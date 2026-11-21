@@ -1,0 +1,874 @@
+{
+  "status": 200,
+  "bytes": 983043,
+  "title": "OSCP+ | Cheatsheet",
+  "headings": {
+    "h1": 1,
+    "h2": 22,
+    "h3": 157,
+    "h4": 313,
+    "h5": 110,
+    "h6": 37
+  },
+  "top_headings": [
+    {
+      "name": "h1",
+      "text": "Emmanuel Solis",
+      "parent": "div",
+      "parent_class": [
+        "profile"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "OSCP+ Cheatsheet",
+      "parent": "div",
+      "parent_class": [
+        "d-flex",
+        "justify-content-between",
+        "align-items-center"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "1. ðµï¸ââï¸ Information Gathering",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "1.1 Passive Information Gathering",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "1.2 DNS Enumeration",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "1.3 Port Scanning",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "1.4 Specific Port Services",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "2. ð Vulnerability Scanning",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "2.1 Nessus",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "2.2 Nmap NSE (Nmap Scripting Engine)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "3. ð·ï¸ Web Applications",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.1 Enumeration",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.2 XSS",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.3. File Inclusion",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.4 File Upload",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.5 SQL Attacks",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.6 XXE (XML External Entity) Injection",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.7 IDOR (Insecure Direct Object References)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.8 Command Injections",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.9 Log4Shell",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "3.10 Exploiting CVEs",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "4. ð¥ Client-Side Attacks",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "4.1 MACROS",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "4.2 Windows Library Files",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "4.3 Advanced Exploitation",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "4.4 Send Emails",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "4.5 Exploiting LibreOffice Macros for\n                Payload Execution",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "5. ð¡ï¸ Antivirus Evasion &\n                Metasploit",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "5.1 In-Memory Injection with PowerShell Script",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "5.2 Shellter (Automatic Tool)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "5.3 Metasploit",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "5.4 Msfvenom",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "6. ð Password Attacks",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.1 Brute-Force",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.2 Spraying Credentials",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.3 Crack Files",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.4 HTTP POST Login Form",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.5 HTTP GET (Basic Authentication)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.6 Calculate cracking time",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.7 Mutating wordlists",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.8 Hashcat Formats for Cracking",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.9 Password Managers",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.10 SSH Passphrases",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.11 Linux Users Hashes",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.12 Mimikatz Commands",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.13 NTLM",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.14 Pass-The-Hash NTLM",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.15 Cracking Net-NTLMv2",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.16 Relaying Net-NTLMv2",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.17 Online Tools",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.18 Default Credentials",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.19 Recommended Wordlists",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "6.20 NetExec (NCX)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "7. ðª Windows Privilege Escalation",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.1 Enumeration",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.2 Finding Files in Directories",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.3 PowerShell Goldmine (Logs)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.4 Abusing Privileges",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.5 Service Binary Hijacking",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.6 Service DLL Hijacking",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.7 Unquoted Service Paths",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.8 Scheduled Tasks",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.9 Internal Services",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.10 Cleartext Password Finding",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.11 Shadow Copies (SAM, SYSTEM,\n                NTDS.dit, SECURITY, NTUSER.dat)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.12 AlwaysElevated Registry Check",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.13 Scripts",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.14 Potatoes",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "7.15 Exploits",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "8. ð§ Linux Privilege Escalation",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.1 Enumeration",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.2 Inspecting Service Footprints",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.3 Cron Jobs",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.4 Password Files",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.5 Setuid Binaries and Capabilities",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.6 Abusing SUDO",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.7 Kernel Exploitations",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.8 Wildcard Exploitation",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.9 Disk Group Permissions",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.10 MySQL Privilege Escalation",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.11 User-Installed Software",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.12 Weak, Reused, and Plaintext Passwords",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.13 Internal Services",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.14 World-Writable Scripts Invoked as Root",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.15 Unmounted FileSystems",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.16 SUID and GUID Files",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "8.17 Scripts",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "9. ð Port Redirection and\n                Manual Tunneling",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.1 Port Redirection with Socat",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.2 SSH Local Port Forwarding",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.3 SSH Dynamic Port Forwarding",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.4 SSH Remote Port Forwarding",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.5 SSH Remote Dynamic Port Forwarding",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.6 SSH (Windows)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.7 Plink (Windows)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "9.8 Netsh (Windows)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h2",
+      "text": "10. âï¸ Tunneling Through Tools",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "10.1 Ligolo (Direct Subnetting)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "10.2 Chisel (HTTP Tunneling)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    },
+    {
+      "name": "h3",
+      "text": "10.3 Dnscat2 (DNS Tunneling)",
+      "parent": "div",
+      "parent_class": [
+        "cheatsheet-content"
+      ]
+    }
+  ],
+  "first_pre": [
+    "whois [domain]\n\n# Specify a different whois server \nwhois [domain] -h [server]\n",
+    "nc [options] [host] [port_number]\n\n# UDP instead of TCP\nnc -u [host] [port number]\n\n# Listen for an incoming connection rather than initiate connection\nnc -l [host] [port number]\n\n# Continue listening for connections after first client has disconnected\nnc -k -l [host] [port number]\n\n# TCP Scan in port range\nnc -nvv -w 1 -z [host] [beginning_port]-[finished_port]\n\n# -w is to specify the connection timeout in seconds, as well as -z to specify zero-I/O mode, which is used for scanning and sends no ",
+    "nmap --script ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 [IP]\n",
+    "ftp -A [IP]\nftp [IP]\n\n# Login with anonymous credentials\nanonymous:anonymous\n\n# Upload a test file to check for reflection on an HTTP port\nput test.txt\n"
+  ],
+  "first_code": [
+    "whois [domain]\n\n# Specify a different whois server \nwhois [domain] -h [server]",
+    "site:somesite.com",
+    "site:somesite.com -filetype:html",
+    "filetype:txt",
+    "ext:txt",
+    "intitle:\"somethig\"",
+    "host [domain]",
+    "host -t txt [domain]",
+    "host [subdomain].[domain]",
+    "nslookup -type=TXT [domain] [use_specific_dns_server_optional]"
+  ],
+  "pre_count": 1322,
+  "code_count": 2336,
+  "possible": [
+    {
+      "tag": "main",
+      "id": "main",
+      "class": null,
+      "text": "OSCP+ Cheatsheet Latest update: July, 2025 Home OSCP+ Cheatsheet Disclaimer: Thi",
+      "headings": 639,
+      "pre": 1322
+    },
+    {
+      "tag": "section",
+      "id": "breadcrumbs",
+      "class": [
+        "breadcrumbs"
+      ],
+      "text": "OSCP+ Cheatsheet Latest update: July, 2025 Home OSCP+ Cheatsheet",
+      "headings": 1,
+      "pre": 0
+    },
+    {
+      "tag": "section",
+      "id": "cheatsheet",
+      "class": [
+        "cheatsheet"
+      ],
+      "text": "Disclaimer: This site compiles various publicly available cheatsheets, commands,",
+      "headings": 638,
+      "pre": 1322
+    }
+  ],
+  "other_blocks": {
+    "ul": 750,
+    "ol": 370,
+    "pre": 1322,
+    "code": 2336,
+    "table": 24
+  }
+}
