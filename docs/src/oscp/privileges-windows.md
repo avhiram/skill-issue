@@ -2827,6 +2827,76 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=[kali_ip] LPORT=[port] -f exe -o
 
 ```
 
+
+## Traces d'exécution et configurations à contrôler
+
+Ces commandes sont des vérifications en lecture seule pour comprendre les privilèges, l'historique et les mécanismes de démarrage d'un poste Windows audité.
+
+### Historique PowerShell (PSReadLine)
+
+Lire l'historique enregistré pour l'utilisateur courant. Le fichier peut être absent ou contenir des données sensibles : limiter l'accès aux besoins de l'audit.
+
+<p class="oscp-command-note">Historique PowerShell (PSReadLine).</p>
+
+```powershell
+Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -ErrorAction SilentlyContinue
+```
+
+### Identifiants enregistrés avec Windows
+
+Lister les entrées du Gestionnaire d'identification sans afficher les mots de passe.
+
+<p class="oscp-command-note">Identifiants enregistrés avec Windows.</p>
+
+```powershell
+cmdkey /list
+```
+
+### Programmes lancés au démarrage
+
+Examiner les entrées Run du registre pour l'utilisateur et la machine.
+
+<p class="oscp-command-note">Programmes lancés au démarrage.</p>
+
+```powershell
+reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run'
+reg query 'HKLM\Software\Microsoft\Windows\CurrentVersion\Run'
+```
+
+### Tâches planifiées
+
+Afficher le nom, l'emplacement et l'état des tâches. Vérifier ensuite les droits sur les exécutables concernés.
+
+<p class="oscp-command-note">Tâches planifiées.</p>
+
+```powershell
+Get-ScheduledTask | Select-Object TaskName,TaskPath,State
+```
+
+### Mises à jour connues du système
+
+Lister les correctifs disponibles dans l'inventaire Windows ; leur absence dans cette sortie ne prouve pas l'absence d'un correctif.
+
+<p class="oscp-command-note">Mises à jour connues du système.</p>
+
+```powershell
+Get-HotFix | Sort-Object InstalledOn -Descending
+```
+
+### Processus et chemins exécutables
+
+Afficher les chemins des processus visibles pour le compte courant afin de préparer l'analyse des permissions.
+
+<p class="oscp-command-note">Processus et chemins exécutables.</p>
+
+```powershell
+Get-Process | Select-Object Name,Id,Path
+```
+
+**Référence technique complémentaire :** [Notes OSCP de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/15_windows_privesc.md). Cette synthèse conserve la structure de SKILL-ISSUE et reformule les explications.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

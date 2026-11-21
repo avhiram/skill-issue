@@ -1460,6 +1460,45 @@ evil-winrm -k -no-pass -u [username] -d [domain] -i [target_host]
 
 ```
 
+
+## Délégations et attributs Kerberos à vérifier
+
+Ces requêtes LDAP identifient des configurations à examiner. La présence d'un attribut ne prouve ni l'exploitation ni l'absence de contrôle compensatoire.
+
+### Délégation RBCD (Resource-Based Constrained Delegation)
+
+Identifier les objets ayant un descripteur de délégation RBCD ; analyser ensuite les permissions réellement accordées.
+
+<p class="oscp-command-note">Délégation RBCD (Resource-Based Constrained Delegation).</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<DC_IP> -D '<DN_COMPTE>' -W -b '<BASE_DN>' '(msDS-AllowedToActOnBehalfOfOtherIdentity=*)' dn sAMAccountName
+```
+
+### Shadow Credentials (attribut msDS-KeyCredentialLink)
+
+Rechercher les objets qui possèdent une clé liée à un mécanisme d'authentification par clé publique.
+
+<p class="oscp-command-note">Shadow Credentials (attribut msDS-KeyCredentialLink).</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<DC_IP> -D '<DN_COMPTE>' -W -b '<BASE_DN>' '(msDS-KeyCredentialLink=*)' dn sAMAccountName
+```
+
+### Contrôle de l'horloge
+
+Vérifier la synchronisation horaire du poste avant de diagnostiquer des échecs Kerberos.
+
+<p class="oscp-command-note">Contrôle de l'horloge.</p>
+
+```bash
+timedatectl status
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/19_ad_exploitation.md). Explications rédigées pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

@@ -549,6 +549,46 @@ crackmapexec http <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 
 ```
 
+
+## Variantes WinRM et exécution distante
+
+Distinguer les protocoles et les modes d'authentification. Ces exemples supposent que les droits sur la machine et les services ont été validés dans le périmètre d'audit.
+
+### WinRM avec un certificat client
+
+Utiliser le certificat et la clé d'un compte autorisé si WinRM TLS accepte cette forme d'authentification.
+
+<p class="oscp-command-note">WinRM avec un certificat client.</p>
+
+```bash
+evil-winrm -i <IP_CIBLE> -S -c <CERTIFICAT_CLIENT>.pem -k <CLE_PRIVEE>.pem
+```
+
+### Scripts locaux dans Evil-WinRM
+
+Déclarer un répertoire de scripts PowerShell à charger dans la session distante.
+
+<p class="oscp-command-note">Scripts locaux dans Evil-WinRM.</p>
+
+```bash
+evil-winrm -i <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -s <DOSSIER_SCRIPTS>
+```
+
+### Comparer SMBExec et WMIExec
+
+Les outils Impacket disposent de mécanismes d'exécution distincts : tester uniquement le protocole autorisé.
+
+<p class="oscp-command-note">Comparer SMBExec et WMIExec.</p>
+
+```bash
+impacket-smbexec '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>'
+impacket-wmiexec '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>'
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/20_ad_lateral_mov.md). Synthèse rédigée pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

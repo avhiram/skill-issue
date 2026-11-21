@@ -1012,6 +1012,56 @@ python3 exploit-suggester.py
 
 ```
 
+
+## Permissions et traces utiles sur Linux
+
+Ces contrôles en lecture seule permettent de repérer des configurations faibles. Examiner les droits réellement accordés avant de conclure à une possibilité d'élévation de privilèges.
+
+### Répertoires modifiables par tous
+
+Afficher les répertoires ouverts en écriture à d'autres utilisateurs. Un droit d'écriture seul ne constitue pas une vulnérabilité.
+
+<p class="oscp-command-note">Répertoires modifiables par tous.</p>
+
+```bash
+find / -type d -perm -0002 -print 2>/dev/null
+```
+
+### Fichiers SUID et SGID
+
+Lister les exécutables ayant des permissions SUID ou SGID et distinguer ces deux mécanismes.
+
+<p class="oscp-command-note">Fichiers SUID et SGID.</p>
+
+```bash
+find / -type f -perm -4000 2>/dev/null
+find / -type f -perm -2000 2>/dev/null
+```
+
+### Tâches planifiées et journaux
+
+Afficher les tâches cron du compte privilégié et rechercher leurs exécutions dans syslog, si accessible.
+
+<p class="oscp-command-note">Tâches planifiées et journaux.</p>
+
+```bash
+grep -i 'CRON' /var/log/syslog | tail -n 30
+```
+
+### Exports NFS
+
+Consulter la politique des exports NFS côté serveur lorsqu'elle existe.
+
+<p class="oscp-command-note">Exports NFS.</p>
+
+```bash
+cat /etc/exports
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/16_linux_privesc.md). Explications rédigées pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

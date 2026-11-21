@@ -2842,6 +2842,76 @@ echo "list" | nc -nv <IP> <PORT>
 
 ```
 
+
+## Vérifications ciblées des services
+
+Ces vérifications complètent l'inventaire des ports. Elles s'utilisent uniquement sur les hôtes inclus dans le périmètre d'audit. Un résultat de scan est un indice : confirmer manuellement la configuration avant de conclure.
+
+### Nmap : examiner précisément un service
+
+Afficher la documentation d'un script NSE, puis interroger uniquement SMB sur le port 445.
+
+<p class="oscp-command-note">Nmap : examiner précisément un service.</p>
+
+```bash
+nmap --script-help smb-ls
+nmap -sV -p 445 --script smb-ls <IP_CIBLE>
+```
+
+### Découverte via un proxy TCP
+
+Utiliser un scan TCP connect lorsque l'accès réseau passe par un proxy SOCKS. Les scans SYN ou UDP ne se comportent pas comme un scan TCP connect derrière proxychains.
+
+<p class="oscp-command-note">Découverte via un proxy TCP.</p>
+
+```bash
+proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
+```
+
+### NFS : identifier les exports
+
+Consulter la liste des partages publiés par un service NFS, avant toute tentative de montage.
+
+<p class="oscp-command-note">NFS : identifier les exports.</p>
+
+```bash
+showmount -e <IP_CIBLE>
+```
+
+### RPC : examiner les utilisateurs visibles
+
+Tester l'accès RPC sans identifiants ; un refus d'accès est un résultat normal et ne prouve pas une anomalie.
+
+<p class="oscp-command-note">RPC : examiner les utilisateurs visibles.</p>
+
+```bash
+rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
+```
+
+### SNMP : interroger les informations système
+
+Essayer une communauté fournie pour l'audit. SNMPv1/v2c ne chiffre pas ces requêtes.
+
+<p class="oscp-command-note">SNMP : interroger les informations système.</p>
+
+```bash
+snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> 1.3.6.1.2.1.1
+```
+
+### Redis : rechercher les informations du service
+
+Interroger le port Redis avec un script NSE ciblé, puis confirmer la version et la configuration observées.
+
+<p class="oscp-command-note">Redis : rechercher les informations du service.</p>
+
+```bash
+nmap -sV -p 6379 --script redis-info <IP_CIBLE>
+```
+
+**Référence technique complémentaire :** [Notes OSCP de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/10_info_gathering.md). Cette synthèse conserve la structure de SKILL-ISSUE et reformule les explications.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

@@ -266,6 +266,45 @@ base64 file_to_send.txt | nc <receiver_IP> 4444
 
 ```
 
+
+## Transferts via SMB et SCP
+
+Choisir une méthode adaptée au protocole autorisé. Les exemples de serveurs temporaires doivent être arrêtés après les tests ; ne pas ouvrir de partage inutilement sur un réseau public.
+
+### Partage SMB temporaire depuis Linux
+
+Exposer un répertoire de laboratoire en SMB2 pour les opérations de copie autorisées.
+
+<p class="oscp-command-note">Partage SMB temporaire depuis Linux.</p>
+
+```bash
+impacket-smbserver -smb2support partage "$(pwd)"
+```
+
+### Partage SMB avec compte de test
+
+Protéger le partage temporaire par un compte dédié plutôt que le laisser accessible sans authentification.
+
+<p class="oscp-command-note">Partage SMB avec compte de test.</p>
+
+```bash
+impacket-smbserver -smb2support -user <UTILISATEUR> -password '<MOT_DE_PASSE>' partage "$(pwd)"
+```
+
+### SCP en mode historique
+
+Forcer le protocole SCP historique lorsque le serveur distant ne prend pas en charge SFTP. L'option -O n'est pas nécessaire pour les serveurs modernes.
+
+<p class="oscp-command-note">SCP en mode historique.</p>
+
+```bash
+scp -O <FICHIER_LOCAL> <UTILISATEUR>@<HOTE_SSH>:<CHEMIN_DISTANT>
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/index.md). Présentation rédigée pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

@@ -461,6 +461,75 @@ smbclient -p [local_port] -L //127.0.0.1 -U [username] --password=[password]
 
 ```
 
+
+## Pivot réseau : Ligolo-ng et sshuttle
+
+Ligolo-ng relaie le trafic via une interface TUN, tandis que sshuttle route certains flux par SSH. Limiter les routes aux sous-réseaux autorisés et vérifier les paramètres de la version installée.
+
+### Créer une interface TUN
+
+Configurer l'interface locale qui recevra les paquets destinés au réseau distant.
+
+<p class="oscp-command-note">Créer une interface TUN.</p>
+
+```bash
+sudo ip tuntap add user "$USER" mode tun ligolo
+```
+
+### Démarrer le proxy Ligolo-ng
+
+Le proxy écoute les connexions de l'agent. Un certificat autosigné reste approprié au laboratoire si son empreinte est vérifiée.
+
+<p class="oscp-command-note">Démarrer le proxy Ligolo-ng.</p>
+
+```bash
+./proxy -selfcert -laddr 0.0.0.0:11601
+```
+
+### Connecter l'agent par empreinte
+
+Employer une empreinte SHA-256 vérifiée plutôt que désactiver entièrement la validation TLS.
+
+<p class="oscp-command-note">Connecter l'agent par empreinte.</p>
+
+```bash
+./agent -connect <IP_PROXY>:11601 -accept-fingerprint <EMPREINTE_SHA256>
+```
+
+### Démarrer le tunnel dans la console proxy
+
+Sélectionner la session appropriée, puis attacher le tunnel à l'interface TUN configurée.
+
+<p class="oscp-command-note">Démarrer le tunnel dans la console proxy.</p>
+
+```text
+tunnel_start --tun ligolo
+```
+
+### Ajouter une route vers le réseau d'audit
+
+Router uniquement la plage IP requise à travers l'interface ligolo.
+
+<p class="oscp-command-note">Ajouter une route vers le réseau d'audit.</p>
+
+```bash
+sudo ip route add <RESEAU_CIBLE_CIDR> dev ligolo
+```
+
+### Route réseau avec sshuttle
+
+L'accès SSH au pivot doit être opérationnel avant de créer ce routage.
+
+<p class="oscp-command-note">Route réseau avec sshuttle.</p>
+
+```bash
+sshuttle -r <UTILISATEUR>@<PIVOT_SSH> <RESEAU_CIBLE_CIDR>
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md). Synthèse rédigée pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

@@ -1911,6 +1911,65 @@ if __name__ == "__main__":
 
 ```
 
+
+## Identifier les formats et préparer un audit de mots de passe
+
+Avant tout cassage hors ligne, identifier le format exact : une chaîne qui ressemble à un hash peut aussi être un identifiant, un sel ou un jeton. Utiliser des fichiers et secrets explicitement autorisés.
+
+### Reconnaître un format possible
+
+HashID propose des familles de formats à partir d'une chaîne, sans garantir un diagnostic unique.
+
+<p class="oscp-command-note">Reconnaître un format possible.</p>
+
+```bash
+hashid '<HASH_A_IDENTIFIER>'
+```
+
+### Consulter les exemples officiels de Hashcat
+
+Parcourir les exemples intégrés pour vérifier la structure attendue d'un hash et le mode correspondant.
+
+<p class="oscp-command-note">Consulter les exemples officiels de Hashcat.</p>
+
+```bash
+hashcat --example-hashes
+```
+
+### Appliquer une liste de règles hors ligne
+
+Tester une liste de mots et un fichier de règles sur les empreintes autorisées. Adapter le mode au format détecté.
+
+<p class="oscp-command-note">Appliquer une liste de règles hors ligne.</p>
+
+```bash
+hashcat -m <MODE> -a 0 <FICHIER_HASHES> <LISTE_MOTS> -r <FICHIER_REGLES>
+```
+
+### Préparer un hash pour John the Ripper
+
+Transformer un fichier KeePass de laboratoire dans un format exploitable par John, sans modifier le fichier original.
+
+<p class="oscp-command-note">Préparer un hash pour John the Ripper.</p>
+
+```bash
+keepass2john <COFFRE>.kdbx > <SORTIE>.hash
+```
+
+### Construire une liste de mots contextuelle
+
+Générer un dictionnaire depuis un site appartenant au périmètre d'audit ; relire les résultats avant usage.
+
+<p class="oscp-command-note">Construire une liste de mots contextuelle.</p>
+
+```bash
+cewl -w <LISTE_MOTS>.txt 'https://<HOTE_AUTORISE>/'
+```
+
+**Référence technique complémentaire :** [Notes OSCP de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/14_password_attacks.md). Cette synthèse conserve la structure de SKILL-ISSUE et reformule les explications.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

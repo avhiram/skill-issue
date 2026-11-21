@@ -83,6 +83,45 @@ sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
 
 ```
 
+
+## Rechercher et vérifier des exploits publics
+
+SearchSploit consulte la base locale d'Exploit-DB. La présence d'un résultat ne démontre pas qu'une cible est vulnérable : comparer le produit, sa version, la configuration et les prérequis.
+
+### Chercher une référence précise
+
+Rechercher par nom de produit et version plutôt que lancer automatiquement une preuve de concept.
+
+<p class="oscp-command-note">Chercher une référence précise.</p>
+
+```bash
+searchsploit '<PRODUIT> <VERSION>'
+```
+
+### Lire le code d'une preuve de concept
+
+Afficher localement le script correspondant à un identifiant EDB pour examiner ses effets avant toute exécution.
+
+<p class="oscp-command-note">Lire le code d'une preuve de concept.</p>
+
+```bash
+searchsploit -x <IDENTIFIANT_EDB>
+```
+
+### Comparer aux résultats d'un scan Nmap
+
+Rechercher des correspondances dans un rapport XML produit avec l'option -oX de Nmap.
+
+<p class="oscp-command-note">Comparer aux résultats d'un scan Nmap.</p>
+
+```bash
+searchsploit --nmap <RAPPORT_NMAP>.xml
+```
+
+**Référence technique complémentaire :** [Notes OSCP de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/13_exploitation.md). Cette synthèse conserve la structure de SKILL-ISSUE et reformule les explications.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

@@ -2406,6 +2406,67 @@ crackmapexec mssql <TARGET_IP> -u <USERNAME> -p <PASSWORD> -q "SELECT name FROM 
 
 ```
 
+
+## NetExec et collecte ciblée de l'annuaire
+
+NetExec (nxc) complète l'énumération SMB classique. Les modules disponibles dépendent des versions : vérifier l'aide de l'outil et utiliser un compte autorisé à consulter le domaine.
+
+### Partages, utilisateurs et groupes
+
+Interroger successivement les principaux objets exposés par SMB sur un contrôleur de domaine.
+
+<p class="oscp-command-note">Partages, utilisateurs et groupes.</p>
+
+```bash
+nxc smb <DC_IP> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>' --shares
+nxc smb <DC_IP> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>' --users
+nxc smb <DC_IP> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>' --groups
+```
+
+### Politique de mots de passe
+
+Interroger la politique de mots de passe et de verrouillage avec un compte de lecture.
+
+<p class="oscp-command-note">Politique de mots de passe.</p>
+
+```bash
+nxc smb <DC_IP> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>' --pass-pol
+```
+
+### LDAPDomainDump
+
+Exporter des vues de l'annuaire avec un compte autorisé ; protéger les fichiers produits, susceptibles de contenir des informations internes.
+
+<p class="oscp-command-note">LDAPDomainDump.</p>
+
+```bash
+ldapdomaindump -u '<DOMAINE>\<UTILISATEUR>' -p '<MOT_DE_PASSE>' <DC_IP>
+```
+
+### Collecte BloodHound CE
+
+Préparer une archive des objets et relations du domaine depuis Linux. Les noms DNS et IP du DC doivent être correctement résolus.
+
+<p class="oscp-command-note">Collecte BloodHound CE.</p>
+
+```bash
+bloodhound-ce-python -c All -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>' -dc '<NOM_DC>' -ns <DNS_IP> --zip
+```
+
+### Stratégies de groupe
+
+Rechercher dans les fichiers XML d'un SYSVOL déjà collecté les attributs cpassword (GPP).
+
+<p class="oscp-command-note">Stratégies de groupe.</p>
+
+```bash
+grep -Rni --include='*.xml' 'cpassword' <DOSSIER_SYSVOL>
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/18_ad_enum.md). Explications rédigées pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

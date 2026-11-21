@@ -287,6 +287,35 @@ netsh interface portproxy del v4tov4 listenport=[LISTEN_PORT] listenaddress=[LIS
 
 ```
 
+
+## Redirections : diagnostics et vérifications
+
+Vérifier les interfaces et ports concernés avant de créer des redirections. Ne pas confondre tunnel SSH local, tunnel distant, proxy SOCKS et transfert TCP.
+
+### Redirection TCP avec Socat
+
+Écouter localement et transmettre chaque connexion TCP vers un service distant autorisé.
+
+<p class="oscp-command-note">Redirection TCP avec Socat.</p>
+
+```bash
+socat TCP-LISTEN:<PORT_LOCAL>,reuseaddr,fork TCP:<IP_SERVICE>:<PORT_SERVICE>
+```
+
+### Redirection SSH vers un serveur distant
+
+Exposer un port de la machine locale depuis le serveur SSH, en fonction de sa politique GatewayPorts et de son bind.
+
+<p class="oscp-command-note">Redirection SSH vers un serveur distant.</p>
+
+```bash
+ssh -N -R 127.0.0.1:9090:127.0.0.1:80 <UTILISATEUR>@<SERVEUR_SSH>
+```
+
+**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md). Synthèse rédigée pour SKILL-ISSUE.
+
+<!-- notes-krovs-2026 -->
+
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
