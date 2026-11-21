@@ -299,3 +299,43 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .vp-doc div[class*="language-"] code { line-height: 1.55; }
 .vp-doc strong { color: #DCCFFF; font-weight: 600; }
 .vp-doc table td, .vp-doc table th { padding: 7px 11px; }
+
+/* SKILL-ISSUE OSCP visual hierarchy v2 */
+/* Headings are clearly distinct from short notes and executable examples. */
+.vp-doc h1 { color: #F2ECFF; }
+.vp-doc h2 {
+  color: #DACBFA;
+  font-weight: 740;
+  border-color: #382844;
+  margin-top: 1.85rem;
+}
+.vp-doc h3 { color: #BCA4F3; font-weight: 700; }
+.vp-doc h4 { color: #A99BC2; font-weight: 650; }
+.vp-doc .oscp-command-note {
+  color: #ACA2BF;
+  font-size: .86rem;
+  line-height: 1.55;
+  border-left: 2px solid #725397;
+  padding-left: 11px;
+  margin: .6rem 0 .55rem;
+}
+.vp-doc .oscp-command-note code {
+  color: #CDB8F9;
+  background: #221930;
+  border: 1px solid #352445;
+  border-radius: 4px;
+  padding: 1px 4px;
+}
+.vp-doc .oscp-command-note + div[class*="language-"] {
+  margin-top: .45rem;
+}
+.vp-doc div[class*="language-"] {
+  background: #17121F;
+  border-color: #30273F;
+  margin-top: .4rem;
+  margin-bottom: .85rem;
+}
+.vp-doc div[class*="language-"] pre {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}

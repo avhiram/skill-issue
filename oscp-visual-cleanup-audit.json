@@ -1,0 +1,111 @@
+{
+  "pages_processed": 17,
+  "notes_styled": 1291,
+  "duplicated_notes_removed": 347,
+  "dns_grouped": true,
+  "misidentified_versions_fixed": 1,
+  "per_page": {
+    "ad-enumeration": {
+      "styled_explanations": 139,
+      "repeated_labels_removed": 53,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "ad-lateral": {
+      "styled_explanations": 27,
+      "repeated_labels_removed": 18,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "ad-techniques": {
+      "styled_explanations": 64,
+      "repeated_labels_removed": 27,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "antivirus-metasploit": {
+      "styled_explanations": 35,
+      "repeated_labels_removed": 2,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "applications-web": {
+      "styled_explanations": 209,
+      "repeated_labels_removed": 68,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "attaques-client": {
+      "styled_explanations": 44,
+      "repeated_labels_removed": 5,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "methodologie": {
+      "styled_explanations": 98,
+      "repeated_labels_removed": 10,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 1
+    },
+    "mots-de-passe": {
+      "styled_explanations": 113,
+      "repeated_labels_removed": 30,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "privileges-linux": {
+      "styled_explanations": 68,
+      "repeated_labels_removed": 10,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "privileges-windows": {
+      "styled_explanations": 164,
+      "repeated_labels_removed": 86,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "rapport": {
+      "styled_explanations": 0,
+      "repeated_labels_removed": 0,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "reconnaissance": {
+      "styled_explanations": 178,
+      "repeated_labels_removed": 13,
+      "dns_command_blocks_grouped": true,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "redirection-ports": {
+      "styled_explanations": 25,
+      "repeated_labels_removed": 2,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "transferts": {
+      "styled_explanations": 21,
+      "repeated_labels_removed": 0,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "tunneling": {
+      "styled_explanations": 32,
+      "repeated_labels_removed": 0,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "utilitaires": {
+      "styled_explanations": 68,
+      "repeated_labels_removed": 23,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    },
+    "vulnerabilites": {
+      "styled_explanations": 6,
+      "repeated_labels_removed": 0,
+      "dns_command_blocks_grouped": false,
+      "noncommand_version_blocks_fixed": 0
+    }
+  }
+}

