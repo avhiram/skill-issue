@@ -1,0 +1,60 @@
+name: Refine OSCP visual hierarchy
+on:
+  push:
+    paths:
+      - 'scripts/oscp_visual_cleanup.py'
+      - '.github/workflows/oscp-visual-cleanup.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: skill-issue-site-write
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Improve titles, notes and code block grouping
+        run: python scripts/oscp_visual_cleanup.py
+      - name: Verify OSCP cleanup
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          audit=json.loads(Path('oscp-visual-cleanup-audit.json').read_text())
+          print(json.dumps({k:v for k,v in audit.items() if k!='per_page'},ensure_ascii=False))
+          assert audit['dns_grouped']
+          assert audit['misidentified_versions_fixed'] >= 1
+          assert audit['notes_styled'] >= 200
+          assert audit['duplicated_notes_removed'] >= 10
+          recon=Path('docs/src/oscp/reconnaissance.md').read_text()
+          assert 'host [domain]' in recon
+          assert 'host -t txt [domain]' in recon
+          assert 'for ip in $(cat list.txt); do host <ip>.[domain]; done' in recon
+          method=Path('docs/src/oscp/methodologie.md').read_text()
+          assert "Version du serveur dans l'exemple" in method
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Build VitePress
+        run: npm run docs:build
+      - name: Commit verified layout changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/src/oscp docs/.vitepress/theme/custom.css oscp-visual-cleanup-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Improve OSCP visual hierarchy and remove repeated command explanations"
+            git push origin HEAD:main
+          fi
