@@ -2,24 +2,26 @@
 
 * [CRTO — Accueil](README.md)
 
-## Cheat sheets
-* [Référentiel CRTO](cheatsheets/README.md)
-* [Cobalt Strike — Commandes de base](cheatsheets/cobalt-strike-primer.md)
-* [Énumération LDAP et Active Directory](cheatsheets/discovery.md)
-* [Audit des politiques AppLocker](cheatsheets/applocker.md)
-* [Kerberos et délégation](cheatsheets/kerberos.md)
-* [Audit AD CS](cheatsheets/adcs.md)
-* [Microsoft SQL Server — Audit](cheatsheets/ms-sql-server.md)
-* [Forest & Domain Trusts](cheatsheets/forest-domain-trusts.md)
+## Techniques et références
 
-## Laboratoires
-* [Index des labs](labs/README.md)
+* [Active Directory](ad/README.md)
+  * [Reconnaissance — LDAP & BloodHound](cheatsheets/discovery.md)
+  * [Authentification — Kerberos](cheatsheets/kerberos.md)
+  * [Forest & Domain Trusts](cheatsheets/forest-domain-trusts.md)
+  * [AD CS — Certificats](cheatsheets/adcs.md)
+* [Windows & applications](windows/README.md)
+  * [AppLocker — Application Control](cheatsheets/applocker.md)
+  * [Microsoft SQL Server](cheatsheets/ms-sql-server.md)
+* [Command & Control](c2/README.md)
+  * [Cobalt Strike Primer](cheatsheets/cobalt-strike-primer.md)
 
-## Examen et commandes
+## Mise en pratique
+
+* [Laboratoires CRTO](labs/README.md)
 * [Préparation à l'examen](exam/README.md)
 
-## Outils et ressources
-* [Environnement de travail](tools/README.md)
+## Documentation
 
-## OPSEC
-* [Risques et visibilité](opsec/README.md)
+* [Cheat sheets — Index](cheatsheets/README.md)
+* [OPSEC — Risques et visibilité](opsec/README.md)
+* [Outils et ressources](tools/README.md)
