@@ -1,4 +1,4 @@
-name: Build and publish SKILL-ISSUE
+name: Build SKILL-ISSUE website
 
 on:
   push:
@@ -7,24 +7,17 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
-  group: skill-issue-publish
+  group: skill-issue-build
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     if: github.event.head_commit.message != 'Publish compiled VitePress site'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          persist-credentials: true
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -37,7 +30,7 @@ jobs:
           test -s docs/.vitepress/dist/index.html
           grep -q 'SKILL-ISSUE' docs/.vitepress/dist/index.html
           test -d docs/.vitepress/dist/assets
-      - name: Publish compiled pages to repository root
+      - name: Publish compiled website at GitHub Pages root
         run: |
           rsync -a docs/.vitepress/dist/ ./
           touch .nojekyll
@@ -48,9 +41,3 @@ jobs:
             git commit -m "Publish compiled VitePress site"
             git push origin HEAD:main
           fi
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: docs/.vitepress/dist
-      - id: deployment
-        uses: actions/deploy-pages@v4
