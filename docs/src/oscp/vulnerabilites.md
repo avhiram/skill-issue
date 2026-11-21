@@ -17,6 +17,7 @@ description: "Évaluer les services exposés et rechercher des faiblesses connue
 Go to the Nessus website https://www.tenable.com/downloads/nessus?loginAttempted=true and select the platform.
 
 Download the installer to your local machine.
+
 ```
 
 
@@ -29,6 +30,7 @@ echo "[sha256_sum_found_in_website] Nessus-10.5.0-debian10_amd64.deb" > sha256su
 sha256sum -c sha256sum_nessus
 
 # Expected Output: OK
+
 ```
 
 
@@ -36,6 +38,7 @@ sha256sum -c sha256sum_nessus
 
 ```bash
 sudo apt install ./Nessus-10.5.0-debian10_amd64.deb
+
 ```
 
 
@@ -45,6 +48,7 @@ sudo apt install ./Nessus-10.5.0-debian10_amd64.deb
 sudo systemctl start nessusd.service
 
 # Ensuite, visitez le Nesus GUI à https://127.0.0.1:8834 pour configurer le scanner.
+
 ```
 
 
@@ -61,6 +65,7 @@ nmap --script [scriptName] [IP]
 
 # Afficher l’aide du script
 nmap --script-help [scriptName]
+
 ```
 
 
@@ -75,6 +80,7 @@ sudo nmap --script-updatedb
 
 # Usage example
 sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
+
 ```
 
 ---

