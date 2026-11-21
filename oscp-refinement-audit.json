@@ -1,0 +1,94 @@
+{
+  "total": {
+    "source_blocks": 2321,
+    "remaining_blocks": 1644,
+    "compact_fragments": 677
+  },
+  "pages": {
+    "ad-enumeration": {
+      "source_blocks": 278,
+      "remaining_blocks": 192,
+      "compact_fragments": 86
+    },
+    "ad-lateral": {
+      "source_blocks": 55,
+      "remaining_blocks": 45,
+      "compact_fragments": 10
+    },
+    "ad-techniques": {
+      "source_blocks": 119,
+      "remaining_blocks": 91,
+      "compact_fragments": 28
+    },
+    "antivirus-metasploit": {
+      "source_blocks": 37,
+      "remaining_blocks": 37,
+      "compact_fragments": 0
+    },
+    "applications-web": {
+      "source_blocks": 353,
+      "remaining_blocks": 277,
+      "compact_fragments": 76
+    },
+    "attaques-client": {
+      "source_blocks": 94,
+      "remaining_blocks": 49,
+      "compact_fragments": 45
+    },
+    "methodologie": {
+      "source_blocks": 240,
+      "remaining_blocks": 109,
+      "compact_fragments": 131
+    },
+    "mots-de-passe": {
+      "source_blocks": 200,
+      "remaining_blocks": 143,
+      "compact_fragments": 57
+    },
+    "privileges-linux": {
+      "source_blocks": 86,
+      "remaining_blocks": 78,
+      "compact_fragments": 8
+    },
+    "privileges-windows": {
+      "source_blocks": 391,
+      "remaining_blocks": 250,
+      "compact_fragments": 141
+    },
+    "rapport": {
+      "source_blocks": 2,
+      "remaining_blocks": 0,
+      "compact_fragments": 2
+    },
+    "reconnaissance": {
+      "source_blocks": 249,
+      "remaining_blocks": 196,
+      "compact_fragments": 53
+    },
+    "redirection-ports": {
+      "source_blocks": 35,
+      "remaining_blocks": 27,
+      "compact_fragments": 8
+    },
+    "transferts": {
+      "source_blocks": 28,
+      "remaining_blocks": 21,
+      "compact_fragments": 7
+    },
+    "tunneling": {
+      "source_blocks": 55,
+      "remaining_blocks": 32,
+      "compact_fragments": 23
+    },
+    "utilitaires": {
+      "source_blocks": 93,
+      "remaining_blocks": 91,
+      "compact_fragments": 2
+    },
+    "vulnerabilites": {
+      "source_blocks": 6,
+      "remaining_blocks": 6,
+      "compact_fragments": 0
+    }
+  }
+}

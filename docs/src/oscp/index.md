@@ -5,6 +5,8 @@ description: Aide-mémoire OSCP en français
 
 # OSCP
 
+**Recherche rapide :** Ctrl + K pour trouver une commande ou une technique.
+
 **Offensive Security Certified Professional**
 
 Fiches par technique avec des explications courtes et les commandes originales dans des blocs copiables.

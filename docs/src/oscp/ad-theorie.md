@@ -1,58 +1,35 @@
 ---
 title: "OSCP · Active Directory : fondamentaux"
-description: "Comprendre les objets, protocoles et mécanismes d'un domaine."
+description: "Comprendre les objets AD et les mécanismes d'authentification."
 ---
 
-# OSCP · Active Directory : fondamentaux
+# Active Directory : fondamentaux
 
-Comprendre les objets, protocoles et mécanismes d'un domaine.
+Les concepts essentiels avant de commencer l'énumération du domaine.
 
+## Domaine et contrôleur de domaine
 
-## Overview
+Le domaine rassemble comptes, ordinateurs, groupes et droits. Le contrôleur de domaine (DC) fournit notamment les services LDAP et Kerberos.
 
-Commandes, paramètres et exemples associés à cette technique.
+Exemple de domaine : domain.com.
 
+## Authentification
 
-```text
-domain.com
-```
+- Kerberos : le client demande un ticket initial (TGT), puis des tickets de service (TGS).
+- NTLM : protocole d'authentification par défi-réponse.
+- SPN : nom associant un service à un compte Active Directory.
 
+## Valeurs à connaître
 
-## Authentication
+- DONT_REQ_PREAUTH : indicateur d'un compte pouvant ne pas exiger la préauthentification Kerberos.
+- DS-Replication-Get-Changes : droit utilisé dans les mécanismes de réplication de l'annuaire.
 
-Commandes, paramètres et exemples associés à cette technique.
+Ces éléments sont des noms d'attributs et de droits, pas des commandes.
 
+## Passer à la pratique
 
-## Credential Storage & Hash Dumping
+- [Énumération Active Directory](ad-enumeration.md)
+- [Techniques Active Directory](ad-techniques.md)
+- [Mouvement latéral](ad-lateral.md)
 
-Vérifier les comptes, les secrets et les mécanismes d'authentification.
-
-
-## Common Attack Vectors
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-```text
-DONT_REQ_PREAUTH
-```
-
-
-```text
-DC-Replication-Get-Changes
-```
-
-
-## Lateral Movement
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-## Persistence
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
----
-
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+Source : [Notes OSCP Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

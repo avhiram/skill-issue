@@ -8,22 +8,12 @@ description: "Documenter les constats et les preuves techniques."
 Documenter les constats et les preuves techniques.
 
 
-## Tools for Note-Taking and Report Writing
+## Prise de notes et rapports
 
 Vérifier les ports et les services de la cible autorisée.
 
 
-### Recommended Tools
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-### Best Practices
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-## Capturing Screenshots
+## Captures d'écran
 
 Préparer et conserver des preuves exploitables dans un rapport.
 
@@ -33,24 +23,13 @@ Préparer et conserver des preuves exploitables dans un rapport.
 Observer les permissions et la configuration de Windows.
 
 
-### MacOS
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Kali Linux
 
 Examiner les permissions et la configuration de Linux.
 
 
-```text
-gnome-screenshot
-```
-
-
-### Cross-Platform Tools
-
-Commandes, paramètres et exemples associés à cette technique.
+**Paramètres et repères :**
+`gnome-screenshot`  
 
 
 ### Best Practices for Screenshots
@@ -58,9 +37,8 @@ Commandes, paramètres et exemples associés à cette technique.
 Préparer et conserver des preuves exploitables dans un rapport.
 
 
-```text
-sql_injection_vuln_example.png
-```
+**Paramètres et repères :**
+`sql_injection_vuln_example.png`  
 
 
 ## Key Components of a Good Report
@@ -73,31 +51,13 @@ Vérifier les ports et les services de la cible autorisée.
 Vérifier les ports et les services de la cible autorisée.
 
 
-## Proof of Concept (PoC)
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ## Compliance Reporting (Optional)
 
 Vérifier les ports et les services de la cible autorisée.
 
 
-## Common Mistakes to Avoid
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-## Structure for Each Vulnerability
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-## Tips for Debrief Sessions
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

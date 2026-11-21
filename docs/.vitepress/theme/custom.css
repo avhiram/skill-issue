@@ -288,3 +288,14 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   .VPNavBar { background: #09070E !important; }
   .vp-doc h1 { font-size: 1.7rem; }
 }
+
+/* OSCP exam compact styling */
+.vp-doc h2 { margin-top: 1.7rem; margin-bottom: .65rem; }
+.vp-doc h3 { margin-top: 1.25rem; margin-bottom: .5rem; }
+.vp-doc h4 { margin-top: 1rem; margin-bottom: .4rem; }
+.vp-doc p { margin: .5rem 0 .75rem; line-height: 1.6; }
+.vp-doc div[class*="language-"] { margin: .55rem 0 1rem; border-color: #30243F; box-shadow: none; }
+.vp-doc div[class*="language-"] pre { padding-top: 12px; padding-bottom: 12px; }
+.vp-doc div[class*="language-"] code { line-height: 1.55; }
+.vp-doc strong { color: #DCCFFF; font-weight: 600; }
+.vp-doc table td, .vp-doc table th { padding: 7px 11px; }

