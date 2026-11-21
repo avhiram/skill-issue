@@ -1,0 +1,62 @@
+name: Integrate complete OSCP source
+
+on:
+  push:
+    paths:
+      - '.github/workflows/oscp-import.yml'
+      - 'scripts/import_oscp.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: oscp-source-import
+  cancel-in-progress: false
+
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source parser
+        run: python -m pip install requests beautifulsoup4 lxml
+      - name: Extract complete source
+        run: python scripts/import_oscp.py
+      - name: Verify coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r = json.loads(Path('oscp-import-audit.json').read_text())
+          print('Source preformatted commands:', r['source_pre'])
+          print('Imported preformatted commands:', r['imported_pre'])
+          print('Source inline code:', r['source_inline_code'])
+          print('Imported inline code:', r['imported_inline_code'])
+          print('Skipped pre:', r['skipped_pre'])
+          print('Skipped inline code:', r['skipped_inline_code_outside_headings'])
+          assert r['imported_pre'] == r['source_pre']
+          assert r['skipped_inline_code_outside_headings'] == 0
+          assert len(r['generated_pages']) >= 19
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install VitePress
+        run: npm ci --no-audit --no-fund
+      - name: Compile OSCP website
+        run: npm run docs:build
+      - name: Commit approved import to GitHub
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/src/index.md docs/src/crto/index.md docs/src/oscp docs/.vitepress/config.mts oscp-import-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Integrate all OSCP source command blocks with French technical navigation"
+            git push origin HEAD:main
+          fi
