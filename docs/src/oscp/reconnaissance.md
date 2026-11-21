@@ -650,7 +650,7 @@ nmap --script ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-ba
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 21: FTP ».</p>
+<p class="oscp-command-note">Ouvrir FTP et tester une connexion anonyme, si elle est autorisée.</p>
 
 ```bash
 ftp -A [IP]
@@ -1230,12 +1230,12 @@ nmap -p 69 --script tftp-enum <target_ip>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 69: TFTP ».</p>
+<p class="oscp-command-note">Script Bash d’énumération TFTP : vérifier la présence d’un fichier connu.</p>
 
 ```bash
 #!/bin/bash
 
-# TFTP Enumeration Script
+# Script d'énumération TFTP
 if [ "$#" -ne 2 ]; then
     echo "Usage: $0 <target_ip> <filename>"
     exit 1
@@ -1791,7 +1791,7 @@ nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 139, 445: SMB ».</p>
+<p class="oscp-command-note">Observer le trafic SMB et lister les partages accessibles.</p>
 
 ```bash
 # Analyse des paquets réseau: capture et analyse les paquets liés au trafic SMB sur le port 139, à la recherche de modèles spécifiques
@@ -1818,7 +1818,7 @@ smbmap -u '' -p '' -H <IP> -R
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Interroger le service SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <IP>
@@ -1872,7 +1872,7 @@ mget *
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
 ```bash
 crackmapexec smb <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
@@ -2059,13 +2059,13 @@ sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=
 
 ```bash
 # Version: 1, 2c, 3
-# Community String: public, private, security, etc
+# Chaînes de communauté SNMP possibles : public, private, security, etc.
 snmpwalk -v <SNMP_VERSION> -c <COMMUNITY_STRING> <target-ip> .1
 
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 161 (UDP): SNMP ».</p>
+<p class="oscp-command-note">Énumérer SNMP avec une communauté autorisée et examiner les résultats.</p>
 
 ```bash
 # Popular wordlist: /usr/share/wordlists/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt
@@ -2372,7 +2372,7 @@ nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Exécuter la commande distante indiquée via MSSQL avec CrackMapExec (droits requis).</p>
 
 ```bash
 # Vérifiez le service MSSQL et exécutez la commande
@@ -2620,7 +2620,7 @@ nmap -sV -p 3306 --script "mysql-audit,mysql-databases,mysql-dump-hashes,mysql-e
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Exécuter la requête SQL indiquée sur le service MySQL avec CrackMapExec (droits requis).</p>
 
 ```bash
 crackmapexec mysql -d <database> -u <username> -p <password> -x "SHOW DATABASES;" <target_ip>
@@ -2775,7 +2775,7 @@ hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service POSTGRES avec CrackMapExec.</p>
 
 ```bash
 crackmapexec postgres -d <DB_NAME> -u <USER> -p <PASSWORD> -t <ip>
@@ -2938,7 +2938,7 @@ nmap -p 5985,5986 --script winrm-info <ip>
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service WINRM avec CrackMapExec.</p>
 
 ```bash
 crackmapexec winrm <IP> -u <USER> -p <PASSWORD>

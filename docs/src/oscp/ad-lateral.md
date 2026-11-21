@@ -249,7 +249,7 @@ crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
 ```bash
 # Utilisez l'option --target de CrackMapExec pour réduire la focalisation
@@ -304,7 +304,7 @@ nmap -p 5985,1433,445,3389 <TARGET_IP>
 `-p` · `-H`  
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester une authentification par hash NTLM sur SMB avec CrackMapExec.</p>
 
 ```bash
 # Tester les mots de passe et les hachages NTLM
@@ -318,7 +318,7 @@ crackmapexec smb <DOMAIN_IP> -u users.txt -p passwords.txt -H hashes.txt -d <DOM
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester un mot de passe sur plusieurs comptes via SMB, selon la politique de verrouillage.</p>
 
 ```bash
 # Tester un mot de passe unique pour tous les utilisateurs du domaine
@@ -380,7 +380,7 @@ net use \\<NOM_CIBLE>\<PARTAGE> /user:<DOMAINE>\<UTILISATEUR> *
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester un mot de passe sur plusieurs comptes via WINRM, selon la politique de verrouillage.</p>
 
 ```bash
 # Tester les références sur le domaine principal via WinRM
@@ -430,7 +430,7 @@ crackmapexec winrm <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x 
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Spécifier la méthode d'exécution distante SMB avec CrackMapExec (droits requis).</p>
 
 ```bash
 # Gagnez un shell en utilisant des identifiants valides
@@ -455,7 +455,7 @@ crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 ### VMIExec
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Spécifier la méthode d'exécution distante SMB avec CrackMapExec (droits requis).</p>
 
 ```bash
 # Gagnez un shell en utilisant des identifiants valides
@@ -472,7 +472,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exe
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service LDAP avec CrackMapExec.</p>
 
 ```bash
 # Authentifier et énumérer les utilisateurs sur le domaine principal
@@ -499,7 +499,7 @@ crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUB
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service MSSQL avec CrackMapExec.</p>
 
 ```bash
 # Tester les identifiants de domaine principal sur un serveur MSSQL
@@ -534,7 +534,7 @@ crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ### RDP
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service RDP avec CrackMapExec.</p>
 
 ```bash
 # Tester les références d'un service RDP sur le domaine principal
@@ -582,7 +582,7 @@ xfreerdp3 /u:<UTILISATEUR> /v:<IP_CIBLE> /dynamic-resolution
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service FTP avec CrackMapExec.</p>
 
 ```bash
 crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
@@ -593,7 +593,7 @@ crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 ### SSH
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service SSH avec CrackMapExec.</p>
 
 ```bash
 crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
@@ -617,7 +617,7 @@ ssh <UTILISATEUR>@<HOTE_SSH> hostname
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester les identifiants fournis sur le service HTTP avec CrackMapExec.</p>
 
 ```bash
 crackmapexec http <TARGET_IP> -u <USERNAME> -p <PASSWORD>
