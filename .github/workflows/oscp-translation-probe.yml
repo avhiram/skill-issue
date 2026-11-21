@@ -1,0 +1,36 @@
+name: Probe French technical translation
+on:
+  push:
+    paths: ['.github/workflows/oscp-translation-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  translation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -q argostranslate
+      - name: Test offline English to French translation
+        run: |
+          python - <<'PY'
+          import argostranslate.package
+          import argostranslate.translate
+          print("Downloading available language models...")
+          argostranslate.package.update_package_index()
+          packs = argostranslate.package.get_available_packages()
+          en_fr = next(p for p in packs if p.from_code == "en" and p.to_code == "fr")
+          print("Selected package:", en_fr)
+          argostranslate.package.install_from_path(en_fr.download())
+          for source in [
+              "Download a single file from the remote host",
+              "Check available services and versions",
+              "Run the tool with a custom user agent",
+              "Replace TARGET_IP with the target address",
+          ]:
+              print("SOURCE", repr(source))
+              print("FRENCH", repr(argostranslate.translate.translate(source,"en","fr")))
+          PY
