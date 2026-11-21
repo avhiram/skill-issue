@@ -53,9 +53,7 @@ telnet [ip] [port]
 
 
 
-```text
-gpp decrypt
-```
+<p class="oscp-inline-ref"><strong>Référence GPP :</strong> <code>gpp decrypt</code> est une indication du guide, pas une commande complète vérifiée.</p>
 
 
 **Paramètres et repères :**
@@ -63,7 +61,7 @@ gpp decrypt
 `.xml`  
 
 
-#### FTP (with Null Session)
+#### FTP sans authentification
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
@@ -120,19 +118,21 @@ Examiner les objets, les droits et les services du domaine.
 
 
 
+<p class="oscp-command-note">Récupérer le message POP3 correspondant au numéro indiqué, après ouverture d’une session.</p>
+
 ```text
 retr <number>
 ```
 
 
-#### RPC (with Null Session)
+#### RPC sans authentification
 
 
 **Paramètres et repères :**
 `enumdomusers` · `enumprinters`  
 
 
-#### SMB (with Null Session)
+#### SMB sans authentification
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -148,14 +148,14 @@ Examiner les objets, les droits et les services du domaine.
 `nmap` · `snmpwalk`  
 
 
-#### LDAP (with Null Session)
+#### LDAP sans authentification
 
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Afficher le répertoire courant.</p>
+<p class="oscp-command-note">Commande de shell locale : afficher le répertoire courant (ce n’est pas une requête LDAP).</p>
 
-```text
+```bash
 pwd
 ```
 
@@ -165,7 +165,7 @@ pwd
 `ldapdomaindump`  
 
 
-#### Redis (with Null Session)
+#### Redis sans authentification
 
 
 **Paramètres et repères :**
@@ -206,7 +206,7 @@ curl -s http://[ip]/ | html2markdown
 ```
 
 
-### Énumération des utilisateurs and Credential Gathering
+### Énumération des utilisateurs et recherche d’identifiants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -227,7 +227,7 @@ pwd
 `credential` · `auth` (authentification)  
 
 
-### CMS and Version Detection
+### Identification du CMS et de sa version
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -243,7 +243,7 @@ $_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
 ```
 
 
-### Technology-Specific Checks
+### Vérifications propres aux technologies détectées
 
 
 **Paramètres et repères :**
@@ -251,19 +251,19 @@ $_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
 `master.key` · `root:` · `root:password` · `/manager`  
 
 
-### Enumerate Upload Capabilities
+### Tester les fonctions de téléversement
 
 Examiner les entrées et les réponses de l'application web.
 
 
-### Application Logic and Security Analysis
+### Logique applicative et contrôles de sécurité
 
 
 **Paramètres et repères :**
 `DoNotExist.php` · `DoNotExist.html` · `DoNotExist`  
 
 
-### Directory and File Énumération
+### Énumération des répertoires et fichiers
 
 
 
@@ -299,12 +299,12 @@ GET /forgot_pass.php?email=%0aid
 `robots.txt` · `.svn` · `.DS_STORE`  
 
 
-### Parameter Testing and Injection SQL
+### Paramètres de requête et injections SQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-### Authentification and Login Forms
+### Authentification et formulaires de connexion
 
 
 <p class="oscp-command-note">Gérer les modules Python.</p>
@@ -324,7 +324,7 @@ pip3 install defaultcreds-cheat-sheet
 Examiner les permissions et la configuration de Linux.
 
 
-#### Principles to Becoming Root
+#### Principes de l’élévation de privilèges Linux
 
 
 
@@ -369,7 +369,7 @@ find / -name "*.py"
 ```
 
 
-#### Configurations Files
+#### Fichiers de configuration
 
 
 **Paramètres et repères :**
@@ -384,7 +384,7 @@ echo $PATH
 ```
 
 
-#### Services and Jobs
+#### Services et tâches planifiées
 
 
 **Paramètres et repères :**
@@ -402,7 +402,7 @@ mysql -uroot -pdasdasd
 `Init` · `init.d` · `systemd`  
 
 
-#### Credentials Search
+#### Recherche d’identifiants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -466,7 +466,7 @@ find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)
 Observer les permissions et la configuration de Windows.
 
 
-#### General Énumération des utilisateurs
+#### Énumération générale des utilisateurs
 
 
 <p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
@@ -490,7 +490,7 @@ net localgroup Administrators
 ```
 
 
-#### System Énumération
+#### Énumération du système
 
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
@@ -613,7 +613,7 @@ Get-ChildItem -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
 ```
 
 
-#### Misconfigurations
+#### Configurations à risque
 
 
 <p class="oscp-command-note">Examiner les services Windows.</p>
@@ -788,7 +788,7 @@ wsl python -c 'put here your command'
 ```
 
 
-#### Credential Access
+#### Accès aux données d’authentification
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -850,7 +850,7 @@ reg query HKCU\Software\SimonTatham\PuTTY\SshHostKeys\
 reg query "HKCU\Software\ORL\WinVNC3\Password"
 reg query "HKEY_LOCAL_MACHINE\SOFTWARE\RealVNC\WinVNC4" /v password
 
-## OpenSSH credentials
+## Identifiants OpenSSH
 reg query HKEY_CURRENT_USER\Software\OpenSSH\Agent\Keys
 ```
 
@@ -1242,12 +1242,12 @@ impacket-smbclient [user]@[ip] -hashes 00000000000000000000000000000000:[valid_n
 ```
 
 
-### Domain Controller
+### Contrôleur de domaine
 
 Examiner les objets, les droits et les services du domaine.
 
 
-#### Targeted AD Attacks on DC
+#### Techniques visant le contrôleur de domaine
 
 
 **Paramètres et repères :**
@@ -1279,7 +1279,7 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 ```
 
 
-#### Golden Ticket Attack for Persistent Access
+#### Tickets Kerberos Golden et persistance
 
 
 
@@ -1289,7 +1289,7 @@ kerberos::golden /domain:<domain> /sid:<domain_SID> /krbtgt:<NTLM_hash> /user:Ad
 ```
 
 
-#### Credential Harvesting with LSASS
+#### Données d’authentification LSASS
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1305,7 +1305,7 @@ mimikatz # sekurlsa::logonPasswords
 ```
 
 
-### Post-Exploitation and Flag Collection
+### Actions après accès et collecte de preuves
 
 
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\\Users\\Public</code></p>
@@ -1331,7 +1331,7 @@ net group "Domain Admins" new_admin /add /domain
 ```
 
 
-### Complémentaire Tips for Efficiency and Stealth
+### Conseils complémentaires de méthodologie
 
 
 **Paramètres et repères :**
