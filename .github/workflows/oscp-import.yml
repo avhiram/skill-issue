@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: oscp-source-import
+  group: skill-issue-site-write
   cancel-in-progress: false
 
 jobs:
