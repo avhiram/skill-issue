@@ -384,7 +384,7 @@ echo $PATH
 ```
 
 
-#### Services et tâches prévues
+#### Services et tâches planifiées
 
 
 **Paramètres et repères :**
@@ -1124,7 +1124,7 @@ sc query state= all | findstr "SERVICE_NAME"
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```powershell
-# Recherchez-les dans C:\\ProgramData, C:\\Users\\Tous les utilisateurs et les dossiers spécifiques à une application comme C:\\Program Files.
+# Rechercher dans C:\\ProgramData, C:\\Users\\All Users et les dossiers propres aux applications, par exemple C:\\Program Files.
 
 dir /s /b C:\\Users\\Public\\*.config
 ```
@@ -1141,7 +1141,7 @@ dir /s /b C:\\Users\\Public\\*.config
 reg save HKLM\\SAM sam.save
 reg save HKLM\\SYSTEM system.save
 
-# Cours dans ton Kali
+# À exécuter depuis Kali
 impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 ```
 

@@ -303,7 +303,7 @@ whoami /priv
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Enable All Tokens ».</p>
 
 ```powershell
-## All Credit goes to Lee Holmes (@Lee_Holmes on twitter).  I found the code here https://www.leeholmes.com/blog/2010/09/24/adjusting-token-privileges-in-powershell/
+## Attribution du code : Lee Holmes. Référence : https://www.leeholmes.com/blog/2010/09/24/adjusting-token-privileges-in-powershell/
 $definition = @'
 using System;
 using System.Collections.Generic;

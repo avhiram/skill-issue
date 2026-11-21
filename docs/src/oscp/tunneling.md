@@ -32,7 +32,7 @@ sudo ip link set ligolo up
 <p class="oscp-command-note">Script shell dans la rubrique « Tunnel simple ».</p>
 
 ```bash
-# L'option -selfcert est de ne pas utiliser un certificat (cela fera nos communications en texte clair), nous n'avons pas besoin de les chiffrer pour l'examen.
+# -selfcert génère un certificat TLS autosigné. Le tunnel reste chiffré, mais il faut vérifier l'identité du serveur.
 ./ligolo_proxy_linux -selfcert
 # Autre possibilité
 ./ligolo_proxy_linux -selfcert -port <DIFFERENT_PROXY_PORT>

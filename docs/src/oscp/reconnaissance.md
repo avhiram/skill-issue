@@ -134,7 +134,7 @@ nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
 
 ```bash
-sudo nmap --minrate-5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
+sudo nmap --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
 ```
 
 

