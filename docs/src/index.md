@@ -1,26 +1,19 @@
 ---
 title: SKILL-ISSUE
-description: Documentation cybersécurité
+description: Documentation cybersécurité en français
 next: false
-editLink: false
 ---
 
 # SKILL-ISSUE
 
-Documentation cybersécurité, techniques et commandes.
+**Notes techniques · Commandes copiables · Français**
 
-Le site reprend les rubriques techniques et les ressources du référentiel existant, avec une navigation latérale et des exemples en blocs copiables.
+## Certifications
 
-## Explorer la documentation
+### [OSCP](/oscp/)
 
-[Active Directory](/ad/recon/index.md)
+Commandes organisées par technique, avec une courte explication et un bloc copiable.
 
-[Kerberos](/ad/movement/kerberos/index.md)
+### [CRTO](/crto/)
 
-[Windows](/infra/privilege-escalation/windows/index.md)
-
-[Web](/web/config/http-headers/index.md)
-
-[Réseaux et protocoles](/infra/protocols/index.md)
-
-Les notes des certifications seront organisées et complétées progressivement.
+Espace dédié aux notes Certified Red Team Operator.

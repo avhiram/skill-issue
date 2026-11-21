@@ -1,0 +1,138 @@
+{
+  "source": "https://www.emmanuelsolis.com/oscp.html",
+  "source_pre": 1322,
+  "source_inline_code": 1008,
+  "imported_pre": 1322,
+  "imported_inline_code": 1002,
+  "extra_inline_examples": [
+    "-m"
+  ],
+  "skipped_pre": 0,
+  "skipped_inline_code_outside_headings": 0,
+  "skipped_pre_examples": [],
+  "skipped_inline_examples": [],
+  "sections": {
+    "1": {
+      "pre": 153,
+      "inline": 95,
+      "images": 0
+    },
+    "2": {
+      "pre": 6,
+      "inline": 0,
+      "images": 0
+    },
+    "3": {
+      "pre": 234,
+      "inline": 119,
+      "images": 8
+    },
+    "4": {
+      "pre": 31,
+      "inline": 63,
+      "images": 0
+    },
+    "5": {
+      "pre": 7,
+      "inline": 30,
+      "images": 0
+    },
+    "6": {
+      "pre": 100,
+      "inline": 100,
+      "images": 1
+    },
+    "7": {
+      "pre": 183,
+      "inline": 208,
+      "images": 9
+    },
+    "8": {
+      "pre": 53,
+      "inline": 33,
+      "images": 0
+    },
+    "9": {
+      "pre": 27,
+      "inline": 8,
+      "images": 0
+    },
+    "10": {
+      "pre": 31,
+      "inline": 24,
+      "images": 14
+    },
+    "11": {
+      "pre": 0,
+      "inline": 3,
+      "images": 0
+    },
+    "12": {
+      "pre": 187,
+      "inline": 91,
+      "images": 1
+    },
+    "13": {
+      "pre": 87,
+      "inline": 32,
+      "images": 2
+    },
+    "14": {
+      "pre": 43,
+      "inline": 12,
+      "images": 0
+    },
+    "15": {
+      "pre": 0,
+      "inline": 0,
+      "images": 0
+    },
+    "16": {
+      "pre": 0,
+      "inline": 2,
+      "images": 0
+    },
+    "17": {
+      "pre": 19,
+      "inline": 9,
+      "images": 0
+    },
+    "18": {
+      "pre": 87,
+      "inline": 6,
+      "images": 0
+    },
+    "19": {
+      "pre": 74,
+      "inline": 166,
+      "images": 0
+    },
+    "20": {
+      "pre": 0,
+      "inline": 0,
+      "images": 0
+    }
+  },
+  "generated_pages": [
+    "reconnaissance.md",
+    "vulnerabilites.md",
+    "applications-web.md",
+    "attaques-client.md",
+    "antivirus-metasploit.md",
+    "mots-de-passe.md",
+    "privileges-windows.md",
+    "privileges-linux.md",
+    "redirection-ports.md",
+    "tunneling.md",
+    "ad-theorie.md",
+    "ad-enumeration.md",
+    "ad-techniques.md",
+    "ad-lateral.md",
+    "cloud.md",
+    "rapport.md",
+    "transferts.md",
+    "utilitaires.md",
+    "methodologie.md",
+    "references.md"
+  ]
+}
