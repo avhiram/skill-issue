@@ -16,8 +16,7 @@ export default defineConfig({
   srcExclude: [
     'ad/**', 'web/**', 'infra/**', 'evasion/**', 'physical/**',
     'phishing/**', 'intelligence-gathering/**', 'radio/**',
-    'mobile-apps/**', 'policies/**', 'contributing/**',
-    'oscp/cloud.md', 'oscp/references.md'
+    'mobile-apps/**', 'policies/**', 'contributing/**'
   ],
   head: [
     ['meta', { name: 'theme-color', content: '#09070E' }],
@@ -36,54 +35,26 @@ export default defineConfig({
         link: '/oscp/',
         collapsed: false,
         items: [
-          {
-            text: 'Reconnaissance',
-            collapsed: true,
-            items: [
-              { text: 'Information Gathering', link: '/oscp/reconnaissance' },
-              { text: 'Analyse de vulnérabilités', link: '/oscp/vulnerabilites' }
-            ]
-          },
-          {
-            text: 'Applications et accès',
-            collapsed: true,
-            items: [
-              { text: 'Applications web', link: '/oscp/applications-web' },
-              { text: 'Attaques côté client', link: '/oscp/attaques-client' },
-              { text: 'Antivirus et Metasploit', link: '/oscp/antivirus-metasploit' },
-              { text: 'Mots de passe', link: '/oscp/mots-de-passe' }
-            ]
-          },
-          {
-            text: 'Systèmes et réseau',
-            collapsed: true,
-            items: [
-              { text: 'Windows', link: '/oscp/privileges-windows' },
-              { text: 'Linux', link: '/oscp/privileges-linux' },
-              { text: 'Redirection de ports', link: '/oscp/redirection-ports' },
-              { text: 'Tunneling', link: '/oscp/tunneling' },
-              { text: 'Transfert de fichiers', link: '/oscp/transferts' }
-            ]
-          },
-          {
-            text: 'Active Directory',
-            collapsed: true,
-            items: [
-              { text: 'Fondamentaux', link: '/oscp/ad-theorie' },
-              { text: 'Énumération', link: '/oscp/ad-enumeration' },
-              { text: 'Techniques', link: '/oscp/ad-techniques' },
-              { text: 'Mouvement latéral', link: '/oscp/ad-lateral' }
-            ]
-          },
-          {
-            text: 'Outils et méthodologie',
-            collapsed: true,
-            items: [
-              { text: 'Rapports', link: '/oscp/rapport' },
-              { text: 'Utilitaires', link: '/oscp/utilitaires' },
-              { text: 'Méthodologie OSCP', link: '/oscp/methodologie' }
-            ]
-          }
+          { text: '01. Collecte d’informations', link: '/oscp/reconnaissance' },
+          { text: '02. Analyse de vulnérabilités', link: '/oscp/vulnerabilites' },
+          { text: '03. Applications web', link: '/oscp/applications-web' },
+          { text: '04. Attaques côté client', link: '/oscp/attaques-client' },
+          { text: '05. Évasion antivirus et Metasploit', link: '/oscp/antivirus-metasploit' },
+          { text: '06. Attaques par mots de passe', link: '/oscp/mots-de-passe' },
+          { text: '07. Élévation de privilèges Windows', link: '/oscp/privileges-windows' },
+          { text: '08. Élévation de privilèges Linux', link: '/oscp/privileges-linux' },
+          { text: '09. Redirection de ports et tunnels manuels', link: '/oscp/redirection-ports' },
+          { text: '10. Tunnels avec des outils', link: '/oscp/tunneling' },
+          { text: '11. Théorie Active Directory', link: '/oscp/ad-theorie' },
+          { text: '12. Énumération Active Directory', link: '/oscp/ad-enumeration' },
+          { text: '13. Attaques Active Directory', link: '/oscp/ad-techniques' },
+          { text: '14. Mouvement latéral Active Directory', link: '/oscp/ad-lateral' },
+          { text: '15. Infrastructures cloud', link: '/oscp/cloud' },
+          { text: '16. Rédaction de rapports', link: '/oscp/rapport' },
+          { text: '17. Transferts de fichiers', link: '/oscp/transferts' },
+          { text: '18. Utilitaires', link: '/oscp/utilitaires' },
+          { text: '19. Méthodologie', link: '/oscp/methodologie' },
+          { text: '20. Références', link: '/oscp/references' }
         ]
       },
       { text: 'CRTO', link: '/crto/', collapsed: true }

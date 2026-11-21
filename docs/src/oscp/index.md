@@ -5,35 +5,35 @@ description: Aide-mémoire OSCP en français
 
 # OSCP
 
-**Recherche rapide :** Ctrl + K pour trouver une commande ou une technique.
-
 **Offensive Security Certified Professional**
 
-Fiches par technique avec des explications courtes et les commandes originales dans des blocs copiables.
+Retrouve une technique par numéro, utilise le sommaire de chaque fiche et copie directement les commandes. La recherche est accessible avec **Ctrl + K**.
 
-## Sommaire
+## Sommaire des 20 rubriques
 
-- [Reconnaissance](reconnaissance.md) : Identifier les hôtes, les ports et les services accessibles.
-- [Analyse de vulnérabilités](vulnerabilites.md) : Évaluer les services exposés et rechercher des faiblesses connues.
-- [Applications web](applications-web.md) : Examiner les fonctionnalités, entrées et configurations des applications web.
-- [Attaques côté client](attaques-client.md) : Comprendre les vecteurs d'interaction avec les postes utilisateurs.
-- [Antivirus et Metasploit](antivirus-metasploit.md) : Références sur les protections, charges utiles et outils de laboratoire.
-- [Mots de passe et authentification](mots-de-passe.md) : Analyser les mécanismes d'authentification et les formats de hachage.
-- [Élévation de privilèges Windows](privileges-windows.md) : Auditer les services, jetons et configurations d'un poste Windows.
-- [Élévation de privilèges Linux](privileges-linux.md) : Examiner les permissions, processus et configurations d'un système Linux.
-- [Redirection de ports](redirection-ports.md) : Documenter les redirections locales, distantes et dynamiques.
-- [Tunneling](tunneling.md) : Référence des outils de tunnel et des modes de transport réseau.
-- [Active Directory : fondamentaux](ad-theorie.md) : Comprendre les objets, protocoles et mécanismes d'un domaine.
-- [Active Directory : énumération](ad-enumeration.md) : Identifier les utilisateurs, groupes, services et relations du domaine.
-- [Active Directory : techniques](ad-techniques.md) : Étudier les mécanismes d'authentification et les techniques AD.
-- [Active Directory : mouvement latéral](ad-lateral.md) : Référence des accès distants et protocoles entre hôtes Windows.
-- [Rapports de pentest](rapport.md) : Documenter les constats et les preuves techniques.
-- [Transfert de fichiers](transferts.md) : Envoyer, récupérer et encoder des fichiers dans un laboratoire.
-- [Utilitaires](utilitaires.md) : Commandes courantes et outils complémentaires.
-- [Méthodologie OSCP](methodologie.md) : Organiser les vérifications et la collecte des résultats.
+1. [**Collecte d’informations**](reconnaissance.md) : Identifier les hôtes, les services et les informations accessibles.
+2. [**Analyse de vulnérabilités**](vulnerabilites.md) : Examiner les services et leurs vulnérabilités connues.
+3. [**Applications web**](applications-web.md) : Retrouver les outils et les vérifications des applications web.
+4. [**Attaques côté client**](attaques-client.md) : Consulter les techniques côté poste client.
+5. [**Évasion antivirus et Metasploit**](antivirus-metasploit.md) : Consulter les références relatives aux antivirus et à Metasploit.
+6. [**Attaques par mots de passe**](mots-de-passe.md) : Identifier les outils et les formats liés à l’authentification.
+7. [**Élévation de privilèges Windows**](privileges-windows.md) : Vérifier les configurations et privilèges sous Windows.
+8. [**Élévation de privilèges Linux**](privileges-linux.md) : Vérifier les permissions et configurations sous Linux.
+9. [**Redirection de ports et tunnels manuels**](redirection-ports.md) : Retrouver les commandes de redirection réseau.
+10. [**Tunnels avec des outils**](tunneling.md) : Consulter les outils de tunneling et de pivot réseau.
+11. [**Théorie Active Directory**](ad-theorie.md) : Comprendre les objets, tickets et droits Active Directory.
+12. [**Énumération Active Directory**](ad-enumeration.md) : Examiner les comptes, groupes et services du domaine.
+13. [**Attaques Active Directory**](ad-techniques.md) : Retrouver les techniques de sécurité offensive Active Directory.
+14. [**Mouvement latéral Active Directory**](ad-lateral.md) : Consulter les protocoles et les accès distants Windows.
+15. [**Infrastructures cloud**](cloud.md) : État de cette rubrique dans les notes originales.
+16. [**Rédaction de rapports**](rapport.md) : Préparer les preuves, captures et rapports d’audit.
+17. [**Transferts de fichiers**](transferts.md) : Retrouver les méthodes de transfert de fichiers.
+18. [**Utilitaires**](utilitaires.md) : Consulter les commandes et outils complémentaires.
+19. [**Méthodologie**](methodologie.md) : Organiser les vérifications pendant un examen.
+20. [**Références**](references.md) : Retrouver les liens et ressources cités par les notes.
 
-Les commandes sont présentées telles qu'elles figurent dans la source, avec ses paramètres et ses exemples de laboratoire.
+Les commandes sont classées dans leurs rubriques et présentées avec une explication courte en français. Les paramètres et valeurs isolés sont regroupés comme repères plutôt que présentés comme des commandes.
 
-Les commentaires intégrés aux commandes restent dans leur langue d'origine pour éviter d'altérer leur syntaxe.
+**À noter :** la rubrique 15 ne comporte pas de commandes dans la source originale. La rubrique 20 regroupe les références.
 
-Source : [Emmanuel Solis, OSCP+ Cheatsheet](https://www.emmanuelsolis.com/oscp.html).
+Source principale : [OSCP+ Cheatsheet d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

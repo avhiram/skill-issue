@@ -1,13 +1,12 @@
 ---
 title: "OSCP · Infrastructures cloud"
-description: "Repères sur l'évaluation des environnements cloud."
+description: "État de la rubrique Cloud dans les notes OSCP originales."
 ---
 
-# OSCP · Infrastructures cloud
+# Infrastructures cloud
 
-Repères sur l'évaluation des environnements cloud.
+La section **15. Cloud Infrastructures** du guide d’Emmanuel Solis est indiquée comme étant *en attente de rédaction*.
 
+**Aucune commande n’est fournie dans cette rubrique de la source.** Je conserve la catégorie dans la navigation pour respecter l’organisation en 20 sections, sans inventer de contenu.
 
----
-
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+[Consulter cette rubrique dans le guide original](https://www.emmanuelsolis.com/oscp.html#15-cloud-infrastructures).
