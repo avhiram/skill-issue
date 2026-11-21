@@ -7,7 +7,7 @@ description: Aide-mémoire OSCP en français
 
 **Offensive Security Certified Professional**
 
-Retrouve une technique par numéro, utilise le sommaire de chaque fiche et copie directement les commandes. La recherche est accessible avec **Ctrl + K**.
+Retrouve une technique par thème, utilise le sommaire de chaque fiche et copie directement les commandes. La recherche est accessible avec **Ctrl + K**.
 
 ## Toutes les rubriques
 
@@ -19,15 +19,15 @@ Retrouve une technique par numéro, utilise le sommaire de chaque fiche et copie
 - [**Attaques par mots de passe**](mots-de-passe.md) : Identifier les outils et les formats liés à l’authentification.
 - [**Élévation de privilèges Windows**](privileges-windows.md) : Vérifier les configurations et privilèges sous Windows.
 - [**Élévation de privilèges Linux**](privileges-linux.md) : Vérifier les permissions et configurations sous Linux.
-- [**Redirection de ports et tunnels manuels**](redirection-ports.md) : Retrouver les commandes de redirection réseau.
-- [**Tunnels avec des outils**](tunneling.md) : Consulter les outils de tunneling et de pivot réseau.
+- [**Redirections SSH, Socat et netsh**](redirection-ports.md) : Comprendre où ouvrir les ports et comment tester chaque relais.
+- [**Ligolo-ng, Chisel et pivot**](tunneling.md) : Reproduire un tunnel simple, un double pivot et des listeners.
 - [**Théorie Active Directory**](ad-theorie.md) : Comprendre les objets, tickets et droits Active Directory.
 - [**Énumération Active Directory**](ad-enumeration.md) : Examiner les comptes, groupes et services du domaine.
 - [**Attaques Active Directory**](ad-techniques.md) : Retrouver les techniques de sécurité offensive Active Directory.
 - [**Mouvement latéral Active Directory**](ad-lateral.md) : Consulter les protocoles et les accès distants Windows.
-- [**Infrastructures cloud**](cloud.md) : État de cette rubrique dans les notes originales.
+- [**Infrastructures cloud**](cloud.md) : Contrôler les accès S3 dans un laboratoire autorisé.
 - [**Rédaction de rapports**](rapport.md) : Préparer les preuves, captures et rapports d’audit.
-- [**Transferts de fichiers**](transferts.md) : Retrouver les méthodes de transfert de fichiers.
+- [**Transferts Linux et Windows**](transferts.md) : Choisir les commandes par sens de transfert et machine.
 - [**Utilitaires**](utilitaires.md) : Consulter les commandes et outils complémentaires.
 - [**Méthodologie**](methodologie.md) : Organiser les vérifications pendant un examen.
 - [**Références**](references.md) : Retrouver les liens et ressources cités par les notes.
