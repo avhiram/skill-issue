@@ -621,6 +621,17 @@ rustscan -a <target-ip> -p 1-65535 -- -sS -sU
 ```
 
 
+
+### Découverte d'hôtes avec fping
+
+Vérifier les hôtes répondant à ICMP dans un sous-réseau de laboratoire, sans considérer les non-répondants comme absents.
+
+<p class="oscp-command-note">Découverte d'hôtes avec fping.</p>
+
+```bash
+fping -a -g <RESEAU_CIDR> 2>/dev/null
+```
+
 ## Services par port
 
 Vérifier les ports et les services de la cible autorisée.
@@ -1085,6 +1096,27 @@ Identifier les commandes annoncées par le serveur SMTP ; les résultats d'énum
 ```bash
 nmap -sV -p 25 --script smtp-commands <IP_CIBLE>
 nmap -p 25 --script smtp-enum-users <IP_CIBLE>
+```
+
+
+#### Énumération SMTP par VRFY
+
+`smtp-user-enum` teste l'existence des noms contenus dans un fichier avec la commande SMTP VRFY. Ne pas interpréter un refus comme la preuve que le compte n'existe pas. Voir [la syntaxe Kali](https://www.kali.org/tools/smtp-user-enum/).
+
+<p class="oscp-command-note">Énumération SMTP par VRFY.</p>
+
+```bash
+smtp-user-enum -M VRFY -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
+```
+
+#### Énumération SMTP par RCPT
+
+Méthode alternative si VRFY est désactivée. Ce contrôle envoie des requêtes au serveur et doit être limité au périmètre autorisé.
+
+<p class="oscp-command-note">Énumération SMTP par RCPT.</p>
+
+```bash
+smtp-user-enum -M RCPT -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
 ```
 
 ### 53: DNS
@@ -2121,6 +2153,27 @@ Lire les descriptions d'interface. Attention : SNMPv2c ne chiffre pas le trafic.
 
 ```bash
 snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.2.2.1.2
+```
+
+
+#### SNMP-Check : inventaire du service
+
+Sur Kali, la commande s'appelle `snmp-check` avec un tiret, même si les notes consultées écrivent `snmpcheck`. Elle utilise la communauté indiquée et ne nécessite pas d'écriture sur l'équipement. [Référence Kali](https://www.kali.org/tools/snmpcheck/).
+
+<p class="oscp-command-note">SNMP-Check : inventaire du service.</p>
+
+```bash
+snmp-check <IP_CIBLE> -c <COMMUNAUTE>
+```
+
+#### SNMP : informations système HOST-RESOURCES-MIB
+
+Interroger les noms de processus déclarés par l'agent. Les données dépendent du MIB et des droits de la communauté.
+
+<p class="oscp-command-note">SNMP : informations système HOST-RESOURCES-MIB.</p>
+
+```bash
+snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.25.4.2.1.2
 ```
 
 ### 389, 636, 3268 & 3269: LDAP

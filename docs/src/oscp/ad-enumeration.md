@@ -1082,6 +1082,17 @@ Get-DomainUser -SPN | Select-Object samaccountname,serviceprincipalname
 Get-NetSession -ComputerName <NOM_ORDINATEUR>
 ```
 
+
+### Contrôler les droits administrateur locaux
+
+Lancer cette vérification uniquement si la version chargée de PowerView contient `Test-AdminAccess` et si le poste est dans le périmètre.
+
+<p class="oscp-command-note">Contrôler les droits administrateur locaux.</p>
+
+```powershell
+Test-AdminAccess -ComputerName <NOM_POSTE>
+```
+
 ## Inventaire des noms principaux de service (SPN)
 
 Examiner les objets, les droits et les services du domaine.
@@ -1199,6 +1210,17 @@ Identifier les ressources exposées et les sessions visibles depuis un compte SM
 ```powershell
 nxc smb <IP_DC> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --loggedon-users
 nxc smb <IP_DC> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
+```
+
+
+### Recherche de données sensibles avec Snaffler
+
+Snaffler inspecte les partages accessibles pour trouver des fichiers de configuration et des secrets possibles. Exécuter avec un compte de domaine autorisé : le résultat peut être volumineux et sensible. [Projet officiel](https://github.com/SnaffCon/Snaffler).
+
+<p class="oscp-command-note">Recherche de données sensibles avec Snaffler.</p>
+
+```powershell
+Snaffler.exe -s -d <DOMAINE_AD> -o <JOURNAL_SNAFFLER>.log -v data
 ```
 
 ## BloodHound & SharpHound
@@ -1364,6 +1386,27 @@ MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:C
 
 ```
 
+
+
+### Installer BloodHound Community Edition
+
+Sur la machine d'audit, installer BloodHound CE avec le binaire officiel `bloodhound-cli` ; cette commande télécharge et démarre des conteneurs. Vérifier les prérequis Docker et la version locale. [Documentation SpecterOps](https://bloodhound.specterops.io/get-started/quickstart/community-edition-quickstart).
+
+<p class="oscp-command-note">Installer BloodHound Community Edition.</p>
+
+```bash
+./bloodhound-cli install
+```
+
+### Afficher les commandes du gestionnaire BloodHound
+
+Lister les sous-commandes disponibles avant de gérer les conteneurs ; certaines commandes de notes anciennes ne sont pas valables dans toutes les versions.
+
+<p class="oscp-command-note">Afficher les commandes du gestionnaire BloodHound.</p>
+
+```bash
+./bloodhound-cli help
+```
 
 ## Analyse des empreintes de mots de passe
 
@@ -1979,6 +2022,17 @@ Get-DomainGMSA -Properties msDS-ManagedPassword
 ```
 
 
+
+### NetExec : paramètres d'autologin GPP
+
+Interroger les stratégies de groupe accessibles via SMB pour repérer les paramètres d'ouverture de session automatique. Conserver les résultats dans un espace de preuve restreint.
+
+<p class="oscp-command-note">NetExec : paramètres d'autologin GPP.</p>
+
+```bash
+nxc smb <IP_DC> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE_AD>' -M gpp_autologin
+```
+
 ## Exploitation des stratégies de groupe (GPO)
 
 Examiner les objets, les droits et les services du domaine.
@@ -2468,6 +2522,17 @@ Interroger l'attribut member sans résoudre automatiquement toute l'appartenance
 
 ```bash
 ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(cn=Domain Admins)' member
+```
+
+
+#### Délégations LAPS visibles
+
+Lister uniquement les noms des ordinateurs et la date d'expiration associée à Windows LAPS. La visibilité dépend des droits de lecture et de l'installation du module AD.
+
+<p class="oscp-command-note">Délégations LAPS visibles.</p>
+
+```powershell
+Get-ADComputer -Filter * -Properties 'msLAPS-PasswordExpirationTime' | Select-Object Name,'msLAPS-PasswordExpirationTime'
 ```
 
 ### Énumération MSSQL

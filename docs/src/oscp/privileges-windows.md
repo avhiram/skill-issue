@@ -237,6 +237,17 @@ Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,
 Get-AppLockerPolicy -Effective | Select-Object -ExpandProperty RuleCollections
 ```
 
+
+### RunasCs avec identifiants de laboratoire
+
+Démarrer uniquement une commande d'identification sous le compte de test fourni. RunasCs requiert des identifiants valides et sa syntaxe diffère de celle de `runas.exe`. [Référence officielle](https://github.com/antonioCoco/RunasCs).
+
+<p class="oscp-command-note">RunasCs avec identifiants de laboratoire.</p>
+
+```powershell
+RunasCs.exe <UTILISATEUR> <MOT_DE_PASSE> 'cmd /c whoami /all'
+```
+
 ## Recherche de fichiers
 
 
@@ -326,6 +337,17 @@ Rechercher des extensions précises sans ouvrir automatiquement les fichiers dé
 ```powershell
 Get-ChildItem -Path 'C:\Users' -Recurse -File -Include '*.config','*.ini','*.xml' -ErrorAction SilentlyContinue
 Get-ChildItem -Path 'C:\Users' -Recurse -File -Filter '*.kdbx' -ErrorAction SilentlyContinue
+```
+
+
+### Inspecter les éléments de la Corbeille
+
+Lister les entrées de la Corbeille visibles par le compte Windows courant, sans les restaurer ni les exécuter.
+
+<p class="oscp-command-note">Inspecter les éléments de la Corbeille.</p>
+
+```powershell
+(New-Object -ComObject Shell.Application).NameSpace(0x0a).Items() | Select-Object Name,Path
 ```
 
 ## Journaux PowerShell
@@ -1646,6 +1668,27 @@ dir c:\ /s /b | findstr /si *vnc.ini
 
 ```
 
+
+
+### Registre Winlogon et ouverture de session automatique
+
+Afficher les paramètres Winlogon pour vérifier une configuration AutoAdminLogon. La lecture peut exposer des secrets : ne pas les inclure tels quels dans un rapport.
+
+<p class="oscp-command-note">Registre Winlogon et ouverture de session automatique.</p>
+
+```powershell
+reg query 'HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon'
+```
+
+### Chemin de l'historique PSReadLine
+
+Afficher l'emplacement où PowerShell enregistre son historique pour le compte courant ; le chemin ne garantit pas qu'un historique soit présent.
+
+<p class="oscp-command-note">Chemin de l'historique PSReadLine.</p>
+
+```powershell
+(Get-PSReadLineOption).HistorySavePath
+```
 
 ## Copies instantanées VSS (SAM, SYSTEM, NTDS.dit, SECURITY, NTUSER.dat)
 

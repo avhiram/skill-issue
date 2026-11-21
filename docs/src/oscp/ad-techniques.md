@@ -123,6 +123,27 @@ Rechercher les comptes de service ayant un SPN à partir de LDAP, sans extraire 
 ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(objectCategory=person)(objectClass=user)(servicePrincipalName=*))' sAMAccountName servicePrincipalName
 ```
 
+
+### Comptes SPN : commande native Windows
+
+Lister les noms principaux de service d'un compte de domaine avec l'outil Windows intégré, sans modifier l'annuaire.
+
+<p class="oscp-command-note">Comptes SPN : commande native Windows.</p>
+
+```powershell
+setspn -L <COMPTE_DE_SERVICE>
+```
+
+### TargetedKerberoast sans modification d'attribut SPN
+
+Avec `--no-abuse`, l'outil se limite aux SPN existants et n'essaie pas de modifier `servicePrincipalName`. Il émet néanmoins des requêtes d'authentification : exécuter uniquement en laboratoire autorisé. Attention au nom officiel **targetedKerberoast.py**, souvent mal orthographié dans les notes. [Référence](https://github.com/ShutdownRepo/targetedKerberoast).
+
+<p class="oscp-command-note">TargetedKerberoast sans modification d'attribut SPN.</p>
+
+```bash
+targetedKerberoast.py -d <DOMAINE_AD> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --no-abuse
+```
+
 ## Faux tickets de service (Silver Tickets)
 
 
@@ -1569,3 +1590,24 @@ timedatectl status
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->
+
+
+### pyWhisker : consulter les clés d'un objet
+
+Utiliser `--action list` pour lire l'attribut `msDS-KeyCredentialLink`, sans ajouter de Shadow Credential. Les droits LDAP nécessaires restent applicables. [Documentation de l'outil](https://github.com/ShutdownRepo/pywhisker).
+
+<p class="oscp-command-note">pyWhisker : consulter les clés d'un objet.</p>
+
+```bash
+pywhisker.py -d <DOMAINE_AD> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --target <COMPTE_CIBLE> --action list
+```
+
+### RBCD : état d'un compte ordinateur
+
+Afficher l'attribut de délégation contrôlée par la ressource avec le module Active Directory de PowerShell. Les permissions doivent être examinées séparément.
+
+<p class="oscp-command-note">RBCD : état d'un compte ordinateur.</p>
+
+```powershell
+Get-ADComputer -Identity <NOM_ORDINATEUR> -Properties 'msDS-AllowedToActOnBehalfOfOtherIdentity' | Select-Object Name,'msDS-AllowedToActOnBehalfOfOtherIdentity'
+```

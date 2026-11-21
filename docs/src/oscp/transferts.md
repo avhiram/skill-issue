@@ -180,6 +180,17 @@ Télécharger vers un chemin explicitement choisi et contrôler l'empreinte avan
 Invoke-WebRequest -Uri 'https://<HOTE_AUDIT>/outil.txt' -OutFile '<CHEMIN_LOCAL>.txt'
 ```
 
+
+### Partage WebDAV local avec WsgiDAV
+
+Exposer un dossier temporaire uniquement sur `127.0.0.1`. Le mode `--auth anonymous` ne protège pas les fichiers : ne l'utiliser que dans un laboratoire isolé ou derrière un tunnel contrôlé. [Documentation officielle WsgiDAV](https://wsgidav.readthedocs.io/en/stable/user_guide_cli.html).
+
+<p class="oscp-command-note">Partage WebDAV local avec WsgiDAV.</p>
+
+```bash
+wsgidav -H 127.0.0.1 -p 8080 -r <DOSSIER_PARTAGE> --auth anonymous
+```
+
 ## Script PHP pour recevoir des fichiers depuis Windows
 
 Recevoir des fichiers téléversés vers un script PHP.

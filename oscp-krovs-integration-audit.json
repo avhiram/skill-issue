@@ -3,10 +3,10 @@
   "date": "2026-11-22",
   "source": "https://github.com/krovs/oscp-notes/tree/main/docs",
   "project": "https://github.com/avhiram/skill-issue",
-  "methodology": "Décompte manuel des lignes de commande inédites insérées lors de la seconde passe. Les exemples utilisent des paramètres génériques et comportent des descriptions françaises. Les fichiers sources existants et la navigation sont conservés.",
+  "methodology": "Trois passes d'intégration. La troisième compare les 12 fichiers Markdown de krovs/oscp-notes avec les fiches existantes, vérifie les fonctions réellement absentes et n'ajoute pas les variantes déjà couvertes. Les commandes sont replacées dans leurs sections existantes avec une explication en français.",
   "first_pass_new_command_lines": 74,
   "second_pass_new_command_lines": 156,
-  "cumulative_new_command_lines": 230,
+  "cumulative_new_command_lines": 260,
   "modified_oscp_pages": 15,
   "per_page_second_pass": {
     "reconnaissance": 25,
@@ -29,6 +29,59 @@
     "Le nombre mesure les lignes d'exemples ajoutées, pas les techniques uniques.",
     "Les variantes redondantes, exemples spécifiques à une machine et séquences incertaines ne sont pas intégrés automatiquement.",
     "Le contenu n'a pas été exécuté contre une cible ; les commandes requièrent un contexte de laboratoire autorisé.",
-    "Les documents de la source ne sont pas recopiés intégralement ; la licence de réutilisation de krovs n'a pas pu être confirmée."
+    "Les documents de la source ne sont pas recopiés intégralement ; la licence de réutilisation de krovs n'a pas pu être confirmée.",
+    "Il n'est pas possible de conclure qu'aucune commande ne manque encore : ce bilan est un audit par commande et par fonction, pas un test exécutable exhaustif."
+  ],
+  "third_pass_audited_source_documents": [
+    "docs/10_info_gathering.md",
+    "docs/11_web_attacks.md",
+    "docs/12_client-side_attacks.md",
+    "docs/13_exploitation.md",
+    "docs/14_password_attacks.md",
+    "docs/15_windows_privesc.md",
+    "docs/16_linux_privesc.md",
+    "docs/17_port_red_tun.md",
+    "docs/18_ad_enum.md",
+    "docs/19_ad_exploitation.md",
+    "docs/20_ad_lateral_mov.md",
+    "docs/index.md"
+  ],
+  "third_pass_new_command_lines": 30,
+  "per_page_third_pass": {
+    "reconnaissance": 5,
+    "privileges-windows": 4,
+    "privileges-linux": 2,
+    "mots-de-passe": 2,
+    "ad-enumeration": 6,
+    "ad-techniques": 4,
+    "transferts": 1,
+    "utilitaires": 6
+  },
+  "third_pass_modified_oscp_pages": 8,
+  "third_pass_verified_tool_fixes": [
+    {
+      "error_in_reference": "snmpcheck",
+      "verified_command": "snmp-check",
+      "authority": "https://www.kali.org/tools/snmpcheck/"
+    },
+    {
+      "error_in_reference": "targetkerberoast.py",
+      "verified_command": "targetedKerberoast.py",
+      "authority": "https://github.com/ShutdownRepo/targetedKerberoast"
+    }
+  ],
+  "third_pass_checks": {
+    "existing_lines_preserved_on_all_changed_pages": true,
+    "new_markdown_fence_pairs_balanced": true,
+    "numbered_headings_added": false,
+    "live_command_execution_performed": false,
+    "github_build_verified_after_third_pass": false
+  },
+  "not_copied_from_source": [
+    "Commandes équivalentes avec des placeholders différents",
+    "Exemples propres à des machines de laboratoire particulières",
+    "Commandes incomplètes ou mal orthographiées dans les notes d'origine",
+    "Anciennes syntaxes dépendantes de versions non vérifiées",
+    "Actions modifiant les stratégies AD ou extrayant des secrets sans avertissement et contexte adéquats"
   ]
 }

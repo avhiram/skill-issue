@@ -1003,6 +1003,27 @@ Identifier les bibliothèques déclarées dans un exécutable sans exécuter le 
 readelf -d <BINAIRE_ELF> | grep NEEDED
 ```
 
+
+#### Observer les accès aux fichiers d'un programme
+
+`strace` exécute le programme observé : l'utiliser seulement sur un binaire de laboratoire connu, pour diagnostiquer les chemins et bibliothèques recherchés.
+
+<p class="oscp-command-note">Observer les accès aux fichiers d'un programme.</p>
+
+```bash
+strace -f -e trace=file <BINAIRE_DE_TEST> 2>&1 | grep -Ei 'ENOENT|openat|access'
+```
+
+#### Afficher les chaînes d'un exécutable SUID
+
+Chercher des références à des chemins et programmes externes sans exécuter le binaire.
+
+<p class="oscp-command-note">Afficher les chaînes d'un exécutable SUID.</p>
+
+```bash
+strings <BINAIRE_SUID> | grep -Ei '(/bin/|/usr/|system|exec|sh )'
+```
+
 ### LinPEAS
 
 

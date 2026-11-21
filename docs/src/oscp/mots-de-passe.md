@@ -931,6 +931,27 @@ mimikatz.exe "privilege::debug" "[command]" "exit" > nul 2>&1
 ```
 
 
+
+### Assembler passwd et shadow pour John
+
+L'outil `unshadow` combine des fichiers `passwd` et `shadow` déjà obtenus dans un audit autorisé. Les empreintes doivent rester protégées. [Documentation Openwall](https://www.openwall.com/john/doc/EXAMPLES.shtml).
+
+<p class="oscp-command-note">Assembler passwd et shadow pour John.</p>
+
+```bash
+unshadow <FICHIER_PASSWD> <FICHIER_SHADOW> > <SORTIE_HASHES>.txt
+```
+
+### Tester les empreintes Linux hors ligne
+
+Exécuter John sur les empreintes autorisées, avec le dictionnaire prévu pour le laboratoire.
+
+<p class="oscp-command-note">Tester les empreintes Linux hors ligne.</p>
+
+```bash
+john --wordlist=<LISTE_MOTS> <SORTIE_HASHES>.txt
+```
+
 ## NTLM
 
 

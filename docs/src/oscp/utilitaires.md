@@ -234,6 +234,28 @@ stty rows <ROWS> columns <COLS>
 ```
 
 
+
+#### Netcat avec édition de ligne rlwrap
+
+`rlwrap` ajoute un historique et l'édition de ligne à une commande interactive comme Netcat, sans améliorer à lui seul les permissions du shell.
+
+<p class="oscp-command-note">Netcat avec édition de ligne rlwrap.</p>
+
+```bash
+rlwrap nc -lvnp <PORT_ECOUTE>
+```
+
+#### Gestionnaire de session Penelope
+
+Démarrer Penelope, un gestionnaire de sessions shell, depuis son installation locale. Vérifier les options de la version installée. [Documentation officielle](https://github.com/brightio/penelope).
+
+<p class="oscp-command-note">Gestionnaire de session Penelope.</p>
+
+```bash
+python3 penelope.py --help
+python3 penelope.py -p <PORT_ECOUTE>
+```
+
 ### Bash
 
 
@@ -363,6 +385,17 @@ Examiner les objets, les droits et les services du domaine.
 
 Examiner les objets, les droits et les services du domaine.
 
+
+
+#### Informations sur le système Windows
+
+Afficher le nom du poste, la version de Windows et le numéro de build sans modifier la configuration.
+
+<p class="oscp-command-note">Informations sur le système Windows.</p>
+
+```powershell
+Get-ComputerInfo | Select-Object CsName,WindowsProductName,WindowsVersion,OsBuildNumber
+```
 
 ### Connexion RDP avec identifiant et mot de passe
 
@@ -1238,3 +1271,15 @@ xfreerdp3 /v:<IP_CIBLE> /u:<UTILISATEUR> /dynamic-resolution
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->
+
+
+### UPX : examiner un exécutable compacté
+
+Les options `-l` et `-t` affichent l'information de compression et testent l'intégrité du fichier. Elles ne prouvent pas qu'un fichier est sûr. [Documentation UPX](https://github.com/upx/upx).
+
+<p class="oscp-command-note">UPX : examiner un exécutable compacté.</p>
+
+```bash
+upx -l <BINAIRE_COMPRESSE>
+upx -t <BINAIRE_COMPRESSE>
+```
