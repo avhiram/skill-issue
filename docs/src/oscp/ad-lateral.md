@@ -52,6 +52,27 @@ evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTL
 ```
 
 
+
+#### Tester WinRM avant la connexion
+
+Depuis un poste Windows, interroger le service WS-Management sans ouvrir de session distante.
+
+<p class="oscp-command-note">Tester WinRM avant la connexion.</p>
+
+```powershell
+Test-WSMan -ComputerName <NOM_CIBLE>
+```
+
+#### WinRM chiffré
+
+Se connecter au point de terminaison HTTPS lorsque le certificat et les règles du service sont correctement configurés.
+
+<p class="oscp-command-note">WinRM chiffré.</p>
+
+```bash
+evil-winrm -i <IP_CIBLE> -S -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
+```
+
 ### PsExec
 
 
@@ -176,6 +197,17 @@ winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
 
 ```
 
+
+
+#### Exécuter une commande d'inventaire WinRS
+
+Exécuter une commande simple sur un poste déjà administrable, avec un compte autorisé.
+
+<p class="oscp-command-note">Exécuter une commande d'inventaire WinRS.</p>
+
+```powershell
+winrs -r:<NOM_CIBLE> -u:<UTILISATEUR> -p:<MOT_DE_PASSE> hostname
+```
 
 ### WMIC
 
@@ -321,6 +353,27 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 
 ```
 
+
+
+#### Vérifier les partages administratifs
+
+Lister les partages accessibles sans supposer que la présence de C$ autorise une connexion.
+
+<p class="oscp-command-note">Vérifier les partages administratifs.</p>
+
+```powershell
+net view \\<NOM_CIBLE>
+```
+
+#### Monter un partage avec un compte de test
+
+Créer une connexion SMB vers une ressource autorisée, sans persistance.
+
+<p class="oscp-command-note">Monter un partage avec un compte de test.</p>
+
+```powershell
+net use \\<NOM_CIBLE>\<PARTAGE> /user:<DOMAINE>\<UTILISATEUR> *
+```
 
 ### WinRM (administration distante Windows)
 
@@ -513,6 +566,17 @@ crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ```
 
 
+
+#### Accès RDP avec résolution dynamique
+
+Utiliser FreeRDP 3 pour ouvrir une session graphique autorisée.
+
+<p class="oscp-command-note">Accès RDP avec résolution dynamique.</p>
+
+```bash
+xfreerdp3 /u:<UTILISATEUR> /v:<IP_CIBLE> /dynamic-resolution
+```
+
 ### FTP
 
 Transférer ou récupérer des fichiers dans le laboratoire.
@@ -536,6 +600,17 @@ crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 
 ```
 
+
+
+#### Exécuter une commande distante en SSH
+
+Éviter d'ouvrir un shell interactif lorsque la collecte requiert une seule commande.
+
+<p class="oscp-command-note">Exécuter une commande distante en SSH.</p>
+
+```bash
+ssh <UTILISATEUR>@<HOTE_SSH> hostname
+```
 
 ### HTTP
 

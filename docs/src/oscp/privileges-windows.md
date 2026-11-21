@@ -202,6 +202,41 @@ $PSVersionTable.PSVersion
 ```
 
 
+
+### Utilisateurs, groupes et privilèges Windows
+
+Inventorier les droits du compte courant et les groupes locaux visibles.
+
+<p class="oscp-command-note">Utilisateurs, groupes et privilèges Windows.</p>
+
+```powershell
+whoami /all
+Get-LocalUser | Select-Object Name,Enabled,LastLogon
+Get-LocalGroupMember -Group 'Administrators' -ErrorAction SilentlyContinue
+```
+
+### Applications et versions installées
+
+Lire les deux vues du Registre employées par les programmes Windows.
+
+<p class="oscp-command-note">Applications et versions installées.</p>
+
+```powershell
+Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*' | Select-Object DisplayName,DisplayVersion
+Get-ItemProperty 'HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*' | Select-Object DisplayName,DisplayVersion
+```
+
+### Protections actives
+
+Vérifier les paramètres locaux de Defender et les politiques AppLocker visibles pour le compte.
+
+<p class="oscp-command-note">Protections actives.</p>
+
+```powershell
+Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated
+Get-AppLockerPolicy -Effective | Select-Object -ExpandProperty RuleCollections
+```
+
 ## Recherche de fichiers
 
 
@@ -280,6 +315,18 @@ runas /user:[Domain\Username] cmd
 
 ```
 
+
+
+### Fichiers de configuration et coffres
+
+Rechercher des extensions précises sans ouvrir automatiquement les fichiers détectés.
+
+<p class="oscp-command-note">Fichiers de configuration et coffres.</p>
+
+```powershell
+Get-ChildItem -Path 'C:\Users' -Recurse -File -Include '*.config','*.ini','*.xml' -ErrorAction SilentlyContinue
+Get-ChildItem -Path 'C:\Users' -Recurse -File -Filter '*.kdbx' -ErrorAction SilentlyContinue
+```
 
 ## Journaux PowerShell
 
@@ -1225,6 +1272,38 @@ Get-WindowsUpdateLog
 ```
 
 
+
+
+#### Mises à jour Windows
+
+Examiner l'inventaire des correctifs, qui n'est pas nécessairement exhaustif.
+
+<p class="oscp-command-note">Mises à jour Windows.</p>
+
+```powershell
+Get-CimInstance -ClassName Win32_QuickFixEngineering | Select-Object HotFixID,InstalledOn,Description
+```
+
+#### Pare-feu Windows
+
+Lire la configuration des profils pare-feu sans la modifier.
+
+<p class="oscp-command-note">Pare-feu Windows.</p>
+
+```powershell
+netsh advfirewall show allprofiles
+```
+
+### Historique récent du compte courant
+
+Consulter les commandes PSReadLine stockées, sans supposer que l'historique est complet.
+
+<p class="oscp-command-note">Historique récent du compte courant.</p>
+
+```powershell
+Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Tail 50 -ErrorAction SilentlyContinue
+```
+
 ## Chargement de DLL par un service
 
 
@@ -1345,6 +1424,18 @@ $env:path
 ```
 
 
+
+### Configuration et permissions du service
+
+Identifier l'exécutable d'un service puis contrôler ses droits NTFS.
+
+<p class="oscp-command-note">Configuration et permissions du service.</p>
+
+```powershell
+sc.exe qc <NOM_SERVICE>
+icacls '<CHEMIN_EXECUTABLE>'
+```
+
 ## Chemins de services sans guillemets
 
 
@@ -1424,6 +1515,17 @@ Get-WinEvent -LogName System | Where-Object {$_.Id -eq 7036 -and $_.Message -lik
 
 ```
 
+
+
+### Lister les chemins des services
+
+Contrôler les espaces et les guillemets des chemins de services avant toute interprétation.
+
+<p class="oscp-command-note">Lister les chemins des services.</p>
+
+```powershell
+Get-CimInstance Win32_Service | Select-Object Name,StartName,PathName | Format-Table -AutoSize
+```
 
 ## Tâches planifiées
 
@@ -2210,6 +2312,18 @@ PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example
 **Paramètres et repères :**
 `PowerSharpBinaries`  
 
+
+
+### Vérification des deux branches
+
+La configuration potentiellement risquée dépend des valeurs de l'utilisateur et de la machine.
+
+<p class="oscp-command-note">Vérification des deux branches.</p>
+
+```powershell
+reg query 'HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer' /v AlwaysInstallElevated
+reg query 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer' /v AlwaysInstallElevated
+```
 
 ## Outils d’usurpation de jeton (famille Potato)
 

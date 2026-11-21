@@ -47,6 +47,23 @@ upload [file_name] [optional_file_destination_path]
 ```
 
 
+
+### Vérifier l'intégrité après transfert
+
+Comparer les empreintes SHA-256 sur chaque machine pour détecter une modification accidentelle.
+
+<p class="oscp-command-note">Vérifier l'intégrité après transfert.</p>
+
+```bash
+sha256sum <FICHIER_TRANSFERE>
+```
+
+Sous Windows :
+
+```powershell
+Get-FileHash -Algorithm SHA256 '<FICHIER_TRANSFERE>'
+```
+
 ## FTP
 
 Transférer des fichiers via FTP.
@@ -55,6 +72,17 @@ Transférer des fichiers via FTP.
 **Paramètres et repères :**
 `binary`  
 
+
+
+### Transfert SFTP sur SSH
+
+Employer SFTP pour un transfert interactif chiffré vers un serveur autorisé.
+
+<p class="oscp-command-note">Transfert SFTP sur SSH.</p>
+
+```bash
+sftp <UTILISATEUR>@<HOTE_SSH>
+```
 
 ## SMB
 
@@ -76,6 +104,17 @@ net use m: \\[my_kali_IP]\[name_we_gave_to_the_share] /user:my_user my_password
 
 ```
 
+
+
+### Copie de fichiers vers un partage SMB
+
+Utiliser un partage prévu pour les tests, avec les permissions nécessaires.
+
+<p class="oscp-command-note">Copie de fichiers vers un partage SMB.</p>
+
+```powershell
+Copy-Item '<FICHIER_LOCAL>' '\\<HOTE_SMB>\<PARTAGE>\'
+```
 
 ## Requêtes HTTP
 
@@ -108,6 +147,38 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('http://[kali_IP]/[
 
 ```
 
+
+
+### Serveur HTTP temporaire Python
+
+Exposer un répertoire du laboratoire sur le port choisi. Par défaut, Python écoute sur toutes les interfaces : utiliser --bind pour limiter la portée.
+
+<p class="oscp-command-note">Serveur HTTP temporaire Python.</p>
+
+```bash
+python3 -m http.server 8000 --bind 127.0.0.1
+```
+
+### Télécharger un fichier avec curl et wget
+
+Sauvegarder un fichier distant avec un nom local choisi plutôt que l'exécuter immédiatement.
+
+<p class="oscp-command-note">Télécharger un fichier avec curl et wget.</p>
+
+```bash
+curl -fL 'http://<HOTE_AUDIT>/fichier.txt' -o <FICHIER_LOCAL>.txt
+wget 'http://<HOTE_AUDIT>/fichier.txt' -O <FICHIER_LOCAL>.txt
+```
+
+### PowerShell : récupérer un fichier distant
+
+Télécharger vers un chemin explicitement choisi et contrôler l'empreinte avant utilisation.
+
+<p class="oscp-command-note">PowerShell : récupérer un fichier distant.</p>
+
+```powershell
+Invoke-WebRequest -Uri 'https://<HOTE_AUDIT>/outil.txt' -OutFile '<CHEMIN_LOCAL>.txt'
+```
 
 ## Script PHP pour recevoir des fichiers depuis Windows
 
@@ -245,6 +316,18 @@ echo "PASTE_BASE64_CONTENTS_HERE" | base64 -d > received_file.txt
 
 ```
 
+
+
+#### Encoder et reconstruire un fichier
+
+Utiliser Base64 uniquement comme moyen de représentation : cela ne chiffre pas les données.
+
+<p class="oscp-command-note">Encoder et reconstruire un fichier.</p>
+
+```bash
+base64 -w 0 <FICHIER_SOURCE> > <FICHIER_SOURCE>.b64
+base64 -d <FICHIER_SOURCE>.b64 > <FICHIER_RECONSTRUIT>
+```
 
 ### Transfert de contenu Base64 via Netcat
 

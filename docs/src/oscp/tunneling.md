@@ -84,6 +84,28 @@ ip route list
 ```
 
 
+
+#### Vérifier le routage avant un tunnel
+
+Contrôler la route réellement choisie pour joindre une adresse du laboratoire.
+
+<p class="oscp-command-note">Vérifier le routage avant un tunnel.</p>
+
+```bash
+ip route get <IP_CIBLE>
+ss -ltnp
+```
+
+#### Saut SSH (ProxyJump)
+
+Rejoindre un serveur final à travers un hôte SSH intermédiaire autorisé.
+
+<p class="oscp-command-note">Saut SSH (ProxyJump).</p>
+
+```bash
+ssh -J <UTILISATEUR_PIVOT>@<IP_PIVOT> <UTILISATEUR_CIBLE>@<IP_CIBLE>
+```
+
 ### Double tunnel
 
 Configurer et comprendre les chemins de communication réseau.
@@ -190,6 +212,27 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_port_forwarding.png)
 
+
+
+#### Tunnel local lié à la boucle locale
+
+Rendre accessible un port distant depuis un port de la machine locale, sans l'exposer sur toutes les interfaces.
+
+<p class="oscp-command-note">Tunnel local lié à la boucle locale.</p>
+
+```bash
+ssh -N -L 127.0.0.1:<PORT_LOCAL>:<IP_SERVICE>:<PORT_DISTANT> <UTILISATEUR>@<PIVOT_SSH>
+```
+
+#### Tunnel dynamique SOCKS
+
+Créer un proxy SOCKS local pour l'acheminement d'applications compatibles.
+
+<p class="oscp-command-note">Tunnel dynamique SOCKS.</p>
+
+```bash
+ssh -N -D 127.0.0.1:9050 <UTILISATEUR>@<PIVOT_SSH>
+```
 
 ### Shells inversés depuis les réseaux internes (Reverse Shells)
 
@@ -349,6 +392,27 @@ socks5 127.0.0.1 <LOCAL_PORT>
 ```
 
 
+
+#### Tester une connexion via SOCKS
+
+Confirmer que le proxy relaie une requête en utilisant la résolution DNS côté proxy.
+
+<p class="oscp-command-note">Tester une connexion via SOCKS.</p>
+
+```bash
+curl --socks5-hostname 127.0.0.1:9050 -I 'http://<HOTE_INTERNE>/'
+```
+
+#### Utiliser un proxy avec Nmap
+
+Nmap derrière proxychains nécessite un scan TCP connect : certaines sondes et découvertes hôtes ne passent pas par SOCKS.
+
+<p class="oscp-command-note">Utiliser un proxy avec Nmap.</p>
+
+```bash
+proxychains4 -q nmap -sT -Pn -n -p <PORTS> <IP_CIBLE>
+```
+
 ### Proxy SOCKS inverse
 
 Configurer et comprendre les chemins de communication réseau.
@@ -389,6 +453,27 @@ proxychains nmap localhost
 
 ```
 
+
+
+### Démarrer le serveur Chisel
+
+Écouter sur le port de relais choisi ; l'authentification et le chiffrement doivent être définis selon l'environnement.
+
+<p class="oscp-command-note">Démarrer le serveur Chisel.</p>
+
+```bash
+chisel server --reverse --port 8080
+```
+
+### Ouvrir une redirection TCP Chisel
+
+Exposer un port cible à travers la connexion Chisel établie.
+
+<p class="oscp-command-note">Ouvrir une redirection TCP Chisel.</p>
+
+```bash
+chisel client <IP_SERVEUR>:8080 R:<PORT_LOCAL>:127.0.0.1:<PORT_CIBLE>
+```
 
 ## Tunnels DNS avec dnscat2
 

@@ -58,6 +58,17 @@ hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
 ```
 
 
+
+### Repérer les comptes sans préauthentification
+
+Examiner le bit DONT_REQ_PREAUTH via LDAP, sans demander de ticket.
+
+<p class="oscp-command-note">Repérer les comptes sans préauthentification.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(userAccountControl:1.2.840.113556.1.4.803:=4194304)' dn sAMAccountName
+```
+
 ## Kerberoasting
 
 
@@ -100,6 +111,17 @@ hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 ```
 
+
+
+### Inventaire des SPN de comptes utilisateur
+
+Rechercher les comptes de service ayant un SPN à partir de LDAP, sans extraire de tickets.
+
+<p class="oscp-command-note">Inventaire des SPN de comptes utilisateur.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(objectCategory=person)(objectClass=user)(servicePrincipalName=*))' sAMAccountName servicePrincipalName
+```
 
 ## Faux tickets de service (Silver Tickets)
 
@@ -1051,6 +1073,28 @@ crackmapexec ntp [ip/domain]
 ```
 
 
+
+### Afficher les tickets Kerberos courants
+
+Sur Windows, klist permet d'examiner les tickets déjà présents dans la session sans les exporter.
+
+<p class="oscp-command-note">Afficher les tickets Kerberos courants.</p>
+
+```powershell
+klist tickets
+klist sessions
+```
+
+### Diagnostiquer l'heure d'un système Linux
+
+Kerberos exige une synchronisation cohérente ; vérifier l'état des services de temps avant d'enquêter sur une erreur de ticket.
+
+<p class="oscp-command-note">Diagnostiquer l'heure d'un système Linux.</p>
+
+```bash
+timedatectl show -p NTPSynchronized -p TimeUSec
+```
+
 ## Copies instantanées (Shadow Copies)
 
 
@@ -1374,6 +1418,27 @@ userPrincipalName: esolis@domain.local
 
 ```
 
+
+
+### Rechercher les délégations Kerberos contraintes
+
+Lire les attributs msDS-AllowedToDelegateTo pour repérer les services configurés.
+
+<p class="oscp-command-note">Rechercher les délégations Kerberos contraintes.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(msDS-AllowedToDelegateTo=*)' dn sAMAccountName msDS-AllowedToDelegateTo
+```
+
+### Délégation sans contrainte
+
+Contrôler les objets qui possèdent le bit TRUSTED_FOR_DELEGATION, sans modifier leur configuration.
+
+<p class="oscp-command-note">Délégation sans contrainte.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(userAccountControl:1.2.840.113556.1.4.803:=524288)' dn sAMAccountName
+```
 
 ## Réutilisation de tickets Kerberos (Pass-the-Ticket, PtT)
 

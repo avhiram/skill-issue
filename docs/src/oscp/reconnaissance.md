@@ -451,6 +451,39 @@ Test-NetConnection -Port [portNumber] [IP]
 ```
 
 
+
+#### Inventaire TCP complet
+
+Découvrir les ports TCP puis identifier les services dans le périmètre autorisé.
+
+<p class="oscp-command-note">Inventaire TCP complet.</p>
+
+```bash
+nmap -sS -p- -Pn -n -oN <RAPPORT_PORTS>.txt <IP_CIBLE>
+nmap -sV -sC -p <LISTE_PORTS> -oN <RAPPORT_SERVICES>.txt <IP_CIBLE>
+```
+
+#### Contrôle des scripts NSE
+
+Afficher la documentation d'un script puis consulter son comportement avant de l'exécuter.
+
+<p class="oscp-command-note">Contrôle des scripts NSE.</p>
+
+```bash
+nmap --script-help <SCRIPT_NSE>
+nmap -sV -p <PORT> --script <SCRIPT_NSE> <IP_CIBLE>
+```
+
+#### Découverte de plusieurs hôtes
+
+Effectuer un ping sweep sans lancer de scan de ports. Les pare-feu peuvent masquer des hôtes présents.
+
+<p class="oscp-command-note">Découverte de plusieurs hôtes.</p>
+
+```bash
+nmap -sn -n <RESEAU_CIDR>
+```
+
 ### RustScan
 
 Vérifier les ports et les services de la cible autorisée.
@@ -658,6 +691,18 @@ ftp -p [IP]
 
 ```
 
+
+
+#### Accès FTP anonyme
+
+Vérifier si le serveur autorise une connexion anonyme, sans modifier les fichiers distants.
+
+<p class="oscp-command-note">Accès FTP anonyme.</p>
+
+```bash
+curl -v 'ftp://anonymous:anonymous@<IP_CIBLE>/'
+wget -q --spider 'ftp://anonymous:anonymous@<IP_CIBLE>/'
+```
 
 ### 22: SSH
 
@@ -1030,6 +1075,18 @@ python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<
 ```
 
 
+
+#### Capacités SMTP exposées
+
+Identifier les commandes annoncées par le serveur SMTP ; les résultats d'énumération utilisateurs doivent être confirmés.
+
+<p class="oscp-command-note">Capacités SMTP exposées.</p>
+
+```bash
+nmap -sV -p 25 --script smtp-commands <IP_CIBLE>
+nmap -p 25 --script smtp-enum-users <IP_CIBLE>
+```
+
 ### 53: DNS
 
 Interroger les enregistrements DNS et identifier les services associés.
@@ -1095,6 +1152,28 @@ Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
 
 ```
 
+
+
+#### Enregistrements MX et TXT
+
+Lister les serveurs de messagerie et les informations TXT d'un domaine appartenant au périmètre.
+
+<p class="oscp-command-note">Enregistrements MX et TXT.</p>
+
+```bash
+dig @<SERVEUR_DNS> <DOMAINE> MX +noall +answer
+dig @<SERVEUR_DNS> <DOMAINE> TXT +noall +answer
+```
+
+#### Transfert de zone DNS
+
+Vérifier si un transfert AXFR non autorisé est accepté par le serveur DNS.
+
+<p class="oscp-command-note">Transfert de zone DNS.</p>
+
+```bash
+dig @<SERVEUR_DNS> <DOMAINE> AXFR
+```
 
 ### 69: TFTP
 
@@ -1833,6 +1912,28 @@ crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
 ```
 
 
+
+#### Découverte des partages sans mot de passe
+
+Tester l'énumération anonyme et noter un refus d'accès comme un résultat normal.
+
+<p class="oscp-command-note">Découverte des partages sans mot de passe.</p>
+
+```bash
+smbclient -L //<IP_CIBLE> -N
+enum4linux-ng -A <IP_CIBLE>
+```
+
+#### Partages accessibles avec un compte de test
+
+Lister uniquement les ressources visibles pour le compte fourni dans le périmètre.
+
+<p class="oscp-command-note">Partages accessibles avec un compte de test.</p>
+
+```bash
+nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
+```
+
 ### 143, 993: IMAP
 
 
@@ -1895,6 +1996,17 @@ if __name__ == "__main__":
 
 ```
 
+
+
+#### Bannière IMAP et TLS
+
+Examiner le certificat d'un service IMAPS sans tenter d'authentification.
+
+<p class="oscp-command-note">Bannière IMAP et TLS.</p>
+
+```bash
+openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
+```
 
 ### 161 (UDP): SNMP
 
@@ -1989,6 +2101,27 @@ snmpwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip> <OID>
 
 ```
 
+
+
+#### Information système via SNMP
+
+Interroger l'OID system sur une instance SNMPv2c avec la communauté d'audit autorisée.
+
+<p class="oscp-command-note">Information système via SNMP.</p>
+
+```bash
+snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.1
+```
+
+#### Services et interfaces SNMP
+
+Lire les descriptions d'interface. Attention : SNMPv2c ne chiffre pas le trafic.
+
+<p class="oscp-command-note">Services et interfaces SNMP.</p>
+
+```bash
+snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.2.2.1.2
+```
 
 ### 389, 636, 3268 & 3269: LDAP
 
@@ -2149,6 +2282,27 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 ```
 
 
+
+#### Base de l'annuaire LDAP
+
+Interroger RootDSE pour trouver les contextes de nommage, puis utiliser le DN de base approprié.
+
+<p class="oscp-command-note">Base de l'annuaire LDAP.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -s base -b '' defaultNamingContext namingContexts
+```
+
+#### Objets utilisateurs du domaine
+
+Lister le nom des comptes exposés à un utilisateur LDAP autorisé.
+
+<p class="oscp-command-note">Objets utilisateurs du domaine.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(objectClass=user)' sAMAccountName
+```
+
 ### 1433: MSSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -2246,6 +2400,17 @@ DELETE FROM <table_name> WHERE <condition>;
 
 ```
 
+
+
+#### Client SQL Server avec authentification Windows
+
+Vérifier le type d'authentification demandé par l'instance MSSQL.
+
+<p class="oscp-command-note">Client SQL Server avec authentification Windows.</p>
+
+```bash
+impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -windows-auth
+```
 
 ### 2049: NFS
 
@@ -2525,6 +2690,17 @@ rdesktop <ip>
 ```
 
 
+
+#### Vérification d'un compte RDP
+
+Tester un compte de laboratoire sur le service RDP si les règles d'audit autorisent l'authentification.
+
+<p class="oscp-command-note">Vérification d'un compte RDP.</p>
+
+```bash
+nxc rdp <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
+```
+
 ### 5432, 5433: PostgreSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -2735,6 +2911,27 @@ evil-winrm -i <ip> -u <USER> -p <PASSWORD>
 ```
 
 
+
+#### Informations WinRM
+
+Identifier si le point de terminaison WinRM est accessible en HTTP et s'il demande une authentification.
+
+<p class="oscp-command-note">Informations WinRM.</p>
+
+```bash
+curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
+```
+
+#### Authentification WinRM autorisée
+
+Tester des identifiants fournis pour l'audit sur une seule cible, sans mot de passe en masse.
+
+<p class="oscp-command-note">Authentification WinRM autorisée.</p>
+
+```bash
+nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
+```
+
 ### 6379: Redis
 
 
@@ -2842,6 +3039,17 @@ echo "list" | nc -nv <IP> <PORT>
 
 ```
 
+
+
+#### Détecter si un port parle TLS
+
+Observer la négociation TLS d'un service inconnu avant de choisir l'outil d'énumération.
+
+<p class="oscp-command-note">Détecter si un port parle TLS.</p>
+
+```bash
+openssl s_client -connect <IP_CIBLE>:<PORT> -brief
+```
 
 ## Vérifications ciblées des services
 

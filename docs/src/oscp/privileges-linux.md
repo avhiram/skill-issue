@@ -253,6 +253,41 @@ sudo -i
 **Énumération automatisée**
 
 
+
+### Interfaces et connexions
+
+Observer les interfaces, la table de routage et les services à l'écoute sur la machine locale.
+
+<p class="oscp-command-note">Interfaces et connexions.</p>
+
+```bash
+ip -br address
+ip route
+ss -tulpn
+```
+
+### Volumes et espace disque
+
+Examiner les périphériques et les points de montage.
+
+<p class="oscp-command-note">Volumes et espace disque.</p>
+
+```bash
+lsblk -f
+df -hT
+```
+
+### Arbre de processus
+
+Afficher les processus en détail et leurs relations parent-enfant.
+
+<p class="oscp-command-note">Arbre de processus.</p>
+
+```bash
+ps auxww
+ps axjf
+```
+
 ## Examiner les services
 
 
@@ -557,6 +592,18 @@ Bypasses file and directory read and execute permission checks. · Allows readin
 **CAP_SETUID**
 
 
+
+### Cron et minuteurs systemd
+
+Examiner les tâches configurées et les minuteurs systemd, lorsque disponibles.
+
+<p class="oscp-command-note">Cron et minuteurs systemd.</p>
+
+```bash
+ls -ld /etc/cron*
+systemctl list-timers --all
+```
+
 ## Risques liés à sudo
 
 Examiner les permissions et la configuration de Linux.
@@ -694,6 +741,17 @@ cp /etc/* /tmp/backup/
 ```
 
 
+
+#### Observer l'expansion du shell
+
+Afficher les fichiers qui seraient sélectionnés par * dans un répertoire de laboratoire.
+
+<p class="oscp-command-note">Observer l'expansion du shell.</p>
+
+```bash
+printf '%s\n' ./*
+```
+
 ## Permissions du groupe disk
 
 
@@ -810,6 +868,27 @@ netstat -ano
 ```
 
 
+
+### Localiser les coffres KeePass
+
+Rechercher uniquement les fichiers .kdbx visibles par le compte courant.
+
+<p class="oscp-command-note">Localiser les coffres KeePass.</p>
+
+```bash
+find /home -type f -name '*.kdbx' 2>/dev/null
+```
+
+### Répertoires de clés SSH
+
+Rechercher les répertoires .ssh visibles puis examiner leurs permissions.
+
+<p class="oscp-command-note">Répertoires de clés SSH.</p>
+
+```bash
+find /home -type d -name '.ssh' 2>/dev/null
+```
+
 ## Scripts modifiables par tous et exécutés par root
 
 
@@ -912,6 +991,17 @@ find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 
 ```
 
+
+
+#### Lire les dépendances ELF
+
+Identifier les bibliothèques déclarées dans un exécutable sans exécuter le programme.
+
+<p class="oscp-command-note">Lire les dépendances ELF.</p>
+
+```bash
+readelf -d <BINAIRE_ELF> | grep NEEDED
+```
 
 ### LinPEAS
 

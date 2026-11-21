@@ -786,6 +786,39 @@ curl --http2 http://example.com
 ```
 
 
+
+### Détecter le type d'un fichier
+
+Examiner la signature du contenu d'un fichier, indépendamment de son extension.
+
+<p class="oscp-command-note">Détecter le type d'un fichier.</p>
+
+```bash
+file <FICHIER>
+xxd -l 64 <FICHIER>
+```
+
+### Afficher les chaînes lisibles
+
+Repérer les chaînes ASCII/Unicode dans un binaire sans l'exécuter.
+
+<p class="oscp-command-note">Afficher les chaînes lisibles.</p>
+
+```bash
+strings -a -n 6 <BINAIRE> | head -n 40
+```
+
+### Lire et filtrer du JSON
+
+Convertir un JSON en représentation lisible et extraire une clé avec jq.
+
+<p class="oscp-command-note">Lire et filtrer du JSON.</p>
+
+```bash
+python3 -m json.tool < <REPONSE>.json
+jq '.data' < <REPONSE>.json
+```
+
 ## Générer une clé SSH
 
 
@@ -846,6 +879,17 @@ ssh -i id_rsa user@<victim_ip>
 
 ```
 
+
+
+### Créer une clé Ed25519
+
+Générer une paire de clés moderne et dédiée au laboratoire ; conserver la clé privée hors du dépôt Git.
+
+<p class="oscp-command-note">Créer une clé Ed25519.</p>
+
+```bash
+ssh-keygen -t ed25519 -f <CHEMIN_CLE> -C 'audit-laboratoire'
+```
 
 ## Compilation croisée pour Windows
 
@@ -1109,6 +1153,37 @@ set PATH=%PATH%C:\Windows\System32;C:\Windows\System32\WindowsPowerShell\v1.0;
 
 ```
 
+
+
+### Vérifier une empreinte de fichier
+
+Calculer un condensat SHA-256 pour contrôler l'intégrité avant la manipulation d'un outil récupéré.
+
+<p class="oscp-command-note">Vérifier une empreinte de fichier.</p>
+
+```bash
+sha256sum <FICHIER>
+```
+
+### Afficher le certificat TLS
+
+Extraire les informations de certificat d'un fichier PEM pour examiner son émetteur et sa validité.
+
+<p class="oscp-command-note">Afficher le certificat TLS.</p>
+
+```bash
+openssl x509 -in <CERTIFICAT>.pem -noout -subject -issuer -dates
+```
+
+### Déterminer les dépendances ELF
+
+Afficher les bibliothèques déclarées dans un binaire Linux sans lancer celui-ci.
+
+<p class="oscp-command-note">Déterminer les dépendances ELF.</p>
+
+```bash
+readelf -d <BINAIRE_ELF> | grep NEEDED
+```
 
 ## Analyser les fichiers et ouvrir une session moderne
 

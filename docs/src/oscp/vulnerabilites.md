@@ -84,6 +84,28 @@ sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
 ```
 
 
+
+### Interroger les scripts de vulnérabilité
+
+Lister les scripts installés et sélectionner ceux pertinents pour le produit observé.
+
+<p class="oscp-command-note">Interroger les scripts de vulnérabilité.</p>
+
+```bash
+ls /usr/share/nmap/scripts/*vuln*.nse
+nmap --script-help <SCRIPT_NSE>
+```
+
+### Sauvegarder les résultats
+
+Conserver la sortie XML pour une analyse différée ; ne pas interpréter automatiquement chaque résultat comme une faille confirmée.
+
+<p class="oscp-command-note">Sauvegarder les résultats.</p>
+
+```bash
+nmap -sV --script <SCRIPT_NSE> -p <PORT> -oX <RAPPORT>.xml <IP_CIBLE>
+```
+
 ## Rechercher et vérifier des exploits publics
 
 SearchSploit consulte la base locale d'Exploit-DB. La présence d'un résultat ne démontre pas qu'une cible est vulnérable : comparer le produit, sa version, la configuration et les prérequis.

@@ -21,6 +21,17 @@ socat -ddd TCP-LISTEN:[listening_local_port_on_dmz],fork TCP:[internal_ip]:[inte
 ```
 
 
+
+### Écoute TCP avec fermeture après la connexion
+
+Rediriger les connexions d'un port local vers une cible du laboratoire ; fork permet plusieurs sessions.
+
+<p class="oscp-command-note">Écoute TCP avec fermeture après la connexion.</p>
+
+```bash
+socat -d -d TCP-LISTEN:<PORT_LOCAL>,reuseaddr,fork TCP:<IP_CIBLE>:<PORT_CIBLE>
+```
+
 ## Redirection SSH locale
 
 Rendre un service distant accessible depuis un port local.
@@ -33,6 +44,17 @@ ssh -N -L 0.0.0.0:[local_port_on_rev_shell]:[internal_ip_target]:[internal_ip_po
 
 ```
 
+
+
+### Liaison uniquement sur localhost
+
+Ne pas exposer le port redirigé aux autres machines du réseau local.
+
+<p class="oscp-command-note">Liaison uniquement sur localhost.</p>
+
+```bash
+ssh -N -L 127.0.0.1:<PORT_LOCAL>:127.0.0.1:<PORT_CIBLE> <UTILISATEUR>@<SERVEUR_SSH>
+```
 
 ## Redirection SSH dynamique
 
@@ -78,6 +100,17 @@ ssh -N -R 127.0.0.1:[remote_port_on_ssh_host]:[internal_target_ip]:[internal_tar
 
 ```
 
+
+
+### Port distant disponible sur localhost
+
+Créer une redirection inverse dont le port d'écoute reste lié à l'interface loopback du serveur SSH.
+
+<p class="oscp-command-note">Port distant disponible sur localhost.</p>
+
+```bash
+ssh -N -R 127.0.0.1:<PORT_DISTANT>:127.0.0.1:<PORT_LOCAL> <UTILISATEUR>@<SERVEUR_SSH>
+```
 
 ## Redirection dynamique distante via SSH
 
@@ -287,6 +320,27 @@ netsh interface portproxy del v4tov4 listenport=[LISTEN_PORT] listenaddress=[LIS
 
 ```
 
+
+
+### Vérifier une règle portproxy précise
+
+Lister les redirections Windows en place avant et après un changement autorisé.
+
+<p class="oscp-command-note">Vérifier une règle portproxy précise.</p>
+
+```bash
+netsh interface portproxy show v4tov4
+```
+
+### Vérifier les ports Windows en écoute
+
+Contrôler si un port local est utilisé par un processus avant d'ajouter une redirection.
+
+<p class="oscp-command-note">Vérifier les ports Windows en écoute.</p>
+
+```powershell
+Get-NetTCPConnection -State Listen | Select-Object LocalAddress,LocalPort,OwningProcess
+```
 
 ## Redirections : diagnostics et vérifications
 

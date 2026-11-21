@@ -386,6 +386,39 @@ dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 ```
 
 
+
+#### Observer les réponses HTTP
+
+Examiner les en-têtes et les méthodes autorisées sans modifier l'application.
+
+<p class="oscp-command-note">Observer les réponses HTTP.</p>
+
+```bash
+curl -I 'https://<HOTE_CIBLE>/'
+curl -i -X OPTIONS 'https://<HOTE_CIBLE>/'
+```
+
+#### Explorer les chemins potentiels
+
+Rechercher des chemins par dictionnaire, avec un nombre de requêtes conforme au périmètre d'audit.
+
+<p class="oscp-command-note">Explorer les chemins potentiels.</p>
+
+```bash
+feroxbuster -u 'https://<HOTE_CIBLE>/' -w <LISTE_MOTS> --rate-limit 10
+gobuster dir -u 'https://<HOTE_CIBLE>/' -w <LISTE_MOTS> -x php,txt,html
+```
+
+#### Contrôle de configuration web
+
+Lancer les contrôles standards de Nikto ; vérifier ensuite chaque résultat manuellement.
+
+<p class="oscp-command-note">Contrôle de configuration web.</p>
+
+```bash
+nikto -h 'https://<HOTE_CIBLE>/'
+```
+
 ### Dépôt Git exposé
 
 
@@ -438,6 +471,27 @@ git reset --hard
 
 ```
 
+
+
+#### Consulter les métadonnées Git exposées
+
+Vérifier la présence d'un fichier de métadonnées .git/HEAD accessible par HTTP.
+
+<p class="oscp-command-note">Consulter les métadonnées Git exposées.</p>
+
+```bash
+curl -i 'https://<HOTE_CIBLE>/.git/HEAD'
+```
+
+#### Collecte du dépôt exposé
+
+Utiliser un récupérateur Git seulement si la collecte du code est autorisée. Éviter la diffusion des secrets éventuellement présents.
+
+<p class="oscp-command-note">Collecte du dépôt exposé.</p>
+
+```bash
+git-dumper 'https://<HOTE_CIBLE>/.git/' <DOSSIER_SORTIE>
+```
 
 ### Systèmes de gestion de contenu (CMS)
 
@@ -555,6 +609,17 @@ wpscan --url http(s)://<IP>/ --enumerate p --plugins-detection aggressive
 ```
 
 
+
+#### WordPress : inventaire des extensions
+
+Lister les extensions accessibles sans imposer un essai de mots de passe.
+
+<p class="oscp-command-note">WordPress : inventaire des extensions.</p>
+
+```bash
+wpscan --url 'https://<HOTE_CIBLE>/' --enumerate ap --plugins-detection passive
+```
+
 ### WebDAV
 
 Examiner les entrées et les réponses de l'application web.
@@ -642,6 +707,27 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 
 ```
 
+
+
+#### Tester une API JSON
+
+Définir explicitement l'en-tête Accept, puis examiner le statut et le type de réponse.
+
+<p class="oscp-command-note">Tester une API JSON.</p>
+
+```bash
+curl -i -H 'Accept: application/json' 'https://<HOTE_CIBLE>/api/'
+```
+
+#### Examiner les réponses sans perdre les en-têtes
+
+Sauvegarder le corps JSON et les en-têtes séparément pour le rapport.
+
+<p class="oscp-command-note">Examiner les réponses sans perdre les en-têtes.</p>
+
+```bash
+curl -D <ENTETES>.txt -o <REPONSE>.json 'https://<HOTE_CIBLE>/api/'
+```
 
 ### Listes de mots
 
@@ -1124,6 +1210,17 @@ python rfiscanner.py <target_url>
 
 ```
 
+
+
+#### Éviter la normalisation du chemin
+
+Envoyer littéralement les segments de traversée lorsque le paramètre est placé dans le chemin de l'URL.
+
+<p class="oscp-command-note">Éviter la normalisation du chemin.</p>
+
+```bash
+curl --path-as-is 'http://<HOTE_CIBLE>/../../../../etc/hostname'
+```
 
 ### Inclusion de fichiers distants (RFI)
 
@@ -1678,6 +1775,17 @@ cp cat.jpg ’|smile”`echo <base64_bash_reverse_shell> | base64 -d | bash`”.
 
 ```
 
+
+
+### Tester un téléversement multipart
+
+Transmettre un fichier de test inoffensif pour vérifier les restrictions de type, taille et extension.
+
+<p class="oscp-command-note">Tester un téléversement multipart.</p>
+
+```bash
+curl -i -F 'file=@<FICHIER_TEST>.txt;type=text/plain' 'https://<HOTE_CIBLE>/upload'
+```
 
 ## Injection SQL (SQLi)
 
@@ -3100,6 +3208,27 @@ admin ' OR 1=1 --
 Examiner les entrées et les réponses de l'application web.
 
 
+
+### Paramètre de requête SQL ciblé
+
+Utiliser la requête HTTP capturée pour tester une seule variable, sans extraction automatique des données.
+
+<p class="oscp-command-note">Paramètre de requête SQL ciblé.</p>
+
+```bash
+sqlmap -r <REQUETE_HTTP>.txt -p <PARAMETRE> --batch --technique=BEU
+```
+
+### Vérifier l'injection en aveugle
+
+Préparer un test fondé sur les délais en limitant le niveau de bruit et les tentatives.
+
+<p class="oscp-command-note">Vérifier l'injection en aveugle.</p>
+
+```bash
+sqlmap -u 'https://<HOTE_CIBLE>/fiche?id=1' -p id --technique=T --batch
+```
+
 ## Injection XXE
 
 Examiner les entrées et les réponses de l'application web.
@@ -3429,6 +3558,17 @@ $.ajax({
 
 ```
 
+
+
+### Examiner le type de contenu XML
+
+Transmettre une requête XML inoffensive pour observer si l'application accepte ce format et son analyseur.
+
+<p class="oscp-command-note">Examiner le type de contenu XML.</p>
+
+```bash
+curl -i -H 'Content-Type: application/xml' --data '<controle>test</controle>' 'https://<HOTE_CIBLE>/api/xml'
+```
 
 ## Injections de commandes
 
@@ -3769,6 +3909,17 @@ Invoke-DOSfuscation\Encoding> 1
 
 ```
 
+
+
+### Contrôle d'une injection en laboratoire
+
+Encoder correctement les paramètres transmis à une application de test ; n'utiliser qu'une commande d'identification non destructive.
+
+<p class="oscp-command-note">Contrôle d'une injection en laboratoire.</p>
+
+```bash
+curl -G --data-urlencode 'param=;id' 'http://<HOTE_LABORATOIRE>/test'
+```
 
 ## Log4Shell
 

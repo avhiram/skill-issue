@@ -167,6 +167,17 @@ fcrackzip -u -D -p <wordlist> <file.zip>
 ```
 
 
+
+#### Tester un mot de passe ZIP hors ligne
+
+Vérifier une archive appartenant au laboratoire avec un dictionnaire autorisé.
+
+<p class="oscp-command-note">Tester un mot de passe ZIP hors ligne.</p>
+
+```bash
+fcrackzip -u -D -p <LISTE_MOTS> <ARCHIVE>.zip
+```
+
 ## Connexion HTTP POST
 
 Examiner les entrées et les réponses de l'application web.
@@ -449,6 +460,38 @@ domain\username:hash:salt
 
 
 <p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$krb5asrep$23$user@realm:hash</code></p>
+
+### Vérifier le mode avant un test hors ligne
+
+Consulter les formats de référence et les résultats déjà identifiés.
+
+<p class="oscp-command-note">Vérifier le mode avant un test hors ligne.</p>
+
+```bash
+hashcat --example-hashes | less
+hashcat -m <MODE> <FICHIER_HASHES> --show
+```
+
+### Utiliser un masque de test
+
+Exemple de masque de quatre lettres et deux chiffres sur un fichier de laboratoire autorisé.
+
+<p class="oscp-command-note">Utiliser un masque de test.</p>
+
+```bash
+hashcat -m <MODE> -a 3 <FICHIER_HASHES> '?l?l?l?l?d?d'
+```
+
+### Règles de mutation sur liste de mots
+
+Appliquer un jeu de règles existant aux empreintes fournies pour l'audit.
+
+<p class="oscp-command-note">Règles de mutation sur liste de mots.</p>
+
+```bash
+hashcat -m <MODE> -a 0 <FICHIER_HASHES> <LISTE_MOTS> -r /usr/share/hashcat/rules/best64.rule
+```
+
 ## Gestionnaires de mots de passe
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
@@ -499,6 +542,17 @@ get <entry_path or entry_id> <field_name>
 ```
 
 
+
+### Préparer un coffre KeePass
+
+Convertir le coffre de laboratoire pour un test hors ligne, sans modifier l'original.
+
+<p class="oscp-command-note">Préparer un coffre KeePass.</p>
+
+```bash
+keepass2john <COFFRE>.kdbx > <RESULTAT>.hash
+```
+
 ## Phrases secrètes SSH
 
 
@@ -516,6 +570,17 @@ john --wordlist=<password_list> --rules=<rules_file> ssh.hash
 
 ```
 
+
+
+### Préparer une clé SSH pour l'audit
+
+Utiliser le convertisseur de John the Ripper sur une clé privée autorisée.
+
+<p class="oscp-command-note">Préparer une clé SSH pour l'audit.</p>
+
+```bash
+ssh2john.py <CLE_SSH> > <RESULTAT>.hash
+```
 
 ## Empreintes Linux
 
@@ -1911,6 +1976,28 @@ if __name__ == "__main__":
 
 ```
 
+
+
+### Créer un dictionnaire contextuel
+
+Recueillir les mots visibles sur les pages d'un site appartenant au périmètre.
+
+<p class="oscp-command-note">Créer un dictionnaire contextuel.</p>
+
+```bash
+cewl -d 2 -m 5 -w <LISTE_SORTIE>.txt 'https://<SITE_AUTORISE>/'
+```
+
+### Voir les formats et règles de John
+
+Consulter les formats et les règles avant de sélectionner un mode de test.
+
+<p class="oscp-command-note">Voir les formats et règles de John.</p>
+
+```bash
+john --list=formats
+john --list=rules
+```
 
 ## Identifier les formats et préparer un audit de mots de passe
 

@@ -960,6 +960,28 @@ foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
 ```
 
 
+
+### Objet domaine et contrôleurs de domaine
+
+Lister les contrôleurs de domaine, leur site et le mode de fonctionnement Active Directory avec le module Windows approprié.
+
+<p class="oscp-command-note">Objet domaine et contrôleurs de domaine.</p>
+
+```powershell
+Get-ADDomainController -Filter * | Select-Object HostName,Site,IPv4Address
+Get-ADTrust -Filter * | Select-Object Name,Direction,TrustType
+```
+
+### Stratégie de mot de passe
+
+Consulter la stratégie par défaut du domaine via les outils d'administration Windows.
+
+<p class="oscp-command-note">Stratégie de mot de passe.</p>
+
+```powershell
+Get-ADDefaultDomainPasswordPolicy | Format-List
+```
+
 ## PowerView
 
 
@@ -1035,6 +1057,30 @@ Get-NetUser -Delegation
 
 ```
 
+
+
+### Inventaire des utilisateurs et groupes
+
+Interroger les objets via PowerView si le module est disponible dans l'environnement de test.
+
+<p class="oscp-command-note">Inventaire des utilisateurs et groupes.</p>
+
+```powershell
+Get-DomainUser | Select-Object samaccountname,description
+Get-DomainGroup -Identity 'Domain Admins' | Select-Object distinguishedname
+Get-DomainGroupMember -Identity 'Domain Admins' -Recurse
+```
+
+### Utilisateurs et sessions visibles
+
+Rechercher les comptes possédant des SPN et les sessions accessibles selon les permissions du compte.
+
+<p class="oscp-command-note">Utilisateurs et sessions visibles.</p>
+
+```powershell
+Get-DomainUser -SPN | Select-Object samaccountname,serviceprincipalname
+Get-NetSession -ComputerName <NOM_ORDINATEUR>
+```
 
 ## Inventaire des noms principaux de service (SPN)
 
@@ -1115,6 +1161,17 @@ Get-NetGroup "[GroupName]" | Select-Object member
 ```
 
 
+
+### Examiner une liste de contrôle d'accès AD
+
+Afficher les entrées ACL d'un objet Active Directory ; une permission présente n'est pas nécessairement effective.
+
+<p class="oscp-command-note">Examiner une liste de contrôle d'accès AD.</p>
+
+```powershell
+Get-DomainObjectAcl -Identity '<OBJET_AD>' -ResolveGUIDs | Select-Object SecurityIdentifier,ActiveDirectoryRights,ObjectAceType
+```
+
 ## Énumération des partages du domaine
 
 Examiner les objets, les droits et les services du domaine.
@@ -1131,6 +1188,18 @@ gpp-decrypt [encrypted_password]
 
 ```
 
+
+
+### Utilisateurs connectés et partages NetExec
+
+Identifier les ressources exposées et les sessions visibles depuis un compte SMB autorisé.
+
+<p class="oscp-command-note">Utilisateurs connectés et partages NetExec.</p>
+
+```powershell
+nxc smb <IP_DC> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --loggedon-users
+nxc smb <IP_DC> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
+```
 
 ## BloodHound & SharpHound
 
@@ -2390,6 +2459,17 @@ crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_
 ```
 
 
+
+#### Chercher les membres d'un groupe LDAP
+
+Interroger l'attribut member sans résoudre automatiquement toute l'appartenance indirecte.
+
+<p class="oscp-command-note">Chercher les membres d'un groupe LDAP.</p>
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(cn=Domain Admins)' member
+```
+
 ### Énumération MSSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -2406,6 +2486,28 @@ crackmapexec mssql <TARGET_IP> -u <USERNAME> -p <PASSWORD> -q "SELECT name FROM 
 
 ```
 
+
+
+### Utilisateurs et ordinateurs via le module AD
+
+Limiter l'affichage à des attributs utiles et aux objets autorisés.
+
+<p class="oscp-command-note">Utilisateurs et ordinateurs via le module AD.</p>
+
+```powershell
+Get-ADUser -Filter * -Properties Enabled,LastLogonDate | Select-Object SamAccountName,Enabled,LastLogonDate
+Get-ADComputer -Filter * -Properties OperatingSystem,Enabled | Select-Object Name,OperatingSystem,Enabled
+```
+
+### Unités organisationnelles du domaine
+
+Énumérer les OU pour comprendre l'organisation logique de l'annuaire.
+
+<p class="oscp-command-note">Unités organisationnelles du domaine.</p>
+
+```powershell
+Get-ADOrganizationalUnit -Filter * | Select-Object Name,DistinguishedName
+```
 
 ## NetExec et collecte ciblée de l'annuaire
 

