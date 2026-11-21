@@ -10,50 +10,50 @@ Documenter les constats et les preuves techniques.
 
 ## Prise de notes et rapports
 
-Vérifier les ports et les services de la cible autorisée.
+Structurer les notes, les constats et les preuves techniques.
 
 
 ## Captures d'écran
 
-Préparer et conserver des preuves exploitables dans un rapport.
+Conserver des captures lisibles pour appuyer les constats.
 
 
 ### Windows
 
-Observer les permissions et la configuration de Windows.
+Capturer les écrans utiles depuis Windows.
 
 
 ### Kali Linux
 
-Examiner les permissions et la configuration de Linux.
+Réaliser les captures depuis Kali Linux.
 
 
 **Paramètres et repères :**
 `gnome-screenshot`  
 
 
-### Best Practices for Screenshots
+### Bonnes pratiques pour les captures d’écran
 
-Préparer et conserver des preuves exploitables dans un rapport.
+Conserver le contexte nécessaire à la compréhension de chaque preuve.
 
 
 **Paramètres et repères :**
 `sql_injection_vuln_example.png`  
 
 
-## Key Components of a Good Report
+## Éléments essentiels d’un rapport
 
-Vérifier les ports et les services de la cible autorisée.
-
-
-## Report Formatting
-
-Vérifier les ports et les services de la cible autorisée.
+Présenter le périmètre, les constats, les preuves et les recommandations.
 
 
-## Compliance Reporting (Optional)
+## Mise en forme du rapport
 
-Vérifier les ports et les services de la cible autorisée.
+Organiser le rapport pour faciliter la lecture des résultats.
+
+
+## Rapport de conformité (facultatif)
+
+Relier les constats aux exigences applicables lorsque cela est demandé.
 
 
 ---

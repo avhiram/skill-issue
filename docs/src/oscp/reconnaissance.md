@@ -59,7 +59,7 @@ for ip in $(cat list.txt); do host <ip>.[domain]; done
 Vérifier les ports et les services de la cible autorisée.
 
 
-### Montant net
+### Netcat
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -81,7 +81,7 @@ nc -k -l [host] [port number]
 # TCP Balayage dans la plage de port
 nc -nvv -w 1 -z [host] [beginning_port]-[finished_port]
 
-# -w est de spécifier le délai de connexion en secondes, ainsi que -z pour spécifier le mode zéro-I/O, qui est utilisé pour la numérisation et n'envoie aucune donnée
+# -w est de spécifier le délai de connexion en secondes, ainsi que -z pour spécifier le mode zéro-I/O, qui sert au scan des ports et n'envoie aucune donnée
 nc -nv -u -z -w 1 [host] [beginning_port]-[finished_port]
 
 # -u inidcates to do an UDP scan
@@ -176,7 +176,7 @@ Vérifier les ports et les services de la cible autorisée.
 `-sU` (scan UDP)  
 
 
-**UDP Scan ( -sU )**
+**Scan UDP (-sU)**
 
 
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
@@ -198,7 +198,7 @@ sudo nmap -sU -T5 --top-ports 500 [IP]
 `-sT` (TCP connect)  
 
 
-**TCP Connect ( -sT )**
+**Connexion TCP complète (TCP Connect, -sT)**
 
 
 
@@ -213,7 +213,7 @@ nmap -sT [IP]
 `-sS` (SYN)  
 
 
-**Stealth Scan ( -sS )**
+**Scan SYN (Stealth Scan, -sS)**
 
 
 
@@ -224,7 +224,7 @@ sudo nmap -sS [IP]
 ```
 
 
-**Scannage de port spécifique**
+**Scan d’un port précis**
 
 
 
@@ -250,7 +250,7 @@ nmap -sn [IP_range]
 ```
 
 
-**Top 20 Ports**
+**20 ports les plus courants**
 
 
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
@@ -311,7 +311,7 @@ nmap -sV [IP]
 ```
 
 
-**Bannières de service & Traceroute**
+**Bannières de services et traceroute**
 
 
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
@@ -335,7 +335,7 @@ Observer les permissions et la configuration de Windows.
 `-oG` (sortie grepable)  
 
 
-**Enregistrer dans le fichier ( -oG )**
+**Sortie au format grepable (-oG)**
 
 
 <p class="oscp-command-note">Identifier les hôtes actifs.</p>
@@ -350,7 +350,7 @@ nmap -v -sn [IP_range] -oG [fileName].txt
 `-oN` (sortie texte)  
 
 
-**Analyze File**
+**Analyser le fichier de résultats**
 
 
 <p class="oscp-command-note">Rechercher un motif textuel.</p>
@@ -374,7 +374,7 @@ Vérifier les ports et les services de la cible autorisée.
 `--script`  
 
 
-**Run Script ( --script )**
+**Exécuter un script NSE (--script)**
 
 
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
@@ -385,7 +385,7 @@ nmap --script [scriptName] [IP]
 ```
 
 
-**Aide Script**
+**Afficher l’aide des scripts NSE**
 
 
 <p class="oscp-command-note">Afficher l&#x27;aide d&#x27;un script Nmap NSE.</p>
@@ -429,7 +429,7 @@ nmap --script [category] [IP]
 Observer les permissions et la configuration de Windows.
 
 
-**Vérifiez le port TCP**
+**Vérifier un port TCP**
 
 
 <p class="oscp-command-note">Tester une connexion réseau avec PowerShell.</p>
@@ -440,7 +440,7 @@ Test-NetConnection -Port [portNumber] [IP]
 ```
 
 
-**Scénario de balayage de port**
+**Exemple de scan de ports**
 
 
 
@@ -456,7 +456,7 @@ Test-NetConnection -Port [portNumber] [IP]
 Vérifier les ports et les services de la cible autorisée.
 
 
-**De base RustScan**
+**Utilisation de base de RustScan**
 
 
 <p class="oscp-command-note">Rechercher rapidement les ports accessibles.</p>
@@ -478,7 +478,7 @@ rustscan -a <target-ip> -p 1-65535 -- -Pn
 ```
 
 
-**Specific Port Range**
+**Plage de ports précise**
 
 
 
@@ -489,7 +489,7 @@ rustscan -a <target-ip> -r 1-1000
 ```
 
 
-**Adjust Timeout & Batch Size**
+**Régler les délais et la taille des lots**
 
 
 
@@ -522,7 +522,7 @@ rustscan -a <target-ip> -- -oN [machine]_rustscan.txt
 ```
 
 
-**UDP Scan**
+**Scan UDP**
 
 
 
@@ -544,7 +544,7 @@ rustscan -a <target-ip> -p 1-65535 -- -sV --script vuln
 ```
 
 
-**Silent Mode**
+**Mode silencieux**
 
 
 
@@ -555,7 +555,7 @@ rustscan -a <target-ip> -p 1-65535 -g -q
 ```
 
 
-**Exclude Certain Ports**
+**Exclure certains ports**
 
 
 
@@ -566,7 +566,7 @@ rustscan -a <target-ip> -p 1-65535 --exclude-ports 80,443
 ```
 
 
-**OS Detection**
+**Détection du système d’exploitation**
 
 
 
@@ -577,7 +577,7 @@ rustscan -a <target-ip> -p 1-65535 -- -O
 ```
 
 
-**TCP and UDP Scan**
+**Scan TCP et UDP**
 
 
 
@@ -930,7 +930,7 @@ telnet -l <username> <target_ip>
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
-# Numérisation de scripts Nmap
+# Analyse avec les scripts Nmap (NSE)
 nmap --script=smtp-commands,smtp-enum-users,smtp-vuln-cve2010-4344,smtp-vuln-cve2011-1720,smtp-vuln-cve2011-1764 -p 25 <target_ip>
 
 # Interaction entre Netcat et Telnet
@@ -955,7 +955,7 @@ VRFY test_user
 <p class="oscp-command-note">Script shell dans la rubrique « 25: SMTP ».</p>
 
 ```bash
-# Usage
+# Utilisation
 kali@kali:~/Desktop$ python3 smtp.py root 192.168.123.8
 b'220 mail ESMTP Postfix (Ubuntu)\r\n'
 b'252 2.0.0 root\r\n'
@@ -1243,10 +1243,10 @@ hashcat -m 13100 <ticket_file> <wordlist>
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Request a TGT (Ticket Granting Ticket)
+# Demander un ticket TGT (Ticket Granting Ticket)
 python3 GetTGT.py -dc-ip <dc_ip> <domain>/<username>:<password>
 
-# Request a Service Ticket (TGS)
+# Demander un ticket de service (TGS)
 python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<target>
 
 ```
@@ -1255,10 +1255,10 @@ python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<t
 <p class="oscp-command-note">Énumérer les SPN des comptes de service.</p>
 
 ```bash
-# Extraire tous les tickets de service pour fissuration hors ligne
+# Extraire les tickets de service pour une attaque hors ligne (offline cracking)
 impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<username>:<password>
 
-# Crack les billets extraits avec John l'Éventreur ou Hashcat
+# Casser les mots de passe des tickets extraits avec John the Ripper ou Hashcat
 john --wordlist=<wordlist> <tickets_file>
 # or
 hashcat -m 13100 <tickets_file> <wordlist>
@@ -1278,10 +1278,10 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Renew a TGT (for Kerberos ticket manipulation)
+# Renouveler un ticket Kerberos TGT
 python3 psexec.py <domain>/<username>:<password>@<target_ip> -impersonate-user <target_user>
 
-# Perform Kerberos attacks with Rubeus
+# Exécuter des techniques Kerberos avec Rubeus
 rubeus.exe asktgt /user:<username> /rc4:<password>
 rubeus.exe tgtdeleg /user:<username> /rc4:<password>
 rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
@@ -1292,7 +1292,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
-# Domptez les tickets Kerberos de la mémoire en utilisant Mimikatz
+# Extraire les tickets Kerberos de la mémoire avec Mimikatz
 mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 
 ```
@@ -1582,7 +1582,7 @@ queryaliasmem builtin|domain <0xrid>
 # Liste des domaines
 enumdomains
 
-# Obtain Domain SID
+# Obtenir le SID du domaine
 lsaquery
 
 # Obtenir des informations de domaine
@@ -1649,7 +1649,7 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
 
 ```bash
-# Scan Nmap
+# Scanner les ports et services avec Nmap
 nmap -v -p 139,445 [IP]
 nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
 
@@ -1863,7 +1863,7 @@ searchsploit imap <version>
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Usage
+# Utilisation
 python3 check_imap.py <target-ip> <port>
 
 ```
@@ -2009,13 +2009,13 @@ nmap -n -sV --script "ldap* and not brute" <target_ip>
 # Demande LDAP de base
 ldapsearch -x -H ldap://<target_ip>
 
-# LDAP de base Rechercher un niveau de base
+# Recherche LDAP à la racine de l’annuaire (Base DN)
 ldapsearch -h <target_ip> -x -s base
 
 # Afficher les contextes de nommage LDAP
 ldapsearch -x -H ldap://<target_ip> -s base namingcontexts
 
-# Rechercher dans un nom de domaine de base spécifique
+# Effectuer une recherche à partir d’un DN de base précis (Base DN)
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 
 # Énumérer les utilisateurs utilisant LDAP
@@ -2064,7 +2064,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher des mots de passe faibles communs dans des attributs comme la description
 (description=*(123456*|password*|qwerty*|letmein*))
 
-# Général LDAP Filtres de recherche
+# Filtres de recherche LDAP courants
 # Rechercher tous les utilisateurs
 (objectClass=user)
 
@@ -2074,13 +2074,13 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher tous les groupes
 (objectClass=group)
 
-# Recherche de comptes handicapés
+# Rechercher les comptes désactivés (Disabled Accounts)
 (userAccountControl:1.2.840.113556.1.4.803:=2)
 
-# Recherche de comptes expirés
+# Rechercher les comptes non désactivés avec un mot de passe défini
 (& (objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2)(!(pwdLastSet=0)))
 
-# Rechercher un abonnement de groupe spécifique
+# Rechercher les membres d’un groupe (Group Membership)
 (&(objectClass=user)(memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com))
 
 # Rechercher des utilisateurs avec des attributs spécifiques
@@ -2089,20 +2089,20 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Pour les utilisateurs ayant un titre spécifique
 (title=Manager)
 
-# Specific Attributes
+# Recherche par attribut LDAP
 
 # Recherche du dernier jeu de mots de passe
 (pwdLastSet=*)
 
-# Recherche de comptes avec mot de passe expiré
+# Rechercher les comptes dont pwdLastSet est égal à 0
 (& (objectClass=user)(pwdLastSet<=0))
 
 # Recherche de comptes dans une unité organisationnelle spécifique (OU)
 (distinguishedName=*,OU=Sales,DC=domain,DC=com)
 
-# Security-Related Searches
+# Recherches liées à la sécurité
 
-# Recherche de comptes avec Kerberos pré-authentification désactivée
+# Rechercher les comptes sans préauthentification Kerberos (AS-REP Roasting)
 (userAccountControl:1.2.840.113556.1.4.803:=4194304)
 
 # Recherche de noms principaux de services (SPN)
@@ -2114,7 +2114,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher des comptes avec des privilèges
 (memberOf=CN=Domain Admins,CN=Users,DC=domain,DC=com)
 
-# Other Useful Searches
+# Autres recherches LDAP utiles
 
 # Rechercher toutes les unités organisationnelles
 (objectClass=organizationalUnit)
@@ -2125,7 +2125,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher tous les attributs d'un utilisateur spécifique
 (sAMAccountName=username)
 
-# Recherche de comptes avec notes ou descriptions spécifiques
+# Rechercher les comptes selon leur description
 (description=*keyword*)
 
 # Rechercher tous les objets dans le répertoire
@@ -2134,10 +2134,10 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Recherche de comptes de service
 (objectCategory=serviceAccount)
 
-# Recherche de comptes avec des abonnements spécifiques de groupe (remplacer 'GroupName')
+# Rechercher les comptes membres du groupe indiqué (GroupName)
 (memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com)
 
-# Recherche de comptes informatiques
+# Rechercher les comptes d’ordinateur
 (objectClass=computer)
 
 # Rechercher des utilisateurs dans une unité organisationnelle spécifique (remplacer 'OU=Users')
@@ -2261,7 +2261,7 @@ nmap -p 2049 -sV --script "nfs-showmount,nfs-ls,nfs-statfs,nfs-secure,nfs-client
 <p class="oscp-command-note">Lister les exports NFS.</p>
 
 ```bash
-# Afficher toutes les parts de NFS sur la cible
+# Afficher les partages NFS de la cible
 showmount -e <target_ip>
 
 # Afficher les informations de montage pour la cible
@@ -2413,7 +2413,7 @@ crackmapexec mysql -d <database> -u <username> -p <password> -x "SHOW DATABASES;
 <p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
 
 ```bash
-# Brute force MySQL login using Hydra
+# Tester les identifiants MySQL par force brute avec Hydra
 hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 
 ```
@@ -2446,7 +2446,7 @@ SELECT * FROM <table_name>;
 
 
 ```sql
-# Database User Enumeration
+# Énumérer les utilisateurs de la base de données
 SELECT user FROM mysql.user;
 
 # Privilege Escalation
@@ -2603,7 +2603,7 @@ DROP TABLE IF EXISTS cmd_exec;
 # Switch to a specific database
 \c <DB_NAME>
 
-# Liste de tous les tableaux de la base de données actuelle
+# Lister les tables de la base de données courante
 \dt
 
 # View the schema of a specific table
@@ -2633,10 +2633,10 @@ CREATE TABLE test_table (
 # Insert data into a table
 INSERT INTO test_table (name) VALUES ('example_data');
 
-# Update data in a table
+# Modifier les données d’une table
 UPDATE test_table SET name = 'updated_data' WHERE id = 1;
 
-# Delete data from a table
+# Supprimer des données d’une table
 DELETE FROM test_table WHERE id = 1;
 
 ```
@@ -2790,7 +2790,7 @@ shutdown      # Shutdown the Redis server
 ```
 
 
-### Unkown Port
+### Port inconnu
 
 Vérifier les ports et les services de la cible autorisée.
 

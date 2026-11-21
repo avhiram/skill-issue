@@ -101,7 +101,7 @@ hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
 ```
 
 
-## Tickets Silver
+## Faux tickets de service (Silver Tickets)
 
 
 <p class="oscp-command-note">Énumérer les utilisateurs du domaine.</p>
@@ -121,7 +121,7 @@ mimikatz # lsadump::dcsync /user:HTTP/server01
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Tickets Silver ».</p>
+<p class="oscp-command-note">Script PowerShell pour créer un faux ticket de service (Silver Ticket).</p>
 
 ```powershell
 # 1. Trouver le domaine SID
@@ -162,7 +162,7 @@ dir \\targetserver\sharedfolder
 ```
 
 
-## Tickets Golden
+## Faux tickets TGT (Golden Tickets)
 
 
 **Paramètres et repères :**
@@ -177,7 +177,7 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Tickets Golden ».</p>
+<p class="oscp-command-note">Script PowerShell pour créer un faux ticket TGT (Golden Ticket).</p>
 
 ```powershell
 # 1. Trouver le domaine SID
@@ -215,7 +215,7 @@ net use \\domaincontroller\C$ /user:[DesiredUsername]
 ```
 
 
-## Synchronisation des contrôleurs de domaine (DC Sync)
+## Réplication Active Directory avec DCSync
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -798,14 +798,14 @@ BruteForce $duration $threshold $passwords
 ```
 
 
-### Authenticating using DirectoryEntry
+### Authentification avec DirectoryEntry
 
 
 **Paramètres et repères :**
 `System.DirectoryServices`  
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Authenticating using DirectoryEntry ».</p>
+<p class="oscp-command-note">Script PowerShell pour l’authentification avec DirectoryEntry.</p>
 
 ```powershell
 # Fetch the current domain object
@@ -1051,7 +1051,7 @@ crackmapexec ntp [ip/domain]
 ```
 
 
-## Shadow Copies
+## Copies instantanées (Shadow Copies)
 
 
 
@@ -1242,7 +1242,7 @@ RDP · Remote Desktop Protocol.
 WinRM · Windows Remote Management.
 
 
-### Complémentaire Énumération Techniques
+### Techniques complémentaires d’énumération
 
 
 <p class="oscp-command-note">Observer les requêtes de résolution de noms.</p>
@@ -1290,7 +1290,7 @@ Get-ADGroupMember -Identity "Domain Admins"
 ```
 
 
-### Detection Evasion Techniques
+### Techniques d’évasion de la détection
 
 
 **Paramètres et repères :**
@@ -1338,7 +1338,7 @@ ldapsearch -x -h [IP] -p 9389
 ```
 
 
-### Sample Outputs
+### Exemples de résultats
 
 
 
@@ -1375,20 +1375,20 @@ userPrincipalName: esolis@domain.local
 ```
 
 
-## Pass-the-Ticket (PtT)
+## Réutilisation de tickets Kerberos (Pass-the-Ticket, PtT)
 
 
-**Active TGT in Memory**
+**TGT actif présent en mémoire**
 
 A valid TGT from a privileged user must be present, for example that it was cached by a Domain Admin that logged in before.
 
 
-**SYSTEM Privileges**
+**Privilèges SYSTEM**
 
 Needed to access LSASS memory where Kerberos tickets are stored.
 
 
-**Local Administrator**
+**Administrateur local**
 
 Often sufficient, as it allows escalation to SYSTEM or LSASS access tools.
 

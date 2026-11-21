@@ -143,7 +143,7 @@ sudo ip add route <New_Network> dev ligolo_double
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_06.png)
 
 
-### Local Redirection de ports
+### Redirection locale de ports (Local Port Forwarding)
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -191,7 +191,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_port_forwarding.png)
 
 
-### Reverse Shells From Internal Networks
+### Shells inversés depuis les réseaux internes (Reverse Shells)
 
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
@@ -228,7 +228,7 @@ listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_11.png)
 
 
-### Transfert de fichiers From Internal Networks
+### Transfert de fichiers depuis les réseaux internes
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
@@ -263,7 +263,7 @@ Invoke-WebRequest -Uri "http://[agent_ip]:[agent_port]/[file_name]" -OutFile [fi
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_09.png)
 
 
-## Chisel (HTTP Tunneling)
+## Tunnels HTTP avec Chisel
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -390,7 +390,7 @@ proxychains nmap localhost
 ```
 
 
-## Dnscat2 (DNS Tunneling)
+## Tunnels DNS avec dnscat2
 
 Interroger les enregistrements DNS et identifier les services associés.
 

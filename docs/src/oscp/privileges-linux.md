@@ -22,7 +22,7 @@ id
 ```
 
 
-**Hostname**
+**Nom de la machine**
 
 
 <p class="oscp-command-note">Afficher le nom de la machine.</p>
@@ -33,7 +33,7 @@ hostname
 ```
 
 
-**OS versions and architecture**
+**Version du système et architecture**
 
 
 <p class="oscp-command-note">Lire un fichier.</p>
@@ -58,7 +58,7 @@ uname -a
 ```
 
 
-**Running processes**
+**Processus en cours**
 
 
 <p class="oscp-command-note">Afficher les processus actifs.</p>
@@ -88,7 +88,7 @@ ss -anp
 ```
 
 
-**Firewall rules**
+**Règles du pare-feu**
 
 
 <p class="oscp-command-note">Lire un fichier.</p>
@@ -99,7 +99,7 @@ cat /etc/iptables/rules.v4
 ```
 
 
-**Scheduled cron tasks**
+**Tâches cron planifiées**
 
 
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
@@ -125,7 +125,7 @@ sudo crontab -l
 ```
 
 
-**Installed applications**
+**Logiciels installés**
 
 
 <p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
@@ -140,7 +140,7 @@ dpkg -l
 `/dev/null`  
 
 
-**Sensitive writable files (excluding /dev/null )**
+**Fichiers sensibles modifiables (hors /dev/null)**
 
 
 <p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
@@ -151,7 +151,7 @@ find / -writable -type d 2>/dev/null
 ```
 
 
-**In memory passwords**
+**Mots de passe présents en mémoire**
 
 
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
@@ -173,7 +173,7 @@ locate password | more
 ```
 
 
-**Mounted drives**
+**Volumes montés**
 
 
 <p class="oscp-command-note">Lire un fichier.</p>
@@ -200,7 +200,7 @@ lsblk
 ```
 
 
-**Device drivers and kernel modules**
+**Pilotes et modules du noyau**
 
 
 
@@ -219,7 +219,7 @@ lsmod
 ```
 
 
-**SUID binaries**
+**Binaires SUID**
 
 
 <p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
@@ -250,7 +250,7 @@ sudo -i
 `unix-privesc-check`  
 
 
-**Automated Énumération**
+**Énumération automatisée**
 
 
 ## Examiner les services
@@ -423,7 +423,7 @@ ls -l $(find / -perm -4000 -type f 2>/dev/null)
 ```
 
 
-### Exploiting Setuid Binaries
+### Exploitation des binaires setuid
 
 
 <p class="oscp-command-note">Afficher les processus actifs.</p>
@@ -461,7 +461,7 @@ find / -name [vulnerable_binary] -exec /bin/bash -p \;
 ```
 
 
-### Capabilities
+### Capacités Linux (Capabilities)
 
 
 
@@ -503,7 +503,7 @@ setcap -r /usr/bin/nmap
 ```
 
 
-### Capacités Linux
+### Capacités et permissions Linux
 
 
 **CAP_AUDIT_CONTROL**
@@ -646,7 +646,7 @@ Privilege Escalation via the Kernel · Linux Kernel 5.4 - 5.10.4 · Exploit
 DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 
 
-## Wildcard Exploitation
+## Exploitation des caractères génériques (Wildcards)
 
 
 
@@ -654,7 +654,7 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>*</code></p>
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>?</code></p>
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>[]</code></p>
-### Exploiting Wildcards in Exécution de commandes
+### Exploitation des caractères génériques dans les commandes
 
 
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
@@ -674,7 +674,7 @@ tar -cvf archive.tar.gz /var/log/*
 ```
 
 
-### Exploiting Wildcards in File Operations
+### Exploitation des caractères génériques dans les opérations sur les fichiers
 
 
 
@@ -694,7 +694,7 @@ cp /etc/* /tmp/backup/
 ```
 
 
-## Disk Group Permissions
+## Permissions du groupe disk
 
 
 
@@ -710,7 +710,7 @@ debugfs: cat /etc/shadow
 ```
 
 
-## MySQL Élévation de privilèges
+## Élévation de privilèges via MySQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
@@ -724,7 +724,7 @@ select sys_eval('whoami');
 ```
 
 
-## Logiciels intégrés par l'utilisateur
+## Logiciels installés par l’utilisateur
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « User-Installed Software ».</p>
@@ -756,7 +756,7 @@ pkg_info
 ```
 
 
-## Weak, Reused, and Plaintext Passwords
+## Mots de passe faibles, réutilisés ou en clair
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -810,7 +810,7 @@ netstat -ano
 ```
 
 
-## World-Writable Scripts Invoked as Root
+## Scripts modifiables par tous et exécutés par root
 
 
 <p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
@@ -830,7 +830,7 @@ find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
 ```
 
 
-## Unmounted FileSystems
+## Systèmes de fichiers non montés
 
 
 
@@ -847,7 +847,7 @@ cat /etc/fstab
 Examiner les permissions et la configuration de Linux.
 
 
-### Understanding SUID and GUID
+### Comprendre les permissions SUID et SGID
 
 Examiner les permissions et la configuration de Linux.
 
@@ -869,7 +869,7 @@ find / -perm -g=s -type f 2>/dev/null
 ```
 
 
-### Determining Exploitability
+### Évaluer les possibilités d’exploitation
 
 
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
@@ -886,7 +886,7 @@ ltrace /path/to/suid-binary
 echo '/bin/sh' > /tmp/cp
 chmod +x /tmp/cp
 
-# Modify PATH to prioritize your malicious version
+# Placer le répertoire du binaire de remplacement en priorité dans PATH
 export PATH=/tmp:$PATH
 
 # Exécutez le programme vulnérable SUID

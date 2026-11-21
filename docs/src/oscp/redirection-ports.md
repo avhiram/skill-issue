@@ -10,7 +10,7 @@ Documenter les redirections locales, distantes et dynamiques.
 
 ## Redirection avec Socat
 
-Vérifier les ports et les services de la cible autorisée.
+Rediriger un flux réseau entre deux ports avec Socat.
 
 
 <p class="oscp-command-note">Configurer une connexion ou une redirection réseau.</p>
@@ -23,7 +23,7 @@ socat -ddd TCP-LISTEN:[listening_local_port_on_dmz],fork TCP:[internal_ip]:[inte
 
 ## Redirection SSH locale
 
-Vérifier les ports et les services de la cible autorisée.
+Rendre un service distant accessible depuis un port local.
 
 
 <p class="oscp-command-note">Configurer une redirection SSH.</p>
@@ -36,7 +36,7 @@ ssh -N -L 0.0.0.0:[local_port_on_rev_shell]:[internal_ip_target]:[internal_ip_po
 
 ## Redirection SSH dynamique
 
-Vérifier les ports et les services de la cible autorisée.
+Créer un proxy SOCKS local avec SSH.
 
 
 <p class="oscp-command-note">Configurer une redirection SSH.</p>
@@ -68,7 +68,7 @@ proxychains smbclient -L //internal_ip/ -U username --password=password
 
 ## Redirection SSH distante
 
-Vérifier les ports et les services de la cible autorisée.
+Exposer un port local depuis un serveur SSH distant.
 
 
 <p class="oscp-command-note">Configurer une redirection SSH.</p>
@@ -81,7 +81,7 @@ ssh -N -R 127.0.0.1:[remote_port_on_ssh_host]:[internal_target_ip]:[internal_tar
 
 ## Redirection dynamique distante via SSH
 
-Vérifier les ports et les services de la cible autorisée.
+Créer un proxy SOCKS sur le serveur SSH distant.
 
 
 <p class="oscp-command-note">Configurer une redirection SSH.</p>
@@ -102,9 +102,9 @@ socks5 127.0.0.1 [proxychains_port]
 ```
 
 
-## SSH (Windows)
+## Redirection SSH sous Windows
 
-Observer les permissions et la configuration de Windows.
+Configurer une redirection SSH depuis Windows.
 
 
 
@@ -142,9 +142,9 @@ ss -ntplu
 ```
 
 
-## Plink (Windows)
+## Redirection avec Plink sous Windows
 
-Observer les permissions et la configuration de Windows.
+Utiliser Plink pour rediriger un port sous Windows.
 
 
 <p class="oscp-command-note">Examiner l&#x27;état des services Linux.</p>
@@ -225,9 +225,9 @@ xfreerdp /u:[USERNAME] /p:[PASSWORD] /v:127.0.0.1:[LOCAL_PORT]
 ```
 
 
-## Netsh (Windows)
+## Redirection avec netsh sous Windows
 
-Observer les permissions et la configuration de Windows.
+Créer une redirection TCP avec netsh portproxy.
 
 
 **Paramètres et repères :**
