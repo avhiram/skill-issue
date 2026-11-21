@@ -1,0 +1,15 @@
+{
+  "name": "skill-issue",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev docs",
+    "build": "vitepress build docs",
+    "preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "vitepress": "^1.4.0",
+    "vue": "^3.5.0"
+  }
+}
