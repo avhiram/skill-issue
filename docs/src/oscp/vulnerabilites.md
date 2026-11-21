@@ -23,7 +23,7 @@ Download the installer to your local machine.
 <p class="oscp-command-note">Changer de répertoire.</p>
 
 ```bash
-#  It's important to verify the integrity of the download with `sha256sum`.
+# Il est important de vérifier l'intégrité du téléchargement avec `sha256sum`.
 cd ~/Downloads
 echo "[sha256_sum_found_in_website] Nessus-10.5.0-debian10_amd64.deb" > sha256sum_nessus
 sha256sum -c sha256sum_nessus
@@ -44,11 +44,11 @@ sudo apt install ./Nessus-10.5.0-debian10_amd64.deb
 ```bash
 sudo systemctl start nessusd.service
 
-# Then, visit the Nessus GUI at https://127.0.0.1:8834 to configure the scanner.
+# Ensuite, visitez le Nesus GUI à https://127.0.0.1:8834 pour configurer le scanner.
 ```
 
 
-## Nmap NSE (Nmap Scripting Engine)
+## Nmap NSE (moteur de script Nmap)
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -56,10 +56,10 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
-# Run specific script
+# Exécuter un script précis
 nmap --script [scriptName] [IP]
 
-# Get help on what a script does
+# Afficher l’aide du script
 nmap --script-help [scriptName]
 ```
 
@@ -67,10 +67,10 @@ nmap --script-help [scriptName]
 <p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
 ```bash
-# Scripts are located in /usr/share/nmap/scripts; we can add new scripts by copying them into this directory
+# Les scripts sont situés dans /usr/share/nmap/scripts; nous pouvons ajouter de nouveaux scripts en les copiant dans ce répertoire
 sudo cp /path/to/script.nse /usr/share/nmap/scripts/
 
-# Update the script database
+# Actualiser la base de scripts
 sudo nmap --script-updatedb
 
 # Usage example

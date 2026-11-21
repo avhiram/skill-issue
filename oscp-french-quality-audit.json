@@ -1,0 +1,333 @@
+{
+  "per_file": {
+    "ad-enumeration": {
+      "comments_translated": 122,
+      "titles_translated": 12
+    },
+    "ad-lateral": {
+      "comments_translated": 42,
+      "titles_translated": 1
+    },
+    "ad-techniques": {
+      "comments_translated": 65,
+      "titles_translated": 4
+    },
+    "ad-theorie": {},
+    "antivirus-metasploit": {
+      "titles_translated": 2,
+      "comments_translated": 22,
+      "labels_translated": 1
+    },
+    "applications-web": {
+      "references_reclassified": 6,
+      "comments_translated": 152,
+      "titles_translated": 8
+    },
+    "attaques-client": {
+      "titles_translated": 3,
+      "comments_translated": 9,
+      "labels_translated": 1
+    },
+    "cloud": {},
+    "index": {},
+    "methodologie": {
+      "references_reclassified": 1,
+      "titles_translated": 5,
+      "comments_translated": 44
+    },
+    "mots-de-passe": {
+      "references_reclassified": 13,
+      "titles_translated": 6,
+      "comments_translated": 46,
+      "labels_translated": 8
+    },
+    "privileges-linux": {
+      "references_reclassified": 3,
+      "labels_translated": 3,
+      "comments_translated": 22,
+      "titles_translated": 1
+    },
+    "privileges-windows": {
+      "references_reclassified": 8,
+      "comments_translated": 62,
+      "titles_translated": 7
+    },
+    "rapport": {
+      "titles_translated": 1
+    },
+    "reconnaissance": {
+      "titles_translated": 5,
+      "comments_translated": 186,
+      "labels_translated": 13
+    },
+    "redirection-ports": {
+      "comments_translated": 1,
+      "titles_translated": 1
+    },
+    "references": {},
+    "transferts": {
+      "comments_translated": 7,
+      "titles_translated": 3
+    },
+    "tunneling": {
+      "comments_translated": 18
+    },
+    "utilitaires": {
+      "titles_translated": 15,
+      "comments_translated": 54
+    },
+    "vulnerabilites": {
+      "comments_translated": 6,
+      "titles_translated": 1
+    }
+  },
+  "not_translated": [],
+  "unsafe_translations": [],
+  "translation_errors": [],
+  "totals": {
+    "comments_translated": 858,
+    "titles_translated": 75,
+    "labels_translated": 26,
+    "references_reclassified": 31
+  },
+  "remaining_english_comments": [
+    {
+      "file": "ad-enumeration.md",
+      "comment": "Nmap scan"
+    },
+    {
+      "file": "ad-enumeration.md",
+      "comment": "PowerShell"
+    },
+    {
+      "file": "ad-enumeration.md",
+      "comment": "Bash (Kali)"
+    },
+    {
+      "file": "antivirus-metasploit.md",
+      "comment": "Linux"
+    },
+    {
+      "file": "antivirus-metasploit.md",
+      "comment": "Windows"
+    },
+    {
+      "file": "antivirus-metasploit.md",
+      "comment": "Bash"
+    },
+    {
+      "file": "antivirus-metasploit.md",
+      "comment": "Python"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Scan élémentaire des répertoires"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Scan élémentaire des répertoires"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Scan élémentaire des répertoires"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "script automatique pour lire et restaurer la dernière dump git"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Scan WordPress de base"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Ceci suppose que les paramètres allow url fopen ou allow url include du serveur sont activés."
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Script pour toutes les permutations"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Script avec regex pour trouver les documents"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Linux"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Windows"
+    },
+    {
+      "file": "applications-web.md",
+      "comment": "Linux"
+    },
+    {
+      "file": "attaques-client.md",
+      "comment": "script Python pour diviser la charge utile en morceaux de 50 caractères"
+    },
+    {
+      "file": "methodologie.md",
+      "comment": "Recherchez-les dans C:\\\\ProgramData, C:\\\\Users\\\\Tous les utilisateurs et les dossiers spécifiques à une application comme C:\\\\Program Files."
+    },
+    {
+      "file": "mots-de-passe.md",
+      "comment": "Utilisation de Mimikatz (déprécié) : vous avez besoin d'au moins un privilège d'administration local sur la cible distante, utilisez l'option --local-auth si votre utilisateur est un compte local"
+    },
+    {
+      "file": "mots-de-passe.md",
+      "comment": "Alternative avec Nmap"
+    },
+    {
+      "file": "privileges-linux.md",
+      "comment": "John L'Éventreur"
+    },
+    {
+      "file": "privileges-linux.md",
+      "comment": "Hashcat, nous devons isoler la partie de hachage, par exemple du hachage supérieur serait: $6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42N"
+    },
+    {
+      "file": "privileges-linux.md",
+      "comment": "John L'Éventreur"
+    },
+    {
+      "file": "privileges-linux.md",
+      "comment": "Hashcat"
+    },
+    {
+      "file": "privileges-windows.md",
+      "comment": "PowerShell"
+    },
+    {
+      "file": "reconnaissance.md",
+      "comment": "Downlaod a File from a Specific Port (dans le cas où SSH fonctionne sur un port non par défaut)"
+    },
+    {
+      "file": "reconnaissance.md",
+      "comment": "Nmap"
+    },
+    {
+      "file": "reconnaissance.md",
+      "comment": "Nmap scan"
+    },
+    {
+      "file": "tunneling.md",
+      "comment": "Ajoutez une IP spéciale codée en dur pour le transfert de port local."
+    },
+    {
+      "file": "tunneling.md",
+      "comment": "Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, <LOCAL_FORWARD_PORT> avec le port de votre machine locale auquel "
+    },
+    {
+      "file": "tunneling.md",
+      "comment": "Remplacer <REMOTE_PORT> par le port du proxy SOCKS sur la machine distante, <REMOTE_IP> par l'adresse IP de la machine distante, et <LOCAL_PORT> par le port de votre machine locale où le proxy SOCKS s"
+    },
+    {
+      "file": "tunneling.md",
+      "comment": "Remplacer <LOCAL_PORT> par le port que vous voulez que Chisel écoute localement, <LOCAL_IP> avec l'adresse IP de votre machine locale, et <REMOTE_PORT> avec le port sur la machine distante où le proxy"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Python 2.x"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Python 3.x"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Get status: si True la règle est activée et RDP devrait fonctionner"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Linux"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Windows"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Linux"
+    },
+    {
+      "file": "utilitaires.md",
+      "comment": "Windows"
+    }
+  ],
+  "remaining_english_headings": [
+    {
+      "file": "ad-techniques.md",
+      "title": "Source du code du script"
+    },
+    {
+      "file": "methodologie.md",
+      "title": "Linux"
+    },
+    {
+      "file": "methodologie.md",
+      "title": "Services et tâches prévues"
+    },
+    {
+      "file": "methodologie.md",
+      "title": "Windows"
+    },
+    {
+      "file": "privileges-windows.md",
+      "title": "All Credit goes to Lee Holmes (@Lee_Holmes on twitter).  I found the code here https://www.leeholmes.com/blog/2010/09/24/adjusting-token-privileges-in"
+    },
+    {
+      "file": "rapport.md",
+      "title": "Windows"
+    },
+    {
+      "file": "reconnaissance.md",
+      "title": "Nmap"
+    },
+    {
+      "file": "reconnaissance.md",
+      "title": "Scripts Nmap (NSE)"
+    },
+    {
+      "file": "reconnaissance.md",
+      "title": "Services par port"
+    },
+    {
+      "file": "redirection-ports.md",
+      "title": "SSH Remote Dynamic Redirection de ports"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "Bash"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "PowerShell"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "Python"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "Bash"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "Python"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "Linux"
+    },
+    {
+      "file": "utilitaires.md",
+      "title": "Windows"
+    },
+    {
+      "file": "vulnerabilites.md",
+      "title": "Nmap NSE (moteur de script Nmap)"
+    }
+  ]
+}

