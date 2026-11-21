@@ -1,0 +1,44 @@
+name: Inspect OSCP documentation source
+
+on:
+  push:
+    paths:
+      - '.github/workflows/oscp-probe.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests beautifulsoup4 lxml
+      - name: Inspect OSCP HTML structure
+        run: |
+          python - <<'PY'
+          import requests, json, collections, re
+          from bs4 import BeautifulSoup
+          url='https://www.emmanuelsolis.com/oscp.html'
+          r=requests.get(url,timeout=90,headers={'User-Agent':'Mozilla/5.0'})
+          r.raise_for_status()
+          s=BeautifulSoup(r.text,'lxml')
+          headings=s.find_all(re.compile('^h[1-6]$'))
+          code=s.find_all('code')
+          pre=s.find_all('pre')
+          possible=[{'tag':p.name,'id':p.get('id'),'class':p.get('class'),'text':p.get_text(' ',strip=True)[:80],'headings':len(p.find_all(re.compile('^h[2-6]$'))),'pre':len(p.find_all('pre'))} for p in s.find_all(['main','article','section'])[:40]]
+          top=[{'name':h.name,'text':h.get_text(' ',strip=True)[:150],'parent':h.parent.name,'parent_class':h.parent.get('class') or []} for h in headings if h.name in ['h1','h2','h3']][:100]
+          result={'status':r.status_code,'bytes':len(r.content),'title':s.title.get_text(' ',strip=True) if s.title else '', 'headings':dict(collections.Counter(h.name for h in headings)),'top_headings':top,'first_pre':[x.get_text('\n',strip=False)[:500] for x in pre[:4]],'first_code':[x.get_text(' ',strip=True)[:250] for x in code[:10]],'pre_count':len(pre),'code_count':len(code),'possible':possible,'other_blocks':dict(collections.Counter([x.name for x in s.find_all(['table','blockquote','ul','ol','pre','code'])]))}
+          open('oscp-structure-audit.json','w').write(json.dumps(result,ensure_ascii=False,indent=2))
+          print(json.dumps({k:v for k,v in result.items() if k not in ['top_headings','first_pre']},ensure_ascii=False)[:6000])
+          PY
+      - name: Save inspection report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add oscp-structure-audit.json
+          git commit -m "Inspect Emmanuel Solis OSCP source layout"
+          git push
