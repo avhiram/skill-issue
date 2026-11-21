@@ -1,0 +1,184 @@
+{
+  "pages": {
+    "ad-enumeration": {
+      "translated_titles": 0,
+      "titles_written": 98,
+      "generic_before": 79,
+      "unknown_titles_omitted": 33,
+      "repeated_titles_removed": 7,
+      "noncommands_fixed": 1,
+      "generic_after": 0,
+      "code_blocks_before": 192,
+      "code_blocks_after": 191
+    },
+    "ad-lateral": {
+      "translated_titles": 0,
+      "generic_before": 12,
+      "titles_written": 24,
+      "unknown_titles_omitted": 2,
+      "repeated_titles_removed": 1,
+      "generic_after": 0,
+      "code_blocks_before": 45,
+      "code_blocks_after": 45
+    },
+    "ad-techniques": {
+      "translated_titles": 0,
+      "titles_written": 49,
+      "generic_before": 44,
+      "repeated_titles_removed": 3,
+      "unknown_titles_omitted": 11,
+      "noncommands_fixed": 1,
+      "generic_after": 0,
+      "code_blocks_before": 91,
+      "code_blocks_after": 90
+    },
+    "antivirus-metasploit": {
+      "translated_titles": 0,
+      "generic_before": 34,
+      "titles_written": 10,
+      "unknown_titles_omitted": 5,
+      "repeated_titles_removed": 20,
+      "generic_after": 0,
+      "code_blocks_before": 37,
+      "code_blocks_after": 37
+    },
+    "applications-web": {
+      "translated_titles": 0,
+      "generic_before": 169,
+      "titles_written": 132,
+      "repeated_titles_removed": 19,
+      "unknown_titles_omitted": 58,
+      "generic_after": 0,
+      "code_blocks_before": 277,
+      "code_blocks_after": 277
+    },
+    "attaques-client": {
+      "translated_titles": 0,
+      "generic_before": 41,
+      "unknown_titles_omitted": 23,
+      "titles_written": 21,
+      "generic_after": 0,
+      "code_blocks_before": 49,
+      "code_blocks_after": 49
+    },
+    "methodologie": {
+      "identifiers_grouped": 1,
+      "translated_titles": 0,
+      "titles_written": 62,
+      "generic_before": 79,
+      "noncommands_fixed": 7,
+      "unknown_titles_omitted": 20,
+      "repeated_titles_removed": 5,
+      "generic_after": 0,
+      "code_blocks_before": 102,
+      "code_blocks_after": 95
+    },
+    "mots-de-passe": {
+      "translated_titles": 0,
+      "titles_written": 61,
+      "generic_before": 74,
+      "unknown_titles_omitted": 42,
+      "repeated_titles_removed": 10,
+      "generic_after": 0,
+      "code_blocks_before": 143,
+      "code_blocks_after": 143
+    },
+    "privileges-linux": {
+      "translated_titles": 0,
+      "generic_before": 58,
+      "titles_written": 42,
+      "unknown_titles_omitted": 25,
+      "repeated_titles_removed": 1,
+      "generic_after": 0,
+      "code_blocks_before": 78,
+      "code_blocks_after": 78
+    },
+    "privileges-windows": {
+      "translated_titles": 11,
+      "titles_written": 79,
+      "generic_before": 152,
+      "repeated_titles_removed": 2,
+      "unknown_titles_omitted": 73,
+      "noncommands_fixed": 10,
+      "generic_after": 0,
+      "code_blocks_before": 250,
+      "code_blocks_after": 240
+    },
+    "rapport": {
+      "translated_titles": 0,
+      "generic_after": 0,
+      "code_blocks_before": 0,
+      "code_blocks_after": 0
+    },
+    "reconnaissance": {
+      "translated_titles": 0,
+      "titles_written": 143,
+      "repeated_titles_removed": 23,
+      "generic_before": 71,
+      "unknown_titles_omitted": 13,
+      "generic_after": 0,
+      "code_blocks_before": 192,
+      "code_blocks_after": 192
+    },
+    "redirection-ports": {
+      "translated_titles": 0,
+      "generic_before": 15,
+      "titles_written": 18,
+      "unknown_titles_omitted": 7,
+      "generic_after": 0,
+      "code_blocks_before": 27,
+      "code_blocks_after": 27
+    },
+    "transferts": {
+      "translated_titles": 0,
+      "generic_before": 17,
+      "titles_written": 13,
+      "repeated_titles_removed": 1,
+      "unknown_titles_omitted": 7,
+      "generic_after": 0,
+      "code_blocks_before": 21,
+      "code_blocks_after": 21
+    },
+    "tunneling": {
+      "translated_titles": 0,
+      "generic_before": 29,
+      "titles_written": 23,
+      "unknown_titles_omitted": 9,
+      "generic_after": 0,
+      "code_blocks_before": 32,
+      "code_blocks_after": 32
+    },
+    "utilitaires": {
+      "translated_titles": 0,
+      "generic_before": 53,
+      "titles_written": 45,
+      "noncommands_fixed": 1,
+      "unknown_titles_omitted": 17,
+      "repeated_titles_removed": 5,
+      "generic_after": 0,
+      "code_blocks_before": 91,
+      "code_blocks_after": 90
+    },
+    "vulnerabilites": {
+      "translated_titles": 0,
+      "generic_before": 5,
+      "unknown_titles_omitted": 1,
+      "titles_written": 5,
+      "generic_after": 0,
+      "code_blocks_before": 6,
+      "code_blocks_after": 6
+    }
+  },
+  "totals": {
+    "generic_before": 932,
+    "generic_after": 0,
+    "titles_written": 825,
+    "unknown_titles_omitted": 346,
+    "repeated_titles_removed": 97,
+    "noncommands_fixed": 20,
+    "identifiers_grouped": 1,
+    "translated_titles": 11,
+    "code_blocks_before": 1633,
+    "code_blocks_after": 1613
+  }
+}

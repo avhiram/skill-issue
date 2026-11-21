@@ -11,7 +11,7 @@ description: "Évaluer les services exposés et rechercher des faiblesses connue
 ## Nessus
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil go.</p>
+
 
 ```text
 Go to the Nessus website https://www.tenable.com/downloads/nessus?loginAttempted=true and select the platform.
@@ -20,7 +20,7 @@ Download the installer to your local machine.
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cd.</p>
+<p class="oscp-command-note">Changer de répertoire.</p>
 
 ```bash
 #  It's important to verify the integrity of the download with `sha256sum`.
@@ -32,14 +32,14 @@ sha256sum -c sha256sum_nessus
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil apt.</p>
+<p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
 
 ```bash
 sudo apt install ./Nessus-10.5.0-debian10_amd64.deb
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil systemctl.</p>
+<p class="oscp-command-note">Examiner l&#x27;état des services Linux.</p>
 
 ```bash
 sudo systemctl start nessusd.service
@@ -53,7 +53,7 @@ sudo systemctl start nessusd.service
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Examiner le service avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
 
 ```bash
 # Run specific script
@@ -64,7 +64,7 @@ nmap --script-help [scriptName]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cp.</p>
+<p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
 ```bash
 # Scripts are located in /usr/share/nmap/scripts; we can add new scripts by copying them into this directory

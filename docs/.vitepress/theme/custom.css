@@ -339,3 +339,10 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   padding-top: 12px;
   padding-bottom: 12px;
 }
+
+/* Precise OSCP labels */
+.vp-doc .oscp-command-note { font-size: .84rem; color:#B7A6D9; font-weight:500;
+    border-left:2px solid #694C9A; padding-left:10px; margin:.45rem 0; }
+.vp-doc .oscp-inline-ref { font-size:.84rem; color:#ACA1C0; line-height:1.55; margin:.35rem 0 .6rem; }
+.vp-doc .oscp-inline-ref strong { color:#CDB8F3; }
+.vp-doc .oscp-inline-ref code { color:#DDCFFF; }
