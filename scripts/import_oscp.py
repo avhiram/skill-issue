@@ -470,6 +470,24 @@ def main() -> None:
     )
     write_config(page_items)
 
+    # A few inline commands can sit outside numbered sections in the source.
+    # Keep those as an appendix rather than silently discarding them.
+    extra_inline = [
+        c for c in source_inline
+        if id(c) not in imported_inline
+        and c.find_parent(["h2", "h3", "h4", "h5", "h6"]) is None
+    ]
+    extra_examples = [c.get_text(" ", strip=True)[:150] for c in extra_inline]
+    if extra_inline:
+        extra_path = OUT / "reconnaissance.md"
+        with extra_path.open("a", encoding="utf-8") as appendix:
+            appendix.write("\n## Syntaxes complémentaires de la source\n\n")
+            appendix.write("Exemples présents hors des rubriques principales de la page d'origine.\n\n")
+            for c in extra_inline:
+                value = c.get_text("\n", strip=False)
+                appendix.write(fenced(value, c.get("class", [])))
+                imported_inline.add(id(c))
+
     skipped_pre = [p.get_text(" ",strip=True)[:80] for p in source_pre if id(p) not in imported_pre]
     skipped_inline = [c.get_text(" ",strip=True)[:80] for c in source_inline
                       if id(c) not in imported_inline
@@ -479,7 +497,7 @@ def main() -> None:
         "source_inline_code": len(source_inline),
         "imported_pre": len(imported_pre),
         "imported_inline_code": len(imported_inline),
-        "skipped_pre": len(skipped_pre),
+        "extra_inline_examples": extra_examples,\n        "skipped_pre": len(skipped_pre),
         "skipped_inline_code_outside_headings": len(skipped_inline),
         "skipped_pre_examples": skipped_pre[:20],
         "skipped_inline_examples": skipped_inline[:20],
