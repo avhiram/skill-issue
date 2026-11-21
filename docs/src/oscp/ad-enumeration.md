@@ -531,7 +531,7 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
 
 ```bash
-# Nmap scan
+# Scan Nmap
 nmap -v -p 139,445 [IP]
 nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
 

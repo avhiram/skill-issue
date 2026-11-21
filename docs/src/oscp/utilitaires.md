@@ -476,7 +476,7 @@ net localgroup "Remote Desktop Users" "[domain]\[username]" /add
 ```powershell
 # Ceci est fait parce que si un pare-feu est configuré, il peut causer des problèmes pour notre RDP
 
-# Get status: si True la règle est activée et RDP devrait fonctionner
+# Vérifier l'état : True indique que la règle est activée et que RDP devrait être accessible.
 Get-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 # Enabled if it's disabled, ensures traffic via port 3389 is not blocked

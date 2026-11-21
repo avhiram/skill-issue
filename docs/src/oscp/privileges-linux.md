@@ -385,7 +385,7 @@ cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
 <p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
-# John L'Éventreur
+# Avec John the Ripper
 john --wordlist=/usr/share/wordlists/rockyou.txt [root_user]_hash.txt
 
 # Hashcat, nous devons isoler la partie de hachage, par exemple du hachage supérieur serait: $6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0
@@ -395,7 +395,7 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt
 
 
 ```bash
-# John L'Éventreur
+# Avec John the Ripper
 john --show [root_user]_hash.txt
 
 # Hashcat

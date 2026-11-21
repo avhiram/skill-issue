@@ -376,7 +376,7 @@ dir \\targetserver\sharedfolder
 ```
 
 
-#### Source du code du script
+#### Code source du script
 
 
 <p class="oscp-command-note">Script PowerShell dans la rubrique « Code source of the Script ».</p>
