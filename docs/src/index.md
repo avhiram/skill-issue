@@ -1,21 +1,26 @@
 ---
 title: SKILL-ISSUE
-description: Bibliothèque de notes et commandes cybersécurité
-outline: false
+description: Documentation cybersécurité
+next: false
+editLink: false
 ---
 
 # SKILL-ISSUE
 
-Documentation cybersécurité en français.
+Documentation cybersécurité, techniques et commandes.
 
-Notes techniques courtes, commandes en blocs copiables et navigation par certification.
+Le site reprend les rubriques techniques et les ressources du référentiel existant, avec une navigation latérale et des exemples en blocs copiables.
 
-## Certifications
+## Explorer la documentation
 
-### [CRTO : Certified Red Team Operator](/crto/)
+[Active Directory](/ad/recon/index.md)
 
-Première rubrique de la bibliothèque. Les fiches techniques seront ajoutées au fur et à mesure, sans pages vides.
+[Kerberos](/ad/movement/kerberos/index.md)
 
-## Utilisation
+[Windows](/infra/privilege-escalation/windows/index.md)
 
-Ouvrez une certification depuis le menu latéral. La recherche permet ensuite de retrouver rapidement les titres et commandes publiés.
+[Web](/web/config/http-headers/index.md)
+
+[Réseaux et protocoles](/infra/protocols/index.md)
+
+Les notes des certifications seront organisées et complétées progressivement.

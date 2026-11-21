@@ -19,7 +19,7 @@ const {
   toggle
 } = useSidebarControl(computed(() => props.item))
 
-// Indicateur de statut des rubriques
+// Utilisez directement les propriétés de l'article pour le badge
 const badgeText = computed(() => {
   if (props.item.badge === 'new') return 'new !'
   if (props.item.badge === 'wip') return 'incomplete'
@@ -32,7 +32,7 @@ const badgeClass = computed(() => {
   return ''
 })
 
-// Composants dynamiques
+// Propriétés dynamiques
 const sectionTag = computed(() => (hasChildren.value ? 'section' : 'div'))
 const linkTag = computed(() => (isLink.value ? 'a' : 'div'))
 const textTag = computed(() => {
@@ -268,7 +268,7 @@ function onCaretClick() {
   display: none;
 }
 
-/* Indicateurs discrets */
+/* Styles pour les badges */
 .badge {
   margin-left: 8px;
   padding: 2px 7px;

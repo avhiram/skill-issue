@@ -1,23 +1,22 @@
 # SKILL-ISSUE
 
-Documentation cybersécurité en français.
+Documentation cybersécurité, basée sur VitePress.
 
-## Développement local
+## Lancer localement
 
-```bash
-npm install
-npm run dev
-```
+\`\`\`bash
+npm ci
+npm run docs:dev
+\`\`\`
 
-## Construction
+## Compiler
 
-```bash
-npm run build
-npm run preview
-```
+\`\`\`bash
+npm run docs:build
+\`\`\`
 
-Le site est configuré pour GitHub Pages sous `/skill-issue/`.
+## Licence et provenance
 
-La documentation est dans `docs/src/` ; la navigation est définie dans `docs/.vitepress/config.mts`.
-
-Les références de licence du code réutilisé sont conservées dans `LICENSE` et `NOTICE.md`.
+Ce projet contient du code et des documents réutilisés du dépôt libre
+[The Hacker Recipes](https://github.com/The-Hacker-Recipes/The-Hacker-Recipes).
+Les licences et notices d'origine sont conservées. Voir \`LICENSE\` et \`NOTICE.md\`.
