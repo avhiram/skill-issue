@@ -201,8 +201,8 @@ def lang_for(code: str, cls: list[str] | None = None) -> str:
 
 def fenced(value: str, classes: list[str] | None = None) -> str:
     # Prevent a command that contains backticks from closing its fence.
-    n = max([len(x) for x in re.findall(r"\`+", value)] or [0]) + 1
-    fence = "\`" * max(3, n)
+    n = max([len(x) for x in re.findall(r"`+", value)] or [0]) + 1
+    fence = "`" * max(3, n)
     return "\n" + fence + lang_for(value, classes) + "\n" + value.rstrip("\n") + "\n" + fence + "\n"
 
 
