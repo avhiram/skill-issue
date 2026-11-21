@@ -1,0 +1,54 @@
+name: Improve OSCP exam notes
+on:
+  push:
+    paths:
+      - 'scripts/refine_oscp.py'
+      - '.github/workflows/refine-oscp.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: skill-issue-site-write
+  cancel-in-progress: false
+jobs:
+  refine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reorganize OSCP notes
+        run: python scripts/refine_oscp.py
+      - name: Inspect results
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('oscp-refinement-audit.json').read_text())
+          print(json.dumps(r['total'],ensure_ascii=False))
+          assert r['total']['compact_fragments']>200
+          assert r['total']['remaining_blocks']>900
+          text=Path('docs/src/oscp/reconnaissance.md').read_text()
+          assert 'Catégories NSE' in text
+          assert 'auth' in text and 'broadcast' in text
+          assert 'Commandes, paramètres et exemples associés à cette technique.' not in text
+          print('OSCP formatting checks passed')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - name: Test VitePress build
+        run: npm run docs:build
+      - name: Commit refreshed documents
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/src/oscp docs/.vitepress/theme/custom.css oscp-refinement-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Improve OSCP navigation and command readability for exams"
+            git push origin HEAD:main
+          fi
