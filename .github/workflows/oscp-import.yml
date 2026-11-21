@@ -51,11 +51,21 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Compile OSCP website
         run: npm run docs:build
+      - name: Publish OSCP HTML and theme at GitHub Pages root
+        run: |
+          for directory in ad web infra evasion physical phishing intelligence-gathering radio mobile-apps policies contributing; do
+            if [ -d "$directory" ]; then rm -rf -- "$directory"; fi
+          done
+          rsync -a docs/.vitepress/dist/ ./
+          touch .nojekyll
+          test -s index.html
+          test -d oscp
+          grep -q 'SKILL-ISSUE' index.html
       - name: Commit approved import to GitHub
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/src/index.md docs/src/crto/index.md docs/src/oscp docs/.vitepress/config.mts oscp-import-audit.json
+          git add -A
           if ! git diff --cached --quiet; then
             git commit -m "Integrate all OSCP source command blocks with French technical navigation"
             git push origin HEAD:main
