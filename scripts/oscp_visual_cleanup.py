@@ -217,7 +217,9 @@ def main() -> None:
     assert report["dns_grouped"]
     assert report["misidentified_versions_fixed"] >= 1
     recon = (ROOT / "reconnaissance.md").read_text(encoding="utf-8")
-    assert recon.count("Interroger les enregistrements DNS.") == 0
+    dns_section = recon.split("## Énumération DNS", 1)[1].split("## Scan de ports", 1)[0]
+    assert dns_section.count(FENCE) == 2
+    assert "Interroger les enregistrements DNS." not in dns_section
     assert "# Enregistrement TXT du domaine" in recon
     assert "host -t txt [domain]" in recon
     print(json.dumps({k:v for k,v in report.items() if k!="per_page"}, ensure_ascii=False, indent=2))
