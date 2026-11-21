@@ -16,7 +16,8 @@ export default defineConfig({
   srcExclude: [
     'ad/**', 'web/**', 'infra/**', 'evasion/**', 'physical/**',
     'phishing/**', 'intelligence-gathering/**', 'radio/**',
-    'mobile-apps/**', 'policies/**', 'contributing/**'
+    'mobile-apps/**', 'policies/**', 'contributing/**',
+    'oscp/cloud.md', 'oscp/references.md'
   ],
   head: [
     ['meta', { name: 'theme-color', content: '#09070E' }],
@@ -35,25 +36,54 @@ export default defineConfig({
         link: '/oscp/',
         collapsed: false,
         items: [
-          { text: "Reconnaissance", link: '/oscp/reconnaissance' },
-          { text: "Analyse de vulnérabilités", link: '/oscp/vulnerabilites' },
-          { text: "Applications web", link: '/oscp/applications-web' },
-          { text: "Attaques côté client", link: '/oscp/attaques-client' },
-          { text: "Antivirus et Metasploit", link: '/oscp/antivirus-metasploit' },
-          { text: "Mots de passe et authentification", link: '/oscp/mots-de-passe' },
-          { text: "Élévation de privilèges Windows", link: '/oscp/privileges-windows' },
-          { text: "Élévation de privilèges Linux", link: '/oscp/privileges-linux' },
-          { text: "Redirection de ports", link: '/oscp/redirection-ports' },
-          { text: "Tunneling", link: '/oscp/tunneling' },
-          { text: "Active Directory : fondamentaux", link: '/oscp/ad-theorie' },
-          { text: "Active Directory : énumération", link: '/oscp/ad-enumeration' },
-          { text: "Active Directory : techniques", link: '/oscp/ad-techniques' },
-          { text: "Active Directory : mouvement latéral", link: '/oscp/ad-lateral' },
-          { text: "Infrastructures cloud", link: '/oscp/cloud' },
-          { text: "Rapports de pentest", link: '/oscp/rapport' },
-          { text: "Transfert de fichiers", link: '/oscp/transferts' },
-          { text: "Utilitaires", link: '/oscp/utilitaires' },
-          { text: "Méthodologie OSCP", link: '/oscp/methodologie' }
+          {
+            text: 'Reconnaissance',
+            collapsed: true,
+            items: [
+              { text: 'Information Gathering', link: '/oscp/reconnaissance' },
+              { text: 'Analyse de vulnérabilités', link: '/oscp/vulnerabilites' }
+            ]
+          },
+          {
+            text: 'Applications et accès',
+            collapsed: true,
+            items: [
+              { text: 'Applications web', link: '/oscp/applications-web' },
+              { text: 'Attaques côté client', link: '/oscp/attaques-client' },
+              { text: 'Antivirus et Metasploit', link: '/oscp/antivirus-metasploit' },
+              { text: 'Mots de passe', link: '/oscp/mots-de-passe' }
+            ]
+          },
+          {
+            text: 'Systèmes et réseau',
+            collapsed: true,
+            items: [
+              { text: 'Windows', link: '/oscp/privileges-windows' },
+              { text: 'Linux', link: '/oscp/privileges-linux' },
+              { text: 'Redirection de ports', link: '/oscp/redirection-ports' },
+              { text: 'Tunneling', link: '/oscp/tunneling' },
+              { text: 'Transfert de fichiers', link: '/oscp/transferts' }
+            ]
+          },
+          {
+            text: 'Active Directory',
+            collapsed: true,
+            items: [
+              { text: 'Fondamentaux', link: '/oscp/ad-theorie' },
+              { text: 'Énumération', link: '/oscp/ad-enumeration' },
+              { text: 'Techniques', link: '/oscp/ad-techniques' },
+              { text: 'Mouvement latéral', link: '/oscp/ad-lateral' }
+            ]
+          },
+          {
+            text: 'Outils et méthodologie',
+            collapsed: true,
+            items: [
+              { text: 'Rapports', link: '/oscp/rapport' },
+              { text: 'Utilitaires', link: '/oscp/utilitaires' },
+              { text: 'Méthodologie OSCP', link: '/oscp/methodologie' }
+            ]
+          }
         ]
       },
       { text: 'CRTO', link: '/crto/', collapsed: true }

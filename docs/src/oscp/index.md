@@ -25,7 +25,6 @@ Fiches par technique avec des explications courtes et les commandes originales d
 - [Active Directory : énumération](ad-enumeration.md) : Identifier les utilisateurs, groupes, services et relations du domaine.
 - [Active Directory : techniques](ad-techniques.md) : Étudier les mécanismes d'authentification et les techniques AD.
 - [Active Directory : mouvement latéral](ad-lateral.md) : Référence des accès distants et protocoles entre hôtes Windows.
-- [Infrastructures cloud](cloud.md) : Repères sur l'évaluation des environnements cloud.
 - [Rapports de pentest](rapport.md) : Documenter les constats et les preuves techniques.
 - [Transfert de fichiers](transferts.md) : Envoyer, récupérer et encoder des fichiers dans un laboratoire.
 - [Utilitaires](utilitaires.md) : Commandes courantes et outils complémentaires.

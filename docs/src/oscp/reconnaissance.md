@@ -10,7 +10,7 @@ Identifier les hôtes, les ports et les services accessibles.
 
 ## Collecte passive d'informations
 
-Commandes, paramètres et exemples associés à cette technique.
+Rechercher des informations publiques sur un domaine avant toute analyse active.
 
 
 ```bash
@@ -122,7 +122,7 @@ Vérifier les ports et les services de la cible autorisée.
 Commandes, paramètres et exemples associés à cette technique.
 
 
-**Advanced Énumération**
+**Énumération avancée**
 
 
 ```bash
@@ -130,7 +130,7 @@ nmap -A [IP/domain] -oN [machine_name].txt
 ```
 
 
-**Fast all-ports scan**
+**Scan rapide de tous les ports**
 
 
 ```bash
@@ -138,7 +138,7 @@ sudo nmap -p- -sS -sU --min-rate=1000 --max-retries=1 -T4 [IP/Domain]
 ```
 
 
-**Fast scan alternative**
+**Alternative de scan rapide**
 
 
 ```bash
@@ -146,7 +146,7 @@ nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
 ```
 
 
-**Fast scan second alternative**
+**Seconde alternative de scan rapide**
 
 
 ```bash
@@ -154,7 +154,7 @@ sudo nmap --minrate-5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
 ```
 
 
-**Discovery all ports scan**
+**Découverte de tous les ports**
 
 
 ```bash
@@ -162,7 +162,7 @@ nmap -p- [IP/Domain] -oN [machine_name]_ports.txt
 ```
 
 
-**Top ports**
+**Ports les plus courants**
 
 
 ```bash
@@ -258,7 +258,7 @@ nmap --top-ports=20 [IP]
 Vérifier les ports et les services de la cible autorisée.
 
 
-**OS Detection ( -O )**
+**Détection du système d'exploitation (`-O`)**
 
 
 ```text
@@ -271,7 +271,7 @@ nmap -O [IP]
 ```
 
 
-**OS Guessing**
+**Estimation du système d'exploitation**
 
 
 ```bash
