@@ -1976,6 +1976,8 @@ snmpwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip> <OID>
 
 
 
+<p class="oscp-command-note">Identifiants SNMP (OID) et leur signification</p>
+
 ```text
 1.3.6.1.2.1.25.1.6.0 --> System Processes
 1.3.6.1.4.1.77.1.2.25 --> User Accounts
@@ -2672,6 +2674,8 @@ hydra -L <user_list> -P <password_list> vnc://<ip>
 
 
 
+
+<p class="oscp-command-note">Exemple de résultat d'un service VNC</p>
 
 ```text
 No Password

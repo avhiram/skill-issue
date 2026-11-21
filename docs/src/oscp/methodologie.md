@@ -245,10 +245,7 @@ Examiner les entrées et les réponses de l'application web.
 
 
 
-```text
-$_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]
-
-```
+<p class="oscp-inline-ref"><strong>Valeur de configuration PHP :</strong> <code>$_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]</code></p>
 
 
 ### Vérifications propres aux technologies détectées
@@ -299,6 +296,8 @@ nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,c
 
 
 
+
+<p class="oscp-command-note">Exemple de requête HTTP GET</p>
 
 ```text
 GET /forgot_pass.php?email=%0aid
@@ -1133,10 +1132,7 @@ HKCU\Software\Microsoft\Terminal Server Client\Servers\
 
 
 
-```text
-Remote desktop credential manager
-
-```
+<p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>Remote desktop credential manager</code></p>
 
 
 
@@ -1291,10 +1287,7 @@ smbclient //dc-ip/SYSVOL -U "domain\username"
 
 
 
-```text
-Shortest Path to Domain Admins
-
-```
+<p class="oscp-inline-ref"><strong>Nom de requête BloodHound :</strong> <code>Shortest Path to Domain Admins</code></p>
 
 
 

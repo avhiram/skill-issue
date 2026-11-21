@@ -183,10 +183,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user
 
 
 
-```text
-/<login_uri>
-
-```
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/&lt;login_uri&gt;</code></p>
 
 
 
@@ -200,10 +197,7 @@ fm_usr=user&fm_pwd=^PASS^
 
 
 
-```text
-<failure_message>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;failure_message&gt;</code></p>
 
 
 
@@ -983,28 +977,16 @@ xfreerdp /v:<target_ip> /u:<USERNAME> /pth:<NTLM_HASH> /size:<resolution>
 
 
 
-```text
-<responder_ip>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;responder_ip&gt;</code></p>
 
 
-```text
-<victim_ip>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;victim_ip&gt;</code></p>
 
 
-```text
-<DOMAIN>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;DOMAIN&gt;</code></p>
 
 
-```text
-<hash_file>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;hash_file&gt;</code></p>
 
 
 <p class="oscp-command-note">Observer les requêtes de résolution de noms.</p>
@@ -1060,10 +1042,7 @@ hashcat (v6.2.5) starting
 
 
 
-```text
-<target_ip>
-
-```
+<p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;target_ip&gt;</code></p>
 
 
 <p class="oscp-command-note">Commande Impacket dans la rubrique « Relaying Net-NTLMv2 ».</p>
@@ -1392,6 +1371,8 @@ netexec [protocol] [target(s)] -u [usernames].txt -H [ntlm_hashes].txt --no-brut
 
 
 
+<p class="oscp-command-note">Exemples de couples utilisateur / mot de passe</p>
+
 ```text
 user1 -> pass1
 user2 -> pass2
@@ -1657,11 +1638,10 @@ Examiner les objets, les droits et les services du domaine.
 
 
 
-```text
-~/.nxc/nxc.conf
+<p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>~/.nxc/nxc.conf</code></p>
 
-```
 
+<p class="oscp-command-note">Exemple de configuration NetExec/BloodHound</p>
 
 ```text
 [BloodHound]
@@ -1867,6 +1847,8 @@ netexec [protocol] [target(s)] -u FILE -p password
 
 
 
+
+<p class="oscp-command-note">Exemples de comptes avec domaines</p>
 
 ```text
 DOMAIN1\user

