@@ -3,13 +3,17 @@ name: Build SKILL-ISSUE website
 on:
   push:
     branches: [main]
+    paths:
+      - 'docs/**'
+      - 'package.json'
+      - 'package-lock.json'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: skill-issue-build
+  group: skill-issue-site-write
   cancel-in-progress: false
 
 jobs:
