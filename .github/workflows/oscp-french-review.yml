@@ -1,0 +1,55 @@
+name: Review and translate all OSCP notes to French
+on:
+  push:
+    paths:
+      - 'scripts/oscp_french_review.py'
+      - '.github/workflows/oscp-french-review.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: skill-issue-site-write
+  cancel-in-progress: false
+jobs:
+  quality-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install offline translation engine
+        run: python -m pip install -q argostranslate
+      - name: Review all OSCP pages and translate explanations
+        run: python -u scripts/oscp_french_review.py
+      - name: Verify that the French review produced its audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('oscp-french-quality-audit.json').read_text(encoding='utf-8'))
+          print(json.dumps(r['totals'],ensure_ascii=False,indent=2))
+          print("Untranslated comments:",len(r['remaining_english_comments']))
+          print("Untranslated headings:",len(r['remaining_english_headings']))
+          assert r['totals']['comments_translated']>350
+          assert r['totals']['references_reclassified']>=15
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install VitePress dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Build and validate website
+        run: npm run docs:build
+      - name: Commit reviewed French pages and audit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/src/oscp oscp-french-quality-audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Translate technical OSCP comments, classify reference values, and save verified audit"
+            git push origin HEAD:main
+          fi
