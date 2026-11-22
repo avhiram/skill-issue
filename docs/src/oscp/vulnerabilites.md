@@ -3,71 +3,60 @@ title: "OSCP · Analyse de vulnérabilités"
 description: "Évaluer les services exposés et rechercher des faiblesses connues."
 ---
 
-# OSCP · Analyse de vulnérabilités
-
-Évaluer les services exposés et rechercher des faiblesses connues.
+# Analyse de vulnérabilités
 
 ## Nessus
 
-```text
-Go to the Nessus website https://www.tenable.com/downloads/nessus?loginAttempted=true and select the platform.
+Télécharger le paquet adapté depuis [Tenable](https://www.tenable.com/downloads/nessus). Vérifier le SHA-256 publié avant installation.
 
-Download the installer to your local machine.
-
-```
-
-<p class="oscp-command-note">Ouvrir le dossier contenant les fichiers Nessus.</p>
+<p class="oscp-command-note">Sur Kali : comparer l'empreinte du paquet à celle publiée par Tenable.</p>
 
 ```bash
-# Il est important de vérifier l'intégrité du téléchargement avec `sha256sum`.
 cd ~/Downloads
-echo "[sha256_sum_found_in_website] Nessus-10.5.0-debian10_amd64.deb" > sha256sum_nessus
-sha256sum -c sha256sum_nessus
-
-# Résultat attendu : OK
+sha256sum ./Nessus-*.deb
 ```
 
-<p class="oscp-command-note">Installer les paquets nécessaires sur Debian ou Ubuntu.</p>
+Remplacer le nom du paquet par le fichier réellement téléchargé et comparer manuellement l'empreinte.
+
+<p class="oscp-command-note">Sur Kali/Debian : installer le paquet Nessus téléchargé.</p>
 
 ```bash
-sudo apt install ./Nessus-10.5.0-debian10_amd64.deb
+sudo apt install ./Nessus-*.deb
 
 ```
 
-<p class="oscp-command-note">Examiner l&#x27;état des services Linux.</p>
+<p class="oscp-command-note">Démarrer le service Nessus.</p>
 
 ```bash
 sudo systemctl start nessusd.service
 
-# Ensuite, visitez le Nesus GUI à https://127.0.0.1:8834 pour configurer le scanner.
+# Interface : https://127.0.0.1:8834
 
 ```
 
-## Nmap NSE (moteur de script Nmap)
+## Nmap NSE
 
-Vérifier les ports et les services de la cible autorisée.
-
-<p class="oscp-command-note">Nmap NSE : lancer un script choisi et afficher sa documentation avec --script-help.</p>
+<p class="oscp-command-note">Exécuter un script NSE et consulter son aide.</p>
 
 ```bash
 # Exécuter un script précis
-nmap --script [scriptName] [IP]
+nmap --script <SCRIPT_NSE> <IP_CIBLE>
 
 # Afficher l’aide du script
-nmap --script-help [scriptName]
+nmap --script-help <SCRIPT_NSE>
 
 ```
 
-<p class="oscp-command-note">Copier les fichiers indiqués.</p>
+<p class="oscp-command-note">Installer un script NSE local et actualiser l'index.</p>
 
 ```bash
-# Les scripts sont situés dans /usr/share/nmap/scripts; nous pouvons ajouter de nouveaux scripts en les copiant dans ce répertoire
+# Copier le script dans le répertoire NSE
 sudo cp /path/to/script.nse /usr/share/nmap/scripts/
 
 # Actualiser la base de scripts
 sudo nmap --script-updatedb
 
-# Exemple d'utilisation
+# Exemple ciblé
 sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
 
 ```
@@ -75,8 +64,6 @@ sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
 ### Interroger les scripts de vulnérabilité
 
 Lister les scripts installés et sélectionner ceux pertinents pour le produit observé.
-
-<p class="oscp-command-note">Interroger les scripts de vulnérabilité.</p>
 
 ```bash
 ls /usr/share/nmap/scripts/*vuln*.nse
@@ -86,8 +73,6 @@ nmap --script-help <SCRIPT_NSE>
 ### Sauvegarder les résultats
 
 Conserver la sortie XML pour une analyse différée ; ne pas interpréter automatiquement chaque résultat comme une faille confirmée.
-
-<p class="oscp-command-note">Sauvegarder les résultats.</p>
 
 ```bash
 nmap -sV --script <SCRIPT_NSE> -p <PORT> -oX <RAPPORT>.xml <IP_CIBLE>
@@ -101,8 +86,6 @@ SearchSploit consulte la base locale d'Exploit-DB. La présence d'un résultat n
 
 Rechercher par nom de produit et version plutôt que lancer automatiquement une preuve de concept.
 
-<p class="oscp-command-note">Chercher une référence précise.</p>
-
 ```bash
 searchsploit '<PRODUIT> <VERSION>'
 ```
@@ -111,8 +94,6 @@ searchsploit '<PRODUIT> <VERSION>'
 
 Afficher localement le script correspondant à un identifiant EDB pour examiner ses effets avant toute exécution.
 
-<p class="oscp-command-note">Lire le code d'une preuve de concept.</p>
-
 ```bash
 searchsploit -x <IDENTIFIANT_EDB>
 ```
@@ -120,8 +101,6 @@ searchsploit -x <IDENTIFIANT_EDB>
 ### Comparer aux résultats d'un scan Nmap
 
 Rechercher des correspondances dans un rapport XML produit avec l'option -oX de Nmap.
-
-<p class="oscp-command-note">Comparer aux résultats d'un scan Nmap.</p>
 
 ```bash
 searchsploit --nmap <RAPPORT_NMAP>.xml
