@@ -1,43 +1,43 @@
-# Discovery
+# Discovery — Reconnaissance Active Directory
 
-> After **Credential Access** and **User Impersonation**, Discovery determines group membership and local admin access on domain computers.
-> Goal: build attack path map without triggering LDAP detection thresholds.
+> Après **Credential Access** et **User Impersonation**, la phase de **Discovery** permet d’identifier les groupes et les accès administrateur locaux sur les machines du domaine.
+> Objectif : cartographier les chemins d’attaque tout en limitant les requêtes LDAP susceptibles de déclencher des détections.
 
-- Lightweight Directory Access Protocol (LDAP)
+- Lightweight Directory Access Protocol (**LDAP**)
 - BOFHound → BloodHound CE
 
 ---
 
-## Why NOT SharpHound / Default Collectors
+## Pourquoi éviter les collectors par défaut ?
 
-| Collector | Detection risk |
+| Collector | Risque de détection |
 |-----------|---------------|
-| SharpHound | Signatured LDAP queries, session enumeration traffic, large slow AD pulls — caught by mature blue teams |
-| AzureHound | Same issue for Entra ID |
-| ldapsearch BOF + BOFHound | Custom queries, controlled pace, no hardcoded signatures — preferred for CRTO exam |
+| SharpHound | Requêtes LDAP caractéristiques, énumération des sessions et collecte AD volumineuse ; détectables par une Blue Team équipée |
+| AzureHound | Risques similaires dans Entra ID |
+| ldapsearch BOF + BOFHound | Requêtes ciblées et cadence maîtrisée ; approche privilégiée dans les notes CRTO |
 
-**CRTO approach:** `ldapsearch` BOF → copy logs → `bofhound` → ingest JSON into BloodHound CE
+**Méthode CRTO :** `ldapsearch` BOF → copie des logs → `bofhound` → import des JSON dans BloodHound CE.
 
 ---
 
-## LDAP Filters — Quick Reference
+## Filtres LDAP — Référence rapide
 
-| Object type | samAccountType / filter |
+| Type d’objet | samAccountType / filtre |
 |-------------|------------------------|
-| Users | `samAccountType=805306368` |
-| Computers | `samAccountType=805306369` |
-| Groups | `samAccountType=268435456` |
+| Utilisateurs | `samAccountType=805306368` |
+| Ordinateurs | `samAccountType=805306369` |
+| Groupes | `samAccountType=268435456` |
 | Domain | `objectClass=domain` |
 | OUs | `objectClass=organizationalUnit` |
 | GPOs | `objectClass=groupPolicyContainer` |
 | Trusts | `objectClass=trustedDomain` |
-| WMI Filters | `objectClass=msWMI-Som` |
+| Filtres WMI | `objectClass=msWMI-Som` |
 
-> **Note:** Computer accounts also have objectClass `user` and `person` — using objectClass=user returns computers too. Use `samAccountType=805306369` to target computers only.
+> **Attention :** les comptes ordinateurs possèdent aussi les valeurs `user` et `person` dans `objectClass`. Un filtre `objectClass=user` peut donc renvoyer des ordinateurs ; utiliser `samAccountType=805306369` pour ne cibler que ces derniers.
 
 ---
 
-## OPSEC — LDAP Detection Thresholds
+## OPSEC — Seuils de détection LDAP
 
 ```
 Expensive Search Results   — query returns more results than threshold (avoid objectClass=* dumps)
@@ -46,14 +46,14 @@ Inefficient Search Results — returns <10% of visited objects if visited >thres
                              e.g. kerberoast SPN filter visits ALL users, returns few → inefficient
 ```
 
-**Safe approach:** Use small, targeted queries. Split enumeration across multiple sessions.
-Return only needed attributes with `--attributes` — avoid `*` unless necessary for ACL data.
+**Approche recommandée dans ces notes :** utiliser des requêtes courtes et ciblées, réparties sur plusieurs sessions.
+Limiter les attributs renvoyés avec `--attributes` et éviter `*`, sauf lorsque les données ACL l’exigent.
 
 ---
 
-## Step 1 — LDAP Enumeration via ldapsearch BOF
+## Étape 1 — Énumération LDAP avec le BOF `ldapsearch`
 
-### Core domain enumeration (OPSEC-SAFE)
+### Énumération principale du domaine (OPSEC-SAFE)
 
 ```cs
 // Domain, OUs, GPOs — with ACL data for BloodHound edges
@@ -63,9 +63,9 @@ beacon> ldapsearch (|(objectClass=domain)(objectClass=organizationalUnit)(object
 beacon> ldapsearch (|(samAccountType=805306368)(samAccountType=805306369)(samAccountType=268435456)) --attributes *,ntsecuritydescriptor
 ```
 
-> `ntsecuritydescriptor` = ACL of each object. Required for BloodHound to show ACL-based attack paths (GenericWrite, WriteDacl, etc). Output as base64 — BOFHound decodes it.
+> `ntsecuritydescriptor` contient les ACL des objets. Ces données permettent à BloodHound de représenter les chemins liés aux permissions (`GenericWrite`, `WriteDacl`, etc.). BOFHound décode leur sortie en Base64.
 
-### Targeted queries
+### Requêtes ciblées
 
 ```cs
 // All users — minimal attributes (fast, efficient)
@@ -102,7 +102,7 @@ beacon> ldapsearch (objectClass=msWMI-Som) --attributes msWMI-Name,msWMI-Parm2
 beacon> ldapsearch (objectSid=S-1-5-21-XXXXXXXXXX-XXXXXXXXXX-XXXXXXXXXX-XXXX) --attributes *
 ```
 
-### Bitwise filter syntax reference
+### Syntaxe des filtres bitwise
 
 ```
 userAccountControl flags:
@@ -113,7 +113,7 @@ userAccountControl flags:
 Syntax: (attr:1.2.840.113556.1.4.803:=<value>)   ← bitwise AND
 ```
 
-### Nested group membership (LDAP_MATCHING_RULE_IN_CHAIN)
+### Appartenance aux groupes imbriqués (LDAP_MATCHING_RULE_IN_CHAIN)
 
 ```cs
 // Unroll all ancestors of Domain Admins — avoids manual recursive group lookups
@@ -122,7 +122,7 @@ beacon> ldapsearch (memberOf:1.2.840.113556.1.4.1941:=CN=Domain Admins,CN=Users,
 
 ---
 
-## Step 2 — Copy Beacon Logs to Attacker Desktop
+## Étape 2 — Copier les logs Beacon sur l’Attacker Desktop
 
 ```bash
 # On attacker desktop — open Ubuntu tab in Windows Terminal
@@ -133,7 +133,7 @@ scp -r attacker@10.0.0.5:/opt/cobaltstrike/logs .
 
 ---
 
-## Step 3 — Parse Logs with BOFHound
+## Étape 3 — Analyser les logs avec BOFHound
 
 ```bash
 bofhound -i logs
@@ -142,7 +142,7 @@ bofhound -i logs
 
 ---
 
-## Step 4 — Ingest into BloodHound CE
+## Étape 4 — Importer les données dans BloodHound CE
 
 ```
 1. Start Menu → Docker Desktop → Containers → play all containers
@@ -154,7 +154,7 @@ bofhound -i logs
 6. Explore → Cypher search box
 ```
 
-### Useful BloodHound Cypher queries
+### Requêtes Cypher utiles dans BloodHound
 
 ```cypher
 // All GPOs
@@ -175,10 +175,10 @@ MATCH p=(n)-[:DCSync|AllExtendedRights|GenericAll]->(m:Domain) RETURN p
 
 ---
 
-## Step 5 — Restricted Groups (GPO local admin data)
+## Étape 5 — Restricted Groups (administrateurs locaux via GPO)
 
-> LDAP alone cannot reveal local group memberships applied via GPO.
-> Must read `GptTmpl.inf` from SYSVOL to find group → computer local admin mappings.
+> LDAP seul ne révèle pas toutes les appartenances aux groupes locaux appliquées par GPO.
+> Lire `GptTmpl.inf` dans SYSVOL pour identifier les relations groupe → administrateur local d’ordinateur.
 
 ```cs
 // Step 1 — find GPO gPCFileSysPath in BloodHound (e.g. Workstation Admins GPO)
@@ -194,7 +194,7 @@ beacon> download \\contoso.com\SysVol\contoso.com\Policies\{GPO-GUID}\Machine\Mi
 //   *S-1-5-32-544__Members = <domain-group-SID>   ← S-1-5-32-544 = built-in Administrators
 ```
 
-### Add missing edges to BloodHound manually
+### Ajouter manuellement les relations manquantes à BloodHound
 
 ```cypher
 // Template — replace Computer and Group objectids with values from BloodHound/GptTmpl.inf
@@ -216,10 +216,10 @@ MERGE (y)-[:AdminTo]->(x)
 
 ---
 
-## WMI Filters — Exam Awareness
+## WMI Filters — Points à vérifier pour l’examen
 
-> WMI filters restrict GPO application even within a linked OU — BloodHound does NOT evaluate them.
-> A GPO may appear to apply to a computer based on OU, but a WMI filter can exclude it entirely.
+> Les **WMI filters** peuvent restreindre l’application d’une GPO, même dans une OU liée. BloodHound ne les évalue pas.
+> Une GPO peut sembler s’appliquer à un ordinateur selon son OU, mais un WMI filter peut l’exclure.
 
 ```cs
 // Enumerate WMI filters
@@ -229,13 +229,13 @@ beacon> ldapsearch (objectClass=msWMI-Som) --attributes msWMI-Name,msWMI-Parm2
 beacon> ldapsearch (objectClass=groupPolicyContainer) --attributes displayname,gpcfilesyspath,gpcwqlfilter
 ```
 
-> If `gpcwqlfilter` is populated on a GPO, that GPO has a WMI filter — verify the query
-> manually before assuming it applies to all computers in the linked OU.
-> GPO:WMI filter is many:1 — a GPO has at most one filter, a filter can apply to many GPOs.
+> Si `gpcwqlfilter` est renseigné sur une GPO, celle-ci possède un WMI filter : vérifier la requête
+> avant de conclure qu’elle s’applique à tous les ordinateurs de l’OU liée.
+> Relation GPO/WMI filter : une GPO possède au plus un filtre, tandis qu’un filtre peut être utilisé par plusieurs GPO.
 
 ---
 
-## Exam Day Checklist
+## Checklist pour l’examen
 
 ```
 1. Immediately after beacon — run core ldapsearch queries (domain + users/computers/groups)
@@ -267,7 +267,7 @@ beacon> ldapsearch (objectClass=groupPolicyContainer) --attributes displayname,g
 
 ---
 
-## OPSEC Summary
+## Récapitulatif OPSEC
 
 ```
 Tier:          SAFE
