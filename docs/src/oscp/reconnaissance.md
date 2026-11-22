@@ -2255,7 +2255,7 @@ version
 
 ```
 
-### 3306: MYSQL
+### 3306 : MySQL / MariaDB
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
@@ -2266,7 +2266,7 @@ nmap -sV -p 3306 --script mysql-info,mysql-variables <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">MySQL : lister les bases avec le client mysql natif ; -p demande le mot de passe.</p>
+<p class="oscp-command-note">Depuis Kali, utiliser le client `mysql` ou `mariadb` installé pour lister les bases accessibles au compte fourni. L'option `-p` sans valeur demande le mot de passe sans l'inscrire dans l'historique du shell.</p>
 
 ```bash
 mysql -h <IP_CIBLE> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
@@ -2281,52 +2281,56 @@ hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 
 ```
 
-<p class="oscp-command-note">MySQL : ouvrir une session interactive sur une base existante ; le client demande le mot de passe avec -p.</p>
+<p class="oscp-command-note">MySQL : ouvrir une session interactive sur une base existante et accessible au compte connecté. Le nom de la base est un argument positionnel ; `-p` demande le mot de passe.</p>
 
 ```bash
 mysql -h <IP_CIBLE> -u <UTILISATEUR> -p <BASE_DE_DONNEES>
 
 ```
 
-<p class="oscp-command-note">Dans le client MySQL : lister les bases, sélectionner une base puis consulter les tables autorisées.</p>
+<p class="oscp-command-note">Dans le client MySQL : exécuter les requêtes séparément. Remplacer les noms de base et de table par des identifiants réels **sans chevrons** ; `SELECT *` peut afficher des données sensibles et doit être limité au périmètre autorisé.</p>
 
 ```sql
 SHOW DATABASES;
 
-USE <database_name>;
+-- Remplacer oscp_lab par une base existante et autorisée
+USE oscp_lab;
 
 SHOW TABLES;
 
-DESCRIBE <table_name>;
+-- Remplacer exemple par une table réellement présente
+DESCRIBE exemple;
 
-SELECT * FROM <table_name>;
+-- Limiter la lecture aux dix premières lignes
+SELECT * FROM exemple LIMIT 10;
 
 ```
 
 ```sql
--- Lister les comptes MySQL visibles avec les privilèges du compte connecté
-SELECT user FROM mysql.user;
+-- Lister les comptes MySQL si la lecture de mysql.user est autorisée
+SELECT user, host FROM mysql.user;
 
--- Pour consulter les privilèges sans les modifier :
-SHOW GRANTS FOR CURRENT_USER;
+-- Afficher les privilèges du compte courant, sans les modifier
+SHOW GRANTS FOR CURRENT_USER();
 
 ```
 
-<p class="oscp-command-note">MySQL : LOAD_FILE lit un fichier sur le serveur SQL, pas sur Kali ; nécessite les droits FILE et une configuration secure_file_priv compatible.</p>
+<p class="oscp-command-note">MySQL : `LOAD_FILE()` lit un fichier **sur l'hôte du serveur SQL**, pas sur Kali. Le compte doit disposer du privilège `FILE`, le service doit pouvoir lire le fichier et `secure_file_priv` peut restreindre les chemins. La fonction renvoie `NULL` si les conditions ne sont pas remplies.</p>
 
 ```sql
-SELECT LOAD_FILE('C:/xampp/htdocs/ncat.exe');
+-- Lire un fichier texte de démonstration sur le serveur Windows, s'il existe et est autorisé
+SELECT LOAD_FILE('C:/xampp/htdocs/test.txt');
 ```
 
-<p class="oscp-command-note">Windows CMD ou PowerShell sur l'hôte Windows concerné : examiner séparément les permissions NTFS du fichier, si le chemin existe.</p>
+<p class="oscp-command-note">Sur l'hôte Windows hébergeant MySQL : `icacls` affiche les ACL NTFS du fichier de démonstration. Cette commande locale ne peut pas être exécutée depuis une simple connexion SQL distante.</p>
 
 ```cmd
-icacls "C:\xampp\htdocs\ncat.exe"
+icacls "C:\xampp\htdocs\test.txt"
 ```
 
 ### 3389: RDP
 
-<p class="oscp-command-note">Nmap RDP : identifier les mécanismes de sécurité RDP et les informations NTLM exposées ; aucun test MS12-020.</p>
+<p class="oscp-command-note">Nmap RDP : `rdp-enum-encryption` énumère les modes de sécurité annoncés et `rdp-ntlm-info` peut relever des métadonnées NTLM. Aucun de ces scripts ne confirme une vulnérabilité MS12-020.</p>
 
 ```bash
 nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
@@ -2351,13 +2355,14 @@ nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">Linux RDP : utiliser FreeRDP pour une session graphique et un partage de dossier local ; rdesktop est une alternative historique.</p>
+<p class="oscp-command-note">Depuis Kali, utiliser FreeRDP pour ouvrir une session RDP ou partager un répertoire local ; vérifier la version installée (`xfreerdp` en 2.x, souvent `xfreerdp3` en 3.x). `rdesktop` est une alternative ancienne dont les capacités de sécurité peuvent être limitées.</p>
 
 ```bash
 # FreeRDP 2.x : ouvrir une session RDP ; vérifier le binaire disponible (xfreerdp ou xfreerdp3)
 xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /size:1600x1000
 
-# Partager un répertoire local avec le bureau distant (FreeRDP 2.x ; adapter pour FreeRDP 3.x)
+# Partager un répertoire local existant avec le bureau distant (FreeRDP 2.x)
+# Le dossier /home/kali/partage doit exister sur Kali avant la connexion
 xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /drive:partage,/home/kali/partage
 
 # Activer le presse-papiers et régler la résolution (FreeRDP 2.x)
@@ -2366,8 +2371,8 @@ xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore +clipboard /size:1920x1080
 # Alternative historique : rdesktop ; éviter -p pour ne pas exposer le mot de passe dans les processus
 rdesktop -u utilisateur -g 1920x1080 <IP_CIBLE>
 
-# Ouvrir rdesktop et saisir les identifiants lorsque le serveur le demande
-rdesktop <ip>
+# Variante rdesktop sans utilisateur précisé ; la demande d'identifiants dépend du serveur
+rdesktop <IP_CIBLE>
 
 ```
 
