@@ -924,29 +924,17 @@ smtp-user-enum -M RCPT -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
 
 Interroger les enregistrements DNS et identifier les services associés.
 
-<p class="oscp-command-note">Nmap DNS : exécuter dns-nsid et dns-recursion sur UDP 53 (dns-brute n'est pas lancé ici).</p>
+<p class="oscp-command-note">Nmap : relever l'identifiant DNS et vérifier la récursion.</p>
 
 ```bash
 nmap -sU -p 53 --script dns-nsid,dns-recursion <IP_CIBLE>
 
 ```
 
-```bash
-# Nmap DNS : exécuter uniquement dns-nsid sur UDP 53
-nmap -sU -p 53 --script dns-nsid <IP_CIBLE>
-
-```
-
-<p class="oscp-command-note">DNS : tester AXFR et ANY avec dig ; ouvrir ensuite nslookup et saisir les commandes interactives séparément.</p>
+<p class="oscp-command-note">DNS : interroger les enregistrements. Les commandes `nslookup` sont interactives.</p>
 
 ```bash
-dig @192.0.2.53 exemple.local AXFR  # Tester un transfert de zone autorisé
 dig @192.0.2.53 exemple.local ANY  # ANY ne retourne pas nécessairement tous les enregistrements
-nslookup
-server 192.0.2.53
-set type=any
-exemple.local
-
 ```
 
 ```bash
@@ -957,21 +945,21 @@ dnsenum --enum --dnsserver <SERVEUR_DNS> <DOMAINE>
 
 ```
 
-<p class="oscp-command-note">Nmap -sL : lister les cibles d'une plage et tenter leur résolution inverse sans envoyer de sondes de scan.</p>
+<p class="oscp-command-note">Nmap : lister les adresses et tenter leur résolution DNS inverse.</p>
 
 ```bash
 nmap -sL <RESEAU_CIDR>  # Lister les cibles et tenter leur résolution DNS inverse, sans scanner les ports
 
 ```
 
-<p class="oscp-command-note">DNS : interroger directement un serveur pour l'enregistrement A sans demander la récursion.</p>
+<p class="oscp-command-note">dig : demander un enregistrement A sans récursion.</p>
 
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> A +norecurse
 
 ```
 
-<p class="oscp-command-note">PowerShell : résoudre un nom via le serveur DNS indiqué avec Resolve-DnsName.</p>
+<p class="oscp-command-note">PowerShell : résoudre un nom avec le serveur DNS choisi.</p>
 
 ```powershell
 Resolve-DnsName -Name <DOMAINE> -Server <SERVEUR_DNS> -DnsOnly
@@ -982,7 +970,7 @@ Resolve-DnsName -Name <DOMAINE> -Server <SERVEUR_DNS> -DnsOnly
 
 Lister les serveurs de messagerie et les informations TXT d'un domaine appartenant au périmètre.
 
-<p class="oscp-command-note">DNS : afficher uniquement les réponses MX (messagerie) et TXT d'un domaine.</p>
+<p class="oscp-command-note">dig : afficher les enregistrements MX et TXT du domaine.</p>
 
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> MX +noall +answer
@@ -993,7 +981,7 @@ dig @<SERVEUR_DNS> <DOMAINE> TXT +noall +answer
 
 Vérifier si un transfert AXFR non autorisé est accepté par le serveur DNS.
 
-<p class="oscp-command-note">DNS AXFR : vérifier si le serveur autorise un transfert complet de zone pour le domaine audité.</p>
+<p class="oscp-command-note">dig : tester le transfert de zone AXFR.</p>
 
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> AXFR
@@ -1003,7 +991,7 @@ dig @<SERVEUR_DNS> <DOMAINE> AXFR
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
-<p class="oscp-command-note">Nmap TFTP : tester les noms de fichiers connus via tftp-enum sur UDP 69 ; pas de liste exhaustive garantie.</p>
+<p class="oscp-command-note">Nmap : rechercher des fichiers TFTP connus sur UDP 69.</p>
 
 ```bash
 sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
@@ -1017,7 +1005,7 @@ sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Bash TFTP : tenter de télécharger un fichier connu ; vérifier le succès du transfert, pas seulement sa présence locale.</p>
+<p class="oscp-command-note">Bash : télécharger un fichier TFTP et vérifier sa présence.</p>
 
 ```bash
 #!/bin/bash
@@ -1064,14 +1052,14 @@ quit
 
 ```
 
-<p class="oscp-command-note">TFTP : essayer chaque nom de fichier de la liste sur un serveur connu ; aucun parcours distant automatique.</p>
+<p class="oscp-command-note">TFTP : essayer les noms de fichiers de la liste, un par un.</p>
 
 ```bash
 while IFS= read -r fichier; do [ -n "$fichier" ] && tftp 192.0.2.10 -c get "$fichier"; done < liste_fichiers.txt
 
 ```
 
-<p class="oscp-command-note">TFTP : transmettre get ou put à l'invite interactive via stdin ; vérifier le client installé.</p>
+<p class="oscp-command-note">TFTP : télécharger (`get`) ou envoyer (`put`) un fichier.</p>
 
 ```bash
 printf 'get fichier_distant fichier_local\nquit\n' | tftp 192.0.2.10
