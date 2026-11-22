@@ -153,7 +153,7 @@ sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password '
 
 ### Depuis Windows, récupérer le fichier du partage Kali
 
-Dans PowerShell, saisis le même mot de passe à l’invite de `net use`.
+Sur Windows destination, `net use` demande le mot de passe SMB ; `Copy-Item` lit ensuite le partage Kali. Ferme la connexion après la copie.
 
 ```powershell
 net use \\10.10.14.10\partage * /user:audit
@@ -163,7 +163,7 @@ net use \\10.10.14.10\partage /delete
 
 ### Depuis Linux, déposer le fichier sur un partage Windows {#lw-smb-windows}
 
-Le compte `LAB\etudiant` doit pouvoir écrire dans le partage `Depot` et dans son dossier Windows.
+Depuis Linux source, `smbclient` envoie `rapport.txt` vers Windows. Le compte `LAB\etudiant` doit avoir les droits d'écriture SMB et NTFS.
 
 ```bash
 smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'put rapport.txt rapport.txt'
@@ -171,7 +171,7 @@ smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'put rapport.txt rapport.txt'
 
 ### Depuis Linux, envoyer le fichier à Windows par SCP {#lw-scp}
 
-OpenSSH Server doit être actif sur Windows. Le chemin après `:` est relatif au dossier de connexion du compte distant.
+Depuis Linux source, Windows destination doit exécuter OpenSSH Server. `rapport.txt` après `:` est relatif au dossier de connexion distant.
 
 ```bash
 scp ./rapport.txt etudiant@10.10.10.30:rapport.txt
@@ -190,7 +190,7 @@ sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password '
 
 ### Depuis Windows, déposer le fichier dans le partage Kali
 
-Le fichier arrive dans `./reception/rapport.txt` sur Kali.
+Depuis Windows source, le fichier est déposé dans `./reception/rapport.txt` sur Kali. Le partage doit autoriser l'écriture.
 
 ```powershell
 net use \\10.10.14.10\partage * /user:audit
@@ -200,14 +200,14 @@ net use \\10.10.14.10\partage /delete
 
 ### Sur Kali, ouvrir un dossier de réception WebDAV {#wl-webdav}
 
-WsgiDAV et Cheroot doivent être installés. Cet exemple autorise l’écriture anonyme en clair sur un réseau isolé.
+Sur Kali destination, WsgiDAV et Cheroot doivent être installés. L'écriture anonyme HTTP est réservée à un réseau isolé et doit être désactivée après le transfert.
 
 ```bash
 mkdir -p ./reception
 wsgidav --no-config --host 10.10.14.10 --port 8080 --root ./reception --auth anonymous
 ```
 
-### Depuis Windows, déposer le fichier par WebDAV
+### Depuis Windows source, envoyer le fichier vers le serveur WebDAV de Kali
 
 ```bat
 curl.exe --fail --upload-file "C:\Users\Public\rapport.txt" "http://10.10.14.10:8080/rapport.txt"
@@ -215,7 +215,7 @@ curl.exe --fail --upload-file "C:\Users\Public\rapport.txt" "http://10.10.14.10:
 
 ### Depuis Windows, envoyer le fichier à Kali par SCP {#wl-scp}
 
-Il faut le client OpenSSH sur Windows, le serveur SSH/SFTP sur Kali et un compte pouvant écrire dans `/tmp`.
+À exécuter sur Windows source : client OpenSSH disponible, serveur SSH sur Kali destination et compte `kali` autorisé à écrire dans `/tmp`.
 
 ```powershell
 scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
@@ -223,7 +223,7 @@ scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
 
 ### Depuis Linux, récupérer le fichier d’un partage Windows {#wl-smb-windows}
 
-Le fichier doit déjà se trouver sur le partage `Depot` et le compte doit pouvoir le lire.
+À exécuter sur Linux destination : `get` télécharge depuis le partage Windows `Depot` vers le dossier courant Linux.
 
 ```bash
 smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'get rapport.txt rapport.txt'
@@ -233,7 +233,7 @@ smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'get rapport.txt rapport.txt'
 
 ### Sur la destination, créer le partage SMB {#ww-creer}
 
-PowerShell administrateur. Cette étape est utile si `Depot` n’existe pas encore. Le compte doit aussi disposer du droit d’écriture NTFS.
+Sur Windows destination, exécuter PowerShell en administrateur uniquement si le partage `Depot` n'existe pas. Accorder également les permissions NTFS nécessaires.
 
 ```powershell
 New-Item -ItemType Directory -Path 'C:\Depot' -Force
@@ -242,7 +242,7 @@ New-SmbShare -Name 'Depot' -Path 'C:\Depot' -ChangeAccess 'LAB\etudiant'
 
 ### Depuis la source, copier vers le partage SMB {#ww-smb}
 
-Le compte utilisé par PowerShell doit pouvoir écrire sur `\\10.10.10.30\Depot`.
+Sur Windows source, le compte courant doit avoir les permissions SMB et NTFS d'écriture sur `\\10.10.10.30\Depot`.
 
 ```powershell
 Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\10.10.10.30\Depot\rapport.txt'
@@ -250,7 +250,7 @@ Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\10.10.10.30
 
 ### Depuis la source, envoyer le fichier par SCP {#ww-scp}
 
-Le client OpenSSH s’exécute sur le premier Windows. Le serveur OpenSSH du second reçoit le fichier dans le dossier de connexion de `etudiant`.
+Sur Windows source, lancer le client OpenSSH ; Windows destination doit héberger OpenSSH Server et autoriser l'écriture dans le dossier du compte `etudiant`.
 
 ```powershell
 scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
@@ -260,26 +260,26 @@ scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
 
 ### Depuis Kali, ouvrir la session avec un dossier partagé {#rdp}
 
-FreeRDP 3 et la redirection de lecteurs doivent être disponibles. Place dans `partage` les fichiers à envoyer.
+Depuis Kali, FreeRDP 3 doit être disponible et la stratégie RDP Windows doit autoriser la redirection de lecteurs. Place les fichiers à envoyer dans `partage`.
 
 ```bash
 mkdir -p ./partage
 xfreerdp3 /v:10.10.10.30 /u:etudiant /dynamic-resolution "/drive:partage,$PWD/partage"
 ```
 
-### Dans Windows, afficher le dossier de Kali
+### Dans la session RDP Windows, afficher le dossier partagé de Kali
 
 ```powershell
 Get-ChildItem -LiteralPath '\\tsclient\partage'
 ```
 
-### Dans Windows, copier de Kali vers Windows
+### Dans la session RDP Windows, copier un fichier depuis Kali
 
 ```powershell
 Copy-Item -LiteralPath '\\tsclient\partage\rapport.txt' -Destination 'C:\Users\Public\rapport.txt'
 ```
 
-### Dans Windows, copier de Windows vers Kali
+### Dans la session RDP Windows, renvoyer un fichier vers Kali
 
 ```powershell
 Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\partage\retour.txt'
@@ -287,17 +287,17 @@ Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\pa
 
 ## FTP sur un serveur existant
 
-FTP transmet les identifiants et le fichier en clair. Utilise ici un compte de test sur un réseau isolé.
+FTP classique transmet les identifiants et les fichiers en clair. Ces commandes concernent un serveur FTP existant, pas un partage anonyme ; réserver les identifiants de test à un réseau isolé.
 
-### Depuis Linux, télécharger par FTP
+### Depuis Linux destination, récupérer un fichier depuis le serveur FTP
 
 ```bash
 curl --fail --user etudiant --output ./rapport.txt ftp://10.10.10.20/rapport.txt
 ```
 
-### Depuis Linux, envoyer par FTP
+### Depuis Linux source, déposer un fichier sur le serveur FTP
 
-Le compte FTP doit pouvoir écrire dans le dossier distant.
+Le serveur FTP doit accepter l'upload et le compte `etudiant` doit disposer des droits d'écriture dans le répertoire distant.
 
 ```bash
 curl --fail --user etudiant --upload-file ./rapport.txt ftp://10.10.10.20/rapport.txt
@@ -305,7 +305,7 @@ curl --fail --user etudiant --upload-file ./rapport.txt ftp://10.10.10.20/rappor
 
 ## Transférer un petit fichier sous forme de texte
 
-Base64 représente les octets sous forme de texte. Copie toute la chaîne et compare les empreintes après décodage.
+Base64 encode les octets en texte, sans les chiffrer. Pour un petit fichier seulement, copier toute la chaîne sans retour à la ligne ajouté, puis comparer SHA-256 après décodage.
 
 ### Sur Linux source, encoder en Base64
 
