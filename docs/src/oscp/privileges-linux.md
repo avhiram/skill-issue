@@ -105,9 +105,6 @@ Sur Debian, Ubuntu et les distributions utilisant `dpkg`, affiche la base des pa
 dpkg -l
 ```
 
-**Paramètres et repères :**
-`/dev/null`  
-
 ### Rechercher les répertoires modifiables par le compte courant
 
 `-writable` teste l'accès en écriture du processus courant, pas une permission d'écriture accordée à tous. La recherche peut être partielle si certains répertoires sont inaccessibles.
@@ -116,13 +113,13 @@ dpkg -l
 find / -writable -type d 2>/dev/null
 ```
 
-**Mots de passe présents en mémoire**
+**Limites de lecture de la mémoire physique**
 
-<p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
+<p class="oscp-command-note">`/dev/mem` est généralement restreint ; cette recherche ne garantit pas de retrouver des secrets.</p>
 
-```text
-strings /dev/mem -n10 | grep -i PASS
-
+```bash
+# Nécessite des droits élevés ; souvent bloqué par le noyau
+sudo strings -n 10 /dev/mem 2>/dev/null | grep -i 'pass'
 ```
 
 ### Rechercher les chemins indexés contenant « password »
@@ -195,9 +192,6 @@ sudo -l
 sudo -i
 ```
 
-**Paramètres et repères :**
-`unix-privesc-check`  
-
 **Énumération automatisée**
 
 ### Interfaces et connexions
@@ -237,24 +231,21 @@ ps axjf
 ## Examiner les services
 
 ```bash
-watch -n 1 "ps -aux | grep pass"
-
-```
-
-**Paramètres et repères :**
-`tcpdump`  
-
-```bash
-# Capturer le trafic réseau
-sudo tcpdump -i lo -A | grep "pass"
+watch -n 1 "ps auxww | grep -i '[p]ass'"
 
 ```
 
 ```bash
-# Capturer le trafic réseau
-tcpdump -i any -s0 -w capture.pcap
-tcpdump -i eth0 -w capture -n -U -s 0 src not 10.11.1.111 and dst not 10.11.1.111
-tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
+# Afficher le trafic en clair sur l'interface loopback (si autorisé)
+sudo tcpdump -i lo -A | grep -i 'pass'
+
+```
+
+```bash
+# Enregistrer le trafic sur toutes les interfaces (droits requis)
+sudo tcpdump -i any -s 0 -w capture.pcap
+sudo tcpdump -i eth0 -w capture.pcap -n -U -s 0 'not host 10.11.1.111'
+sudo tcpdump -vv -i eth0 'not host 10.11.1.111'
 
 ```
 
@@ -262,19 +253,19 @@ tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
 
 Examiner les permissions et la configuration de Linux.
 
-<p class="oscp-command-note">Rechercher les événements cron dans les journaux système.</p>
+<p class="oscp-command-note">Cron : rechercher les exécutions dans les journaux accessibles.</p>
 
 ```bash
 grep "CRON" /var/log/syslog
 # Autre possibilité
-cat /var/log/cron.log
+cat /var/log/cron.log  # Fichier présent uniquement sur certaines distributions
 
 ```
 
-<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Tâches cron».</p>
+<p class="oscp-command-note">Cron : vérifier les droits du script exécuté par la tâche planifiée.</p>
 
 ```bash
-ls -lah /path/to/script.sh
+ls -lah /chemin/vers/script.sh
 
 ```
 
