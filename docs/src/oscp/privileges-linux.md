@@ -7,15 +7,19 @@ description: "Examiner les permissions, processus et configurations d'un systèm
 
 Examiner les permissions, processus et configurations d'un système Linux.
 
-## Énumération
+## Énumération initiale
 
 ### Identifier l'utilisateur et ses groupes
+
+`id` affiche les UID, GID et groupes supplémentaires.
 
 ```bash
 id
 ```
 
 ### Identifier le nom de la machine
+
+`hostname` affiche le nom configuré localement.
 
 ```bash
 hostname
@@ -31,11 +35,15 @@ cat /etc/issue
 
 ### Lire la version de la distribution
 
+`/etc/os-release` contient les identifiants et versions déclarés par la distribution.
+
 ```bash
 cat /etc/os-release
 ```
 
 ### Identifier le noyau et l'architecture
+
+`uname -a` affiche la version du noyau et l'architecture.
 
 ```bash
 uname -a
@@ -43,96 +51,96 @@ uname -a
 
 ### Lister les processus
 
-`ps aux` affiche les processus, leurs PID, propriétaires et ressources consommées.
+`ps aux` affiche les PID, propriétaires et consommations CPU/mémoire ; la visibilité dépend de `/proc`.
 
 ```bash
 ps aux
 ```
 
-### Identifier les interfaces et adresses IP
+### Lister les adresses IP locales
 
-`ip a` affiche les interfaces et leurs adresses, pas les routes.
+`ip address` affiche les adresses des interfaces ; `ip route` affiche les routes séparément.
 
 ```bash
-ip a
+ip address show
 ```
 
-### Lister les sockets et les processus associés
+### Identifier les sockets ouverts
 
-`ss -anp` affiche les sockets sans résolution DNS ; les processus peuvent être masqués sans droits suffisants.
+`ss -anp` liste les sockets sans résoudre les noms ; `-p` peut nécessiter des privilèges pour afficher les PID.
 
 ```bash
 ss -anp
 ```
 
-### Examiner les règles IPv4 sauvegardées
+### Lire les règles iptables sauvegardées
 
-`rules.v4` dépend d'`iptables-persistent` ; ce n'est pas forcément le pare-feu actif.
-
-```bash
-cat /etc/iptables/rules.v4
-```
-
-### Identifier les fichiers cron du système
-
-Ne couvre pas les crontabs utilisateur ni les minuteurs systemd.
+`rules.v4` n'existe que si des règles IPv4 ont été sauvegardées ; ce fichier ne garantit pas leur activation.
 
 ```bash
-ls -lah /etc/cron*
+cat /etc/iptables/rules.v4 2>/dev/null
 ```
 
-### Lire ses tâches cron
+### Lister les fichiers cron système
 
-Une absence de crontab n'exclut pas des tâches système.
+Les fichiers `/etc/cron*` ne couvrent ni toutes les crontabs utilisateur ni les minuteurs systemd.
+
+```bash
+ls -lah /etc/cron* 2>/dev/null
+```
+
+### Lire la crontab courante
+
+`crontab -l` affiche la crontab personnelle ou signale qu'elle n'existe pas.
 
 ```bash
 crontab -l
 ```
 
-### Lire la crontab root avec sudo
+### Lire la crontab root si autorisé
 
-Nécessite une autorisation sudo appropriée.
+La politique sudo doit autoriser la lecture de la crontab root.
 
 ```bash
-sudo crontab -l
+sudo crontab -u root -l
 ```
 
-### Inventorier les paquets Debian/Ubuntu
+### Lister les paquets gérés par dpkg
 
-`dpkg -l` liste les paquets et leurs états, pas les installations manuelles.
+`dpkg -l` affiche les paquets enregistrés et leur état sur Debian et dérivées.
 
 ```bash
 dpkg -l
 ```
 
-### Trouver les dossiers accessibles en écriture
+### Rechercher les répertoires modifiables
 
-`-writable` vérifie l'accès du compte courant ; les chemins interdits sont ignorés.
-
-```bash
-find / -writable -type d 2>/dev/null
-```
-
-**Limites de lecture de la mémoire physique**
-
-<p class="oscp-command-note">`/dev/mem` est généralement restreint ; cette recherche ne garantit pas de retrouver des secrets.</p>
+`-writable` teste les permissions du compte courant ; les erreurs d'accès sont masquées.
 
 ```bash
-# Nécessite des droits élevés ; souvent bloqué par le noyau
-sudo strings -n 10 /dev/mem 2>/dev/null | grep -i 'pass'
+find / -type d -writable 2>/dev/null
 ```
 
-### Rechercher « password » dans l'index local
+### Comprendre les restrictions de `/dev/mem`
 
-`locate` dépend d'un index qui peut être incomplet ou ancien.
+<p class="oscp-command-note">L'accès à `/dev/mem` est souvent bloqué par le noyau. Éviter de parcourir la mémoire brute sans autorisation explicite.</p>
+
+```bash
+# Vérifier les permissions du périphérique sans lire la mémoire physique
+ls -l /dev/mem 2>/dev/null
+```
+
+### Rechercher des chemins via l'index locate
+
+`locate` interroge un index local, qui peut être absent, incomplet ou périmé.
 
 ```bash
 locate -i password | less
 ```
 
-### Examiner les montages prévus au démarrage
+### Lire la configuration des montages
 
-`fstab` décrit les montages configurés, pas nécessairement actifs.
+`/etc/fstab` décrit les montages configurés ; utiliser `findmnt` pour les montages actifs.
 
 ```bash
 cat /etc/fstab
@@ -140,53 +148,55 @@ cat /etc/fstab
 
 ### Lister les systèmes de fichiers montés
 
+`findmnt` affiche les points de montage actifs et leur source.
+
 ```bash
-mount
+findmnt
 ```
 
-### Identifier disques et partitions
+### Lister les périphériques blocs
 
-`lsblk` ne recense pas tous les montages réseau.
+`lsblk` montre les périphériques blocs, mais pas l'ensemble des montages réseau.
 
 ```bash
 lsblk
 ```
 
-### Identifier les modules chargés
+### Lister les modules du noyau actifs
 
-`lsmod` n'affiche que les modules chargés.
+`lsmod` n'affiche que les modules actuellement chargés.
 
 ```bash
 lsmod
 ```
 
-### Examiner un module disponible
+### Lire les métadonnées d'un module
 
-`modinfo` décrit un module installé, même s'il n'est pas chargé.
+Remplacer `NOM_MODULE` par un nom connu ; `modinfo` n'exige pas que le module soit chargé.
 
 ```bash
 modinfo NOM_MODULE
 ```
 
-### Rechercher les exécutables SUID
+### Trouver les fichiers avec le bit SUID
 
-SUID ne signifie pas automatiquement qu'un fichier est vulnérable.
+Un fichier SUID n'est pas forcément exploitable ; vérifier son propriétaire et les options `nosuid`.
 
 ```bash
-find / -perm -u=s -type f 2>/dev/null
+find / -type f -perm -u=s 2>/dev/null
 ```
 
-### Identifier les commandes autorisées par sudo
+### Examiner les droits sudo
 
-`sudo -l` peut demander le mot de passe et liste les droits accordés.
+`sudo -l` peut demander une authentification et liste les règles applicables au compte courant.
 
 ```bash
 sudo -l
 ```
 
-### Ouvrir un shell de connexion avec sudo
+### Ouvrir une session privilégiée si autorisée
 
-`sudo -i` ouvre un shell de connexion si la politique sudo l'autorise.
+`sudo -i` ouvre une session du compte cible, généralement root, seulement si autorisé.
 
 ```bash
 sudo -i
@@ -194,7 +204,7 @@ sudo -i
 
 ## Inventaire complémentaire
 
-### Interfaces et connexions
+### Adresses, routes et ports en écoute
 
 Afficher adresses IP, routes et ports en écoute.
 
