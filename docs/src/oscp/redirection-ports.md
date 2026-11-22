@@ -18,7 +18,6 @@ description: "Comprendre et reproduire les redirections SSH, Socat, Plink et net
 | Plink `-R` | Windows pivot | Même logique que SSH `-R` avec l'outil PuTTY |
 | Windows `netsh portproxy` | Windows pivot, administrateur | Relais TCP entre deux adresses/ports |
 
-
 **Comprendre les ports :** le **port d'écoute** est le port auquel vous vous connectez ; le **port cible** est celui du service final. La machine qui héberge le port d'écoute dépend de `-L`, `-R` et de l'outil.
 
 ## SSH : redirection locale
@@ -39,7 +38,7 @@ ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
 
 Tester le service HTTP distant depuis la boucle locale de Kali.
 
-<p class="oscp-command-note">Sur Kali — autre terminal.</p>
+<p class="oscp-command-note">Sur Kali : exécuter cette commande dans un second terminal.</p>
 
 ```bash
 curl -I http://127.0.0.1:8080/
@@ -65,7 +64,7 @@ ssh -N -R 127.0.0.1:9090:127.0.0.1:80 kali@10.10.14.10
 
 La requête arrive sur le service qui écoute sur le port 80 du pivot.
 
-<p class="oscp-command-note">Sur Kali — autre terminal.</p>
+<p class="oscp-command-note">Sur Kali : exécuter cette commande dans un second terminal.</p>
 
 ```bash
 curl -I http://127.0.0.1:9090/
@@ -91,7 +90,7 @@ ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
 
 L'option `--socks5-hostname` conserve la résolution de nom côté proxy, quand un nom interne est utilisé.
 
-<p class="oscp-command-note">Sur Kali — autre terminal.</p>
+<p class="oscp-command-note">Sur Kali : exécuter cette commande dans un second terminal.</p>
 
 ```bash
 curl --socks5-hostname 127.0.0.1:9050 -I http://172.16.20.10/
@@ -117,7 +116,7 @@ socat TCP-LISTEN:8080,bind=0.0.0.0,reuseaddr,fork TCP:172.16.20.10:80
 
 Se connecter au port 8080 du pivot.
 
-<p class="oscp-command-note">Sur Kali — autre terminal.</p>
+<p class="oscp-command-note">Sur Kali : exécuter cette commande dans un second terminal.</p>
 
 ```bash
 curl -I http://10.10.10.30:8080/
@@ -218,7 +217,6 @@ Consulter la [fiche Ligolo-ng pas à pas](./tunneling.md) : tunnel simple, doubl
 | ProxyChains ne répond pas | SOCKS actif et bon port renseigné dans `proxychains4.conf` |
 | `netsh` configuré mais muet | IP Helper, port Windows, route et pare-feu |
 | Ligolo traverse plusieurs sous-réseaux | Vérifier l'interface TUN et les routes avec la fiche dédiée |
-
 
 ## Références
 
