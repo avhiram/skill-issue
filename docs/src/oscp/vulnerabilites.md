@@ -7,11 +7,7 @@ description: "Évaluer les services exposés et rechercher des faiblesses connue
 
 Évaluer les services exposés et rechercher des faiblesses connues.
 
-
 ## Nessus
-
-
-
 
 ```text
 Go to the Nessus website https://www.tenable.com/downloads/nessus?loginAttempted=true and select the platform.
@@ -20,8 +16,7 @@ Download the installer to your local machine.
 
 ```
 
-
-<p class="oscp-command-note">Se placer dans le répertoire utilisé pour «Nessus».</p>
+<p class="oscp-command-note">Ouvrir le dossier contenant les fichiers Nessus.</p>
 
 ```bash
 # Il est important de vérifier l'intégrité du téléchargement avec `sha256sum`.
@@ -33,14 +28,12 @@ sha256sum -c sha256sum_nessus
 
 ```
 
-
-<p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
+<p class="oscp-command-note">Installer les paquets nécessaires sur Debian ou Ubuntu.</p>
 
 ```bash
 sudo apt install ./Nessus-10.5.0-debian10_amd64.deb
 
 ```
-
 
 <p class="oscp-command-note">Examiner l&#x27;état des services Linux.</p>
 
@@ -51,11 +44,9 @@ sudo systemctl start nessusd.service
 
 ```
 
-
 ## Nmap NSE (moteur de script Nmap)
 
 Vérifier les ports et les services de la cible autorisée.
-
 
 <p class="oscp-command-note">Nmap NSE : lancer un script choisi et afficher sa documentation avec --script-help.</p>
 
@@ -67,7 +58,6 @@ nmap --script [scriptName] [IP]
 nmap --script-help [scriptName]
 
 ```
-
 
 <p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
@@ -82,8 +72,6 @@ sudo nmap --script-updatedb
 sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
 
 ```
-
-
 
 ### Interroger les scripts de vulnérabilité
 
