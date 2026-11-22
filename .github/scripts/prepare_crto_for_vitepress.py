@@ -98,12 +98,20 @@ for path in ROOT.rglob("*.md"):
     rendered = re.sub(r"<img\b[^>]*?\bsrc\s*=\s*([\"'])([^\"']+)\1[^>]*>", check_html_image, rendered, flags=re.IGNORECASE)
     if path.relative_to(ROOT).as_posix() == "labs/defence-evasion-lab-Malleable.md":
         rendered = rendered.replace("](Exam-Instructions.md)", "](../notes/Exam-Instructions.md)")
-    # Page-local styling without touching the imported upstream Markdown.
+    # Keep VitePress footer links inside their own section.
+    # This is applied only to the temporary build copy, not the upstream files.
     fm = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", rendered, flags=re.S)
+    frontmatter = {"pageClass": "crto-page", "prev": "false", "next": "false"}
     if fm:
-        if not re.search(r"(?m)^pageClass\s*:", fm.group(1)):
-            rendered = rendered.replace("---\n", "---\npageClass: crto-page\n", 1)
+        additions = [
+            f"{key}: {value}" for key, value in frontmatter.items()
+            if not re.search(rf"(?m)^{key}\s*:", fm.group(1))
+        ]
+        if additions:
+            rendered = rendered.replace("---\n", "---\n" + "\n".join(additions) + "\n", 1)
     else:
-        rendered = "---\npageClass: crto-page\n---\n\n" + rendered
+        rendered = "---\n" + "\n".join(
+            f"{key}: {value}" for key, value in frontmatter.items()
+        ) + "\n---\n\n" + rendered
     if rendered != original:
         path.write_text(rendered, encoding="utf-8")

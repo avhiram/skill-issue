@@ -3,6 +3,8 @@ title: CRTO
 description: Certified Red Team Operator
 pageClass: crto-hub-page
 aside: false
+prev: false
+next: false
 ---
 
 # CRTO
