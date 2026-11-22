@@ -31,6 +31,7 @@ const key = computed(() => `${source.value}-${target.value}` as keyof typeof met
 const choices = computed(() => methods[key.value])
 const selected = ref(0)
 const current = computed(() => choices.value[Math.min(selected.value,choices.value.length-1)])
+async function navigatorClipboard(value:string) { if (typeof navigator !== 'undefined' && navigator.clipboard) await navigator.clipboard.writeText(value) }
 function chooseSource(v:Event){source.value=(v.target as HTMLSelectElement).value as OS;selected.value=0}
 function chooseTarget(v:Event){target.value=(v.target as HTMLSelectElement).value as OS;selected.value=0}
 </script>
@@ -50,16 +51,6 @@ function chooseTarget(v:Event){target.value=(v.target as HTMLSelectElement).valu
     <p class="transfer-help">IP de laboratoire : Kali 10.10.14.10 · Linux 10.10.10.20 · Windows 10.10.10.30. Adapter les comptes, chemins et ports. Voir les explications détaillées plus bas.</p>
   </div>
 </template>
-
-<script lang="ts">
-export default {
-  methods: {
-    async navigatorClipboard(value:string) {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) await navigator.clipboard.writeText(value)
-    }
-  }
-}
-</script>
 
 <style scoped>
 .transfer-selector{border:1px solid #48345d;border-radius:12px;padding:16px;background:#15101e;margin:18px 0}
