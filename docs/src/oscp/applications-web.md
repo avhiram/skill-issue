@@ -1192,7 +1192,7 @@ http://<target_url>/file.php?recurse=../../../../../proc/self/environ
 ```
 
 
-#### Outils utiles
+#### Outils pour analyser les requêtes et réponses HTTP
 
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
@@ -3877,7 +3877,7 @@ iex "$([System.Text.Encoding]::Unicode.GetString([System.Convert]::FromBase64Str
 ```
 
 
-### Outils automatisés
+### Outils automatisés de vérification des applications web
 
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
