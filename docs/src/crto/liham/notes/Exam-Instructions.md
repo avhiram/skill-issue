@@ -36,7 +36,7 @@ Le **Lab ID** figure en bas du panneau d’instructions. Le communiquer en cas d
 | Critère | Cause de pénalité | Mesure préventive |
 |-----------|--------------------------|------------|
 | **Blocage par Defender / AppLocker** | Blocage de l’exécution d’un payload par l’antivirus | Vérifier l’Artifact Kit et le Resource Kit avant l’examen |
-| **Connexion sortante depuis un processus inhabituel** | Callback HTTP d’un Beacon depuis un processus qui n’effectue normalement pas de requêtes Web | Utiliser un processus habituel (browser, svchost, dllhost) et configurer `spawnto` and `ppid` |
+| **Connexion sortante depuis un processus inhabituel** | Callback HTTP d’un Beacon depuis un processus qui n’effectue normalement pas de requêtes Web | Utiliser un processus habituel (browser, svchost, dllhost) et configurer `spawnto` et `ppid` |
 | **Indicateurs Cobalt Strike par défaut** | Noms de named pipes par défaut et technique d’injection standard | Personnaliser `post-ex.pipename` et `process-inject` dans le Malleable C2 Profile |
 | **Lateral Movement suspect** | `jump psexec` / événements de création de services | Privilégier `jump winrm64`, puis `remote-exec wmi` ; utiliser PsExec en dernier recours |
 | **Handles LSASS suspects** | Handle direct sur LSASS depuis un processus non-système | Privilégier le BOF `nanodump` ; éviter l’accès direct à LSASS avec Mimikatz |
@@ -95,7 +95,7 @@ Après une reprise, une chaîne Beacon SMB/P2P peut être interrompue. La persis
 
 ---
 
-## Checklist avant l’examen
+## Liste de vérification avant l’examen
 
 ```
 [ ] Lire les rules of engagement et identifier les hôtes hors périmètre
