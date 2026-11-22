@@ -27,7 +27,7 @@ Commencer par identifier le sens de la relation de confiance : il détermine que
 ```
 
 **Interprétation de `trustDirection` pour le lab :**
-- `trustDirection=1 INBOUND` (queried from CONTOSO) → PARTNER fait confiance à CONTOSO : les utilisateurs CONTOSO peuvent s’authentifier sur les ressources PARTNER, sous réserve des autorisations.
+- `trustDirection=1 INBOUND` (interrogé depuis CONTOSO) → PARTNER fait confiance à CONTOSO : les utilisateurs CONTOSO peuvent s’authentifier sur les ressources PARTNER, sous réserve des autorisations.
 - `trustDirection=2 OUTBOUND` → CONTOSO fait confiance à l’autre domaine : ses utilisateurs peuvent s’authentifier sur les ressources CONTOSO.
 - `trustDirection=3` → bidirectionnelle
 
@@ -242,7 +242,7 @@ Le groupe **Contoso Users** existe dans PARTNER. Il faut vérifier si ses droits
     ldapsearch (samAccountType=805306369) --hostname par-dc-1.partner.com --dn DC=partner,DC=com --attributes distinguishedName
     ```
 
-    > `samAccountType=805306369` = compte ordinateurs. Lists all machines in PARTNER so you know valid targets. `par-jmp-1.partner.com` will appear here — this is our jump target for the exploitation step.
+    > `samAccountType=805306369` correspond aux comptes ordinateur. Cette recherche répertorie les machines de PARTNER, notamment `par-jmp-1.partner.com` dans le scénario.
 
 ===
 
@@ -251,8 +251,8 @@ Le groupe **Contoso Users** existe dans PARTNER. Il faut vérifier si ses droits
 ### Objectif de cette phase
 Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOSO. L’utilisateur `rsteel` bénéficie d’autorisations locales dans PARTNER via les groupes de confiance. La suite illustre le cheminement des tickets Kerberos entre les deux domaines.
 
-**Compte étudié :** `rsteel` — a CONTOSO domain user, member of "Partner Jump Users"
-**Machine cible :** `par-jmp-1.partner.com` — a jump server in PARTNER where rsteel has local admin
+**Compte étudié :** `rsteel` — utilisateur CONTOSO membre de **Partner Jump Users**
+**Machine cible :** `par-jmp-1.partner.com` — serveur PARTNER sur lequel le lab attribue des droits d’administration locale à `rsteel`
 
 > **Point important pour l’examen :**
 > DCSync nécessite des permissions de réplication AD appropriées. Le compte local `NT AUTHORITY\SYSTEM` d’une workstation ne dispose pas automatiquement de ces droits ; une demande non autorisée peut renvoyer `ERROR_DS_DRA_ACCESS_DENIED (0x20f7)`.
