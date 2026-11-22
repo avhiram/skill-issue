@@ -1,8 +1,6 @@
-# Pivoting  
+# Pivoting
 
->Once ***Lateral Movement** achieved, then the aim is to pass through internal network segmentation and use ***pivoting*** and tunnelling with SOCKS proxies to reach internal targets from compromised hosts running C2 beacon.  
+> Après le **Lateral Movement**, le **pivoting** et le **tunneling** permettent de traverser la segmentation du réseau interne. Des **SOCKS proxies** donnent accès à d’autres cibles depuis les hôtes disposant d’un **C2 Beacon**.
 
-* SOCKS Proxies
-* Reverse Port Forwards
-
-
+* **SOCKS Proxies**
+* **Reverse Port Forwards**

