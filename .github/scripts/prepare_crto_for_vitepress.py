@@ -80,7 +80,7 @@ for path in ROOT.rglob("*.md"):
             return match.group(0)
         return f"*Image absente du dépôt original : {alt or Path(url).name}*"
 
-    rendered = re.sub(r"!\\[([^\\]]*)\\]\\(([^\\s)]+)\\)", check_markdown_image, rendered)
+    rendered = re.sub(r"!\[([^\]]*)\]\(([^\s)]+)\)", check_markdown_image, rendered)
 
     def check_html_image(match: re.Match) -> str:
         url = match.group(2)
@@ -88,6 +88,6 @@ for path in ROOT.rglob("*.md"):
             return match.group(0)
         return f"*Image absente du dépôt original : {Path(url).name}*"
 
-    rendered = re.sub(r"<img\\b[^>]*?\\bsrc\\s*=\\s*([\\\"'])([^\\\"']+)\\1[^>]*>", check_html_image, rendered, flags=re.IGNORECASE)
+    rendered = re.sub(r"<img\b[^>]*?\bsrc\s*=\s*([\"'])([^\"']+)\1[^>]*>", check_html_image, rendered, flags=re.IGNORECASE)
     if rendered != original:
         path.write_text(rendered, encoding="utf-8")
