@@ -1319,9 +1319,6 @@ nmap -sV -p 593 <IP_CIBLE>
 
 ```
 
-**Paramètres et repères :**
-`rpcclient`  
-
 <p class="oscp-command-note">rpcclient : ouvrir une session SMB/RPC et interroger les informations accessibles sans identifiants.</p>
 
 ```bash
@@ -1415,7 +1412,7 @@ querydominfo
 
 ```
 
-<p class="oscp-command-note">SMB : identifier le service, tester des identifiants autorisés avec NetExec et résoudre les SID avec Impacket ; aucun script smb-brute n'est exécuté.</p>
+<p class="oscp-command-note">SMB : identifier le service, vérifier un compte et résoudre les SID.</p>
 
 ```bash
 # Nmap : vérifier la présence du service SMB
@@ -1457,14 +1454,11 @@ rpcclient -U '' -N 192.0.2.10 -c 'enumdomusers'
 
 ```
 
-**Paramètres et repères :**
-`setuserinfo` · `rpcclient` · `level` · `setuserinfo2`  
-
 ### 139, 445: SMB
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">SMB : contrôler TCP 139/445 avec Nmap ; nbtscan fonctionne sous Linux, net view sous Windows CMD.</p>
+<p class="oscp-command-note">SMB : détecter les ports 139/445 et les partages visibles.</p>
 
 ```bash
 # Scanner les ports et services avec Nmap
@@ -1479,7 +1473,7 @@ net view \\\\192.0.2.10 /all
 
 ```
 
-<p class="oscp-command-note">Nmap SMB : énumérer partages, comptes, groupes et protocoles ; tester MS17-010 uniquement dans le périmètre autorisé.</p>
+<p class="oscp-command-note">Nmap : lister les informations SMB et vérifier MS17-010 sur une cible autorisée.</p>
 
 ```bash
 nmap -p 445 --script smb-enum-shares <IP_CIBLE>
@@ -1496,7 +1490,7 @@ nmap -p 445 --script smb-protocols 192.0.2.10
 
 ```
 
-<p class="oscp-command-note">SMB : capturer le trafic TCP 139 avec ngrep et lister les partages accessibles sans mot de passe.</p>
+<p class="oscp-command-note">SMB : observer le trafic TCP 139 et tester les partages anonymes.</p>
 
 ```bash
 # Capturer le trafic TCP 139 avec ngrep ; ne décode pas les opérations SMB
@@ -1507,10 +1501,7 @@ smbclient -L //<IP_CIBLE> -N
 
 ```
 
-**Paramètres et repères :**
-`smbmap`  
-
-<p class="oscp-command-note">SMBMap : comparer les droits visibles en accès anonyme ou invité ; -R explore les répertoires autorisés.</p>
+<p class="oscp-command-note">SMBMap : lister les partages et leurs permissions. `-R` parcourt les dossiers.</p>
 
 ```bash
 smbmap -H <IP_CIBLE>
@@ -1520,7 +1511,7 @@ smbmap -u '' -p '' -H <IP_CIBLE> -R
 
 ```
 
-<p class="oscp-command-note">Interroger SMB avec NetExec (`nxc`), successeur de CrackMapExec ; les essais de comptes doivent être autorisés.</p>
+<p class="oscp-command-note">NetExec : vérifier SMB, les comptes invités et les partages accessibles.</p>
 
 ```bash
 nxc smb 192.0.2.10
@@ -1532,7 +1523,7 @@ nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
 
-<p class="oscp-command-note">Enum4linux : inventorier les comptes, partages et informations NetBIOS visibles selon les permissions de la session.</p>
+<p class="oscp-command-note">Enum4linux : lister les utilisateurs, partages et informations NetBIOS.</p>
 
 ```bash
 # Énumérer les informations SMB/NetBIOS accessibles avec enum4linux
@@ -1545,11 +1536,6 @@ enum4linux -U <IP_DC>
 # Lister les partages SMB annoncés par la cible
 enum4linux -S <IP_CIBLE>
 
-enum4linux -a 192.0.2.10 2>&1
-enum4linux -a -u "" -p "" <ip>
-enum4linux -a -u "guest" -p "" <ip>
-enum4linux -a -u "[user]" -p "[password]" <ip>
-
 ```
 
 ```bash
@@ -1560,18 +1546,9 @@ smbclient //192.0.2.10/partage
 smbclient -N //192.0.2.10/partage
 smbclient //192.0.2.10/partage -U utilisateur -t 100 -c 'prompt;recurse;mget *'
 
-# Dans la session smbclient, help affiche les commandes interactives disponibles
-help
-# Exemple dans le terminal Linux, hors de l'invite smbclient : smbclient -t 100 -L //192.0.2.10 -N
-
-# Dans smbclient, basculer les confirmations et la récursion (commandes sans ON/OFF)
-prompt
-recurse
-mget *
-
 ```
 
-<p class="oscp-command-note">SMB : essais d'identifiants autorisés avec NetExec ou Hydra ; limiter le débit et surveiller les verrouillages.</p>
+<p class="oscp-command-note">SMB : tester les identifiants autorisés. Attention aux verrouillages.</p>
 
 ```bash
 nxc smb 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
@@ -1579,7 +1556,7 @@ hydra -L utilisateurs.txt -P mots_de_passe.txt smb://192.0.2.10 -f
 
 ```
 
-<p class="oscp-command-note">Linux : créer un point de montage puis monter un partage SMB en lecture seule avec cifs-utils et les droits sudo.</p>
+<p class="oscp-command-note">Kali : monter un partage SMB en lecture seule avec `cifs-utils`.</p>
 
 ```bash
 # Monter un partage SMB autorisé dans un répertoire local (installer cifs-utils)
@@ -1589,7 +1566,7 @@ sudo mount -t cifs //192.0.2.10/partage /tmp/share -o username=utilisateur,ro
 
 ```
 
-<p class="oscp-command-note">Impacket : PsExec, WMIExec, SMBExec et ATExec sont des méthodes distinctes d'exécution distante nécessitant les droits adaptés.</p>
+<p class="oscp-command-note">Impacket : exécuter des commandes à distance avec les droits nécessaires.</p>
 
 ```bash
 # Impacket PsExec : selon l'installation, utiliser impacket-psexec ou psexec.py
