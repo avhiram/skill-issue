@@ -118,7 +118,7 @@ jump scshell64 lon-fs-1 smb
 
 ```cs
 ls c:\
-powerpick [System.IO.File]::WriteAllText("C:\rto.txt","Juan Botes")
+powerpick [System.IO.File]::WriteAllText("C:\rto.txt","liham")
 powerpick gc C:\rto.txt
 ```
 

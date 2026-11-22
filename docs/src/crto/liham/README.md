@@ -1,6 +1,6 @@
 # CRTO Study Notes 2026  
 
-<img src="/images/crto_pass.png">  
+**liham** · [CRTO Certificate](https://certs.zeropointsecurity.co.uk/97e8bb4c-2937-4c21-bf35-ad5cc17f6cb0#acc.pYBlWQqt)
 
 ## OPSEC ROBOT  
 
@@ -171,4 +171,3 @@
 
 <img src="/images/RedTeamOperationsPractitioner.png" width=400>  
 
-🇿🇦 22May2026 🇿🇦  

@@ -41,6 +41,7 @@ jobs:
         run: git restore --worktree -- docs/src/crto/botesjuan
       - name: Publish compiled website at GitHub Pages root
         run: |
+          rm -rf crto/botesjuan
           rsync -a docs/.vitepress/dist/ ./
           touch .nojekyll
           git config user.name "github-actions[bot]"

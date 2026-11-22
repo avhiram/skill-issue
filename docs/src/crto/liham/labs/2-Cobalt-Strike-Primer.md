@@ -245,7 +245,7 @@ Go to **Cobalt Strike > Listeners > Add** to create a new listener.
 
 > ⚠️ **PREREQUISITE — First Update C2 Malleable Profile**  
 
-> First CHECK [Defence evasion Malleable C2 profile](https://github.com/botesjuan/CRTO-Study-Notes/blob/main/labs/defence-evasion-lab-Malleable.md#part-1--malleable-c2-profile)
+> First CHECK [Defence evasion Malleable C2 profile](defence-evasion-lab-Malleable.md#part-1--malleable-c2-profile)
 
 <img src="/images/malleable-c2-profile-updates.png">  
 

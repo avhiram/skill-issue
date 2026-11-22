@@ -8,7 +8,7 @@ from pathlib import Path
 import re
 from urllib.parse import unquote
 
-ROOT = Path("docs/src/crto/botesjuan")
+ROOT = Path("docs/src/crto/liham")
 ALLOWED_HTML = {
     "a", "abbr", "b", "blockquote", "br", "caption", "center", "code",
     "col", "colgroup", "dd", "del", "details", "div", "dl", "dt",
