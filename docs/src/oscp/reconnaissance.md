@@ -1859,39 +1859,23 @@ nmap -n -sV -p 389,636 --script ldap-rootdse <IP_DC>
 
 ```
 
-<p class="oscp-command-note">LDAP : lire RootDSE puis rechercher des objets sous le DN de base autorisé ; -W demande le mot de passe.</p>
+<p class="oscp-command-note">LDAP : lire RootDSE, puis rechercher dans le domaine. `-W` demande le mot de passe.</p>
 
 ```bash
 # LDAP : lire namingContexts dans RootDSE sans authentification si le serveur le permet
 ldapsearch -LLL -x -H ldap://192.0.2.10 -s base -b '' namingContexts
 
-# Interroger le RootDSE : base DN vide et portée base
-ldapsearch -x -H ldap://<IP_DC> -s base -b ''
-
-# Afficher les contextes de nommage publiés par le serveur LDAP
-ldapsearch -x -H ldap://<IP_DC> -s base -b '' namingContexts
-
-# LDAP : rechercher les objets visibles sous le DN de base explicite
-ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
-
-# Rechercher tous les objets LDAP visibles (le filtre objectClass=* ne se limite pas aux utilisateurs)
-ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass=*)"
+# LDAP : lister les objets visibles du domaine (adapter le DN)
+ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=exemple,DC=local' '(objectClass=*)'
 
 # Lister les attributs sAMAccountName des objets utilisateur visibles
 ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=exemple,DC=local' '(objectClass=user)' sAMAccountName
 
-# LDAP : distinguer les filtres utilisateur et groupe
-ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=user)"
-ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=group)"
+# LDAP : lister les groupes du domaine
+ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=exemple,DC=local' '(objectCategory=group)' cn
 
 # LDAP : -D accepte l'identité de connexion ; -W demande le mot de passe sans l'inscrire dans l'historique
 ldapsearch -x -H ldap://<IP_DC> -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=*)'
-
-# Recherche LDAP authentifiée : fournir un filtre valide et demander le mot de passe de façon interactive.
-ldapsearch -x -H ldap://192.0.2.10 -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=user)'
-
-# Sélectionner explicitement un attribut retourné après le filtre LDAP.
-ldapsearch -x -H ldap://192.0.2.10 -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=user)' sAMAccountName
 
 ```
 
@@ -1931,8 +1915,8 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher les comptes désactivés (Disabled Accounts)
 (userAccountControl:1.2.840.113556.1.4.803:=2)
 
-# Rechercher les comptes utilisateurs actifs dont pwdLastSet n'est pas égal à zéro (ne garantit pas la validité du mot de passe)
-(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(pwdLastSet=0)))
+# Rechercher les personnes actives dont le mot de passe a déjà été défini
+(&(objectCategory=person)(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(pwdLastSet=0)))
 
 # Rechercher les membres d’un groupe (Group Membership)
 (&(objectClass=user)(memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com))
@@ -1951,8 +1935,8 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher les comptes dont l'attribut pwdLastSet vaut exactement zéro
 (&(objectClass=user)(pwdLastSet=0))
 
-# Recherche de comptes dans une unité organisationnelle spécifique (OU)
-(distinguishedName=*,OU=Sales,DC=domain,DC=com)
+# Pour chercher dans une OU, modifier le DN de base de ldapsearch :
+# -b 'OU=Sales,DC=domain,DC=com' (ceci n'est pas un filtre LDAP)
 
 # Recherches liées à la sécurité
 
@@ -1985,8 +1969,8 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher tous les objets dans le répertoire
 (objectClass=*)
 
-# Rechercher les objets de catégorie serviceAccount si le schéma LDAP la prend en charge
-(objectCategory=serviceAccount)
+# Rechercher les comptes de service gérés AD (gMSA)
+(objectClass=msDS-GroupManagedServiceAccount)
 
 # Rechercher les comptes membres du groupe indiqué (GroupName)
 (memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com)
@@ -2016,7 +2000,7 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -s base -b '' defaultNamingContext namingCo
 
 Lister le nom des comptes exposés à un utilisateur LDAP autorisé.
 
-<p class="oscp-command-note">LDAP authentifié : lire sAMAccountName des objets user accessibles ; le filtre peut aussi inclure des comptes ordinateurs AD.</p>
+<p class="oscp-command-note">LDAP : lister les noms des comptes utilisateurs accessibles.</p>
 
 ```bash
 ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(objectCategory=person)(objectClass=user))' sAMAccountName
