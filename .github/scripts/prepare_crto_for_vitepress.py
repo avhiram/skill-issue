@@ -54,10 +54,10 @@ for path in ROOT.rglob("*.md"):
         # Upstream sometimes indents Markdown blockquotes as code, leaving
         # literal ">" prefixes and unformatted OPSEC explanations on the page.
         # Adjust presentation only; never change commands inside fences.
-        if re.fullmatch(r"[ \\t]*={3,}[ \\t]*(?:\\r?\\n)?", line):
-            line = "---\\n"
-        elif re.match(r"^[ \\t]*>", line):
-            line = re.sub(r"^[ \\t]*>[ \\t]*", "> ", line, count=1)
+        if re.fullmatch(r"[ \t]*={3,}[ \t]*(?:\r?\n)?", line):
+            line = "---\n"
+        elif re.match(r"^[ \t]*>", line):
+            line = re.sub(r"^[ \t]*>[ \t]*", "> ", line, count=1)
         pieces = INLINE_CODE.split(line)
         output.append("".join(
             chunk if i % 2 else escape_placeholders(chunk)
@@ -99,11 +99,11 @@ for path in ROOT.rglob("*.md"):
     if path.relative_to(ROOT).as_posix() == "labs/defence-evasion-lab-Malleable.md":
         rendered = rendered.replace("](Exam-Instructions.md)", "](../notes/Exam-Instructions.md)")
     # Page-local styling without touching the imported upstream Markdown.
-    fm = re.match(r"\\A---\\r?\\n(.*?)\\r?\\n---(?:\\r?\\n|$)", rendered, flags=re.S)
+    fm = re.match(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|$)", rendered, flags=re.S)
     if fm:
-        if not re.search(r"(?m)^pageClass\\s*:", fm.group(1)):
-            rendered = rendered.replace("---\\n", "---\\npageClass: crto-page\\n", 1)
+        if not re.search(r"(?m)^pageClass\s*:", fm.group(1)):
+            rendered = rendered.replace("---\n", "---\npageClass: crto-page\n", 1)
     else:
-        rendered = "---\\npageClass: crto-page\\n---\\n\\n" + rendered
+        rendered = "---\npageClass: crto-page\n---\n\n" + rendered
     if rendered != original:
         path.write_text(rendered, encoding="utf-8")
