@@ -25,7 +25,7 @@ Télécharger les binaires depuis les [versions officielles de Ligolo-ng](https:
 
 L'interface TUN transporte les paquets vers Ligolo. Ne pas la recréer si elle existe déjà. Cette méthode manuelle fonctionne avec les versions classiques.
 
-<p class="oscp-command-note">Sur Kali — terminal habituel, avant de lancer le proxy.</p>
+<p class="oscp-command-note">Sur Kali: terminal habituel, avant de lancer le proxy.</p>
 
 ```bash
 sudo ip tuntap add user "$USER" mode tun ligolo
@@ -37,7 +37,7 @@ ip -br link show ligolo
 
 Les exemples utilisent un binaire nommé `proxy` téléchargé depuis le projet officiel. Ligolo écoute par défaut sur TCP 11601.
 
-<p class="oscp-command-note">Sur Kali — autre terminal, à laisser ouvert.</p>
+<p class="oscp-command-note">Sur Kali: autre terminal, à laisser ouvert.</p>
 
 ```bash
 chmod +x ./proxy
@@ -58,7 +58,7 @@ certificate_fingerprint
 
 Transférer auparavant le binaire Windows `agent.exe` de la même version que le proxy. Remplacer `EMPREINTE_SHA256` par la vraie empreinte.
 
-<p class="oscp-command-note">Sur le Windows pivot — PowerShell.</p>
+<p class="oscp-command-note">Sur le Windows pivot: PowerShell.</p>
 
 ```powershell
 .\agent.exe -connect 10.10.14.10:11601 -accept-fingerprint EMPREINTE_SHA256
@@ -68,7 +68,7 @@ Transférer auparavant le binaire Windows `agent.exe` de la même version que le
 
 Alternative à l'agent Windows. Exécuter le binaire Linux correspondant à l'architecture du pivot.
 
-<p class="oscp-command-note">Sur un pivot Linux — terminal Bash.</p>
+<p class="oscp-command-note">Sur un pivot Linux: terminal Bash.</p>
 
 ```bash
 chmod +x ./agent
@@ -101,7 +101,7 @@ tunnel_list
 
 Adapter `172.16.20.0/24` au réseau découvert avec `ifconfig` dans Ligolo. Cette route n'est ajoutée que sur Kali.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux différent de la console proxy.</p>
+<p class="oscp-command-note">Sur Kali: terminal Linux différent de la console proxy.</p>
 
 ```bash
 sudo ip route add 172.16.20.0/24 dev ligolo
@@ -129,7 +129,7 @@ Depuis Ligolo-ng **v0.6**, la console du proxy permet de créer l'interface et d
 
 La console tente de créer l'interface TUN sur le système Kali.
 
-<p class="oscp-command-note">Dans la console Ligolo sur Kali — alternative aux commandes `ip tuntap`.</p>
+<p class="oscp-command-note">Dans la console Ligolo sur Kali: alternative aux commandes `ip tuntap`.</p>
 
 ```text
 interface_create --name ligolo
@@ -190,7 +190,7 @@ listener_list
 
 Pivot B contacte l'IP de Pivot A, pas celle de Kali. Vérifier que Pivot B peut joindre le port 11602 du premier pivot.
 
-<p class="oscp-command-note">Sur le pivot B — PowerShell si Windows.</p>
+<p class="oscp-command-note">Sur le pivot B: PowerShell si Windows.</p>
 
 ```powershell
 .\agent.exe -connect 172.16.20.1:11602 -accept-fingerprint EMPREINTE_SHA256
@@ -202,7 +202,7 @@ Pivot B contacte l'IP de Pivot A, pas celle de Kali. Vérifier que Pivot B peut 
 
 Chaque tunnel actif doit avoir sa propre interface ; `ligolo2` est distincte de `ligolo`.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux habituel.</p>
+<p class="oscp-command-note">Sur Kali: terminal Linux habituel.</p>
 
 ```bash
 sudo ip tuntap add user "$USER" mode tun ligolo2
@@ -241,7 +241,7 @@ Un *listener* est une **redirection de port sur l'agent Ligolo** vers un port qu
 
 Servir un dossier uniquement sur `127.0.0.1:8000` ; le listener Ligolo assurera l'accès distant.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux séparé.</p>
+<p class="oscp-command-note">Sur Kali: terminal Linux séparé.</p>
 
 ```bash
 mkdir -p ./partage
@@ -252,7 +252,7 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory ./partage
 
 Le port `8080` écoute sur le **pivot A** et redirige vers le HTTP de Kali (`127.0.0.1:8000`).
 
-<p class="oscp-command-note">Dans la console Ligolo — session du pivot A.</p>
+<p class="oscp-command-note">Dans la console Ligolo: session du pivot A.</p>
 
 ```text
 listener_add --addr 0.0.0.0:8080 --to 127.0.0.1:8000 --tcp
@@ -279,7 +279,7 @@ Pour **envoyer un fichier vers Kali**, ce serveur HTTP Python ne suffit pas : ut
 
 Kali écoute sur TCP `8001` et accepte les redirections inverses demandées par le client distant.
 
-<p class="oscp-command-note">Sur Kali — serveur Chisel.</p>
+<p class="oscp-command-note">Sur Kali: serveur Chisel.</p>
 
 ```bash
 chisel server --port 8001 --reverse
@@ -289,7 +289,7 @@ chisel server --port 8001 --reverse
 
 Le port `8080` sur Kali pointe vers le port `80` du pivot Windows.
 
-<p class="oscp-command-note">Sur le pivot Windows — client Chisel.</p>
+<p class="oscp-command-note">Sur le pivot Windows: client Chisel.</p>
 
 ```powershell
 .\chisel.exe client 10.10.14.10:8001 R:8080:127.0.0.1:80
@@ -299,7 +299,7 @@ Le port `8080` sur Kali pointe vers le port `80` du pivot Windows.
 
 La connexion aboutit sur le serveur HTTP du pivot, s'il existe.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux distinct.</p>
+<p class="oscp-command-note">Sur Kali: terminal Linux distinct.</p>
 
 ```bash
 curl -I http://127.0.0.1:8080/
@@ -309,7 +309,7 @@ curl -I http://127.0.0.1:8080/
 
 Le port SOCKS `1080` apparaîtra sur Kali. Garder la commande ouverte pendant l'utilisation.
 
-<p class="oscp-command-note">Sur le pivot Windows — client Chisel.</p>
+<p class="oscp-command-note">Sur le pivot Windows: client Chisel.</p>
 
 ```powershell
 .\chisel.exe client 10.10.14.10:8001 R:1080:socks
@@ -335,7 +335,7 @@ curl --socks5-hostname 127.0.0.1:1080 -I http://172.16.20.10/
 
 Le port `8080` local dirige le trafic vers `172.16.20.10:80` depuis l'hôte SSH.
 
-<p class="oscp-command-note">Sur Kali — le serveur SSH a accès au service interne.</p>
+<p class="oscp-command-note">Sur Kali: le serveur SSH a accès au service interne.</p>
 
 ```bash
 ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
@@ -345,7 +345,7 @@ ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
 
 Un proxy SOCKS local apparaît sur le port `9050` de Kali.
 
-<p class="oscp-command-note">Sur Kali — accès SSH à un pivot.</p>
+<p class="oscp-command-note">Sur Kali: accès SSH à un pivot.</p>
 
 ```bash
 ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
@@ -355,7 +355,7 @@ ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
 
 Acheminer le sous-réseau entier par le pivot, sans installer un agent Ligolo.
 
-<p class="oscp-command-note">Sur Kali — sshuttle et SSH accessibles.</p>
+<p class="oscp-command-note">Sur Kali: sshuttle et SSH accessibles.</p>
 
 ```bash
 sshuttle -r etudiant@10.10.10.30 172.16.20.0/24
@@ -406,7 +406,7 @@ La disponibilité et les options de `dnscat2` dépendent de l'installation. Exé
 
 Arrêter le tunnel sélectionné. Les listeners sont indépendants : les fermer aussi si nécessaire.
 
-<p class="oscp-command-note">Dans la console Ligolo — sélectionner la bonne session.</p>
+<p class="oscp-command-note">Dans la console Ligolo: sélectionner la bonne session.</p>
 
 ```text
 session
@@ -429,16 +429,16 @@ Si les interfaces ont été créées manuellement et ne servent plus, vérifier 
 
 ## Sources officielles
 
-- [Ligolo-ng — introduction et limites réseau](https://docs.ligolo.ng/)
+- [Ligolo-ng: introduction et limites réseau](https://docs.ligolo.ng/)
 
-- [Ligolo-ng — Quickstart, interface, certificat et routage](https://docs.ligolo.ng/Quickstart/)
+- [Ligolo-ng: Quickstart, interface, certificat et routage](https://docs.ligolo.ng/Quickstart/)
 
-- [Ligolo-ng — double pivot](https://docs.ligolo.ng/sample/double/)
+- [Ligolo-ng: double pivot](https://docs.ligolo.ng/sample/double/)
 
-- [Ligolo-ng — listeners](https://docs.ligolo.ng/Listeners/)
+- [Ligolo-ng: listeners](https://docs.ligolo.ng/Listeners/)
 
-- [Ligolo-ng — accès au localhost de l'agent](https://docs.ligolo.ng/Localhost/)
+- [Ligolo-ng: accès au localhost de l'agent](https://docs.ligolo.ng/Localhost/)
 
-- [Ligolo-ng — configuration v0.8 et routes persistantes](https://docs.ligolo.ng/Config-File/)
+- [Ligolo-ng: configuration v0.8 et routes persistantes](https://docs.ligolo.ng/Config-File/)
 
-- [Notes krovs — tunnels complémentaires](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md)
+- [Notes krovs: tunnels complémentaires](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md)
