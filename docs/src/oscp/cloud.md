@@ -55,6 +55,6 @@ Interroger le statut d'accès public calculé à partir de la politique, si l'AP
 aws s3api get-bucket-policy-status --bucket <NOM_BUCKET> --no-sign-request
 ```
 
-**Références :** [krovs — notes pratiques](https://github.com/krovs/oscp-notes/blob/main/docs/index.md) · [AWS CLI : s3 ls](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html) · [AWS CLI : get-bucket-policy](https://docs.aws.amazon.com/cli/latest/reference/s3api/get-bucket-policy.html).
+**Références :** [krovs: notes pratiques](https://github.com/krovs/oscp-notes/blob/main/docs/index.md) · [AWS CLI : s3 ls](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html) · [AWS CLI : get-bucket-policy](https://docs.aws.amazon.com/cli/latest/reference/s3api/get-bucket-policy.html).
 
 <!-- notes-krovs-2026 -->
