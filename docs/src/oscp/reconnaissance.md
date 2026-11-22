@@ -37,19 +37,19 @@ Interroger les enregistrements DNS et identifier les services associés.
 
 ```bash
 # Résolution du domaine
-host [domain]
+host example.com
 
 # Enregistrement TXT du domaine
-host -t txt [domain]
+host -t TXT example.com
 
 # Résolution d'un sous-domaine
-host [subdomain].[domain]
+host www.example.com
 
 # Requête TXT avec un serveur DNS spécifique
-nslookup -type=TXT [domain] [use_specific_dns_server_optional]
+nslookup -type=TXT example.com 192.0.2.53
 
 # Résolution en boucle depuis une liste
-for ip in $(cat list.txt); do host <ip>.[domain]; done
+while IFS= read -r sous_domaine; do [ -n "$sous_domaine" ] && host "${sous_domaine}.example.com"; done < sous_domaines.txt
 
 ```
 
@@ -62,19 +62,19 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Netcat».</p>
 
 ```bash
-nc [options] [host] [port_number]
+nc -nv 192.0.2.10 80
 
 # Utiliser UDP plutôt que TCP
-nc -u [host] [port number]
+nc -u -nv 192.0.2.10 53
 
 # Attendre une connexion entrante
-nc -l [host] [port number]
+nc -l 4444
 
 # Rester en écoute après la première connexion
-nc -k -l [host] [port number]
+nc -k -l 4444
 
 # TCP Balayage dans la plage de port
-nc -nvv -w 1 -z [host] [beginning_port]-[finished_port]
+nc -nvv -w 1 -z 192.0.2.10 1-1024
 
 # -w est de spécifier le délai de connexion en secondes, ainsi que -z pour spécifier le mode zéro-I/O, qui sert au scan des ports et n'envoie aucune donnée
 nc -nv -u -z -w 1 [host] [beginning_port]-[finished_port]
@@ -141,7 +141,7 @@ nmap -p- <IP_CIBLE> -oN rapport_ports.txt
 <p class="oscp-command-note">Nmap : scanner un nombre défini de ports parmi les plus fréquents.</p>
 
 ```bash
-nmap --top-ports <NOMBRE_PORTS> <IP_CIBLE>
+nmap --top-ports 100 192.0.2.10
 
 ```
 
@@ -190,7 +190,7 @@ sudo nmap -sS <IP_CIBLE>
 **Scan d’un port précis**
 
 ```bash
-nmap -p <PORT_TCP> <IP_CIBLE>
+nmap -p 445 192.0.2.10
 
 ```
 
@@ -202,7 +202,7 @@ nmap -p <PORT_TCP> <IP_CIBLE>
 <p class="oscp-command-note">Identifier les hôtes actifs.</p>
 
 ```bash
-nmap -sn <RESEAU_CIDR>
+nmap -sn 192.0.2.0/24
 
 ```
 
@@ -249,7 +249,7 @@ sudo nmap -O --osscan-guess <IP_CIBLE>
 <p class="oscp-command-note">Identifier les versions des services.</p>
 
 ```bash
-nmap -sV <IP_CIBLE>
+nmap -sV 192.0.2.10
 
 ```
 
@@ -317,7 +317,7 @@ nmap --script <SCRIPT_NSE> <IP_CIBLE>
 <p class="oscp-command-note">Afficher l&#x27;aide d&#x27;un script Nmap NSE.</p>
 
 ```bash
-nmap --script-help <SCRIPT_NSE>
+nmap --script-help smb-os-discovery
 
 ```
 
@@ -326,14 +326,14 @@ nmap --script-help <SCRIPT_NSE>
 <p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-headers ».</p>
 
 ```bash
-nmap -p 80 --script http-headers <IP_CIBLE>
+nmap -p 80 --script http-headers 192.0.2.10
 
 ```
 
 **Catégories des scripts NSE**
 
 ```bash
-nmap --script <CATEGORIE_NSE> <IP_CIBLE>
+nmap --script default 192.0.2.10
 
 ```
 
@@ -351,14 +351,14 @@ Observer les permissions et la configuration de Windows.
 <p class="oscp-command-note">Tester une connexion réseau avec PowerShell.</p>
 
 ```powershell
-Test-NetConnection -ComputerName <IP_CIBLE> -Port <PORT_TCP>
+Test-NetConnection -ComputerName 192.0.2.10 -Port 445
 
 ```
 
 **Exemple de scan de ports**
 
 ```text
-1..1024 % {echo ((New-Object Net.Sockets.TcpClient).Connect("[IP]", $_)) "TCP port $_ is open"} 2>$null
+1..1024 | ForEach-Object { $port = $_; $client = [Net.Sockets.TcpClient]::new(); try { if ($client.ConnectAsync('192.0.2.10', $port).Wait(150)) { "TCP $port ouvert" } } catch {} finally { $client.Dispose() } }
 
 ```
 
@@ -391,7 +391,7 @@ Effectuer un ping sweep sans lancer de scan de ports. Les pare-feu peuvent masqu
 <p class="oscp-command-note">Découverte de plusieurs hôtes.</p>
 
 ```bash
-nmap -sn -n <RESEAU_CIDR>
+nmap -sn -n 192.0.2.0/24
 ```
 
 ### RustScan
