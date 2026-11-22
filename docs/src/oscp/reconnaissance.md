@@ -1394,7 +1394,7 @@ queryuser <0xrid>
 queryusergroups <0xrid>
 
 # Résoudre un nom de compte en SID
-lookupnames <username>
+lookupnames utilisateur
 
 # Obtenir les alias associés à un utilisateur (selon les commandes prises en charge)
 queryuseraliases [builtin|domain] <sid>
@@ -1455,14 +1455,14 @@ impacket-lookupsid 'exemple.local/utilisateur@192.0.2.10'
 <p class="oscp-command-note">Localiser les fichiers correspondant aux critères indiqués.</p>
 
 ```bash
-Find SID by Name
+# Résoudre un nom de compte en SID
 lookupnames <username>
 
 # Trouver d'autres SID
 lsaenumsid
 
-# Vérifiez le cycle RID pour plus de SID
-lookupsids <sid>
+# Résoudre un SID connu (ne lance pas de balayage RID)
+lookupsids S-1-5-21-111111111-222222222-333333333-500
 
 ```
 
@@ -1495,8 +1495,8 @@ nmap -p 139,445 --script smb-os-discovery <IP_CIBLE>
 # Analyser les services NetBIOS
 sudo nbtscan -r 192.168.50.0/24
 
-# Vue réseau Windows
-net view \\[domainName] /all
+# Windows CMD : afficher les ressources partagées d'un serveur
+net view \\192.0.2.10 /all
 
 ```
 
@@ -1520,10 +1520,10 @@ nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-
 <p class="oscp-command-note">Observer le trafic SMB et lister les partages accessibles.</p>
 
 ```bash
-# Analyse des paquets réseau: capture et analyse les paquets liés au trafic SMB sur le port 139, à la recherche de modèles spécifiques
-sudo ngrep -i -d <INTERFACE> 's.?a.?m.?b.?a.*[[:digit:]]' port 139
+# Capturer les échanges NetBIOS sur TCP 139 ; ce filtre ne décode pas SMB
+sudo ngrep -d eth0 '' 'tcp port 139'
 
-# Listes des actions SMB disponibles sur la cible
+# Lister les partages SMB accessibles sans mot de passe
 smbclient -L //<IP_CIBLE> -N
 
 ```
@@ -1556,14 +1556,14 @@ crackmapexec smb <IP> -u '[user]' -p '[password]'
 <p class="oscp-command-note">Examiner les informations SMB et du domaine.</p>
 
 ```bash
-# Collecte d'informations de base sur le domaine
+# Énumérer les informations SMB/NetBIOS accessibles avec enum4linux
 enum4linux -a <IP_CIBLE>
 enum4linux -a -u "" -p "" <IP> && enum4linux -a -u "guest" -p "" <IP>
 
-# Extraire les utilisateurs du domaine
+# Énumérer les utilisateurs accessibles via RPC/SMB
 enum4linux -U <IP_DC>
 
-# Extraire les parts de domaine disponibles
+# Lister les partages SMB annoncés par la cible
 enum4linux -S <IP_CIBLE>
 
 enum4linux -a -M -l -d <ip> 2>&1
@@ -1574,20 +1574,20 @@ enum4linux -a -u "[user]" -p "[password]" <ip>
 ```
 
 ```bash
-# Lister les partages SMB du serveur
+# Lister les partages SMB ; -N désactive la demande de mot de passe
 smbclient --no-pass -L //<IP_CIBLE>
 smbclient -L //<IP_CIBLE> -U <UTILISATEUR>
 smbclient //<IP>/<SHARE>
 smbclient -N //<IP>/<SHARE>
 smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *" # Change the timeout to download big files
 
-# Changer le timeout pour télécharger les gros fichiers
-help timeout
-timeout 100
+# Pour ajuster le délai, utiliser l'option -t au lancement de smbclient
+help
+# Exemple hors session : smbclient -t 100 -L //192.0.2.10 -N
 
-# Autres commandes
-prompt off
-recurse on
+# Dans une session smbclient interactive : désactiver la confirmation et récupérer récursivement
+prompt OFF
+recurse ON
 mget *
 
 ```
@@ -1603,8 +1603,8 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 <p class="oscp-command-note">Créer un répertoire.</p>
 
 ```bash
-# Monte les parts de SMB dans un répertoire local pour plus d'accès et de manipulation.
-mkdir /tmp/share
+# Monter un partage SMB autorisé dans un répertoire local (installer cifs-utils)
+mkdir -p /tmp/share
 sudo mount -t cifs //<IP>/<SHARE> /tmp/share
 sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/share
 
@@ -1613,7 +1613,7 @@ sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/
 <p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
-# PsExec
+# Impacket PsExec (vérifier l'installation du paquet Impacket)
 psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
@@ -1625,7 +1625,7 @@ wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 smbexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 smbexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# AteExec
+# ATExec (Impacket)
 atexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP> <COMMAND>
 atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
