@@ -1,12 +1,12 @@
-# Inbound Trusts Lab
+# Lab — Relations de confiance entrantes (Inbound Trusts)
 
-> The objective for this lab is to gain access to a foreign domain across a one-way inbound trust.
+> Ce lab étudie l’accès entre deux domaines liés par une relation de confiance entrante à sens unique.
 
 ===
 
-## Trust Relationship — Understand This First
+## Comprendre le sens de la relation de confiance
 
-Before touching any commands, lock in the trust direction. Everything else flows from this.
+Commencer par identifier le sens de la relation de confiance : il détermine quels utilisateurs peuvent accéder aux ressources de l’autre domaine.
 
 ```
 ┌─────────────────────────────────────┐        ┌─────────────────────────────────────┐
@@ -26,28 +26,28 @@ Before touching any commands, lock in the trust direction. Everything else flows
    (accounts originate here)                        (resources are here)
 ```
 
-**Trust Direction Rule for the exam:**
-- `trustDirection=1 INBOUND` (queried from CONTOSO) → PARTNER trusts CONTOSO → CONTOSO users can authenticate to PARTNER resources
-- `trustDirection=2 OUTBOUND` → CONTOSO trusts the other → the other's users can come here
-- `trustDirection=3` → bidirectional
+**Interprétation de `trustDirection` pour le lab :**
+- `trustDirection=1 INBOUND` (queried from CONTOSO) → PARTNER fait confiance à CONTOSO : les utilisateurs CONTOSO peuvent s’authentifier sur les ressources PARTNER, sous réserve des autorisations.
+- `trustDirection=2 OUTBOUND` → CONTOSO fait confiance à l’autre domaine : ses utilisateurs peuvent s’authentifier sur les ressources CONTOSO.
+- `trustDirection=3` → bidirectionnelle
 
-**`trustAttributes=8` (TRUST_ATTRIBUTE_FOREST_TRANSITIVE)** — this is a forest-level trust, not just a domain-level trust. SID filtering is applied at the forest boundary — you cannot inject arbitrary SIDs from CONTOSO into PARTNER's PAC (SID history abuse is blocked). The only SIDs that flow across are legitimate group memberships set up via Foreign Security Principals.
+**`trustAttributes=8` (TRUST_ATTRIBUTE_FOREST_TRANSITIVE)** indique une relation transitive entre forêts. Le filtrage des SID à la frontière empêche certains usages de SID History ; les appartenances configurées via des Foreign Security Principals (FSP) restent pertinentes.
 
 ---
 
-## Object Map — Who Is Who Across Both Domains
+## Identifier les objets dans les deux domaines
 
-Study this table before running any commands. Every SID you will see in the lab maps to one of these rows.
+Ce tableau associe les SID du lab aux utilisateurs et groupes présents dans CONTOSO et PARTNER.
 
-| SID | Domain | Object Type | Name | Role in the attack |
+| SID | Domaine | Type d’objet | Nom | Rôle dans le lab |
 |-----|--------|-------------|------|--------------------|
-| S-1-5-21-**3926355307**-1661546229-813047887-**500** | CONTOSO | User | Administrator | DA we start with |
-| S-1-5-21-**3926355307**-1661546229-813047887-**6102** | CONTOSO | Group | **Partner Jump Users** | Bridge group — members of this CONTOSO group get PARTNER local admin via FSP |
-| S-1-5-21-**3926355307**-1661546229-813047887-**XXXX** | CONTOSO | User | **rsteel** | Member of "Partner Jump Users" — the account we impersonate |
-| S-1-5-21-**4244029708**-1901239654-2578485347-**1104** | PARTNER | Group | **Contoso Users** | PARTNER group — has CONTOSO's "Partner Jump Users" SID as an FSP member |
-| S-1-5-**32**-544 | BUILTIN | Group | Administrators | Well-known local admins SID — "Contoso Users" is added here via GPO |
+| S-1-5-21-**3926355307**-1661546229-813047887-**500** | CONTOSO | Utilisateur | Administrator | Compte Domain Admin initial |
+| S-1-5-21-**3926355307**-1661546229-813047887-**6102** | CONTOSO | Groupe | **Partner Jump Users** | Groupe utilisé pour l’attribution de droits dans PARTNER via FSP |
+| S-1-5-21-**3926355307**-1661546229-813047887-**XXXX** | CONTOSO | Utilisateur | **rsteel** | Compte membre du groupe Partner Jump Users |
+| S-1-5-21-**4244029708**-1901239654-2578485347-**1104** | PARTNER | Groupe | **Contoso Users** | Groupe PARTNER contenant le SID CONTOSO via un objet FSP |
+| S-1-5-**32**-544 | BUILTIN | Groupe | Administrators | Groupe administrateurs locaux ; Contoso Users y est associé par GPO dans le lab |
 
-**How the access chain works (read this once, re-read it again):**
+**Schéma des relations d’accès :**
 
 ```
 rsteel (CONTOSO user)
@@ -67,12 +67,12 @@ rsteel (CONTOSO user)
              par-jmp-1.partner.com — rsteel is local admin here
 ```
 
-**What is a Foreign Security Principal (FSP)?**
-When a CONTOSO group is added to a PARTNER group, PARTNER cannot store the CONTOSO object directly — it doesn't own that SID. Instead, PARTNER creates an FSP object in `CN=ForeignSecurityPrincipals,DC=partner,DC=com`. The FSP is just a placeholder that stores the CONTOSO SID. When rsteel authenticates cross-domain, his Kerberos PAC carries the "Partner Jump Users" SID (-6102). PARTNER's KDC sees the FSP, resolves it to "Contoso Users" membership, and adds -1104 to the PAC before issuing the service ticket.
+**Qu’est-ce qu’un Foreign Security Principal (FSP) ?**
+Lorsqu’un groupe CONTOSO devient membre d’un groupe PARTNER, le domaine PARTNER crée un objet FSP dans `CN=ForeignSecurityPrincipals,DC=partner,DC=com` pour représenter son SID. Dans le scénario, le SID de **Partner Jump Users** (`-6102`) permet de relier l’identité `rsteel` au groupe PARTNER **Contoso Users** (`-1104`), selon les relations de groupe configurées.
 
 ---
 
-## Ticket Flow — What Gets Issued by Whom
+## Comprendre le parcours des tickets Kerberos
 
 ```
 Step 1: DCSync rsteel hash from CONTOSO DC
@@ -97,44 +97,44 @@ Step 5: SMB to par-jmp-1 with service ticket
          → ACCESS GRANTED
 ```
 
-**Key insight:** You need THREE separate tickets: TGT (CONTOSO) → Inter-realm TGT (trust boundary) → Service ticket (PARTNER). Each is issued by a different authority and encrypted with a different key. The commands in the Exploitation section step through this exactly.
+**À retenir :** le parcours fait intervenir un TGT CONTOSO, un TGT inter-realm au passage de la relation de confiance, puis un ticket de service PARTNER. Les tickets sont délivrés par différentes autorités Kerberos.
 
 ===
 
-## Enumeration
+## Énumération
 
-### What we are looking for
-We need to confirm: (1) a trust exists and its direction, (2) a CONTOSO object has been placed into a PARTNER group, (3) what CONTOSO object that is, (4) which user is a member of it.
+### Informations à vérifier
+Vérifier l’existence et le sens de la trust, l’objet CONTOSO référencé dans PARTNER, son type et les utilisateurs membres du groupe concerné.
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Interact with the medium-integrity Beacon and enumerate the trust.
+1. Ouvrir Cobalt Strike et se connecter au team server.
+2. Dans le Beacon de moyenne intégrité, énumérer les relations de confiance.
 
     ```Beacon-nocolor
     ldapsearch (objectClass=trustedDomain) --attributes trustDirection,trustPartner,trustAttributes,flatname
     ```
 
-    > This queries CONTOSO's domain for trust objects. Every domain trust is stored as a `trustedDomain` object. We pull four attributes:
-    > - `trustPartner` — the FQDN of the other domain (will show `partner.com`)
-    > - `trustDirection` — direction integer from CONTOSO's perspective
-    > - `trustAttributes` — flags about the trust type
-    > - `flatname` — NetBIOS name of the partner domain (e.g. `PARTNER`)
+    > Cette requête recherche les objets `trustedDomain` dans CONTOSO et récupère quatre attributs :
+    > - `trustPartner` — le nom FQDN du domaine distant (ici `partner.com`)
+    > - `trustDirection` — la direction de la trust depuis CONTOSO
+    > - `trustAttributes` — les indicateurs décrivant le type de trust
+    > - `flatname` — le nom NetBIOS du domaine distant (ici `PARTNER`)
 
-⚠️ What do these results mean?
+⚠️ Comment interpréter ces résultats ?
     >
-    > - `trustDirection 1` = **TRUST_DIRECTION_INBOUND** — PARTNER trusts CONTOSO. CONTOSO users can authenticate to PARTNER resources. We are the trusted domain.
-    > - `trustAttributes 8` = **TRUST_ATTRIBUTE_FOREST_TRANSITIVE** — forest-level trust. SID filtering is ON — SID history injection across this boundary will be blocked. Only legitimate FSP group memberships carry across.
+    > - `trustDirection 1` = **TRUST_DIRECTION_INBOUND** — PARTNER fait confiance à CONTOSO ; certains utilisateurs CONTOSO peuvent s’authentifier sur des ressources PARTNER.
+    > - `trustAttributes 8` = **TRUST_ATTRIBUTE_FOREST_TRANSITIVE** — relation entre forêts ; le filtrage des SID limite les utilisations de SID History entre les domaines. Les appartenances FSP restent prises en compte.
 
-3. Enumerate the Foreign Security Principals Container of the foreign domain.
+3. Énumérer le conteneur Foreign Security Principals du domaine distant.
 
     ```Beacon-nocolor
     ldapsearch (objectClass=foreignSecurityPrincipal) --attributes objectSid,memberOf --hostname partner.com --dn DC=partner,DC=com
     ```
 
-    > **What this does:** We query PARTNER's directory (note `--hostname partner.com` and `--dn DC=partner,DC=com` — we are querying the foreign domain, not our own). We search for `foreignSecurityPrincipal` objects, which are PARTNER's placeholder representations of CONTOSO objects.
+    > **Fonctionnement :** les options `--hostname partner.com` et `--dn DC=partner,DC=com` ciblent l’annuaire PARTNER. Le filtre cherche les objets `foreignSecurityPrincipal` représentant les comptes et groupes externes.
     >
-    > **Why we can query PARTNER's LDAP:** Because the trust is inbound — PARTNER trusts us — so our beacon's existing token is accepted by PARTNER's DC for read-level LDAP queries.
+    > **Pourquoi interroger PARTNER ?** La relation de confiance permet, selon les permissions configurées, certaines requêtes LDAP du contexte CONTOSO vers PARTNER.
     >
-    > The `objectSid` on each FSP is the **CONTOSO SID** of the object that was added to the PARTNER group. The `memberOf` shows which PARTNER group that FSP belongs to.
+    > L’attribut `objectSid` de l’objet FSP représente le SID CONTOSO référencé. `memberOf` indique les groupes PARTNER auxquels l’objet appartient.
 
 ⚠️ This will show that the SID `S-1-5-21-3926355307-1661546229-813047887-6102` (a CONTOSO SID — note the CONTOSO domain prefix `3926355307-1661546229-813047887`) is a member of a "Contoso Users" group in PARTNER.
 
@@ -181,7 +181,7 @@ We need to confirm: (1) a trust exists and its direction, (2) a CONTOSO object h
 
 Enumerate the foreign domain to confirm exactly where "Contoso Users" (and therefore rsteel) has privileged access, and on which machines.
 
-### What we are looking for
+### Informations à vérifier
 We know "Contoso Users" exists in PARTNER. We need to find HOW it has been granted local admin — the mechanism is likely a GPO. Then find which computers are in scope.
 
 1. List GPOs.
