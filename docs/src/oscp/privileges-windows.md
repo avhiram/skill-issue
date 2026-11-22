@@ -1394,7 +1394,7 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::sam /sam:"<sam_file>" /system:"<system_file>"
@@ -1422,7 +1422,7 @@ impacket-secretsdump -ntds <ntds_dit_backup> -system <system_backup> LOCAL
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
@@ -1452,7 +1452,7 @@ impacket-secretsdump -security <security_file> -system <system_file> LOCAL
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::secrets /security:"<security_file>" /system:"<system_file>"
