@@ -41,65 +41,68 @@ cat /etc/os-release
 uname -a
 ```
 
-**Processus en cours**
+### Afficher les processus en cours
 
-<p class="oscp-command-note">Afficher les processus actifs.</p>
-
-```text
-ps aux
-
-```
-
-**Interfaces réseau, itinéraires, connexions, ports ouverts**
-
-<p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
-
-```text
-ip a
-
-```
-
-```text
-ss -anp
-
-```
-
-**Règles du pare-feu**
-
-<p class="oscp-command-note">Lire le fichier /etc/iptables/rules.v4 et examiner son contenu.</p>
-
-```text
-cat /etc/iptables/rules.v4
-
-```
-
-**Tâches cron planifiées**
-
-<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Énumération».</p>
-
-```text
-ls -lah /etc/cron*
-
-```
-
-```text
-crontab -l
-
-```
+`ps aux` liste les processus de tous les utilisateurs, avec notamment leur PID, leur propriétaire et leur consommation de ressources. Les détails visibles dépendent des permissions et de la configuration de `/proc`.
 
 ```bash
-# Examiner les tâches cron
-sudo crontab -l
-
+ps aux
 ```
 
-**Logiciels installés**
+### Afficher les adresses des interfaces réseau
 
-<p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Énumération» (ne pas exécuter comme une commande).</p>
+`ip a` est l'abréviation de `ip address show` ; cette commande affiche les interfaces et leurs adresses, mais **pas** la table de routage.
 
-```text
+```bash
+ip a
+```
+
+### Afficher les sockets et leurs processus
+
+`ss -anp` affiche les sockets sans résolution des noms. L'association aux processus peut être incomplète sans droits suffisants. Pour ne voir que les ports TCP/UDP en écoute, utiliser `ss -tuln`.
+
+```bash
+ss -anp
+```
+
+### Lire les règles IPv4 sauvegardées par iptables-persistent
+
+Ce fichier n'existe que si les règles ont été sauvegardées à cet emplacement, généralement avec `iptables-persistent`. Il ne reflète pas nécessairement les règles actuellement actives ni les règles `nftables`.
+
+```bash
+cat /etc/iptables/rules.v4
+```
+
+### Lister les fichiers de planification cron du système
+
+Affiche les fichiers et répertoires dont le nom commence par `/etc/cron`. Cela ne liste pas à lui seul toutes les tâches planifiées.
+
+```bash
+ls -lah /etc/cron*
+```
+
+### Afficher la crontab de l'utilisateur courant
+
+La commande peut indiquer qu'aucune crontab n'existe pour ce compte.
+
+```bash
+crontab -l
+```
+
+### Afficher la crontab du compte root
+
+Nécessite une autorisation `sudo` suffisante ; peut demander le mot de passe de l'utilisateur.
+
+```bash
+sudo crontab -l
+```
+
+### Lister les paquets connus de dpkg
+
+Sur Debian, Ubuntu et les distributions utilisant `dpkg`, affiche la base des paquets et leur état. Cela ne recense pas les programmes installés manuellement hors gestionnaire de paquets.
+
+```bash
 dpkg -l
-
 ```
 
 **Paramètres et repères :**
@@ -130,23 +133,26 @@ locate password | more
 
 ```
 
-**Volumes montés**
+### Lire les montages configurés dans fstab
 
-<p class="oscp-command-note">Lire le fichier /etc/fstab et examiner son contenu.</p>
+Affiche les systèmes de fichiers prévus pour le montage ; une entrée ne signifie pas nécessairement que le volume est monté actuellement.
 
-```text
+```bash
 cat /etc/fstab
-
 ```
 
-```text
+### Afficher les montages actifs
+
+```bash
 mount
-
 ```
 
-```text
-lsblk
+### Afficher les périphériques blocs
 
+`lsblk` liste les disques et partitions connus ; il ne recense pas tous les montages réseau.
+
+```bash
+lsblk
 ```
 
 **Pilotes et modules du noyau**
