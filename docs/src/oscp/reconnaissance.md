@@ -1464,7 +1464,7 @@ rpcclient -U '' -N 192.0.2.10 -c 'enumdomusers'
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Nmap : contrôler les ports SMB 139/445 et relever les informations du système via NSE.</p>
+<p class="oscp-command-note">SMB : contrôler TCP 139/445 avec Nmap ; nbtscan fonctionne sous Linux, net view sous Windows CMD.</p>
 
 ```bash
 # Scanner les ports et services avec Nmap
@@ -1475,7 +1475,7 @@ nmap -p 139,445 --script smb-os-discovery <IP_CIBLE>
 sudo nbtscan -r 192.168.50.0/24
 
 # Windows CMD : afficher les ressources partagées d'un serveur
-net view \\192.0.2.10 /all
+net view \\\\192.0.2.10 /all
 
 ```
 
@@ -1496,7 +1496,7 @@ nmap -p 445 --script smb-protocols 192.0.2.10
 
 ```
 
-<p class="oscp-command-note">Observer le trafic SMB et lister les partages accessibles.</p>
+<p class="oscp-command-note">SMB : capturer le trafic TCP 139 avec ngrep et lister les partages accessibles sans mot de passe.</p>
 
 ```bash
 # Capturer le trafic TCP 139 avec ngrep ; ne décode pas les opérations SMB
@@ -1510,7 +1510,7 @@ smbclient -L //<IP_CIBLE> -N
 **Paramètres et repères :**
 `smbmap`  
 
-<p class="oscp-command-note">SMBMap : tester les accès anonyme et invité, puis afficher les partages et permissions disponibles.</p>
+<p class="oscp-command-note">SMBMap : comparer les droits visibles en accès anonyme ou invité ; -R explore les répertoires autorisés.</p>
 
 ```bash
 smbmap -H <IP_CIBLE>
@@ -1532,7 +1532,7 @@ nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
 
-<p class="oscp-command-note">Enum4linux : collecter les informations SMB/NetBIOS, utilisateurs et partages accessibles.</p>
+<p class="oscp-command-note">Enum4linux : inventorier les comptes, partages et informations NetBIOS visibles selon les permissions de la session.</p>
 
 ```bash
 # Énumérer les informations SMB/NetBIOS accessibles avec enum4linux
@@ -1553,25 +1553,25 @@ enum4linux -a -u "[user]" -p "[password]" <ip>
 ```
 
 ```bash
-# Lister les partages SMB ; -N désactive la demande de mot de passe
+# Depuis Kali : lister les partages SMB ; -N évite la demande interactive de mot de passe
 smbclient --no-pass -L //<IP_CIBLE>
 smbclient -L //192.0.2.10 -U utilisateur
 smbclient //192.0.2.10/partage
 smbclient -N //192.0.2.10/partage
-smbclient //192.0.2.10/partage -U utilisateur -t 100 -c 'prompt OFF;recurse ON;mget *'
+smbclient //192.0.2.10/partage -U utilisateur -t 100 -c 'prompt;recurse;mget *'
 
-# L'option -t s'applique à la commande smbclient, pas à son invite interactive
+# Dans la session smbclient, help affiche les commandes interactives disponibles
 help
-# Exemple hors session : smbclient -t 100 -L //192.0.2.10 -N
+# Exemple dans le terminal Linux, hors de l'invite smbclient : smbclient -t 100 -L //192.0.2.10 -N
 
-# Dans smbclient, désactiver les confirmations puis télécharger récursivement les fichiers autorisés
-prompt OFF
-recurse ON
+# Dans smbclient, basculer les confirmations et la récursion (commandes sans ON/OFF)
+prompt
+recurse
 mget *
 
 ```
 
-<p class="oscp-command-note">Tester des identifiants SMB autorisés avec NetExec et Hydra ; attention au verrouillage de comptes.</p>
+<p class="oscp-command-note">SMB : essais d'identifiants autorisés avec NetExec ou Hydra ; limiter le débit et surveiller les verrouillages.</p>
 
 ```bash
 nxc smb 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
@@ -1579,7 +1579,7 @@ hydra -L utilisateurs.txt -P mots_de_passe.txt smb://192.0.2.10 -f
 
 ```
 
-<p class="oscp-command-note">Créer un point de montage local puis monter un partage SMB en lecture seule avec cifs-utils.</p>
+<p class="oscp-command-note">Linux : créer un point de montage puis monter un partage SMB en lecture seule avec cifs-utils et les droits sudo.</p>
 
 ```bash
 # Monter un partage SMB autorisé dans un répertoire local (installer cifs-utils)
@@ -1589,24 +1589,24 @@ sudo mount -t cifs //192.0.2.10/partage /tmp/share -o username=utilisateur,ro
 
 ```
 
-<p class="oscp-command-note">Impacket : comparer PsExec, WMIExec, SMBExec et ATExec ; leur exécution distante exige des droits appropriés.</p>
+<p class="oscp-command-note">Impacket : PsExec, WMIExec, SMBExec et ATExec sont des méthodes distinctes d'exécution distante nécessitant les droits adaptés.</p>
 
 ```bash
-# Impacket PsExec : utiliser le nom de commande disponible dans l'installation Kali
+# Impacket PsExec : selon l'installation, utiliser impacket-psexec ou psexec.py
 psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Impacket WMIExec : exécution distante via WMI, avec droits appropriés
+# Impacket WMIExec : exécution distante via WMI ; vérifier les privilèges et le pare-feu
 wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Impacket SMBExec : exécution distante via SMB, avec droits appropriés
+# Impacket SMBExec : exécution distante via SMB ; les permissions d'administration sont généralement nécessaires
 smbexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 smbexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Impacket ATExec : exécution via le planificateur de tâches, avec droits appropriés
+# Impacket ATExec : exécution via le planificateur de tâches distant ; une commande à exécuter est obligatoire
 atexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP> <COMMAND>
-atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
+atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH> whoami
 
 ```
 
@@ -1642,7 +1642,7 @@ nxc smb 192.0.2.10 -u utilisateur -H '0123456789abcdef0123456789abcdef' --exec-m
 
 Tester l'énumération anonyme et noter un refus d'accès comme un résultat normal.
 
-<p class="oscp-command-note">Découverte des partages sans mot de passe.</p>
+<p class="oscp-command-note">SMB : tenter de lister les partages anonymement ; un accès refusé ne signifie pas que SMB est absent.</p>
 
 ```bash
 smbclient -L //<IP_CIBLE> -N
@@ -1653,7 +1653,7 @@ enum4linux-ng -A <IP_CIBLE>
 
 Lister uniquement les ressources visibles pour le compte fourni dans le périmètre.
 
-<p class="oscp-command-note">Partages accessibles avec un compte de test.</p>
+<p class="oscp-command-note">NetExec SMB : afficher les partages visibles par un compte de test avec --shares.</p>
 
 ```bash
 nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
