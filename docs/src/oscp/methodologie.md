@@ -850,11 +850,11 @@ TypedURLs #IE
 <p class="oscp-command-note">Afficher les interfaces, ports et routes du réseau Windows.</p>
 
 ```powershell
-# 1. Find AP SSID
+# 1. Lister les profils Wi-Fi
 netsh wlan show profile
 # 2. Récupérer le mot de passe en clair si les droits l'autorisent.
 netsh wlan show profile <SSID> key=clear
-# OR
+# Ou
 # Variante : examiner toutes les entrées accessibles.
 cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| find "Profile "') do @echo off > nul & (netsh wlan show profiles name=%a key=clear | findstr "SSID Cipher Content" | find /v "Number" & echo.) & @echo on
 
