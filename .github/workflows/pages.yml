@@ -37,8 +37,8 @@ jobs:
           test -s docs/.vitepress/dist/index.html
           grep -q 'SKILL-ISSUE' docs/.vitepress/dist/index.html
           test -d docs/.vitepress/dist/assets
-      - name: Restore upstream CRTO files before publishing
-        run: git restore --worktree -- docs/src/crto/botesjuan
+      - name: Restore CRTO sources before publishing
+        run: git restore --worktree -- docs/src/crto/liham
       - name: Publish compiled website at GitHub Pages root
         run: |
           rm -rf crto/botesjuan
