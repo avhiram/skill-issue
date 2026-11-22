@@ -1772,18 +1772,18 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 <p class="oscp-command-note">Énumérer SNMP avec une communauté autorisée et examiner les résultats.</p>
 
 ```bash
-# Popular wordlist: /usr/share/wordlists/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt
+# Dictionnaire SNMP : vérifier la présence de SecLists dans /usr/share/seclists/Discovery/SNMP/
 
-# Onesixtyone
+# Tester des chaînes de communauté SNMP dans le laboratoire
 onesixtyone -c communautes.txt <IP_CIBLE>
 
-# Snmpwalk
+# Interroger un OID SNMP précis (remplacer OID par sa valeur numérique) accessibles
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
-# Snmpbulkwalk
+# Parcourir les objets SNMP avec des requêtes groupées
 snmpbulkwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
-# Snmp-check
+# Afficher un résumé de la configuration SNMP
 snmp-check <IP_CIBLE>
 
 ```
@@ -1794,13 +1794,11 @@ snmp-check <IP_CIBLE>
 <p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
-echo <community1> > community
-echo <community2> >> community
-echo <community3> >> community
+printf '%s\n' public private monitoring > communautes.txt
 
-for ip in $(seq 1 254); do echo <target-network>.<ip>; done > ips
+for hote in $(seq 1 254); do printf '192.0.2.%s\n' "$hote"; done > adresses.txt
 
-onesixtyone -c community -i ips
+onesixtyone -c communautes.txt -i adresses.txt
 
 ```
 
@@ -1877,7 +1875,7 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Nmap (LDAP) : lancer les scripts NSE « ldap* ».</p>
 
 ```bash
-nmap -n -sV --script "ldap* and not brute" <target_ip>
+nmap -n -sV -p 389,636 --script ldap-rootdse <IP_DC>
 
 ```
 
@@ -1888,10 +1886,10 @@ nmap -n -sV --script "ldap* and not brute" <target_ip>
 ldapsearch -x -H ldap://<target_ip>
 
 # Recherche LDAP à la racine de l’annuaire (Base DN)
-ldapsearch -h <target_ip> -x -s base
+ldapsearch -x -H ldap://<IP_DC> -s base -b ''
 
 # Afficher les contextes de nommage LDAP
-ldapsearch -x -H ldap://<target_ip> -s base namingcontexts
+ldapsearch -x -H ldap://<IP_DC> -s base -b '' namingContexts
 
 # Effectuer une recherche à partir d’un DN de base précis (Base DN)
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
@@ -1900,14 +1898,14 @@ ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass=*)"
 
 # Récupérer le nom de compte des utilisateurs
-ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass*)" | grep sAMAccountName:
+ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=exemple,DC=local' '(objectClass=user)' sAMAccountName
 
 # Rechercher avec les filtres
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=user)"
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=group)"
 
 # Recherche avec authentification
-ldapsearch -h <target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>"
+ldapsearch -x -H ldap://<IP_DC> -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=*)'
 
 # Filtres de recherche.
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>"
@@ -2150,7 +2148,7 @@ impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -window
 <p class="oscp-command-note">Nmap (NFS) : lancer les scripts NSE « nfs-showmount, nfs-ls, nfs-statfs ».</p>
 
 ```bash
-nmap -p 2049 -sV --script "nfs-showmount,nfs-ls,nfs-statfs,nfs-secure,nfs-client,disk,nfs-*" <target_ip>
+nmap -sV -p 111,2049 --script nfs-showmount,nfs-ls,nfs-statfs <IP_CIBLE>
 
 ```
 
@@ -2158,10 +2156,10 @@ nmap -p 2049 -sV --script "nfs-showmount,nfs-ls,nfs-statfs,nfs-secure,nfs-client
 
 ```bash
 # Afficher les partages NFS de la cible
-showmount -e <target_ip>
+showmount -e <IP_CIBLE>
 
 # Afficher les informations de montage pour la cible
-showmount <target_ip>
+showmount <IP_CIBLE>
 
 ```
 
@@ -2169,10 +2167,10 @@ showmount <target_ip>
 
 ```bash
 # Créer un répertoire local pour monter le partage NFS
-mkdir <mount_point>
+mkdir -p /mnt/partage_nfs
 
 # Monter la part NFS
-sudo mount -t nfs -o vers=<version>,nolock <target_ip>:<share> <mount_point>
+sudo mount -t nfs -o ro,vers=3 <IP_CIBLE>:/export/partage /mnt/partage_nfs
 
 ```
 
@@ -2286,14 +2284,14 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Nmap (MYSQL) : lancer les scripts NSE « mysql-audit, mysql-databases, mysql-dump-hashes ».</p>
 
 ```bash
-nmap -sV -p 3306 --script "mysql-audit,mysql-databases,mysql-dump-hashes,mysql-empty-password,mysql-enum,mysql-info,mysql-query,mysql-users,mysql-variables,mysql-vuln-cve2012-2122" <target_ip>
+nmap -sV -p 3306 --script mysql-info,mysql-variables <IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">MySQL : lister les bases avec le client mysql natif ; -p demande le mot de passe.</p>
 
 ```bash
-mysql -h <target_ip> -u <username> -p -e 'SHOW DATABASES;'
+mysql -h <IP_CIBLE> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
 
 ```
 
@@ -2308,7 +2306,7 @@ hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 <p class="oscp-command-note">Interroger une base de données MySQL.</p>
 
 ```bash
-mysql -h <target_ip> -u <username> -p <database>
+mysql -h <IP_CIBLE> -u <UTILISATEUR> -p <BASE_DE_DONNEES>
 
 ```
 
