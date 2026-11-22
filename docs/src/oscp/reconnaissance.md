@@ -1558,18 +1558,18 @@ smbclient //192.0.2.10/partage
 smbclient -N //192.0.2.10/partage
 smbclient //192.0.2.10/partage -U utilisateur -t 100 -c 'prompt OFF;recurse ON;mget *'
 
-# Pour ajuster le délai, utiliser l'option -t au lancement de smbclient
+# L'option -t s'applique à la commande smbclient, pas à son invite interactive
 help
 # Exemple hors session : smbclient -t 100 -L //192.0.2.10 -N
 
-# Dans une session smbclient interactive : désactiver la confirmation et récupérer récursivement
+# Dans smbclient, désactiver les confirmations puis télécharger récursivement les fichiers autorisés
 prompt OFF
 recurse ON
 mget *
 
 ```
 
-<p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
+<p class="oscp-command-note">Tester des identifiants SMB autorisés avec NetExec et Hydra ; attention au verrouillage de comptes.</p>
 
 ```bash
 nxc smb 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
@@ -1577,7 +1577,7 @@ hydra -L utilisateurs.txt -P mots_de_passe.txt smb://192.0.2.10 -f
 
 ```
 
-<p class="oscp-command-note">Créer un répertoire.</p>
+<p class="oscp-command-note">Créer un point de montage local puis monter un partage SMB en lecture seule avec cifs-utils.</p>
 
 ```bash
 # Monter un partage SMB autorisé dans un répertoire local (installer cifs-utils)
@@ -1587,22 +1587,22 @@ sudo mount -t cifs //192.0.2.10/partage /tmp/share -o username=utilisateur,ro
 
 ```
 
-<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
+<p class="oscp-command-note">Impacket : comparer PsExec, WMIExec, SMBExec et ATExec ; leur exécution distante exige des droits appropriés.</p>
 
 ```bash
-# Impacket PsExec (vérifier l'installation du paquet Impacket)
+# Impacket PsExec : utiliser le nom de commande disponible dans l'installation Kali
 psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# WMIexec
+# Impacket WMIExec : exécution distante via WMI, avec droits appropriés
 wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# SMBexec
+# Impacket SMBExec : exécution distante via SMB, avec droits appropriés
 smbexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 smbexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# ATExec (Impacket)
+# Impacket ATExec : exécution via le planificateur de tâches, avec droits appropriés
 atexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP> <COMMAND>
 atexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
@@ -1615,13 +1615,13 @@ psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 # Pass-the-Hash
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Vérification avec CrackMapExec
+# Vérification avec NetExec (nxc)
 nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 nxc smb 192.0.2.10 -u utilisateur -H '0123456789abcdef0123456789abcdef'
 
 ```
 
-<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
+<p class="oscp-command-note">Impacket WMIExec : exemples d'authentification par mot de passe ou empreinte NTLM, puis vérification via NetExec.</p>
 
 ```bash
 # Identifiants
@@ -1630,9 +1630,9 @@ wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 # Pass-the-Hash
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
-# Vérification avec CrackMapExec
-crackmapexec smb <IP> -u <USER> -p <PASSWORD> --exec-method wmiexec -x 'whoami'
-crackmapexec smb <IP> -u <USER> -H <NTHASH> --exec-method wmiexec -x 'whoami'
+# Vérification avec NetExec (nxc)
+nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest' --exec-method wmiexec -x 'whoami'
+nxc smb 192.0.2.10 -u utilisateur -H '0123456789abcdef0123456789abcdef' --exec-method wmiexec -x 'whoami'
 
 ```
 
@@ -1659,28 +1659,28 @@ nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
 
 ### 143, 993: IMAP
 
-<p class="oscp-command-note">Nmap (IMAP) : lancer les scripts NSE « imap-ntlm-info ».</p>
+<p class="oscp-command-note">Nmap IMAP : identifier les services 143/993 et relever les informations NTLM si elles sont exposées.</p>
 
 ```bash
 nmap -sV -p 143,993 --script imap-ntlm-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Examiner une connexion TLS ou un certificat.</p>
+<p class="oscp-command-note">IMAPS : examiner la négociation TLS et le certificat du service sur TCP 993.</p>
 
 ```bash
 openssl s_client -connect 192.0.2.10:993
 
 ```
 
-<p class="oscp-command-note">Rechercher des références de vulnérabilités connues.</p>
+<p class="oscp-command-note">SearchSploit : rechercher des références d'exploits IMAP, sans conclure à une vulnérabilité exploitable.</p>
 
 ```bash
 searchsploit imap
 
 ```
 
-<p class="oscp-command-note">Exécuter check_imap.py avec les paramètres indiqués pour «IMAP».</p>
+<p class="oscp-command-note">Lancer le script Python check_imap.py défini ci-dessous pour afficher les capacités IMAP annoncées.</p>
 
 ```bash
 # Exemple : relever les capacités IMAP sans authentification
@@ -1688,7 +1688,7 @@ python3 check_imap.py 192.0.2.10 143
 
 ```
 
-<p class="oscp-command-note">Script Python : implémentation de «IMAP».</p>
+<p class="oscp-command-note">Script Python 3 utilisant imaplib : connexion IMAP/IMAPS, affichage des capacités et fermeture de session.</p>
 
 ```python
 import imaplib
@@ -1727,7 +1727,7 @@ openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
 
 ### 161 (UDP): SNMP
 
-<p class="oscp-command-note">Nmap (161) : lancer les scripts NSE « snmp-* ».</p>
+<p class="oscp-command-note">SNMP UDP 161 : repérer les hôtes, relever les informations SNMP et tester les communautés autorisées.</p>
 
 ```bash
 sudo nmap -sU --open -p 161 <RESEAU_CIDR> -oG open-snmp.txt
