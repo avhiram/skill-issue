@@ -32,8 +32,8 @@ Liens mentionnés dans la section **20. References** du guide OSCP original, reg
 - [Schéma Active Directory](https://whimsical.com/active-directory-YJFeAhW9GMtmLX4SWxKCCM)
 - [OSCP Survival Guide](https://github.com/wwong99/pentest-notes/blob/master/oscp_resources/OSCP-Survival-Guide.md#shells)
 - [Notes OSCP complémentaires](https://github.com/xsudoxx/OSCP)
-- [Notes OSCP et eCPPTv3 de krovs — référence complémentaire](https://github.com/krovs/oscp-notes/tree/main/docs)
-- [Ligolo-ng — documentation officielle](https://docs.ligolo.ng/Quickstart/)
-- [AWS CLI — documentation S3](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html)
+- [Notes OSCP et eCPPTv3 de krovs: référence complémentaire](https://github.com/krovs/oscp-notes/tree/main/docs)
+- [Ligolo-ng: documentation officielle](https://docs.ligolo.ng/Quickstart/)
+- [AWS CLI: documentation S3](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html)
 
 Source : [Emmanuel Solis, OSCP+ Cheatsheet](https://www.emmanuelsolis.com/oscp.html#20-references).
