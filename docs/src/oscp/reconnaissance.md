@@ -1769,7 +1769,7 @@ snmp-check <IP_CIBLE>
 **Paramètres et repères :**
 `onesixtyone`  
 
-<p class="oscp-command-note">Envoyer des lignes de texte à un service TCP : uniquement si son protocole les accepte ; aucun fichier local n’est créé.</p>
+<p class="oscp-command-note">Créer les fichiers locaux de communautés et d'adresses IP, puis les fournir à onesixtyone pour tester SNMP/UDP 161.</p>
 
 ```bash
 printf '%s\n' public private monitoring > communautes.txt
@@ -1780,7 +1780,7 @@ onesixtyone -c communautes.txt -i adresses.txt
 
 ```
 
-<p class="oscp-command-note">Interroger les paramètres SNMP.</p>
+<p class="oscp-command-note">Lire les sorties NET-SNMP-EXTEND-MIB exposées par l'agent SNMP, si cette MIB est disponible.</p>
 
 ```bash
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
@@ -1793,7 +1793,7 @@ snmpwalk -v2c -c public 192.0.2.10 1.3.6.1.2.1.1
 
 ```
 
-<p class="oscp-command-note">Identifiants SNMP (OID) et leur signification</p>
+<p class="oscp-command-note">OID SNMP courants : les objets accessibles dépendent de la MIB, de l'agent et des droits.</p>
 
 ```text
 1.3.6.1.2.1.25.1.6.0 --> Nombre de processus
@@ -1850,7 +1850,7 @@ snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.25.4.2.1.2
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Nmap (LDAP) : lancer les scripts NSE « ldap* ».</p>
+<p class="oscp-command-note">Nmap LDAP : lire RootDSE avec le script ldap-rootdse sur TCP 389/636 ; ne lance pas tous les scripts ldap*.</p>
 
 ```bash
 nmap -n -sV -p 389,636 --script ldap-rootdse <IP_DC>
@@ -1869,10 +1869,10 @@ ldapsearch -x -H ldap://<IP_DC> -s base -b ''
 # Afficher les contextes de nommage publiés par le serveur LDAP
 ldapsearch -x -H ldap://<IP_DC> -s base -b '' namingContexts
 
-# Effectuer une recherche à partir d’un DN de base précis (Base DN)
+# Effectuer une recherche LDAP depuis un DN de base explicite
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 
-# Énumérer les utilisateurs utilisant LDAP
+# Rechercher tous les objets LDAP visibles (le filtre objectClass=* ne se limite pas aux utilisateurs)
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass=*)"
 
 # Lister les attributs sAMAccountName des objets utilisateur visibles
@@ -1885,11 +1885,11 @@ ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=grou
 # Requête LDAP authentifiée : utiliser -D pour le DN du compte et -W pour demander le mot de passe
 ldapsearch -x -H ldap://<IP_DC> -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=*)'
 
-# Filtres de recherche.
-ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>"
+# Recherche LDAP authentifiée : fournir un filtre valide et demander le mot de passe de façon interactive.
+ldapsearch -x -H ldap://192.0.2.10 -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=user)'
 
-# Précise la valeur ou le terme à retourner.
-ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>" <additionalTerm>
+# Sélectionner explicitement un attribut retourné après le filtre LDAP.
+ldapsearch -x -H ldap://192.0.2.10 -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=user)' sAMAccountName
 
 ```
 
@@ -1903,7 +1903,7 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 <p class="oscp-command-note">Filtres LDAP à insérer dans ldapsearch : ces expressions ne s’exécutent pas dans Bash.</p>
 
 ```text
-# Termes de recherche pour trouver les mots de passe Cleartext
+# Filtres LDAP : certains attributs peuvent contenir des informations sensibles ; respecter les droits d'accès
 # Rechercher ms-MCS-AdmPwd (mots de passe de l'administrateur local)
 (ms-MCS-AdmPwd=*)
 
@@ -1913,8 +1913,8 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher le délai d'expiration de LAPS (pour identifier la gestion de mot de passe potentielle)
 (ms-MCS-AdmPwdExpirationTime=*)
 
-# Rechercher des mots de passe faibles communs dans des attributs comme la description
-(description=*(123456*|password*|qwerty*|letmein*))
+# Rechercher séparément une sous-chaîne dans description ; le filtre LDAP n'accepte pas une alternance de type regex
+(|(description=*123456*)(description=*password*)(description=*qwerty*)(description=*letmein*))
 
 # Filtres de recherche LDAP courants
 # Rechercher tous les utilisateurs
@@ -1929,8 +1929,8 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Rechercher les comptes désactivés (Disabled Accounts)
 (userAccountControl:1.2.840.113556.1.4.803:=2)
 
-# Rechercher les comptes non désactivés avec un mot de passe défini
-(& (objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2)(!(pwdLastSet=0)))
+# Rechercher les comptes utilisateurs actifs dont pwdLastSet n'est pas égal à zéro (ne garantit pas la validité du mot de passe)
+(&(objectClass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2))(!(pwdLastSet=0)))
 
 # Rechercher les membres d’un groupe (Group Membership)
 (&(objectClass=user)(memberOf=CN=GroupName,OU=Groups,DC=domain,DC=com))
@@ -1946,18 +1946,18 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 # Recherche du dernier jeu de mots de passe
 (pwdLastSet=*)
 
-# Rechercher les comptes dont pwdLastSet est égal à 0
-(& (objectClass=user)(pwdLastSet<=0))
+# Rechercher les comptes dont l'attribut pwdLastSet vaut exactement zéro
+(&(objectClass=user)(pwdLastSet=0))
 
 # Recherche de comptes dans une unité organisationnelle spécifique (OU)
 (distinguishedName=*,OU=Sales,DC=domain,DC=com)
 
 # Recherches liées à la sécurité
 
-# Rechercher les comptes sans préauthentification Kerberos (AS-REP Roasting)
+# Identifier les comptes dont le bit DONT_REQ_PREAUTH est défini dans userAccountControl
 (userAccountControl:1.2.840.113556.1.4.803:=4194304)
 
-# Recherche de noms principaux de services (SPN)
+# Rechercher les objets qui possèdent au moins un servicePrincipalName (SPN)
 (servicePrincipalName=*)
 
 # Recherche d'utilisateurs délégués
