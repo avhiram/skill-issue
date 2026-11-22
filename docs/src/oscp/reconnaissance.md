@@ -98,7 +98,7 @@ nc -nvlp [listening_port]
 Vérifier les ports et les services de la cible autorisée.
 
 
-#### Méthode personnelle
+#### Séquence de scans Nmap pour un premier diagnostic
 
 
 **Énumération avancée**
@@ -265,7 +265,7 @@ nmap --top-ports=20 [IP]
 `/usr/share/nmap/nmap-services`  
 
 
-#### Détection et scan
+#### Identifier le système d’exploitation et les services
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -326,7 +326,7 @@ nmap -A [IP]
 `-sV` (versions de service)  
 
 
-#### Enregistrement des résultats
+#### Enregistrer et exploiter les résultats Nmap
 
 Observer les permissions et la configuration de Windows.
 
