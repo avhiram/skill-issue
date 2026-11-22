@@ -502,7 +502,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
-<p class="oscp-command-note">Nmap (FTP) : lancer les scripts NSE « ftp-anon, ftp-bounce, ftp-libopie ».</p>
+<p class="oscp-command-note">Nmap FTP : vérifier l'accès anonyme, le rebond FTP et les informations système avec ftp-anon, ftp-bounce et ftp-syst.</p>
 
 ```bash
 nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst <IP_CIBLE>
@@ -512,28 +512,28 @@ nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst <IP_CIBLE>
 <p class="oscp-command-note">Ouvrir FTP et tester une connexion anonyme, si elle est autorisée.</p>
 
 ```bash
-ftp <IP_CIBLE>
+ftp 192.0.2.10
 # À l'invite « Name », saisir anonymous ; à l'invite du mot de passe, saisir une adresse électronique de test.
 # Après connexion, « ls » liste les fichiers distants ; « get fichier.txt » télécharge un fichier autorisé.
 
 ```
 
 ```bash
-# Dans une session FTP déjà ouverte :
-ftp> binary
-ftp> put fichier.bin
+# À saisir dans l'invite interactive FTP (sans recopier le préfixe ftp>) :
+binary
+put fichier.bin
 
 ```
 
-<p class="oscp-command-note">Télécharger une ressource distante.</p>
+<p class="oscp-command-note">Télécharger un répertoire FTP avec wget, puis rechercher des fichiers locaux avec find (deux opérations distinctes).</p>
 
 ```bash
-wget -r 'ftp://<IP_CIBLE>/repertoire/'
+wget -r 'ftp://192.0.2.10/repertoire/'
 
-# Recherche de fichiers spécifiques
+# Recherche locale d'un fichier précis (ne parcourt pas le serveur FTP)
 find / -name 'nom_fichier' 2>/dev/null
 
-# Exemple de recherche de fichiers
+# Recherche locale de fichiers nommés Settings.*
 find / -name 'Settings.*' 2>/dev/null
 
 ```
@@ -548,7 +548,7 @@ hydra -l <UTILISATEUR> -P liste_mots_de_passe.txt -t 4 ftp://<IP_CIBLE>
 <p class="oscp-command-note">Ouvrir une session FTP sur le serveur cible.</p>
 
 ```bash
-ftp -p <IP_CIBLE>
+ftp -p 192.0.2.10
 
 ```
 
@@ -568,22 +568,22 @@ curl --list-only 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 <p class="oscp-command-note">Nmap (SSH) : lancer les scripts NSE « ssh-hostkey ».</p>
 
 ```bash
-# Examiner les clés d'hôte annoncées par SSH
+# Relever les empreintes des clés d'hôte SSH annoncées par le serveur
 nmap -p 22 --script ssh-hostkey <target_ip>
 
-# Énumérer les méthodes d'authentification SSH (ne démontre aucun contournement)
+# Lister les méthodes d'authentification SSH ; peut provoquer des traces d'authentification
 nmap -p 22 --script ssh-auth-methods <target_ip>
 
-# Tester les mots de passe SSH dans le périmètre autorisé
+# Test de mots de passe SSH : risque de verrouillage ; ne lancer qu'avec autorisation
 nmap -p 22 --script=ssh-brute --script-args userdb=/usr/share/seclists/Usernames/top-usernames-shortlist.txt,passdb=/usr/share/wordlists/rockyou.txt <target_ip>
 
-# Lister les algorithmes SSH2 proposés (ne détermine pas à lui seul la version du serveur)
+# Lister les algorithmes SSH2 proposés ; ne suffit pas à déterminer la version du logiciel
 nmap -p 22 --script ssh2-enum-algos <IP_CIBLE>
 
-# Examiner les algorithmes SSH anciens
+# Relever les algorithmes SSH2 et vérifier si SSHv1 est accepté
 nmap -p 22 --script ssh2-enum-algos,sshv1 <IP_CIBLE>
 
-# Authentification SSH par clé publique
+# Vérifier l'acceptation d'une clé publique SSH de test avec le compte autorisé
 nmap -p 22 --script=ssh-publickey-acceptance --script-args ssh.user=<username>,ssh.privatekey=<path_to_private_key> <target_ip>
 
 ```
@@ -599,7 +599,7 @@ hydra -f -V -C /usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefau
 
 ```
 
-<p class="oscp-command-note">Modifier les permissions d&#x27;un fichier.</p>
+<p class="oscp-command-note">Restreindre les permissions de la clé privée à son propriétaire, puis l'utiliser pour SSH.</p>
 
 ```bash
 chmod 600 cle_privee
@@ -621,7 +621,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt cle_privee.hash
 
 ```
 
-<p class="oscp-command-note">Localiser les clés SSH et les fichiers associés.</p>
+<p class="oscp-command-note">Rechercher les clés publiques système et les fichiers de clés du compte courant (les résultats peuvent contenir des clés privées).</p>
 
 ```bash
 find /etc/ssh -type f -name '*.pub' 2>/dev/null
@@ -664,7 +664,7 @@ scp -P 2222 user@192.168.1.10:/etc/config.txt /home/user/
 scp -i /path/to/private_key user@remote_host:/path/to/remote/file /local/destination/
 scp -i ~/.ssh/id_rsa user@192.168.1.10:/etc/config.txt /home/user/
 
-# Télécharger les fichiers avec Verbose Output
+# Afficher les détails du transfert distant vers local avec -v
 scp -v user@remote_host:/path/to/remote/file /local/destination/
 scp -v user@192.168.1.10:/etc/config.txt /home/user/
 
@@ -691,11 +691,11 @@ scp -r /home/user/html user@192.168.1.10:/var/www/
 scp -P 2222 /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -P 2222 /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Télécharger un fichier en utilisant une clé privée
+# Envoyer un fichier local en s'authentifiant avec une clé privée
 scp -i /path/to/private_key /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -i ~/.ssh/id_rsa /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Télécharger des fichiers avec Verbose Output
+# Afficher les détails du transfert local vers distant avec -v
 scp -v /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -v /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
