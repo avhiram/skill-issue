@@ -149,11 +149,11 @@ Ensuite, sélectionner l'agent avec `session`, démarrer avec `tunnel_start --tu
 
 ## Atteindre le localhost du pivot
 
-**Problème :** un service sur `127.0.0.1:8000` du pivot n'est pas accessible directement via son IP réseau. Ligolo réserve `240.0.0.1` pour atteindre **le `127.0.0.1` de l'agent sélectionné** à travers son tunnel.
+**Problème :** un service lié uniquement à `127.0.0.1:8000` sur le pivot n'écoute pas sur son IP réseau. Ligolo réserve `240.0.0.1` pour atteindre **le `127.0.0.1` de l'agent sélectionné** à travers son tunnel.
 
 ### Ajouter la route spéciale vers le localhost distant
 
-Cette route doit utiliser l'interface de l'agent concerné.
+Ajouter la route `240.0.0.1/32` sur Kali via la TUN associée à l'agent concerné, après le démarrage du tunnel.
 
 <p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
@@ -162,11 +162,11 @@ sudo ip route add 240.0.0.1/32 dev ligolo
 curl -I http://240.0.0.1:8000/
 ```
 
-La réponse HTTP n'existe que si un serveur écoute réellement sur le port `8000` du pivot. Éviter de réutiliser cette même adresse avec plusieurs interfaces simultanées sans contrôler la route.
+`curl` ne réussira que si un serveur HTTP écoute effectivement sur `127.0.0.1:8000` du pivot. Éviter de réutiliser cette même adresse avec plusieurs interfaces simultanées sans contrôler la route.
 
 ## Ligolo-ng : double pivot
 
-**Situation :** Kali atteint le premier pivot, mais le deuxième pivot **ne peut pas joindre directement Kali**. Le premier pivot doit relayer le port Ligolo du deuxième agent vers le proxy sur Kali.
+**Situation :** le pivot B ne peut pas joindre Kali directement, mais peut atteindre l'IP interne du pivot A et son listener TCP. Le premier pivot doit relayer le port Ligolo du deuxième agent vers le proxy sur Kali.
 
 ```text
 Kali (proxy :11601) ⇐ tunnel TLS ⇒ Pivot A (agent Ligolo)
@@ -177,7 +177,7 @@ Kali (proxy :11601) ⇐ tunnel TLS ⇒ Pivot A (agent Ligolo)
 
 ### Créer un listener sur le premier pivot
 
-Le port `11602` est ouvert **sur le pivot A** et redirigé vers `127.0.0.1:11601` **sur Kali**. Ne pas le confondre avec un port ouvert sur Kali.
+Le listener ouvre TCP `11602` **sur le pivot A** et relaie vers TCP `11601` **sur Kali** ; vérifier les pare-feu des deux côtés. Ne pas le confondre avec un port ouvert sur Kali.
 
 <p class="oscp-command-note">Dans la console Ligolo, **session du pivot A** sélectionnée.</p>
 
@@ -188,7 +188,7 @@ listener_list
 
 ### Faire connecter le second agent
 
-Pivot B contacte l'IP de Pivot A, pas celle de Kali. Vérifier que Pivot B peut joindre le port 11602 du premier pivot.
+Sur le pivot B, l'agent contacte `172.16.20.1:11602` (pivot A) ; ne pas utiliser l'IP de Kali si elle n'est pas routable.
 
 <p class="oscp-command-note">Sur le pivot B: PowerShell si Windows.</p>
 
@@ -196,11 +196,11 @@ Pivot B contacte l'IP de Pivot A, pas celle de Kali. Vérifier que Pivot B peut 
 .\agent.exe -connect 172.16.20.1:11602 -accept-fingerprint EMPREINTE_SHA256
 ```
 
-**Attention à l'IP ci-dessus :** `172.16.20.1` est l'adresse interne du premier pivot A, tandis que `172.16.20.30` est celle du deuxième pivot B. Remplacer ces IP par les vraies interfaces trouvées avec `ifconfig`.
+**Repère :** `172.16.20.1` est l'interface interne du pivot A et `172.16.20.30` celle du pivot B. Ces adresses sont fictives. Remplacer ces IP par les vraies interfaces trouvées avec `ifconfig`.
 
 ### Créer la seconde interface TUN
 
-Chaque tunnel actif doit avoir sa propre interface ; `ligolo2` est distincte de `ligolo`.
+Créer `ligolo2` sur Kali pour le second tunnel : ne pas faire passer simultanément les deux agents sur la même interface TUN.
 
 <p class="oscp-command-note">Sur Kali: terminal Linux habituel.</p>
 
@@ -211,7 +211,7 @@ sudo ip link set ligolo2 up
 
 ### Sélectionner le deuxième agent
 
-Sélectionner la **nouvelle** session apparue pour Pivot B, puis démarrer le deuxième tunnel.
+Dans la console Ligolo, sélectionner la **session du pivot B** avant `ifconfig` et `tunnel_start --tun ligolo2`.
 
 <p class="oscp-command-note">Dans la console Ligolo sur Kali.</p>
 
@@ -223,23 +223,23 @@ tunnel_start --tun ligolo2
 
 ### Router le deuxième réseau
 
-Le second sous-réseau passe par `ligolo2`, pas `ligolo`.
+Sur Kali, router `172.16.30.0/24` via `ligolo2` et vérifier la route avant de tester un port du second réseau.
 
 <p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
 ```bash
 sudo ip route add 172.16.30.0/24 dev ligolo2
 ip route get 172.16.30.10
-nmap -sT -Pn -n -p 445 172.16.30.10
+nmap -sT -Pn -n --unprivileged -p 445 172.16.30.10
 ```
 
 ## Listener Ligolo : rendre un service Kali accessible au pivot
 
-Un *listener* est une **redirection de port sur l'agent Ligolo** vers un port qui écoute **sur Kali**. Pratique pour récupérer un fichier depuis Kali lorsque la cible ne peut pas contacter directement `10.10.14.10`.
+Un *listener* ouvre un port TCP sur l'agent sélectionné et redirige les connexions vers un service qui écoute sur le proxy Kali. Pratique pour récupérer un fichier depuis Kali lorsque la cible ne peut pas contacter directement `10.10.14.10`.
 
 ### Héberger le fichier sur Kali
 
-Servir un dossier uniquement sur `127.0.0.1:8000` ; le listener Ligolo assurera l'accès distant.
+Sur Kali, servir le dossier local uniquement sur `127.0.0.1:8000` ; le listener Ligolo exposera ce service sur le pivot.
 
 <p class="oscp-command-note">Sur Kali: terminal Linux séparé.</p>
 
@@ -248,7 +248,7 @@ mkdir -p ./partage
 python3 -m http.server 8000 --bind 127.0.0.1 --directory ./partage
 ```
 
-### Exposer ce service sur le pivot A
+### Dans Ligolo, exposer le service HTTP de Kali sur le pivot A
 
 Le port `8080` écoute sur le **pivot A** (`172.16.20.1`) et redirige vers le serveur HTTP de Kali (`127.0.0.1:8000`).
 
@@ -269,15 +269,15 @@ La machine Windows interne contacte **le pivot A à `172.16.20.1:8080`**, pas le
 Invoke-WebRequest -UseBasicParsing -Uri 'http://172.16.20.1:8080/outil.txt' -OutFile 'C:\Users\Public\outil.txt'
 ```
 
-Pour **envoyer un fichier vers Kali**, ce serveur HTTP Python ne suffit pas : utiliser **SMB ou WebDAV** comme expliqué dans la [fiche Transferts de fichiers](./transferts.md). Un listener Ligolo peut acheminer ces protocoles si le port et le service de réception sont configurés.
+Pour **envoyer un fichier vers Kali**, `python3 -m http.server` ne suffit pas (pas d'upload) : utiliser **SMB ou WebDAV** comme expliqué dans la [fiche Transferts de fichiers](./transferts.md). Un listener Ligolo peut acheminer ces protocoles si le port et le service de réception sont configurés.
 
 ## Chisel : autre solution de pivot
 
-**Chisel** transporte des redirections TCP et un proxy SOCKS dans une connexion client/serveur. Contrairement au tunnel TUN de Ligolo, il peut nécessiter ProxyChains pour les outils qui ne prennent pas en charge SOCKS.
+**Chisel** transporte des redirections TCP et un proxy SOCKS via une connexion client/serveur HTTP encapsulée dans un tunnel chiffré lorsqu'il est configuré en conséquence. Contrairement au tunnel TUN de Ligolo, il peut nécessiter ProxyChains pour les outils qui ne prennent pas en charge SOCKS.
 
 ### Démarrer Chisel en mode reverse
 
-Kali écoute sur TCP `8001` et accepte les redirections inverses demandées par le client distant.
+Le serveur Chisel de Kali écoute sur TCP `8001` et autorise les redirections inverses demandées par le client distant ; protéger son accès.
 
 <p class="oscp-command-note">Sur Kali: serveur Chisel.</p>
 
@@ -287,7 +287,7 @@ chisel server --port 8001 --reverse
 
 ### Rediriger un port interne vers Kali
 
-Le port `8080` sur Kali pointe vers le port `80` du pivot Windows.
+Le client Chisel sur Windows demande une écoute sur Kali en `8080` vers son propre `127.0.0.1:80` ; un serveur doit réellement écouter sur ce port.
 
 <p class="oscp-command-note">Sur le pivot Windows: client Chisel.</p>
 
@@ -307,7 +307,7 @@ curl -I http://127.0.0.1:8080/
 
 ### Créer un proxy SOCKS inversé
 
-Le port SOCKS `1080` apparaîtra sur Kali. Garder la commande ouverte pendant l'utilisation.
+Avec `R:1080:socks`, le port SOCKS `1080` est exposé côté serveur Chisel sur Kali ; garder la connexion client active.
 
 <p class="oscp-command-note">Sur le pivot Windows: client Chisel.</p>
 
@@ -317,7 +317,7 @@ Le port SOCKS `1080` apparaîtra sur Kali. Garder la commande ouverte pendant l'
 
 ### Tester un site interne via SOCKS
 
-`--socks5-hostname` demande la résolution du nom côté proxy, utile pour les noms internes.
+Avec `curl --socks5-hostname`, la résolution des noms DNS est déléguée au proxy SOCKS ; l'adresse IP d'exemple n'exige pas de résolution.
 
 <p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
