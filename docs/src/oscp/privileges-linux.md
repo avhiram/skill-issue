@@ -370,14 +370,14 @@ find / -perm -4000 -type f -exec ls -l {} + 2>/dev/null
 <p class="oscp-command-note">Lister les processus correspondant au nom d'un binaire.</p>
 
 ```bash
-ps u -C <NOM_BINAIRE>
+ps u -C NOM_BINAIRE
 
 ```
 
 <p class="oscp-command-note">Afficher les UID d'un processus dans `/proc`.</p>
 
 ```bash
-grep '^Uid:' /proc/<PID>/status
+grep '^Uid:' /proc/1234/status  # Remplacer 1234 par le PID
 
 ```
 
@@ -414,16 +414,16 @@ getcap /usr/bin/nmap
 ```bash
 sudo setcap cap_net_bind_service=ep /chemin/vers/binaire
 
-# Exemple pour ajouter CAP_DAC_OVERRIDE à un binaire
-sudo getcap /chemin/vers/binaire
+# Vérifier les capacités après modification
+getcap /chemin/vers/binaire
 
 ```
 
 ```bash
 sudo setcap -r /chemin/vers/binaire
 
-# Par exemple
-setcap -r /usr/bin/nmap
+# Exemple (nécessite les droits root)
+sudo setcap -r /usr/bin/nmap
 
 ```
 
@@ -431,33 +431,33 @@ setcap -r /usr/bin/nmap
 
 **CAP_AUDIT_CONTROL**
 
-Allows enabling or disabling kernel auditing. · Can be used to disable auditing mechanisms and evade detection.
+Permet de contrôler l'audit du noyau, notamment son activation ou sa désactivation.
 
 **CAP_AUDIT_WRITE**
 
-Allows writing records to the kernel auditing log. · Can be used to manipulate or inject log entries, potentially covering up malicious activities.
+Permet d'écrire des événements dans le journal d'audit du noyau.
 
-**CAP_BLOCK_SUSPEND**
+**CAP_BLOCK_SUSPEND** — Empêcher certaines mises en veille du système.
 
-**CAP_CHOWN**
+**CAP_CHOWN** — Modifier le propriétaire des fichiers.
 
-**CAP_DAC_OVERRIDE**
+**CAP_DAC_OVERRIDE** — Contourner les permissions classiques des fichiers.
 
 **CAP_DAC_READ_SEARCH**
 
-Bypasses file and directory read and execute permission checks. · Allows reading and searching files and directories that would normally be restricted.
+Contourne certaines vérifications de lecture et de parcours des fichiers et répertoires.
 
-**CAP_FOWNER**
+**CAP_FOWNER** — Effectuer certaines opérations réservées au propriétaire d'un fichier.
 
-**CAP_IPC_LOCK**
+**CAP_IPC_LOCK** — Verrouiller des pages mémoire.
 
-**CAP_KILL**
+**CAP_KILL** — Contourner certaines vérifications de permission pour envoyer des signaux.
 
 **CAP_MAC_ADMIN**
 
-**CAP_NET_BIND_SERVICE**
+**CAP_NET_BIND_SERVICE** — Écouter sur les ports réseau privilégiés.
 
-**CAP_NET_RAW**
+**CAP_NET_RAW** — Utiliser des sockets réseau brutes.
 
 **CAP_SETGID**
 
