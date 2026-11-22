@@ -9,105 +9,105 @@ Examiner les permissions, processus et configurations d'un système Linux.
 
 ## Énumération
 
-### Afficher l’identité Unix et les groupes
+### Identifier l'utilisateur et ses groupes
 
 ```bash
 id
 ```
 
-### Afficher le nom d’hôte
+### Identifier le nom de la machine
 
 ```bash
 hostname
 ```
 
-### Lire la bannière de connexion locale
+### Lire la bannière système
 
-Cette bannière peut être personnalisée.
+`/etc/issue` peut être personnalisé : ne pas s'y fier pour identifier la version exacte.
 
 ```bash
 cat /etc/issue
 ```
 
-### Identifier la distribution Linux
+### Lire la version de la distribution
 
 ```bash
 cat /etc/os-release
 ```
 
-### Afficher les informations du noyau et de la machine
+### Identifier le noyau et l'architecture
 
 ```bash
 uname -a
 ```
 
-### Afficher les processus en cours
+### Lister les processus
 
-`ps aux` liste les processus de tous les utilisateurs, avec notamment leur PID, leur propriétaire et leur consommation de ressources. Les détails visibles dépendent des permissions et de la configuration de `/proc`.
+`ps aux` affiche les processus, leurs PID, propriétaires et ressources consommées.
 
 ```bash
 ps aux
 ```
 
-### Afficher les adresses des interfaces réseau
+### Identifier les interfaces et adresses IP
 
-`ip a` est l'abréviation de `ip address show` ; cette commande affiche les interfaces et leurs adresses, mais **pas** la table de routage.
+`ip a` affiche les interfaces et leurs adresses, pas les routes.
 
 ```bash
 ip a
 ```
 
-### Afficher les sockets et leurs processus
+### Lister les sockets et les processus associés
 
-`ss -anp` affiche les sockets sans résolution des noms. L'association aux processus peut être incomplète sans droits suffisants. Pour ne voir que les ports TCP/UDP en écoute, utiliser `ss -tuln`.
+`ss -anp` affiche les sockets sans résolution DNS ; les processus peuvent être masqués sans droits suffisants.
 
 ```bash
 ss -anp
 ```
 
-### Lire les règles IPv4 sauvegardées par iptables-persistent
+### Examiner les règles IPv4 sauvegardées
 
-Ce fichier n'existe que si les règles ont été sauvegardées à cet emplacement, généralement avec `iptables-persistent`. Il ne reflète pas nécessairement les règles actuellement actives ni les règles `nftables`.
+`rules.v4` dépend d'`iptables-persistent` ; ce n'est pas forcément le pare-feu actif.
 
 ```bash
 cat /etc/iptables/rules.v4
 ```
 
-### Lister les fichiers de planification cron du système
+### Identifier les fichiers cron du système
 
-Affiche les fichiers et répertoires dont le nom commence par `/etc/cron`. Cela ne liste pas à lui seul toutes les tâches planifiées.
+Ne couvre pas les crontabs utilisateur ni les minuteurs systemd.
 
 ```bash
 ls -lah /etc/cron*
 ```
 
-### Afficher la crontab de l'utilisateur courant
+### Lire ses tâches cron
 
-La commande peut indiquer qu'aucune crontab n'existe pour ce compte.
+Une absence de crontab n'exclut pas des tâches système.
 
 ```bash
 crontab -l
 ```
 
-### Afficher la crontab du compte root
+### Lire la crontab root avec sudo
 
-Nécessite une autorisation `sudo` suffisante ; peut demander le mot de passe de l'utilisateur.
+Nécessite une autorisation sudo appropriée.
 
 ```bash
 sudo crontab -l
 ```
 
-### Lister les paquets connus de dpkg
+### Inventorier les paquets Debian/Ubuntu
 
-Sur Debian, Ubuntu et les distributions utilisant `dpkg`, affiche la base des paquets et leur état. Cela ne recense pas les programmes installés manuellement hors gestionnaire de paquets.
+`dpkg -l` liste les paquets et leurs états, pas les installations manuelles.
 
 ```bash
 dpkg -l
 ```
 
-### Rechercher les répertoires modifiables par le compte courant
+### Trouver les dossiers accessibles en écriture
 
-`-writable` teste l'accès en écriture du processus courant, pas une permission d'écriture accordée à tous. La recherche peut être partielle si certains répertoires sont inaccessibles.
+`-writable` vérifie l'accès du compte courant ; les chemins interdits sont ignorés.
 
 ```bash
 find / -writable -type d 2>/dev/null
@@ -122,83 +122,83 @@ find / -writable -type d 2>/dev/null
 sudo strings -n 10 /dev/mem 2>/dev/null | grep -i 'pass'
 ```
 
-### Rechercher les chemins indexés contenant « password »
+### Rechercher « password » dans l'index local
 
-`locate` cherche dans une base de données préalablement construite : les résultats peuvent être anciens ou incomplets. Installer `plocate` ou `mlocate` selon la distribution si la commande est absente.
+`locate` dépend d'un index qui peut être incomplet ou ancien.
 
 ```bash
-locate password | more
+locate -i password | less
 ```
 
-### Lire les montages configurés dans fstab
+### Examiner les montages prévus au démarrage
 
-Affiche les systèmes de fichiers prévus pour le montage ; une entrée ne signifie pas nécessairement que le volume est monté actuellement.
+`fstab` décrit les montages configurés, pas nécessairement actifs.
 
 ```bash
 cat /etc/fstab
 ```
 
-### Afficher les montages actifs
+### Lister les systèmes de fichiers montés
 
 ```bash
 mount
 ```
 
-### Afficher les périphériques blocs
+### Identifier disques et partitions
 
-`lsblk` liste les disques et partitions connus ; il ne recense pas tous les montages réseau.
+`lsblk` ne recense pas tous les montages réseau.
 
 ```bash
 lsblk
 ```
 
-### Lister les modules du noyau chargés
+### Identifier les modules chargés
 
-`lsmod` affiche les modules actuellement chargés, pas tous les modules disponibles sur le disque.
+`lsmod` n'affiche que les modules chargés.
 
 ```bash
 lsmod
 ```
 
-### Examiner les informations d'un module du noyau
+### Examiner un module disponible
 
-Remplacer `NOM_MODULE` par un module disponible. Le chemin de `modinfo` varie selon la distribution ; invoquer la commande via le `PATH` est plus portable.
+`modinfo` décrit un module installé, même s'il n'est pas chargé.
 
 ```bash
 modinfo NOM_MODULE
 ```
 
-### Rechercher les fichiers dotés du bit SUID
+### Rechercher les exécutables SUID
 
-La commande repère les fichiers réguliers dont le bit SUID est positionné. La présence du bit ne démontre pas à elle seule une vulnérabilité.
+SUID ne signifie pas automatiquement qu'un fichier est vulnérable.
 
 ```bash
 find / -perm -u=s -type f 2>/dev/null
 ```
 
-### Afficher les autorisations sudo du compte courant
+### Identifier les commandes autorisées par sudo
 
-`sudo -l` peut demander une authentification. La sortie décrit les commandes autorisées par la politique sudo.
+`sudo -l` peut demander le mot de passe et liste les droits accordés.
 
 ```bash
 sudo -l
 ```
 
-### Ouvrir une session de connexion via sudo
+### Ouvrir un shell de connexion avec sudo
 
-`sudo -i` nécessite que la politique sudo autorise cette opération. Elle ouvre un environnement de connexion du compte cible, généralement root.
+`sudo -i` ouvre un shell de connexion si la politique sudo l'autorise.
 
 ```bash
 sudo -i
 ```
 
-**Énumération automatisée**
+## Inventaire complémentaire
 
 ### Interfaces et connexions
 
-Observer les interfaces, la table de routage et les services à l'écoute sur la machine locale.
+Afficher adresses IP, routes et ports en écoute.
 
-Les trois commandes sont indépendantes : `ip -br address` résume les adresses, `ip route` affiche la table de routage principale et `ss -tulpn` liste les sockets TCP/UDP en écoute avec leurs processus lorsque les droits le permettent. `ip` nécessite `iproute2`.
+`ip` nécessite `iproute2` ; `ss -tulpn` peut masquer les processus sans privilèges.
 
 ```bash
 ip -br address
@@ -208,9 +208,9 @@ ss -tulpn
 
 ### Volumes et espace disque
 
-Examiner les périphériques et les points de montage.
+Comparer les périphériques et l'espace occupé.
 
-`lsblk -f` affiche les périphériques blocs et les informations de systèmes de fichiers disponibles ; `df -hT` affiche l'occupation des systèmes de fichiers montés, avec leur type.
+`lsblk -f` identifie les volumes ; `df -hT` affiche les montages et l'espace utilisé.
 
 ```bash
 lsblk -f
@@ -219,9 +219,9 @@ df -hT
 
 ### Arbre de processus
 
-Afficher les processus en détail et leurs relations parent-enfant.
+Lister les processus et leurs relations parent-enfant.
 
-`ps auxww` affiche les processus avec des lignes non tronquées ; `ps axjf` présente leur hiérarchie sous forme d'arbre. Les options de `ps` décrites ici sont celles de procps-ng sous Linux.
+`ps auxww` évite de tronquer les lignes ; `ps axjf` affiche l'arbre des processus.
 
 ```bash
 ps auxww
@@ -231,18 +231,18 @@ ps axjf
 ## Examiner les services
 
 ```bash
-watch -n 1 "ps auxww | grep -i '[p]ass'"
+watch -n 1 "ps auxww | grep -i '[p]ass'"  # Recherche un motif, pas tous les secrets
 
 ```
 
 ```bash
-# Afficher le trafic en clair sur l'interface loopback (si autorisé)
+# Examiner les paquets en texte lisible sur loopback (droits requis)
 sudo tcpdump -i lo -A | grep -i 'pass'
 
 ```
 
 ```bash
-# Enregistrer le trafic sur toutes les interfaces (droits requis)
+# Enregistrer les paquets accessibles (droits requis)
 sudo tcpdump -i any -s 0 -w capture.pcap
 sudo tcpdump -i eth0 -w capture.pcap -n -U -s 0 'not host 10.11.1.111'
 sudo tcpdump -vv -i eth0 'not host 10.11.1.111'
