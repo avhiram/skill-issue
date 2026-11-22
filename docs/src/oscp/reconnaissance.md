@@ -1240,7 +1240,7 @@ RETR 1
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur POP3 à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra POP3 : tester un compte de laboratoire sur TCP 110 ou POP3S sur TCP 995 avec TLS implicite.</p>
 
 ```bash
 # Tester des identifiants POP3 dans un laboratoire autorisé
@@ -1254,10 +1254,10 @@ hydra -S -v -l <username> -P <password_list> -s 995 -f <target_ip> pop3 -V
 <p class="oscp-command-note">POP3 : second exemple interactif avec fermeture propre via QUIT.</p>
 
 ```text
-# Connectez-vous au service POP3
+# Ouvrir une connexion au service POP3 non chiffré
 telnet <target_ip> 110
 
-# Connectez-vous avec vos identifiants
+# Saisir les identifiants de laboratoire dans la session POP3
 USER <username>
 PASS <password>
 
@@ -1322,7 +1322,7 @@ nmap -sV -p 593 <IP_CIBLE>
 **Paramètres et repères :**
 `rpcclient`  
 
-<p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
+<p class="oscp-command-note">rpcclient : ouvrir une session SMB/RPC et interroger les informations accessibles sans identifiants.</p>
 
 ```bash
 # Tenter une session RPC sans identifiants (peut être refusée)
@@ -1345,7 +1345,7 @@ rpcclient -U 'utilisateur' -W 'EXEMPLE' 192.0.2.10 -c 'enumdomusers'
 **Paramètres et repères :**
 `rpcclient`  
 
-<p class="oscp-command-note">Commandes interactives rpcclient : consultation des utilisateurs, groupes, imprimantes et droits ; les opérations de modification exigent des autorisations spécifiques.</p>
+<p class="oscp-command-note">rpcclient : commandes interactives de lecture uniquement ; saisir ces lignes après connexion, pas dans Bash.</p>
 
 ```text
 enumdomusers
@@ -1353,60 +1353,58 @@ enumdomgroups
 queryuser 0x450
 enumprinters
 querydominfo
-createdomuser
-deletedomuser
-lookupnames
-lookupsids
-lsaaddacctrights
-lsaremoveacctrights
+# lookupnames et lookupsids exigent respectivement un nom et un SID
+lookupnames utilisateur
+lookupsids S-1-5-18
+# Informations sur le rôle du domaine
 dsroledominfo
 dsenumdomtrusts
 
 ```
 
-```bash
-# Lister les utilisateurs du domaine depuis une session rpcclient
+```text
+# Dans l'invite interactive rpcclient : lister les utilisateurs du domaine
 enumdomusers
 
 # Interroger un utilisateur par son RID hexadécimal
-queryuser <0xrid>
+queryuser 0x450
 
 # Afficher les RID des groupes associés à cet utilisateur
-queryusergroups <0xrid>
+queryusergroups 0x450
 
 # Résoudre un nom de compte en SID
 lookupnames utilisateur
 
 # Obtenir les alias associés à un utilisateur (selon les commandes prises en charge)
-queryuseraliases [builtin|domain] <sid>
+queryuseraliases domain S-1-5-21-111111111-222222222-333333333-1000
 
 ```
 
 <p class="oscp-command-note">Dans rpcclient : énumérer les groupes, consulter un RID puis lister ses membres.</p>
 
-```bash
-# Liste des groupes
+```text
+# Dans l'invite rpcclient : lister les groupes
 enumdomgroups
 
 # Obtenir les détails du groupe
-querygroup <0xrid>
+querygroup 0x200
 
 # Lister les membres du groupe identifié par son RID
-querygroupmem <0xrid>
+querygroupmem 0x200
 
 ```
 
-```bash
-# Liste des alias
-enumalsgroups <builtin|domain>
+```text
+# Dans l'invite rpcclient : lister les alias
+enumalsgroups builtin
 
 # Lister les membres d'un alias
-queryaliasmem builtin|domain <0xrid>
+queryaliasmem builtin 0x220
 
 ```
 
-```bash
-# Lister les domaines visibles depuis cette session rpcclient
+```text
+# Dans l'invite rpcclient : lister les domaines visibles
 enumdomains
 
 # Interroger le SID et les informations de politique du domaine
@@ -1433,10 +1431,10 @@ impacket-lookupsid 'exemple.local/utilisateur@192.0.2.10'
 
 ```
 
-<p class="oscp-command-note">Dans rpcclient : résoudre des noms de comptes et des SID ; ces commandes ne recherchent pas de fichiers.</p>
+<p class="oscp-command-note">rpcclient interactif : résoudre des noms et SID, ou énumérer les SID LSA accessibles.</p>
 
-```bash
-# Résoudre un nom de compte en SID
+```text
+# Dans l'invite rpcclient : résoudre un nom de compte en SID
 lookupnames utilisateur
 
 # Énumérer les SID accessibles à la session RPC
@@ -1450,7 +1448,7 @@ lookupsids S-1-5-21-111111111-222222222-333333333-500
 **Paramètres et repères :**
 `rpcclient`  
 
-<p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
+<p class="oscp-command-note">rpcclient : consulter les informations du domaine avec un compte autorisé ou tenter une session anonyme.</p>
 
 ```bash
 rpcclient -U 'administrateur' 192.0.2.10 -c 'querydominfo'
