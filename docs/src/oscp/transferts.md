@@ -260,28 +260,28 @@ scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
 
 ## Dossier partagé dans une session RDP
 
-### Depuis Kali, ouvrir la session avec un dossier partagé {#rdp}
+### Sur Kali, ouvrir RDP avec redirection du dossier local {#rdp}
 
-Depuis Kali, FreeRDP 3 doit être disponible et la stratégie RDP Windows doit autoriser la redirection de lecteurs. Place les fichiers à envoyer dans `partage`.
+Sur Kali, installer FreeRDP 3 et préparer `./partage`. Le serveur Windows doit autoriser la redirection des lecteurs RDP ; le compte `etudiant` doit être autorisé à ouvrir une session RDP.
 
 ```bash
 mkdir -p ./partage
 xfreerdp3 /v:10.10.10.30 /u:etudiant /dynamic-resolution "/drive:partage,$PWD/partage"
 ```
 
-### Dans la session RDP Windows, afficher le dossier partagé de Kali
+### Sur Windows distant, afficher le dossier Kali redirigé par RDP
 
 ```powershell
 Get-ChildItem -LiteralPath '\\tsclient\partage'
 ```
 
-### Dans la session RDP Windows, copier un fichier depuis Kali
+### Sur Windows distant, récupérer un fichier du dossier Kali redirigé
 
 ```powershell
 Copy-Item -LiteralPath '\\tsclient\partage\rapport.txt' -Destination 'C:\Users\Public\rapport.txt'
 ```
 
-### Dans la session RDP Windows, renvoyer un fichier vers Kali
+### Sur Windows distant, renvoyer un fichier dans le dossier Kali redirigé
 
 ```powershell
 Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\partage\retour.txt'
@@ -307,27 +307,27 @@ curl --fail --user etudiant --upload-file ./rapport.txt ftp://10.10.10.20/rappor
 
 ## Transférer un petit fichier sous forme de texte
 
-Base64 encode les octets en texte, sans les chiffrer. Pour un petit fichier seulement, copier toute la chaîne sans retour à la ligne ajouté, puis comparer SHA-256 après décodage.
+Base64 représente les octets sous forme de texte **sans chiffrement**. Réserver cette méthode aux petits fichiers, copier la chaîne complète sans caractères supplémentaires et comparer les empreintes SHA-256 après reconstruction.
 
-### Sur Linux source, encoder en Base64
+### Sur Kali source, encoder un fichier en Base64 pour Windows
 
 ```bash
 base64 -w 0 ./rapport.txt
 ```
 
-### Sur Windows destination, décoder la chaîne copiée
+### Sur Windows destination, reconstruire le fichier depuis Base64
 
 ```powershell
 [IO.File]::WriteAllBytes('C:\Users\Public\rapport.txt', [Convert]::FromBase64String((Read-Host 'Base64')))
 ```
 
-### Sur Windows source, encoder en Base64
+### Sur Windows source, encoder un fichier en Base64 pour Linux
 
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\Users\Public\rapport.txt'))
 ```
 
-### Sur Linux destination, décoder la chaîne copiée
+### Sur Kali destination, reconstruire le fichier depuis Base64
 
 ```bash
 read -r -p 'Base64 : ' contenu
@@ -338,13 +338,17 @@ printf '%s' "$contenu" | base64 --decode > ./rapport.txt
 
 Calcule l’empreinte du fichier source puis celle du fichier reçu. Ignore la différence entre majuscules et minuscules lors de la comparaison.
 
-### Sous Linux
+### Sur Linux source et destination
+
+Exécuter la commande sur chaque machine en adaptant le chemin du fichier, puis comparer les deux empreintes SHA-256.
 
 ```bash
 sha256sum ./rapport.txt
 ```
 
-### Sous Windows avec PowerShell
+### Sur Windows source et destination avec PowerShell
+
+Exécuter sur chaque machine concernée ; le champ `Hash` doit correspondre à l'empreinte calculée sur Linux ou Windows pour le même fichier.
 
 ```powershell
 Get-FileHash -LiteralPath 'C:\Users\Public\rapport.txt' -Algorithm SHA256
@@ -356,9 +360,9 @@ Get-FileHash -LiteralPath 'C:\Users\Public\rapport.txt' -Algorithm SHA256
 | --- | --- |
 | Connexion refusée ou expirée | Adresse, port d’écoute, route et pare-feu. |
 | HTTP 404 | Nom du fichier et dossier servi par Python. |
-| HTTP 501 pendant un envoi | Le serveur `http.server` de Python sert les fichiers en lecture. Pour recevoir, utilise le serveur WebDAV. |
-| SMB refuse la copie | Compte, droits du partage et droits du dossier. |
-| Empreintes différentes | Chemins source et destination, intégralité de la copie. |
+| HTTP 501 pendant un envoi | `python3 -m http.server` ne prend pas en charge PUT ; pour recevoir un fichier, démarrer un serveur WebDAV configuré pour l'écriture. |
+| SMB refuse la copie | Authentification, permissions du partage, droits NTFS (Windows) ou permissions du répertoire (Linux), et port TCP 445. |
+| Empreintes différentes | Vérifier les chemins, la taille et l'intégrité du fichier ; ne pas considérer le transfert comme validé. |
 
 ## Sources
 
