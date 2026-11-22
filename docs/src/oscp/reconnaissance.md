@@ -98,7 +98,7 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Nmap -A : identifier l'OS, les versions, les scripts standards et tracer la route ; enregistrer le scan.</p>
 
 ```bash
-nmap -A [IP/domain] -oN [machine_name].txt
+sudo nmap -A <IP_CIBLE> -oN rapport_avance.txt
 
 ```
 
@@ -114,7 +114,7 @@ sudo nmap -sS -p- --min-rate 1000 --max-retries 1 -T4 <IP_CIBLE>
 <p class="oscp-command-note">Scanner tous les ports.</p>
 
 ```bash
-nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
+nmap -p- -T4 -n -Pn <IP_CIBLE> -oN rapport_ports.txt
 
 ```
 
@@ -123,7 +123,7 @@ nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
 <p class="oscp-command-note">Nmap : scanner tous les ports TCP avec un débit élevé et enregistrer la sortie grepable.</p>
 
 ```bash
-sudo nmap --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
+sudo nmap -sS --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt <IP_CIBLE>
 
 ```
 
@@ -132,7 +132,7 @@ sudo nmap --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
 <p class="oscp-command-note">Scanner tous les ports.</p>
 
 ```bash
-nmap -p- [IP/Domain] -oN [machine_name]_ports.txt
+nmap -p- <IP_CIBLE> -oN rapport_ports.txt
 
 ```
 
@@ -141,7 +141,7 @@ nmap -p- [IP/Domain] -oN [machine_name]_ports.txt
 <p class="oscp-command-note">Nmap : scanner un nombre défini de ports parmi les plus fréquents.</p>
 
 ```bash
-nmap [IP/Domain] --top-ports [number_of_top_ports]
+nmap --top-ports <NOMBRE_PORTS> <IP_CIBLE>
 
 ```
 
@@ -163,7 +163,7 @@ sudo nmap -sU -sS <IP_CIBLE>
 
 ```bash
 # Examiner les ports UDP
-sudo nmap -sU -T5 --top-ports 500 [IP]
+sudo nmap -sU --top-ports 500 -T3 <IP_CIBLE>
 
 ```
 
@@ -173,7 +173,7 @@ sudo nmap -sU -T5 --top-ports 500 [IP]
 **Connexion TCP complète (TCP Connect, -sT)**
 
 ```bash
-nmap -sT [IP]
+nmap -sT <IP_CIBLE>
 
 ```
 
@@ -183,14 +183,14 @@ nmap -sT [IP]
 **Scan SYN (Stealth Scan, -sS)**
 
 ```bash
-sudo nmap -sS [IP]
+sudo nmap -sS <IP_CIBLE>
 
 ```
 
 **Scan d’un port précis**
 
 ```bash
-nmap -p [portNumber] [IP]
+nmap -p <PORT_TCP> <IP_CIBLE>
 
 ```
 
@@ -211,7 +211,7 @@ nmap -sn <RESEAU_CIDR>
 <p class="oscp-command-note">Nmap : scanner les 20 ports les plus fréquents sur la cible.</p>
 
 ```bash
-nmap --top-ports=20 [IP]
+nmap --top-ports 20 <IP_CIBLE>
 
 ```
 
@@ -249,7 +249,7 @@ sudo nmap -O --osscan-guess <IP_CIBLE>
 <p class="oscp-command-note">Identifier les versions des services.</p>
 
 ```bash
-nmap -sV [IP]
+nmap -sV <IP_CIBLE>
 
 ```
 
@@ -258,7 +258,7 @@ nmap -sV [IP]
 <p class="oscp-command-note">Nmap -A : regrouper détection d'OS, versions, scripts NSE et traceroute.</p>
 
 ```bash
-nmap -A [IP]
+sudo nmap -A <IP_CIBLE>
 
 ```
 
@@ -277,7 +277,7 @@ Observer les permissions et la configuration de Windows.
 <p class="oscp-command-note">Détecter les hôtes actifs et enregistrer le résultat au format grepable.</p>
 
 ```bash
-nmap -v -sn [IP_range] -oG [fileName].txt
+nmap -v -sn <RESEAU_CIDR> -oG decouverte.gnmap
 
 ```
 
@@ -289,7 +289,7 @@ nmap -v -sn [IP_range] -oG [fileName].txt
 <p class="oscp-command-note">Extraire les adresses des hôtes actifs du fichier Nmap au format grepable.</p>
 
 ```bash
-awk '/Up$/{print $2}' [fileName].txt
+awk '/Up$/{print $2}' decouverte.gnmap
 
 ```
 
@@ -308,7 +308,7 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Nmap : exécuter le script NSE choisi, après avoir lu son aide.</p>
 
 ```bash
-nmap --script [scriptName] [IP]
+nmap --script <SCRIPT_NSE> <IP_CIBLE>
 
 ```
 
@@ -317,7 +317,7 @@ nmap --script [scriptName] [IP]
 <p class="oscp-command-note">Afficher l&#x27;aide d&#x27;un script Nmap NSE.</p>
 
 ```bash
-nmap --script-help [scriptName]
+nmap --script-help <SCRIPT_NSE>
 
 ```
 
@@ -333,7 +333,7 @@ nmap -p 80 --script http-headers <IP_CIBLE>
 **Catégories des scripts NSE**
 
 ```bash
-nmap --script [category] [IP]
+nmap --script <CATEGORIE_NSE> <IP_CIBLE>
 
 ```
 
@@ -370,7 +370,7 @@ Découvrir les ports TCP puis identifier les services dans le périmètre autori
 
 ```bash
 sudo nmap -sS -p- -Pn -n -oN rapport_ports.txt <IP_CIBLE>
-nmap -sV -sC -p <LISTE_PORTS> -oN <RAPPORT_SERVICES>.txt <IP_CIBLE>
+nmap -sV -sC -p <LISTE_PORTS> -oN rapport_services.txt <IP_CIBLE>
 ```
 
 #### Contrôle des scripts NSE
