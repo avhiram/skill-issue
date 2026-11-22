@@ -893,10 +893,6 @@ hashcat (v6.2.5) starting
 
 <p class="oscp-command-note">ntlmrelayx : exemple de lancement d'un relais NTLM suivi de sa sortie de journal.</p>
 
-```bash
-
-```
-
 **Exemple de sortie produit par ntlmrelayx (ne pas exécuter ces lignes) :**
 
 ```text
