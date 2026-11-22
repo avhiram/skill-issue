@@ -43,37 +43,37 @@ Test-NetConnection 10.10.14.10 -Port 8000
 
 ## Linux vers Linux
 
-### Depuis la source, envoyer un fichier par SCP {#ll-scp}
+### Sur Kali, envoyer un fichier au second Linux par SCP {#ll-scp}
 
-À exécuter sur Linux source. Le serveur SSH/SFTP du Linux destination doit écouter sur 22 et `etudiant` doit pouvoir écrire dans `/tmp`.
+À exécuter sur Kali (`10.10.14.10`), source du fichier. Le serveur SSH du second Linux (`10.10.10.20`) doit être accessible et `etudiant` doit pouvoir écrire dans `/tmp`.
 
 ```bash
 scp ./rapport.txt etudiant@10.10.10.20:/tmp/
 ```
 
-### Depuis la destination, récupérer un fichier par SCP {#ll-scp-reception}
+### Sur Kali, récupérer un fichier du second Linux par SCP {#ll-scp-reception}
 
-À exécuter sur Linux destination : `10.10.10.20` possède le fichier ; le répertoire courant reçoit la copie.
+À exécuter sur Kali (`10.10.14.10`), qui reçoit le fichier. Le Linux distant (`10.10.10.20`) possède `/tmp/rapport.txt` et doit autoriser la connexion SSH.
 
 ```bash
 scp etudiant@10.10.10.20:/tmp/rapport.txt ./rapport.txt
 ```
 
-### Depuis Linux source, envoyer un dossier complet par SCP {#ll-scp-dossier}
+### Sur Kali, envoyer un dossier complet au second Linux par SCP {#ll-scp-dossier}
 
 ```bash
 scp -r ./dossier etudiant@10.10.10.20:/tmp/
 ```
 
-### Depuis la source, synchroniser un dossier avec rsync {#ll-rsync}
+### Sur Kali, synchroniser un dossier vers le second Linux avec rsync {#ll-rsync}
 
-`rsync` doit être installé sur les deux Linux et SSH accessible. Le `/` final de `./dossier/` copie le contenu, pas le dossier lui-même.
+`rsync` doit être installé sur Kali et le second Linux, avec SSH accessible. Le `/` final de `./dossier/` copie son contenu dans `/tmp/dossier/` ; `-P` affiche la progression et conserve les transferts partiels.
 
 ```bash
 rsync -avP ./dossier/ etudiant@10.10.10.20:/tmp/dossier/
 ```
 
-### Depuis Linux source, ouvrir une session SFTP vers Linux destination {#ll-sftp}
+### Sur Kali, ouvrir une session SFTP vers le second Linux {#ll-sftp}
 
 ```bash
 sftp etudiant@10.10.10.20
@@ -89,9 +89,9 @@ get autre_fichier.txt
 bye
 ```
 
-### Depuis la destination, télécharger par HTTP {#ll-http}
+### Sur le second Linux, télécharger le fichier HTTP servi par Kali {#ll-http}
 
-[Démarre le serveur HTTP sur Linux source](#http-source), puis exécute `curl` sur Linux destination. Le port 8000 doit être accessible.
+Démarre le serveur HTTP sur Kali (`10.10.14.10`) avec [la commande dédiée](#http-source), puis exécute `curl` sur le second Linux (`10.10.10.20`). Le port 8000 doit être joignable depuis ce dernier.
 
 ```bash
 curl --fail --show-error --location --output ./rapport.txt http://10.10.14.10:8000/rapport.txt
