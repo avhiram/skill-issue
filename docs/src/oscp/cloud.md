@@ -11,7 +11,6 @@ La rubrique cloud du guide d’Emmanuel Solis est indiquée comme *en attente de
 
 [Consulter cette rubrique dans le guide original](https://www.emmanuelsolis.com/oscp.html#15-cloud-infrastructures).
 
-
 ## Stockage S3 : vérifier les accès en lecture
 
 Vérifier uniquement les buckets inclus dans le périmètre. L'option `--no-sign-request` envoie une requête non signée : une erreur `AccessDenied` ne signifie pas que le service est absent. Les commandes ci-dessous n'écrivent aucun objet.
