@@ -28,7 +28,6 @@ Sélectionne le système qui possède le fichier, puis celui qui doit le recevoi
 | Windows → Kali sans SMB | WebDAV (PUT) | Serveur de réception accessible |
 | Session RDP | Dossier redirigé | RDP autorisé |
 
-
 **À retenir :** `get` = **récupérer** vers la machine locale ; `put` = **envoyer** vers le serveur. Le sens de `scp` dépend de la place de `utilisateur@hôte:`.
 
 ## Vérifier la connexion
@@ -431,7 +430,6 @@ Get-FileHash -Algorithm SHA256 'C:\Users\Public\rapport.txt'
 | SMB `Access denied` | Compte, permissions du partage et permissions NTFS/Unix |
 | SCP refusé | SSH serveur absent ou port 22 inaccessible |
 | Fichier corrompu | Refaire le transfert et comparer les SHA-256 |
-
 
 **Règle d'examen :** ne pas confondre le terminal de Kali avec celui de la cible, ni le chemin de la source avec celui de la destination. N'exposer un serveur temporaire que pendant le transfert.
 
