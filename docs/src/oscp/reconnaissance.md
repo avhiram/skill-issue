@@ -2632,7 +2632,7 @@ GET mykey
 
 Vérifier les ports et les services de la cible autorisée.
 
-<p class="oscp-command-note">Netcat : ouvrir une connexion TCP à un port autorisé ; -n évite la résolution DNS et -v affiche les détails.</p>
+<p class="oscp-command-note">Sur Kali, `nc -nv` ouvre une connexion TCP vers un port autorisé ; `-n` évite la résolution DNS et `-v` affiche les détails de connexion. Aucun protocole applicatif n'est présumé.</p>
 
 ```bash
 # Depuis Kali : établir une connexion TCP vers un port autorisé, sans présumer du protocole
@@ -2640,45 +2640,21 @@ nc -nv <IP_CIBLE> <PORT_TCP>
 
 ```
 
-```text
-# À saisir dans la session interactive, seulement si le protocole accepte help
-help
+Si le protocole identifié accepte explicitement la commande `help`, la saisir dans la session Netcat. Sinon, ne rien envoyer.
 
-```
+<p class="oscp-command-note">Netcat n'effectue pas d'authentification générique : le format des messages dépend du protocole. Éviter d'envoyer des identifiants ou des commandes `list` sans spécification confirmée.</p>
 
-<p class="oscp-command-note">Port TCP inconnu : n'envoyer du texte avec Netcat qu'après identification du protocole ; les exemples ne conviennent pas aux protocoles binaires.</p>
+<p class="oscp-command-note">Identifier d'abord le service avec Nmap, puis consulter la documentation du protocole réellement détecté. Ne pas envoyer de commandes génériques à un service inconnu.</p>
 
 ```bash
-# Protocole texte uniquement : transmettre deux lignes de test si ce format est documenté
-# Définir les variables UTILISATEUR, MOT_DE_PASSE, IP_CIBLE et PORT_TCP avant exécution.
-printf '%s\n%s\n' "$UTILISATEUR" "$MOT_DE_PASSE" | nc -nv "$IP_CIBLE" "$PORT_TCP"
-
-# Si le service fournit des options de commande ou aide à la sortie, utilisez-les pour guider d'autres actions
-# Ne transmettre list que si cette commande existe dans le protocole identifié
-printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
-
-```
-
-<p class="oscp-command-note">Port inconnu : ces commentaires sont des repères, pas des commandes à copier ; identifier le protocole avant toute action.</p>
-
-```bash
-# Après avoir identifié le service, référez-vous à sa documentation ou à sa commande par défaut
-# Par exemple, si le service est un outil de gestion, les commandes peuvent inclure la liste des utilisateurs ou des configurations de requête
-
-# Exemple de commandes peut inclure :
-# - Lister les utilisateurs ou les paramètres disponibles, si le protocole le permet
-# - N'exécuter les commandes administratives que dans le périmètre autorisé
-# - Collecte d'informations sur l'état ou la configuration du service
-
-# Remplacer par des commandes appropriées basées sur le service identifié et la sortie d'aide
-
+nmap -sV --version-all -p <PORT_TCP> <IP_CIBLE>
 ```
 
 #### Détecter si un port parle TLS
 
-Observer la négociation TLS d'un service inconnu avant de choisir l'outil d'énumération.
+Sur un port inconnu, tester TLS seulement après avoir identifié le port et son contexte ; une connexion TLS directe ne convient pas à tous les protocoles.
 
-<p class="oscp-command-note">TLS : utiliser openssl s_client pour tester la négociation ; un échec peut aussi provenir d'un protocole nécessitant STARTTLS.</p>
+<p class="oscp-command-note">`openssl s_client` teste un service TLS direct. Un échec ne prouve pas l'absence de chiffrement : certains protocoles exigent STARTTLS et l'option `-starttls` correspondante.</p>
 
 ```bash
 openssl s_client -connect <IP_CIBLE>:<PORT> -brief
@@ -2690,7 +2666,7 @@ Ces contrôles complètent l'inventaire des ports sur les hôtes autorisés. Un 
 
 ### Nmap : examiner précisément un service
 
-Consulter la description et les prérequis d'un script NSE avant de le lancer sur le port SMB 445.
+Lire l'aide et les effets du script NSE `smb-ls` avant de l'utiliser sur un partage SMB autorisé ; son résultat dépend des droits du compte.
 
 <p class="oscp-command-note">Nmap NSE : lire l'aide de smb-ls avant le scan SMB ; la présence du script ne garantit pas l'accès aux fichiers.</p>
 
@@ -2701,17 +2677,17 @@ nmap -sV -p 445 --script smb-ls <IP_CIBLE>
 
 ### Découverte via un proxy TCP
 
-Avec proxychains, préférer un scan TCP connect (-sT) et -Pn ; les scans SYN et UDP ne passent pas de la même manière par un proxy SOCKS.
+Avec ProxyChains, utiliser `-sT -Pn` pour des connexions TCP ; les sondes SYN/UDP et certaines opérations de découverte ne sont pas relayées par SOCKS.
 
 <p class="oscp-command-note">proxychains4 : scanner en TCP connect (-sT -Pn) ; vérifier d'abord le proxy SOCKS et éviter les scans SYN/UDP via ce chemin.</p>
 
 ```bash
-proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
+proxychains4 -q nmap -sT -Pn -n --unprivileged --top-ports 200 <IP_CIBLE>
 ```
 
 ### NFS : identifier les exports
 
-Interroger les exports NFS publiés via mountd avant tout montage ; NFSv4 peut ne pas exposer cette information par showmount.
+`showmount -e` interroge les exports annoncés par `mountd` ; NFSv4 peut fonctionner sans ce service et ne pas répondre à cette commande.
 
 <p class="oscp-command-note">showmount -e : afficher les exports annoncés par mountd ; l'absence de réponse ne prouve pas l'absence de NFSv4.</p>
 
