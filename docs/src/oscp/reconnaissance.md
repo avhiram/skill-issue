@@ -244,7 +244,7 @@ sudo nmap -O --osscan-guess <IP_CIBLE>
 **Paramètres et repères :**
 `-sV` (versions de service)  
 
-**Identification des services ( -sV )**
+**Identifier les versions des services (`-sV`)**
 
 <p class="oscp-command-note">Identifier les versions des services.</p>
 
@@ -253,7 +253,7 @@ nmap -sV 192.0.2.10
 
 ```
 
-**Bannières de services et traceroute**
+**Détection avancée des services, de l'OS et du chemin réseau (`-A`)**
 
 <p class="oscp-command-note">Nmap -A : regrouper détection d'OS, versions, scripts NSE et traceroute.</p>
 
@@ -267,7 +267,7 @@ sudo nmap -A <IP_CIBLE>
 
 #### Enregistrer et exploiter les résultats Nmap
 
-Identifier WinRM sur TCP 5985 (HTTP) ou 5986 (HTTPS) ; la présence du port ne prouve pas les droits d’accès.
+Conserver les résultats de découverte puis extraire les adresses des hôtes détectés.
 
 **Paramètres et repères :**
 `-oG` (sortie grepable)  
@@ -284,7 +284,7 @@ nmap -v -sn <RESEAU_CIDR> -oG decouverte.gnmap
 **Paramètres et repères :**
 `-oN` (sortie texte)  
 
-**Analyser le fichier de résultats**
+**Extraire les adresses des hôtes actifs du fichier `.gnmap`**
 
 <p class="oscp-command-note">Extraire les adresses des hôtes actifs du fichier Nmap au format grepable.</p>
 
@@ -321,7 +321,7 @@ nmap --script-help smb-os-discovery
 
 ```
 
-**Exemple de script**
+**Lire les en-têtes HTTP avec le script NSE `http-headers`**
 
 <p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-headers ».</p>
 
@@ -330,7 +330,7 @@ nmap -p 80 --script http-headers 192.0.2.10
 
 ```
 
-**Catégories des scripts NSE**
+**Exécuter les scripts NSE de la catégorie `default`**
 
 ```bash
 nmap --script default 192.0.2.10
@@ -355,9 +355,9 @@ Test-NetConnection -ComputerName 192.0.2.10 -Port 445
 
 ```
 
-**Exemple de scan de ports**
+**Exemple de scan TCP en PowerShell**
 
-```text
+```powershell
 1..1024 | ForEach-Object { $port = $_; $client = [Net.Sockets.TcpClient]::new(); try { if ($client.ConnectAsync('192.0.2.10', $port).Wait(150)) { "TCP $port ouvert" } } catch {} finally { $client.Dispose() } }
 
 ```
@@ -398,7 +398,7 @@ nmap -sn -n 192.0.2.0/24
 
 Vérifier les ports et les services de la cible autorisée.
 
-**Utilisation de base de RustScan**
+**Rechercher les ports TCP ouverts avec RustScan**
 
 <p class="oscp-command-note">Rechercher rapidement les ports accessibles.</p>
 
@@ -407,35 +407,35 @@ rustscan -a <IP_CIBLE> -p 1-65535
 
 ```
 
-**RustScan + Nmap**
+**Transmettre les options à Nmap après `--`**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535 -- -Pn
 
 ```
 
-**Plage de ports précise**
+**Limiter RustScan aux ports 1 à 1000**
 
 ```bash
-rustscan -a <IP_CIBLE> -r 1-1000
+rustscan -a 192.0.2.10 -r 1-1000
 
 ```
 
-**Régler les délais et la taille des lots**
+**Régler la taille des lots (`-b`) et le délai (`-u`, en millisecondes)**
 
 ```bash
-rustscan -a <IP_CIBLE> -b 500 -u 5000
+rustscan -a 192.0.2.10 -b 500 -u 5000
 
 ```
 
-**Scanner des ports spécifiques seulement**
+**Scanner uniquement les ports TCP 22, 80 et 443**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 22,80,443
 
 ```
 
-**Enregistrer les résultats dans le fichier**
+**Enregistrer la sortie Nmap lancée par RustScan dans un fichier texte**
 
 ```bash
 rustscan -a <IP_CIBLE> -- -oN rapport_rustscan.txt
@@ -449,35 +449,35 @@ sudo nmap -sU --top-ports 100 <IP_CIBLE>
 
 ```
 
-**Détection de vulnérabilité**
+**Lancer les scripts NSE de catégorie `vuln` après la découverte TCP (potentiellement intrusif)**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535 -- -sV --script vuln
 
 ```
 
-**Mode silencieux**
+**Afficher une sortie RustScan réduite (vérifier les options de la version installée)**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535 -g -q
 
 ```
 
-**Exclure certains ports**
+**Exclure les ports TCP 80 et 443 du scan RustScan**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535 --exclude-ports 80,443
 
 ```
 
-**Détection du système d’exploitation**
+**Demander la détection de l'OS par Nmap (privilèges adaptés requis)**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535 -- -O
 
 ```
 
-**Scan TCP et UDP**
+**Nmap : scan SYN et UDP après découverte RustScan (privilèges requis ; UDP plus lent)**
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535 -- -sS -sU
