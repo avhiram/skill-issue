@@ -2,7 +2,7 @@
 
 ## Beacon et Team Server
 
-Le client opérateur permet de travailler avec le Team Server. Le serveur coordonne les sessions et les tâches. Beacon est l’agent qui traite ces tâches dans le contexte du processus qui l’héberge. Une session affichée dans l’interface renseigne sur les échanges connus du serveur. Pour déterminer si une tâche a abouti, il faut retrouver son résultat.
+L’opérateur utilise le client Cobalt Strike pour transmettre ses tâches au Team Server, qui coordonne les sessions Beacon. Beacon est l’agent qui traite ces tâches dans le contexte du processus qui l’héberge. Une session affichée dans l’interface renseigne sur les échanges connus du serveur. Pour déterminer si une tâche a abouti, il faut retrouver son résultat.
 
 Lors de l’analyse d’une chronologie, distinguer l’heure à laquelle l’opérateur demande une action, celle à laquelle l’agent récupère la tâche et celle à laquelle le serveur reçoit le résultat. Avec un agent qui communique par intervalles, ces trois instants peuvent différer.
 
@@ -14,7 +14,7 @@ Aggressor Script étend le comportement du client, par exemple ses menus et le t
 
 Le Lateral Movement désigne le passage d’un système à un autre. Le Pivoting utilise un intermédiaire pour atteindre un réseau ou un service. Un proxy SOCKS relaie les connexions d’applications configurées pour l’utiliser. Un accès réseau possible et un accès applicatif autorisé constituent deux résultats différents.
 
-Exemple de lecture de traces en lab : un journal du service indique une connexion depuis le relais. Ce journal identifie le pair réseau immédiat. Pour attribuer la demande initiale, il faut rapprocher son horodatage des journaux du relais et de l’application cliente. Un décalage d’horloge ou plusieurs utilisateurs simultanés limitent cette attribution.
+Si le service enregistre une connexion depuis le relais, son journal identifie uniquement la machine qui lui a transmis la connexion. Pour attribuer la demande initiale, il faut rapprocher son horodatage des journaux du relais et de l’application cliente. Un décalage d’horloge ou plusieurs utilisateurs simultanés limitent cette attribution.
 
 ## Initial Access, Post-Exploitation et OPSEC
 

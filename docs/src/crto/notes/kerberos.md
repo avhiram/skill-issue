@@ -2,15 +2,15 @@
 
 ## Du TGT au ticket de service
 
-Le KDC du domaine assure deux fonctions. Son service d’authentification délivre un Ticket Granting Ticket (TGT). Son service d’émission de tickets accepte ensuite ce TGT pour délivrer un ticket destiné à un service identifié par son SPN. Le client présente ce dernier au service. La ressource évalue encore les droits de l’utilisateur.
+Le Key Distribution Center (KDC) du domaine assure deux fonctions. Son service d’authentification délivre un Ticket Granting Ticket (TGT). Son service d’émission de tickets accepte ensuite ce TGT pour délivrer un ticket destiné à un service identifié par son Service Principal Name (SPN). Le client présente ce ticket au service, qui vérifie ensuite les droits de l’utilisateur sur la ressource.
 
 ![Échanges Kerberos. Le client obtient un TGT auprès du KDC, demande un ticket pour le SPN, puis présente le ticket au service.](./kerberos.svg)
 
-Dans le cache Windows, un ticket dont le service est krbtgt correspond à un TGT. Pour un ticket de service, relever le principal serveur, le domaine et la période de validité. Le cache est lié à une session. L’absence d’une entrée dans la console courante ne décrit pas les autres sessions de la machine.
+Dans le cache Windows, un ticket dont le service est krbtgt correspond à un TGT. Pour un ticket de service, relever le nom du service destinataire, le domaine et la période de validité. Chaque session possède son propre cache. Un ticket absent de cette liste peut donc figurer dans une autre session.
 
 ## Délégation et S4U
 
-Une application frontale peut avoir besoin de contacter un service aval pour le compte d’un utilisateur. La question à poser est « qui autorise quel service à représenter cet utilisateur auprès de quelle ressource ? ».
+Une application web peut avoir besoin de lire un fichier au nom d’un utilisateur. La délégation Kerberos détermine si le service web peut représenter cet utilisateur auprès du serveur de fichiers.
 
 | Modèle | Où lire la décision | Portée |
 |---|---|---|

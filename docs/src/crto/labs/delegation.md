@@ -16,12 +16,12 @@ Déterminer où chercher l’autorisation de délégation lorsqu’une applicati
 ## Procédure
 
 1. Dessiner les deux échanges applicatifs. Pour chacun, indiquer le client réseau, le service destinataire et l’identité que le service doit reconnaître.
-2. Identifier le compte frontal puis la ressource qui porte la décision de délégation.
+2. Identifier le compte utilisé par WEB et la machine sur laquelle la délégation est autorisée.
 3. Expliquer comment l’authentification peut réussir alors que la tentative d’écriture échoue.
 
 ## Résultat attendu
 
-Le premier échange va de POSTE à WEB. Pour le deuxième, WEB contacte FICHIERS au nom de l’utilisateur. La configuration décrite correspond à Resource-Based Constrained Delegation. L’autorisation accordée au frontal permet de représenter l’utilisateur. Les permissions sur le dossier déterminent encore les opérations possibles.
+Le premier échange va de POSTE à WEB. Pour le deuxième, WEB contacte FICHIERS au nom de l’utilisateur. La configuration décrite correspond à Resource-Based Constrained Delegation. L’autorisation accordée au frontal permet de représenter l’utilisateur. Les permissions de l’utilisateur sur le dossier déterminent ensuite s’il peut lire ou modifier le fichier.
 
 ## Vérification et dépannage
 

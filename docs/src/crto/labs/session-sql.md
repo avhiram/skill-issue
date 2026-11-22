@@ -2,15 +2,15 @@
 
 ## Objectif et prérequis
 
-Utiliser une connexion personnelle à une instance SQL Server de laboratoire et un éditeur de requêtes. Une seule base accessible suffit pour établir le premier relevé. Pour examiner la portée du principal de base, choisir deux bases auxquelles ce login a déjà accès.
+Utiliser une connexion personnelle à une instance SQL Server de laboratoire et un éditeur de requêtes. Une seule base accessible suffit pour établir le premier relevé. Pour comparer les résultats entre deux bases, choisissez deux bases accessibles avec le même login.
 
 ## Procédure
 
 Ouvrir une fenêtre de requête, sélectionner la première base dans le sélecteur et conserver la connexion ouverte.
 
-## Identifier le contexte SQL
+## Identifier le login et l’utilisateur SQL
 
-Dans une fenêtre de requête connectée à SQL Server, relever les identités et la base en une seule ligne.
+Exécutez cette requête dans SQL Server pour comparer le login initial, le contexte serveur et l’utilisateur de la base active.
 
 ```sql
 SELECT ORIGINAL_LOGIN() AS login_initial,
