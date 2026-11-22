@@ -42,8 +42,6 @@ jobs:
         run: git restore --worktree -- docs/src/crto/liham
       - name: Publish compiled website at GitHub Pages root
         run: |
-          rm -rf crto/botesjuan
-          find assets -maxdepth 1 -type f -name 'crto_botesjuan_*' -delete
           rsync -a docs/.vitepress/dist/ ./
           touch .nojekyll
           git config user.name "github-actions[bot]"
