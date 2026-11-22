@@ -1,9 +1,9 @@
-# User Impersonation
+# User Impersonation — Usurpation d'identité
 
-> After **Elevated Persistence** and **Credential Access** phases, User Impersonation assumes the identity of stolen credential material.
-> MITRE: Use Alternate Authentication Material (T1550)
+> Après les phases **Elevated Persistence** et **Credential Access**, la **User Impersonation** consiste à utiliser une identité associée à des credentials ou tickets obtenus.
+> MITRE : **Use Alternate Authentication Material (T1550)**.
 
-Techniques:
+Techniques utilisées :
 - Token Impersonation (`make_token`, `steal_token`, `token-store`)
 - Pass the Hash (PTH)
 - Pass the Ticket (PtT)
@@ -11,7 +11,7 @@ Techniques:
 
 ---
 
-## Background — How Windows Identity Works
+## Comprendre l'identité sous Windows
 
 ```
 Logon Session  →  created on successful auth, holds LUID + creds + Kerberos tickets
@@ -21,14 +21,14 @@ Access Token   →  created from logon session, attached to every process/thread
 Credential Cache (LSASS) → plaintext, NTLM hashes, AES keys, Kerberos tickets stored per session
 ```
 
-**Key exam point:** `getuid` and `whoami` read from the **primary access token of the process** —
-not the impersonated token. After PtH or PtT, `getuid` still shows the original user. This is expected behaviour.
+**Point important pour l'examen :** `getuid` et `whoami` lisent le **primary access token du processus**, et
+pas nécessairement le token utilisé pour l'impersonation. Après PtH ou PtT, `getuid` peut donc afficher l'utilisateur d'origine : c'est attendu.
 
 ---
 
 ## Token Impersonation
 
-### make_token — plaintext creds, creates new logon session
+### make_token — Credentials en clair et nouvelle session de logon
 
 ```cs
 // OPSEC-SAFE — no high-integrity required, no logon event (type 9 NewCredentials)
@@ -42,13 +42,13 @@ beacon> getuid
 beacon> rev2self
 ```
 
-> Uses `LogonUserA` + `ImpersonateLoggedOnUser` APIs.
-> Logon type 9 (NewCredentials) — less anomalous than type 2/3.
-> Does **not** require high-integrity session.
+> Utilise les API `LogonUserA` et `ImpersonateLoggedOnUser`.
+> Crée une session de logon de **type 9 (NewCredentials)**, avec un profil différent des types 2 et 3.
+> Ne nécessite **pas** une session high integrity.
 
 ---
 
-### steal_token — steal primary token from another process
+### steal_token — Récupérer le token d'un autre processus
 
 ```cs
 // OPSEC-SAFE — requires HIGH-INTEGRITY session
@@ -62,12 +62,12 @@ beacon> steal_token <PID>
 beacon> rev2self
 ```
 
-> Steps under the hood: `OpenProcess` → `OpenProcessToken` → `DuplicateToken` → `ImpersonateLoggedOnUser`
-> Requires high-integrity beacon. Token is lost if target process closes — use `token-store` to persist.
+> API utilisées en interne : `OpenProcess` → `OpenProcessToken` → `DuplicateToken` → `ImpersonateLoggedOnUser`
+> Nécessite un Beacon en **high integrity**. Le token peut devenir indisponible à la fermeture du processus cible ; `token-store` permet de conserver la référence.
 
 ---
 
-### token-store — persist stolen tokens across process lifetime
+### token-store — Conserver les tokens récupérés
 
 ```cs
 // Steal token AND add to store (survives process close)
@@ -86,7 +86,7 @@ beacon> token-store remove <ID>
 beacon> rev2self
 ```
 
-> Tokens are reference-counted by the kernel — store holds the handle open, token survives process exit.
+> Le noyau conserve les références aux tokens : le store maintient un handle ouvert, ce qui peut préserver le token après la fermeture du processus.
 
 ---
 
@@ -104,17 +104,17 @@ beacon> steal_token <PID of spawned notepad>
 beacon> rev2self
 ```
 
-> **NTLM is increasingly anomalous** — Kerberos has replaced NTLM as default.
-> NTLM may be restricted in hardened environments. Prefer PtT where possible.
-> PTH only works for network auth — no impact on local actions.
+> **Le trafic NTLM peut être considéré comme anormal** — dans les environnements qui privilégient désormais Kerberos.
+> NTLM peut être restreint sur les systèmes renforcés. Dans ces notes, **PtT** est privilégié lorsque c'est possible.
+> Le **PtH** concerne l'authentification réseau, sans modifier l'identité des opérations locales.
 
 ---
 
 ## Pass the Ticket (PtT)
 
-> Superior to PtH — Kerberos is not anomalous, does not patch LSASS memory, not blocked by PPL.
+> Le **PtT** utilise Kerberos et ne requiert pas la modification de la mémoire LSASS. Son comportement diffère de PtH et des protections PPL.
 
-### Method 1 — Beacon native (kerberos_ticket_use)
+### Méthode 1 — Commande native Beacon (`kerberos_ticket_use`)
 
 ```cs
 // Step 1 — triage tickets on compromised host to find a target TGT
@@ -144,13 +144,13 @@ beacon> ls \\lon-ws-1\c$
 beacon> rev2self
 ```
 
-> `make_token` first creates an isolated logon session — prevents clobbering the real user's TGT.
-> `kerberos_ticket_purge` removes tickets from session without dropping the session itself.
-> After `rev2self` the sacrificial session is disposed of.
+> `make_token` crée une session de logon isolée afin de ne pas remplacer le TGT de la session utilisateur initiale.
+> `kerberos_ticket_purge` supprime les tickets de la session sans fermer celle-ci.
+> Après `rev2self`, la session temporaire n'est plus utilisée pour l'impersonation.
 
 ---
 
-### Method 2 — Rubeus (createnetonly + ptt)
+### Méthode 2 — Rubeus (`createnetonly` + `ptt`)
 
 ```cs
 // Step 1 — request TGT using AES key (preferred over NTLM hash — avoids RC4 anomaly)
@@ -170,12 +170,12 @@ beacon> rev2self
 beacon> kill <PID>
 ```
 
-> `/opsec` flag on `asktgt` requests AES-encrypted ticket — avoids RC4 downgrade anomaly.
-> `createnetonly` is the Rubeus equivalent of `make_token` for PtT workflows.
+> L'option `/opsec` de `asktgt` favorise une demande de ticket chiffré en AES plutôt qu'une utilisation inhabituelle de RC4.
+> `createnetonly` joue un rôle comparable à `make_token` dans un workflow PtT.
 
 ---
 
-### Requesting a TGT when you have the hash/key
+### Demander un TGT avec un hash ou une clé
 
 ```cs
 // AES256 key (preferred — produces Kerberos-native AES ticket)
@@ -187,7 +187,7 @@ beacon> execute-assembly Rubeus.exe asktgt /user:rsteel /domain:CONTOSO.COM /rc4
 
 ---
 
-## Process Injection — crude but effective
+## Process Injection — Autre méthode
 
 ```cs
 // Requires HIGH-INTEGRITY session
@@ -199,26 +199,26 @@ beacon> process_browser     // GUI tab — find process owned by target user, ri
 beacon> inject <PID> x64 <listener>
 ```
 
-> OPSEC-CAUTION — `inject` uses `CreateRemoteThread` by default, detectable by EDR.
-> Only use when token-based impersonation is not viable.
+> **OPSEC-CAUTION :** `inject` utilise par défaut `CreateRemoteThread`, détectable par un EDR.
+> À envisager uniquement si l'impersonation par token n'est pas possible.
 
 ---
 
-## OPSEC Comparison
+## Comparaison OPSEC
 
-| Technique | Integrity req | Logon event | LSASS touch | Kerberos | OPSEC |
+| Technique | Integrity requise | Événement logon | Accès LSASS | Kerberos | OPSEC |
 |-----------|---------------|-------------|-------------|----------|-------|
-| `make_token` | Any | Type 9 (low noise) | No | No | SAFE |
-| `steal_token` | HIGH | None | No | No | SAFE |
-| `token-store steal` | HIGH | None | No | No | SAFE |
-| `pth` (built-in) | Any | Type 9 | Patches LSASS | No | CAUTION |
-| PtT (`kerberos_ticket_use`) | Any | None | No | Yes | SAFE |
-| PtT (Rubeus `ptt`) | Any | None | No | Yes | SAFE |
-| `inject` | HIGH | None | No | No | CAUTION |
+| `make_token` | Toute | Type 9 | Non | Non | SAFE |
+| `steal_token` | HIGH | Aucun | Non | Non | SAFE |
+| `token-store steal` | HIGH | Aucun | Non | Non | SAFE |
+| `pth` (natif) | Toute | Type 9 | Modifie LSASS | Non | CAUTION |
+| PtT (`kerberos_ticket_use`) | Toute | Aucun | Non | Oui | SAFE |
+| PtT (Rubeus `ptt`) | Toute | Aucun | Non | Oui | SAFE |
+| `inject` | HIGH | Aucun | Non | Non | CAUTION |
 
 ---
 
-## getuid Confusion — Exam Note
+## Comprendre `getuid` — Note pour l'examen
 
 ```
 steal_token / PtH / PtT all show original user in getuid output.
@@ -228,7 +228,7 @@ This is expected. Verify impersonation worked by attempting resource access (ls 
 
 ---
 
-## Exam Day Checklist
+## Checklist pour l'examen
 
 ```
 1. Identify credential material type: plaintext / NTLM hash / AES key / Kerberos ticket
