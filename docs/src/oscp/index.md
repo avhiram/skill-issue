@@ -34,6 +34,6 @@ Consulte une fiche par thème ou utilise la recherche du site.
 - [**Transferts Linux et Windows**](transferts.md) : Choisir les commandes par sens de transfert et machine.
 - [**Utilitaires**](utilitaires.md) : Consulter les commandes et outils complémentaires.
 - [**Méthodologie**](methodologie.md) : Organiser les vérifications pendant un examen.
-- [**Références**](references.md) : Retrouver les liens et ressources cités par les notes.
+- [**Références**](references.md) : Consulter les consignes officielles de l’examen.
 
 Sources : [OSCP+ Cheatsheet d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html) et [notes OSCP de krovs](https://github.com/krovs/oscp-notes/tree/main/docs).
