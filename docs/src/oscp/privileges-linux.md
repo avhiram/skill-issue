@@ -114,7 +114,7 @@ dpkg -l
 
 **Fichiers sensibles modifiables (hors /dev/null)**
 
-<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
+<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```text
 find / -writable -type d 2>/dev/null
@@ -170,7 +170,7 @@ lsmod
 
 **Binaires SUID**
 
-<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
+<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```text
 find / -perm -u=s -type f 2>/dev/null
@@ -354,7 +354,7 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
 
 ### Binaires SUID
 
-<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
+<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
@@ -715,7 +715,7 @@ find /home -type d -name '.ssh' 2>/dev/null
 
 ## Scripts modifiables par tous et exécutés par root
 
-<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
+<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```bash
 # World-writable directories
@@ -751,7 +751,7 @@ Examiner les permissions et la configuration de Linux.
 
 Examiner les permissions et la configuration de Linux.
 
-<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
+<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```bash
 # Trouver des fichiers SUID
@@ -786,7 +786,7 @@ export PATH=/tmp:$PATH
 
 ```
 
-<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
+<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```bash
 # Trouver des fichiers enregistrables SUID
