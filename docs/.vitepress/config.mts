@@ -64,15 +64,24 @@ export default defineConfig({
             { text: 'Windows et contexte de sécurité', link: '/crto/notes/windows' },
             { text: 'Kerberos et Active Directory', link: '/crto/notes/kerberos' },
             { text: 'Cobalt Strike et opérations réseau', link: '/crto/notes/cobalt-strike' },
-            { text: 'Identités dans SQL Server', link: '/crto/notes/sql-server' }
+            { text: 'Identités dans SQL Server', link: '/crto/notes/sql-server' },
+            { text: 'Discovery dans Active Directory', link: '/crto/notes/discovery' },
+            { text: 'Services Windows et Persistence', link: '/crto/notes/services-persistence' },
+            { text: 'Credential Access et User Impersonation', link: '/crto/notes/credential-access' },
+            { text: 'Process Injection et Defence Evasion', link: '/crto/notes/processus' },
+            { text: 'Active Directory Certificate Services', link: '/crto/notes/adcs' },
+            { text: 'Domain Trusts et Forest Trusts', link: '/crto/notes/trusts' }
           ] },
           { text: 'Labs', items: [
             { text: 'Session Windows', link: '/crto/labs/session-windows' },
             { text: 'Session SQL', link: '/crto/labs/session-sql' },
-            { text: 'Scénario de délégation', link: '/crto/labs/delegation' }
+            { text: 'Scénario de délégation', link: '/crto/labs/delegation' },
+            { text: 'Interpréter une décision AppLocker', link: '/crto/labs/applocker' },
+            { text: 'Relire une demande de certificat', link: '/crto/labs/certificat' }
           ] },
           { text: 'Cheatsheets', items: [
-            { text: 'Commandes Windows et SQL', link: '/crto/cheatsheets/identites' }
+            { text: 'Commandes Windows et SQL', link: '/crto/cheatsheets/identites' },
+            { text: 'Journaux et stratégie Windows', link: '/crto/cheatsheets/journaux' }
           ] }
         ]
       }

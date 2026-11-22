@@ -19,3 +19,15 @@ Si le service enregistre une connexion depuis le relais, son journal identifie u
 ## Initial Access, Post-Exploitation et OPSEC
 
 Dans un compte rendu, dater la première exécution confirmée, identifier le compte associé et décrire les actions ultérieures avec leurs preuves. Une livraison de fichier, son ouverture et son exécution constituent trois événements différents. Une alerte liée à des identifiants ne suffit pas à établir quels secrets ont été lus ou utilisés. Consigner la source, l’heure et la limite de chaque observation permet de situer les phases du scénario.
+
+## Relier les observations réseau à une session
+
+Un listener décrit un point de communication. Un profil décrit certains aspects des échanges. Un Named Pipe est un mécanisme de communication entre processus que Windows peut aussi exposer via SMB. Lorsqu’une chronologie mentionne ces trois éléments, consigner pour chacun le protocole observé, les deux extrémités connues et la source de l’information.
+
+Un Beacon Object File (BOF) est un module objet que Beacon peut charger pour accomplir une tâche. Un script Aggressor peut fournir l’interface opérateur associée. Le nom d’une commande dans le client ne révèle donc pas à lui seul le processus, le module ou le transport effectivement observé sur le poste.
+
+## Livraison, ouverture et exécution
+
+Les exemples d’Initial Access mettent en jeu des fichiers de nature différente, notamment raccourcis Windows, compléments Office et installateurs. Documenter séparément la provenance du fichier, son empreinte, son ouverture et toute exécution corrélée. Mark of the Web est un indice de provenance attaché à certains fichiers. Son absence laisse la provenance indéterminée.
+
+SMB et WinRM peuvent intervenir dans l’administration distante. Un partage ouvert, une authentification réussie et l’exécution d’une action distante constituent trois observations distinctes. Pour attribuer une action, rapprocher le compte, la machine de destination, l’heure et le journal du service.

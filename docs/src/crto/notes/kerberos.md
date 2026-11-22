@@ -29,3 +29,13 @@ Si le domaine A fait confiance au domaine B, une ressource de A peut reconnaîtr
 Une autorité de certification délivre un certificat selon les règles d’un modèle et les conditions d’inscription. Pour évaluer un modèle, distinguer qui peut demander le certificat, qui détermine l’identité inscrite, quels usages sont déclarés et quelle validation précède l’émission. Un certificat émis ne garantit pas que le service visé l’acceptera pour authentifier cette identité.
 
 [Consulter les tickets de la session](../cheatsheets/identites#lister-les-tickets-kerberos)
+
+## Réplication, Golden Ticket et Silver Ticket
+
+DCSync désigne un usage abusif des droits de réplication de l’annuaire. L’objet de la revue est la délégation de ces droits et l’identité qui les a exercés. La réplication est une activité normale entre contrôleurs de domaine. Le rôle et l’identité de la machine source sont donc essentiels pour qualifier un événement.
+
+Un Golden Ticket est un TGT falsifié, tandis qu’un Silver Ticket est un ticket de service falsifié. Un Diamond Ticket désigne un TGT légitime modifié. Ces termes distinguent la nature du ticket et sa provenance. Le contenu affiché par le cache d’un poste ne suffit pas à établir comment le ticket y est arrivé.
+
+## Replacer une demande dans la chronologie
+
+Lorsque les stratégies d’audit correspondantes sont actives, l’événement 4768 concerne une demande de TGT et le 4769 une demande de ticket de service. Lire le résultat de la demande, le compte, le service et l’heure. Une demande réussie documente l’émission du ticket. Pour établir ce que l’utilisateur a fait ensuite, examiner le journal de la ressource.

@@ -15,3 +15,9 @@ Si `USER_NAME()` renvoie `dbo`, la session agit en tant que propriétaire dans c
 Un linked server définit un accès à une autre source de données. L’identité employée pour cette connexion dépend du mappage configuré et du mode d’authentification. Pour lire une trace distribuée, relever l’instance qui a enregistré chaque événement et le principal qu’elle a effectivement observé. Le nom affiché sur la première instance ne suffit pas à attribuer le contexte sur la seconde.
 
 [Exercice sur les identités SQL](../labs/session-sql)
+
+## SQL CLR et permissions d’exécution
+
+SQL CLR permet à SQL Server d’utiliser des composants écrits en code managé, notamment pour certaines procédures stockées. Dans un inventaire, distinguer l’assembly enregistré, les objets SQL qui le référencent et les permissions d’exécution. La présence d’un assembly indique qu’il est enregistré dans une base. Elle ne date aucune exécution.
+
+Un linked server peut également intervenir dans un appel distant. Pour expliquer un résultat, consigner séparément la configuration du lien, le contexte de sécurité utilisé sur l’autre instance et les droits accordés dans la base distante. Une erreur de connexion et un refus d’accès à un objet se produisent à des étapes différentes.
