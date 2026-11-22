@@ -9,43 +9,36 @@ Examiner les permissions, processus et configurations d'un système Linux.
 
 ## Énumération
 
-**Utilisateur actuel**
+### Afficher l’identité Unix et les groupes
 
-<p class="oscp-command-note">Afficher l&#x27;identité Unix et les groupes.</p>
-
-```text
+```bash
 id
-
 ```
 
-**Nom de la machine**
+### Afficher le nom d’hôte
 
-<p class="oscp-command-note">Afficher le nom de la machine.</p>
-
-```text
+```bash
 hostname
-
 ```
 
-**Version du système et architecture**
+### Lire la bannière de connexion locale
 
-<p class="oscp-command-note">Lire le fichier /etc/issue et examiner son contenu.</p>
+Cette bannière peut être personnalisée.
 
-```text
+```bash
 cat /etc/issue
-
 ```
 
-```text
+### Identifier la distribution Linux
+
+```bash
 cat /etc/os-release
-
 ```
 
-<p class="oscp-command-note">Afficher le système et la version du noyau.</p>
+### Afficher les informations du noyau et de la machine
 
-```text
+```bash
 uname -a
-
 ```
 
 **Processus en cours**
