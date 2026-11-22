@@ -6,6 +6,7 @@ restores the working copies after VitePress has rendered the site.
 """
 from pathlib import Path
 import re
+from urllib.parse import unquote
 
 ROOT = Path("docs/src/crto/botesjuan")
 ALLOWED_HTML = {
@@ -65,5 +66,28 @@ for path in ROOT.rglob("*.md"):
         rendered = rendered.replace(f"='/{folder}/", f"='{relative_root}{folder}/")
         rendered = rendered.replace(f'](/{folder}/', f']({relative_root}{folder}/')
     rendered = rendered.replace("](/crto-command-library.md", f"]({relative_root}crto-command-library.md")
+    # Some upstream notes reference images absent from their own repository.
+    # Render an explicit message for missing assets, while leaving source untouched.
+    def missing_asset(url: str) -> bool:
+        if url.startswith(("https://", "http://", "data:", "#")):
+            return False
+        local = unquote(url.split("#", 1)[0].split("?", 1)[0])
+        return not (path.parent / local).is_file()
+
+    def check_markdown_image(match: re.Match) -> str:
+        alt, url = match.group(1), match.group(2)
+        if not missing_asset(url):
+            return match.group(0)
+        return f"*Image absente du dépôt original : {alt or Path(url).name}*"
+
+    rendered = re.sub(r"!\\[([^\\]]*)\\]\\(([^\\s)]+)\\)", check_markdown_image, rendered)
+
+    def check_html_image(match: re.Match) -> str:
+        url = match.group(2)
+        if not missing_asset(url):
+            return match.group(0)
+        return f"*Image absente du dépôt original : {Path(url).name}*"
+
+    rendered = re.sub(r"<img\\b[^>]*?\\bsrc\\s*=\\s*([\\\"'])([^\\\"']+)\\1[^>]*>", check_html_image, rendered, flags=re.IGNORECASE)
     if rendered != original:
         path.write_text(rendered, encoding="utf-8")
