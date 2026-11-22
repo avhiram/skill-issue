@@ -1,82 +1,60 @@
 ---
-title: "OSCP · Rapports de pentest"
-description: "Documenter les constats et les preuves techniques."
+title: "OSCP · Rapport d’audit"
+description: "Préparer les captures, vérifier leur intégrité et rédiger un constat."
 ---
 
-# OSCP · Rapports de pentest
+# Rapport d’audit
 
-Documenter les constats et les preuves techniques.
+## Garder le contexte d’une preuve
 
-## Prise de notes et rapports
+Pour chaque constat, note la machine, le compte utilisé, la commande exacte et sa sortie. Conserve une capture lisible qui montre le résultat et permet d’identifier le système concerné.
 
-Structurer les notes, les constats et les preuves techniques.
+| Élément | À consigner |
+| --- | --- |
+| Périmètre | Machine et service concernés. |
+| Observation | Action réalisée, résultat obtenu et nom de la capture. |
+| Impact | Conséquence effectivement observée pendant le test. |
+| Correction | Mesure proposée et résultat attendu après correction. |
 
-## Captures d'écran
+Pour l’examen, vérifie les consignes de capture et de remise du rapport dans le [guide officiel OffSec](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).
 
-Conserver des captures lisibles pour appuyer les constats.
+## Capturer une fenêtre
 
-### Windows
+### Sous Windows
 
-Capturer les écrans utiles depuis Windows.
+Appuie sur **Windows + Maj + S**, sélectionne la zone utile et enregistre l’image sous `capture.png`.
 
-### Kali Linux
+### Sous Kali avec GNOME Screenshot
 
-Réaliser les captures depuis Kali Linux.
-
-**Paramètres et repères :**
-`gnome-screenshot`  
-
-### Bonnes pratiques pour les captures d’écran
-
-Conserver le contexte nécessaire à la compréhension de chaque preuve.
-
-**Paramètres et repères :**
-`sql_injection_vuln_example.png`  
-
-## Éléments essentiels d’un rapport
-
-Présenter le périmètre, les constats, les preuves et les recommandations.
-
-## Mise en forme du rapport
-
-Organiser le rapport pour faciliter la lecture des résultats.
-
-## Rapport de conformité (facultatif)
-
-Relier les constats aux exigences applicables lorsque cela est demandé.
-
-## Conserver des preuves vérifiables
-
-Une preuve doit préserver son contexte : système, compte de test, date, cible et commande exécutée. Le rapport distingue observation, impact et recommandations.
-
-### Empreinte SHA-256 sous Linux
-
-Calculer l'empreinte d'un fichier de preuve pour contrôler son intégrité sans divulguer son contenu.
-
-<p class="oscp-command-note">Calculer l’empreinte d’un fichier sous Linux.</p>
+Si `gnome-screenshot` est installé, sélectionne la zone à enregistrer dans le dossier courant.
 
 ```bash
-sha256sum <FICHIER_PREUVE>
+gnome-screenshot -a -f ./capture.png
 ```
 
-### Empreinte SHA-256 sous Windows
+## Contrôler l’intégrité d’une capture
 
-Associer une empreinte à chaque capture conservée dans le dossier du rapport.
+Exécute la commande depuis le dossier contenant `capture.png`. Conserve l’empreinte avec les notes pour la comparer à celle d’une copie ultérieure.
 
-<p class="oscp-command-note">Calculer l’empreinte d’une capture avec PowerShell.</p>
+### SHA-256 sous Linux
+
+```bash
+sha256sum -- ./capture.png
+```
+
+### SHA-256 sous Windows avec PowerShell
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -Path '<CAPTURE>.png'
+Get-FileHash -LiteralPath '.\capture.png' -Algorithm SHA256
 ```
 
-Pour structurer les constats, consulter le [guide de rapports OffSec avec SysReptor](https://docs.sysreptor.com/offsec-reporting-with-sysreptor/). Éviter d'exécuter un script d'installation distant sans en examiner le contenu.
+## Rédiger le rapport
 
-**Référence complémentaire :** [krovs/oscp-notes](https://github.com/krovs/oscp-notes/blob/main/README.md).
+Relie chaque constat à sa preuve et à une correction. Si le mandat prévoit une analyse de conformité, cite l’exigence concernée et la pièce qui permet de la vérifier.
+
+[Consignes de rapport OffSec](https://help.offsec.com/hc/en-us/articles/360046787731-OSCP-Reporting-Requirements) · [Modèle OffSec pour SysReptor](https://docs.sysreptor.com/offsec-reporting-with-sysreptor/) · [GNU Coreutils](https://www.gnu.org/software/coreutils/manual/coreutils.html) · [Get-FileHash](https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/get-filehash).
+
+Sources d’origine : [notes de krovs](https://github.com/krovs/oscp-notes/blob/main/README.md) et [guide d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- notes-krovs-2026 -->
-
----
-
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
-
 <!-- refined-oscp -->

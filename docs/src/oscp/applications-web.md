@@ -3,9 +3,9 @@ title: "OSCP · Applications web"
 description: "Examiner les fonctionnalités, entrées et configurations des applications web."
 ---
 
-# OSCP · Applications web
+# Applications web
 
-Examiner les fonctionnalités, entrées et configurations des applications web.
+**Examen OSCP+** : OffSec interdit SQLmap pendant l’épreuve. [Règles officielles](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).
 
 ### Identification des technologies
 

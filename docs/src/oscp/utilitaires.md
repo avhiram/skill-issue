@@ -436,270 +436,284 @@ rdesktop -u [username] -p 'P@ssword123!' -d [domain.com] [victim_ip]
 
 ```
 
-## Techniques de décodage et d’encodage
+## Encoder et décoder du texte
 
-<p class="oscp-command-note">Afficher les valeurs ou chaînes utilisées dans «Techniques de décodage et d’encodage».</p>
+### Convertir les octets décimaux en texte
 
 ```bash
-# Décoder
-echo "72 101 108 108 111" | awk '{for(i=1;i<=NF;i++) printf("%c",$i)}'
-
-# Encoder
-echo -n "Hello" | od -An -t uC | tr -d ' \n'
-
+printf '%s\n' '72 101 108 108 111' | awk '{for (i=1; i<=NF; i++) printf "%c", $i}'
 ```
 
+### Afficher les octets décimaux d’un texte
+
+Les espaces séparent les valeurs décimales.
+
 ```bash
-# Décoder
-echo "SGVsbG8gd29ybGQ=" | base64 -d
-
-# Encoder
-echo "Hello world" | base64
-
+printf '%s' 'Hello' | od -An -v -t u1
 ```
 
+### Décoder du Base64
+
 ```bash
-# Décoder
-echo "48656c6c6f20776f726c64" | xxd -r -p
-
-# Encoder
-echo "Hello world" | xxd -p
-
+printf '%s' 'SGVsbG8gd29ybGQ=' | base64 --decode
 ```
 
+### Encoder du texte en Base64
+
+`printf` évite d’ajouter un saut de ligne au texte à encoder.
+
 ```bash
-# Décoder
-echo "dlrow olleH" | rev
-
-# Encoder
-echo "Hello world" | rev
-
+printf '%s' 'Hello world' | base64
 ```
 
+### Décoder une chaîne hexadécimale
+
 ```bash
-# Décoder
-echo "Uryyb jbeyq" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-
-# Encoder
-echo "Hello world" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-
+printf '%s' '48656c6c6f20776f726c64' | xxd -r -p
 ```
 
+### Afficher le texte en hexadécimal
+
 ```bash
-# Décoder
-echo "Hello%20World%21" | python3 -c "import urllib.parse, sys; print(urllib.parse.unquote(sys.stdin.read().strip()))"
-
-# Encoder
-echo "Hello World!" | python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.stdin.read().strip()))"
-
+printf '%s' 'Hello world' | xxd -p
 ```
 
-### Requêtes HTTP de base
-
-<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Requêtes HTTP de base».</p>
+### Rétablir le texte inversé
 
 ```bash
-curl http://example.com
-
+printf '%s\n' 'dlrow olleH' | rev
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -H "Accept: application/json" http://example.com
+### Inverser les caractères d’une ligne
 
+```bash
+printf '%s\n' 'Hello world' | rev
 ```
 
-### Présentation des données
-
-<p class="oscp-command-note">Envoyer une requête HTTP POST.</p>
+### Décoder du ROT13
 
 ```bash
-curl -X POST -d "param1=value1&param2=value2" http://example.com/submit
-
+printf '%s' 'Uryyb jbeyq' | LC_ALL=C tr 'A-Za-z' 'N-ZA-Mn-za-m'
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -H "Content-Type: application/json" -X POST -d '{"key1":"value1", "key2":"value2"}' http://example.com/api
+### Appliquer ROT13
 
+```bash
+printf '%s' 'Hello world' | LC_ALL=C tr 'A-Za-z' 'N-ZA-Mn-za-m'
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -X POST -d "param1=value1&param2=value2" --data-urlencode http://example.com/submit
+### Décoder un composant d’URL
 
+```bash
+python3 -c "from urllib.parse import unquote; print(unquote('Hello%20World%21'))"
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -X PUT -d "param1=value1&param2=value2" http://example.com/update
+### Encoder un composant d’URL
 
+```bash
+python3 -c "from urllib.parse import quote; print(quote('Hello World!', safe=''))"
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -X DELETE http://example.com/delete
+## Requêtes HTTP avec curl
 
+Les exemples supposent une API de test sur `127.0.0.1:8000` qui accepte la méthode et le chemin indiqués. Les appels HTTPS utilisent le service local sur le port `8443`.
+
+### Lire le corps de la réponse
+
+```bash
+curl http://127.0.0.1:8000/
 ```
 
-### Authentification et en-têtes HTTP
-
-<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Authentification et en-têtes HTTP».</p>
+### Demander une réponse JSON
 
 ```bash
-curl -u username:password http://example.com
-
+curl -H 'Accept: application/json' http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -A "CustomUserAgent/1.0" http://example.com
+### Envoyer un formulaire avec POST
 
+```bash
+curl --data 'nom=Alice&ville=Paris' http://127.0.0.1:8000/formulaire
 ```
 
-### Gestion des réponses HTTP
-
-<p class="oscp-command-note">HTTP : examiner les en-têtes et le statut de la réponse.</p>
+### Envoyer du JSON avec POST
 
 ```bash
-curl -i http://example.com
-
+curl -H 'Content-Type: application/json' --data '{"nom":"Alice"}' http://127.0.0.1:8000/api
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -o filename.html http://example.com
+### Encoder les champs d’un formulaire
 
+```bash
+curl --data-urlencode 'nom=Alice Martin' --data-urlencode 'ville=Aix & environs' http://127.0.0.1:8000/formulaire
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -I http://example.com
+### Remplacer une ressource avec PUT
 
+```bash
+curl -X PUT --data 'nom=Alice' http://127.0.0.1:8000/ressources/demo
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -s http://example.com
+### Supprimer une ressource de test avec DELETE
 
+```bash
+curl -X DELETE http://127.0.0.1:8000/ressources/demo
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -v http://example.com
+### S’authentifier avec un compte HTTP
 
+curl demande le mot de passe et vérifie le certificat du serveur.
+
+```bash
+curl --user etudiant https://localhost:8443/
 ```
 
-### Cookies et gestion des sessions
-
-<p class="oscp-command-note">HTTP : transmettre les cookies avec la requête.</p>
+### Définir l’en-tête User-Agent
 
 ```bash
-curl -b "cookie1=value1; cookie2=value2" http://example.com
-
+curl --user-agent 'ClientTest/1.0' http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -c cookies.txt http://example.com
+### Afficher les en-têtes avec le corps
 
+```bash
+curl -i http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -b cookies.txt http://example.com
+### Enregistrer le corps dans un fichier
 
+```bash
+curl --output ./reponse.html http://127.0.0.1:8000/
 ```
 
-### Opérations de fichiers
-
-<p class="oscp-command-note">HTTP : envoyer un fichier par POST multipart avec curl -F (serveur de réception requis).</p>
+### Demander les en-têtes avec HEAD
 
 ```bash
-curl -F "file=@path/to/file" http://example.com/upload
-
+curl --head http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -C - -o filename http://example.com/file
+### Masquer la progression et afficher les erreurs
 
+```bash
+curl --silent --show-error http://127.0.0.1:8000/
 ```
 
-### Proxy et options de sécurité
+### Afficher le détail de l’échange HTTP
 
-Configurer et comprendre les chemins de communication réseau.
-
-<p class="oscp-command-note">HTTP : acheminer la requête par un proxy.</p>
+La trace peut contenir les en-têtes d’authentification.
 
 ```bash
-curl -x http://proxyserver:port http://example.com
-
+curl --verbose http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -k https://example.com
+### Envoyer des cookies de test
 
+```bash
+curl --cookie 'langue=fr; theme=sombre' http://127.0.0.1:8000/
 ```
 
-### Options complémentaires
-
-<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Options complémentaires».</p>
+### Enregistrer les cookies reçus
 
 ```bash
-curl -L http://example.com
-
+curl --cookie-jar ./cookies.txt http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl --max-time 30 http://example.com
+### Renvoyer les cookies d’un fichier
 
+```bash
+curl --cookie ./cookies.txt http://127.0.0.1:8000/
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl -s -o /dev/null -w "%{http_code}" http://example.com
+### Déposer un fichier en multipart
 
+Le serveur doit accepter un formulaire avec un champ nommé `file`.
+
+```bash
+curl --form 'file=@./rapport.txt' http://127.0.0.1:8000/depot
 ```
 
-```bash
-# Récupérer une ressource HTTP
-curl --http2 http://example.com
+### Reprendre un téléchargement interrompu
 
+Le fichier local doit contenir le début de cette ressource et le serveur doit accepter les requêtes partielles.
+
+```bash
+curl --continue-at - --output ./rapport.txt http://127.0.0.1:8000/rapport.txt
 ```
 
-### Détecter le type d'un fichier
+### Utiliser un proxy HTTP local
 
-Examiner la signature du contenu d'un fichier, indépendamment de son extension.
-
-<p class="oscp-command-note">Détecter le type d'un fichier.</p>
+Le proxy doit déjà écouter sur le port 3128.
 
 ```bash
-file <FICHIER>
-xxd -l 64 <FICHIER>
+curl --proxy http://127.0.0.1:3128 http://example.org/
 ```
 
-### Afficher les chaînes lisibles
+### Diagnostiquer un certificat local non reconnu
 
-Repérer les chaînes ASCII/Unicode dans un binaire sans l'exécuter.
-
-<p class="oscp-command-note">Afficher les chaînes lisibles.</p>
+Cette option désactive la vérification du certificat pour cette requête.
 
 ```bash
-strings -a -n 6 <BINAIRE> | head -n 40
+curl --insecure https://localhost:8443/
 ```
 
-### Lire et filtrer du JSON
-
-Convertir un JSON en représentation lisible et extraire une clé avec jq.
-
-<p class="oscp-command-note">Lire et filtrer du JSON.</p>
+### Suivre les redirections HTTP
 
 ```bash
-python3 -m json.tool < <REPONSE>.json
-jq '.data' < <REPONSE>.json
+curl --location http://127.0.0.1:8000/redirection
+```
+
+### Limiter la durée totale à 30 secondes
+
+```bash
+curl --max-time 30 http://127.0.0.1:8000/
+```
+
+### Afficher uniquement le statut HTTP
+
+```bash
+curl --silent --show-error --output /dev/null --write-out '%{http_code}\n' http://127.0.0.1:8000/
+```
+
+### Demander HTTP/2 et afficher la version négociée
+
+Il faut une version de curl compilée avec HTTP/2 et un certificat reconnu.
+
+```bash
+curl --http2 --silent --show-error --output /dev/null --write-out '%{http_version}\n' https://localhost:8443/
+```
+
+## Examiner un fichier sous Linux
+
+### Identifier le format d’un fichier
+
+```bash
+file -- ./rapport.pdf
+```
+
+### Lire les 64 premiers octets
+
+```bash
+xxd -l 64 ./rapport.pdf
+```
+
+### Afficher les chaînes imprimables d’un binaire
+
+Affiche au plus 40 chaînes d’au moins six caractères avec l’encodage par défaut de GNU strings.
+
+```bash
+strings -a -n 6 ./programme.elf | sed -n '1,40p'
+```
+
+### Indenter un document JSON
+
+```bash
+python3 -m json.tool ./reponse.json
+```
+
+### Lire la propriété data avec jq
+
+```bash
+jq '.data' ./reponse.json
 ```
 
 ## Générer une clé SSH
@@ -754,14 +768,12 @@ ssh -i id_rsa user@<victim_ip>
 
 ```
 
-### Créer une clé Ed25519
+### Créer une paire de clés Ed25519
 
-Générer une paire de clés moderne et dédiée au laboratoire ; conserver la clé privée hors du dépôt Git.
-
-<p class="oscp-command-note">Créer une clé Ed25519.</p>
+Choisis un nom libre pour la clé et saisis une phrase secrète à l’invite.
 
 ```bash
-ssh-keygen -t ed25519 -f <CHEMIN_CLE> -C 'audit-laboratoire'
+ssh-keygen -t ed25519 -f ./cle-audit -C 'audit-laboratoire'
 ```
 
 ## Compilation croisée pour Windows
@@ -862,11 +874,10 @@ sudo usermod -aG <group_name> <username>
 
 ```
 
-<p class="oscp-command-note">Afficher les métadonnées d&#x27;un fichier.</p>
+### Lire aussi les métadonnées inconnues ou en double
 
 ```bash
-exiftool -a -u [file.extension]
-
+exiftool -a -u ./document.pdf
 ```
 
 ```bash
@@ -997,97 +1008,71 @@ set PATH=%PATH%C:\Windows\System32;C:\Windows\System32\WindowsPowerShell\v1.0;
 
 ```
 
-### Vérifier une empreinte de fichier
+## Vérifier un fichier sous Linux
 
-Calculer un condensat SHA-256 pour contrôler l'intégrité avant la manipulation d'un outil récupéré.
-
-<p class="oscp-command-note">Vérifier une empreinte de fichier.</p>
+### Calculer l’empreinte SHA-256
 
 ```bash
-sha256sum <FICHIER>
+sha256sum -- ./rapport.pdf
 ```
 
-### Afficher le certificat TLS
-
-Extraire les informations de certificat d'un fichier PEM pour examiner son émetteur et sa validité.
-
-<p class="oscp-command-note">Afficher le certificat TLS.</p>
+### Lire l’émetteur et les dates d’un certificat PEM
 
 ```bash
-openssl x509 -in <CERTIFICAT>.pem -noout -subject -issuer -dates
+openssl x509 -in ./certificat.pem -noout -subject -issuer -dates
 ```
 
-### Déterminer les dépendances ELF
+### Lister les bibliothèques déclarées par un ELF
 
-Afficher les bibliothèques déclarées dans un binaire Linux sans lancer celui-ci.
-
-<p class="oscp-command-note">Déterminer les dépendances ELF.</p>
+Les entrées `NEEDED` décrivent les dépendances directes du fichier.
 
 ```bash
-readelf -d <BINAIRE_ELF> | grep NEEDED
+readelf -d ./programme.elf | grep NEEDED
 ```
 
-## Analyser les fichiers et ouvrir une session moderne
+Le [format du fichier](#identifier-le-format-d-un-fichier) se vérifie avec `file`.
 
-Ces outils complètent les commandes de base et facilitent l'inventaire, l'inspection de fichiers ainsi que l'accès graphique autorisé.
-
-### Identifier le format d'un fichier
-
-Afficher le type détecté à partir du contenu plutôt que se fier à l'extension.
-
-<p class="oscp-command-note">Identifier le format d'un fichier.</p>
+### Repérer les signatures dans une image
 
 ```bash
-file <CHEMIN_DU_FICHIER>
+binwalk ./image.bin
 ```
 
-### Rechercher les signatures embarquées
+### Extraire les contenus reconnus par Binwalk
 
-Afficher les composants et formats reconnaissables dans un binaire ou une archive.
-
-<p class="oscp-command-note">Rechercher les signatures embarquées.</p>
+Dans un dossier de travail isolé, l’extraction dépend des formats détectés et des extracteurs installés.
 
 ```bash
-binwalk <CHEMIN_DU_FICHIER>
+binwalk -e ./image.bin
 ```
 
-### Extraire les éléments reconnus
-
-Demander à Binwalk d'extraire les éléments connus ; vérifier les fichiers produits avant leur ouverture.
-
-<p class="oscp-command-note">Extraire les éléments reconnus.</p>
+### Afficher les informations de compression UPX
 
 ```bash
-binwalk -e <CHEMIN_DU_FICHIER>
+upx -l ./programme.upx
 ```
 
-### RDP : client FreeRDP 3
-
-Ouvrir une session RDP avec résolution dynamique et compte explicitement autorisé ; les options diffèrent de celles de FreeRDP 2.
-
-<p class="oscp-command-note">RDP : client FreeRDP 3.</p>
+### Vérifier l’intégrité de la compression UPX
 
 ```bash
-xfreerdp3 /v:<IP_CIBLE> /u:<UTILISATEUR> /dynamic-resolution
+upx -t ./programme.upx
 ```
 
-**Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/index.md). Présentation rédigée pour SKILL-ISSUE.
+## Accès graphique
+
+### Ouvrir une session avec FreeRDP 3
+
+Depuis un bureau Linux, utilise un compte autorisé et un serveur RDP accessible.
+
+```bash
+xfreerdp3 /v:10.10.10.30 /u:etudiant /dynamic-resolution
+```
+
+## Sources
+
+[curl](https://curl.se/docs/manpage.html) · [GNU Coreutils](https://www.gnu.org/software/coreutils/manual/coreutils.html) · [xxd](https://manpages.debian.org/trixie/xxd/xxd.1.en.html) · [Python, encodage d’URL](https://docs.python.org/3/library/urllib.parse.html) · [jq](https://jqlang.org/manual/) · [OpenSSL](https://docs.openssl.org/3.5/man1/openssl-x509/) · [Binwalk](https://github.com/ReFirmLabs/binwalk) · [UPX](https://upx.github.io/upx/upx-doc.html).
+
+Sources d’origine : [notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/index.md) et [guide d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- notes-krovs-2026 -->
-
----
-
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
-
 <!-- refined-oscp -->
-
-### UPX : examiner un exécutable compacté
-
-Les options `-l` et `-t` affichent l'information de compression et testent l'intégrité du fichier. Elles ne prouvent pas qu'un fichier est sûr. [Documentation UPX](https://github.com/upx/upx).
-
-<p class="oscp-command-note">UPX : examiner un exécutable compacté.</p>
-
-```bash
-upx -l <BINAIRE_COMPRESSE>
-upx -t <BINAIRE_COMPRESSE>
-```

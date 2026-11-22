@@ -5,7 +5,12 @@ description: "Ressources documentaires citées par le guide original."
 
 # Références
 
-Liens mentionnés dans la section **20. References** du guide OSCP original, regroupés dans une page simple.
+## Consignes de l’examen
+
+- [Guide officiel de l’OSCP+](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide)
+- [Critères du rapport d’examen](https://help.offsec.com/hc/en-us/articles/360046787731-OSCP-Reporting-Requirements)
+
+## Ressources citées dans le guide
 
 - [Awesome OSCP](https://github.com/0x4D31/awesome-oscp)
 - [OSCP GitBook](https://aditya-3.gitbook.io/oscp)

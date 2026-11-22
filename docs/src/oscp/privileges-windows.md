@@ -2406,46 +2406,43 @@ Lister les entrées du Gestionnaire d'identification sans afficher les mots de p
 cmdkey /list
 ```
 
-### Programmes lancés au démarrage
+### Lire les entrées Run de l’utilisateur
 
-Examiner les entrées Run du registre pour l'utilisateur et la machine.
-
-<p class="oscp-command-note">Programmes lancés au démarrage.</p>
+Sous PowerShell, la clé `HKCU` concerne le compte courant.
 
 ```powershell
-reg query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run'
-reg query 'HKLM\Software\Microsoft\Windows\CurrentVersion\Run'
+reg.exe query 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run'
 ```
 
-### Tâches planifiées
-
-Afficher le nom, l'emplacement et l'état des tâches. Vérifier ensuite les droits sur les exécutables concernés.
-
-<p class="oscp-command-note">Tâches planifiées.</p>
+### Lire les entrées Run de la machine
 
 ```powershell
-Get-ScheduledTask | Select-Object TaskName,TaskPath,State
+reg.exe query 'HKLM\Software\Microsoft\Windows\CurrentVersion\Run'
 ```
 
-### Mises à jour connues du système
+### Afficher les tâches planifiées et leur état
 
-Lister les correctifs disponibles dans l'inventaire Windows ; leur absence dans cette sortie ne prouve pas l'absence d'un correctif.
+```powershell
+Get-ScheduledTask | Select-Object TaskName, TaskPath, State
+```
 
-<p class="oscp-command-note">Mises à jour connues du système.</p>
+### Lister les correctifs Windows signalés par WMI
+
+`Get-HotFix` couvre les correctifs exposés par `Win32_QuickFixEngineering`. D’autres mises à jour peuvent être installées.
 
 ```powershell
 Get-HotFix | Sort-Object InstalledOn -Descending
 ```
 
-### Processus et chemins exécutables
+### Afficher les chemins des processus accessibles
 
-Afficher les chemins des processus visibles pour le compte courant afin de préparer l'analyse des permissions.
-
-<p class="oscp-command-note">Processus et chemins exécutables.</p>
+Certains chemins peuvent rester vides selon les droits et l’architecture de PowerShell.
 
 ```powershell
-Get-Process | Select-Object Name,Id,Path
+Get-Process | Select-Object Name, Id, Path
 ```
+
+[Registre](https://learn.microsoft.com/windows-server/administration/windows-commands/reg-query) · [Tâches planifiées](https://learn.microsoft.com/powershell/module/scheduledtasks/get-scheduledtask) · [Correctifs](https://learn.microsoft.com/powershell/module/microsoft.powershell.management/get-hotfix) · [Processus](https://learn.microsoft.com/powershell/module/microsoft.powershell.management/get-process).
 
 **Référence technique complémentaire :** [Notes OSCP de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/15_windows_privesc.md). Cette synthèse conserve la structure de SKILL-ISSUE et reformule les explications.
 

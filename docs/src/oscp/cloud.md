@@ -1,60 +1,57 @@
 ---
 title: "OSCP · Infrastructures cloud"
-description: "Vérifications en lecture seule des services de stockage cloud, avec AWS CLI."
+description: "Contrôler les droits de lecture sur un compartiment S3."
 ---
 
 # Infrastructures cloud
 
-La rubrique cloud du guide d’Emmanuel Solis est indiquée comme *en attente de rédaction*.
+## Contrôler un compartiment S3
 
-**Le guide principal ne fournit pas de commandes pour cette rubrique.** Les exemples ci-dessous sont des compléments rédigés à partir des notes de krovs et de la documentation officielle d’AWS.
+Dans Bash, utilise AWS CLI et le nom d’un compartiment que tu administres. Les exemples de politique concernent les compartiments S3 à usage général.
 
-[Consulter cette rubrique dans le guide original](https://www.emmanuelsolis.com/oscp.html#15-cloud-infrastructures).
-
-## Stockage S3 : vérifier les accès en lecture
-
-Vérifier uniquement les buckets inclus dans le périmètre. L'option `--no-sign-request` envoie une requête non signée : une erreur `AccessDenied` ne signifie pas que le service est absent. Les commandes ci-dessous n'écrivent aucun objet.
-
-### Lister les objets d'un bucket public
-
-Déterminer si une liste d'objets est accessible sans authentification. La disponibilité dépend de la politique du bucket.
-
-<p class="oscp-command-note">Examiner le contenu visible d’un bucket S3 autorisé.</p>
+### Choisir le compartiment
 
 ```bash
-aws s3 ls s3://<NOM_BUCKET>/ --no-sign-request
+read -r -p 'Nom du bucket : ' BUCKET
 ```
 
-### Consulter la politique du bucket
+### Vérifier si la liste des objets est publique
 
-Vérifier la politique si le service l'autorise. Une politique inaccessible doit être signalée comme telle, sans déduire qu'elle n'existe pas.
-
-<p class="oscp-command-note">Lire la politique d'accès S3 si les permissions l’autorisent.</p>
+`--no-sign-request` tente de lister les objets sans identifiants. Un refus ne renseigne pas sur la lecture d’un objet individuel.
 
 ```bash
-aws s3api get-bucket-policy --bucket <NOM_BUCKET> --no-sign-request
+aws s3 ls "s3://${BUCKET:?Renseigner BUCKET}/" --no-sign-request
 ```
 
-### Interroger un stockage compatible S3
+### Lire la politique avec le compte propriétaire
 
-Préciser l'URL du service lorsque le laboratoire utilise un endpoint compatible S3 autre que celui d'AWS.
-
-<p class="oscp-command-note">Lister les objets à partir d’un endpoint S3 précis.</p>
+Utilise une identité configurée dans AWS CLI, rattachée au compte propriétaire, avec le droit `s3:GetBucketPolicy`.
 
 ```bash
-aws s3 ls s3://<NOM_BUCKET>/ --endpoint-url <URL_ENDPOINT_S3> --no-sign-request
+aws s3api get-bucket-policy --bucket "${BUCKET:?Renseigner BUCKET}" --query Policy --output text
 ```
 
-### Vérifier le statut d'accès public
+### Vérifier un service compatible S3
 
-Interroger le statut d'accès public calculé à partir de la politique, si l'API l'autorise. Ce résultat doit être corrélé aux autres paramètres de sécurité S3.
-
-<p class="oscp-command-note">Consulter le statut de la politique d'accès public.</p>
+Indique son URL complète, avec `https://`, puis teste la liste anonyme sur ce service.
 
 ```bash
-aws s3api get-bucket-policy-status --bucket <NOM_BUCKET> --no-sign-request
+read -r -p 'URL du service S3 : ' ENDPOINT_S3
+aws s3 ls "s3://${BUCKET:?Renseigner BUCKET}/" --endpoint-url "${ENDPOINT_S3:?Renseigner ENDPOINT_S3}" --no-sign-request
 ```
 
-**Références :** [krovs: notes pratiques](https://github.com/krovs/oscp-notes/blob/main/docs/index.md) · [AWS CLI : s3 ls](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html) · [AWS CLI : get-bucket-policy](https://docs.aws.amazon.com/cli/latest/reference/s3api/get-bucket-policy.html).
+### Lire le statut public de la politique
+
+Le droit `s3:GetBucketPolicyStatus` est requis. Le résultat porte sur la politique du compartiment.
+
+```bash
+aws s3api get-bucket-policy-status --bucket "${BUCKET:?Renseigner BUCKET}" --query PolicyStatus.IsPublic --output text
+```
+
+## Sources
+
+[AWS CLI, liste S3](https://docs.aws.amazon.com/cli/latest/reference/s3/ls.html) · [AWS, lecture de la politique](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketPolicy.html) · [AWS, statut public de la politique](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketPolicyStatus.html).
+
+Sources d’origine : [notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/index.md) et [guide d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html#15-cloud-infrastructures).
 
 <!-- notes-krovs-2026 -->

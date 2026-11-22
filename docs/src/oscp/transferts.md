@@ -1,49 +1,41 @@
 ---
 title: "OSCP · Transferts de fichiers"
-description: "Scénarios reproduisibles Linux, Windows, Kali, SCP, SMB, HTTP, WebDAV, RDP et Netcat."
+description: "Copier un fichier entre Linux et Windows, depuis la machine qui l’envoie ou celle qui le reçoit."
 ---
 
 # Transferts de fichiers
 
-**IP d'exemple :** Kali `10.10.14.10`, Linux `10.10.10.20`, Windows `10.10.10.30`. À adapter.
+La **source** possède le fichier, la **destination** le reçoit. Adapte les adresses et les comptes. Les exemples utilisent `rapport.txt` dans le dossier courant sous Linux et dans `C:\Users\Public` sous Windows.
 
-## Choisir le sens du transfert
-
-Choisis la source, la destination et la méthode.
+| Machine d’exemple | Adresse |
+| --- | --- |
+| Kali | `10.10.14.10` |
+| Second Linux | `10.10.10.20` |
+| Windows distant | `10.10.10.30` |
 
 <TransferSelector />
 
-**À retenir :** `get` = **récupérer** vers la machine locale ; `put` = **envoyer** vers le serveur. Le sens de `scp` dépend de la place de `utilisateur@hôte:`.
-
 ## Vérifier la connexion
 
-### Adresse réseau de Kali
-
-Repérer l'interface VPN et la route vers la cible.
-
-<p class="oscp-command-note">Sur Kali : afficher les interfaces et les routes réseau.</p>
+### Afficher les adresses et les routes de Kali
 
 ```bash
 ip -br address
 ip route
 ```
 
-### Tester le port de la destination
+### Depuis Kali, tester SSH ou SMB
 
-Un service distant doit écouter : 22 pour SSH, 445 pour SMB et 8000 pour notre exemple HTTP.
-
-<p class="oscp-command-note">Sur Kali : vérifier l’accès aux ports SSH et SMB distants.</p>
+Teste uniquement le port du service que tu comptes utiliser.
 
 ```bash
 nc -zv 10.10.10.20 22
 nc -zv 10.10.10.30 445
 ```
 
-### Tester un port depuis Windows
+### Depuis Windows, tester le port HTTP de Kali
 
-Exemple : vérifier que Windows peut atteindre le serveur HTTP de Kali.
-
-<p class="oscp-command-note">Sur Windows : PowerShell</p>
+`TcpTestSucceeded` indique si PowerShell a pu ouvrir la connexion TCP.
 
 ```powershell
 Test-NetConnection 10.10.14.10 -Port 8000
@@ -51,383 +43,325 @@ Test-NetConnection 10.10.14.10 -Port 8000
 
 ## Linux vers Linux
 
-### Envoyer un fichier avec SCP
+### Depuis la source, envoyer un fichier par SCP {#ll-scp}
 
-Le fichier est copié dans `/tmp/` sur le Linux distant. SSH doit fonctionner.
-
-<p class="oscp-command-note">Sur le Linux qui possède le fichier</p>
+Le serveur SSH/SFTP distant doit être joignable et le compte `etudiant` doit pouvoir écrire dans `/tmp`.
 
 ```bash
 scp ./rapport.txt etudiant@10.10.10.20:/tmp/
 ```
 
-### Récupérer un fichier avec SCP
+### Depuis la destination, récupérer un fichier par SCP {#ll-scp-reception}
 
-Le chemin `./rapport.txt` correspond à la machine qui exécute la commande.
-
-<p class="oscp-command-note">Sur le Linux qui doit recevoir le fichier</p>
+Ici, `10.10.10.20` possède déjà le fichier et le Linux qui exécute la commande le reçoit.
 
 ```bash
 scp etudiant@10.10.10.20:/tmp/rapport.txt ./rapport.txt
 ```
 
-### Envoyer un dossier avec SCP
-
-Le paramètre `-r` copie tout un répertoire.
-
-<p class="oscp-command-note">Sur le Linux source</p>
+### Depuis la source, envoyer un dossier par SCP {#ll-scp-dossier}
 
 ```bash
-scp -r ./dossier/ etudiant@10.10.10.20:/tmp/
+scp -r ./dossier etudiant@10.10.10.20:/tmp/
 ```
 
-### Synchroniser un dossier avec rsync
+### Depuis la source, synchroniser un dossier avec rsync {#ll-rsync}
 
-Reprise et suivi des transferts. `rsync` doit être disponible sur les deux machines.
-
-<p class="oscp-command-note">Sur le Linux source</p>
+Installe `rsync` des deux côtés. La barre finale de `./dossier/` copie son contenu.
 
 ```bash
 rsync -avP ./dossier/ etudiant@10.10.10.20:/tmp/dossier/
 ```
 
-### Transférer en mode SFTP
+### Depuis Linux, ouvrir une session SFTP {#ll-sftp}
 
-`put` envoie, `get` télécharge ; `bye` ferme la session.
+```bash
+sftp etudiant@10.10.10.20
+```
 
-<p class="oscp-command-note">Sur le Linux source : puis dans SFTP</p>
+### Dans SFTP, envoyer et récupérer un fichier
+
+`put` envoie le fichier local et `get` récupère un fichier déjà présent dans le dossier distant.
 
 ```text
-sftp etudiant@10.10.10.20
 put rapport.txt
 get autre_fichier.txt
 bye
 ```
 
-### Netcat : sans SSH
+### Depuis la destination, télécharger par HTTP {#ll-http}
 
-**Linux de destination :** démarrer d'abord le récepteur.
-
-```bash
-nc -lvnp 9001 > rapport.txt
-```
-
-**Linux source :** envoyer ensuite le fichier.
+[Ouvre le serveur HTTP sur le Linux source](#http-source), puis télécharge le fichier sur le second Linux.
 
 ```bash
-nc 10.10.10.20 9001 < rapport.txt
+curl --fail --show-error --location --output ./rapport.txt http://10.10.14.10:8000/rapport.txt
 ```
 
-Netcat ne chiffre ni n'authentifie le contenu : **laboratoire isolé seulement**. Fermer le transfert et contrôler le hash après réception.
+### Sur la destination, recevoir avec Netcat {#ll-netcat}
+
+Avec `netcat-openbsd` sur un réseau isolé, démarre cette écoute avant l’envoi. Le fichier local est écrasé et le transfert circule en clair.
+
+```bash
+nc -l 9001 > ./rapport.txt
+```
+
+### Depuis la source, envoyer avec Netcat
+
+`-N` ferme le flux réseau à la fin du fichier.
+
+```bash
+nc -N 10.10.10.20 9001 < ./rapport.txt
+```
 
 ## Linux vers Windows
 
-**Cas le plus courant :** Kali héberge le fichier, Windows le télécharge.
+### Sur Kali, servir le fichier par HTTP {#http-source}
 
-### Kali : héberger un fichier par HTTP
-
-Créer un dossier et servir son contenu. `0.0.0.0` permet d'être joint depuis une autre machine.
-
-<p class="oscp-command-note">Sur Kali : terminal à laisser ouvert</p>
+Laisse le terminal ouvert pendant le téléchargement. Seul le contenu de `partage` doit être destiné au réseau de test.
 
 ```bash
 mkdir -p ./partage
-cp ./outil.exe ./partage/
-python3 -m http.server 8000 --bind 0.0.0.0 --directory ./partage
+cp ./rapport.txt ./partage/
+python3 -m http.server 8000 --bind 10.10.14.10 --directory ./partage
 ```
 
-### Windows : télécharger avec PowerShell
+### Depuis Windows, télécharger avec PowerShell {#lw-http-ps}
 
-Récupérer `outil.exe` à partir du serveur Kali.
-
-<p class="oscp-command-note">Sur Windows : PowerShell</p>
+[Démarre le serveur HTTP de Kali](#http-source) avant la copie.
 
 ```powershell
-Invoke-WebRequest -UseBasicParsing -Uri 'http://10.10.14.10:8000/outil.exe' -OutFile 'C:\Users\Public\outil.exe'
+Invoke-WebRequest -UseBasicParsing -Uri 'http://10.10.14.10:8000/rapport.txt' -OutFile 'C:\Users\Public\rapport.txt'
 ```
 
-### Windows : alternative avec curl.exe
+### Depuis Windows, télécharger avec curl.exe {#lw-http-curl}
 
-Même résultat si `Invoke-WebRequest` est indisponible.
+Cette variante utilise le même serveur HTTP et fonctionne dans PowerShell ou CMD.
 
-<p class="oscp-command-note">Sur Windows : PowerShell / CMD</p>
-
-```powershell
-curl.exe -fL 'http://10.10.14.10:8000/outil.exe' -o 'C:\Users\Public\outil.exe'
+```bat
+curl.exe --fail --location --output "C:\Users\Public\rapport.txt" "http://10.10.14.10:8000/rapport.txt"
 ```
 
-**Important :** `python3 -m http.server` fournit des fichiers par **GET**. Il **ne reçoit pas** un téléversement `POST` ou `PUT` sans implémentation supplémentaire.
+### Sur Kali, partager le fichier par SMB {#lw-smb-kali}
 
-### Linux → Windows : récupérer un fichier depuis le partage SMB de Kali
-
-**Sur Kali :** créer un partage SMB authentifié. Le port SMB 445 nécessite généralement `sudo` pour être ouvert par un processus local.
+Le serveur SMB d’Impacket demande le mot de passe du compte temporaire `audit`. Le port 445 doit être libre.
 
 ```bash
 mkdir -p ./partage
-cp ./outil.exe ./partage/
-sudo impacket-smbserver -smb2support -username audit -password 'MotDePasseTest' partage ./partage
+cp ./rapport.txt ./partage/
+sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit partage ./partage
 ```
 
-**Sur Windows :** s'authentifier, récupérer puis fermer la connexion.
+### Depuis Windows, récupérer le fichier du partage Kali
+
+Dans PowerShell, saisis le même mot de passe à l’invite de `net use`.
 
 ```powershell
-net use \\10.10.14.10\partage /user:audit 'MotDePasseTest'
-Copy-Item '\\10.10.14.10\partage\outil.exe' 'C:\Users\Public\outil.exe'
+net use \\10.10.14.10\partage * /user:audit
+Copy-Item -LiteralPath '\\10.10.14.10\partage\rapport.txt' -Destination 'C:\Users\Public\rapport.txt'
 net use \\10.10.14.10\partage /delete
 ```
 
-Le mot de passe affiché n'est qu'un exemple : utiliser un identifiant dédié au laboratoire.
+### Depuis Linux, déposer le fichier sur un partage Windows {#lw-smb-windows}
 
-### Linux → Windows : envoyer vers un partage SMB ou via SSH
-
-**Si Windows possède un partage SMB `Depot` en écriture**, depuis Linux :
+Le compte `LAB\etudiant` doit pouvoir écrire dans le partage `Depot` et dans son dossier Windows.
 
 ```bash
-smbclient //10.10.10.30/Depot -U 'LAB\etudiant' -c 'put rapport.txt rapport.txt'
+smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'put rapport.txt rapport.txt'
 ```
 
-**Si Windows héberge OpenSSH Server**, depuis Linux :
+### Depuis Linux, envoyer le fichier à Windows par SCP {#lw-scp}
+
+OpenSSH Server doit être actif sur Windows. Le chemin après `:` est relatif au dossier de connexion du compte distant.
 
 ```bash
-scp ./rapport.txt etudiant@10.10.10.30:C:/Users/Public/rapport.txt
+scp ./rapport.txt etudiant@10.10.10.30:rapport.txt
 ```
 
-SCP ne fonctionne que si le service SSH distant est actif ; il ne suffit pas que Windows ait le client SSH.
+## Windows vers Linux
 
-## Windows vers Linux / Kali
+### Sur Kali, ouvrir un partage SMB de réception {#wl-smb-kali}
 
-**Méthode privilégiée :** Kali ouvre un partage SMB dans un dossier de réception, puis Windows y dépose le fichier. `sudo` est utilisé ici car le serveur écoute sur le port privilégié 445.
-
-### Kali : ouvrir un partage SMB de réception
-
-Le dossier `./reception/` contiendra les fichiers déposés par Windows.
-
-<p class="oscp-command-note">Sur Kali : terminal à laisser ouvert</p>
+Laisse le serveur ouvert pendant la copie. Impacket demande le mot de passe temporaire de `audit`.
 
 ```bash
 mkdir -p ./reception
-sudo impacket-smbserver -smb2support -username audit -password 'MotDePasseTest' partage ./reception
+sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit partage ./reception
 ```
 
-### Windows : envoyer le fichier à Kali
+### Depuis Windows, déposer le fichier dans le partage Kali
 
-Le fichier sera récupérable dans `./reception/rapport.txt` sur Kali.
-
-<p class="oscp-command-note">Sur Windows : PowerShell</p>
+Le fichier arrive dans `./reception/rapport.txt` sur Kali.
 
 ```powershell
-net use \\10.10.14.10\partage /user:audit 'MotDePasseTest'
-Copy-Item 'C:\Users\Public\rapport.txt' '\\10.10.14.10\partage\rapport.txt'
+net use \\10.10.14.10\partage * /user:audit
+Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\10.10.14.10\partage\rapport.txt'
 net use \\10.10.14.10\partage /delete
 ```
 
-### Windows → Linux : envoyer un fichier avec WebDAV
+### Sur Kali, ouvrir un dossier de réception WebDAV {#wl-webdav}
 
-**Sur Kali :** un serveur WebDAV accepte des requêtes PUT et peut recevoir des fichiers. L'exemple utilise un accès **anonyme et non chiffré**, réservé à un laboratoire isolé.
+WsgiDAV et Cheroot doivent être installés. Cet exemple autorise l’écriture anonyme en clair sur un réseau isolé.
 
 ```bash
 mkdir -p ./reception
-wsgidav -H 0.0.0.0 -p 8080 -r ./reception --auth anonymous
+wsgidav --no-config --host 10.10.14.10 --port 8080 --root ./reception --auth anonymous
 ```
 
-**Sur Windows :** envoyer le fichier avec la commande native `curl.exe`.
+### Depuis Windows, déposer le fichier par WebDAV
 
-```powershell
-curl.exe -T 'C:\Users\Public\rapport.txt' 'http://10.10.14.10:8080/rapport.txt'
+```bat
+curl.exe --fail --upload-file "C:\Users\Public\rapport.txt" "http://10.10.14.10:8080/rapport.txt"
 ```
 
-### Windows → Linux : envoyer un fichier avec SCP
+### Depuis Windows, envoyer le fichier à Kali par SCP {#wl-scp}
 
-**Sur Windows :** si le **serveur SSH de Kali** est accessible et si OpenSSH Client est installé.
+Il faut le client OpenSSH sur Windows, le serveur SSH/SFTP sur Kali et un compte pouvant écrire dans `/tmp`.
 
 ```powershell
 scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
 ```
 
-### Windows → Linux : récupérer un fichier depuis un partage SMB
+### Depuis Linux, récupérer le fichier d’un partage Windows {#wl-smb-windows}
 
-**Sur Kali :** si Windows expose déjà le partage `Depot` avec un droit de lecture.
+Le fichier doit déjà se trouver sur le partage `Depot` et le compte doit pouvoir le lire.
 
 ```bash
-smbclient //10.10.10.30/Depot -U 'LAB\etudiant' -c 'get rapport.txt rapport.txt'
+smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'get rapport.txt rapport.txt'
 ```
 
 ## Windows vers Windows
 
-### Copier vers un partage SMB existant
+### Sur la destination, créer le partage SMB {#ww-creer}
 
-Le compte utilisé doit avoir des droits sur le partage `Depot` et sur le système de fichiers.
-
-<p class="oscp-command-note">Sur le Windows source : PowerShell</p>
-
-```powershell
-Copy-Item 'C:\Users\Public\rapport.txt' '\\10.10.10.30\Depot\rapport.txt'
-```
-
-### Créer un partage si vous êtes administrateur
-
-Cas de laboratoire seulement. Adapter le compte et les permissions NTFS avant le transfert.
-
-<p class="oscp-command-note">Sur le Windows de destination : PowerShell administrateur</p>
+PowerShell administrateur. Cette étape est utile si `Depot` n’existe pas encore. Le compte doit aussi disposer du droit d’écriture NTFS.
 
 ```powershell
 New-Item -ItemType Directory -Path 'C:\Depot' -Force
 New-SmbShare -Name 'Depot' -Path 'C:\Depot' -ChangeAccess 'LAB\etudiant'
 ```
 
-### Copier par SCP entre deux Windows
+### Depuis la source, copier vers le partage SMB {#ww-smb}
 
-Nécessite OpenSSH Server sur Windows destination.
-
-<p class="oscp-command-note">Sur le Windows source</p>
+Le compte utilisé par PowerShell doit pouvoir écrire sur `\\10.10.10.30\Depot`.
 
 ```powershell
-scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:C:/Users/Public/rapport.txt
+Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\10.10.10.30\Depot\rapport.txt'
 ```
 
-## Via une session RDP
+### Depuis la source, envoyer le fichier par SCP {#ww-scp}
 
-Si RDP est disponible, **FreeRDP peut partager un dossier Kali avec la session Windows** : les transferts fonctionnent dans les deux sens.
+Le client OpenSSH s’exécute sur le premier Windows. Le serveur OpenSSH du second reçoit le fichier dans le dossier de connexion de `etudiant`.
 
-### Ouvrir une session RDP avec partage de dossier
+```powershell
+scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
+```
 
-L'exemple utilise FreeRDP 3 ; adapter l'option à la version installée.
+## Dossier partagé dans une session RDP
 
-<p class="oscp-command-note">Sur Kali : partager le dossier local avec la session Windows distante.</p>
+### Depuis Kali, ouvrir la session avec un dossier partagé {#rdp}
+
+FreeRDP 3 et la redirection de lecteurs doivent être disponibles. Place dans `partage` les fichiers à envoyer.
 
 ```bash
 mkdir -p ./partage
-xfreerdp3 /v:10.10.10.30 /u:etudiant /dynamic-resolution /drive:partage,$PWD/partage
+xfreerdp3 /v:10.10.10.30 /u:etudiant /dynamic-resolution "/drive:partage,$PWD/partage"
 ```
 
-### Récupérer ou déposer un fichier depuis Windows
-
-Le dossier de Kali est visible sous `\\tsclient\partage`.
-
-<p class="oscp-command-note">Sur Windows : dans la session RDP</p>
+### Dans Windows, afficher le dossier de Kali
 
 ```powershell
-Get-ChildItem '\\tsclient\partage'
-Copy-Item '\\tsclient\partage\outil.exe' 'C:\Users\Public\outil.exe'
-Copy-Item 'C:\Users\Public\rapport.txt' '\\tsclient\partage\rapport.txt'
+Get-ChildItem -LiteralPath '\\tsclient\partage'
 ```
 
-## FTP : si le service existe déjà
+### Dans Windows, copier de Kali vers Windows
 
-FTP transmet généralement les identifiants et les données sans chiffrement ; privilégier SCP/SFTP lorsque c'est possible.
+```powershell
+Copy-Item -LiteralPath '\\tsclient\partage\rapport.txt' -Destination 'C:\Users\Public\rapport.txt'
+```
 
-### Télécharger depuis FTP
+### Dans Windows, copier de Windows vers Kali
 
-Un compte de laboratoire et un droit de lecture sont nécessaires.
+```powershell
+Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\partage\retour.txt'
+```
 
-<p class="oscp-command-note">Sur Linux : serveur FTP accessible</p>
+## FTP sur un serveur existant
+
+FTP transmet les identifiants et le fichier en clair. Utilise ici un compte de test sur un réseau isolé.
+
+### Depuis Linux, télécharger par FTP
 
 ```bash
-curl --user 'etudiant:MotDePasseTest' 'ftp://10.10.10.20/rapport.txt' -o ./rapport.txt
+curl --fail --user etudiant --output ./rapport.txt ftp://10.10.10.20/rapport.txt
 ```
 
-### Envoyer vers FTP
+### Depuis Linux, envoyer par FTP
 
-Le serveur doit permettre le téléversement.
-
-<p class="oscp-command-note">Sur Linux : serveur FTP avec écriture autorisée</p>
+Le compte FTP doit pouvoir écrire dans le dossier distant.
 
 ```bash
-curl --user 'etudiant:MotDePasseTest' -T ./rapport.txt 'ftp://10.10.10.20/rapport.txt'
+curl --fail --user etudiant --upload-file ./rapport.txt ftp://10.10.10.20/rapport.txt
 ```
 
-## Base64 : si le réseau ne permet aucun transfert
+## Transférer un petit fichier sous forme de texte
 
-Base64 = **représentation du fichier en texte, pas du chiffrement**. À réserver aux petits fichiers car une chaîne tronquée ne se décode plus correctement.
+Base64 représente les octets sous forme de texte. Copie toute la chaîne et compare les empreintes après décodage.
 
-### Encoder sur Linux
-
-Copier la chaîne imprimée jusqu'à son dernier caractère.
-
-<p class="oscp-command-note">Sur Linux source</p>
+### Sur Linux source, encoder en Base64
 
 ```bash
 base64 -w 0 ./rapport.txt
 ```
 
-### Reconstruire sur Windows
-
-Remplacer `BASE64_COLLE_ICI` par la chaîne complète.
-
-<p class="oscp-command-note">Sur Windows : PowerShell</p>
+### Sur Windows destination, décoder la chaîne copiée
 
 ```powershell
-[IO.File]::WriteAllBytes('C:\Users\Public\rapport.txt', [Convert]::FromBase64String('BASE64_COLLE_ICI'))
+[IO.File]::WriteAllBytes('C:\Users\Public\rapport.txt', [Convert]::FromBase64String((Read-Host 'Base64')))
 ```
 
-### Encoder sur Windows
-
-Cette commande affiche les octets du fichier sous forme de texte.
-
-<p class="oscp-command-note">Sur Windows : PowerShell</p>
+### Sur Windows source, encoder en Base64
 
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\Users\Public\rapport.txt'))
 ```
 
-### Reconstruire sur Linux
-
-Remplacer le texte d'exemple par la chaîne complète.
-
-<p class="oscp-command-note">Sur Linux destination</p>
+### Sur Linux destination, décoder la chaîne copiée
 
 ```bash
-printf '%s' 'BASE64_COLLE_ICI' | base64 -d > ./rapport.txt
+read -r -p 'Base64 : ' contenu
+printf '%s' "$contenu" | base64 --decode > ./rapport.txt
 ```
 
-## Vérifier que le fichier est identique
+## Comparer les empreintes SHA-256
 
-Calculer l'empreinte SHA-256 du **même fichier des deux côtés** et comparer les deux valeurs.
+Calcule l’empreinte du fichier source puis celle du fichier reçu. Ignore la différence entre majuscules et minuscules lors de la comparaison.
 
-### Empreinte SHA-256 sous Linux
-
-Afficher l'empreinte du fichier reçu ou envoyé.
-
-<p class="oscp-command-note">Terminal Linux</p>
+### Sous Linux
 
 ```bash
 sha256sum ./rapport.txt
 ```
 
-### Empreinte SHA-256 sous Windows
-
-Afficher l'empreinte du fichier reçu ou envoyé.
-
-<p class="oscp-command-note">PowerShell Windows</p>
+### Sous Windows avec PowerShell
 
 ```powershell
-Get-FileHash -Algorithm SHA256 'C:\Users\Public\rapport.txt'
+Get-FileHash -LiteralPath 'C:\Users\Public\rapport.txt' -Algorithm SHA256
 ```
 
-## Dépannage express
+## Dépannage
 
-| Erreur | Vérification |
-|---|---|
-| `Connection refused` | Le serveur n'écoute pas sur le port demandé |
-| `Timeout` | Route VPN, pare-feu, IP et réseau du pivot |
-| HTTP `404` | Dossier servi ou nom du fichier incorrect |
-| HTTP `501` sur `POST` / `PUT` | `python3 -m http.server` ne reçoit pas les fichiers : SMB ou WebDAV |
-| SMB `Access denied` | Compte, permissions du partage et permissions NTFS/Unix |
-| SCP refusé | SSH serveur absent ou port 22 inaccessible |
-| Fichier corrompu | Refaire le transfert et comparer les SHA-256 |
-
-**Règle d'examen :** ne pas confondre le terminal de Kali avec celui de la cible, ni le chemin de la source avec celui de la destination. N'exposer un serveur temporaire que pendant le transfert.
+| Symptôme | À vérifier |
+| --- | --- |
+| Connexion refusée ou expirée | Adresse, port d’écoute, route et pare-feu. |
+| HTTP 404 | Nom du fichier et dossier servi par Python. |
+| HTTP 501 pendant un envoi | Le serveur `http.server` de Python sert les fichiers en lecture. Pour recevoir, utilise le serveur WebDAV. |
+| SMB refuse la copie | Compte, droits du partage et droits du dossier. |
+| Empreintes différentes | Chemins source et destination, intégralité de la copie. |
 
 ## Sources
 
-- [Python : serveur HTTP](https://docs.python.org/3/library/http.server.html)
+[OpenSSH](https://man.openbsd.org/scp) · [SFTP](https://man.openbsd.org/sftp) · [OpenSSH pour Windows](https://learn.microsoft.com/fr-fr/windows-server/administration/openssh/openssh-overview) · [rsync](https://rsync.samba.org/ftp/rsync/rsync.1.html) · [Netcat OpenBSD](https://man.openbsd.org/nc) · [curl](https://curl.se/docs/manpage.html) · [Serveur HTTP Python](https://docs.python.org/3/library/http.server.html).
 
-- [Microsoft : Copy-Item](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.management/copy-item)
+[Client Samba](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html) · [Serveur SMB d’Impacket](https://github.com/fortra/impacket/blob/master/examples/smbserver.py) · [Partages Windows](https://learn.microsoft.com/powershell/module/smbshare/new-smbshare) · [Copie PowerShell](https://learn.microsoft.com/powershell/module/microsoft.powershell.management/copy-item) · [WsgiDAV](https://wsgidav.readthedocs.io/en/latest/user_guide_cli.html) · [FreeRDP 3](https://manpages.debian.org/trixie/freerdp3-x11/xfreerdp3.1.en.html).
 
-- [Microsoft : New-SmbShare](https://learn.microsoft.com/en-us/powershell/module/smbshare/new-smbshare)
-
-- [WsgiDAV : CLI](https://wsgidav.readthedocs.io/en/stable/user_guide_cli.html)
-
-- [krovs : OSCP Notes](https://github.com/krovs/oscp-notes/tree/main/docs)
-
-- [Emmanuel Solis : OSCP+ Cheatsheet](https://www.emmanuelsolis.com/oscp.html)
+Sources d’origine : [notes de krovs](https://github.com/krovs/oscp-notes/tree/main/docs) et [guide d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

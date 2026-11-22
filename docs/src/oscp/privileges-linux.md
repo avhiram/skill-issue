@@ -933,25 +933,23 @@ find / -type f -perm -4000 2>/dev/null
 find / -type f -perm -2000 2>/dev/null
 ```
 
-### Tâches planifiées et journaux
+### Lire les dernières entrées cron dans syslog
 
-Afficher les tâches cron du compte privilégié et rechercher leurs exécutions dans syslog, si accessible.
-
-<p class="oscp-command-note">Tâches planifiées et journaux.</p>
+Cette commande demande un `/var/log/syslog` lisible qui reçoit les messages de cron.
 
 ```bash
-grep -i 'CRON' /var/log/syslog | tail -n 30
+grep -i 'cron' /var/log/syslog | tail -n 30
 ```
 
-### Exports NFS
+### Lire le fichier principal des exports NFS
 
-Consulter la politique des exports NFS côté serveur lorsqu'elle existe.
-
-<p class="oscp-command-note">Exports NFS.</p>
+Sur le serveur NFS, ce fichier décrit les partages configurés. Des définitions peuvent aussi figurer dans `/etc/exports.d/`.
 
 ```bash
 cat /etc/exports
 ```
+
+[Journal de cron](https://manpages.debian.org/trixie/cron/cron.8.en.html) · [Configuration des exports NFS](https://manpages.debian.org/trixie/nfs-kernel-server/exports.5.en.html).
 
 **Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/16_linux_privesc.md). Explications rédigées pour SKILL-ISSUE.
 

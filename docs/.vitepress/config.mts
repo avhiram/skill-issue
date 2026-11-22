@@ -59,7 +59,26 @@ export default defineConfig({
       },
       { text: 'CRTO', link: '/crto/', collapsed: true }
     ],
-    search: { provider: 'local' },
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: { buttonText: 'Rechercher', buttonAriaLabel: 'Rechercher dans le guide' },
+          modal: {
+            noResultsText: 'Aucun résultat pour',
+            resetButtonTitle: 'Effacer la recherche',
+            backButtonTitle: 'Fermer la recherche',
+            displayDetails: 'Afficher les détails',
+            footer: {
+              selectText: 'pour sélectionner', selectKeyAriaLabel: 'Entrée',
+              navigateText: 'pour parcourir', navigateUpKeyAriaLabel: 'Flèche haut',
+              navigateDownKeyAriaLabel: 'Flèche bas',
+              closeText: 'pour fermer', closeKeyAriaLabel: 'Échap'
+            }
+          }
+        }
+      }
+    },
     outline: { level: [2, 4], label: 'Sur cette page' },
     docFooter: { prev: 'Précédent', next: 'Suivant' },
     sidebarMenuLabel: 'Menu',

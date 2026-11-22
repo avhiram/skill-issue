@@ -7,7 +7,9 @@ description: Aide-mémoire OSCP en français
 
 **Offensive Security Certified Professional**
 
-Retrouve une technique par thème, utilise le sommaire de chaque fiche et copie directement les commandes. La recherche est accessible avec **Ctrl + K**.
+Consulte une fiche par thème ou utilise la recherche du site.
+
+**Pendant l’examen**, OffSec interdit notamment Nessus et SQLmap. [Règles officielles de l’OSCP+](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).
 
 ## Toutes les rubriques
 
@@ -31,9 +33,5 @@ Retrouve une technique par thème, utilise le sommaire de chaque fiche et copie 
 - [**Utilitaires**](utilitaires.md) : Consulter les commandes et outils complémentaires.
 - [**Méthodologie**](methodologie.md) : Organiser les vérifications pendant un examen.
 - [**Références**](references.md) : Retrouver les liens et ressources cités par les notes.
-
-Les commandes sont classées dans leurs rubriques et présentées avec une explication courte en français. Les paramètres et valeurs isolés sont regroupés comme repères plutôt que présentés comme des commandes.
-
-**À noter :** la source principale ne contient pas de commandes cloud. Cette fiche est désormais enrichie avec des vérifications S3 issues de références complémentaires.
 
 Sources : [OSCP+ Cheatsheet d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html) et [notes OSCP de krovs](https://github.com/krovs/oscp-notes/tree/main/docs).

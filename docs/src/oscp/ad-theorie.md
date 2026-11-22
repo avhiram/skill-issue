@@ -1,35 +1,56 @@
 ---
-title: "OSCP · Active Directory : fondamentaux"
-description: "Comprendre les objets AD et les mécanismes d'authentification."
+title: "OSCP · Fondamentaux d’Active Directory"
+description: "Domaine, authentification et droits de réplication Active Directory."
 ---
 
-# Active Directory : fondamentaux
-
-Les concepts essentiels avant de commencer l'énumération du domaine.
+# Fondamentaux d’Active Directory
 
 ## Domaine et contrôleur de domaine
 
-Le domaine rassemble comptes, ordinateurs, groupes et droits. Le contrôleur de domaine (DC) fournit notamment les services LDAP et Kerberos.
-
-Exemple de domaine : domain.com.
+Un domaine regroupe des objets de l’annuaire, dont les comptes, les groupes et les ordinateurs. Un contrôleur de domaine héberge une copie de l’annuaire et fournit notamment les services LDAP et Kerberos.
 
 ## Authentification
 
-- Kerberos : le client demande un ticket initial (TGT), puis des tickets de service (TGS).
-- NTLM : protocole d'authentification par défi-réponse.
-- SPN : nom associant un service à un compte Active Directory.
+| Terme | Rôle |
+| --- | --- |
+| TGT | Ticket initial qui permet au client de demander un ticket pour un service. |
+| TGS | Service Kerberos qui délivre les tickets de service. |
+| SPN | Nom qui associe une instance de service au compte sous lequel elle s’exécute. |
+| NTLM | Famille de protocoles Windows utilisant notamment un échange de défi et de réponse. |
 
-## Valeurs à connaître
+## Indicateur de compte et droit de réplication
 
-- DONT_REQ_PREAUTH : indicateur d'un compte pouvant ne pas exiger la préauthentification Kerberos.
-- DS-Replication-Get-Changes : droit utilisé dans les mécanismes de réplication de l'annuaire.
+| Nom | Signification |
+| --- | --- |
+| `DONT_REQ_PREAUTH` | Indicateur de `userAccountControl` qui dispense le compte de préauthentification Kerberos. |
+| `DS-Replication-Get-Changes` | Droit étendu permettant de répliquer les modifications d’une partition de l’annuaire. |
 
-Ces éléments sont des noms d'attributs et de droits, pas des commandes.
+[Fonctionnement de Kerberos](https://datatracker.ietf.org/doc/html/rfc4120) · [Indicateurs de compte Microsoft](https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/useraccountcontrol-manipulate-account-properties) · [Droit de réplication Microsoft](https://learn.microsoft.com/en-us/windows/win32/adschema/r-ds-replication-get-changes).
 
-## Passer à la pratique
+## Vérifier l’horloge du poste Linux {#heure-linux}
+
+Sur un poste Linux utilisant systemd, le service de gestion de l’heure doit être accessible.
+
+### Afficher l’heure et le fuseau du poste
+
+```bash
+timedatectl status
+```
+
+### Lire les propriétés de synchronisation
+
+`NTPSynchronized` indique si l’horloge est synchronisée et `TimeUSec` donne l’heure du système.
+
+```bash
+timedatectl show -p NTPSynchronized -p TimeUSec
+```
+
+[Manuel de timedatectl](https://www.freedesktop.org/software/systemd/man/latest/timedatectl.html) · [Propriétés de timedate1](https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.timedate1.html).
+
+## Fiches associées
 
 - [Énumération Active Directory](ad-enumeration.md)
 - [Techniques Active Directory](ad-techniques.md)
 - [Mouvement latéral](ad-lateral.md)
 
-Source : [Notes OSCP Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
+Source d’origine : [guide d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

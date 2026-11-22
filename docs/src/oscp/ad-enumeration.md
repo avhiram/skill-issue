@@ -868,26 +868,37 @@ foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
 
 ```
 
-### Objet domaine et contrôleurs de domaine
+## Administrer le domaine avec RSAT
 
-Lister les contrôleurs de domaine, leur site et le mode de fonctionnement Active Directory avec le module Windows approprié.
+Dans PowerShell sur un poste joint au domaine, utilise le module `ActiveDirectory` des outils RSAT avec un compte autorisé à lire l’annuaire.
 
-<p class="oscp-command-note">Objet domaine et contrôleurs de domaine.</p>
+### Lister les contrôleurs du domaine
 
 ```powershell
-Get-ADDomainController -Filter * | Select-Object HostName,Site,IPv4Address
-Get-ADTrust -Filter * | Select-Object Name,Direction,TrustType
+Get-ADDomainController -Filter * | Select-Object HostName, Site, IPv4Address
 ```
 
-### Stratégie de mot de passe
+### Trouver un contrôleur disponible
 
-Consulter la stratégie par défaut du domaine via les outils d'administration Windows.
+```powershell
+Get-ADDomainController -Discover
+```
 
-<p class="oscp-command-note">Stratégie de mot de passe.</p>
+### Lire les relations d’approbation
+
+```powershell
+Get-ADTrust -Filter * | Select-Object Name, Direction, TrustType
+```
+
+### Lire la stratégie de mot de passe par défaut
+
+Une stratégie affinée peut s’appliquer à un utilisateur particulier.
 
 ```powershell
 Get-ADDefaultDomainPasswordPolicy | Format-List
 ```
+
+[Contrôleurs de domaine](https://learn.microsoft.com/powershell/module/activedirectory/get-addomaincontroller) · [Approbations](https://learn.microsoft.com/powershell/module/activedirectory/get-adtrust) · [Stratégie par défaut](https://learn.microsoft.com/powershell/module/activedirectory/get-addefaultdomainpasswordpolicy).
 
 ## PowerView
 
@@ -900,13 +911,6 @@ Import-Module .\PowerView.ps1
 
 **Paramètres et repères :**
 `Get-NetDomain`  
-
-<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
-
-```powershell
-Get-ADDomainController -Discover
-
-```
 
 **Paramètres et repères :**
 `Get-NetUser`  

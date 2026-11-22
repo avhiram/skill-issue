@@ -346,3 +346,12 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .vp-doc .oscp-inline-ref { font-size:.84rem; color:#ACA1C0; line-height:1.55; margin:.35rem 0 .6rem; }
 .vp-doc .oscp-inline-ref strong { color:#CDB8F3; }
 .vp-doc .oscp-inline-ref code { color:#DDCFFF; }
+
+@media (max-width: 640px) {
+  .vp-doc { overflow-wrap: anywhere; }
+  .vp-doc table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}

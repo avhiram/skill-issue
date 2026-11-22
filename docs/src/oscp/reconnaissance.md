@@ -7,19 +7,23 @@ description: "Identifier les hôtes, les ports et les services accessibles."
 
 Identifier les hôtes, les ports et les services accessibles.
 
-## Collecte passive d'informations
+## Enregistrement d’un domaine
 
-Rechercher des informations publiques sur un domaine avant toute analyse active.
+### Interroger le service WHOIS du registre
 
-<p class="oscp-command-note">Consulter les données publiques d&#x27;enregistrement du domaine.</p>
+Sous Linux avec le client `whois`, cette commande demande la fiche publique d’un domaine français.
 
 ```bash
-whois [domain]
-
-# Utiliser un serveur WHOIS précis 
-whois [domain] -h [server]
-
+whois afnic.fr
 ```
+
+### Choisir explicitement le serveur WHOIS
+
+```bash
+whois -h whois.nic.fr afnic.fr
+```
+
+[Client WHOIS Debian](https://manpages.debian.org/trixie/whois/whois.1.en.html) · [Registre du .fr](https://www.iana.org/domains/root/db/fr.html).
 
 **Paramètres et repères :**
 `site:somesite.com` · `site:somesite.com -filetype:html` · `filetype:txt` · `ext:txt`  

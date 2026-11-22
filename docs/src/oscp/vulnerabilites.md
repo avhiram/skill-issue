@@ -5,34 +5,36 @@ description: "Évaluer les services exposés et rechercher des faiblesses connue
 
 # Analyse de vulnérabilités
 
-## Nessus
+## Nessus en entraînement
 
-Télécharger le paquet adapté depuis [Tenable](https://www.tenable.com/downloads/nessus). Vérifier le SHA-256 publié avant installation.
+**Examen OSCP+** : OffSec interdit Nessus pendant l’épreuve. [Règles officielles](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).
 
-<p class="oscp-command-note">Sur Kali : comparer l'empreinte du paquet à celle publiée par Tenable.</p>
+### Sur Kali, vérifier le paquet Debian
 
-```bash
-cd ~/Downloads
-sha256sum ./Nessus-*.deb
-```
-
-Remplacer le nom du paquet par le fichier réellement téléchargé et comparer manuellement l'empreinte.
-
-<p class="oscp-command-note">Sur Kali/Debian : installer le paquet Nessus téléchargé.</p>
+[Télécharge le paquet Tenable](https://www.tenable.com/downloads/nessus), indique son chemin absolu puis compare l’empreinte affichée à celle publiée pour ce fichier.
 
 ```bash
-sudo apt install ./Nessus-*.deb
-
+read -r -e -p 'Chemin absolu du paquet .deb : ' paquet
+sha256sum -- "$paquet"
 ```
 
-<p class="oscp-command-note">Démarrer le service Nessus.</p>
+### Installer le paquet vérifié
+
+Garde le même terminal Bash et utilise un compte autorisé à installer des paquets.
+
+```bash
+sudo apt install "$paquet"
+```
+
+### Démarrer le service local
+
+Après le démarrage, l’interface est accessible sur [le port local 8834](https://127.0.0.1:8834).
 
 ```bash
 sudo systemctl start nessusd.service
-
-# Interface : https://127.0.0.1:8834
-
 ```
+
+[Installation de Nessus sous Linux](https://docs.tenable.com/nessus/Content/InstallNessusLinux.htm).
 
 ## Nmap NSE
 

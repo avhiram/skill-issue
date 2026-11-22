@@ -1016,15 +1016,7 @@ klist tickets
 klist sessions
 ```
 
-### Diagnostiquer l'heure d'un système Linux
-
-Kerberos exige une synchronisation cohérente ; vérifier l'état des services de temps avant d'enquêter sur une erreur de ticket.
-
-<p class="oscp-command-note">Diagnostiquer l'heure d'un système Linux.</p>
-
-```bash
-timedatectl show -p NTPSynchronized -p TimeUSec
-```
+[Vérifier l’heure du poste Linux](./ad-theorie.md#heure-linux).
 
 ## Copies instantanées (Shadow Copies)
 
@@ -1397,15 +1389,7 @@ Rechercher les objets qui possèdent une clé liée à un mécanisme d'authentif
 ldapsearch -LLL -x -H ldap://<DC_IP> -D '<DN_COMPTE>' -W -b '<BASE_DN>' '(msDS-KeyCredentialLink=*)' dn sAMAccountName
 ```
 
-### Contrôle de l'horloge
-
-Vérifier la synchronisation horaire du poste avant de diagnostiquer des échecs Kerberos.
-
-<p class="oscp-command-note">Contrôle de l'horloge.</p>
-
-```bash
-timedatectl status
-```
+[État de la synchronisation du poste Linux](./ad-theorie.md#heure-linux).
 
 **Référence complémentaire :** [Notes de krovs](https://github.com/krovs/oscp-notes/blob/main/docs/19_ad_exploitation.md). Explications rédigées pour SKILL-ISSUE.
 

