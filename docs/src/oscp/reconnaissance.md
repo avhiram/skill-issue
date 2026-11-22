@@ -1152,16 +1152,14 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 
 ```
 
-<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
+<p class="oscp-command-note">Impacket : demander un TGT avec un compte autorisé ; les exemples Rubeus ci-dessous étaient incorrects.</p>
 
 ```bash
 # Obtenir un TGT avec un compte autorisé (ceci n'est pas un renouvellement)
 impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
 
-# Exemples Rubeus à vérifier selon la version : ne pas confondre mot de passe, hash RC4 et délégation
-rubeus.exe asktgt /user:<username> /rc4:<password>
-rubeus.exe tgtdeleg /user:<username> /rc4:<password>
-rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
+# Vérifier la syntaxe exacte de Rubeus dans son aide avant tout test.
+# /rc4 attend une empreinte RC4, pas un mot de passe en clair.
 
 ```
 
@@ -1181,73 +1179,59 @@ kerbrute userenum --dc 192.0.2.10 -d exemple.local utilisateurs.txt
 
 ```
 
-<p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
+<p class="oscp-command-note">Windows : consulter les tickets Kerberos du compte courant sans en créer ni en importer.</p>
 
-```bash
-# Attention : la commande ci-dessous n'est pas une syntaxe valide de création de Silver Ticket ; se référer à la version de Rubeus utilisée
-rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<domain>
-
-```
-
-<p class="oscp-command-note">Demander un ticket Kerberos TGT.</p>
-
-```bash
-# 1. Obtenir un ticket TGT valide avec un compte autorisé
-impacket-GetTGT -dc-ip <dc_ip> -outputfile <tgt_file> <user>@<domain>
-
-# 2. La commande atexec ci-dessous ne forge pas un Silver Ticket ; exemple historique à ne pas reproduire tel quel
-impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> <username>
+```powershell
+klist
 
 ```
 
-<p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
+<p class="oscp-command-note">Linux : demander un TGT de test avec Impacket ; la commande atexec historique était incorrecte et a été retirée.</p>
 
 ```bash
-# Attention : l'exemple ci-dessous mélange des paramètres et ne constitue pas une commande Rubeus valide de Golden Ticket
-rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<domain_sid> /rc4:<krbtgt_hash>
+impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
+<p class="oscp-command-note">Windows : afficher les tickets Kerberos en cache (l'ancienne commande de création de ticket était invalide).</p>
+
+```powershell
+klist tickets
+
+```
+
+<p class="oscp-command-note">Kerberos : les anciennes commandes de dump et de tickets forgés ont été retirées ; contrôler d'abord l'état du cache de tickets local.</p>
 
 ```bash
-# 1. Obtenir le hash NTLM du compte krbtgt
-impacket-secretsdump -outputfile <dump_file> <target_domain>/<username>:<password>@<dc_ip>
+# Vérifier les tickets locaux avec les outils du système
 
-# 2. Exemple historique de génération d'un Golden Ticket : syntaxe à vérifier selon l'outil installé
-ticketer -user <user> -domain <domain> -sid <domain_sid> -krbtgt <krbtgt_hash> -output <ticket_file>
-
-# 3. Utiliser le ticket Kerberos forgé dans le laboratoire.
-impacket-smbexec -target-ip <target_ip> -ticket <ticket_file> <username>
-
-# Facultatif : utiliser le ticket Kerberos forgé
-impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
+klist
 
 ```
 
 ### 110: POP3
 
-<p class="oscp-command-note">Nmap (POP3) : lancer les scripts NSE « pop3-capabilities ».</p>
+<p class="oscp-command-note">Nmap POP3 : identifier les capacités du service et les informations NTLM éventuellement exposées.</p>
 
 ```bash
 nmap -sV -p 110 --script pop3-capabilities,pop3-ntlm-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Tester la connexion à un port TCP.</p>
+<p class="oscp-command-note">POP3 : ouvrir une session Telnet sur le port 110 puis saisir les commandes POP3 dans la session (sans chiffrement).</p>
 
-```bash
-# Connectez-vous au service POP3
+```text
+# Ouvrir une connexion POP3 de test sur TCP 110
 telnet <IP_CIBLE> 110
 
-# Connectez-vous avec un utilisateur de test
+# Authentifier le compte de test (identifiants transmis en clair)
 USER <UTILISATEUR>
 PASS <MOT_DE_PASSE>
 
-# Lister les messages de la boîte (session POP3 authentifiée)
+# Lister les numéros et tailles des messages après authentification
 LIST
 
-# Récupérer le premier message (session POP3 authentifiée)
+# Lire le premier message de la boîte de test après authentification
 RETR 1
 
 ```
@@ -1263,9 +1247,9 @@ hydra -S -v -l <username> -P <password_list> -s 995 -f <target_ip> pop3 -V
 
 ```
 
-<p class="oscp-command-note">Tester la connexion à un port TCP.</p>
+<p class="oscp-command-note">POP3 : second exemple interactif avec fermeture propre via QUIT.</p>
 
-```bash
+```text
 # Connectez-vous au service POP3
 telnet <target_ip> 110
 
@@ -1273,10 +1257,10 @@ telnet <target_ip> 110
 USER <username>
 PASS <password>
 
-# Liste de tous les messages
+# Lister les messages disponibles après authentification
 LIST
 
-# Récupérer un email spécifique par son numéro
+# Récupérer un message par son numéro (à saisir dans la session POP3)
 RETR <NUMERO_MESSAGE>
 
 # Fermer la connexion
@@ -1286,7 +1270,7 @@ QUIT
 
 ### 111: RPC
 
-<p class="oscp-command-note">Nmap (RPC) : lancer les scripts NSE « rpcinfo ».</p>
+<p class="oscp-command-note">Nmap RPC : lister les programmes RPC exposés via le script rpcinfo sur TCP 111.</p>
 
 ```bash
 nmap -sV -p 111 --script rpcinfo <IP_CIBLE>
@@ -1299,7 +1283,7 @@ rpcinfo -p <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Lister les exports NFS.</p>
+<p class="oscp-command-note">NFS : demander à mountd la liste des exports publiés ; un refus est possible.</p>
 
 ```bash
 # Afficher les exports NFS annoncés par le serveur mountd (si accessible)
@@ -1309,7 +1293,7 @@ showmount -e <IP_CIBLE>
 
 ### 135, 593: MSRPC
 
-<p class="oscp-command-note">Nmap (MSRPC) : lancer les scripts NSE « msrpc-enum ».</p>
+<p class="oscp-command-note">Nmap MSRPC : identifier le service sur TCP 135 ; aucun script NSE n'est exécuté ici.</p>
 
 ```bash
 nmap -sV -p 135 <IP_CIBLE>
