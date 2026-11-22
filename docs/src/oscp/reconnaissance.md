@@ -1721,7 +1721,7 @@ if __name__ == "__main__":
 
 Examiner le certificat d'un service IMAPS sans tenter d'authentification.
 
-<p class="oscp-command-note">Bannière IMAP et TLS.</p>
+<p class="oscp-command-note">IMAPS : afficher le certificat et un résumé de la négociation TLS sur TCP 993.</p>
 
 ```bash
 openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
@@ -1740,11 +1740,11 @@ sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=
 
 ```
 
-<p class="oscp-command-note">Interroger les paramètres SNMP.</p>
+<p class="oscp-command-note">SNMPv2c : parcourir les OID accessibles avec une communauté autorisée ; trafic non chiffré.</p>
 
 ```bash
 # Versions SNMP : v1, v2c et v3 (SNMPv3 utilise une authentification différente)
-# Chaînes de communauté SNMP possibles : public, private, security, etc.
+# Exemples historiques de communautés SNMPv1/v2c : public et private ; ne pas présumer qu'elles fonctionnent
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 
 ```
@@ -1752,7 +1752,7 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 <p class="oscp-command-note">Énumérer SNMP avec une communauté autorisée et examiner les résultats.</p>
 
 ```bash
-# Dictionnaire SNMP : vérifier la présence de SecLists dans /usr/share/seclists/Discovery/SNMP/
+# Dictionnaire SNMP : vérifier la présence de SecLists dans /usr/share/seclists/Discovery/SNMP/ avant usage
 
 # Tester des chaînes de communauté SNMP dans le laboratoire
 onesixtyone -c communautes.txt <IP_CIBLE>
@@ -1760,10 +1760,10 @@ onesixtyone -c communautes.txt <IP_CIBLE>
 # Interroger les objets SNMP accessibles ; ajouter un OID numérique pour limiter la recherche
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
-# Parcourir les objets SNMP avec des requêtes groupées
+# SNMPv2c : parcourir les objets par lots avec GETBULK (si pris en charge par l'agent)
 snmpbulkwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
-# Afficher un résumé de la configuration SNMP
+# Afficher un inventaire SNMP avec snmp-check ; la communauté par défaut peut échouer
 snmp-check <IP_CIBLE>
 
 ```
@@ -1790,7 +1790,7 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
 ```
 
 ```bash
-# Interroger un OID précis avec une communauté autorisée
+# Parcourir la branche system avec la communauté de test public, uniquement si autorisée
 snmpwalk -v2c -c public 192.0.2.10 1.3.6.1.2.1.1
 
 ```
@@ -1812,7 +1812,7 @@ snmpwalk -v2c -c public 192.0.2.10 1.3.6.1.2.1.1
 
 Interroger l'OID system sur une instance SNMPv2c avec la communauté d'audit autorisée.
 
-<p class="oscp-command-note">Information système via SNMP.</p>
+<p class="oscp-command-note">SNMP : parcourir la branche system (1.3.6.1.2.1.1) pour relever description, nom et disponibilité de l'agent.</p>
 
 ```bash
 snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.1
@@ -1822,7 +1822,7 @@ snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.1
 
 Lire les descriptions d'interface. Attention : SNMPv2c ne chiffre pas le trafic.
 
-<p class="oscp-command-note">Services et interfaces SNMP.</p>
+<p class="oscp-command-note">SNMP : afficher les descriptions des interfaces réseau via ifDescr (1.3.6.1.2.1.2.2.1.2).</p>
 
 ```bash
 snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.2.2.1.2
@@ -1832,7 +1832,7 @@ snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.2.2.1.2
 
 Sur Kali, la commande s'appelle `snmp-check` avec un tiret, même si les notes consultées écrivent `snmpcheck`. Elle utilise la communauté indiquée et ne nécessite pas d'écriture sur l'équipement. [Référence Kali](https://www.kali.org/tools/snmpcheck/).
 
-<p class="oscp-command-note">SNMP-Check : inventaire du service.</p>
+<p class="oscp-command-note">snmp-check : produire un inventaire avec une communauté SNMP autorisée ; un refus peut indiquer des droits insuffisants.</p>
 
 ```bash
 snmp-check <IP_CIBLE> -c <COMMUNAUTE>
@@ -1842,7 +1842,7 @@ snmp-check <IP_CIBLE> -c <COMMUNAUTE>
 
 Interroger les noms de processus déclarés par l'agent. Les données dépendent du MIB et des droits de la communauté.
 
-<p class="oscp-command-note">SNMP : informations système HOST-RESOURCES-MIB.</p>
+<p class="oscp-command-note">SNMP : lire hrSWRunName pour les noms de processus exposés par HOST-RESOURCES-MIB.</p>
 
 ```bash
 snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.25.4.2.1.2
@@ -1859,10 +1859,10 @@ nmap -n -sV -p 389,636 --script ldap-rootdse <IP_DC>
 
 ```
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">LDAP : lire RootDSE puis rechercher des objets sous le DN de base autorisé ; -W demande le mot de passe.</p>
 
 ```bash
-# Interroger le RootDSE LDAP sans authentification
+# LDAP : lire namingContexts dans RootDSE sans authentification si le serveur le permet
 ldapsearch -LLL -x -H ldap://192.0.2.10 -s base -b '' namingContexts
 
 # Interroger le RootDSE : base DN vide et portée base
@@ -1871,7 +1871,7 @@ ldapsearch -x -H ldap://<IP_DC> -s base -b ''
 # Afficher les contextes de nommage publiés par le serveur LDAP
 ldapsearch -x -H ldap://<IP_DC> -s base -b '' namingContexts
 
-# Effectuer une recherche LDAP depuis un DN de base explicite
+# LDAP : rechercher les objets visibles sous le DN de base explicite
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 
 # Rechercher tous les objets LDAP visibles (le filtre objectClass=* ne se limite pas aux utilisateurs)
@@ -1880,11 +1880,11 @@ ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass
 # Lister les attributs sAMAccountName des objets utilisateur visibles
 ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=exemple,DC=local' '(objectClass=user)' sAMAccountName
 
-# Rechercher avec les filtres
+# LDAP : distinguer les filtres utilisateur et groupe
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=user)"
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=group)"
 
-# Requête LDAP authentifiée : utiliser -D pour le DN du compte et -W pour demander le mot de passe
+# LDAP : -D accepte l'identité de connexion ; -W demande le mot de passe sans l'inscrire dans l'historique
 ldapsearch -x -H ldap://<IP_DC> -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=*)'
 
 # Recherche LDAP authentifiée : fournir un filtre valide et demander le mot de passe de façon interactive.
@@ -1895,7 +1895,7 @@ ldapsearch -x -H ldap://192.0.2.10 -D 'utilisateur@exemple.local' -W -b 'DC=exem
 
 ```
 
-<p class="oscp-command-note">Examiner les comptes Kerberos du domaine.</p>
+<p class="oscp-command-note">Kerbrute : tester les noms d'utilisateurs fournis sur le contrôleur de domaine autorisé.</p>
 
 ```bash
 kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
@@ -1919,13 +1919,13 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 (|(description=*123456*)(description=*password*)(description=*qwerty*)(description=*letmein*))
 
 # Filtres de recherche LDAP courants
-# Rechercher tous les utilisateurs
+# Rechercher les objets de classe user (peut inclure des ordinateurs dans Active Directory)
 (objectClass=user)
 
-# Rechercher tous les ordinateurs
+# Rechercher les objets de classe computer dans l'annuaire
 (objectClass=computer)
 
-# Rechercher tous les groupes
+# Rechercher les objets de classe group dans l'annuaire
 (objectClass=group)
 
 # Rechercher les comptes désactivés (Disabled Accounts)
