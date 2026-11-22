@@ -388,3 +388,50 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   line-height: 1.35;
   margin-block: .12rem;
 }
+
+/* CRTO landing only: compact two-column documentation navigation. */
+.VPDoc.crto-hub-page .content-container { max-width: 1050px; }
+.VPDoc.crto-hub-page .vp-doc h1 { margin-bottom: 0; }
+.VPDoc.crto-hub-page .vp-doc .crto-hub-intro {
+  color: var(--vp-c-text-2); margin: .3rem 0 1.6rem; font-size: .94rem;
+}
+.VPDoc.crto-hub-page .vp-doc h2 { margin-top: 2rem; margin-bottom: .75rem; }
+.VPDoc.crto-hub-page .vp-doc h3 { margin-top: 1.45rem; margin-bottom: .55rem; font-size: 1rem; font-weight: 650; }
+.VPDoc.crto-hub-page .vp-doc .crto-cards {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .6rem; margin: .8rem 0 1.8rem;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-card {
+  display: flex; align-items: center; justify-content: space-between; gap: .8rem;
+  min-width: 0; min-height: 58px; padding: .75rem .95rem;
+  border: 1px solid #332840; border-radius: 9px; background: #120F1A;
+  color: #E6DEF1; text-decoration: none;
+  transition: background-color .16s, border-color .16s;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-card:hover {
+  background: #1D1628; border-color: #8364BC; color: #F3ECFF;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-card:focus-visible { outline: 2px solid #B39AFF; outline-offset: 2px; }
+.VPDoc.crto-hub-page .vp-doc .crto-card-text {
+  display: flex; flex-direction: column; gap: .22rem; min-width: 0;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-card-title {
+  font-size: .88rem; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-card-desc {
+  color: #A79AB8; font-size: .76rem; font-weight: 400; line-height: 1.35;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-card-chevron {
+  flex: 0 0 auto; font-size: 1.35rem; font-weight: 400; line-height: 1; color: #9D86C2;
+}
+.VPDoc.crto-hub-page .vp-doc .crto-cards-featured .crto-card {
+  min-height: 80px; background: #191322; border-color: #423253;
+}
+@media (max-width: 680px) {
+  .VPDoc.crto-hub-page .vp-doc .crto-cards {
+    grid-template-columns: minmax(0, 1fr); gap: .55rem;
+  }
+  .VPDoc.crto-hub-page .vp-doc .crto-card {
+    min-height: 52px; padding: .7rem .85rem;
+  }
+}
