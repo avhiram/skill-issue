@@ -24,8 +24,7 @@ cd ~/Downloads
 echo "[sha256_sum_found_in_website] Nessus-10.5.0-debian10_amd64.deb" > sha256sum_nessus
 sha256sum -c sha256sum_nessus
 
-# Expected Output: OK
-
+# Résultat attendu : OK
 ```
 
 <p class="oscp-command-note">Installer les paquets nécessaires sur Debian ou Ubuntu.</p>
