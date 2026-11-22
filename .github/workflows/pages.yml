@@ -27,6 +27,8 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
+      - name: Prepare CRTO placeholders for Vue rendering (working copy only)
+        run: python3 .github/scripts/prepare_crto_for_vitepress.py
       - name: Build VitePress website
         run: npm run docs:build
       - name: Verify generated website
@@ -34,6 +36,8 @@ jobs:
           test -s docs/.vitepress/dist/index.html
           grep -q 'SKILL-ISSUE' docs/.vitepress/dist/index.html
           test -d docs/.vitepress/dist/assets
+      - name: Restore upstream CRTO files before publishing
+        run: git restore --worktree -- docs/src/crto/botesjuan
       - name: Publish compiled website at GitHub Pages root
         run: |
           rsync -a docs/.vitepress/dist/ ./
