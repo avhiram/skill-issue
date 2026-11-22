@@ -668,7 +668,7 @@ dpapi::cred /in:<CREDENTIAL_FILE>
 **Paramètres et repères :**
 `Evil-WinRM` · `mimikatz`  
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 .\mimikatz.exe "privilege::debug" "[command]" "exit"
@@ -716,7 +716,7 @@ powershell -Command "C:\\temp\\mimikatz.exe 'privilege::debug' '[command]' 'exit
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz.exe "privilege::debug" "[command]" "exit" > nul 2>&1
@@ -754,7 +754,7 @@ Privilege '20' OK
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # privilege::debug
@@ -796,7 +796,7 @@ impacket-smbclient -hashes <LM_HASH>:<NTLM_HASH> <USERNAME>@<TARGET_IP>
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # privilege::debug
