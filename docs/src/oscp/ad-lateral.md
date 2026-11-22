@@ -30,7 +30,7 @@ mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /ru
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
+<p class="oscp-command-note">Se connecter à Windows via WinRM.</p>
 
 ```bash
 evil-winrm -u <username> -p <password> -i <target_ip>
