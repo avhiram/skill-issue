@@ -18,7 +18,7 @@ nmap -p 53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001,49152-65535 
 
 ```
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">Interroger les objets LDAP.</p>
 
 ```bash
 ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
@@ -248,7 +248,7 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 # Extraire les tickets Kerberos de la mémoire avec Mimikatz
@@ -319,7 +319,7 @@ nmap -n -sV --script "ldap* and not brute" <target_ip>
 
 ```
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">Interroger les objets LDAP.</p>
 
 ```bash
 ldapsearch -x -h <dc-ip> -b "dc=domain,dc=com" "(objectClass=*)"
@@ -841,7 +841,7 @@ function LDAPSearch {
 
 ```
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">Interroger les objets LDAP.</p>
 
 ```powershell
 LDAPSearch -LDAPQuery "(samAccountType=805306368)"
@@ -901,7 +901,7 @@ Import-Module .\PowerView.ps1
 **Paramètres et repères :**
 `Get-NetDomain`  
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADDomainController -Discover
@@ -991,7 +991,7 @@ setspn -L [service]
 
 ```
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetUser -SPN | Select-Object samaccountname, serviceprincipalname
@@ -1033,7 +1033,7 @@ net group "[GroupName]" [username] /add /domain
 
 ```
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetGroup "[GroupName]" | Select-Object member
@@ -1604,7 +1604,7 @@ Invoke-adPEAS -Module Bloodhound -Scope All
 **Paramètres et repères :**
 `Get-ADServiceAccount` · `msDS-ManagedPassword`  
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADServiceAccount -Filter {ObjectClass -eq "msDS-GroupManagedServiceAccount"} -Properties *
@@ -1679,7 +1679,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 **Paramètres et repères :**
 `GMSAPasswordReader.exe` · `msDS-ManagedPassword`  
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 # Trouver tous les comptes gMSA
@@ -1699,7 +1699,7 @@ Get-ADObject -Filter 'ObjectClass -eq "msDS-GroupManagedServiceAccount"' -Proper
 **Paramètres et repères :**
 `Get-ADAttributeEditor` · `msDS-ManagedPassword`  
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">Interroger les objets LDAP.</p>
 
 ```bash
 ldapsearch -x -H ldap://<domain_controller> -D "<user>@<domain>" -w "<password>" -b "DC=domain,DC=com" "(objectClass=msDS-GroupManagedServiceAccount)" msDS-ManagedPassword
@@ -1737,7 +1737,7 @@ Import-Module ./PowerView.ps1
 
 ```
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-NetGPO | select displayname
@@ -1856,7 +1856,7 @@ crackmapexec ldap <DOMAIN_IP> -u <VALID_USERNAME> -p <VALID_PASSWORD> -d [domain
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">Interroger les objets LDAP.</p>
 
 ```bash
 ldapsearch -x -h <DOMAIN_IP> -s base
