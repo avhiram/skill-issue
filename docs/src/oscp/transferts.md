@@ -28,16 +28,16 @@ ip route
 
 ### Sur Kali, vérifier l'accès TCP aux services SSH et SMB
 
-`nc -zv` teste l'ouverture TCP sans transférer de fichier. Teste uniquement le service nécessaire.
+`nc -zv` teste uniquement l'établissement d'une connexion TCP : un port ouvert ne garantit ni l'authentification SSH/SMB ni les permissions de copie.
 
 ```bash
 nc -zv 10.10.10.20 22
 nc -zv 10.10.10.30 445
 ```
 
-### Depuis Windows, tester le port HTTP de Kali
+### Sur Windows, vérifier l'accès TCP au serveur HTTP de Kali
 
-`TcpTestSucceeded : True` confirme la connexion TCP, pas les droits de téléchargement HTTP.
+`TcpTestSucceeded : True` confirme uniquement l'accès TCP à Kali sur le port 8000 ; tester ensuite l'URL du fichier pour distinguer une erreur HTTP 404 d'un problème réseau.
 
 ```powershell
 Test-NetConnection 10.10.14.10 -Port 8000
@@ -47,6 +47,8 @@ Test-NetConnection 10.10.14.10 -Port 8000
 
 ### Sur Kali, envoyer un fichier au second Linux par SCP {#ll-scp}
 
+Vérifier que `./rapport.txt` existe localement avant la copie. Le fichier distant sera `/tmp/rapport.txt`.
+
 À exécuter sur Kali (`10.10.14.10`), source du fichier. Le serveur SSH du second Linux (`10.10.10.20`) doit être accessible et `etudiant` doit pouvoir écrire dans `/tmp`.
 
 ```bash
@@ -54,6 +56,8 @@ scp ./rapport.txt etudiant@10.10.10.20:/tmp/
 ```
 
 ### Sur Kali, récupérer un fichier du second Linux par SCP {#ll-scp-reception}
+
+La commande remplace `./rapport.txt` sur Kali si ce fichier existe déjà ; choisir un autre nom local pour conserver l'original.
 
 À exécuter sur Kali (`10.10.14.10`), qui reçoit le fichier. Le Linux distant (`10.10.10.20`) possède `/tmp/rapport.txt` et doit autoriser la connexion SSH.
 
@@ -70,6 +74,8 @@ scp -r ./dossier etudiant@10.10.10.20:/tmp/
 ```
 
 ### Sur Kali, synchroniser un dossier vers le second Linux avec rsync {#ll-rsync}
+
+L'option `-a` conserve les attributs lorsque les permissions le permettent ; sans `--delete`, les fichiers présents uniquement sur la destination ne sont pas supprimés.
 
 `rsync` doit être installé sur Kali et le second Linux, avec SSH accessible. Le `/` final de `./dossier/` copie son contenu dans `/tmp/dossier/` ; `-P` affiche la progression et conserve les transferts partiels.
 
@@ -100,6 +106,8 @@ bye
 ```
 
 ### Sur le second Linux, télécharger le fichier HTTP servi par Kali {#ll-http}
+
+`--fail` renvoie une erreur pour les réponses HTTP 4xx/5xx et `--output` définit le chemin local. Vérifier le fichier reçu avec `sha256sum`.
 
 Démarre le serveur HTTP sur Kali (`10.10.14.10`) avec [la commande dédiée](#http-source), puis exécute `curl` sur le second Linux (`10.10.10.20`). Le port 8000 doit être joignable depuis ce dernier.
 
@@ -159,6 +167,8 @@ curl.exe --fail --location --output "C:\Users\Public\rapport.txt" "http://10.10.
 
 ### Sur Kali, partager le fichier par SMB {#lw-smb-kali}
 
+Le répertoire `./partage` est publié sous le nom réseau `partage`. Le compte `audit` est propre à ce serveur Impacket ; il ne crée pas de compte Linux.
+
 Sur Kali, installer le serveur SMB d'Impacket et vérifier que TCP 445 est libre. Le mot de passe `MotDePasseTemporaire` est un exemple à remplacer ; l'authentification SMB ne chiffre pas nécessairement le contenu des fichiers.
 
 ```bash
@@ -169,6 +179,8 @@ sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password '
 
 ### Sur Windows, récupérer le fichier du partage SMB de Kali
 
+La commande `net use` ouvre une connexion authentifiée au partage, puis `Copy-Item` enregistre le fichier dans `C:\Users\Public`. Le dernier `net use` déconnecte ce partage.
+
 Sur Windows destination, `net use` demande le mot de passe SMB ; `Copy-Item` lit ensuite le partage Kali. Ferme la connexion après la copie.
 
 ```powershell
@@ -178,6 +190,8 @@ net use \\10.10.14.10\partage /delete
 ```
 
 ### Sur Kali, envoyer le fichier vers un partage SMB Windows {#lw-smb-windows}
+
+Dans `smbclient`, `put rapport.txt rapport.txt` désigne d'abord le fichier local puis le nom distant ; le répertoire courant de Kali doit contenir le fichier.
 
 Sur Kali source, `smbclient put` envoie `./rapport.txt` au partage `Depot` de Windows (`10.10.10.30`). Le compte `LAB\etudiant` doit avoir les droits SMB et NTFS d'écriture ; le client demandera son mot de passe.
 
@@ -247,6 +261,8 @@ scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
 
 ### Sur Kali, récupérer un fichier du partage Windows par SMB {#wl-smb-windows}
 
+Dans `smbclient`, `get rapport.txt rapport.txt` lit d'abord le fichier distant puis écrit la copie locale ; le compte doit avoir accès en lecture au partage.
+
 À exécuter sur Kali, destination du fichier : `smbclient get` télécharge `rapport.txt` du partage `Depot` sur Windows (`10.10.10.30`) dans le dossier courant de Kali.
 
 ```bash
@@ -256,6 +272,8 @@ smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'get rapport.txt rapport.txt'
 ## Windows vers Windows
 
 ### Sur Windows destination, créer un partage SMB {#ww-creer}
+
+La création du partage ne remplace pas la configuration des permissions NTFS : vérifier séparément l'accès effectif de `LAB\etudiant` au dossier `C:\Depot`.
 
 Sur Windows destination (`10.10.10.30`), ouvrir PowerShell en administrateur pour créer le partage `Depot` s'il n'existe pas. Le compte `LAB\etudiant` doit exister et disposer également des droits NTFS d'écriture sur `C:\Depot`.
 
@@ -288,6 +306,8 @@ scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
 
 ### Sur Kali, ouvrir RDP avec redirection du dossier local {#rdp}
 
+L'option `/drive:partage,...` expose le dossier local dans la session Windows sous `\\tsclient\partage` ; elle n'active pas un partage SMB classique.
+
 Sur Kali, installer FreeRDP 3 et préparer `./partage`. Le serveur Windows doit autoriser la redirection des lecteurs RDP ; le compte `etudiant` doit être autorisé à ouvrir une session RDP.
 
 ```bash
@@ -303,11 +323,15 @@ Get-ChildItem -LiteralPath '\\tsclient\partage'
 
 ### Sur Windows distant, récupérer un fichier du dossier Kali redirigé
 
+La source `\\tsclient\partage\rapport.txt` reste sur Kali ; `Copy-Item` crée la copie locale sur le Windows de la session RDP.
+
 ```powershell
 Copy-Item -LiteralPath '\\tsclient\partage\rapport.txt' -Destination 'C:\Users\Public\rapport.txt'
 ```
 
 ### Sur Windows distant, renvoyer un fichier dans le dossier Kali redirigé
+
+La destination `\\tsclient\partage\retour.txt` écrit dans le dossier local `./partage` de Kali, si la redirection autorise l'écriture.
 
 ```powershell
 Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\partage\retour.txt'
