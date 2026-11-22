@@ -5,25 +5,25 @@ description: "Ligolo-ng pas à pas, double pivot, listeners, Chisel et SSH."
 
 # Tunnels et pivot réseau
 
-**Objectif :** atteindre un réseau interne depuis Kali en passant par une machine de pivot. Le **proxy Ligolo-ng** tourne sur Kali ; l'**agent** tourne sur la machine qui peut voir le réseau interne. Le trajet se fait par un tunnel chiffré.
+**Objectif :** atteindre un réseau interne autorisé depuis Kali en passant par une machine de pivot. Le **proxy Ligolo-ng** tourne sur Kali ; l'**agent** tourne sur la machine qui peut voir le réseau interne. Le trajet se fait par un tunnel chiffré.
 
 **Adresses fictives à remplacer :** Kali `10.10.14.10` · premier pivot Windows `10.10.10.30` (IP interne `172.16.20.1`) · réseau interne `172.16.20.0/24` · deuxième pivot `172.16.20.30` · second réseau `172.16.30.0/24`.
 
-Chaque bloc précise **où exécuter la commande**. Une commande saisie **dans la console Ligolo** n'est pas une commande Bash ou PowerShell.
+Chaque bloc précise **où exécuter la commande**. Les commandes `session`, `ifconfig`, `tunnel_start` et `listener_add` se saisissent dans **la console Ligolo**, jamais dans Bash ou PowerShell.
 
 ## Avant de commencer
 
-Télécharger les binaires depuis les [versions officielles de Ligolo-ng](https://github.com/nicocha30/ligolo-ng/releases) : **proxy** pour Kali, **agent** pour Windows/Linux et pour l'architecture concernée. Dans cette fiche, les binaires sont renommés `proxy`, `agent` ou `agent.exe` et placés dans le répertoire courant. Prévoir un compte capable de créer une interface TUN sur Kali, mais l'agent n'a pas besoin des droits administrateur.
+Télécharger les binaires depuis les [versions officielles de Ligolo-ng](https://github.com/nicocha30/ligolo-ng/releases) : **proxy** pour Kali, **agent** pour Windows/Linux et pour l'architecture concernée. Dans cette fiche, les binaires sont renommés `proxy`, `agent` ou `agent.exe` et placés dans le répertoire courant. Prévoir les droits nécessaires à la création d'une interface TUN sur Kali ; l'agent ne nécessite généralement pas de privilèges administrateur.
 
-**Ne pas oublier :** le proxy et l'agent doivent être compatibles. Vérifier les options disponibles localement avec `./proxy -h` et `./agent -h` (ou `agent.exe -h` sur Windows).
+**Compatibilité :** choisir des versions compatibles du proxy et de l'agent et vérifier leur architecture (Linux/Windows, amd64/arm64). Vérifier les options disponibles localement avec `./proxy -h` et `./agent -h` (ou `agent.exe -h` sur Windows).
 
 ## Ligolo-ng : premier tunnel
 
-**Ordre à suivre :** préparer l'interface → lancer le proxy sur Kali → récupérer l'empreinte TLS → connecter l'agent depuis Windows/Linux → sélectionner la session → démarrer le tunnel → ajouter la route → tester.
+**Ordre à suivre :** préparer la TUN → démarrer le proxy Kali → relever l'empreinte TLS → connecter l'agent pivot → sélectionner sa session → démarrer le tunnel → ajouter la route sur Kali → tester un port autorisé.
 
 ### Préparer l'interface TUN sur Kali
 
-L'interface TUN transporte les paquets vers Ligolo. Ne pas la recréer si elle existe déjà. Cette méthode manuelle fonctionne avec les versions classiques.
+L'interface TUN transporte les paquets vers Ligolo. Vérifier `ip -br link show ligolo` avant toute création pour éviter `File exists`. Cette méthode manuelle fonctionne avec les versions classiques.
 
 <p class="oscp-command-note">Sur Kali: terminal habituel, avant de lancer le proxy.</p>
 
@@ -35,7 +35,7 @@ ip -br link show ligolo
 
 ### Démarrer le proxy sur Kali
 
-Les exemples utilisent un binaire nommé `proxy` téléchargé depuis le projet officiel. Ligolo écoute par défaut sur TCP 11601.
+Le binaire `proxy` vient des versions officielles. Le proxy Ligolo écoute par défaut sur TCP 11601 ; autoriser ce port entre l'agent et Kali.
 
 <p class="oscp-command-note">Sur Kali: autre terminal, à laisser ouvert.</p>
 
@@ -46,7 +46,7 @@ chmod +x ./proxy
 
 ### Lire l'empreinte du certificat
 
-Copier l'empreinte SHA-256 affichée : elle permettra à l'agent de vérifier qu'il se connecte au bon proxy.
+Relever l'empreinte TLS SHA-256 réellement affichée par le proxy : l'agent la comparera au certificat présenté lors de la connexion.
 
 <p class="oscp-command-note">Dans la console interactive du proxy Ligolo sur Kali.</p>
 
@@ -56,7 +56,7 @@ certificate_fingerprint
 
 ### Connecter un agent Windows
 
-Transférer auparavant le binaire Windows `agent.exe` de la même version que le proxy. Remplacer `EMPREINTE_SHA256` par la vraie empreinte.
+Sur Windows pivot, transférer `agent.exe` compatible et remplacer `EMPREINTE_SHA256` par l'empreinte relevée sur Kali ; le port TCP 11601 doit être joignable.
 
 <p class="oscp-command-note">Sur le Windows pivot: PowerShell.</p>
 
@@ -66,7 +66,7 @@ Transférer auparavant le binaire Windows `agent.exe` de la même version que le
 
 ### Connecter un agent Linux
 
-Alternative à l'agent Windows. Exécuter le binaire Linux correspondant à l'architecture du pivot.
+Sur un pivot Linux plutôt que Windows, exécuter l'agent adapté à l'architecture ; les commandes Bash ne s'appliquent pas à Windows.
 
 <p class="oscp-command-note">Sur un pivot Linux: terminal Bash.</p>
 
@@ -77,7 +77,7 @@ chmod +x ./agent
 
 ### Choisir l'agent et repérer son réseau
 
-`session` affiche les agents connectés : choisir celui qui doit servir de pivot. `ifconfig` montre les interfaces du pivot et leurs réseaux.
+Dans le proxy Ligolo, `session` sert à sélectionner l'agent connecté ; `ifconfig` affiche ensuite les interfaces de **cet agent**, pas celles de Kali.
 
 <p class="oscp-command-note">Dans la console Ligolo sur Kali.</p>
 
@@ -88,7 +88,7 @@ ifconfig
 
 ### Démarrer le tunnel sur l'interface
 
-`ligolo` est le nom de l'interface TUN créée sur Kali.
+`ligolo` désigne l'interface TUN **sur Kali** ; sélectionner la bonne session agent avant `tunnel_start`.
 
 <p class="oscp-command-note">Dans la console Ligolo, **après avoir sélectionné la session**.</p>
 
@@ -99,7 +99,7 @@ tunnel_list
 
 ### Ajouter la route du réseau interne
 
-Adapter `172.16.20.0/24` au réseau découvert avec `ifconfig` dans Ligolo. Cette route n'est ajoutée que sur Kali.
+Adapter `172.16.20.0/24` au réseau réellement accessible depuis le pivot. Cette route s'ajoute **sur Kali uniquement**, pas sur Windows.
 
 <p class="oscp-command-note">Sur Kali: terminal Linux différent de la console proxy.</p>
 
@@ -110,7 +110,7 @@ ip route get 172.16.20.10
 
 ### Tester un service du réseau interne
 
-Tester d'abord un service précis. Ligolo n'exige pas ProxyChains pour les réseaux routés par son interface. `--unprivileged` réduit le risque de faux positifs liés aux sondes brutes de Nmap.
+Tester un port autorisé du réseau interne avant un scan étendu. Le routage via TUN Ligolo ne nécessite pas ProxyChains. `--unprivileged` réduit le risque de faux positifs liés aux sondes brutes de Nmap.
 
 <p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
@@ -123,11 +123,11 @@ curl -I --max-time 5 http://172.16.20.10/
 
 ## Autre façon de créer l'interface (Ligolo récent)
 
-Depuis Ligolo-ng **v0.6**, la console du proxy permet de créer l'interface et d'ajouter la route. **Choisir cette méthode OU la préparation manuelle précédente, pas les deux**. La création requiert les permissions réseau suffisantes sur Kali.
+Avec les versions récentes de Ligolo-ng, la console du proxy peut créer l'interface et ajouter la route. **Choisir cette méthode OU la préparation manuelle précédente, pas les deux**. La création requiert les permissions réseau suffisantes sur Kali.
 
 ### Créer l'interface dans la console Ligolo
 
-La console tente de créer l'interface TUN sur le système Kali.
+La console Ligolo crée une interface TUN **sur Kali**, sous réserve des droits réseau du processus proxy.
 
 <p class="oscp-command-note">Dans la console Ligolo sur Kali: alternative aux commandes `ip tuntap`.</p>
 
@@ -137,7 +137,7 @@ interface_create --name ligolo
 
 ### Ajouter la route depuis la console
 
-Cette commande remplace `sudo ip route add` pour un client compatible ; le sous-réseau doit être celui du pivot.
+Cette commande ajoute sur Kali une route vers le sous-réseau accessible depuis le pivot ; ne pas la cumuler avec une route manuelle identique.
 
 <p class="oscp-command-note">Dans la console Ligolo sur Kali.</p>
 
@@ -250,7 +250,7 @@ python3 -m http.server 8000 --bind 127.0.0.1 --directory ./partage
 
 ### Exposer ce service sur le pivot A
 
-Le port `8080` écoute sur le **pivot A** et redirige vers le HTTP de Kali (`127.0.0.1:8000`).
+Le port `8080` écoute sur le **pivot A** (`172.16.20.1`) et redirige vers le serveur HTTP de Kali (`127.0.0.1:8000`).
 
 <p class="oscp-command-note">Dans la console Ligolo: session du pivot A.</p>
 
@@ -261,12 +261,12 @@ listener_list
 
 ### Télécharger depuis une machine interne
 
-Ici `172.16.20.1` est **l'IP interne du pivot A** visible de cette machine, et le fichier existe dans `./partage/` sur Kali.
+La machine Windows interne contacte **le pivot A à `172.16.20.1:8080`**, pas le pivot B (`172.16.20.30`). Le fichier doit exister dans `./partage/` sur Kali.
 
 <p class="oscp-command-note">Sur Windows interne pouvant joindre l'IP réseau du pivot A.</p>
 
 ```powershell
-Invoke-WebRequest -UseBasicParsing -Uri 'http://172.16.20.30:8080/outil.txt' -OutFile 'C:\Users\Public\outil.txt'
+Invoke-WebRequest -UseBasicParsing -Uri 'http://172.16.20.1:8080/outil.txt' -OutFile 'C:\Users\Public\outil.txt'
 ```
 
 Pour **envoyer un fichier vers Kali**, ce serveur HTTP Python ne suffit pas : utiliser **SMB ou WebDAV** comme expliqué dans la [fiche Transferts de fichiers](./transferts.md). Un listener Ligolo peut acheminer ces protocoles si le port et le service de réception sont configurés.
