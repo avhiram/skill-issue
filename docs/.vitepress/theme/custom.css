@@ -342,13 +342,13 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 }
 
 /* CRTO: clean reading layout. The upstream files remain unchanged in Git. */
-.VPDoc.crto-page .vp-doc {
+.Layout.crto-page .vp-doc {
   overflow-wrap: break-word;
 }
-.VPDoc.crto-page .vp-doc h1 {
+.Layout.crto-page .vp-doc h1 {
   line-height: 1.2;
 }
-.VPDoc.crto-page .vp-doc blockquote {
+.Layout.crto-page .vp-doc blockquote {
   margin: 1rem 0;
   padding: .65rem .85rem;
   border-left: 2px solid #8C6DC1;
@@ -358,30 +358,30 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   font-size: .91rem;
   line-height: 1.65;
 }
-.VPDoc.crto-page .vp-doc blockquote p {
+.Layout.crto-page .vp-doc blockquote p {
   margin: .25rem 0;
 }
-.VPDoc.crto-page .vp-doc :is(ol, ul) {
+.Layout.crto-page .vp-doc :is(ol, ul) {
   padding-left: 1.5rem;
 }
-.VPDoc.crto-page .vp-doc :is(ol, ul) > li {
+.Layout.crto-page .vp-doc :is(ol, ul) > li {
   margin: .55rem 0;
 }
-.VPDoc.crto-page .vp-doc div[class*="language-"] > pre,
-.VPDoc.crto-page .vp-doc div[class*="language-"] > pre > code,
-.VPDoc.crto-page .vp-doc div[class*="language-"] .vp-code .line {
+.Layout.crto-page .vp-doc div[class*="language-"] > pre,
+.Layout.crto-page .vp-doc div[class*="language-"] > pre > code,
+.Layout.crto-page .vp-doc div[class*="language-"] .vp-code .line {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   word-break: normal;
 }
-.VPDoc.crto-page .vp-doc div[class*="language-"] > pre {
+.Layout.crto-page .vp-doc div[class*="language-"] > pre {
   overflow-x: auto;
 }
-.VPDoc.crto-page .vp-doc pre:not(.vp-code) {
+.Layout.crto-page .vp-doc pre:not(.vp-code) {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-.VPDoc.crto-page .VPDocAsideOutline .outline-link {
+.Layout.crto-page .VPDocAsideOutline .outline-link {
   white-space: normal;
   overflow-wrap: break-word;
   text-overflow: clip;
@@ -390,48 +390,48 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 }
 
 /* CRTO landing only: compact two-column documentation navigation. */
-.VPDoc.crto-hub-page .content-container { max-width: 1050px; }
-.VPDoc.crto-hub-page .vp-doc h1 { margin-bottom: 0; }
-.VPDoc.crto-hub-page .vp-doc .crto-hub-intro {
+.Layout.crto-hub-page .content-container { max-width: 1050px; }
+.Layout.crto-hub-page .vp-doc h1 { margin-bottom: 0; }
+.Layout.crto-hub-page .vp-doc .crto-hub-intro {
   color: var(--vp-c-text-2); margin: .3rem 0 1.6rem; font-size: .94rem;
 }
-.VPDoc.crto-hub-page .vp-doc h2 { margin-top: 2rem; margin-bottom: .75rem; }
-.VPDoc.crto-hub-page .vp-doc h3 { margin-top: 1.45rem; margin-bottom: .55rem; font-size: 1rem; font-weight: 650; }
-.VPDoc.crto-hub-page .vp-doc .crto-cards {
+.Layout.crto-hub-page .vp-doc h2 { margin-top: 2rem; margin-bottom: .75rem; }
+.Layout.crto-hub-page .vp-doc h3 { margin-top: 1.45rem; margin-bottom: .55rem; font-size: 1rem; font-weight: 650; }
+.Layout.crto-hub-page .vp-doc .crto-cards {
   display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: .6rem; margin: .8rem 0 1.8rem;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-card {
+.Layout.crto-hub-page .vp-doc .crto-card {
   display: flex; align-items: center; justify-content: space-between; gap: .8rem;
   min-width: 0; min-height: 58px; padding: .75rem .95rem;
   border: 1px solid #332840; border-radius: 9px; background: #120F1A;
   color: #E6DEF1; text-decoration: none;
   transition: background-color .16s, border-color .16s;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-card:hover {
+.Layout.crto-hub-page .vp-doc .crto-card:hover {
   background: #1D1628; border-color: #8364BC; color: #F3ECFF;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-card:focus-visible { outline: 2px solid #B39AFF; outline-offset: 2px; }
-.VPDoc.crto-hub-page .vp-doc .crto-card-text {
+.Layout.crto-hub-page .vp-doc .crto-card:focus-visible { outline: 2px solid #B39AFF; outline-offset: 2px; }
+.Layout.crto-hub-page .vp-doc .crto-card-text {
   display: flex; flex-direction: column; gap: .22rem; min-width: 0;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-card-title {
+.Layout.crto-hub-page .vp-doc .crto-card-title {
   font-size: .88rem; font-weight: 600; line-height: 1.4; overflow-wrap: anywhere;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-card-desc {
+.Layout.crto-hub-page .vp-doc .crto-card-desc {
   color: #A79AB8; font-size: .76rem; font-weight: 400; line-height: 1.35;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-card-chevron {
+.Layout.crto-hub-page .vp-doc .crto-card-chevron {
   flex: 0 0 auto; font-size: 1.35rem; font-weight: 400; line-height: 1; color: #9D86C2;
 }
-.VPDoc.crto-hub-page .vp-doc .crto-cards-featured .crto-card {
+.Layout.crto-hub-page .vp-doc .crto-cards-featured .crto-card {
   min-height: 80px; background: #191322; border-color: #423253;
 }
 @media (max-width: 680px) {
-  .VPDoc.crto-hub-page .vp-doc .crto-cards {
+  .Layout.crto-hub-page .vp-doc .crto-cards {
     grid-template-columns: minmax(0, 1fr); gap: .55rem;
   }
-  .VPDoc.crto-hub-page .vp-doc .crto-card {
+  .Layout.crto-hub-page .vp-doc .crto-card {
     min-height: 52px; padding: .7rem .85rem;
   }
 }
