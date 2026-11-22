@@ -102,14 +102,14 @@ sudo nmap -A <IP_CIBLE> -oN rapport_avance.txt
 
 ```
 
-**Scan SYN de tous les ports TCP (rapide, potentiellement incomplet)**
+**Scan SYN de tous les ports TCP (débit minimal demandé, risque de pertes)**
 
 ```bash
 sudo nmap -sS -p- --min-rate 1000 --max-retries 1 -T4 <IP_CIBLE>
 
 ```
 
-**Scan TCP complet sans découverte préalable des hôtes**
+**Scan de tous les ports TCP sans découverte d'hôte préalable (-Pn)**
 
 <p class="oscp-command-note">Nmap : scanner les 65 535 ports TCP sans résolution DNS ni découverte d'hôte.</p>
 
@@ -118,7 +118,7 @@ nmap -p- -T4 -n -Pn <IP_CIBLE> -oN rapport_ports.txt
 
 ```
 
-**Scan SYN agressif de tous les ports TCP (risque de pertes)**
+**Scan SYN à débit élevé sur tous les ports TCP (résultats à confirmer)**
 
 <p class="oscp-command-note">Nmap : scan SYN rapide de tous les ports TCP ; --min-rate 5000 peut dégrader la fiabilité.</p>
 
@@ -127,7 +127,7 @@ sudo nmap -sS --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt <IP_CIBLE>
 
 ```
 
-**Scan TCP de tous les ports (cadence par défaut)**
+**Scan des 65 535 ports TCP avec les réglages Nmap par défaut**
 
 <p class="oscp-command-note">Nmap : scanner tous les ports TCP avec la cadence par défaut et enregistrer les résultats.</p>
 
@@ -234,7 +234,7 @@ sudo nmap -O <IP_CIBLE>
 
 ```
 
-**Estimation plus souple du système d'exploitation (`-O --osscan-guess`)**
+**Détection OS avec hypothèses moins certaines (`--osscan-guess`)**
 
 ```bash
 sudo nmap -O --osscan-guess <IP_CIBLE>
@@ -246,7 +246,7 @@ sudo nmap -O --osscan-guess <IP_CIBLE>
 
 **Identifier les versions des services (`-sV`)**
 
-<p class="oscp-command-note">Identifier les versions des services.</p>
+<p class="oscp-command-note">Nmap -sV : interroger les services détectés pour estimer leur produit et leur version.</p>
 
 ```bash
 nmap -sV 192.0.2.10
@@ -272,9 +272,9 @@ Conserver les résultats de découverte puis extraire les adresses des hôtes d�
 **Paramètres et repères :**
 `-oG` (sortie grepable)  
 
-**Sortie au format grepable (-oG)**
+**Découverte d'hôtes avec sortie grepable (-oG)**
 
-<p class="oscp-command-note">Détecter les hôtes actifs et enregistrer le résultat au format grepable.</p>
+<p class="oscp-command-note">Nmap -sn : détecter les hôtes répondants et enregistrer les résultats au format grepable (.gnmap).</p>
 
 ```bash
 nmap -v -sn <RESEAU_CIDR> -oG decouverte.gnmap
@@ -284,12 +284,12 @@ nmap -v -sn <RESEAU_CIDR> -oG decouverte.gnmap
 **Paramètres et repères :**
 `-oN` (sortie texte)  
 
-**Extraire les adresses des hôtes actifs du fichier `.gnmap`**
+**Extraire les adresses IP des lignes « Status: Up » du fichier `.gnmap`**
 
-<p class="oscp-command-note">Extraire les adresses des hôtes actifs du fichier Nmap au format grepable.</p>
+<p class="oscp-command-note">AWK : extraire la deuxième colonne des lignes Host marquées Up dans la sortie grepable Nmap.</p>
 
 ```bash
-awk '/Up$/{print $2}' decouverte.gnmap
+awk '/^Host: / && /Status: Up/{print $2}' decouverte.gnmap
 
 ```
 
@@ -305,7 +305,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 **Exécuter un script NSE (--script)**
 
-<p class="oscp-command-note">Nmap : exécuter le script NSE choisi, après avoir lu son aide.</p>
+<p class="oscp-command-note">Nmap NSE : remplacer SCRIPT_NSE par le nom d'un script installé et lire son aide avant exécution.</p>
 
 ```bash
 nmap --script <SCRIPT_NSE> <IP_CIBLE>
@@ -314,7 +314,7 @@ nmap --script <SCRIPT_NSE> <IP_CIBLE>
 
 **Afficher l’aide des scripts NSE**
 
-<p class="oscp-command-note">Afficher l&#x27;aide d&#x27;un script Nmap NSE.</p>
+<p class="oscp-command-note">Nmap NSE : afficher la documentation et les arguments du script smb-os-discovery.</p>
 
 ```bash
 nmap --script-help smb-os-discovery
@@ -323,14 +323,14 @@ nmap --script-help smb-os-discovery
 
 **Lire les en-têtes HTTP avec le script NSE `http-headers`**
 
-<p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-headers ».</p>
+<p class="oscp-command-note">Nmap HTTP : lire les en-têtes HTTP sur TCP 80 avec le script http-headers.</p>
 
 ```bash
 nmap -p 80 --script http-headers 192.0.2.10
 
 ```
 
-**Exécuter les scripts NSE de la catégorie `default`**
+**Exécuter les scripts NSE par défaut (catégorie `default`) sur les ports détectés**
 
 ```bash
 nmap --script default 192.0.2.10
@@ -348,7 +348,7 @@ Observer les permissions et la configuration de Windows.
 
 **Vérifier un port TCP**
 
-<p class="oscp-command-note">Tester une connexion réseau avec PowerShell.</p>
+<p class="oscp-command-note">PowerShell : vérifier la connexion TCP vers le port 445 avec Test-NetConnection.</p>
 
 ```powershell
 Test-NetConnection -ComputerName 192.0.2.10 -Port 445
@@ -366,7 +366,7 @@ Test-NetConnection -ComputerName 192.0.2.10 -Port 445
 
 Découvrir les ports TCP puis identifier les services dans le périmètre autorisé.
 
-<p class="oscp-command-note">Inventaire TCP complet.</p>
+<p class="oscp-command-note">Nmap : scanner tous les ports TCP, puis identifier les services sur les ports ouverts relevés.</p>
 
 ```bash
 sudo nmap -sS -p- -Pn -n -oN rapport_ports.txt <IP_CIBLE>
@@ -377,7 +377,7 @@ nmap -sV -sC -p <LISTE_PORTS> -oN rapport_services.txt <IP_CIBLE>
 
 Afficher la documentation d'un script puis consulter son comportement avant de l'exécuter.
 
-<p class="oscp-command-note">Contrôle des scripts NSE.</p>
+<p class="oscp-command-note">Nmap NSE : lire l'aide d'un script, puis l'exécuter sur le port choisi après validation du périmètre.</p>
 
 ```bash
 nmap --script-help <SCRIPT_NSE>
@@ -388,7 +388,7 @@ nmap -sV -p <PORT> --script <SCRIPT_NSE> <IP_CIBLE>
 
 Effectuer un ping sweep sans lancer de scan de ports. Les pare-feu peuvent masquer des hôtes présents.
 
-<p class="oscp-command-note">Découverte de plusieurs hôtes.</p>
+<p class="oscp-command-note">Nmap -sn -n : découvrir les hôtes d'un réseau sans scan de ports ni résolution DNS.</p>
 
 ```bash
 nmap -sn -n 192.0.2.0/24
@@ -400,7 +400,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 **Rechercher les ports TCP ouverts avec RustScan**
 
-<p class="oscp-command-note">Rechercher rapidement les ports accessibles.</p>
+<p class="oscp-command-note">RustScan : rechercher les ports TCP ouverts sur la plage 1 à 65535.</p>
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535
