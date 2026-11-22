@@ -1488,8 +1488,8 @@ Examiner les objets, les droits et les services du domaine.
 
 ```bash
 # Scanner les ports et services avec Nmap
-nmap -v -p 139,445 [IP]
-nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
+nmap -sV -p 139,445 <IP_CIBLE>
+nmap -p 139,445 --script smb-os-discovery <IP_CIBLE>
 
 # Analyser les services NetBIOS
 sudo nbtscan -r 192.168.50.0/24
@@ -1502,11 +1502,11 @@ net view \\[domainName] /all
 <p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-enum-shares ».</p>
 
 ```bash
-nmap --script smb-enum-shares.nse -p445 <ip>
+nmap -p 445 --script smb-enum-shares <IP_CIBLE>
 
-nmap --script smb-enum-users.nse -p445 <ip>
+nmap -p 445 --script smb-enum-users <IP_CIBLE>
 
-nmap --script smb-enum-domains.nse,smb-enum-groups.nse,smb-enum-processes.nse,smb-enum-services.nse,smb-enum-sessions.nse,smb-enum-shares.nse,smb-enum-users.nse -p445 <ip>
+nmap -p 445 --script smb-enum-domains,smb-enum-groups,smb-enum-shares,smb-enum-users <IP_CIBLE>
 
 nmap -p139,445 --script "smb-vuln-* and not(smb-vuln-regsvc-dos)" --script-args smb-vuln-cve-2017-7494.check-version,unsafe=1 <IP>
 
@@ -1523,7 +1523,7 @@ nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-
 sudo ngrep -i -d <INTERFACE> 's.?a.?m.?b.?a.*[[:digit:]]' port 139
 
 # Listes des actions SMB disponibles sur la cible
-smbclient -L <IP>
+smbclient -L //<IP_CIBLE> -N
 
 ```
 
@@ -1533,10 +1533,10 @@ smbclient -L <IP>
 <p class="oscp-command-note">Lister les partages SMB et leurs permissions.</p>
 
 ```bash
-smbmap -H <IP>
-smbmap -u '' -p '' -H <IP>
-smbmap -u 'guest' -p '' -H <IP>
-smbmap -u '' -p '' -H <IP> -R
+smbmap -H <IP_CIBLE>
+smbmap -u '' -p '' -H <IP_CIBLE>
+smbmap -u 'guest' -p '' -H <IP_CIBLE>
+smbmap -u '' -p '' -H <IP_CIBLE> -R
 
 ```
 
@@ -1556,14 +1556,14 @@ crackmapexec smb <IP> -u '[user]' -p '[password]'
 
 ```bash
 # Collecte d'informations de base sur le domaine
-enum4linux -a <IP>
+enum4linux -a <IP_CIBLE>
 enum4linux -a -u "" -p "" <IP> && enum4linux -a -u "guest" -p "" <IP>
 
 # Extraire les utilisateurs du domaine
-enum4linux -U <DOMAIN_IP>
+enum4linux -U <IP_DC>
 
 # Extraire les parts de domaine disponibles
-enum4linux -S <IP>
+enum4linux -S <IP_CIBLE>
 
 enum4linux -a -M -l -d <ip> 2>&1
 enum4linux -a -u "" -p "" <ip>
@@ -1574,8 +1574,8 @@ enum4linux -a -u "[user]" -p "[password]" <ip>
 
 ```bash
 # Lister les partages SMB du serveur
-smbclient --no-pass -L //<ip>
-smbclient -L //<ip> -U [user]
+smbclient --no-pass -L //<IP_CIBLE>
+smbclient -L //<IP_CIBLE> -U <UTILISATEUR>
 smbclient //<IP>/<SHARE>
 smbclient -N //<IP>/<SHARE>
 smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *" # Change the timeout to download big files
@@ -1684,21 +1684,21 @@ nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
 <p class="oscp-command-note">Nmap (IMAP) : lancer les scripts NSE « imap-ntlm-info ».</p>
 
 ```bash
-nmap -p 143,993 --script imap-ntlm-info <ip>
+nmap -sV -p 143,993 --script imap-ntlm-info <IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">Examiner une connexion TLS ou un certificat.</p>
 
 ```bash
-openssl s_client -connect <target-ip>:993
+openssl s_client -connect <IP_CIBLE>:993
 
 ```
 
 <p class="oscp-command-note">Rechercher des références de vulnérabilités connues.</p>
 
 ```bash
-searchsploit imap <version>
+searchsploit 'imap' '<VERSION>'
 
 ```
 
@@ -1706,7 +1706,7 @@ searchsploit imap <version>
 
 ```bash
 # Utilisation
-python3 check_imap.py <target-ip> <port>
+python3 check_imap.py <IP_CIBLE> <PORT_IMAP>
 
 ```
 
@@ -1718,15 +1718,16 @@ import sys
 
 def check_imap_capabilities(host, port):
     if port == 993:
-        mail = imaplib.IMAP4_SSL(host)
+        mail = imaplib.IMAP4_SSL(host, port=port, timeout=10)
     else:
-        mail = imaplib.IMAP4(host)
+        mail = imaplib.IMAP4(host, port=port, timeout=10)
     
-    print(mail.capabilities())
+    print(mail.capabilities)
+    mail.logout()
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python3 script.py <host> <port>")
+        print("Utilisation : python3 check_imap.py <hôte> <port>")
         sys.exit(1)
     
     host = sys.argv[1]
@@ -1751,11 +1752,11 @@ openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
 <p class="oscp-command-note">Nmap (161) : lancer les scripts NSE « snmp-* ».</p>
 
 ```bash
-sudo nmap -sU --open -p 161 <target-ip-range> -oG open-snmp.txt
+sudo nmap -sU --open -p 161 <RESEAU_CIDR> -oG open-snmp.txt
 
-sudo nmap --script snmp-* -sU -p 161 <target-ip>
+sudo nmap -sU -p 161 --script 'snmp-info,snmp-sysdescr' <IP_CIBLE>
 
-sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=<community-file> <target-ip>
+sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=communautes.txt <IP_CIBLE>
 
 ```
 
@@ -1764,7 +1765,7 @@ sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=
 ```bash
 # Version: 1, 2c, 3
 # Chaînes de communauté SNMP possibles : public, private, security, etc.
-snmpwalk -v <SNMP_VERSION> -c <COMMUNITY_STRING> <target-ip> .1
+snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 
 ```
 
@@ -1774,16 +1775,16 @@ snmpwalk -v <SNMP_VERSION> -c <COMMUNITY_STRING> <target-ip> .1
 # Popular wordlist: /usr/share/wordlists/seclists/Discovery/SNMP/common-snmp-community-strings-onesixtyone.txt
 
 # Onesixtyone
-onesixtyone -c <community-file> <target-ip>
+onesixtyone -c communautes.txt <IP_CIBLE>
 
 # Snmpwalk
-snmpwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip>
+snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
 # Snmpbulkwalk
-snmpbulkwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip>
+snmpbulkwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
 # Snmp-check
-snmp-check <target-ip>
+snmp-check <IP_CIBLE>
 
 ```
 
@@ -1806,13 +1807,13 @@ onesixtyone -c community -i ips
 <p class="oscp-command-note">Interroger les paramètres SNMP.</p>
 
 ```bash
-snmpwalk -v <SNMP_VERSION> -c <COMMUNITY_STRING> <target-ip> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
+snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
 
 ```
 
 ```bash
 # Interroger les objets SNMP
-snmpwalk -c <COMMUNITY_STRING> -v <SNMP_VERSION> <target-ip> <OID>
+snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> <OID>
 
 ```
 
