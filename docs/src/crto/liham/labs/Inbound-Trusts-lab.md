@@ -136,125 +136,125 @@ Vérifier l’existence et le sens de la trust, l’objet CONTOSO référencé d
     >
     > L’attribut `objectSid` de l’objet FSP représente le SID CONTOSO référencé. `memberOf` indique les groupes PARTNER auxquels l’objet appartient.
 
-⚠️ This will show that the SID `S-1-5-21-3926355307-1661546229-813047887-6102` (a CONTOSO SID — note the CONTOSO domain prefix `3926355307-1661546229-813047887`) is a member of a "Contoso Users" group in PARTNER.
+⚠️ Le résultat attendu indique que le SID CONTOSO `S-1-5-21-3926355307-1661546229-813047887-6102` est associé au groupe **Contoso Users** dans PARTNER.
 
-    > **At this point you know:** Something from CONTOSO with SID ending in `-6102` has been placed into PARTNER's "Contoso Users" group. You don't yet know what the `-6102` object is — could be a user or group. Next step resolves it.
+    > **À ce stade :** un objet CONTOSO portant le SID `-6102` est référencé par PARTNER. Il reste à déterminer s’il s’agit d’un utilisateur ou d’un groupe.
 
-4. Identify what that local SID is.
+4. Identifier l’objet correspondant à ce SID dans CONTOSO.
 
     ```Beacon-nocolor
     ldapsearch (objectSid=S-1-5-21-3926355307-1661546229-813047887-6102) --attributes samAccountType,distinguishedName
     ```
 
-    > **What this does:** Now we switch back to querying CONTOSO (no `--hostname` flag — defaults to our own domain). We look up what object in CONTOSO owns SID `-6102`.
+    > **Fonctionnement :** la requête vise à nouveau CONTOSO et recherche l’objet propriétaire du SID se terminant par `-6102`.
     >
-    > `samAccountType` tells us the object type:
-    > - `805306368` = user account
-    > - `268435456` = domain group (this is what we expect here)
-    > - `805306369` = computer account
+    > `samAccountType` identifie le type d’objet :
+    > - `805306368` = compte utilisateur
+    > - `268435456` = groupe de domaine (résultat attendu)
+    > - `805306369` = compte ordinateur
 
-⚠️ Output shows it is a domain group called **"Partner Jump Users"** in CONTOSO. This is the bridge group — whoever is a member of this CONTOSO group will inherit "Contoso Users" group membership in PARTNER via the FSP, and therefore get local admin on all PARTNER machines via GPO.
+⚠️ Le résultat du lab identifie le groupe CONTOSO **Partner Jump Users**. Ce groupe est associé à **Contoso Users** dans PARTNER grâce au FSP. Les droits effectifs sont ensuite définis par la GPO.
 
-5. Enumerate members of that group.
+5. Énumérer les membres de ce groupe.
 
     ```Beacon-nocolor
     ldapsearch "(&(|(samAccountType=805306368)(samAccountType=268435456))(memberof=CN=Partner Jump Users,CN=Users,DC=contoso,DC=com))" --attributes distinguishedName
     ```
 
-    > **What this does:** Find every user (`samAccountType=805306368`) or group (`samAccountType=268435456`) that is a direct member of "Partner Jump Users" in CONTOSO. The `memberof` filter uses the full DN of the group.
+    > **Fonctionnement :** rechercher les utilisateurs et groupes membres directs de **Partner Jump Users** dans CONTOSO, en utilisant le DN complet du groupe dans le filtre `memberof`.
     >
-    > **Why this matters:** These accounts are the ones we can use to authenticate to PARTNER. We need an account in this group that we can obtain credentials for (via DCSync, as we have DA on CONTOSO).
+    > **Utilité :** l’appartenance à ce groupe indique quels comptes CONTOSO disposent d’une relation d’autorisation vers PARTNER, selon les règles définies dans le lab.
 
-⚠️ This returns `rsteel` — a CONTOSO user who is a member of "Partner Jump Users". rsteel is our target account for impersonation.
+⚠️ Résultat attendu : `rsteel`, utilisateur CONTOSO membre de **Partner Jump Users**.
 
-6. Find a domain controller in the foreign domain.
+6. Identifier un Domain Controller du domaine distant.
 
     ```Beacon-nocolor
     nslookup _ldap._tcp.dc._msdcs.partner.com 10.10.120.1 SRV
     ```
 
-    > **What this does:** DNS SRV record lookup against our own DC (`10.10.120.1`), asking for LDAP SRV records for PARTNER's domain. The response gives us the FQDN of PARTNER's DC — `par-dc-1.partner.com`. We need this hostname explicitly in later steps when directing Kerberos requests to PARTNER's KDC.
+    > **Fonctionnement :** une recherche DNS SRV sur le DC `10.10.120.1` identifie le Domain Controller PARTNER. Le résultat attendu est `par-dc-1.partner.com`, utilisé ensuite dans les échanges Kerberos du lab.
 
 ===
 
 ## Discovery
 
-Enumerate the foreign domain to confirm exactly where "Contoso Users" (and therefore rsteel) has privileged access, and on which machines.
+Énumérer PARTNER pour déterminer sur quelles machines le groupe **Contoso Users** dispose de privilèges.
 
 ### Informations à vérifier
-We know "Contoso Users" exists in PARTNER. We need to find HOW it has been granted local admin — the mechanism is likely a GPO. Then find which computers are in scope.
+Le groupe **Contoso Users** existe dans PARTNER. Il faut vérifier si ses droits administrateur locaux proviennent d’une GPO et identifier les machines concernées.
 
-1. List GPOs.
+1. Lister les GPO.
 
     ```Beacon-nocolor
     ldapsearch (objectClass=groupPolicyContainer) --hostname par-dc-1.partner.com --dn DC=partner,DC=com --attributes displayName,gPCFileSysPath
     ```
 
-    > Queries PARTNER's DC for all Group Policy Objects. `gPCFileSysPath` gives the SYSVOL path where the GPO's template files live — we'll download one of these to read the actual policy content.
+    > La requête recense les Group Policy Objects de PARTNER. L’attribut `gPCFileSysPath` indique le chemin SYSVOL contenant leurs fichiers de configuration.
 
-⚠️ This reveals a GPO called **"Contoso Jump Users"**. The `gPCFileSysPath` will give the GUID-based path: `\\partner.com\SysVol\partner.com\Policies\{DFE606B4-CA59-4AD6-9BCE-55AF35888129}\`
+⚠️ Le lab présente une GPO **Contoso Jump Users**, dont `gPCFileSysPath` renvoie le chemin contenant son GUID : `\\partner.com\SysVol\partner.com\Policies\{DFE606B4-CA59-4AD6-9BCE-55AF35888129}\`
 
-2. Download the GPO's *GptTmpl.inf* file.
+2. Récupérer le fichier `GptTmpl.inf` de la GPO.
 
     ```Beacon-nocolor
     download \\partner.com\SysVol\partner.com\Policies\{DFE606B4-CA59-4AD6-9BCE-55AF35888129}\Machine\Microsoft\Windows NT\SecEdit\GptTmpl.inf
     ```
 
-    > `GptTmpl.inf` is the Security Template file inside a GPO. It defines things like local group membership via `[Group Membership]` section entries. We can read this to see exactly which SIDs are being added to which local groups — without needing to log onto a PARTNER machine.
+    > `GptTmpl.inf` est un fichier de modèle de sécurité GPO. La section `[Group Membership]` indique les SID ajoutés aux groupes locaux, sans nécessiter de session interactive sur la machine.
     >
-    > This download goes over SMB through the beacon's existing Kerberos context — our current token is accepted because PARTNER trusts CONTOSO.
+    > Dans ce scénario, le téléchargement SMB utilise le contexte Kerberos disponible, sous réserve des autorisations prévues par la relation de confiance.
 
-3. Sync it to your Attacker desktop and open it in Notepad.
+3. Synchroniser le fichier sur l’Attacker Desktop, puis l’ouvrir avec Notepad.
 
-⚠️ The file shows:
+⚠️ Le fichier contient :
     > ```
     > [Group Membership]
     > *S-1-5-21-4244029708-1901239654-2578485347-1104__Memberof = *S-1-5-32-544
     > ```
-    > Reading this: the group with SID `S-1-5-21-4244029708-...-1104` (that is PARTNER's "Contoso Users" group) is configured as a member of `S-1-5-32-544` (BUILTIN\Administrators — the local admins group) on every machine this GPO applies to.
+    > Interprétation : le SID PARTNER `S-1-5-21-4244029708-...-1104` correspond à **Contoso Users**. Ce groupe est associé à `S-1-5-32-544`, le groupe local **Administrators**, sur les machines auxquelles la GPO s’applique.
     >
-    > **SID breakdown:**
-    > - `S-1-5-21-4244029708-1901239654-2578485347` → PARTNER domain SID prefix
-    > - `-1104` → RID of "Contoso Users" in PARTNER
-    > - `S-1-5-32-544` → Well-known SID for local Administrators (always the same on every Windows machine)
+    > **Détail des SID :**
+    > - `S-1-5-21-4244029708-1901239654-2578485347` → préfixe SID du domaine PARTNER
+    > - `-1104` → RID du groupe Contoso Users dans PARTNER
+    > - `S-1-5-32-544` → SID bien connu du groupe Administrators local
 
-4. Confirm that "Contoso Users" (PARTNER SID -1104) has the CONTOSO "Partner Jump Users" (-6102) as a member.
+4. Vérifier que **Contoso Users** (`-1104`, PARTNER) contient le FSP du groupe **Partner Jump Users** (`-6102`, CONTOSO).
 
     ```Beacon-nocolor
     ldapsearch (objectSid=S-1-5-21-4244029708-1901239654-2578485347-1104) --hostname par-dc-1.partner.com --dn DC=partner,DC=com --attributes samAccountType,samAccountName,member
     ```
 
-    > Queries PARTNER for the group object that owns SID `-1104`. The `member` attribute will list the FSP DN for the CONTOSO "Partner Jump Users" object. This closes the loop: CONTOSO `-6102` (Partner Jump Users) → PARTNER `-1104` (Contoso Users) → local Admins via GPO.
+    > Cette requête identifie le groupe PARTNER portant le SID `-1104`. L’attribut `member` permet de vérifier la présence du FSP correspondant à **Partner Jump Users**, puis de relier cette appartenance aux droits locaux définis par GPO.
 
-5. Find where that GPO is linked.
+5. Identifier les objets auxquels la GPO est liée.
 
     ```Beacon-nocolor
     ldapsearch (&(|(objectClass=organizationalUnit)(objectClass=domain))(gPLink=*{DFE606B4-CA59-4AD6-9BCE-55AF35888129}*)) --hostname par-dc-1.partner.com --dn DC=partner,DC=com --attributes objectClass,name
     ```
 
-    > Searches for any OU or domain object in PARTNER that has this GPO GUID in its `gPLink` attribute. `gPLink` stores which GPOs are linked to a container.
+    > La recherche examine l’attribut `gPLink` des OU et objets du domaine PARTNER afin de localiser la GPO étudiée.
 
-⚠️ Returns the top-level domain object — the GPO is linked at the domain root, meaning it applies to **all computers in PARTNER.COM**, not just a subset. Every machine in PARTNER has "Contoso Users" as local admin.
+⚠️ Dans le scénario, la GPO est liée à la racine du domaine PARTNER. Son application effective dépend également des paramètres et filtres de stratégie.
 
-6. Find what computers exist in the foreign domain.
+6. Lister les ordinateurs présents dans le domaine distant.
 
     ```Beacon-nocolor
     ldapsearch (samAccountType=805306369) --hostname par-dc-1.partner.com --dn DC=partner,DC=com --attributes distinguishedName
     ```
 
-    > `samAccountType=805306369` = computer accounts. Lists all machines in PARTNER so you know valid targets. `par-jmp-1.partner.com` will appear here — this is our jump target for the exploitation step.
+    > `samAccountType=805306369` = compte ordinateurs. Lists all machines in PARTNER so you know valid targets. `par-jmp-1.partner.com` will appear here — this is our jump target for the exploitation step.
 
 ===
 
-## Exploitation
+## Scénario d’exploitation du lab
 
-### What we need to do
+### Objectif de cette phase
 We have DA on CONTOSO. rsteel (a CONTOSO user) has local admin on all PARTNER machines via group membership. We need to authenticate to a PARTNER machine **as rsteel** using Kerberos. We cannot use rsteel's plaintext password (we don't have it), but we have DA so we can DCSync the AES256 hash and use that to mint a TGT. Then we walk the Kerberos referral chain across the trust.
 
-**Account we are targeting:** `rsteel` — a CONTOSO domain user, member of "Partner Jump Users"
-**Target machine:** `par-jmp-1.partner.com` — a jump server in PARTNER where rsteel has local admin
+**Compte étudié :** `rsteel` — a CONTOSO domain user, member of "Partner Jump Users"
+**Machine cible :** `par-jmp-1.partner.com` — a jump server in PARTNER where rsteel has local admin
 
-> **Exam tip — read before running anything:**
+> **Point important pour l’examen :**
 > DCSync requires DA rights. `steal_token` MUST happen before `dcsync` or it will fail with `ERROR_DS_DRA_ACCESS_DENIED (0x20f7)`. Running DCSync as `NT AUTHORITY\SYSTEM` on a workstation does NOT work — SYSTEM is a local identity with no AD replication rights.
 > `kerberos_ticket_use` MUST be called before any network command that needs the injected ticket. `krb_asktgt`/`krb_asktgs` obtain tickets but the beacon's SMB/WinRM stack will not use them until `kerberos_ticket_use` wires the `.kirbi` into the active Kerberos session.
 
