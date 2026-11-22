@@ -703,9 +703,9 @@ Rechercher les répertoires .ssh visibles puis examiner leurs permissions.
 find /home -type d -name '.ssh' 2>/dev/null
 ```
 
-## Scripts modifiables par tous et exécutés par root
+## Répertoires accessibles en écriture
 
-<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
+<p class="oscp-command-note">Identifier les répertoires modifiables ou traversables selon leurs permissions.</p>
 
 ```bash
 # Répertoires modifiables par le compte courant, puis par tous
@@ -735,11 +735,11 @@ Examiner les permissions et la configuration de Linux.
 
 ### Comprendre les permissions SUID et SGID
 
-Examiner les permissions et la configuration de Linux.
+SUID exécute un fichier avec l'UID effectif de son propriétaire ; SGID utilise le GID effectif de son groupe.
 
 ### Rechercher les fichiers SUID et SGID
 
-Examiner les permissions et la configuration de Linux.
+Lister les fichiers avec les bits SUID ou SGID activés.
 
 <p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
@@ -747,31 +747,31 @@ Examiner les permissions et la configuration de Linux.
 # Trouver des fichiers SUID
 find / -perm -u=s -type f 2>/dev/null
 
-# Trouver des fichiers GUID
+# Trouver des fichiers SGID
 find / -perm -g=s -type f 2>/dev/null
 
 ```
 
 ### Évaluer les possibilités d’exploitation
 
-<p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
+<p class="oscp-command-note">Examiner un binaire SUID : chaînes et appels de bibliothèque (outils disponibles selon la distribution).</p>
 
 ```bash
 # Option 1 : rechercher les chaînes lisibles avec strings.
 strings /path/to/suid-binary
 
-# Option 2 : observer les appels système et les accès aux fichiers.
+# Option 2 : observer les appels de bibliothèque (ltrace, si disponible).
 ltrace /path/to/suid-binary
 
 # Option 3 : étudier si la résolution d'un exécutable via PATH peut modifier le comportement d'un programme SUID.
-# Créer une version malveillante du programme attendu
-echo '/bin/sh' > /tmp/cp
+# Créer un exécutable de test pour illustrer le risque de recherche dans PATH
+printf '#!/bin/sh\nexec /bin/sh\n' > /tmp/cp
 chmod +x /tmp/cp
 
 # Placer le répertoire du binaire de remplacement en priorité dans PATH
 export PATH=/tmp:$PATH
 
-# Exécutez le programme vulnérable SUID
+# Exécuter uniquement un programme de laboratoire dont le comportement est connu
 /path/to/suid-program
 
 ```
@@ -782,12 +782,12 @@ export PATH=/tmp:$PATH
 # Trouver des fichiers enregistrables SUID
 find / -perm -u=s -writable -type f 2>/dev/null
 
-# Si un binaire SUID en écriture est trouvé, vous pouvez injecter votre propre code et l'exécuter avec des privilèges élevés.
+# Un fichier SUID modifiable est un risque ; l'effet dépend du propriétaire, du montage et du noyau.
 
 ```
 
 ```bash
-# Trouver des scripts dans cronjobs ou répertoires système qui peuvent avoir SUID ou GUID ensemble
+# Rechercher des fichiers SUID dans les répertoires cron accessibles
 find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
 
 ```
@@ -816,16 +816,13 @@ strace -f -e trace=file <BINAIRE_DE_TEST> 2>&1 | grep -Ei 'ENOENT|openat|access'
 
 Chercher des références à des chemins et programmes externes sans exécuter le binaire.
 
-<p class="oscp-command-note">Afficher les chaînes d'un exécutable SUID.</p>
+<p class="oscp-command-note">Rechercher les chemins et fonctions sensibles dans les chaînes d'un binaire SUID.</p>
 
 ```bash
 strings <BINAIRE_SUID> | grep -Ei '(/bin/|/usr/|system|exec|sh )'
 ```
 
 ### LinPEAS
-
-**Paramètres et repères :**
-`./linpeas.sh`  
 
 ```bash
 ./linpeas.sh | tee linpeas_output.txt
