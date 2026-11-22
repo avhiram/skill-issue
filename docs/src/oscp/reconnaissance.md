@@ -2271,7 +2271,7 @@ mysql -h <IP_CIBLE> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur MYSQL à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra MySQL : tester des identifiants autorisés sur TCP 3306 ; attention au verrouillage.</p>
 
 ```bash
 # Tester des identifiants MySQL uniquement avec autorisation explicite (risque de verrouillage)
@@ -2336,7 +2336,7 @@ nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur RDP à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra RDP : tester des comptes autorisés ; limiter les essais pour éviter le verrouillage.</p>
 
 ```bash
 hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
@@ -2346,10 +2346,10 @@ hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
 <p class="oscp-command-note">RDP : tester des identifiants de laboratoire avec Crowbar ou NetExec ; attention aux verrouillages de comptes.</p>
 
 ```bash
-# Tester l'authentification RDP avec Crowbar (autorisation requise ; risque de verrouillage)
+# Crowbar : tester des identifiants RDP autorisés ; risque de verrouillage des comptes
 crowbar -b rdp -s <target_ip>/32 -U users.txt -C rockyou.txt
 
-# Avec NetExec : vérifier des identifiants RDP dans un laboratoire autorisé
+# NetExec : vérifier des identifiants RDP autorisés ; limiter les essais
 nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
@@ -2395,7 +2395,7 @@ nmap -sV -p 5432,5433 192.0.2.10
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur POSTGRESQL à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra PostgreSQL : tester des comptes autorisés sur TCP 5432 ; attention au verrouillage.</p>
 
 ```bash
 hydra -L utilisateurs.txt -P mots_de_passe.txt -s 5432 192.0.2.10 postgres
@@ -2493,7 +2493,7 @@ DELETE FROM test_table WHERE id = 1;
 
 ### 5900: VNC (Virtual Network Computing)
 
-<p class="oscp-command-note">Nmap : récupérer les informations du service VNC avec le script vnc-info (aucun contournement d’authentification ici).</p>
+<p class="oscp-command-note">Nmap VNC : relever les informations du service sur TCP 5900 avec vnc-info.</p>
 
 ```bash
 nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
@@ -2503,22 +2503,22 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 <p class="oscp-command-note">VNC : ouvrir une session graphique avec TigerVNC sur TCP 5900 ; ces exemples ne concernent pas RDP.</p>
 
 ```bash
-# Ouvrir une session VNC sur le port TCP 5900 avec TigerVNC
+# TigerVNC : ouvrir une session graphique sur TCP 5900
 vncviewer <IP_CIBLE>::5900
 
-# Utiliser un fichier de mot de passe VNC préalablement créé
+# Utiliser un fichier de mot de passe VNC existant et protégé
 vncviewer -passwd /chemin/vers/fichier_mot_de_passe <IP_CIBLE>::5900
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur VNC à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra VNC : tester des mots de passe autorisés ; VNC classique ne fournit pas de nom d'utilisateur.</p>
 
 ```bash
-hydra -L <user_list> -P <password_list> vnc://<ip>
+hydra -P mots_de_passe.txt vnc://192.0.2.10
 
 ```
 
-<p class="oscp-command-note">Exemples de mots de passe faibles : il ne s’agit pas d’une sortie de scan VNC.</p>
+<p class="oscp-command-note">VNC : exemples de mots de passe faibles pour un laboratoire ; ce bloc n'est pas un résultat de scan.</p>
 
 ```text
 # Exemples de mots de passe faibles à ne tester que dans un laboratoire
@@ -2540,14 +2540,14 @@ vnc
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">Nmap : détecter les services présents sur les ports WinRM 5985 et 5986 (aucun script NSE lancé).</p>
+<p class="oscp-command-note">Nmap WinRM : identifier les services HTTP 5985 et HTTPS 5986 sans lancer de script NSE.</p>
 
 ```bash
 nmap -sV -p 5985,5986 <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Vérifier un compte WinRM autorisé avec NetExec, successeur de CrackMapExec.</p>
+<p class="oscp-command-note">NetExec WinRM : vérifier l'accès d'un compte de laboratoire sur TCP 5985/5986 selon la configuration.</p>
 
 ```bash
 nxc winrm 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
@@ -2560,7 +2560,7 @@ Enter-PSSession -ComputerName 192.0.2.10 -Credential (Get-Credential)
 
 ```
 
-<p class="oscp-command-note">Ouvrir une session distante WinRM.</p>
+<p class="oscp-command-note">Evil-WinRM : ouvrir une session PowerShell distante depuis Kali avec un compte autorisé.</p>
 
 ```bash
 # Depuis Kali : ouvrir une session WinRM avec Evil-WinRM (compte autorisé requis)
@@ -2590,7 +2590,7 @@ nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
 
 ### 6379: Redis
 
-<p class="oscp-command-note">Nmap : relever les informations Redis avec redis-info ; aucune exécution distante n’est tentée.</p>
+<p class="oscp-command-note">Nmap Redis : consulter redis-info sur TCP 6379 sans tentative d'exécution distante.</p>
 
 ```bash
 nmap -sV -p 6379 --script redis-info <IP_CIBLE>
@@ -2642,7 +2642,7 @@ config get '*'  # Afficher les paramètres de configuration accessibles
 
 Vérifier les ports et les services de la cible autorisée.
 
-<p class="oscp-command-note">Netcat : ouvrir une connexion TCP vers un service non identifié (le protocole reste à déterminer).</p>
+<p class="oscp-command-note">Netcat : établir une connexion TCP à un port autorisé ; identifier ensuite le protocole.</p>
 
 ```bash
 # Tenter une connexion TCP à un port identifié dans le périmètre autorisé
@@ -2723,7 +2723,7 @@ proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
 
 Consulter la liste des partages publiés par un service NFS, avant toute tentative de montage.
 
-<p class="oscp-command-note">NFS : identifier les exports.</p>
+<p class="oscp-command-note">NFS : afficher les exports annoncés par mountd, lorsqu'ils sont publiés.</p>
 
 ```bash
 showmount -e <IP_CIBLE>
@@ -2733,7 +2733,7 @@ showmount -e <IP_CIBLE>
 
 Tester l'accès RPC sans identifiants ; un refus d'accès est un résultat normal et ne prouve pas une anomalie.
 
-<p class="oscp-command-note">RPC : examiner les utilisateurs visibles.</p>
+<p class="oscp-command-note">RPC : tenter l'énumération des utilisateurs sans identifiants ; un refus d'accès est normal.</p>
 
 ```bash
 rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
@@ -2743,7 +2743,7 @@ rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
 
 Essayer une communauté fournie pour l'audit. SNMPv1/v2c ne chiffre pas ces requêtes.
 
-<p class="oscp-command-note">SNMP : interroger les informations système.</p>
+<p class="oscp-command-note">SNMPv2c : lire les objets de la branche system avec une communauté autorisée.</p>
 
 ```bash
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> 1.3.6.1.2.1.1
@@ -2753,7 +2753,7 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> 1.3.6.1.2.1.1
 
 Interroger le port Redis avec un script NSE ciblé, puis confirmer la version et la configuration observées.
 
-<p class="oscp-command-note">Redis : rechercher les informations du service.</p>
+<p class="oscp-command-note">Nmap Redis : récupérer les informations exposées par le service avec redis-info.</p>
 
 ```bash
 nmap -sV -p 6379 --script redis-info <IP_CIBLE>
