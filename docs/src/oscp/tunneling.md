@@ -325,7 +325,7 @@ Avec `curl --socks5-hostname`, la résolution des noms DNS est déléguée au pr
 curl --socks5-hostname 127.0.0.1:1080 -I http://172.16.20.10/
 ```
 
-**ProxyChains :** si l'outil n'accepte pas SOCKS directement, ajouter `socks5 127.0.0.1 1080` à la section `[ProxyList]` du fichier `/etc/proxychains4.conf`, puis préfixer la commande par `proxychains4`. Dans Nmap, privilégier `-sT -Pn` derrière un proxy SOCKS.
+**ProxyChains :** si l'outil n'accepte pas SOCKS directement, ajouter `socks5 127.0.0.1 1080` à la section `[ProxyList]` de `/etc/proxychains4.conf`, puis utiliser `proxychains4` devant la commande. Vérifier que le serveur SOCKS Chisel est actif ; avec Nmap, utiliser `-sT -Pn` et éviter les scans SYN/UDP à travers ce proxy.
 
 ## SSH : alternative simple avec un compte valide
 
