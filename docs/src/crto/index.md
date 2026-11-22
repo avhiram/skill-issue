@@ -14,6 +14,8 @@ Les images, scripts et documents annexes sont également conservés dans le [dos
 - [README original](botesjuan/README.md)
 - [Bibliothèque de commandes](botesjuan/crto-command-library.md)
 
+Les cours et exercices sont regroupés ci-dessous, avec leurs titres d’origine.
+
 ## Cheatsheets
 
 - [Post-Exploitation-Privilege-Escalation-Enumeration.md](botesjuan/cheatsheets/Post-Exploitation-Privilege-Escalation-Enumeration.md)
