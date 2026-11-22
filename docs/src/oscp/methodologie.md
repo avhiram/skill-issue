@@ -965,7 +965,7 @@ Examiner les objets, les droits et les services du domaine.
 
 #### Énumération de base
 
-<p class="oscp-command-note">Afficher le nom de la machine.</p>
+<p class="oscp-command-note">Afficher le nom d’hôte.</p>
 
 ```powershell
 hostname
@@ -1164,7 +1164,7 @@ mimikatz # sekurlsa::logonPasswords
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\\Users\\Public</code></p>
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\\Users\\[Administrator/any_user]\\Desktop</code></p>
-<p class="oscp-command-note">Afficher le nom de la machine.</p>
+<p class="oscp-command-note">Afficher le nom d’hôte.</p>
 
 ```powershell
 hostname && whoami && ipconfig /all && type [local/proof].txt
