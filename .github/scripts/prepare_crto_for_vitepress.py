@@ -56,5 +56,14 @@ for path in ROOT.rglob("*.md"):
             for i, chunk in enumerate(pieces)
         ))
     rendered = "".join(output)
+    # Root-relative paths in the upstream repository assume the website is
+    # hosted at /. GitHub Pages uses /skill-issue/, so rewrite links only in
+    # this temporary build-time working copy, leaving Git blobs unchanged.
+    relative_root = "../" * len(path.relative_to(ROOT).parts[:-1])
+    for folder in ("images", "labs", "cheatsheets", "notes"):
+        rendered = rendered.replace(f'="/{folder}/', f'="{relative_root}{folder}/')
+        rendered = rendered.replace(f"='/{folder}/", f"='{relative_root}{folder}/")
+        rendered = rendered.replace(f'](/{folder}/', f']({relative_root}{folder}/')
+    rendered = rendered.replace("](/crto-command-library.md", f"]({relative_root}crto-command-library.md")
     if rendered != original:
         path.write_text(rendered, encoding="utf-8")
