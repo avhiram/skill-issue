@@ -320,7 +320,7 @@ Get-ComputerInfo | Select-Object CsName,WindowsProductName,WindowsVersion,OsBuil
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">Se connecter à la cible via VNC ou RDP.</p>
 
 ```bash
 xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboard /size:1920x1080 /drive:desktop,/home/[your_username]/Desktop
@@ -331,7 +331,7 @@ xfreerdp /compression +auto-reconnect /u:[user] /p:'[password]' /v:[IP] +clipboa
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">Se connecter à la cible via VNC ou RDP.</p>
 
 ```bash
 # Utiliser un hachage NTLM.
@@ -343,7 +343,7 @@ xfreerdp /size:1920x1080 /v:[IP] /u:[user] /H:[hash] /cert:ignore /dynamic-resol
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">Se connecter à la cible via VNC ou RDP.</p>
 
 ```bash
 # Utile lorsque GUI est nécessaire pour les attaques.
@@ -353,7 +353,7 @@ rdesktop [IP]
 
 ### Connexion RDP avec paramètres personnalisés
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">Se connecter à la cible via VNC ou RDP.</p>
 
 ```bash
 # Connectez-vous avec un nom d'utilisateur et un mot de passe
