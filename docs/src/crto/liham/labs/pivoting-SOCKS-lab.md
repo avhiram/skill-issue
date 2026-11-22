@@ -1,146 +1,146 @@
-# SOCKS Pivoting Lab
+# Lab — Pivoting SOCKS
 
-> **Objective:** Obtain an LDAP service ticket and use it to impersonate a user over a SOCKS proxy for domain enumeration 🚨 without touching LSASS 🚨 nor spawning suspicious child processes.  
+> **Objectif :** obtenir un ticket de service LDAP et utiliser un proxy SOCKS pour énumérer le domaine avec l’identité d’un utilisateur, sans lire directement la mémoire de LSASS.  
 
-**Lab flow summary:**
+**Résumé du déroulement du lab :**
 ```
 SYSTEM Beacon → krb_dump rsteel TGT → socks proxy on beacon
 → Attacker Desktop: DNS hosts → Proxifier → runas /netonly
 → Rubeus asktgs LDAP ticket → PTT → RSAT enumeration through proxy
 ```
 
-## Prerequisites
+## Prérequis
 
->krb_triage` and `krb_dump` are BOF commands added by Kerbeus-BOF loaded into your CS client  
+>`krb_triage` et `krb_dump` sont des commandes BOF disponibles après le chargement de Kerbeus-BOF dans le client Cobalt Strike.  
 
 ```
 Cobalt Strike → Script Manager → Load → C:\Tools\Kerbeus-BOF\kerbeus_cs.cna
 ```
 
-## Step 1 — Enumeration SYSTEM Beacon
+## Vérifier le Beacon SYSTEM
 
-In the Cobalt Strike UI, click the SYSTEM-integrity beacon on the target workstation. Confirm you are SYSTEM before dumping:
+Dans Cobalt Strike, sélectionner le Beacon de la workstation cible. Vérifier que la session possède bien les privilèges SYSTEM.
 
 ```cs
 getuid
 ```
 
-`OPSEC-🟢SAFE` — built-in, runs in beacon thread, no child process, no event log.
+`OPSEC-🟢SAFE` — commande intégrée exécutée dans le thread du Beacon, sans processus enfant.
 
-> **Why SYSTEM matters:** LSASS-backed Kerberos ticket cache is accessible from SYSTEM context. A medium-integrity beacon can call `krb_triage` only for its own session tickets. SYSTEM context gives access to all sessions on the box, including rsteel's interactive logon session.
+> **Pourquoi SYSTEM ?** Ce contexte permet d’interroger les tickets Kerberos de plusieurs sessions de la machine, dont la session interactive de `rsteel`. Un Beacon de moindre intégrité ne dispose pas nécessairement de ces accès.
 
 ---
 
-### Step 2 — List Cached Tickets (triage)
+### Lister les tickets Kerberos en cache
 
 ```cs
 krb_triage
 ```
 
-`OPSEC-🟢SAFE` — BOF, Kerberos API call inside beacon thread. No process spawn, no LSASS memory read, no Event 4624/4648. Invisible to most EDR process-tree heuristics.
+`OPSEC-🟢SAFE` dans ces notes — BOF utilisant les API Kerberos depuis le Beacon, sans lancer de processus enfant. Cette qualification ne garantit pas l’absence de télémétrie EDR.
 
-> **What to look for in output:**
-> - Find the entry where `User:` is `rsteel` and `Service:` is `krbtgt` — that is the TGT.
-> - Note the session LUID (e.g., `0x3e7`) shown next to the ticket entry — needed if you want to target a specific logon session.
-> - Tickets with `Service: krbtgt` are TGTs. Tickets with `Service: ldap`, `cifs`, etc. are service tickets already cached.
-> - Check the expiry — a TGT is typically valid 10h. If expired, rsteel must re-authenticate to get a fresh one.
+> **Points à relever dans la sortie :**
+> - Chercher l’entrée avec `User: rsteel` et `Service: krbtgt` : elle correspond au TGT.
+> - Noter le LUID de session (par exemple `0x3e7`) pour identifier précisément la session de connexion.
+> - Les tickets `krbtgt` sont des TGT ; les entrées `ldap` ou `cifs` sont des tickets de service.
+> - Contrôler la date d’expiration du ticket, dont la durée de validité dépend de la politique Kerberos.
 
 ---
 
-### Step 3 — Dump rsteel's TGT
+### Exporter le TGT de `rsteel`
 
->Dump the TGT for rsteel users.  
+>Exporter le TGT associé à l’utilisateur `rsteel`.  
 
 ```cs
 krb_dump /user:rsteel /service:krbtgt
 ```
 
-`OPSEC-🟢SAFE` — BOF, Kerberos API (`LsaCallAuthenticationPackage` → `KerbRetrieveEncodedTicketMessage`). Does NOT open a handle to LSASS process memory (avoids Event 10 / Sysmon LSASS access telemetry). Output is a base64-encoded `.kirbi` blob printed to the beacon console.
+`OPSEC-🟢SAFE` dans ces notes — le BOF utilise les API Kerberos (`LsaCallAuthenticationPackage` et `KerbRetrieveEncodedTicketMessage`). La sortie contient un ticket `.kirbi` encodé en Base64.
 
-> `mimikatz` run directly in the beacon is `OPSEC-🔴UNSAFE`  
->`execute-assembly Rubeus.exe dump` is `OPSEC-🟠CAUTION` spawns a sacrificial process via fork-and-run  
->`krb_dump` is the exam-day preferred method OPSEC-🟢SAFE
+> L’exécution directe de `mimikatz` dans le Beacon est classée `OPSEC-🔴UNSAFE`.  
+>`execute-assembly Rubeus.exe dump` est classé `OPSEC-🟠CAUTION` car il emploie le mécanisme fork-and-run.  
+>`krb_dump` est la méthode privilégiée dans ces notes pour le lab (`OPSEC-🟢SAFE`).
 
-### Step 4 — Save the Encoded Ticket
+### Enregistrer le ticket encodé
 
-Copy the entire base64 blob from the beacon console output.  
-Open Notepad or VSCode on the Attacker Desktop and paste it. You will reference it as `[ENCODED TGT]` in the next phase.  
+Copier toute la valeur Base64 depuis la console du Beacon.  
+Sur l’Attacker Desktop, la coller dans Notepad ou VS Code. Elle sera désignée par `[ENCODED TGT]` dans la suite.  
 
-> **Tip:** The base64 blob is a single line. If it word-wraps in the console, select-all from the beacon output pane and paste into a text editor first to de-wrap it. Rubeus `asktgs` will reject a ticket with embedded newlines.
+> **Conseil :** conserver la chaîne Base64 sur une seule ligne. Des retours à la ligne ajoutés lors de la copie peuvent empêcher Rubeus `asktgs` de lire le ticket.
 
 ---
 
-## Phase 2 — SOCKS Proxy
+## Configurer le proxy SOCKS
 
-> **Why:** The SOCKS proxy tunnels TCP traffic from the Attacker Desktop through the beacon's C2 channel to the internal network. This lets tools on the Attacker Desktop (Rubeus, RSAT cmdlets, BloodHound) reach DCs and other internal hosts as if they were directly on the network — without needing a separate VPN or additional implant.
+> **Principe :** le proxy SOCKS transporte les connexions TCP de l’Attacker Desktop vers le réseau interne via le canal C2 du Beacon. Les outils locaux peuvent ainsi joindre les services du lab à travers le tunnel.
 
-### Start the SOCKS Proxy
+### Démarrer le proxy SOCKS
 
 ```cs
 beacon> socks 1080 socks5
 ```
 
-`OPSEC-🟢SAFE` — runs inside the beacon's existing C2 channel. No new network connection or listening port is opened on the **target**. The listening port `1080` is on the **team server** (Kali), not on the compromised host. No child process, no disk write.
+Le port d’écoute `1080` est configuré sur le **team server**, et non directement sur l’hôte cible. Le tunnel utilise le canal C2 existant.
 
-> **Which beacon to use:** SOCKS does not require local admin or SYSTEM. The medium-integrity beacon is fine. Using the medium-integrity beacon is preferred — it keeps the SYSTEM beacon free for privilege-sensitive operations and reduces SYSTEM beacon exposure time.
+> **Choix du Beacon :** un proxy SOCKS ne nécessite pas systématiquement SYSTEM. Un Beacon de moindre intégrité peut suffire si sa connectivité réseau et ses permissions le permettent.
 
-> **Port note:** `1080` is the default SOCKS port. Any unused port on the team server works. If you run multiple proxy pivots (e.g., into a second forest), use different ports (`1081`, `1082`).
+> **Ports :** `1080` est couramment utilisé pour SOCKS. Plusieurs tunnels nécessitent des ports d’écoute distincts, par exemple `1081` et `1082`.
 
-❗ Cobalt Strike client is no longer needed after this step ❗  
+❗ La configuration du proxy peut ensuite être utilisée depuis les outils locaux ❗  
 
 ---
 
-## Phase 3 — DNS Resolution (Attacker Desktop)
+## Résolution DNS depuis l’Attacker Desktop
 
-> **Why:** Internal hostnames like `lon-dc-1` and `contoso.com` do not resolve from the Attacker Desktop's default DNS — it is outside the domain. Without static host entries, Rubeus and RSAT cmdlets cannot resolve the DC by name, and Kerberos will fail (Kerberos is name-sensitive; IP-only does not work for ticket validation).
+> **Pourquoi :** l’Attacker Desktop étant hors domaine, son DNS ne résout pas nécessairement les noms internes comme `lon-dc-1` et `contoso.com`. La résolution de noms doit être correcte pour les échanges Kerberos du lab.
 
-### Add Static Hosts Entries
+### Ajouter les entrées dans le fichier hosts
 
-💡  Terminal **as Administrator** on the Attacker Desktop 💡  to write to `drivers\etc\hosts`💡  
+💡  Ouvrir un terminal **en administrateur** sur l’Attacker Desktop 💡  pour modifier `drivers\etc\hosts`💡  
 
 ```powershell
 Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "10.10.120.1 lon-dc-1 lon-dc-1.contoso.com contoso.com"
 ```
 
-## Phase 4 — Proxifier
+## Configurer Proxifier
 
-> **Why:** Windows tools (Rubeus.exe, RSAT cmdlets like `Get-ADUser`) use the Windows networking stack and are not proxy-aware by default — they ignore environment variables like `http_proxy`. Proxifier intercepts all TCP connections from specified applications at the socket level and reroutes them through the SOCKS5 proxy on the team server. This is transparent to the applications.
+> **Rôle de Proxifier :** certains outils Windows comme Rubeus et les cmdlets RSAT ne prennent pas directement en charge SOCKS. Proxifier redirige leurs connexions TCP vers le proxy défini dans ses règles.
 
-### Launch Proxifier
+### Ouvrir Proxifier
 
-From the Windows Start menu, launch **Proxifier**. It opens minimised in the system tray — click the tray icon to open the full window.
+Ouvrir **Proxifier** depuis le menu Démarrer de Windows, puis sélectionner son icône dans la zone de notification si la fenêtre est réduite.
 
 ---
 
-### Configure the Proxy Server
+### Définir le serveur proxy
 
 **Profile → Proxy Servers → Add**
 
-| Field    | Value              |
+| Champ    | Valeur              |
 |----------|--------------------|
 | Address  | `10.0.0.5`         |
 | Port     | `1080`             |
 | Protocol | SOCKS Version 5    |
 
-Click **OK**.
+Cliquer sur **OK**.
 
-> A dialog asks "Use this proxy by default?" — click **No**. You want granular control via rules, not all traffic proxied (that would break internet connectivity on the Attacker Desktop).
+> Lorsque la fenêtre propose d’utiliser ce proxy par défaut, choisir **No** pour conserver un routage limité aux règles définies.
 
-Click **OK** again.
+Cliquer de nouveau sur **OK**.
 
-> A second dialog asks to edit Proxification Rules — click **Yes**.
+> Lorsque Proxifier propose de modifier les règles, choisir **Yes**.
 
 ---
 
-### Configure Proxification Rules
+### Configurer les règles de Proxification
 
-**Add** a new rule:
+Ajouter une règle :
 
 | Field        | Value                        |
 |--------------|------------------------------|
-| Name         | `Beacon`                     |
-| Target hosts | `10.10.120.0/23`             |
-| Target ports | `Any`                        |
+| Nom          | `Beacon`                     |
+| Hôtes cibles | `10.10.120.0/23`             |
+| Ports cibles | `Any`                        |
 | Action       | Proxy SOCKS5 10.0.0.5        |
 
 <img src="/images/Proxification-Rules-target-hosts-network-subnet-proxychains.png">  
