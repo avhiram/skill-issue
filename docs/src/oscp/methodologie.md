@@ -3,13 +3,9 @@ title: "OSCP · Méthodologie OSCP"
 description: "Organiser les vérifications et la collecte des résultats."
 ---
 
-# OSCP · Méthodologie OSCP
-
-Organiser les vérifications et la collecte des résultats.
+# Méthodologie OSCP
 
 ### Scan initial
-
-Vérifier les ports et les services de la cible autorisée.
 
 ### Méthodologie générale
 
