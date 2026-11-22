@@ -59,7 +59,7 @@ for path in ROOT.rglob("*.md"):
     # Root-relative paths in the upstream repository assume the website is
     # hosted at /. GitHub Pages uses /skill-issue/, so rewrite links only in
     # this temporary build-time working copy, leaving Git blobs unchanged.
-    relative_root = "../" * len(path.relative_to(ROOT).parts[:-1])
+    relative_root = "../" * len(path.relative_to(ROOT).parts[:-1]) or "./"
     for folder in ("images", "labs", "cheatsheets", "notes"):
         rendered = rendered.replace(f'="/{folder}/', f'="{relative_root}{folder}/')
         rendered = rendered.replace(f"='/{folder}/", f"='{relative_root}{folder}/")
