@@ -9,6 +9,12 @@ description: "Scénarios reproduisibles Linux, Windows, Kali, SCP, SMB, HTTP, We
 
 Les IP ci-dessous sont des **exemples de laboratoire** à remplacer : **Kali** `10.10.14.10` · **Linux distant** `10.10.10.20` · **Windows distant** `10.10.10.30`. Tous les fichiers et comptes montrés sont fictifs.
 
+## Choisir le sens du transfert
+
+Sélectionne le système qui possède le fichier, puis celui qui doit le recevoir. Les commandes s'affichent **dans l'ordre d'exécution**, avec la machine sur laquelle les lancer.
+
+<TransferSelector />
+
 ## Quelle méthode choisir ?
 
 | Départ → destination | Meilleure option | Condition |
