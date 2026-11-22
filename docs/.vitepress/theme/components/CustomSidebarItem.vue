@@ -4,6 +4,9 @@ import { computed } from 'vue'
 import { useSidebarControl } from 'vitepress/dist/client/theme-default/composables/sidebar'
 import VPLink from 'vitepress/dist/client/theme-default/components/VPLink.vue'
 
+// Masquer les préfixes de classement dans les libellés, sans modifier les liens ni les numéros techniques.
+const cleanSidebarLabel = (label: string) => label.replace(/^\s*\d{1,2}\s*[.)-]\s+/, '')
+
 const props = defineProps<{
   item: DefaultTheme.SidebarItem
   depth: number
@@ -90,12 +93,12 @@ function onCaretClick() {
         :target="item.target"
       >
         <component :is="textTag" class="text">
-          {{ item.text }}
+          {{ cleanSidebarLabel(item.text) }}
           <span v-if="badgeText" :class="['badge', badgeClass]">{{ badgeText }}</span>
         </component>
       </VPLink>
       <component v-else :is="textTag" class="text">
-        {{ item.text }}
+        {{ cleanSidebarLabel(item.text) }}
         <span v-if="badgeText" :class="['badge', badgeClass]">{{ badgeText }}</span>
       </component>
 
