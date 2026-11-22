@@ -505,55 +505,50 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 <p class="oscp-command-note">Nmap (FTP) : lancer les scripts NSE « ftp-anon, ftp-bounce, ftp-libopie ».</p>
 
 ```bash
-nmap --script ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 [IP]
+nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst <IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">Ouvrir FTP et tester une connexion anonyme, si elle est autorisée.</p>
 
 ```bash
-ftp -A [IP]
-ftp [IP]
-
-# Connexion avec des identifiants anonymes
-anonymous:anonymous
-
-# Télécharger un fichier de test pour vérifier la réflexion sur un port HTTP
-put test.txt
+ftp <IP_CIBLE>
+# À l'invite « Name », saisir anonymous ; à l'invite du mot de passe, saisir une adresse électronique de test.
+# Après connexion, « ls » liste les fichiers distants ; « get fichier.txt » télécharge un fichier autorisé.
 
 ```
 
 ```bash
+# Dans une session FTP déjà ouverte :
 ftp> binary
-
-ftp> put [binary_file]
+ftp> put fichier.bin
 
 ```
 
 <p class="oscp-command-note">Télécharger une ressource distante.</p>
 
 ```bash
-wget -r ftp://[user]:[password]@[IP]/
+wget -r 'ftp://<IP_CIBLE>/repertoire/'
 
 # Recherche de fichiers spécifiques
-find / -name [filename_pattern] 2>/dev/null
+find / -name 'nom_fichier' 2>/dev/null
 
 # Exemple de recherche de fichiers
-find / -name Settings.*  2>/dev/null
+find / -name 'Settings.*' 2>/dev/null
 
 ```
 
 <p class="oscp-command-note">Hydra : tester des identifiants autorisés sur FTP à partir d'un dictionnaire.</p>
 
 ```bash
-hydra -l [username] -P [path_to_wordlist] [IP] -t 4 ftp
+hydra -l <UTILISATEUR> -P liste_mots_de_passe.txt -t 4 ftp://<IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">Ouvrir une session FTP sur le serveur cible.</p>
 
 ```bash
-ftp -p [IP]
+ftp -p <IP_CIBLE>
 
 ```
 
@@ -565,7 +560,7 @@ Vérifier si le serveur autorise une connexion anonyme, sans modifier les fichie
 
 ```bash
 curl -v 'ftp://anonymous:anonymous@<IP_CIBLE>/'
-wget -q --spider 'ftp://anonymous:anonymous@<IP_CIBLE>/'
+curl --list-only 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 ```
 
 ### 22: SSH
@@ -583,10 +578,10 @@ nmap -p 22 --script=ssh-auth-methods <target_ip>
 nmap -p 22 --script=ssh-brute --script-args userdb=/usr/share/seclists/Usernames/top-usernames-shortlist.txt,passdb=/usr/share/wordlists/rockyou.txt <target_ip>
 
 # Identifier la version SSH
-nmap -p 22 --script=ssh3-enum-algos <target_ip>
+nmap -p 22 --script ssh2-enum-algos <IP_CIBLE>
 
 # Examiner les algorithmes SSH anciens
-nmap -p 22 --script=ssh3-enum-algos,sshv1 <target_ip>
+nmap -p 22 --script ssh2-enum-algos,sshv1 <IP_CIBLE>
 
 # Authentification SSH par clé publique
 nmap -p 22 --script=ssh-publickey-acceptance --script-args ssh.user=<username>,ssh.privatekey=<path_to_private_key> <target_ip>
@@ -607,32 +602,31 @@ hydra -f -V -C /usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefau
 <p class="oscp-command-note">Modifier les permissions d&#x27;un fichier.</p>
 
 ```bash
-chmod 600 [output_key_file]
-
-ssh [user]@[IP] -i [output_key_file]
+chmod 600 cle_privee
+ssh -i cle_privee <UTILISATEUR>@<IP_CIBLE>
 
 ```
 
 ```bash
-puttygen [putty_key_file] -O private-openssh -o [output_key_file]
+puttygen cle_putty.ppk -O private-openssh -o cle_privee
 
 ```
 
 <p class="oscp-command-note">Préparer une empreinte de clé SSH pour John.</p>
 
 ```bash
-ssh2john <private_key_file> > <private_key_file>.hash
+ssh2john cle_privee > cle_privee.hash
 
-john --wordlist=/usr/share/wordlists/rockyou.txt <private_key_file>.hash
+john --wordlist=/usr/share/wordlists/rockyou.txt cle_privee.hash
 
 ```
 
 <p class="oscp-command-note">Localiser les clés SSH et les fichiers associés.</p>
 
 ```bash
-find /etc/ssh -name "*.pub"
+find /etc/ssh -type f -name '*.pub' 2>/dev/null
 
-find /home/<user>/.ssh -name "id_*"
+find "$HOME/.ssh" -type f -name 'id_*' 2>/dev/null
 
 ```
 
@@ -711,13 +705,12 @@ scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/con
 
 ```
 
-**Paramètres et repères :**
-`UserKnownHostsFile` · `/dev/null` · `StrictHostKeyChecking` · `no`  
+**Sécurité SSH :** `accept-new` accepte automatiquement une nouvelle empreinte, mais refuse une empreinte modifiée. Vérifier l'empreinte par un canal fiable avant toute première connexion sensible.  
 
 <p class="oscp-command-note">Ouvrir une connexion SSH.</p>
 
 ```bash
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user@target_ip
+ssh -o StrictHostKeyChecking=accept-new <UTILISATEUR>@<IP_CIBLE>
 
 ```
 
@@ -795,10 +788,10 @@ ssh -i <private_key_file> <user>@<target_ip>
 
 ```bash
 # Connexion de base
-telnet <target_ip> 23
+telnet <IP_CIBLE> 23
 
 # Se connecter avec un nom d'utilisateur précis
-telnet -l <username> <target_ip>
+telnet -l <UTILISATEUR> <IP_CIBLE>
 
 ```
 
@@ -940,7 +933,7 @@ Interroger les enregistrements DNS et identifier les services associés.
 <p class="oscp-command-note">Nmap (DNS) : lancer les scripts NSE « dns-brute, dns-nsid, dns-recursion ».</p>
 
 ```bash
-nmap --script dns-brute,dns-nsid,dns-recursion,dns-zone-transfer -p 53 <target_ip>
+nmap -sU -p 53 --script dns-nsid,dns-recursion <IP_CIBLE>
 
 ```
 
@@ -953,8 +946,8 @@ nmap -p 53 --script "dns-nsid,dns-srv-enum" <target_ip>
 <p class="oscp-command-note">Interroger les enregistrements DNS.</p>
 
 ```bash
-dig axfr <domain_name> @<dns_server_ip>  # Attempt zone transfer
-dig ANY <domain_name> @<dns_server_ip>  # Retrieve all records
+dig @<SERVEUR_DNS> <DOMAINE> AXFR  # Tenter un transfert de zone DNS autorisé
+dig @<SERVEUR_DNS> <DOMAINE> ANY  # ANY ne garantit pas le retour de tous les enregistrements
 nslookup
 > server <dns_server_ip>
 > set type=any
@@ -973,21 +966,21 @@ dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain
 <p class="oscp-command-note">Nmap -sL : demander la résolution DNS des adresses d'une plage sans scanner les ports.</p>
 
 ```bash
-nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a range
+nmap -sL <RESEAU_CIDR>  # Lister les cibles et tenter leur résolution DNS inverse, sans scanner les ports
 
 ```
 
 <p class="oscp-command-note">Interroger les enregistrements DNS.</p>
 
 ```bash
-dig @<dns_server_ip> -t A +norecurse <target_domain>
+dig @<SERVEUR_DNS> <DOMAINE> A +norecurse
 
 ```
 
 <p class="oscp-command-note">Résoudre un nom DNS avec PowerShell.</p>
 
 ```powershell
-Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
+Resolve-DnsName -Name <DOMAINE> -Server <SERVEUR_DNS> -DnsOnly
 
 ```
 
@@ -1019,7 +1012,7 @@ Transférer ou récupérer des fichiers dans le laboratoire.
 <p class="oscp-command-note">Nmap (TFTP) : lancer les scripts NSE « tftp-enum ».</p>
 
 ```bash
-nmap -p 69 --script tftp-enum <target_ip>
+sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
 
 ```
 
@@ -1059,7 +1052,7 @@ fi
 
 ```bash
 # Interroger le service TFTP
-tftp <target_ip> 69
+tftp <IP_CIBLE> 69
 tftp> get <remote_file> <local_file>
 tftp> quit
 
