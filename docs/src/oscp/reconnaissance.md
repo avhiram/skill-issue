@@ -2467,6 +2467,37 @@ DROP TABLE IF EXISTS cmd_exec;
 
 ```
 
+<p class="oscp-command-note">Dans psql : requêtes SQL de lecture et modifications de données de démonstration, à exécuter séparément des méta-commandes.</p>
+
+```sql
+-- Lire les lignes d'une table autorisée
+SELECT * FROM <TABLE_NAME>;
+
+-- Filtrer les lignes d'une table existante
+SELECT * FROM users WHERE attribute = 'value';
+
+-- Inventorier les colonnes du schéma public
+SELECT table_name, column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'public';
+
+-- Créer une table de démonstration (écriture, laboratoire uniquement)
+CREATE TABLE test_table (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insérer une ligne de test
+INSERT INTO test_table (name) VALUES ('example_data');
+
+-- Modifier uniquement la ligne de test choisie
+UPDATE test_table SET name = 'updated_data' WHERE id = 1;
+
+-- Supprimer uniquement la ligne de test choisie
+DELETE FROM test_table WHERE id = 1;
+```
+
 ### 5900: VNC (Virtual Network Computing)
 
 <p class="oscp-command-note">Nmap VNC : relever les informations du service sur TCP 5900 avec vnc-info.</p>
