@@ -1711,7 +1711,7 @@ https://github.com/ahmetgurel/Pentest-Hints/blob/master/AD%20Hunting%20Passwords
 `cpassword`  
 
 
-<p class="oscp-command-note">Rechercher un motif textuel.</p>
+<p class="oscp-command-note">Rechercher les occurrences de « cpassword » dans le répertoire courant et ses sous-dossiers.</p>
 
 ```bash
 grep -inr "cpassword"
