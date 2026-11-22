@@ -2651,10 +2651,10 @@ config get '*'
 
 Vérifier les ports et les services de la cible autorisée.
 
-<p class="oscp-command-note">Netcat : établir une connexion TCP à un port autorisé ; identifier ensuite le protocole.</p>
+<p class="oscp-command-note">Netcat : ouvrir une connexion TCP à un port autorisé ; -n évite la résolution DNS et -v affiche les détails.</p>
 
 ```bash
-# Tenter une connexion TCP à un port identifié dans le périmètre autorisé
+# Depuis Kali : établir une connexion TCP vers un port autorisé, sans présumer du protocole
 nc -nv <IP_CIBLE> <PORT_TCP>
 
 ```
@@ -2705,13 +2705,13 @@ openssl s_client -connect <IP_CIBLE>:<PORT> -brief
 
 ## Vérifications ciblées des services
 
-Ces vérifications complètent l'inventaire des ports. Elles s'utilisent uniquement sur les hôtes inclus dans le périmètre d'audit. Un résultat de scan est un indice : confirmer manuellement la configuration avant de conclure.
+Ces contrôles complètent l'inventaire des ports sur les hôtes autorisés. Un résultat NSE est un indice à confirmer ; certains scripts peuvent être intrusifs, vérifier leur catégorie et leur aide avant exécution.
 
 ### Nmap : examiner précisément un service
 
-Afficher la documentation d'un script NSE, puis interroger uniquement SMB sur le port 445.
+Consulter la description et les prérequis d'un script NSE avant de le lancer sur le port SMB 445.
 
-<p class="oscp-command-note">Nmap : consulter l'aide du script smb-ls puis l'exécuter uniquement sur TCP 445.</p>
+<p class="oscp-command-note">Nmap NSE : lire l'aide de smb-ls avant le scan SMB ; la présence du script ne garantit pas l'accès aux fichiers.</p>
 
 ```bash
 nmap --script-help smb-ls
@@ -2720,9 +2720,9 @@ nmap -sV -p 445 --script smb-ls <IP_CIBLE>
 
 ### Découverte via un proxy TCP
 
-Utiliser un scan TCP connect lorsque l'accès réseau passe par un proxy SOCKS. Les scans SYN ou UDP ne se comportent pas comme un scan TCP connect derrière proxychains.
+Avec proxychains, préférer un scan TCP connect (-sT) et -Pn ; les scans SYN et UDP ne passent pas de la même manière par un proxy SOCKS.
 
-<p class="oscp-command-note">Proxy SOCKS : utiliser proxychains4 avec Nmap -sT -Pn ; la résolution DNS et les délais dépendent du proxy.</p>
+<p class="oscp-command-note">proxychains4 : scanner en TCP connect (-sT -Pn) ; vérifier d'abord le proxy SOCKS et éviter les scans SYN/UDP via ce chemin.</p>
 
 ```bash
 proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
@@ -2730,9 +2730,9 @@ proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
 
 ### NFS : identifier les exports
 
-Consulter la liste des partages publiés par un service NFS, avant toute tentative de montage.
+Interroger les exports NFS publiés via mountd avant tout montage ; NFSv4 peut ne pas exposer cette information par showmount.
 
-<p class="oscp-command-note">NFS : afficher les exports annoncés par mountd, lorsqu'ils sont publiés.</p>
+<p class="oscp-command-note">showmount -e : afficher les exports annoncés par mountd ; l'absence de réponse ne prouve pas l'absence de NFSv4.</p>
 
 ```bash
 showmount -e <IP_CIBLE>
@@ -2740,9 +2740,9 @@ showmount -e <IP_CIBLE>
 
 ### RPC : examiner les utilisateurs visibles
 
-Tester l'accès RPC sans identifiants ; un refus d'accès est un résultat normal et ne prouve pas une anomalie.
+Tester une énumération RPC anonyme seulement si elle est autorisée ; un refus d'accès ne signifie pas que le port SMB est fermé.
 
-<p class="oscp-command-note">RPC : tenter l'énumération des utilisateurs sans identifiants ; un refus d'accès est normal.</p>
+<p class="oscp-command-note">rpcclient : -U '' -N tente une session sans mot de passe ; enumdomusers dépend des permissions RPC.</p>
 
 ```bash
 rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
@@ -2750,9 +2750,9 @@ rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
 
 ### SNMP : interroger les informations système
 
-Essayer une communauté fournie pour l'audit. SNMPv1/v2c ne chiffre pas ces requêtes.
+Utiliser uniquement une communauté SNMP fournie dans le périmètre ; SNMPv1/v2c transmet ses données sans chiffrement.
 
-<p class="oscp-command-note">SNMPv2c : lire les objets de la branche system avec une communauté autorisée.</p>
+<p class="oscp-command-note">snmpwalk : parcourir la branche system (1.3.6.1.2.1.1) avec une communauté SNMPv2c autorisée.</p>
 
 ```bash
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> 1.3.6.1.2.1.1
@@ -2760,9 +2760,9 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> 1.3.6.1.2.1.1
 
 ### Redis : rechercher les informations du service
 
-Interroger le port Redis avec un script NSE ciblé, puis confirmer la version et la configuration observées.
+Exécuter redis-info uniquement sur une cible autorisée ; confirmer ensuite la version et la configuration avec un client adapté.
 
-<p class="oscp-command-note">Nmap Redis : récupérer les informations exposées par le service avec redis-info.</p>
+<p class="oscp-command-note">Nmap NSE redis-info : relever les informations accessibles sur TCP 6379 ; un échec peut résulter d'une authentification obligatoire.</p>
 
 ```bash
 nmap -sV -p 6379 --script redis-info <IP_CIBLE>
@@ -2778,9 +2778,9 @@ Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelso
 
 ## Syntaxes complémentaires de la source
 
-Exemples présents hors des rubriques principales de la page d'origine.
+Cette section rassemble les éléments complémentaires non encore classés ; vérifier leur syntaxe avant de les réutiliser.
 
 **Paramètres et repères :**
-`-m`  
+`-m` : option dont le sens dépend de l'outil ; ne pas l'utiliser isolément sans commande et documentation associées.  
 
 <!-- refined-oscp -->
