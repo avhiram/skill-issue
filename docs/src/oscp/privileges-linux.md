@@ -326,7 +326,7 @@ tcpdump -vv -i eth0 src not 10.11.1.111 and dst not 10.11.1.111
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Rechercher un motif textuel.</p>
+<p class="oscp-command-note">Rechercher les événements cron dans les journaux système.</p>
 
 ```bash
 grep "CRON" /var/log/syslog
@@ -617,7 +617,7 @@ sudo -l
 ```
 
 
-<p class="oscp-command-note">Rechercher un motif textuel.</p>
+<p class="oscp-command-note">Filtrer les journaux système par nom de processus.</p>
 
 ```bash
 grep [process_name] /var/log/syslog
