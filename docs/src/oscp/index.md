@@ -9,8 +9,6 @@ description: Aide-mémoire OSCP en français
 
 **Liham** · OffSec · [Vérifier le certificat](https://credentials.offsec.com/755cac44-117f-407d-8d71-a8fda4aed16e#acc.DNIqrLYR)
 
-Consulte une fiche par thème ou utilise la recherche du site.
-
 **Pendant l’examen**, OffSec interdit notamment Nessus et SQLmap. [Règles officielles de l’OSCP+](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).
 
 ## Toutes les rubriques
@@ -36,4 +34,3 @@ Consulte une fiche par thème ou utilise la recherche du site.
 - [**Méthodologie**](methodologie.md) : Organiser les vérifications pendant un examen.
 - [**Références**](references.md) : Consulter les consignes officielles de l’examen.
 
-Sources : [OSCP+ Cheatsheet d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html) et [notes OSCP de krovs](https://github.com/krovs/oscp-notes/tree/main/docs).
