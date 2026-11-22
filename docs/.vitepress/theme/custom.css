@@ -340,3 +340,51 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   .vp-doc div[class*="language-"]:has(> button.copy) > pre,
   .vp-doc .line-numbers-mode .line-numbers-wrapper { padding-top: 50px; }
 }
+
+/* CRTO: clean reading layout. The upstream files remain unchanged in Git. */
+.VPDoc.crto-page .vp-doc {
+  overflow-wrap: break-word;
+}
+.VPDoc.crto-page .vp-doc h1 {
+  line-height: 1.2;
+}
+.VPDoc.crto-page .vp-doc blockquote {
+  margin: 1rem 0;
+  padding: .65rem .85rem;
+  border-left: 2px solid #8C6DC1;
+  border-radius: 0 6px 6px 0;
+  background: #14101C;
+  color: #BEB5D0;
+  font-size: .91rem;
+  line-height: 1.65;
+}
+.VPDoc.crto-page .vp-doc blockquote p {
+  margin: .25rem 0;
+}
+.VPDoc.crto-page .vp-doc :is(ol, ul) {
+  padding-left: 1.5rem;
+}
+.VPDoc.crto-page .vp-doc :is(ol, ul) > li {
+  margin: .55rem 0;
+}
+.VPDoc.crto-page .vp-doc div[class*="language-"] > pre,
+.VPDoc.crto-page .vp-doc div[class*="language-"] > pre > code,
+.VPDoc.crto-page .vp-doc div[class*="language-"] .vp-code .line {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.VPDoc.crto-page .vp-doc div[class*="language-"] > pre {
+  overflow-x: auto;
+}
+.VPDoc.crto-page .vp-doc pre:not(.vp-code) {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.VPDoc.crto-page .VPDocAsideOutline .outline-link {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-overflow: clip;
+  line-height: 1.35;
+  margin-block: .12rem;
+}
