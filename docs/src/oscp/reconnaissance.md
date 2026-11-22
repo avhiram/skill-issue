@@ -488,7 +488,7 @@ rustscan -a <IP_CIBLE> -p 1-65535 -- -sS -sU
 
 Vérifier les hôtes répondant à ICMP dans un sous-réseau de laboratoire, sans considérer les non-répondants comme absents.
 
-<p class="oscp-command-note">Découverte d'hôtes avec fping.</p>
+<p class="oscp-command-note">fping : afficher les hôtes répondant à ICMP dans le réseau indiqué ; les autres peuvent être filtrés.</p>
 
 ```bash
 fping -a -g <RESEAU_CIDR> 2>/dev/null
@@ -509,7 +509,7 @@ nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Ouvrir FTP et tester une connexion anonyme, si elle est autorisée.</p>
+<p class="oscp-command-note">FTP : ouvrir le client puis saisir anonymous à l'invite du nom d'utilisateur si l'accès anonyme est autorisé.</p>
 
 ```bash
 ftp 192.0.2.10
@@ -538,14 +538,14 @@ find / -name 'Settings.*' 2>/dev/null
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur FTP à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra FTP : tester un compte et un dictionnaire autorisés ; limiter les tentatives pour éviter les verrouillages.</p>
 
 ```bash
 hydra -l <UTILISATEUR> -P liste_mots_de_passe.txt -t 4 ftp://<IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Ouvrir une session FTP sur le serveur cible.</p>
+<p class="oscp-command-note">FTP : se connecter au serveur en mode passif (-p) si le client FTP utilisé prend cette option en charge.</p>
 
 ```bash
 ftp -p 192.0.2.10
@@ -556,7 +556,7 @@ ftp -p 192.0.2.10
 
 Vérifier si le serveur autorise une connexion anonyme, sans modifier les fichiers distants.
 
-<p class="oscp-command-note">Accès FTP anonyme.</p>
+<p class="oscp-command-note">FTP anonyme : tester la connexion et lister les fichiers sans modifier le serveur.</p>
 
 ```bash
 curl -v 'ftp://anonymous:anonymous@<IP_CIBLE>/'
@@ -565,7 +565,7 @@ curl --list-only 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 
 ### 22: SSH
 
-<p class="oscp-command-note">Nmap (SSH) : lancer les scripts NSE « ssh-hostkey ».</p>
+<p class="oscp-command-note">Nmap SSH : examiner clés, algorithmes et authentification ; les tests brute-force sont distincts et intrusifs.</p>
 
 ```bash
 # Relever les empreintes des clés d'hôte SSH annoncées par le serveur
@@ -588,7 +588,7 @@ nmap -p 22 --script=ssh-publickey-acceptance --script-args ssh.user=<username>,s
 
 ```
 
-<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur SSH à partir d'un dictionnaire.</p>
+<p class="oscp-command-note">Hydra SSH : tester des identifiants de laboratoire ; attention aux limitations et verrouillages de comptes.</p>
 
 ```bash
 hydra -l <user> -P /usr/share/wordlists/rockyou.txt <target_ip> -t 4 ssh
@@ -612,7 +612,7 @@ puttygen cle_putty.ppk -O private-openssh -o cle_privee
 
 ```
 
-<p class="oscp-command-note">Préparer une empreinte de clé SSH pour John.</p>
+<p class="oscp-command-note">John : extraire le hash d'une clé privée SSH chiffrée, puis tester sa phrase secrète en laboratoire.</p>
 
 ```bash
 ssh2john cle_privee > cle_privee.hash
@@ -630,7 +630,7 @@ find "$HOME/.ssh" -type f -name 'id_*' 2>/dev/null
 
 ```
 
-<p class="oscp-command-note">Préparer une empreinte de clé SSH pour John.</p>
+<p class="oscp-command-note">SSH : distinguer extraction de hash d'une clé chiffrée et essai d'authentification avec cette clé.</p>
 
 ```bash
 # Extraire le hash d'une clé privée chiffrée (inutile si elle n'a pas de phrase secrète)
@@ -641,26 +641,26 @@ ssh <user>@<target_ip> -p <port> -i <private_key_file> # Error message: Permissi
 
 ```
 
-<p class="oscp-command-note">Transférer des fichiers via SSH.</p>
+<p class="oscp-command-note">SCP : copier des fichiers depuis une machine distante vers Kali, avec les droits de lecture requis.</p>
 
 ```bash
 # Récupérer un fichier distant vers la machine locale
 scp user@remote_host:/path/to/remote/file /path/to/local/destination
 scp user@192.168.1.10:/etc/config.txt /home/user/config.txt
 
-# Récupérer plusieurs fichiers distants vers la machine locale
-scp user@remote_host:/path/to/remote/file1 /path/to/remote/file2 /local/destination/
+# Récupérer plusieurs fichiers d'un même hôte distant vers un répertoire local existant
+scp user@remote_host:/path/to/remote/file1 user@remote_host:/path/to/remote/file2 /local/destination/
 scp user@192.168.1.10:/etc/config.txt user@192.168.1.10:/etc/passwd /home/user/
 
 # Récupérer récursivement un répertoire distant
 scp -r user@remote_host:/path/to/remote/directory /local/destination/
 scp -r user@192.168.1.10:/var/www/html /home/user/
 
-# Récupérer un fichier avec un port SSH non standard (option -P majuscule)
+# Récupérer un fichier via un port SSH non standard : -P majuscule pour scp
 scp -P 2222 user@remote_host:/path/to/remote/file /local/destination/
 scp -P 2222 user@192.168.1.10:/etc/config.txt /home/user/
 
-# Télécharger un fichier utilisant une clé privée
+# Récupérer un fichier distant avec une clé privée SSH lisible uniquement par son propriétaire
 scp -i /path/to/private_key user@remote_host:/path/to/remote/file /local/destination/
 scp -i ~/.ssh/id_rsa user@192.168.1.10:/etc/config.txt /home/user/
 
@@ -668,7 +668,7 @@ scp -i ~/.ssh/id_rsa user@192.168.1.10:/etc/config.txt /home/user/
 scp -v user@remote_host:/path/to/remote/file /local/destination/
 scp -v user@192.168.1.10:/etc/config.txt /home/user/
 
-# Télécharger le fichier sans clé d'hôte Vérification, pour contourner la clé d'hôte vérification (pas recommandé pour des environnements sécurisés)
+# Désactiver la vérification de clé d'hôte (dangereux : risque d'interception ; préférer accept-new et vérifier l'empreinte)
 scp -o StrictHostKeyChecking=no user@remote_host:/path/to/remote/file /local/destination/
 scp -o StrictHostKeyChecking=no user@192.168.1.10:/etc/config.txt /home/user/
 
@@ -687,11 +687,11 @@ scp /home/user/config.txt /home/user/passwd user@192.168.1.10:/etc/
 scp -r /path/to/local/directory user@remote_host:/path/to/remote/destination/
 scp -r /home/user/html user@192.168.1.10:/var/www/
 
-# Envoyer un fichier avec un port SSH non standard (option -P majuscule)
+# Envoyer un fichier via un port SSH non standard : -P majuscule pour scp
 scp -P 2222 /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -P 2222 /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Envoyer un fichier local en s'authentifiant avec une clé privée
+# Envoyer un fichier local en s'authentifiant avec une clé privée SSH
 scp -i /path/to/private_key /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -i ~/.ssh/id_rsa /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
@@ -699,7 +699,7 @@ scp -i ~/.ssh/id_rsa /home/user/config.txt user@192.168.1.10:/etc/config.txt
 scp -v /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -v /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Télécharger le fichier sans vérification de clé d'hôte, pour contourner la vérification de clé d'hôte (pas recommandé pour des environnements sécurisés)
+# Envoyer un fichier sans vérifier la clé d'hôte (dangereux : risque d'interception ; préférer accept-new)
 scp -o StrictHostKeyChecking=no /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
@@ -707,7 +707,7 @@ scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/con
 
 **Sécurité SSH :** `accept-new` accepte automatiquement une nouvelle empreinte, mais refuse une empreinte modifiée. Vérifier l'empreinte par un canal fiable avant toute première connexion sensible.  
 
-<p class="oscp-command-note">Ouvrir une connexion SSH.</p>
+<p class="oscp-command-note">SSH : accepter automatiquement une nouvelle clé d'hôte, mais refuser une clé déjà connue qui a changé.</p>
 
 ```bash
 ssh -o StrictHostKeyChecking=accept-new <UTILISATEUR>@<IP_CIBLE>
@@ -743,7 +743,7 @@ ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa uti
 
 ```
 
-<p class="oscp-command-note">Ouvrir une connexion SSH.</p>
+<p class="oscp-command-note">SSH : exécuter whoami sur la machine distante avec un compte autorisé, sans session interactive.</p>
 
 ```bash
 ssh utilisateur@192.0.2.10 'whoami'
