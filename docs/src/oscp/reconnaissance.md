@@ -1018,8 +1018,8 @@ sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
 
 ```bash
 # Utilisation : exécutez le script de dénombrement TFTP pour obtenir un fichier spécifique
-./tftp_enum.sh <target_ip> <filename>
-./tftp_enum.sh 192.168.1.10 bootfile.bin
+./tftp_enum.sh <IP_CIBLE> <FICHIER>
+./tftp_enum.sh 192.168.1.10 bootfile.bin  # Exemple sur une cible de laboratoire
 
 ```
 
@@ -1038,14 +1038,14 @@ TARGET_IP=$1
 FILENAME=$2
 
 # Tenter de récupérer le fichier du serveur TFTP
-echo "Attempting to retrieve $FILENAME from $TARGET_IP"
-tftp $TARGET_IP -c get $FILENAME
+echo "Tentative de téléchargement de $FILENAME depuis $TARGET_IP"
+tftp "$TARGET_IP" -c get "$FILENAME"
 
 # Vérifiez si le fichier a été récupéré
-if [ -f $FILENAME ]; then
-    echo "File $FILENAME successfully retrieved from $TARGET_IP"
+if [ -f "$FILENAME" ]; then
+    echo "Fichier $FILENAME présent localement après la requête TFTP"
 else
-    echo "Failed to retrieve $FILENAME from $TARGET_IP"
+    echo "Fichier $FILENAME absent : transfert échoué ou fichier indisponible"
 fi
 
 ```
@@ -1060,7 +1060,7 @@ tftp> quit
 
 ```bash
 # Interroger le service TFTP
-tftp <target_ip> 69
+tftp <IP_CIBLE> 69
 tftp> put <local_file> <remote_file>
 tftp> quit
 
@@ -1069,15 +1069,15 @@ tftp> quit
 <p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
 
 ```bash
-for i in $(cat <file_list.txt>); do tftp <target_ip> 69 -c get $i; done
+while IFS= read -r fichier; do [ -n "$fichier" ] && tftp <IP_CIBLE> -c get "$fichier"; done < liste_fichiers.txt
 
 ```
 
 <p class="oscp-command-note">Transmettre des instructions de téléchargement ou d'envoi à TFTP.</p>
 
 ```bash
-echo -e "get <remote_file> <local_file>\nquit" | tftp <target_ip>
-echo -e "put <local_file> <remote_file>\nquit" | tftp <target_ip>
+printf 'get fichier_distant fichier_local\nquit\n' | tftp <IP_CIBLE>
+printf 'put fichier_local fichier_distant\nquit\n' | tftp <IP_CIBLE>
 
 ```
 
@@ -1088,13 +1088,10 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Nmap (KERBEROS) : lancer les scripts NSE « kerberos-enum-users ».</p>
 
 ```bash
-# Vérifier la présence de Kerberos sur le port TCP 88
+# Identifier le service Kerberos sur le port TCP 88
 nmap -sV -p 88 <IP_CIBLE>
 
-# L'énumération Kerberos nécessite un périmètre de test autorisé
-nmap -p 88 --script krb5-enum-users <IP_CIBLE>
-
-# Énumérer les utilisateurs Kerberos si le contrôleur de domaine répond
+# Tester l'énumération d'utilisateurs uniquement dans le périmètre autorisé
 nmap -p 88 --script krb5-enum-users <IP_CIBLE>
 
 ```
@@ -1103,7 +1100,7 @@ nmap -p 88 --script krb5-enum-users <IP_CIBLE>
 
 ```bash
 kerbrute userenum --dc <IP_DC> -d <DOMAINE> liste_utilisateurs.txt
-# Autre possibilité
+# Variante si le binaire a été téléchargé localement
 ./kerbrute_linux_amd64 userenum --dc <IP_DC> -d <DOMAINE> /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
 
 ```
@@ -1126,7 +1123,7 @@ impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
 
 ```bash
 john --wordlist=liste_mots_de_passe.txt tickets.hash
-# Ou
+# Pour les tickets TGS Kerberos de type 23 (RC4-HMAC) uniquement
 hashcat -m 13100 tickets_tgs.hash liste_mots_de_passe.txt
 
 ```
@@ -1239,7 +1236,7 @@ impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 <p class="oscp-command-note">Nmap (POP3) : lancer les scripts NSE « pop3-capabilities ».</p>
 
 ```bash
-nmap --script "pop3-capabilities or pop3-ntlm-info" -sV -p 110 <target_ip>
+nmap -sV -p 110 --script pop3-capabilities,pop3-ntlm-info <IP_CIBLE>
 
 ```
 
@@ -1247,16 +1244,16 @@ nmap --script "pop3-capabilities or pop3-ntlm-info" -sV -p 110 <target_ip>
 
 ```bash
 # Connectez-vous au service POP3
-telnet <target_ip> 110
+telnet <IP_CIBLE> 110
 
 # Connectez-vous avec un utilisateur de test
-USER <username>
-PASS <password>
+USER <UTILISATEUR>
+PASS <MOT_DE_PASSE>
 
-# Liste de tous les messages
+# Lister les messages de la boîte (session POP3 authentifiée)
 LIST
 
-# Récupérer le premier courriel
+# Récupérer le premier message (session POP3 authentifiée)
 RETR 1
 
 ```
@@ -1286,7 +1283,7 @@ PASS <password>
 LIST
 
 # Récupérer un email spécifique par son numéro
-RETR <mail_number>
+RETR <NUMERO_MESSAGE>
 
 # Fermer la connexion
 QUIT
@@ -1298,21 +1295,21 @@ QUIT
 <p class="oscp-command-note">Nmap (RPC) : lancer les scripts NSE « rpcinfo ».</p>
 
 ```bash
-nmap -sV -p 111 --script=rpcinfo <target_ip>
+nmap -sV -p 111 --script rpcinfo <IP_CIBLE>
 
 ```
 
 ```bash
-# Utilisez rpcinfo pour obtenir une liste des services RPC enregistrés sur la cible
-rpcinfo -p <target_ip>
+# Interroger le service rpcbind et afficher les programmes RPC enregistrés
+rpcinfo -p <IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">Lister les exports NFS.</p>
 
 ```bash
-# Vérifiez les services RPC disponibles et leurs versions avec showmount
-showmount -e <target_ip>
+# Afficher les exports NFS annoncés par le serveur mountd (si accessible)
+showmount -e <IP_CIBLE>
 
 ```
 
@@ -1321,7 +1318,7 @@ showmount -e <target_ip>
 <p class="oscp-command-note">Nmap (MSRPC) : lancer les scripts NSE « msrpc-enum ».</p>
 
 ```bash
-nmap -p 135 --script msrpc-enum <target_ip>
+nmap -sV -p 135 <IP_CIBLE>
 
 ```
 
@@ -1329,14 +1326,14 @@ nmap -p 135 --script msrpc-enum <target_ip>
 `rpcdump`  
 
 ```bash
-# Lister les points de terminaison RPC
-rpcdump.py <target_ip> -p 135
+# Lister les points de terminaison RPC via Impacket (outil installé requis)
+impacket-rpcdump <IP_CIBLE> -port 135
 
 ```
 
 ```bash
 # Scanner les services RPC sur les services HTTP en utilisant Nmap
-nmap -p 593 --script http-rpc-epmap <target_ip>
+nmap -sV -p 593 <IP_CIBLE>
 
 ```
 
@@ -1347,19 +1344,19 @@ nmap -p 593 --script http-rpc-epmap <target_ip>
 
 ```bash
 # Connexion avec une session null
-rpcclient -U "" -N <target_ip>
+rpcclient -U '' -N <IP_CIBLE>
 
 # Se connecter à la cible et lister les actions disponibles
-rpcclient -U "" -N <target_ip> -c "srvinfo"
+rpcclient -U '' -N <IP_CIBLE> -c 'srvinfo'
 
 # Liste de tous les utilisateurs disponibles
-rpcclient -U "" -N <target_ip> -c "enumdomusers"
+rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
 
 # Énumérer les groupes de domaines
-rpcclient -U "" -N <target_ip> -c "enumdomgroups"
+rpcclient -U '' -N <IP_CIBLE> -c 'enumdomgroups'
 
 # Demande d'informations à l'utilisateur
-rpcclient -U "<username>" -W "<domain>" <target_ip> -c "queryuser <username>"
+rpcclient -U '<UTILISATEUR>' -W '<DOMAINE>' <IP_CIBLE> -c 'enumdomusers'
 
 ```
 
