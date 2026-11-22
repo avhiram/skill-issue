@@ -1443,9 +1443,9 @@ querydominfo
 nmap -sV -p 445 192.0.2.10
 
 # CrackMapExec
-crackmapexec smb <IP> -u 'admin' -p wordlist_pass.txt
+nxc smb 192.0.2.10 -u admin -p mots_de_passe.txt
 # Autre possibilité
-crackmapexec smb <IP> -u 'wordlist_user.txt' -p password
+nxc smb 192.0.2.10 -u utilisateurs.txt -p 'MotDePasseTest'
 
 # Énumérer les SID/RID via Impacket avec un compte de laboratoire autorisé
 impacket-lookupsid 'exemple.local/utilisateur@192.0.2.10'
@@ -1456,7 +1456,7 @@ impacket-lookupsid 'exemple.local/utilisateur@192.0.2.10'
 
 ```bash
 # Résoudre un nom de compte en SID
-lookupnames <username>
+lookupnames utilisateur
 
 # Trouver d'autres SID
 lsaenumsid
@@ -1472,9 +1472,9 @@ lookupsids S-1-5-21-111111111-222222222-333333333-500
 <p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
 
 ```bash
-rpcclient -N <target_ip> -U '<username>%<password>' -c "setuserinfo2 <target_username> 23 '<new_password>'"
+rpcclient -U 'administrateur' 192.0.2.10 -c 'querydominfo'
 # Autre possibilité
-rpcclient -U "" -N <ip> -c "setuserinfo2 <USER> 23 <NEW_PASSWORD>"
+rpcclient -U '' -N 192.0.2.10 -c 'enumdomusers'
 
 ```
 
@@ -1509,11 +1509,11 @@ nmap -p 445 --script smb-enum-users <IP_CIBLE>
 
 nmap -p 445 --script smb-enum-domains,smb-enum-groups,smb-enum-shares,smb-enum-users <IP_CIBLE>
 
-nmap -p139,445 --script "smb-vuln-* and not(smb-vuln-regsvc-dos)" --script-args smb-vuln-cve-2017-7494.check-version,unsafe=1 <IP>
+nmap -p 445 --script smb-vuln-ms17-010 192.0.2.10
 
-nmap --script smb-vuln-conficker.nse,smb-vuln-cve2009-3103.nse,smb-vuln-cve-2017-7494.nse,smb-vuln-ms06-025.nse,smb-vuln-ms07-029.nse,smb-vuln-ms08-067.nse,smb-vuln-ms10-054.nse,smb-vuln-ms10-061.nse,smb-vuln-ms17-010.nse,smb-vuln-regsvc-dos.nse,smb-vuln-webexec.nse -p445 <ip>
+nmap -p 445 --script smb-security-mode,smb2-security-mode 192.0.2.10
 
-nmap --script smb-vuln-cve-2017-7494 --script-args smb-vuln-cve-2017-7494.check-version -p445 <ip>
+nmap -p 445 --script smb-protocols 192.0.2.10
 
 ```
 
@@ -1544,12 +1544,12 @@ smbmap -u '' -p '' -H <IP_CIBLE> -R
 <p class="oscp-command-note">Interroger le service SMB avec CrackMapExec.</p>
 
 ```bash
-crackmapexec smb <IP>
-crackmapexec smb <IP> -u '' -p ''
-crackmapexec smb <IP> -u 'guest' -p ''
-crackmapexec smb <IP> -u '' -p '' --shares
-crackmapexec smb <IP> -u guest -p "" --rid-brute
-crackmapexec smb <IP> -u '[user]' -p '[password]'
+nxc smb 192.0.2.10
+nxc smb 192.0.2.10 -u '' -p ''
+nxc smb 192.0.2.10 -u guest -p ''
+nxc smb 192.0.2.10 -u guest -p '' --shares
+nxc smb 192.0.2.10 -u guest -p '' --rid-brute
+nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
 
@@ -1566,7 +1566,7 @@ enum4linux -U <IP_DC>
 # Lister les partages SMB annoncés par la cible
 enum4linux -S <IP_CIBLE>
 
-enum4linux -a -M -l -d <ip> 2>&1
+enum4linux -a 192.0.2.10 2>&1
 enum4linux -a -u "" -p "" <ip>
 enum4linux -a -u "guest" -p "" <ip>
 enum4linux -a -u "[user]" -p "[password]" <ip>
@@ -1576,10 +1576,10 @@ enum4linux -a -u "[user]" -p "[password]" <ip>
 ```bash
 # Lister les partages SMB ; -N désactive la demande de mot de passe
 smbclient --no-pass -L //<IP_CIBLE>
-smbclient -L //<IP_CIBLE> -U <UTILISATEUR>
-smbclient //<IP>/<SHARE>
-smbclient -N //<IP>/<SHARE>
-smbclient //<IP>/<SHARE> -U <USER> -c "prompt OFF;recurse ON;mget *" # Change the timeout to download big files
+smbclient -L //192.0.2.10 -U utilisateur
+smbclient //192.0.2.10/partage
+smbclient -N //192.0.2.10/partage
+smbclient //192.0.2.10/partage -U utilisateur -t 100 -c 'prompt OFF;recurse ON;mget *'
 
 # Pour ajuster le délai, utiliser l'option -t au lancement de smbclient
 help
@@ -1595,8 +1595,8 @@ mget *
 <p class="oscp-command-note">Tester les identifiants fournis sur le service SMB avec CrackMapExec.</p>
 
 ```bash
-crackmapexec smb <IP> -u <USERS_LIST> -p <PASSWORDS_LIST>
-hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
+nxc smb 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
+hydra -L utilisateurs.txt -P mots_de_passe.txt smb://192.0.2.10 -f
 
 ```
 
@@ -1605,8 +1605,8 @@ hydra -V -f -L <USERS_LIST> -P <PASSWORDS_LIST> smb://<IP> -u -vV
 ```bash
 # Monter un partage SMB autorisé dans un répertoire local (installer cifs-utils)
 mkdir -p /tmp/share
-sudo mount -t cifs //<IP>/<SHARE> /tmp/share
-sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/share
+sudo mount -t cifs //192.0.2.10/partage /tmp/share -o guest,ro
+sudo mount -t cifs //192.0.2.10/partage /tmp/share -o username=utilisateur,ro
 
 ```
 
@@ -1639,8 +1639,8 @@ psexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 psexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
 # Vérification avec CrackMapExec
-crackmapexec smb <IP> -u <USER> -p <PASSWORD> --psexec
-crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
+nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
+nxc smb 192.0.2.10 -u utilisateur -H '0123456789abcdef0123456789abcdef'
 
 ```
 
