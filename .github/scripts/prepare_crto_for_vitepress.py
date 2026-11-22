@@ -78,7 +78,7 @@ for path in ROOT.rglob("*.md"):
         alt, url = match.group(1), match.group(2)
         if not missing_asset(url):
             return match.group(0)
-        return f"*Image absente du dépôt original : {alt or Path(url).name}*"
+        return ""
 
     rendered = re.sub(r"!\[([^\]]*)\]\(([^\s)]+)\)", check_markdown_image, rendered)
 
@@ -86,8 +86,10 @@ for path in ROOT.rglob("*.md"):
         url = match.group(2)
         if not missing_asset(url):
             return match.group(0)
-        return f"*Image absente du dépôt original : {Path(url).name}*"
+        return ""
 
     rendered = re.sub(r"<img\b[^>]*?\bsrc\s*=\s*([\"'])([^\"']+)\1[^>]*>", check_html_image, rendered, flags=re.IGNORECASE)
+    if path.relative_to(ROOT).as_posix() == "labs/defence-evasion-lab-Malleable.md":
+        rendered = rendered.replace("](Exam-Instructions.md)", "](../notes/Exam-Instructions.md)")
     if rendered != original:
         path.write_text(rendered, encoding="utf-8")
