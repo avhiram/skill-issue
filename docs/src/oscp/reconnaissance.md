@@ -2356,7 +2356,7 @@ Successfully processed 1 files; Failed processing 0 files
 <p class="oscp-command-note">Nmap (RDP) : lancer les scripts NSE « rdp-enum-encryption, rdp-vuln-ms12-020, rdp-ntlm-info ».</p>
 
 ```bash
-nmap --script "rdp-enum-encryption,rdp-vuln-ms12-020,rdp-ntlm-info,rdp-banner" -p 3389 <IP>
+nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
 
 ```
 
@@ -2381,7 +2381,7 @@ crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
 <p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
 ```bash
-# Connectez-vous en utilisant xfreerdp avec différentes options
+# Se connecter au bureau distant avec FreeRDP (vérifier la version installée)
 xfreerdp /cert-ignore /bpp:8 /compression /themes /wallpaper /auto-reconnect /h:1000 /w:1600 /v:<IP> /u:<username> /p:<password>
 
 # Connectez-vous à un mapping de lecteur et à un timeout accru
@@ -2415,7 +2415,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Nmap (POSTGRESQL) : lancer les scripts NSE « postgresql-info, postgresql-user-enum, postgresql-ssl ».</p>
 
 ```bash
-nmap -sV -p 5432,5433 --script "postgresql-info,postgresql-user-enum,postgresql-ssl" <ip>
+nmap -sV -p 5432,5433 --script pgsql-brute <IP_CIBLE>
 
 ```
 
@@ -2429,13 +2429,13 @@ hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
 <p class="oscp-command-note">PostgreSQL : se connecter avec psql et afficher les bases accessibles.</p>
 
 ```bash
-psql -h <ip> -U <USER> -d <DB_NAME> -c '\l'
+psql -h <IP_CIBLE> -U <UTILISATEUR> -d postgres -c '\l'
 
 ```
 
 ```bash
 # -W: Demander un mot de passe
-psql -h <ip> -p 5432 -U <USER> -W
+psql -h <IP_CIBLE> -p 5432 -U <UTILISATEUR> -W
 
 ```
 
@@ -2474,13 +2474,13 @@ DROP TABLE IF EXISTS cmd_exec;
 # Liste toutes les bases de données
 \l
 
-# Switch to a specific database
+# Se connecter à une base de données précise
 \c <DB_NAME>
 
 # Lister les tables de la base de données courante
 \dt
 
-# View the schema of a specific table
+# Afficher la structure d'une table
 \d <TABLE_NAME>
 
 # Interroger le contenu d'une table spécifique
@@ -2504,7 +2504,7 @@ CREATE TABLE test_table (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-# Insert data into a table
+# Insérer des données dans une table de test
 INSERT INTO test_table (name) VALUES ('example_data');
 
 # Modifier les données d’une table
@@ -2520,7 +2520,7 @@ DELETE FROM test_table WHERE id = 1;
 <p class="oscp-command-note">Nmap (VNC) : lancer les scripts NSE « vnc-info, vnc-auth-bypass ».</p>
 
 ```bash
-nmap -p 5900 --script vnc-info,vnc-auth-bypass <ip>
+nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 
 ```
 
@@ -2528,10 +2528,10 @@ nmap -p 5900 --script vnc-info,vnc-auth-bypass <ip>
 
 ```bash
 # Utilisez vncviewer ou tigrevnc pour vous connecter à un serveur VNC
-vncviewer <ip>:5900
+vncviewer <IP_CIBLE>::5900
 
 # Connexion plus détaillée avec l'authentification
-vncviewer -passwd /path/to/passwordfile <ip>:5900
+vncviewer -passwd /chemin/vers/fichier_mot_de_passe <IP_CIBLE>::5900
 
 ```
 
@@ -2566,7 +2566,7 @@ Observer les permissions et la configuration de Windows.
 <p class="oscp-command-note">Nmap (WINRM) : lancer les scripts NSE « winrm-info ».</p>
 
 ```bash
-nmap -p 5985,5986 --script winrm-info <ip>
+nmap -sV -p 5985,5986 <IP_CIBLE>
 
 ```
 
@@ -2579,7 +2579,7 @@ crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 
 ```powershell
 # Utilisation de PowerShell pour se connecter à WinRM
-Enter-PSSession -ComputerName <ip> -Credential (Get-Credential)
+Enter-PSSession -ComputerName <IP_CIBLE> -Credential (Get-Credential)
 
 ```
 
@@ -2616,14 +2616,14 @@ nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
 <p class="oscp-command-note">Nmap (REDIS) : lancer les scripts NSE « redis-info, redis-rce ».</p>
 
 ```bash
-nmap -p 6379 --script "redis-info,redis-rce" <ip>
+nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">Interroger un serveur Redis.</p>
 
 ```bash
-redis-cli -h <ip> -p 6379 -a <password_to_try>
+redis-cli -h <IP_CIBLE> -p 6379 --askpass
 
 ```
 
@@ -2644,20 +2644,20 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 <p class="oscp-command-note">Interroger un serveur Redis.</p>
 
 ```bash
-# Connectez-vous au serveur Redis
-redis-cli -h <ip> -p 6379
+# Se connecter au serveur Redis
+redis-cli -h <IP_CIBLE> -p 6379
 
-# Après la connexion, listez les bases de données et leurs clés
+# Après connexion, afficher les informations et les clés de la base sélectionnée
 info
 keys *
-select <db_number> # select database number (0 by default)
+select 0  # Sélectionner la base 0 (par défaut)
 
-# Exemple de commandes en cours d'exécution
+# Exemple de lecture et écriture de clés dans un laboratoire
 set mykey myvalue
 get mykey
 
-config get *  # View all configuration options
-shutdown      # Shutdown the Redis server
+config get '*'  # Afficher les paramètres de configuration accessibles
+# Ne pas lancer SHUTDOWN : cette commande arrête le serveur Redis.
 
 ```
 
@@ -2669,7 +2669,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ```bash
 # Connectez-vous au port inconnu pour identifier le service
-nc -nv <IP> <PORT>
+nc -nv <IP_CIBLE> <PORT_TCP>
 
 ```
 
@@ -2684,11 +2684,11 @@ help
 ```bash
 # Tentative de connexion avec des identifiants connus ou devinés
 # Vous devrez peut-être remplacer <USERNAME> et <PASSWORD> par des valeurs appropriées.
-echo -e "<USERNAME>\n<PASSWORD>" | nc -nv <IP> <PORT>
+printf '%s\n%s\n' "$UTILISATEUR" "$MOT_DE_PASSE" | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 # Si le service fournit des options de commande ou aide à la sortie, utilisez-les pour guider d'autres actions
 # Par exemple, si le service a des commandes comme 'list', 'status' ou 'config', utilisez ces
-echo "list" | nc -nv <IP> <PORT>
+printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 ```
 
