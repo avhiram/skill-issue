@@ -2117,7 +2117,7 @@ DELETE FROM <table_name> WHERE <condition>;
 
 Vérifier le type d'authentification demandé par l'instance MSSQL.
 
-<p class="oscp-command-note">Impacket mssqlclient : utiliser -windows-auth pour l'authentification intégrée Windows avec un compte de domaine.</p>
+<p class="oscp-command-note">Impacket : se connecter à MSSQL avec un compte de domaine via l'authentification Windows.</p>
 
 ```bash
 impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -windows-auth
@@ -2125,14 +2125,14 @@ impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -window
 
 ### 2049: NFS
 
-<p class="oscp-command-note">Nmap NFS : consulter les exports, listes de fichiers et statistiques accessibles via les scripts NSE NFS.</p>
+<p class="oscp-command-note">Nmap : énumérer les exports et informations NFS accessibles.</p>
 
 ```bash
 nmap -sV -p 111,2049 --script nfs-showmount,nfs-ls,nfs-statfs <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">NFS : interroger mountd pour les exports (-e) et montages déclarés (-a), si le serveur les expose.</p>
+<p class="oscp-command-note">NFS : `showmount -e` liste les exports ; `-a` affiche les montages annoncés par mountd.</p>
 
 ```bash
 # Afficher les partages NFS de la cible
@@ -2143,20 +2143,20 @@ showmount -a <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Linux NFS : monter un export autorisé en lecture seule avec sudo ; vers=3 force NFSv3 et peut échouer sur un serveur NFSv4 uniquement.</p>
+<p class="oscp-command-note">Kali : créer le dossier avec `sudo`, puis monter l'export NFSv3 en lecture seule.</p>
 
 ```bash
 # Créer un répertoire local pour monter le partage NFS
-mkdir -p /mnt/partage_nfs
+sudo mkdir -p /mnt/partage_nfs
 
 # Monter le partage NFSv3 en lecture seule (les exports NFSv4 peuvent nécessiter une autre méthode)
 sudo mount -t nfs -o ro,vers=3 <IP_CIBLE>:/export/partage /mnt/partage_nfs
 
 ```
 
-### 3003: CGMS (possible)
+### 3003 : service à identifier
 
-<p class="oscp-command-note">TCP 3003 : ouvrir une connexion Netcat ; identifier le protocole avant d'essayer des commandes internes.</p>
+<p class="oscp-command-note">TCP 3003 : tester la connexion avec Netcat. Ne pas supposer le protocole.</p>
 
 ```text
 # Depuis un terminal : ouvrir une connexion TCP
@@ -2168,7 +2168,7 @@ version
 
 ```
 
-<p class="oscp-command-note">CGMS : exemple historique de téléchargement d'un script tiers ; vérifier la source, le CVE et les arguments avant tout usage en laboratoire.</p>
+<p class="oscp-command-note">Script CVE tiers : exemple non validé. Vérifier sa source et ses options avant utilisation.</p>
 
 ```bash
 # Télécharger le script tiers uniquement après vérification de son contenu
@@ -2182,7 +2182,7 @@ nc -nlvp 443
 
 ```
 
-<p class="oscp-command-note">Commandes internes CGMS : à saisir dans son interface après connexion, pas dans PowerShell.</p>
+<p class="oscp-command-note">Liste de commandes Aerospike `asinfo` : certaines modifient ou suppriment des données. Ne pas les exécuter sans connaître leur effet.</p>
 
 ```text
 bins
@@ -2259,7 +2259,7 @@ version
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Nmap MySQL : relever la version et les variables du serveur ; aucun script d'extraction de hash n'est exécuté.</p>
+<p class="oscp-command-note">Nmap : relever la version et les variables MySQL accessibles.</p>
 
 ```bash
 nmap -sV -p 3306 --script mysql-info,mysql-variables <IP_CIBLE>
@@ -2273,7 +2273,7 @@ mysql -h <IP_CIBLE> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
 
 ```
 
-<p class="oscp-command-note">Hydra MySQL : tester des identifiants autorisés sur TCP 3306 ; attention au verrouillage.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants MySQL autorisés. Risque de verrouillage.</p>
 
 ```bash
 # Tester des identifiants MySQL uniquement avec autorisation explicite (risque de verrouillage)
@@ -2337,14 +2337,14 @@ nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Hydra RDP : tester des comptes autorisés ; limiter les essais pour éviter le verrouillage.</p>
+<p class="oscp-command-note">Hydra : tester des comptes RDP autorisés. Risque de verrouillage.</p>
 
 ```bash
 hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
 
 ```
 
-<p class="oscp-command-note">RDP : tester des identifiants de laboratoire avec Crowbar ou NetExec ; attention aux verrouillages de comptes.</p>
+<p class="oscp-command-note">Crowbar et NetExec : vérifier des comptes RDP de laboratoire.</p>
 
 ```bash
 # Crowbar : tester des identifiants RDP autorisés ; risque de verrouillage des comptes
@@ -2380,7 +2380,7 @@ rdesktop <IP_CIBLE>
 
 Tester un compte de laboratoire sur le service RDP si les règles d'audit autorisent l'authentification.
 
-<p class="oscp-command-note">RDP : vérifier l'authentification d'un compte de test avec NetExec sur une cible autorisée.</p>
+<p class="oscp-command-note">NetExec : vérifier un compte RDP autorisé.</p>
 
 ```bash
 nxc rdp <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
@@ -2397,7 +2397,7 @@ nmap -sV -p 5432,5433 192.0.2.10
 
 ```
 
-<p class="oscp-command-note">Hydra PostgreSQL : tester des comptes autorisés sur TCP 5432 ; attention au verrouillage.</p>
+<p class="oscp-command-note">Hydra : tester des comptes PostgreSQL autorisés. Risque de verrouillage.</p>
 
 ```bash
 hydra -L utilisateurs.txt -P mots_de_passe.txt -s 5432 192.0.2.10 postgres
