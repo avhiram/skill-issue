@@ -1,0 +1,41 @@
+name: Import CRTO botesjuan unchanged
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-crto-botesjuan.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: skill-issue-site-write
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Clone the exact upstream revision
+        run: |
+          git clone https://github.com/botesjuan/CRTO-Study-Notes.git "$RUNNER_TEMP/crto-src"
+          git -C "$RUNNER_TEMP/crto-src" checkout --detach decaa7a705d7c024455212fb6ff4f6a9d8b59365
+      - name: Copy all original files without editing
+        run: |
+          mkdir -p docs/src/crto/botesjuan
+          rsync -a --exclude='.git' "$RUNNER_TEMP/crto-src/" docs/src/crto/botesjuan/
+          git diff --no-index --quiet "$RUNNER_TEMP/crto-src/README.md" docs/src/crto/botesjuan/README.md
+      - name: Commit the unchanged original tree
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/src/crto/botesjuan
+          if ! git diff --cached --quiet; then
+            git commit -m "Import original CRTO Study Notes (botesjuan), unmodified"
+            git push origin HEAD:main
+          fi
