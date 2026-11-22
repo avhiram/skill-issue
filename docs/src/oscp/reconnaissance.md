@@ -102,10 +102,10 @@ nmap -A [IP/domain] -oN [machine_name].txt
 
 ```
 
-**Scan rapide de tous les ports**
+**Scan SYN de tous les ports TCP (rapide, potentiellement incomplet)**
 
 ```bash
-sudo nmap -p- -sS -sU --min-rate=1000 --max-retries=1 -T4 [IP/Domain]
+sudo nmap -sS -p- --min-rate 1000 --max-retries 1 -T4 <IP_CIBLE>
 
 ```
 
@@ -152,12 +152,12 @@ Vérifier les ports et les services de la cible autorisée.
 **Paramètres et repères :**
 `-sU` (scan UDP)  
 
-**Scan UDP (-sU)**
+**Scan combiné TCP SYN et UDP (`-sS -sU`)**
 
-<p class="oscp-command-note">Nmap : effectuer un scan SYN des ports TCP.</p>
+<p class="oscp-command-note">Lancer un scan combiné TCP SYN et UDP. Les résultats UDP peuvent être lents ou ambigus ; `sudo` fournit les privilèges nécessaires aux paquets bruts.</p>
 
 ```bash
-sudo nmap -sU -sS [IP]
+sudo nmap -sU -sS <IP_CIBLE>
 
 ```
 
@@ -197,12 +197,12 @@ nmap -p [portNumber] [IP]
 **Paramètres et repères :**
 `-sn` (découverte d'hôtes)  
 
-**Découverte réseau ( -sn )**
+**Découverte d'hôtes sans scan de ports (`-sn`)**
 
 <p class="oscp-command-note">Identifier les hôtes actifs.</p>
 
 ```bash
-nmap -sn [IP_range]
+nmap -sn <RESEAU_CIDR>
 
 ```
 
@@ -230,14 +230,14 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Nmap -O : tenter d'identifier le système d'exploitation par empreinte réseau.</p>
 
 ```bash
-nmap -O [IP]
+sudo nmap -O <IP_CIBLE>
 
 ```
 
-**Estimation du système d'exploitation**
+**Estimation du système d'exploitation (nécessite `-O`)**
 
 ```bash
-nmap --osscan-guess [IP]
+sudo nmap -O --osscan-guess <IP_CIBLE>
 
 ```
 
@@ -326,7 +326,7 @@ nmap --script-help [scriptName]
 <p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-headers ».</p>
 
 ```bash
-nmap --script http-headers [IP]
+nmap -p 80 --script http-headers <IP_CIBLE>
 
 ```
 
@@ -351,7 +351,7 @@ Observer les permissions et la configuration de Windows.
 <p class="oscp-command-note">Tester une connexion réseau avec PowerShell.</p>
 
 ```powershell
-Test-NetConnection -Port [portNumber] [IP]
+Test-NetConnection -ComputerName <IP_CIBLE> -Port <PORT_TCP>
 
 ```
 
@@ -369,7 +369,7 @@ Découvrir les ports TCP puis identifier les services dans le périmètre autori
 <p class="oscp-command-note">Inventaire TCP complet.</p>
 
 ```bash
-nmap -sS -p- -Pn -n -oN <RAPPORT_PORTS>.txt <IP_CIBLE>
+sudo nmap -sS -p- -Pn -n -oN rapport_ports.txt <IP_CIBLE>
 nmap -sV -sC -p <LISTE_PORTS> -oN <RAPPORT_SERVICES>.txt <IP_CIBLE>
 ```
 
