@@ -37,7 +37,7 @@ Sélectionne le système qui possède le fichier, puis celui qui doit le recevoi
 
 Repérer l'interface VPN et la route vers la cible.
 
-<p class="oscp-command-note">Sur Kali</p>
+<p class="oscp-command-note">Sur Kali : afficher les interfaces et les routes réseau.</p>
 
 ```bash
 ip -br address
@@ -48,7 +48,7 @@ ip route
 
 Un service distant doit écouter : 22 pour SSH, 445 pour SMB et 8000 pour notre exemple HTTP.
 
-<p class="oscp-command-note">Sur Kali</p>
+<p class="oscp-command-note">Sur Kali : vérifier l’accès aux ports SSH et SMB distants.</p>
 
 ```bash
 nc -zv 10.10.10.20 22
@@ -309,7 +309,7 @@ Si RDP est disponible, **FreeRDP peut partager un dossier Kali avec la session W
 
 L'exemple utilise FreeRDP 3 ; adapter l'option à la version installée.
 
-<p class="oscp-command-note">Sur Kali</p>
+<p class="oscp-command-note">Sur Kali : partager le dossier local avec la session Windows distante.</p>
 
 ```bash
 mkdir -p ./partage
