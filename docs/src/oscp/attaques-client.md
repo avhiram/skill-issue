@@ -182,7 +182,7 @@ Afficher l'état de la signature Authenticode d'un fichier Windows, sans le lanc
 Get-AuthenticodeSignature -FilePath '<CHEMIN_EXECUTABLE>' | Format-List
 ```
 
-## Exploitation avancée
+## Techniques complémentaires côté client
 
 
 
@@ -326,7 +326,7 @@ sudo swaks -t [target-email] --from [your-email] --attach [file-to-attach] \
 `X-Priority` · `Importance`  
 
 
-### Autres outils pour envoyer un e-mail
+### Outils complémentaires d’envoi d’e-mails
 
 
 
