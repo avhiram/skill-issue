@@ -338,7 +338,7 @@ Observer les permissions et la configuration de Windows.
 **Sortie au format grepable (-oG)**
 
 
-<p class="oscp-command-note">Identifier les hôtes actifs.</p>
+<p class="oscp-command-note">Détecter les hôtes actifs et enregistrer le résultat au format grepable.</p>
 
 ```bash
 nmap -v -sn [IP_range] -oG [fileName].txt
@@ -353,10 +353,10 @@ nmap -v -sn [IP_range] -oG [fileName].txt
 **Analyser le fichier de résultats**
 
 
-<p class="oscp-command-note">Rechercher un motif textuel.</p>
+<p class="oscp-command-note">Extraire les adresses des hôtes actifs du fichier Nmap au format grepable.</p>
 
 ```bash
-grep Up [fileName].txt cut -d " " -f 2
+awk '/Up$/{print $2}' [fileName].txt
 
 ```
 
