@@ -108,13 +108,12 @@ dpkg -l
 **Paramètres et repères :**
 `/dev/null`  
 
-**Fichiers sensibles modifiables (hors /dev/null)**
+### Rechercher les répertoires modifiables par le compte courant
 
-<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
+`-writable` teste l'accès en écriture du processus courant, pas une permission d'écriture accordée à tous. La recherche peut être partielle si certains répertoires sont inaccessibles.
 
-```text
+```bash
 find / -writable -type d 2>/dev/null
-
 ```
 
 **Mots de passe présents en mémoire**
@@ -126,11 +125,12 @@ strings /dev/mem -n10 | grep -i PASS
 
 ```
 
-**Trouver des fichiers sensibles**
+### Rechercher les chemins indexés contenant « password »
 
-```text
+`locate` cherche dans une base de données préalablement construite : les résultats peuvent être anciens ou incomplets. Installer `plocate` ou `mlocate` selon la distribution si la commande est absente.
+
+```bash
 locate password | more
-
 ```
 
 ### Lire les montages configurés dans fstab
@@ -155,35 +155,44 @@ mount
 lsblk
 ```
 
-**Pilotes et modules du noyau**
+### Lister les modules du noyau chargés
 
-```text
+`lsmod` affiche les modules actuellement chargés, pas tous les modules disponibles sur le disque.
+
+```bash
 lsmod
-
 ```
 
-```text
-/sbin/modinfo <driver_name>
+### Examiner les informations d'un module du noyau
 
+Remplacer `NOM_MODULE` par un module disponible. Le chemin de `modinfo` varie selon la distribution ; invoquer la commande via le `PATH` est plus portable.
+
+```bash
+modinfo NOM_MODULE
 ```
 
-**Binaires SUID**
+### Rechercher les fichiers dotés du bit SUID
 
-<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
+La commande repère les fichiers réguliers dont le bit SUID est positionné. La présence du bit ne démontre pas à elle seule une vulnérabilité.
 
-```text
+```bash
 find / -perm -u=s -type f 2>/dev/null
-
 ```
+
+### Afficher les autorisations sudo du compte courant
+
+`sudo -l` peut demander une authentification. La sortie décrit les commandes autorisées par la politique sudo.
 
 ```bash
 sudo -l
-
 ```
+
+### Ouvrir une session de connexion via sudo
+
+`sudo -i` nécessite que la politique sudo autorise cette opération. Elle ouvre un environnement de connexion du compte cible, généralement root.
 
 ```bash
 sudo -i
-
 ```
 
 **Paramètres et repères :**
@@ -195,7 +204,7 @@ sudo -i
 
 Observer les interfaces, la table de routage et les services à l'écoute sur la machine locale.
 
-<p class="oscp-command-note">Interfaces et connexions.</p>
+Les trois commandes sont indépendantes : `ip -br address` résume les adresses, `ip route` affiche la table de routage principale et `ss -tulpn` liste les sockets TCP/UDP en écoute avec leurs processus lorsque les droits le permettent. `ip` nécessite `iproute2`.
 
 ```bash
 ip -br address
@@ -207,7 +216,7 @@ ss -tulpn
 
 Examiner les périphériques et les points de montage.
 
-<p class="oscp-command-note">Volumes et espace disque.</p>
+`lsblk -f` affiche les périphériques blocs et les informations de systèmes de fichiers disponibles ; `df -hT` affiche l'occupation des systèmes de fichiers montés, avec leur type.
 
 ```bash
 lsblk -f
@@ -218,7 +227,7 @@ df -hT
 
 Afficher les processus en détail et leurs relations parent-enfant.
 
-<p class="oscp-command-note">Arbre de processus.</p>
+`ps auxww` affiche les processus avec des lignes non tronquées ; `ps axjf` présente leur hiérarchie sous forme d'arbre. Les options de `ps` décrites ici sont celles de procps-ng sous Linux.
 
 ```bash
 ps auxww
