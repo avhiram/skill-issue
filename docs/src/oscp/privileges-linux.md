@@ -206,21 +206,22 @@ sudo -i
 
 ### Adresses, routes et ports en écoute
 
-Afficher adresses IP, routes et ports en écoute.
+Examiner les interfaces, les routes IPv4 et IPv6 et les services à l'écoute.
 
-`ip` nécessite `iproute2` ; `ss -tulpn` peut masquer les processus sans privilèges.
+`ip` et `ss` appartiennent généralement à `iproute2` ; l'affichage des PID dépend des droits.
 
 ```bash
 ip -br address
-ip route
+ip route show
+ip -6 route show
 ss -tulpn
 ```
 
 ### Volumes et espace disque
 
-Comparer les périphériques et l'espace occupé.
+Comparer les périphériques détectés et l'espace des systèmes montés.
 
-`lsblk -f` identifie les volumes ; `df -hT` affiche les montages et l'espace utilisé.
+`lsblk -f` affiche les UUID et types de systèmes de fichiers ; `df -hT` indique le type et l'occupation des montages.
 
 ```bash
 lsblk -f
@@ -229,16 +230,18 @@ df -hT
 
 ### Arbre de processus
 
-Lister les processus et leurs relations parent-enfant.
+Observer les processus et leurs relations de parenté.
 
-`ps auxww` évite de tronquer les lignes ; `ps axjf` affiche l'arbre des processus.
+`ps auxww` conserve les longues lignes de commande ; `ps axjf` montre la hiérarchie des processus.
 
 ```bash
 ps auxww
 ps axjf
 ```
 
-## Examiner les services
+## Examiner les processus et le trafic local
+
+<p class="oscp-command-note">Surveiller les lignes de commande contenant un motif ; cela ne recherche pas les secrets dans la mémoire.</p>
 
 ```bash
 watch -n 1 "ps auxww | grep -i '[p]ass'"  # Recherche un motif, pas tous les secrets
@@ -246,73 +249,75 @@ watch -n 1 "ps auxww | grep -i '[p]ass'"  # Recherche un motif, pas tous les sec
 ```
 
 ```bash
-# Examiner les paquets en texte lisible sur loopback (droits requis)
-sudo tcpdump -i lo -A | grep -i 'pass'
+# Observer le trafic loopback en ASCII ; la capture ne déchiffre pas TLS
+sudo tcpdump -i lo -nn -A | grep -i 'pass'
 
 ```
 
 ```bash
-# Enregistrer les paquets accessibles (droits requis)
-sudo tcpdump -i any -s 0 -w capture.pcap
-sudo tcpdump -i eth0 -w capture.pcap -n -U -s 0 'not host 10.11.1.111'
-sudo tcpdump -vv -i eth0 'not host 10.11.1.111'
+# Capturer les paquets accessibles dans un fichier PCAP (droits requis)
+sudo tcpdump -i any -nn -s 0 -w capture.pcap
+sudo tcpdump -i eth0 -nn -U -s 0 -w capture-eth0.pcap 'not host 10.11.1.111'
+sudo tcpdump -vv -nn -i eth0 'not host 10.11.1.111'
 
 ```
 
-## Tâches cron
+## Examiner les tâches cron
 
-Examiner les tâches planifiées, leurs propriétaires et les scripts exécutés.
+Identifier les planifications, les comptes d'exécution et les permissions des scripts.
 
-<p class="oscp-command-note">Cron : rechercher les exécutions dans les journaux accessibles.</p>
+<p class="oscp-command-note">Rechercher les événements cron dans les journaux disponibles.</p>
 
 ```bash
-grep -i 'cron' /var/log/syslog  # Debian/Ubuntu, si disponible
+grep -i 'cron' /var/log/syslog 2>/dev/null  # Debian/Ubuntu
 # Autre journal selon la distribution
-grep -i 'cron' /var/log/cron  # RHEL/CentOS, si disponible
+grep -i 'cron' /var/log/cron 2>/dev/null  # RHEL/CentOS
 
 ```
 
-<p class="oscp-command-note">Cron : vérifier les droits du script exécuté par la tâche planifiée.</p>
+<p class="oscp-command-note">Examiner le propriétaire et les droits du script appelé par cron.</p>
 
 ```bash
-ls -l /chemin/vers/script.sh
+stat /chemin/vers/script.sh
 
 ```
 
-<p class="oscp-command-note">Cron : vérifier si le script et ses répertoires parents sont modifiables.</p>
+<p class="oscp-command-note">Contrôler les permissions de chaque répertoire parent du script cron.</p>
 
 ```bash
 namei -l /chemin/vers/script.sh
 ```
 
-<p class="oscp-command-note">Cron : afficher les tâches de l'utilisateur et examiner les répertoires de planification.</p>
+<p class="oscp-command-note">Lister la crontab personnelle, les fichiers cron système et les restrictions d'accès.</p>
 
 ```bash
 crontab -l
 ls -alh /var/spool/cron /var/spool/cron/crontabs 2>/dev/null
 ls -lah /etc/cron* 2>/dev/null
 ls -l /etc/at.allow /etc/at.deny /etc/cron.allow /etc/cron.deny 2>/dev/null
-cat /etc/crontab
+cat /etc/crontab 2>/dev/null
 cat /etc/anacrontab 2>/dev/null
 sudo crontab -u root -l  # Uniquement si autorisé
 
 ```
 
-### Comptes Unix et identifiants privilégiés
+### Comptes locaux et UID privilégiés
 
-<p class="oscp-command-note">Créer un hash SHA-512 crypt en saisissant le mot de passe dans l'invite OpenSSL.</p>
+<p class="oscp-command-note">Générer un hash SHA-512 crypt de laboratoire sans placer le mot de passe en argument.</p>
 
 ```bash
 openssl passwd -6
 
 ```
 
+<p class="oscp-command-note">Un UID de 0 confère les privilèges root, quel que soit le nom du compte.</p>
+
 ```bash
-# Examiner les comptes ayant un UID égal à 0 (lecture seule)
+# Afficher les noms, UID et shells des comptes ayant l'UID 0
 awk -F: '$3 == 0 {print $1 ":" $3 ":" $7}' /etc/passwd
 ```
 
-<p class="oscp-command-note">Se connecter à un compte de test connu, puis vérifier son UID et ses groupes.</p>
+<p class="oscp-command-note">`su` demande généralement le mot de passe du compte cible ; `id` affiche ensuite les identifiants effectifs.</p>
 
 ```bash
 su NOM_COMPTE
@@ -322,69 +327,69 @@ id
 
 ```
 
-### Examiner les empreintes de /etc/shadow
+### Empreintes de mots de passe dans shadow
 
-<p class="oscp-command-note">Shadow : extraire la ligne root si l'accès privilégié est autorisé.</p>
+<p class="oscp-command-note">La lecture de `/etc/shadow` nécessite généralement root ; protéger les copies de hashes.</p>
 
 ```bash
-sudo grep '^root:' /etc/shadow > root_hash.txt
+sudo grep '^root:' /etc/shadow > root_hash.txt  # Conserver ce fichier en lieu sûr
 
 ```
 
-<p class="oscp-command-note">Tester hors ligne un hash SHA-512 crypt (`$6$`) avec une liste de mots de passe autorisée.</p>
+<p class="oscp-command-note">John et Hashcat peuvent tester un hash SHA-512 crypt (`$6$`) ; vérifier son format avant usage.</p>
 
 ```bash
-# John the Ripper : tester l'empreinte extraite
+# John : tester le hash avec une liste de mots de passe
 john --wordlist=/usr/share/wordlists/rockyou.txt root_hash.txt
 
-# Extraire uniquement le hash de la ligne shadow avant Hashcat
+# Hashcat attend l'empreinte seule (sans les champs shadow)
 cut -d: -f2 root_hash.txt > sha512crypt.hash
-hashcat -m 1800 sha512crypt.hash /usr/share/wordlists/rockyou.txt
+hashcat -m 1800 -a 0 sha512crypt.hash /usr/share/wordlists/rockyou.txt
 
 ```
 
 ```bash
-# Afficher les résultats enregistrés par John
+# John : afficher les correspondances déjà trouvées
 john --show root_hash.txt
 
-# Hashcat : afficher les correspondances déjà trouvées
+# Hashcat : afficher les correspondances présentes dans le potfile
 hashcat -m 1800 sha512crypt.hash --show
 
 ```
 
-### Inventorier les exécutables SUID
+### Lister les fichiers SUID
 
-<p class="oscp-command-note">Lister les fichiers réguliers avec le bit SUID ; ce n'est pas une preuve de vulnérabilité.</p>
+<p class="oscp-command-note">Lister les fichiers SUID sans présumer qu'ils sont exploitables.</p>
 
 ```bash
-find / -perm -4000 -type f 2>/dev/null
+find / -type f -perm -4000 2>/dev/null
 
 ```
 
-<p class="oscp-command-note">Afficher le propriétaire et les permissions des fichiers SUID.</p>
+<p class="oscp-command-note">Afficher le propriétaire et les bits de permission de chaque fichier SUID.</p>
 
 ```bash
-find / -perm -4000 -type f -exec ls -l {} + 2>/dev/null
+find / -type f -perm -4000 -exec ls -l {} + 2>/dev/null
 
 ```
 
-### Examiner le comportement des binaires SUID
+### Examiner les exécutables SUID
 
-<p class="oscp-command-note">Remplacer `NOM_BINAIRE` par un nom réel pour afficher les processus correspondants.</p>
+<p class="oscp-command-note">`ps -C` recherche le nom de l'exécutable, pas une sous-chaîne de sa ligne de commande.</p>
 
 ```bash
-ps u -C NOM_BINAIRE
+ps -u "$(id -un)" -C NOM_BINAIRE -o pid,user,euser,comm
 
 ```
 
-<p class="oscp-command-note">Lire les UID réel, effectif, sauvegardé et de système de fichiers d'un PID.</p>
+<p class="oscp-command-note">La ligne `Uid` de `/proc/PID/status` contient les UID réel, effectif, sauvegardé et filesystem.</p>
 
 ```bash
-grep '^Uid:' /proc/1234/status  # Remplacer 1234 par le PID
+grep '^Uid:' /proc/1234/status  # Remplacer 1234 par un PID existant
 
 ```
 
-<p class="oscp-command-note">Exécuter `ls -l` sur chaque fichier trouvé ; aucun privilège supplémentaire n'est accordé.</p>
+<p class="oscp-command-note">`find -exec` lance `ls -l` avec les droits du processus courant, sans privilège supplémentaire.</p>
 
 ```bash
 find /chemin -type f -exec ls -l {} \;
