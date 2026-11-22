@@ -15,6 +15,7 @@ Un domaine regroupe des objets de l’annuaire, dont les comptes, les groupes et
 | --- | --- |
 | TGT | Ticket initial qui permet au client de demander un ticket pour un service. |
 | TGS | Service Kerberos qui délivre les tickets de service. |
+| Ticket de service | Ticket présenté au service demandé pour authentifier le client. |
 | SPN | Nom qui associe une instance de service au compte sous lequel elle s’exécute. |
 | NTLM | Famille de protocoles Windows utilisant notamment un échange de défi et de réponse. |
 
@@ -32,6 +33,8 @@ Un domaine regroupe des objets de l’annuaire, dont les comptes, les groupes et
 Sur un poste Linux utilisant systemd, le service de gestion de l’heure doit être accessible.
 
 ### Afficher l’heure et le fuseau du poste
+
+Lis l’heure locale, le fuseau et l’état de la synchronisation affichés par systemd.
 
 ```bash
 timedatectl status

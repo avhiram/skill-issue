@@ -38,11 +38,15 @@ Exécute la commande depuis le dossier contenant `capture.png`. Conserve l’emp
 
 ### SHA-256 sous Linux
 
+`sha256sum` affiche l’empreinte et le chemin de la capture.
+
 ```bash
 sha256sum -- ./capture.png
 ```
 
 ### SHA-256 sous Windows avec PowerShell
+
+Relève la valeur de la colonne `Hash`.
 
 ```powershell
 Get-FileHash -LiteralPath '.\capture.png' -Algorithm SHA256

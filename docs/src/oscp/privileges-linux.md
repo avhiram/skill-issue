@@ -17,6 +17,22 @@ Examiner les permissions, processus et configurations d'un système Linux.
 id
 ```
 
+### Examiner les droits sudo
+
+`sudo -l` peut demander une authentification et liste les règles applicables au compte courant.
+
+```bash
+sudo -l
+```
+
+### Trouver les fichiers avec le bit SUID
+
+Liste les fichiers ordinaires qui portent le bit SUID. Son effet à l’exécution dépend du propriétaire, des permissions d’exécution et des options du montage.
+
+```bash
+find / -type f -perm -u=s 2>/dev/null
+```
+
 ### Identifier le nom de la machine
 
 `hostname` affiche le nom configuré localement.
@@ -176,22 +192,6 @@ Remplacer `NOM_MODULE` par un nom connu ; `modinfo` n'exige pas que le module so
 
 ```bash
 modinfo NOM_MODULE
-```
-
-### Trouver les fichiers avec le bit SUID
-
-Un fichier SUID n'est pas forcément exploitable ; vérifier son propriétaire et les options `nosuid`.
-
-```bash
-find / -type f -perm -u=s 2>/dev/null
-```
-
-### Examiner les droits sudo
-
-`sudo -l` peut demander une authentification et liste les règles applicables au compte courant.
-
-```bash
-sudo -l
 ```
 
 ### Ouvrir une session privilégiée si autorisée

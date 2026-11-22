@@ -7,6 +7,8 @@ description: Aide-mémoire OSCP en français
 
 **Offensive Security Certified Professional**
 
+**Liham** · OffSec · [Vérifier le certificat](https://credentials.offsec.com/755cac44-117f-407d-8d71-a8fda4aed16e#acc.DNIqrLYR)
+
 Consulte une fiche par thème ou utilise la recherche du site.
 
 **Pendant l’examen**, OffSec interdit notamment Nessus et SQLmap. [Règles officielles de l’OSCP+](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).

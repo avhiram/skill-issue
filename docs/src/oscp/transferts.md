@@ -1,11 +1,13 @@
 ---
 title: "OSCP · Transferts de fichiers"
-description: "Copier un fichier entre Linux et Windows, depuis la machine qui l’envoie ou celle qui le reçoit."
+description: "Transferts Linux et Windows avec SCP, SFTP, SMB, HTTP ou HTTPS. Choisir la source, la destination et la machine qui lance la commande."
 ---
 
-# Transferts de fichiers
+# Transferts de fichiers entre Linux et Windows {#transferts-de-fichiers}
 
-La **source** possède le fichier, la **destination** le reçoit. Exécute chaque commande sur la machine indiquée et adapte les adresses et les comptes. Les exemples utilisent `rapport.txt` dans le dossier courant sous Linux et dans `C:\Users\Public` sous Windows.
+La **source** possède le fichier et la **destination** le reçoit. Choisis le sens du transfert, puis adapte les adresses, les comptes et les chemins du fichier témoin `rapport.txt`.
+
+<TransferSelector />
 
 | Machine d’exemple | Adresse |
 | --- | --- |
@@ -13,43 +15,25 @@ La **source** possède le fichier, la **destination** le reçoit. Exécute chaqu
 | Second Linux | `10.10.10.20` |
 | Windows distant | `10.10.10.30` |
 
-Pour les transferts **Windows vers Windows**, l'adresse `10.10.10.30` représente le Windows **destination** ; le Windows source est un autre poste disposant du fichier.
+Pour les transferts **Windows vers Windows**, `10.10.10.30` représente le poste de destination. Les commandes Windows utilisent `C:\Users\Public\rapport.txt`. Si tu copies depuis un autre dossier, adapte le chemin à chaque étape.
 
-<TransferSelector />
+## Ports et prérequis
 
-## Vérifier la connexion
-
-### Afficher les adresses et les routes de Kali
-
-```bash
-ip -br address
-ip route
-```
-
-### Sur Kali, vérifier l'accès TCP aux services SSH et SMB
-
-`nc -zv` teste uniquement l'établissement d'une connexion TCP : un port ouvert ne garantit ni l'authentification SSH/SMB ni les permissions de copie.
-
-```bash
-nc -zv 10.10.10.20 22
-nc -zv 10.10.10.30 445
-```
-
-### Sur Windows, vérifier l'accès TCP au serveur HTTP de Kali
-
-`TcpTestSucceeded : True` confirme uniquement l'accès TCP à Kali sur le port 8000 ; tester ensuite l'URL du fichier pour distinguer une erreur HTTP 404 d'un problème réseau.
-
-```powershell
-Test-NetConnection 10.10.14.10 -Port 8000
-```
+| Méthode | Ports par défaut ou d’exemple | Service et droits |
+| --- | --- | --- |
+| SCP, SFTP et rsync via SSH | TCP 22 | Serveur SSH sur la machine jointe. Le compte lit ou écrit le fichier selon le sens de la copie. |
+| SMB | TCP 445 | Partage existant ou serveur SMB local. Vérifie les permissions du partage et du dossier. |
+| HTTP et HTTPS | TCP 8000 ou 443 dans les exemples | Serveur sur la source pour un téléchargement. En HTTPS, il lui faut un certificat reconnu par le client. |
+| WebDAV | TCP 8080 dans l’exemple | Serveur sur la destination qui accepte l’écriture en HTTP PUT. |
+| FTP | TCP 21 pour le contrôle et ports de données passifs du serveur | Serveur FTP existant. Ouvre aussi la plage passive pour permettre le transfert. |
+| RDP | TCP 3389 par défaut | Connexion RDP, avec redirection des lecteurs autorisée. |
+| Netcat | TCP 9001 dans l’exemple | Écoute côté destination et connexion côté source. |
 
 ## Linux vers Linux
 
 ### Sur Kali, envoyer un fichier au second Linux par SCP {#ll-scp}
 
-Vérifier que `./rapport.txt` existe localement avant la copie. Le fichier distant sera `/tmp/rapport.txt`.
-
-À exécuter sur Kali (`10.10.14.10`), source du fichier. Le serveur SSH du second Linux (`10.10.10.20`) doit être accessible et `etudiant` doit pouvoir écrire dans `/tmp`.
+Sur Kali source, envoie le fichier dans `/tmp/rapport.txt` sur le second Linux. Le compte SSH `etudiant` doit avoir le droit d’écrire dans `/tmp`.
 
 ```bash
 scp ./rapport.txt etudiant@10.10.10.20:/tmp/
@@ -57,9 +41,7 @@ scp ./rapport.txt etudiant@10.10.10.20:/tmp/
 
 ### Sur Kali, récupérer un fichier du second Linux par SCP {#ll-scp-reception}
 
-La commande remplace `./rapport.txt` sur Kali si ce fichier existe déjà ; choisir un autre nom local pour conserver l'original.
-
-À exécuter sur Kali (`10.10.14.10`), qui reçoit le fichier. Le Linux distant (`10.10.10.20`) possède `/tmp/rapport.txt` et doit autoriser la connexion SSH.
+Sur Kali destination, télécharge `/tmp/rapport.txt` depuis le second Linux avec un compte SSH autorisé à le lire. Choisis un autre nom de sortie si `./rapport.txt` existe déjà et doit être conservé.
 
 ```bash
 scp etudiant@10.10.10.20:/tmp/rapport.txt ./rapport.txt
@@ -75,9 +57,7 @@ scp -r ./dossier etudiant@10.10.10.20:/tmp/
 
 ### Sur Kali, synchroniser un dossier vers le second Linux avec rsync {#ll-rsync}
 
-L'option `-a` conserve les attributs lorsque les permissions le permettent ; sans `--delete`, les fichiers présents uniquement sur la destination ne sont pas supprimés.
-
-`rsync` doit être installé sur Kali et le second Linux, avec SSH accessible. Le `/` final de `./dossier/` copie son contenu dans `/tmp/dossier/` ; `-P` affiche la progression et conserve les transferts partiels.
+Installe `rsync` sur les deux Linux et lance la copie depuis Kali source avec un accès SSH en écriture. Le `/` final de `./dossier/` copie son contenu dans `/tmp/dossier/` et `-P` conserve les transferts partiels et affiche la progression.
 
 ```bash
 rsync -avP ./dossier/ etudiant@10.10.10.20:/tmp/dossier/
@@ -93,9 +73,7 @@ sftp etudiant@10.10.10.20
 
 ### Dans SFTP, envoyer et récupérer un fichier
 
-Le répertoire local est celui d'où `sftp` a été lancé ; le répertoire distant dépend du compte SSH. Vérifier les chemins avec `lpwd` et `pwd` avant le transfert.
-
-À saisir dans l'invite `sftp>` : `put` envoie un fichier local et `get` récupère un fichier distant. Ce ne sont pas des commandes Bash.
+Dans l’invite `sftp>` ouverte sur Kali, vérifie les répertoires local et distant. `put` envoie `rapport.txt` depuis Kali et `get` récupère `autre_fichier.txt` dans le répertoire local.
 
 ```text
 lpwd
@@ -107,9 +85,7 @@ bye
 
 ### Sur le second Linux, télécharger le fichier HTTP servi par Kali {#ll-http}
 
-`--fail` renvoie une erreur pour les réponses HTTP 4xx/5xx et `--output` définit le chemin local. Vérifier le fichier reçu avec `sha256sum`.
-
-Démarre le serveur HTTP sur Kali (`10.10.14.10`) avec [la commande dédiée](#http-source), puis exécute `curl` sur le second Linux (`10.10.10.20`). Le port 8000 doit être joignable depuis ce dernier.
+Démarre d’abord [le serveur HTTP sur Kali](#http-source). Sur le second Linux destination, télécharge le fichier dans le dossier courant. `--fail` signale les erreurs HTTP 4xx et 5xx.
 
 ```bash
 curl --fail --show-error --location --output ./rapport.txt http://10.10.14.10:8000/rapport.txt
@@ -135,9 +111,7 @@ nc -N 10.10.10.20 9001 < ./rapport.txt
 
 ### Sur Kali, servir le fichier par HTTP {#http-source}
 
-La commande `python3 -m http.server` sert les fichiers en lecture seule, sans authentification ni TLS. L'interface `10.10.14.10` doit exister sur Kali.
-
-Sur Kali source, laisse ce serveur HTTP ouvert pendant la copie. Le contenu de `partage` est accessible sans authentification sur le réseau de test.
+Sur Kali source, Python 3.7 ou plus récent sert le dossier `./partage` en lecture seule sur TCP 8000. Utilise un dossier dédié aux fichiers à partager et garde le terminal ouvert. L’accès se fait en clair et sans authentification.
 
 ```bash
 mkdir -p ./partage
@@ -147,9 +121,7 @@ python3 -m http.server 8000 --bind 10.10.14.10 --directory ./partage
 
 ### Sur Windows, télécharger le fichier HTTP de Kali avec PowerShell {#lw-http-ps}
 
-L'URL pointe vers Kali (`10.10.14.10`) ; `-OutFile` désigne le chemin local du fichier **sur Windows**.
-
-Sur Windows destination, [démarre d'abord le serveur HTTP de Kali](#http-source). Le dossier `C:\Users\Public` doit exister.
+Après avoir [démarré le serveur HTTP sur Kali](#http-source), exécute la commande sur Windows destination. Le fichier est écrit dans `C:\Users\Public\rapport.txt`.
 
 ```powershell
 Invoke-WebRequest -UseBasicParsing -Uri 'http://10.10.14.10:8000/rapport.txt' -OutFile 'C:\Users\Public\rapport.txt'
@@ -157,9 +129,7 @@ Invoke-WebRequest -UseBasicParsing -Uri 'http://10.10.14.10:8000/rapport.txt' -O
 
 ### Sur Windows, télécharger le fichier HTTP de Kali avec curl.exe {#lw-http-curl}
 
-`curl.exe` évite la confusion avec l'ancien alias PowerShell `curl` ; `--output` écrit le fichier sur le Windows qui lance la commande.
-
-Cette variante utilise `curl.exe` natif sous Windows, depuis PowerShell ou CMD ; `--fail` fait échouer la commande sur une erreur HTTP.
+Sur Windows destination, lance la commande dans CMD ou PowerShell après avoir [démarré le serveur sur Kali](#http-source). Le nom `curl.exe` appelle le binaire Windows, y compris dans les versions de PowerShell où `curl` est un alias.
 
 ```bat
 curl.exe --fail --location --output "C:\Users\Public\rapport.txt" "http://10.10.14.10:8000/rapport.txt"
@@ -167,21 +137,22 @@ curl.exe --fail --location --output "C:\Users\Public\rapport.txt" "http://10.10.
 
 ### Sur Kali, partager le fichier par SMB {#lw-smb-kali}
 
-Le répertoire `./partage` est publié sous le nom réseau `partage`. Le compte `audit` est propre à ce serveur Impacket ; il ne crée pas de compte Linux.
-
-Sur Kali, installer le serveur SMB d'Impacket et vérifier que TCP 445 est libre. Le mot de passe `MotDePasseTemporaire` est un exemple à remplacer ; l'authentification SMB ne chiffre pas nécessairement le contenu des fichiers.
+Sur Kali source, lance ce bloc dans Bash pour publier `./partage` sur TCP 445 avec le serveur SMB d’Impacket. Choisis un mot de passe temporaire réservé à ce service, transmis au processus comme argument.
 
 ```bash
 mkdir -p ./partage
 cp ./rapport.txt ./partage/
-sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password 'MotDePasseTemporaire' partage ./partage
+read -r -s -p 'Mot de passe SMB temporaire : ' mot_de_passe
+printf '\n'
+if [ -n "$mot_de_passe" ]; then
+  sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password "$mot_de_passe" partage ./partage
+fi
+unset mot_de_passe
 ```
 
 ### Sur Windows, récupérer le fichier du partage SMB de Kali
 
-La commande `net use` ouvre une connexion authentifiée au partage, puis `Copy-Item` enregistre le fichier dans `C:\Users\Public`. Le dernier `net use` déconnecte ce partage.
-
-Sur Windows destination, `net use` demande le mot de passe SMB ; `Copy-Item` lit ensuite le partage Kali. Ferme la connexion après la copie.
+Après avoir [ouvert le partage sur Kali](#lw-smb-kali), lance les commandes sur Windows destination. `net use` demande le mot de passe et `Copy-Item` écrit le fichier dans `C:\Users\Public\rapport.txt`.
 
 ```powershell
 net use \\10.10.14.10\partage * /user:audit
@@ -191,17 +162,22 @@ net use \\10.10.14.10\partage /delete
 
 ### Sur Kali, envoyer le fichier vers un partage SMB Windows {#lw-smb-windows}
 
-Dans `smbclient`, `put rapport.txt rapport.txt` désigne d'abord le fichier local puis le nom distant ; le répertoire courant de Kali doit contenir le fichier.
-
-Sur Kali source, `smbclient put` envoie `./rapport.txt` au partage `Depot` de Windows (`10.10.10.30`). Le compte `LAB\etudiant` doit avoir les droits SMB et NTFS d'écriture ; le client demandera son mot de passe.
+Sur Kali source, connecte-toi au partage Windows `Depot`. Le client demande le mot de passe du compte `LAB\etudiant`, qui doit disposer des droits d’écriture SMB et NTFS.
 
 ```bash
-smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'put rapport.txt rapport.txt'
+smbclient //10.10.10.30/Depot -U 'LAB/etudiant'
+```
+
+Dans l’invite `smb: \>`, envoie le fichier local sous le même nom dans le dossier distant.
+
+```text
+put rapport.txt rapport.txt
+exit
 ```
 
 ### Sur Kali, envoyer le fichier à Windows par SCP {#lw-scp}
 
-Sur Kali source, `scp` transfère le fichier au compte `etudiant` sur Windows (`10.10.10.30`). OpenSSH Server doit être actif ; le chemin `rapport.txt` après `:` est relatif au répertoire distant de connexion.
+Sur Kali source, envoie `./rapport.txt` dans le répertoire de connexion du compte `etudiant` sur Windows. OpenSSH Server doit y être actif et le compte autorisé à écrire.
 
 ```bash
 scp ./rapport.txt etudiant@10.10.10.30:rapport.txt
@@ -209,20 +185,46 @@ scp ./rapport.txt etudiant@10.10.10.30:rapport.txt
 
 ## Windows vers Linux
 
+### Sur Windows source, envoyer le fichier à Kali par SCP {#wl-scp}
+
+Sur Windows source, utilise le client OpenSSH pour écrire `/tmp/rapport.txt` sur Kali. Le serveur SSH de Kali doit être joignable et le compte `kali` doit pouvoir écrire dans `/tmp`.
+
+```powershell
+scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
+```
+
+### Sur Kali, récupérer un fichier du partage Windows par SMB {#wl-smb-windows}
+
+Sur Kali destination, connecte-toi au partage Windows `Depot` avec un compte autorisé à lire le fichier.
+
+```bash
+smbclient //10.10.10.30/Depot -U 'LAB/etudiant'
+```
+
+Dans l’invite `smb: \>`, récupère le fichier dans le dossier courant de Kali. Le deuxième nom passé à `get` indique le nom de sortie local.
+
+```text
+get rapport.txt rapport.txt
+exit
+```
+
 ### Sur Kali, ouvrir un partage SMB de réception {#wl-smb-kali}
 
-Le nom du partage exposé aux clients Windows est `partage` ; son répertoire réel sur Kali est `./reception`.
-
-Sur Kali destination, créer `./reception` avec les permissions d'écriture nécessaires, puis garder Impacket actif pendant la copie. Employer des identifiants temporaires et arrêter le serveur après le test.
+Sur Kali destination, lance ce bloc dans Bash pour publier `./reception` en écriture sur TCP 445 avec Impacket. Saisis un mot de passe temporaire, transmis au processus comme argument, et laisse le serveur actif pendant la copie.
 
 ```bash
 mkdir -p ./reception
-sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password 'MotDePasseTemporaire' partage ./reception
+read -r -s -p 'Mot de passe SMB temporaire : ' mot_de_passe
+printf '\n'
+if [ -n "$mot_de_passe" ]; then
+  sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password "$mot_de_passe" partage ./reception
+fi
+unset mot_de_passe
 ```
 
 ### Sur Windows source, envoyer un fichier au partage SMB de Kali
 
-Sur Windows source, `Copy-Item` dépose le fichier dans `./reception/rapport.txt` sur Kali. Le partage Impacket et le répertoire Linux doivent autoriser l'écriture ; `net use` demande le mot de passe.
+Après avoir [ouvert le partage sur Kali](#wl-smb-kali), lance les commandes sur Windows source. `net use` demande le mot de passe et `Copy-Item` dépose le fichier dans `./reception/rapport.txt` sur Kali.
 
 ```powershell
 net use \\10.10.14.10\partage * /user:audit
@@ -232,9 +234,7 @@ net use \\10.10.14.10\partage /delete
 
 ### Sur Kali, ouvrir un dossier de réception WebDAV {#wl-webdav}
 
-Le serveur doit rester actif pendant l'envoi depuis Windows. Le fichier reçu doit apparaître dans `./reception/rapport.txt` sur Kali.
-
-Sur Kali destination, installer WsgiDAV et son serveur HTTP Cheroot. Cette configuration accepte des écritures WebDAV anonymes **sans chiffrement** : uniquement en laboratoire isolé, puis arrêter le service.
+Sur Kali destination, installe WsgiDAV et Cheroot, puis laisse le serveur actif sur TCP 8080. Cette configuration autorise l’écriture dans `./reception` en clair et sans authentification sur un réseau de test isolé.
 
 ```bash
 mkdir -p ./reception
@@ -243,72 +243,64 @@ wsgidav --no-config --host 10.10.14.10 --port 8080 --root ./reception --auth ano
 
 ### Sur Windows source, déposer le fichier sur Kali via WebDAV
 
-`curl.exe --upload-file` envoie le contenu par requête HTTP PUT ; cette méthode nécessite un serveur WebDAV acceptant l'écriture, pas le serveur HTTP Python standard.
+Après avoir [ouvert le dossier de réception sur Kali](#wl-webdav), lance `curl.exe` sous Windows. La requête HTTP PUT écrit le fichier dans `./reception/rapport.txt` sur Kali.
 
 ```bat
 curl.exe --fail --upload-file "C:\Users\Public\rapport.txt" "http://10.10.14.10:8080/rapport.txt"
 ```
 
-### Sur Windows source, envoyer le fichier à Kali par SCP {#wl-scp}
+## Windows vers Windows
 
-Le chemin avant `kali@` est local à Windows ; `/tmp/rapport.txt` est le chemin du fichier reçu **sur Kali**.
+### Depuis Windows, copier vers un partage SMB {#ww-smb}
 
-À exécuter sur Windows source : client OpenSSH disponible, serveur SSH sur Kali destination et compte `kali` autorisé à écrire dans `/tmp`.
+Sur Windows source, copie le fichier local vers le partage `Depot` du poste distant. Le compte courant doit y disposer des droits d’écriture SMB et NTFS. Si le partage est absent, [crée-le sur Windows destination](#ww-creer).
 
 ```powershell
-scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
+Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\10.10.10.30\Depot\rapport.txt'
 ```
 
-### Sur Kali, récupérer un fichier du partage Windows par SMB {#wl-smb-windows}
+### Depuis Windows, envoyer vers Windows par SCP {#ww-scp}
 
-Dans `smbclient`, `get rapport.txt rapport.txt` lit d'abord le fichier distant puis écrit la copie locale ; le compte doit avoir accès en lecture au partage.
+Sur Windows source, utilise le client OpenSSH. OpenSSH Server doit être actif sur Windows destination et le compte `etudiant` doit pouvoir écrire dans son répertoire de connexion.
 
-À exécuter sur Kali, destination du fichier : `smbclient get` télécharge `rapport.txt` du partage `Depot` sur Windows (`10.10.10.30`) dans le dossier courant de Kali.
-
-```bash
-smbclient //10.10.10.30/Depot -U 'LAB/etudiant' -c 'get rapport.txt rapport.txt'
+```powershell
+scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
 ```
-
-## Windows vers Windows
 
 ### Sur Windows destination, créer un partage SMB {#ww-creer}
 
-La création du partage ne remplace pas la configuration des permissions NTFS : vérifier séparément l'accès effectif de `LAB\etudiant` au dossier `C:\Depot`.
-
-Sur Windows destination (`10.10.10.30`), ouvrir PowerShell en administrateur pour créer le partage `Depot` s'il n'existe pas. Le compte `LAB\etudiant` doit exister et disposer également des droits NTFS d'écriture sur `C:\Depot`.
+Sur Windows destination, ouvre PowerShell en administrateur et crée le partage `Depot` s’il est absent. Accorde séparément au compte existant `LAB\etudiant` les droits d’écriture NTFS sur `C:\Depot`.
 
 ```powershell
 New-Item -ItemType Directory -Path 'C:\Depot' -Force
 New-SmbShare -Name 'Depot' -Path 'C:\Depot' -ChangeAccess 'LAB\etudiant'
 ```
 
-### Sur Windows source, copier vers le partage SMB du Windows destination {#ww-smb}
+## Téléchargement HTTPS
 
-Le chemin UNC `\\10.10.10.30\Depot\rapport.txt` désigne le fichier distant ; le chemin `C:\Users\Public\rapport.txt` désigne la source locale.
+Ces exemples utilisent un serveur HTTPS existant sur la machine source, accessible sur TCP 443. Remplace `transferts.example.org` par le nom couvert par le certificat du serveur et vérifie que le fichier est accessible à cette URL.
 
-Sur Windows source, le compte courant doit avoir les permissions SMB et NTFS d'écriture sur `\\10.10.10.30\Depot`.
+### Sur Linux destination, télécharger avec curl {#https-linux}
 
-```powershell
-Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\10.10.10.30\Depot\rapport.txt'
+Le client vérifie le nom du serveur et la chaîne du certificat avant d’écrire `./rapport.txt`. Pour une autorité interne, utilise le magasin de confiance du système ou indique à curl le certificat de l’autorité avec `--cacert`.
+
+```bash
+curl --fail --show-error --output ./rapport.txt 'https://transferts.example.org/rapport.txt'
 ```
 
-### Sur Windows source, envoyer par SCP au Windows destination {#ww-scp}
+### Sur Windows destination, télécharger avec PowerShell {#https-windows}
 
-Le chemin local `C:\Users\Public\rapport.txt` est lu sur Windows source ; le nom après `:` est créé dans le répertoire distant du compte SSH.
-
-Sur Windows source, utiliser le client OpenSSH ; le Windows destination (`10.10.10.30`) doit exécuter OpenSSH Server et permettre au compte `etudiant` d'écrire dans son répertoire de connexion.
+Le certificat du serveur doit être reconnu par Windows. La commande écrit le fichier dans `C:\Users\Public`.
 
 ```powershell
-scp 'C:\Users\Public\rapport.txt' etudiant@10.10.10.30:rapport.txt
+Invoke-WebRequest -UseBasicParsing -Uri 'https://transferts.example.org/rapport.txt' -OutFile 'C:\Users\Public\rapport.txt'
 ```
 
 ## Dossier partagé dans une session RDP
 
 ### Sur Kali, ouvrir RDP avec redirection du dossier local {#rdp}
 
-L'option `/drive:partage,...` expose le dossier local dans la session Windows sous `\\tsclient\partage` ; elle n'active pas un partage SMB classique.
-
-Sur Kali, installer FreeRDP 3 et préparer `./partage`. Le serveur Windows doit autoriser la redirection des lecteurs RDP ; le compte `etudiant` doit être autorisé à ouvrir une session RDP.
+Sur Kali, ouvre la session avec FreeRDP 3. Si Windows autorise la redirection de lecteurs, le répertoire Kali devient accessible dans la session sous `\\tsclient\partage`.
 
 ```bash
 mkdir -p ./partage
@@ -316,6 +308,8 @@ xfreerdp3 /v:10.10.10.30 /u:etudiant /dynamic-resolution "/drive:partage,$PWD/pa
 ```
 
 ### Sur Windows distant, afficher le dossier Kali redirigé par RDP
+
+Depuis PowerShell dans la session RDP, liste les fichiers du dossier redirigé. La présence de `rapport.txt` indique que le fichier est accessible dans cette session.
 
 ```powershell
 Get-ChildItem -LiteralPath '\\tsclient\partage'
@@ -329,9 +323,9 @@ La source `\\tsclient\partage\rapport.txt` reste sur Kali ; `Copy-Item` crée la
 Copy-Item -LiteralPath '\\tsclient\partage\rapport.txt' -Destination 'C:\Users\Public\rapport.txt'
 ```
 
-### Sur Windows distant, renvoyer un fichier dans le dossier Kali redirigé
+### Sur Windows distant, renvoyer un fichier dans le dossier Kali redirigé {#rdp-retour}
 
-La destination `\\tsclient\partage\retour.txt` écrit dans le dossier local `./partage` de Kali, si la redirection autorise l'écriture.
+Après avoir [ouvert la session RDP depuis Kali](#rdp), lance la copie dans le PowerShell du poste Windows. Si la redirection autorise l’écriture, le fichier apparaît dans `./partage/retour.txt` sur Kali.
 
 ```powershell
 Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\partage\retour.txt'
@@ -339,9 +333,9 @@ Copy-Item -LiteralPath 'C:\Users\Public\rapport.txt' -Destination '\\tsclient\pa
 
 ## FTP sur un serveur existant
 
-FTP classique transmet les identifiants et les fichiers en clair. Ces commandes utilisent un compte `etudiant` sur un serveur FTP existant ; l'accès FTP anonyme, s'il est autorisé, est un cas distinct. Préférer SFTP hors laboratoire isolé.
+FTP transmet les identifiants et les fichiers en clair. Les exemples utilisent un compte sur un serveur FTP existant. Pour un service explicitement public, voir [FTP Anonymous](./reconnaissance.md#accès-ftp-anonyme).
 
-### Sur Kali, télécharger un fichier depuis le serveur FTP distant
+### Sur Kali, télécharger un fichier depuis le serveur FTP distant {#ftp}
 
 `--user etudiant` utilise le compte FTP et demande son mot de passe si nécessaire ; `--output` écrit le fichier localement sur Kali.
 
@@ -351,9 +345,7 @@ curl --fail --user etudiant --output ./rapport.txt ftp://10.10.10.20/rapport.txt
 
 ### Sur Kali, envoyer un fichier vers le serveur FTP distant
 
-`--upload-file` lit `./rapport.txt` sur Kali et l'envoie vers le chemin FTP distant. Vérifier les droits d'écriture du compte avant l'essai.
-
-Le serveur FTP doit accepter l'upload et le compte `etudiant` doit disposer des droits d'écriture dans le répertoire distant.
+Sur Kali source, lis `./rapport.txt` et envoie-le au serveur FTP. Le compte `etudiant` doit être autorisé à écrire dans le répertoire distant.
 
 ```bash
 curl --fail --user etudiant --upload-file ./rapport.txt ftp://10.10.10.20/rapport.txt
@@ -363,7 +355,9 @@ curl --fail --user etudiant --upload-file ./rapport.txt ftp://10.10.10.20/rappor
 
 Base64 représente les octets sous forme de texte **sans chiffrement**. Réserver cette méthode aux petits fichiers, copier la chaîne complète sans caractères supplémentaires et comparer les empreintes SHA-256 après reconstruction.
 
-### Sur Kali source, encoder un fichier en Base64 pour Windows
+### Sur Kali source, encoder un fichier en Base64 pour Windows {#base64-linux}
+
+Sur Kali source, GNU `base64` affiche une ligne à copier dans l’invite PowerShell sur Windows destination.
 
 ```bash
 base64 -w 0 ./rapport.txt
@@ -371,17 +365,23 @@ base64 -w 0 ./rapport.txt
 
 ### Sur Windows destination, reconstruire le fichier depuis Base64
 
+Sur Windows destination, colle la ligne encodée quand PowerShell affiche l’invite. La commande crée ou remplace le fichier local.
+
 ```powershell
 [IO.File]::WriteAllBytes('C:\Users\Public\rapport.txt', [Convert]::FromBase64String((Read-Host 'Base64')))
 ```
 
-### Sur Windows source, encoder un fichier en Base64 pour Linux
+### Sur Windows source, encoder un fichier en Base64 pour Linux {#base64-windows}
+
+Sur Windows source, PowerShell affiche une ligne à transmettre à Kali.
 
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes('C:\Users\Public\rapport.txt'))
 ```
 
 ### Sur Kali destination, reconstruire le fichier depuis Base64
+
+Sur Kali destination, colle la ligne encodée à l’invite Bash. La redirection écrit les octets décodés dans le fichier local, en remplaçant son contenu éventuel.
 
 ```bash
 read -r -p 'Base64 : ' contenu
@@ -400,12 +400,48 @@ Exécuter la commande sur chaque machine en adaptant le chemin du fichier, puis 
 sha256sum ./rapport.txt
 ```
 
-### Sur Windows source et destination avec PowerShell
+### Comparer les empreintes sous Windows avec PowerShell
 
 Exécuter sur chaque machine concernée ; le champ `Hash` doit correspondre à l'empreinte calculée sur Linux ou Windows pour le même fichier.
 
 ```powershell
 Get-FileHash -LiteralPath 'C:\Users\Public\rapport.txt' -Algorithm SHA256
+```
+
+### Calculer l’empreinte sous Windows avec certutil
+
+Dans CMD, utilise `certutil` pour afficher l’empreinte SHA-256 du fichier de la machine courante. Compare-la à celle calculée sur l’autre machine.
+
+```bat
+certutil -hashfile "C:\Users\Public\rapport.txt" SHA256
+```
+
+## Vérifier la connexion
+
+### Afficher les adresses et les routes de Kali
+
+Sur Kali, repère l’adresse de l’interface utilisée pour le transfert et la route vers l’autre machine.
+
+```bash
+ip -br address
+ip route
+```
+
+### Sur Kali, vérifier l'accès TCP aux services SSH et SMB
+
+Sur Kali, teste le serveur SSH Linux (TCP 22) et le partage SMB Windows (TCP 445). Une connexion TCP établie permet ensuite de tester l’authentification et les droits de copie.
+
+```bash
+nc -zv 10.10.10.20 22
+nc -zv 10.10.10.30 445
+```
+
+### Sur Windows, vérifier l'accès TCP au serveur HTTP de Kali
+
+Sur Windows, cherche `TcpTestSucceeded : True` dans la sortie. Une réponse HTTP 404 à l’étape suivante indique que le serveur est joignable et que le chemin du fichier est à vérifier.
+
+```powershell
+Test-NetConnection 10.10.14.10 -Port 8000
 ```
 
 ## Dépannage
@@ -423,5 +459,7 @@ Get-FileHash -LiteralPath 'C:\Users\Public\rapport.txt' -Algorithm SHA256
 [OpenSSH](https://man.openbsd.org/scp) · [SFTP](https://man.openbsd.org/sftp) · [OpenSSH pour Windows](https://learn.microsoft.com/fr-fr/windows-server/administration/openssh/openssh-overview) · [rsync](https://rsync.samba.org/ftp/rsync/rsync.1.html) · [Netcat OpenBSD](https://man.openbsd.org/nc) · [curl](https://curl.se/docs/manpage.html) · [Serveur HTTP Python](https://docs.python.org/3/library/http.server.html).
 
 [Client Samba](https://www.samba.org/samba/docs/current/man-html/smbclient.1.html) · [Serveur SMB d’Impacket](https://github.com/fortra/impacket/blob/master/examples/smbserver.py) · [Partages Windows](https://learn.microsoft.com/powershell/module/smbshare/new-smbshare) · [Copie PowerShell](https://learn.microsoft.com/powershell/module/microsoft.powershell.management/copy-item) · [WsgiDAV](https://wsgidav.readthedocs.io/en/latest/user_guide_cli.html) · [FreeRDP 3](https://manpages.debian.org/trixie/freerdp3-x11/xfreerdp3.1.en.html).
+
+[Invoke-WebRequest](https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/invoke-webrequest) · [Get-FileHash](https://learn.microsoft.com/powershell/module/microsoft.powershell.utility/get-filehash) · [Certutil](https://learn.microsoft.com/windows-server/administration/windows-commands/certutil).
 
 Sources d’origine : [notes de krovs](https://github.com/krovs/oscp-notes/tree/main/docs) et [guide d’Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).

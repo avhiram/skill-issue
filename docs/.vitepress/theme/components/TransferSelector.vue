@@ -15,15 +15,19 @@ const methods: Record<System, Record<System, Method[]>> = {
       { name: 'rsync', anchor: 'll-rsync' },
       { name: 'SFTP', anchor: 'll-sftp' },
       { name: 'HTTP', anchor: 'll-http' },
+      { name: 'HTTPS', anchor: 'https-linux' },
+      { name: 'FTP', anchor: 'ftp' },
       { name: 'Netcat', anchor: 'll-netcat' }
     ],
     Windows: [
       { name: 'HTTP avec PowerShell', anchor: 'lw-http-ps' },
-      { name: 'HTTP avec curl.exe', anchor: 'lw-http-curl' },
       { name: 'SCP', anchor: 'lw-scp' },
       { name: 'Partage SMB sur Kali', anchor: 'lw-smb-kali' },
       { name: 'Partage SMB sur Windows', anchor: 'lw-smb-windows' },
-      { name: 'Dossier partagé par RDP', anchor: 'rdp' }
+      { name: 'HTTPS avec PowerShell', anchor: 'https-windows' },
+      { name: 'HTTP avec curl.exe', anchor: 'lw-http-curl' },
+      { name: 'Dossier partagé par RDP', anchor: 'rdp' },
+      { name: 'Base64', anchor: 'base64-linux' }
     ]
   },
   Windows: {
@@ -31,13 +35,16 @@ const methods: Record<System, Record<System, Method[]>> = {
       { name: 'SCP', anchor: 'wl-scp' },
       { name: 'Partage SMB sur Kali', anchor: 'wl-smb-kali' },
       { name: 'Partage SMB sur Windows', anchor: 'wl-smb-windows' },
+      { name: 'HTTPS', anchor: 'https-linux' },
       { name: 'WebDAV', anchor: 'wl-webdav' },
-      { name: 'Dossier partagé par RDP', anchor: 'rdp' }
+      { name: 'Copie vers Kali par RDP', anchor: 'rdp-retour' },
+      { name: 'Base64', anchor: 'base64-windows' }
     ],
     Windows: [
       { name: 'Partage SMB existant', anchor: 'ww-smb' },
+      { name: 'SCP', anchor: 'ww-scp' },
       { name: 'Créer le partage SMB', anchor: 'ww-creer' },
-      { name: 'SCP', anchor: 'ww-scp' }
+      { name: 'HTTPS avec PowerShell', anchor: 'https-windows' }
     ]
   }
 }
@@ -49,10 +56,10 @@ const available = computed(() => methods[source.value][destination.value])
   <nav class="transfer-selector" aria-label="Choisir un transfert de fichiers">
     <div class="transfer-fields">
       <label>Machine source
-        <select v-model="source"><option>Linux</option><option>Windows</option></select>
+        <select v-model="source"><option value="Linux">Linux (dont Kali)</option><option value="Windows">Windows</option></select>
       </label>
       <label>Machine de destination
-        <select v-model="destination"><option>Linux</option><option>Windows</option></select>
+        <select v-model="destination"><option value="Linux">Linux (dont Kali)</option><option value="Windows">Windows</option></select>
       </label>
     </div>
     <ul :aria-label="`Méthodes de ${source} vers ${destination}`">
@@ -95,12 +102,11 @@ const available = computed(() => methods[source.value][destination.value])
 .transfer-selector ul {
   display: flex;
   flex-wrap: wrap;
-  gap: .15rem 1rem;
+  gap: .15rem 1.15rem;
   padding: 0;
   margin: .75rem 0 0;
   list-style: none;
 }
 .transfer-selector li { margin: 0; }
-.transfer-selector a { display: inline-block; padding: .3rem 0; }
-.transfer-selector :focus-visible { outline: 2px solid var(--vp-c-brand-1); outline-offset: 2px; }
+.transfer-selector a { display: inline-block; padding: .35rem 0; }
 </style>

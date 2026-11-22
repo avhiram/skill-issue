@@ -62,6 +62,12 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        miniSearch: {
+          options: {
+            processTerm: (term) => term.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
+          },
+          searchOptions: { boost: { title: 4, titles: 3, text: 1 } }
+        },
         translations: {
           button: { buttonText: 'Rechercher', buttonAriaLabel: 'Rechercher dans le guide' },
           modal: {
@@ -81,12 +87,15 @@ export default defineConfig({
     },
     outline: { level: [2, 4], label: 'Sur cette page' },
     docFooter: { prev: 'Précédent', next: 'Suivant' },
+    skipToContentLabel: 'Aller au contenu',
     sidebarMenuLabel: 'Menu',
     returnToTopLabel: 'Retour en haut',
     socialLinks: [],
     editLink: false
   },
   markdown: {
+    codeCopyButtonTitle: 'Copier le code',
+    theme: { light: 'github-light', dark: 'github-dark-default' },
     config(md) {
       md.use(tabsMarkdownPlugin)
       md.use(githubAlertsPlugin)

@@ -515,11 +515,9 @@ ftp -p 192.0.2.10
 
 ```
 
-#### Accès FTP anonyme
+#### Accès FTP anonyme (FTP Anonymous) {#accès-ftp-anonyme}
 
-Vérifier si le serveur autorise une connexion anonyme, sans modifier les fichiers distants.
-
-<p class="oscp-command-note">FTP anonyme : tester l'accès et lister les fichiers avec `curl`.</p>
+Sur un serveur FTP prévu pour l’accès public, remplace `<IP_CIBLE>` par son adresse. `-v` affiche le détail du dialogue FTP et `--list-only` affiche uniquement les noms retournés par le serveur.
 
 ```bash
 curl -v 'ftp://anonymous:anonymous@<IP_CIBLE>/'
