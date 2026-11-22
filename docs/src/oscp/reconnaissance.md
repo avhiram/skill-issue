@@ -2266,7 +2266,7 @@ nmap -sV -p 3306 --script mysql-info,mysql-variables <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Depuis Kali, utiliser le client `mysql` ou `mariadb` installé pour lister les bases accessibles au compte fourni. L'option `-p` sans valeur demande le mot de passe sans l'inscrire dans l'historique du shell.</p>
+<p class="oscp-command-note">Kali : lister les bases MySQL accessibles. `-p` demande le mot de passe.</p>
 
 ```bash
 mysql -h <IP_CIBLE> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
@@ -2281,14 +2281,14 @@ hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 
 ```
 
-<p class="oscp-command-note">MySQL : ouvrir une session interactive sur une base existante et accessible au compte connecté. Le nom de la base est un argument positionnel ; `-p` demande le mot de passe.</p>
+<p class="oscp-command-note">MySQL : se connecter à une base existante. `-p` demande le mot de passe.</p>
 
 ```bash
 mysql -h <IP_CIBLE> -u <UTILISATEUR> -p <BASE_DE_DONNEES>
 
 ```
 
-<p class="oscp-command-note">Dans le client MySQL : exécuter les requêtes séparément. Remplacer les noms de base et de table par des identifiants réels **sans chevrons** ; `SELECT *` peut afficher des données sensibles et doit être limité au périmètre autorisé.</p>
+<p class="oscp-command-note">MySQL : lister les bases et les tables, puis lire 10 lignes. Adapter les noms.</p>
 
 ```sql
 SHOW DATABASES;
@@ -2315,14 +2315,14 @@ SHOW GRANTS FOR CURRENT_USER();
 
 ```
 
-<p class="oscp-command-note">MySQL : `LOAD_FILE()` lit un fichier **sur l'hôte du serveur SQL**, pas sur Kali. Le compte doit disposer du privilège `FILE`, le service doit pouvoir lire le fichier et `secure_file_priv` peut restreindre les chemins. La fonction renvoie `NULL` si les conditions ne sont pas remplies.</p>
+<p class="oscp-command-note">MySQL : lire un fichier sur le serveur, pas sur Kali. Nécessite le droit `FILE` et un chemin autorisé.</p>
 
 ```sql
 -- Lire un fichier texte de démonstration sur le serveur Windows, s'il existe et est autorisé
 SELECT LOAD_FILE('C:/xampp/htdocs/test.txt');
 ```
 
-<p class="oscp-command-note">Sur l'hôte Windows hébergeant MySQL : `icacls` affiche les ACL NTFS du fichier de démonstration. Cette commande locale ne peut pas être exécutée depuis une simple connexion SQL distante.</p>
+<p class="oscp-command-note">Windows : afficher les permissions du fichier local avec `icacls`.</p>
 
 ```cmd
 icacls "C:\xampp\htdocs\test.txt"
@@ -2330,7 +2330,7 @@ icacls "C:\xampp\htdocs\test.txt"
 
 ### 3389: RDP
 
-<p class="oscp-command-note">Nmap RDP : `rdp-enum-encryption` énumère les modes de sécurité annoncés et `rdp-ntlm-info` peut relever des métadonnées NTLM. Aucun de ces scripts ne confirme une vulnérabilité MS12-020.</p>
+<p class="oscp-command-note">Nmap : relever la sécurité RDP et les informations NTLM disponibles.</p>
 
 ```bash
 nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
@@ -2355,7 +2355,7 @@ nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">Depuis Kali, utiliser FreeRDP pour ouvrir une session RDP ou partager un répertoire local ; vérifier la version installée (`xfreerdp` en 2.x, souvent `xfreerdp3` en 3.x). `rdesktop` est une alternative ancienne dont les capacités de sécurité peuvent être limitées.</p>
+<p class="oscp-command-note">Kali : se connecter en RDP avec FreeRDP (`xfreerdp` ou `xfreerdp3` selon la version).</p>
 
 ```bash
 # FreeRDP 2.x : ouvrir une session RDP ; vérifier le binaire disponible (xfreerdp ou xfreerdp3)
@@ -2404,7 +2404,7 @@ hydra -L utilisateurs.txt -P mots_de_passe.txt -s 5432 192.0.2.10 postgres
 
 ```
 
-<p class="oscp-command-note">Depuis Kali, `psql -c '\l'` exécute la méta-commande PostgreSQL qui liste les bases accessibles au compte connecté. Installer le client PostgreSQL et disposer d'identifiants autorisés.</p>
+<p class="oscp-command-note">Kali : lister les bases PostgreSQL avec `psql`. Client et identifiants requis.</p>
 
 ```bash
 psql -h <IP_CIBLE> -U <UTILISATEUR> -d postgres -c '\l'
@@ -2439,7 +2439,7 @@ DROP TABLE IF EXISTS cmd_exec;
 
 ```
 
-<p class="oscp-command-note">Dans `psql`, les méta-commandes commencent par une barre oblique inverse et ne se terminent pas par `;`. Elles ne sont pas des requêtes SQL exécutables dans n'importe quel client.</p>
+<p class="oscp-command-note">Dans `psql` : commandes `\l`, `\c`, `\dt` et `\d`, sans point-virgule.</p>
 
 Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` liste les bases, `\c` change de base, `\dt` liste les tables et `\d` décrit une table. Remplacer les noms entre chevrons.
 
@@ -2452,7 +2452,7 @@ Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` lis
 \d+ <TABLE_NAME>
 ```
 
-<p class="oscp-command-note">Dans `psql` : les requêtes SQL se terminent par `;`. Les deux lectures sur `public.users` ne fonctionnent que si cette table et la colonne `username` existent ; les commandes de création et modification exigent des droits d'écriture et sont réservées à une base de test.</p>
+<p class="oscp-command-note">PostgreSQL : adapter les noms des tables. Écritures réservées à une base de test.</p>
 
 ```sql
 -- Exemple à adapter à une table existante et autorisée ; remplacer public.users par le schéma et la table réels
@@ -2492,7 +2492,7 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">TigerVNC : `::5900` désigne le port TCP 5900 explicitement, tandis que `:0` désigne l'écran VNC 0. Le client peut demander un mot de passe selon la configuration du serveur.</p>
+<p class="oscp-command-note">VNC : `::5900` indique le port TCP ; `:0` indique l'écran 0.</p>
 
 ```bash
 # TigerVNC : ::5900 désigne le port TCP 5900, tandis que :0 désigne l'écran VNC 0
@@ -2564,7 +2564,7 @@ evil-winrm -i 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 Identifier si le point de terminaison WinRM est accessible en HTTP et s'il demande une authentification.
 
-<p class="oscp-command-note">Depuis Kali, interroger `/wsman` sur HTTP/5985 sans identifiants ; un code 401 indique souvent qu'une authentification est exigée, pas que la connexion WinRM a réussi.</p>
+<p class="oscp-command-note">WinRM : tester `/wsman` sur 5985. `401` signifie authentification requise.</p>
 
 ```bash
 curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
