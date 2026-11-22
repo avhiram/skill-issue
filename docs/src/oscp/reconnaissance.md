@@ -403,84 +403,84 @@ Vérifier les ports et les services de la cible autorisée.
 <p class="oscp-command-note">Rechercher rapidement les ports accessibles.</p>
 
 ```bash
-rustscan -a <target-ip> -p 1-65535
+rustscan -a <IP_CIBLE> -p 1-65535
 
 ```
 
 **RustScan + Nmap**
 
 ```bash
-rustscan -a <target-ip> -p 1-65535 -- -Pn
+rustscan -a <IP_CIBLE> -p 1-65535 -- -Pn
 
 ```
 
 **Plage de ports précise**
 
 ```bash
-rustscan -a <target-ip> -r 1-1000
+rustscan -a <IP_CIBLE> -r 1-1000
 
 ```
 
 **Régler les délais et la taille des lots**
 
 ```bash
-rustscan -a <target-ip> -b 500 -u 5000
+rustscan -a <IP_CIBLE> -b 500 -u 5000
 
 ```
 
 **Scanner des ports spécifiques seulement**
 
 ```bash
-rustscan -a <target-ip> -p 22,80,443
+rustscan -a <IP_CIBLE> -p 22,80,443
 
 ```
 
 **Enregistrer les résultats dans le fichier**
 
 ```bash
-rustscan -a <target-ip> -- -oN [machine]_rustscan.txt
+rustscan -a <IP_CIBLE> -- -oN rapport_rustscan.txt
 
 ```
 
-**Scan UDP**
+**Scan UDP avec Nmap (RustScan découvre principalement les ports TCP)**
 
 ```bash
-rustscan -a <target-ip> -- -sU -p 1-65535
+sudo nmap -sU --top-ports 100 <IP_CIBLE>
 
 ```
 
 **Détection de vulnérabilité**
 
 ```bash
-rustscan -a <target-ip> -p 1-65535 -- -sV --script vuln
+rustscan -a <IP_CIBLE> -p 1-65535 -- -sV --script vuln
 
 ```
 
 **Mode silencieux**
 
 ```bash
-rustscan -a <target-ip> -p 1-65535 -g -q
+rustscan -a <IP_CIBLE> -p 1-65535 -g -q
 
 ```
 
 **Exclure certains ports**
 
 ```bash
-rustscan -a <target-ip> -p 1-65535 --exclude-ports 80,443
+rustscan -a <IP_CIBLE> -p 1-65535 --exclude-ports 80,443
 
 ```
 
 **Détection du système d’exploitation**
 
 ```bash
-rustscan -a <target-ip> -p 1-65535 -- -O
+rustscan -a <IP_CIBLE> -p 1-65535 -- -O
 
 ```
 
 **Scan TCP et UDP**
 
 ```bash
-rustscan -a <target-ip> -p 1-65535 -- -sS -sU
+rustscan -a <IP_CIBLE> -p 1-65535 -- -sS -sU
 
 ```
 
@@ -725,17 +725,16 @@ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no user@target_ip
 `aes128-cbc`  
 
 ```bash
-# Ouvrir une session SSH
+# Algorithme CBC ancien : peut être refusé par les configurations modernes.
 ssh -c aes128-cbc user@target_ip
 
 ```
 
-**Paramètres et repères :**
-`-1`  
+**Compatibilité SSH :** le protocole SSH version 2 est utilisé par défaut sur les clients OpenSSH modernes. L'option `-1` (SSH version 1) n'est plus prise en charge par les versions récentes.  
 
 ```bash
 # Ouvrir une session SSH
-ssh -2 user@target_ip
+ssh user@target_ip
 
 ```
 
@@ -754,7 +753,7 @@ nc -nvlp [listening_port]
 <p class="oscp-command-note">Ouvrir une connexion SSH.</p>
 
 ```bash
-ssh user@target_ip "whoami"
+ssh user@target_ip 'whoami'
 
 ```
 
