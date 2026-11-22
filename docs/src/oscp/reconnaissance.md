@@ -2378,7 +2378,7 @@ rdesktop <ip>
 
 Tester un compte de laboratoire sur le service RDP si les règles d'audit autorisent l'authentification.
 
-<p class="oscp-command-note">Vérification d'un compte RDP.</p>
+<p class="oscp-command-note">RDP : vérifier l'authentification d'un compte de test avec NetExec sur une cible autorisée.</p>
 
 ```bash
 nxc rdp <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
@@ -2465,28 +2465,28 @@ SELECT * FROM <TABLE_NAME>;
 -- Afficher les colonnes, types et informations supplémentaires d'une table
 \d+ <TABLE_NAME>
 
-# Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
+-- Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
 SELECT * FROM users WHERE attribute = 'value';
 
-# Interroger information_schema pour obtenir les colonnes du schéma public
+-- Interroger information_schema pour obtenir les colonnes du schéma public
 SELECT table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_schema = 'public';
 
-# Créer une table de démonstration (modifie la base ; laboratoire uniquement)
+-- Créer une table de démonstration (modifie la base ; laboratoire uniquement)
 CREATE TABLE test_table (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-# Insérer une ligne dans la table de démonstration
+-- Insérer une ligne dans la table de démonstration
 INSERT INTO test_table (name) VALUES ('example_data');
 
-# Modifier des données existantes (requête d'écriture ; vérifier WHERE)
+-- Modifier des données existantes (requête d'écriture ; vérifier WHERE)
 UPDATE test_table SET name = 'updated_data' WHERE id = 1;
 
-# Supprimer des données existantes (requête destructive ; vérifier WHERE)
+-- Supprimer des données existantes (requête destructive ; vérifier WHERE)
 DELETE FROM test_table WHERE id = 1;
 
 ```
@@ -2500,7 +2500,7 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">VNC : ouvrir une session graphique avec TigerVNC sur TCP 5900 ; ces exemples ne concernent pas RDP.</p>
 
 ```bash
 # Ouvrir une session VNC sur le port TCP 5900 avec TigerVNC
@@ -2572,7 +2572,7 @@ evil-winrm -i 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 Identifier si le point de terminaison WinRM est accessible en HTTP et s'il demande une authentification.
 
-<p class="oscp-command-note">Informations WinRM.</p>
+<p class="oscp-command-note">WinRM : examiner les en-têtes HTTP de /wsman sur TCP 5985, sans authentification.</p>
 
 ```bash
 curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
@@ -2582,7 +2582,7 @@ curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
 
 Tester des identifiants fournis pour l'audit sur une seule cible, sans mot de passe en masse.
 
-<p class="oscp-command-note">Authentification WinRM autorisée.</p>
+<p class="oscp-command-note">WinRM : vérifier un compte et un domaine fournis avec NetExec, sur une cible autorisée.</p>
 
 ```bash
 nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
@@ -2597,14 +2597,14 @@ nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Interroger un serveur Redis.</p>
+<p class="oscp-command-note">Redis : se connecter avec redis-cli et demander le mot de passe de façon interactive.</p>
 
 ```bash
 redis-cli -h <IP_CIBLE> -p 6379 --askpass
 
 ```
 
-<p class="oscp-command-note">Rechercher des références de vulnérabilités connues.</p>
+<p class="oscp-command-note">Redis : rechercher des références SearchSploit ; les scripts tiers mentionnés ne sont ni fournis ni vérifiés.</p>
 
 ```bash
 # Rechercher les références Redis locales avec SearchSploit (ne prouve pas la vulnérabilité de la cible)
@@ -2618,13 +2618,13 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 
 ```
 
-<p class="oscp-command-note">Interroger un serveur Redis.</p>
+<p class="oscp-command-note">Redis : ouvrir une session interactive, consulter INFO et SCAN, puis manipuler uniquement une clé de test.</p>
 
-```bash
+```text
 # Ouvrir le client Redis ; une authentification peut être nécessaire
 redis-cli -h <IP_CIBLE> -p 6379
 
-# Après connexion, afficher les informations et parcourir les clés avec SCAN (résultat paginé)
+# Dans l'invite redis-cli : afficher INFO puis lancer SCAN ; poursuivre avec le curseur retourné
 info
 scan 0
 select 0  # Sélectionner la base 0 (par défaut)
@@ -2650,13 +2650,13 @@ nc -nv <IP_CIBLE> <PORT_TCP>
 
 ```
 
-```bash
-# Envoyer help uniquement si le protocole du service prend en charge cette commande
+```text
+# À saisir dans la session interactive, seulement si le protocole accepte help
 help
 
 ```
 
-<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
+<p class="oscp-command-note">Service TCP inconnu : envoyer deux lignes de test ou une commande documentée via Netcat ; aucun fichier n'est créé.</p>
 
 ```bash
 # Exemple de protocole texte : envoyer des identifiants de test uniquement si le service attend deux lignes
@@ -2669,7 +2669,7 @@ printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 ```
 
-<p class="oscp-command-note">Repères méthodologiques pour un service inconnu ; il ne s’agit pas de commandes prêtes à exécuter.</p>
+<p class="oscp-command-note">Service inconnu : repères d'analyse, non exécutables ; identifier le protocole avant toute action.</p>
 
 ```bash
 # Après avoir identifié le service, référez-vous à sa documentation ou à sa commande par défaut
@@ -2688,7 +2688,7 @@ printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 Observer la négociation TLS d'un service inconnu avant de choisir l'outil d'énumération.
 
-<p class="oscp-command-note">Détecter si un port parle TLS.</p>
+<p class="oscp-command-note">TLS : tenter une négociation avec openssl s_client pour vérifier si un port accepte TLS.</p>
 
 ```bash
 openssl s_client -connect <IP_CIBLE>:<PORT> -brief
@@ -2702,7 +2702,7 @@ Ces vérifications complètent l'inventaire des ports. Elles s'utilisent uniquem
 
 Afficher la documentation d'un script NSE, puis interroger uniquement SMB sur le port 445.
 
-<p class="oscp-command-note">Nmap : examiner précisément un service.</p>
+<p class="oscp-command-note">Nmap : consulter l'aide du script smb-ls puis l'exécuter uniquement sur TCP 445.</p>
 
 ```bash
 nmap --script-help smb-ls
@@ -2713,7 +2713,7 @@ nmap -sV -p 445 --script smb-ls <IP_CIBLE>
 
 Utiliser un scan TCP connect lorsque l'accès réseau passe par un proxy SOCKS. Les scans SYN ou UDP ne se comportent pas comme un scan TCP connect derrière proxychains.
 
-<p class="oscp-command-note">Découverte via un proxy TCP.</p>
+<p class="oscp-command-note">Proxy SOCKS : utiliser Nmap en mode TCP connect (-sT) avec -Pn via proxychains4.</p>
 
 ```bash
 proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
