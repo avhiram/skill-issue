@@ -1,148 +1,148 @@
-# SQL Servers Lab
+# Lab — Microsoft SQL Servers
 
-> **Objective:** Gain code execution, move laterally, and escalate privileges across MS SQL servers in the CONTOSO environment.
+> **Objectif :** étudier l’exécution de code, le Lateral Movement et la Privilege Escalation sur les serveurs Microsoft SQL de l’environnement CONTOSO.
 
-> **Attack path summary:** Enumerate SQL servers in AD → Find a low-priv user that can't exploit SQL → Find a high-priv user (sysadmin) via group membership → Impersonate that user using Kerberos tickets → Enable SQL CLR → Deploy a .NET assembly payload → Gain beacon inside SQL process → Pivot via SQL linked server to a second SQL host → Escalate to SYSTEM via SeImpersonatePrivilege.
+> **Parcours du lab :** énumérer les serveurs SQL dans AD → identifier les groupes `sysadmin` → étudier l’impersonation Kerberos → activer SQL CLR → charger une assembly .NET → rejoindre un second serveur via Linked Server → examiner `SeImpersonatePrivilege`.
 
 ---
 
-# Enumeration
+## Énumération
 
-> ⚠️ **Beacon context key used throughout this lab:**
-> - `[BEACON: wkstn-1 | USER: pchilds]` — medium-integrity foothold beacon
-> - `[BEACON: wkstn-1 | USER: rsteel]` — same beacon after steal_token from rsteel's process
-> - `[BEACON: lon-db-1 | USER: mssql_svc]` — CLR beacon inside lon-db-1 sqlservr.exe
-> - `[BEACON: lon-db-2 | USER: mssql_svc]` — CLR beacon inside lon-db-2 sqlservr.exe
-> - `[BEACON: lon-db-2 | USER: SYSTEM]` — tcp-local beacon after SweetPotato privesc
+> ⚠️ **Contexte des Beacons utilisés dans ce lab :**
+> - `[BEACON: wkstn-1 | USER: pchilds]` — Beacon initial de moyenne intégrité
+> - `[BEACON: wkstn-1 | USER: rsteel]` — même Beacon après l’utilisation du token du processus `rsteel`
+> - `[BEACON: lon-db-1 | USER: mssql_svc]` — Beacon CLR dans le processus `sqlservr.exe` de `lon-db-1`
+> - `[BEACON: lon-db-2 | USER: mssql_svc]` — Beacon CLR dans le processus `sqlservr.exe` de `lon-db-2`
+> - `[BEACON: lon-db-2 | USER: SYSTEM]` — Beacon tcp-local après Privilege Escalation dans le lab
 
-**phase:** 🔍identify what SQL servers exist, how they authenticate, and what privilege your current user has before attempting any exploitation. Going in blind wastes time and creates unnecessary noise.
+**But de cette phase :** identifier les instances SQL, leurs méthodes d’authentification et les permissions du compte courant avant toute opération.
 
-1. Launch Cobalt Strike and connect to the team server.
+1. Lancer Cobalt Strike et se connecter au team server.
 
-2. Load the SQL-BOF Aggressor script.❗ 
-    - Go to **Cobalt Strike > Script Manager**
-    - Click **Load**
-    - Select `C:\Tools\SQL-BOF\SQL\SQL.cna` 
+2. Charger le script Aggressor SQL-BOF.❗ 
+    - Ouvrir **Cobalt Strike > Script Manager**
+    - Cliquer sur **Load**
+    - Sélectionner `C:\Tools\SQL-BOF\SQL\SQL.cna` 
 
-    > **Why:** SQL-BOF provides `sql-*` commands implemented as Beacon Object Files (BOFs). BOFs run directly inside the beacon thread — no child process is spawned. This makes all subsequent `sql-*` commands `OPSEC-🟢SAFE`.
+    > **Pourquoi :** SQL-BOF ajoute les commandes `sql-*` sous forme de Beacon Object Files. Ces commandes s’exécutent dans le contexte du Beacon, mais leur classification OPSEC dépend également de la requête SQL effectuée.
 
-3. **BEACON: User** — 🔍 MS SQL servers configured for Kerberos authentication.
+3. **BEACON: User** — 🔍 Rechercher les serveurs MS SQL disposant d’une configuration Kerberos.
 
 ```
 ldapsearch (&(samAccountType=805306368)(servicePrincipalName=MSSQLSvc*)) --attributes name,samAccountName,servicePrincipalName
 ```
 
-4. **BEACON: User** — 🔍 information about the *lon-db-1* instance and your current privileges:
+4. **BEACON: User** — 🔍 Consulter les informations de `lon-db-1` et les privilèges du compte courant :
 
 ```
 sql-info lon-db-1
 sql-whoami lon-db-1
 ```
 
-    > **Why:** `sql-info` reveals the SQL version, authentication mode (Windows = Kerberos), and any linked servers. `sql-whoami` tells you your current SQL login name and role.  
-    > `OPSEC-🟢SAFE` — SQL-BOF, no child process.
+    > **Utilité :** `sql-info` présente l’instance, son mode d’authentification et les Linked Servers ; `sql-whoami` indique l’identité et le rôle SQL du compte.  
+    > `OPSEC-🟢SAFE` dans les notes — exécution via SQL-BOF sans processus enfant.
 
-    > **Expected output:** You are authenticated as `pchilds` but only have `public/guest` privileges — not sysadmin. You cannot run CLR or xp_cmdshell with guest privileges. This tells you impersonation is needed.
+    > **Résultat attendu :** `pchilds` dispose ici des rôles `public/guest`, sans droits `sysadmin`. Les opérations nécessitant des privilèges élevés ne sont donc pas disponibles.
 
-5. **BEACON: User** — Find groups that grant sysadmin on the SQL server.
+5. **BEACON: User** — Rechercher les groupes associés au rôle `sysadmin` sur SQL Server.
 
 ```
 ldapsearch (&(samAccountType=268435456)(|(name=*SQL*)(name=*DB*)(name=*Database*))) --attributes distinguishedName,member
 ```
 
-> Lab-confirmed: `CN=Database Admins` — member: `CN=Robert Steel` (rsteel).
+> **Résultat du lab :** le groupe `CN=Database Admins` contient `CN=Robert Steel` (`rsteel`).
 
 
-6. **BEACON: SYSTEM** — Impersonate the *rsteel* user to gain sysadmin access on lon-db-1.
+6. **BEACON: SYSTEM** — Examiner le contexte d’impersonation de `rsteel` pour accéder au rôle `sysadmin` de `lon-db-1`.
 
-    > **Why:** rsteel has the sysadmin role on lon-db-1 — you need to authenticate to SQL as rsteel. SQL Server uses Windows authentication (Kerberos), so presenting rsteel's Kerberos ticket or access token will make the SQL server treat you as rsteel with full sysadmin.
+    > **Explication :** dans ce lab, `rsteel` dispose du rôle `sysadmin` sur `lon-db-1`. L’identité Windows utilisée pour la connexion SQL détermine les permissions accordées.
 
-    **First — check what Kerberos tickets are in memory and find rsteel's processes:**
+    **Vérifier d’abord les tickets Kerberos et les processus appartenant à `rsteel` :**
 
     ```
     krb_triage
     process_browser
     ```
 
-    > `krb_triage` lists all Kerberos tickets cached on this host. Look for rsteel's TGT (service: `krbtgt`).  
-    > `process_browser` shows all running processes with their owner — look for any process running as rsteel.  
-    > `OPSEC-🟢SAFE` — BOF-based operations, no child process.
+    > `krb_triage` recense les tickets Kerberos accessibles ; rechercher le TGT de `rsteel` associé au service `krbtgt`.  
+    > `process_browser` affiche les processus et leurs propriétaires ; rechercher ceux qui appartiennent à `rsteel`.  
+    > `OPSEC-🟢SAFE` dans les notes — opérations BOF sans lancement de processus enfant.
 
-    **Steal rsteel's token from a running process (preferred when a process exists):**
+    **Examiner l’utilisation du token d’un processus appartenant à `rsteel` :**
 
 ```
 steal_token <pid of rsteel cmd process>
 ```
 
-    > Replace `<pid>` with the PID of a process owned by rsteel (found via `process_browser`).  
-    > `steal_token` duplicates rsteel's Windows access token into your beacon. Network connections (including SQL auth) will use this token, making SQL see you as rsteel.  
-    > `OPSEC-🟢SAFE` — token theft is in-process, no new process spawned.
+    > Remplacer `<pid>` par le PID du processus `rsteel` identifié avec `process_browser`.  
+    > `steal_token` permet au Beacon d’utiliser le token Windows d’un autre processus, ce qui peut modifier l’identité employée pour certaines connexions réseau.  
+    > `OPSEC-🟢SAFE` dans les notes — manipulation du token sans création de processus enfant.
 
 
-7. **BEACON: SYSTEM - rsteel** — Verify sysadmin is confirmed on lon-db-1.
+7. **BEACON: SYSTEM - rsteel** — Vérifier le rôle `sysadmin` sur `lon-db-1`.
 
 ```
 sql-whoami lon-db-1
 ```
->You can now enable CLR and load assemblies.  
+>Le lab poursuit avec la configuration CLR et les assemblies SQL, sous réserve des droits obtenus.  
 
 
 <img src="/images/sql-server-impersonate-user-rsteel-sysadmin.png">  
 
-# Code Execution
+## Exécution de code avec SQL CLR
 
-**Why this phase:** With sysadmin on lon-db-1, you want to run OS-level code inside the SQL process. SQL CLR loads a .NET assembly into `sqlservr.exe` memory — code executes inside the SQL process with no child process spawned. This is far stealthier than `xp_cmdshell`, which spawns `cmd.exe` as a direct child and is heavily signatured.
+**Objectif :** comprendre le fonctionnement de SQL CLR, qui permet d’exécuter une assembly .NET dans le contexte du processus SQL Server. Son activité demeure observable et dépend de la configuration du serveur.
 
-1. **BEACON: SYSTEM - rsteel** — Check the status of SQL CLR.
+1. **BEACON: SYSTEM - rsteel** — Vérifier l’état de SQL CLR.
 
 ```
 sql-query lon-db-1 "SELECT value FROM sys.configurations WHERE name = 'clr enabled'"
 ```
 
-    > **Why:** CLR must be enabled on the SQL instance before it will accept and run assemblies. You check first so you know whether enabling it is a change you're making (which is logged).  
-    > `OPSEC-🟠CAUTION` — querying `sys.configurations` is logged if SQL auditing is active.  
-    > **Expected output:** `0` = disabled.
+    > **Explication :** vérifier l’état de CLR permet de déterminer si une modification de configuration est nécessaire, et de la documenter.  
+    > `OPSEC-🟠CAUTION` — les requêtes sur `sys.configurations` peuvent être consignées si l’audit SQL est actif.  
+    > **Résultat attendu :** `0` signifie désactivé.
 
-2. **BEACON: SYSTEM - rsteel** — Enable SQL CLR on *lon-db-1*.
+2. **BEACON: SYSTEM - rsteel** — Activer SQL CLR sur `lon-db-1`.
 
 ```
 sql-enableclr lon-db-1
 ```
 
-    > **Why:** Required before you can load your .NET assembly. This sets `clr enabled = 1` in SQL Server configuration.  
-    > `OPSEC-🟠CAUTION` — configuration change is logged in SQL Server error log and `sys.configurations` history.
+    > **Explication :** ce réglage active l’intégration CLR sur l’instance SQL Server, lorsque les autorisations nécessaires sont réunies.  
+    > `OPSEC-🟠CAUTION` — la modification de configuration peut être enregistrée dans les journaux SQL Server.
 
-3. Generate x64 SMB Beacon shellcode.
+3. Générer le payload SMB x64 prévu par le lab.
 
     1. **Payloads > Windows Stageless Payload**
-    2. Listener: **smb**
-    3. Output: **Raw**
-    4. Exit Function: **Thread**
+    2. Listener : **smb**
+    3. Format de sortie : **Raw**
+    4. Fonction de sortie : **Thread**
     5. x64: ✓
-    6. Click **Generate**
-    7. Save to `C:\Payloads\smb_x64.xthread.bin`
+    6. Cliquer sur **Generate**
+    7. Enregistrer dans `C:\Payloads\smb_x64.xthread.bin`
 
 
 <img src="/images/sql-server-stageless-payload-smb-raw-thread-bin.png">  
 
-    > **SMB listener:** The SQL server may not have a direct outbound network path to your team server. SMB named pipes work on TCP 445, which is often open internally.  SMB beacon connects back *to you* via a named pipe over SMB — you then link to it from a beacon that already has SMB access to that host.  
-    > **Raw output:** The CLR DLL will embed this as raw shellcode bytes — no PE wrapper needed.  
-    > **Thread exit function:** If set to Process, the exit kills `sqlservr.exe` — the SQL service crashes and generates a very noisy event. Thread exit terminates only the spawned thread; the SQL process keeps running.
+    > **Listener SMB :** le lab utilise les named pipes SMB pour communiquer avec un Beacon lorsque la machine ne dispose pas d’accès direct au team server.  
+    > **Format Raw :** le fichier binaire est intégré comme ressource dans l’assembly CLR.  
+    > **Fonction de sortie :** l’option `Thread` termine le thread associé ; `Process` pourrait arrêter le processus SQL Server lui-même.
 
-4. Open Visual Studio and create a new `Class Library (.NET Framework)` project:
-    1. Project name: `MyProcedure`
-    2. Place in the same directory: ✓
+4. Dans Visual Studio, créer un projet `Class Library (.NET Framework)` :
+    1. Nom du projet : `MyProcedure`
+    2. Enregistrer dans le même dossier : ✓
     3. Framework: .NET Framework 4.7.2
 
     > **.NET Framework** SQL Server's CLR runtime only supports .NET Framework assemblies❗   
 
-5. Add `smb_x64.xthread.bin` as an embedded resource.
+5. Ajouter `smb_x64.xthread.bin` comme ressource intégrée.
 
-    > In Solution Explorer: right-click project → Add → Existing Item → select the `.bin` file  
-    > Select the file → Properties panel → **Build Action: Embedded Resource**  
-    > **embedded resource:** Bundles the shellcode *inside* the DLL binary so no separate file needs to be written to disk when the assembly executes. The shellcode is retrieved from the DLL's resource manifest at runtime.
+    > Dans Solution Explorer : clic droit sur le projet → Add → Existing Item → choisir le fichier `.bin`  
+    > Sélectionner le fichier → Properties → **Build Action: Embedded Resource**  
+    > **Ressource intégrée :** le contenu du fichier binaire est stocké dans la DLL et accessible lors de son chargement.
 
-6. Paste 📝 code into `Class1.cs`:
+6. Insérer le code du lab dans `Class1.cs` :
 
 ```c#
 using System;
@@ -268,20 +268,20 @@ public partial class StoredProcedures
 }
 ```
 
-    > **code:** When SQL Server calls `MyProcedure` as a stored procedure:
-    > 1. Reads the embedded `.bin` shellcode from the DLL's resource manifest
-    > 2. Allocates RWX (read/write/execute) memory inside `sqlservr.exe`
-    > 3. Copies the shellcode bytes into that memory
-    > 4. Spawns a thread pointing at the shellcode — this launches the SMB beacon
-    > 5. Closes the thread handle (beacon keeps running as a detached thread)
+    > **Fonctionnement :** lorsque SQL Server invoque `MyProcedure` comme procédure stockée :
+    > 1. Lit les données `.bin` depuis les ressources de la DLL.
+    > 2. Alloue une zone mémoire RWX dans `sqlservr.exe`.
+    > 3. Copie les octets du payload dans cette zone.
+    > 4. Démarre un thread qui exécute le payload SMB.
+    > 5. Ferme le handle du thread ; son exécution peut se poursuivre indépendamment.
     >
-    > The beacon runs inside the `sqlservr.exe` process. No child process is created.  
-    > `OPSEC-🟠CAUTION` — `PAGE_EXECUTE_READWRITE` memory allocation is a behavioral detection indicator for many EDRs. In the exam, a custom artifact using indirect syscalls and RW→RX memory transitions is stealthier.  
+    > Le Beacon fonctionne dans le processus `sqlservr.exe`, sans créer de processus enfant.  
+    > `OPSEC-🟠CAUTION` — l’allocation `PAGE_EXECUTE_READWRITE` peut être surveillée par les EDR. La classification OPSEC du lab ne garantit pas l’absence de détection.  
     >
-    > **Important:** The resource name in `GetManifestResourceStream("MyProcedure.smb_x64.xthread.bin")` must match exactly — format is `<ProjectName>.<filename>`. A mismatch returns `null` and the procedure silently fails with a null reference exception.
+    > **Important :** le nom fourni à `GetManifestResourceStream("MyProcedure.smb_x64.xthread.bin")` doit correspondre exactement au format `<NomProjet>.<NomFichier>`. Une erreur renvoie `null` et empêche la procédure de fonctionner.
 
-    Build the project: **Build → Build Solution** (Release mode)  
-    Output: `C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll`
+    Compiler le projet : **Build → Build Solution** (Release mode)  
+    Format de sortie : `C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll`
 
 
 <img src="/images/sql-server-MyProcedure-visual-studio-code-build-release.png">  
@@ -433,11 +433,11 @@ whoami
 3. Generate a TCP (localhost-only) executable payload.
 
     1. **Payloads > Windows Stageless Payload**
-    2. Listener: **tcp-local**
-    3. Output: Windows Executable
-    4. Exit Function: Process
+    2. Listener : **tcp-local**
+    3. Format de sortie : Windows Executable
+    4. Fonction de sortie : Process
     5. x64: ✓
-    6. Click **Generate**
+    6. Cliquer sur **Generate**
     7. Save to `C:\Payloads\tcp-local_x64.exe`
 
     > **Why tcp-local:** lon-db-2 is on a separate network segment with no outbound path to your team server. `tcp-local` binds only to `127.0.0.1` — the beacon is reached via the existing beacon chain (lon-db-1's beacon connects to it locally on lon-db-2), not directly from your attacker machine.  
