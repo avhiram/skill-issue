@@ -18,72 +18,72 @@
 ## Préparation à l’examen CRTO — Labs  
 
 1. Installer et préparer Cobalt Strike  
-[Cobalt Strike Primer Setup Lab 🕒 30 Minutes | Attacker Desktop | User: Attacker](/labs/2-Cobalt-Strike-Primer.md)  
+[Lab — Préparation de Cobalt Strike 🕒 30 min | Poste Attacker | Utilisateur : Attacker](/labs/2-Cobalt-Strike-Primer.md)  
 
 2. Configurer le **Malleable C2 Profile**, préparer les **payloads** et contrôler les binaires avec **ThreatCheck**.  
-[Defence Evasion Lab 🕒 45 Minutes | Attacker, DC, Workstation, Web Server | User: pchilds](/labs/defence-evasion-lab-Malleable.md)  
+[Lab — Évasion des défenses 🕒 45 min | Attacker, DC, Poste Windows, Serveur web | Utilisateur : pchilds](/labs/defence-evasion-lab-Malleable.md)  
 
 3. Énumérer les politiques **AppLocker**, **UAC** et **antivirus** du poste avec les credentials fournis.  
-[AppLocker Challenge 🕒 45 Minutes | Attacker, DC, Workstation | User: pchilds](/labs/applocker-challenge.md)  
+[Challenge AppLocker 🕒 45 min | Attacker, DC, Poste Windows | Utilisateur : pchilds](/labs/applocker-challenge.md)  
 
 4. Obtenir un **Beacon SYSTEM** depuis le premier poste en utilisant l’accès privilégié.  
-[Initial Access Lab 🕒 45 Minutes | Attacker, DC, Workstation | User: pchilds](/labs/Initial-Access-lab.md)  
+[Lab — Accès initial 🕒 45 min | Attacker, DC, Poste Windows | Utilisateur : pchilds](/labs/Initial-Access-lab.md)  
 
 5. Réaliser une **user impersonation** depuis un Beacon SYSTEM sur la workstation.  
-[User Impersonation Lab 🕒 30 Minutes | Attacker, DC, Workstation, Web Server | Users: pchilds, rsteel](/labs/User-Impersonation-lab.md)  
+[Lab — Usurpation d’identité 🕒 30 min | Attacker, DC, Poste Windows, Serveur web | Utilisateurs : pchilds, rsteel](/labs/User-Impersonation-lab.md)  
 
 6. Effectuer un **jump** avec l’identité de l’utilisateur et lancer un Beacon sur la cible suivante.  
-[Lateral Movement Lab 🕒 30 Minutes | Attacker, DC, Workstation, Web Server | Users: pchilds, rsteel](/labs/Lateral-Movement-lab.md)  
+[Lab — Lateral Movement 🕒 30 min | Attacker, DC, Poste Windows, Serveur web | Utilisateurs : pchilds, rsteel](/labs/Lateral-Movement-lab.md)  
 
 7. Utiliser **S4U** sur un serveur pour effectuer une **admin impersonation**.  
-[Constrained Delegation Kerberos Lab 🕒 30 Minutes | Attacker, Workstation, DC, Web Server, File Server | User: pchilds](/labs/Constrained-Delegation-kerberos-lab.md)  
+[Lab — Kerberos Constrained Delegation 🕒 30 min | Attacker, Poste Windows, DC, Serveur web, Serveur de fichiers | Utilisateur : pchilds](/labs/Constrained-Delegation-kerberos-lab.md)  
 
 8. Utiliser les permissions du **SQL DB owner** pour effectuer une impersonation avec un payload.  
-[SQL Server Lab 🕒 45 Minutes (Attacker, Workstation, DC, SQL 1, SQL 2 | Users: pchilds, rsteel](labs/SQL-Servers-lab.md)  
+[Lab — SQL Server 🕒 45 min (Attacker, Poste Windows, DC, SQL 1, SQL 2 | Utilisateurs : pchilds, rsteel](labs/SQL-Servers-lab.md)  
 
 9. Exploiter **SeImpersonatePrivilege** sur le serveur et se connecter à localhost.  
-[SQL Server Lab 🕒 45 Minutes (Attacker, Workstation, DC, SQL 1, SQL 2 | Users: pchilds, rsteel](labs/SQL-Servers-lab.md)  
+[Lab — SQL Server 🕒 45 min (Attacker, Poste Windows, DC, SQL 1, SQL 2 | Utilisateurs : pchilds, rsteel](labs/SQL-Servers-lab.md)  
 
 10. Utiliser une **Parent-Child Trust** et un **Golden Ticket** pour effectuer une impersonation et créer un Beacon.  
-[Parent Child Trust Lab 🕒 30 minutes | Attacker, Dublin Workstation, Contoso DC, Dublin DC | User: DUBLIN\sguest](/labs/Parent-Child-Trusts.md)  
+[Lab — Relation de confiance parent-enfant 🕒 30 min | Attacker, Dublin Poste Windows, Contoso DC, Dublin DC | Utilisateur : DUBLIN\sguest](/labs/Parent-Child-Trusts.md)  
 
 11. Mettre en place un **DNS Beacon** sur le Domain Controller pour renforcer la résilience.  
-[Elevated Persistence Lab 🕒 30 Minutes | Attacker, DC, Workstation | User: pchilds](/labs/Elevated-Persistence-lab.md)  
+[Lab — Persistence élevée 🕒 30 min | Attacker, DC, Poste Windows | Utilisateur : pchilds](/labs/Elevated-Persistence-lab.md)  
 
 12. Utiliser la clé d’une **inter-realm trust** et un Golden Ticket pour lancer un Beacon avec impersonation.  
-[Inbound Trust Lab 🕒 30 minutes | Attacker, Contoso Workstation, Partner Jump Server, Contoso DC, Partner DC | User: PARTNER\vwebber](/labs/Inbound-Trusts-lab.md)  
+[Lab — Trust entrante 🕒 30 min | Attacker, Contoso Poste Windows, Partner Jump Server, Contoso DC, Partner DC | Utilisateur : PARTNER\vwebber](/labs/Inbound-Trusts-lab.md)  
 
 13. Effectuer la phase **Active Directory Discovery**.  
-[Discovery Lab 🕒 30 Minutes | Attacker, DC, Workstation | Users: pchilds, rsteel](/labs/Discovery-lab.md)  
+[Lab — Discovery Active Directory 🕒 30 min | Attacker, DC, Poste Windows | Utilisateurs : pchilds, rsteel](/labs/Discovery-lab.md)  
 
 15. Utiliser **S4U Constrained Delegation** et l’attribut **Allowed To Delegate To**.  
-[Constrained Delegation Kerberos Lab 🕒 30 Minutes | Attacker, Workstation, DC, Web Server, File Server | User: pchilds](/labs/Constrained-Delegation-kerberos-lab.md)  
+[Lab — Kerberos Constrained Delegation 🕒 30 min | Attacker, Poste Windows, DC, Serveur web, Serveur de fichiers | Utilisateur : pchilds](/labs/Constrained-Delegation-kerberos-lab.md)  
 
 16. Configurer un **SOCKS proxy** pour réaliser du **pivoting** vers d’autres sous-réseaux.  
-[SOCKS Lab 🕒 30 Minutes | Attacker, Workstation, DC | Users: pchilds, rsteel](/labs/pivoting-SOCKS-lab.md)  
+[Lab — Pivoting SOCKS 🕒 30 min | Attacker, Poste Windows, DC | Utilisateurs : pchilds, rsteel](/labs/pivoting-SOCKS-lab.md)  
 
 17. Étudier **RBCD** et la propriété **Allowed To Act On Behalf Of Other Identity**.  
-[Kerberos Resource-Based Constrained Delegation Lab 🕒 30 Minutes | Attacker, Workstation, DC, File Server | User: pchilds](/labs/RBCD-lab.md)  
+[Lab — Kerberos RBCD 🕒 30 min | Attacker, Poste Windows, DC, Serveur de fichiers | Utilisateur : pchilds](/labs/RBCD-lab.md)  
 
 18. Étudier la **Kerberos Constrained Delegation**, la **Service Name Substitution** et l’option **S4U /altservice**.  
-[Kerberos Service Name Substitution Lab 🕒 30 Minutes | Attacker, Workstation, DC, File Server, Web Server | Users: pchilds,rsteel](/labs/Service-Name-Substitution-Kerberos-lab.md)
+[Lab — Kerberos Service Name Substitution 🕒 30 min | Attacker, Poste Windows, DC, Serveur de fichiers, Serveur web | Utilisateurs : pchilds,rsteel](/labs/Service-Name-Substitution-Kerberos-lab.md)
 
 19. Étudier **S4U2self** et la récupération d’un **TGT**.
-[Kerberos S4U2self 🕒 30 Minutes | Attacker, Workstation, DC, Web Server | Users: pchilds,rsteel](/labs/S4U2self-lab.md)  
+[Kerberos S4U2self 🕒 30 min | Attacker, Poste Windows, DC, Serveur web | Utilisateurs : pchilds,rsteel](/labs/S4U2self-lab.md)  
 
 20. Identifier une mauvaise configuration **Kerberos**, puis effectuer un **Lateral Movement** vers le Domain Controller.  
-[Kerberos Challenge 🕒 60 Minutes 🖥️ Attacker, LON-WKSTN-1, LON-DC-1 | Users: pchilds, Administrator, Machine Account 3e7 ](/labs/kerberos-challenge.md)  
+[Challenge Kerberos 🕒 60 min 🖥️ Attacker, LON-WKSTN-1, LON-DC-1 | Utilisateurs : pchilds, Administrator, Compte machine 3e7 ](/labs/kerberos-challenge.md)  
 
 ## Labs CRTO essentiels  
 
-* [Persistence lab 🕒 30 Minutes 🖥️ Attacker, Workstation, DC | Users: pchilds](/labs/Persistence-lab.md)  
-* [Credential Access Challenge 🕒 30 Minutes 🖥️ Attacker, Workstation, DC | Users: pchilds](/labs/credential-access-challenge-commands.md)  
-* [Privilege Escalation lab 🕒 30 Minutes 🖥️ Attacker, Workstation, DC | Users: pchilds](/labs/Privilege-Escalation-lab.md)  
-* [Kerberos Unconstrained Delegation Lab 🕒 30 Minutes 🖥️ Attacker, Workstation, DC, Web Server | Users: pchilds, dyork](/labs/Unconstrained-Delegation-Kerberos-lab.md)  
-* [ESC1 Misconfigured Client Authentication Templates 🕒 30 Minutes 🖥️ Attacker, Workstation, DC, Certificate Authority | User: Administrator](/labs/esc1.md)  
+* [Lab — Persistence 🕒 30 min 🖥️ Attacker, Poste Windows, DC | Utilisateurs : pchilds](/labs/Persistence-lab.md)  
+* [Challenge Credential Access 🕒 30 min 🖥️ Attacker, Poste Windows, DC | Utilisateurs : pchilds](/labs/credential-access-challenge-commands.md)  
+* [Lab — Privilege Escalation 🕒 30 min 🖥️ Attacker, Poste Windows, DC | Utilisateurs : pchilds](/labs/Privilege-Escalation-lab.md)  
+* [Lab — Kerberos Unconstrained Delegation 🕒 30 min 🖥️ Attacker, Poste Windows, DC, Serveur web | Utilisateurs : pchilds, dyork](/labs/Unconstrained-Delegation-Kerberos-lab.md)  
+* [ESC1 Misconfigured Client Authentication Templates 🕒 30 min 🖥️ Attacker, Poste Windows, DC, Certificate Authority | Utilisateur : Administrator](/labs/esc1.md)  
 * [ESC8 NTLM Relay to ADCS HTTP Endpoints](/labs/esc8.md)  
 * [DPERSIST1 Golden Certificates](/labs/dpersist1.md)  
-* [Outbound Trust Lab](/labs/Outbound-Trusts-lab.md)  
+* [Lab — Trust sortante](/labs/Outbound-Trusts-lab.md)  
 
 ----  
 
@@ -118,9 +118,9 @@
 
 ----  
 
-## Outils et ressources de l’Attacker Desktop  
+## Outils et ressources de l’Poste Attacker  
 
-* [DRSAT avec MMC sur un Attacker Desktop hors domaine](https://github.com/CCob/DRSAT/tree/master)  
+* [DRSAT avec MMC sur un Poste Attacker hors domaine](https://github.com/CCob/DRSAT/tree/master)  
 * [Certify](https://github.com/GhostPack/Certify)  
 * [Crystal-Kit Rasta-Mouse evasion primitives](https://github.com/rasta-mouse/Crystal-Kit)  
 * [ThreadCheck- Artifact Kit](https://github.com/rasta-mouse/ThreatCheck)  
