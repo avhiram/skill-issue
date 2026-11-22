@@ -565,7 +565,7 @@ curl --list-only 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 
 ### 22: SSH
 
-<p class="oscp-command-note">Nmap SSH : examiner clés, algorithmes et authentification ; les tests brute-force sont distincts et intrusifs.</p>
+<p class="oscp-command-note">Nmap : examiner les clés, algorithmes et méthodes d'authentification SSH.</p>
 
 ```bash
 # Relever les empreintes des clés d'hôte SSH annoncées par le serveur
@@ -577,9 +577,6 @@ nmap -p 22 --script ssh-auth-methods <target_ip>
 # Test de mots de passe SSH : risque de verrouillage ; ne lancer qu'avec autorisation
 nmap -p 22 --script=ssh-brute --script-args userdb=/usr/share/seclists/Usernames/top-usernames-shortlist.txt,passdb=/usr/share/wordlists/rockyou.txt <target_ip>
 
-# Lister les algorithmes SSH2 proposés ; ne suffit pas à déterminer la version du logiciel
-nmap -p 22 --script ssh2-enum-algos <IP_CIBLE>
-
 # Relever les algorithmes SSH2 et vérifier si SSHv1 est accepté
 nmap -p 22 --script ssh2-enum-algos,sshv1 <IP_CIBLE>
 
@@ -588,18 +585,18 @@ nmap -p 22 --script=ssh-publickey-acceptance --script-args ssh.user=<username>,s
 
 ```
 
-<p class="oscp-command-note">Hydra SSH : tester des identifiants de laboratoire ; attention aux limitations et verrouillages de comptes.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants SSH autorisés. Risque de verrouillage.</p>
 
 ```bash
 hydra -l <user> -P /usr/share/wordlists/rockyou.txt <target_ip> -t 4 ssh
 
 hydra -L <user_list> -p <password> <target_ip> -t 4 ssh -s <port>
 
-hydra -f -V -C /usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefaultpasslist.txt -s 22 [IP] ssh
+hydra -f -V -C /usr/share/seclists/Passwords/Default-Credentials/ssh-betterdefaultpasslist.txt -s 22 <IP_CIBLE> ssh
 
 ```
 
-<p class="oscp-command-note">Restreindre les permissions de la clé privée à son propriétaire, puis l'utiliser pour SSH.</p>
+<p class="oscp-command-note">SSH : protéger la clé privée (`chmod 600`), puis se connecter.</p>
 
 ```bash
 chmod 600 cle_privee
@@ -612,7 +609,7 @@ puttygen cle_putty.ppk -O private-openssh -o cle_privee
 
 ```
 
-<p class="oscp-command-note">John : extraire le hash d'une clé privée SSH chiffrée, puis tester sa phrase secrète en laboratoire.</p>
+<p class="oscp-command-note">John : extraire puis tester la phrase secrète d'une clé SSH chiffrée.</p>
 
 ```bash
 ssh2john cle_privee > cle_privee.hash
@@ -621,7 +618,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt cle_privee.hash
 
 ```
 
-<p class="oscp-command-note">Rechercher les clés publiques système et les fichiers de clés du compte courant (les résultats peuvent contenir des clés privées).</p>
+<p class="oscp-command-note">Linux : rechercher les clés SSH système et celles du compte courant.</p>
 
 ```bash
 find /etc/ssh -type f -name '*.pub' 2>/dev/null
@@ -630,18 +627,15 @@ find "$HOME/.ssh" -type f -name 'id_*' 2>/dev/null
 
 ```
 
-<p class="oscp-command-note">SSH : distinguer extraction de hash d'une clé chiffrée et essai d'authentification avec cette clé.</p>
+<p class="oscp-command-note">SSH : tester l'authentification avec une clé privée existante.</p>
 
 ```bash
-# Extraire le hash d'une clé privée chiffrée (inutile si elle n'a pas de phrase secrète)
-ssh2john cle_privee > cle_privee.hash
-
 # Tester une authentification SSH par clé (un refus peut avoir plusieurs causes)
-ssh <user>@<target_ip> -p <port> -i <private_key_file> # Error message: Permission denied (publickey,password).
+ssh -i <FICHIER_CLE_PRIVEE> -p <PORT> <UTILISATEUR>@<IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">SCP : copier des fichiers depuis une machine distante vers Kali, avec les droits de lecture requis.</p>
+<p class="oscp-command-note">SCP : récupérer des fichiers ou dossiers distants sur Kali.</p>
 
 ```bash
 # Récupérer un fichier distant vers la machine locale
@@ -668,9 +662,8 @@ scp -i ~/.ssh/id_rsa user@192.168.1.10:/etc/config.txt /home/user/
 scp -v user@remote_host:/path/to/remote/file /local/destination/
 scp -v user@192.168.1.10:/etc/config.txt /home/user/
 
-# Désactiver la vérification de clé d'hôte (dangereux : risque d'interception ; préférer accept-new et vérifier l'empreinte)
-scp -o StrictHostKeyChecking=no user@remote_host:/path/to/remote/file /local/destination/
-scp -o StrictHostKeyChecking=no user@192.168.1.10:/etc/config.txt /home/user/
+# Accepter une nouvelle clé d'hôte sans accepter les changements de clé
+scp -o StrictHostKeyChecking=accept-new user@remote_host:/path/to/remote/file /local/destination/
 
 ```
 
@@ -699,9 +692,8 @@ scp -i ~/.ssh/id_rsa /home/user/config.txt user@192.168.1.10:/etc/config.txt
 scp -v /path/to/local/file user@remote_host:/path/to/remote/destination/
 scp -v /home/user/config.txt user@192.168.1.10:/etc/config.txt
 
-# Envoyer un fichier sans vérifier la clé d'hôte (dangereux : risque d'interception ; préférer accept-new)
-scp -o StrictHostKeyChecking=no /path/to/local/file user@remote_host:/path/to/remote/destination/
-scp -o StrictHostKeyChecking=no /home/user/config.txt user@192.168.1.10:/etc/config.txt
+# Envoyer un fichier en refusant une clé d'hôte déjà connue qui a changé
+scp -o StrictHostKeyChecking=accept-new /path/to/local/file user@remote_host:/path/to/remote/destination/
 
 ```
 
