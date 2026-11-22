@@ -25,15 +25,11 @@ whois -h whois.nic.fr afnic.fr
 
 [Client WHOIS Debian](https://manpages.debian.org/trixie/whois/whois.1.en.html) · [Registre du .fr](https://www.iana.org/domains/root/db/fr.html).
 
-**Paramètres et repères :**
-`site:somesite.com` · `site:somesite.com -filetype:html` · `filetype:txt` · `ext:txt`  
-`intitle:"exemple"`  
-
 ## Énumération DNS
 
 Interroger les enregistrements DNS et identifier les services associés.
 
-<p class="oscp-command-note">DNS : résoudre des noms et interroger les enregistrements TXT avec host et nslookup.</p>
+<p class="oscp-command-note">DNS : résoudre les noms et lire les enregistrements TXT.</p>
 
 ```bash
 # Résoudre les adresses associées au domaine
@@ -59,7 +55,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 ### Netcat
 
-<p class="oscp-command-note">Netcat : tester un port TCP, envoyer des datagrammes UDP ou ouvrir une écoute locale selon la commande.</p>
+<p class="oscp-command-note">Netcat : tester TCP/UDP ou écouter sur un port local.</p>
 
 ```bash
 nc -nv 192.0.2.10 80
@@ -70,20 +66,17 @@ nc -u -nv 192.0.2.10 53
 # Netcat : écouter une connexion TCP entrante sur le port local 4444
 nc -l 4444
 
-# Netcat : rester à l'écoute après déconnexion ; -k dépend de la variante installée
+# Netcat : garder l'écoute ouverte après une connexion (selon la version)
 nc -k -l 4444
 
 # Netcat : tester les ports TCP 1 à 1024 ; -w 1 limite l'attente par connexion
 nc -nvv -w 1 -z 192.0.2.10 1-1024
 
-# Netcat : sonder UDP 53 à 55 sans données applicatives ; l'état des ports reste incertain
+# Sonder UDP 53 à 55 ; une absence de réponse reste ambiguë
 nc -nvu -z -w 1 192.0.2.10 53-55
 
 # Netcat : sonder UDP 53 ; l'absence de réponse ne prouve ni ouverture ni fermeture
 nc -nvzu -w 2 192.0.2.10 53
-
-# Netcat : écouter sur TCP 4444 ; cette commande n'ouvre aucun shell à elle seule
-nc -nvlp 4444
 
 ```
 
@@ -95,7 +88,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 **Énumération avancée**
 
-<p class="oscp-command-note">Nmap -A : activer détection OS, versions, scripts par défaut et traceroute ; enregistrer la sortie.</p>
+<p class="oscp-command-note">Nmap : détecter OS, services et scripts par défaut, puis enregistrer le résultat.</p>
 
 ```bash
 sudo nmap -A <IP_CIBLE> -oN rapport_avance.txt
@@ -111,7 +104,7 @@ sudo nmap -sS -p- --min-rate 1000 --max-retries 1 -T4 <IP_CIBLE>
 
 **Scan de tous les ports TCP sans découverte d'hôte préalable (-Pn)**
 
-<p class="oscp-command-note">Nmap : scanner les 65 535 ports TCP sans résolution DNS ni découverte d'hôte.</p>
+<p class="oscp-command-note">Nmap : scanner tous les ports TCP sans DNS ni découverte préalable.</p>
 
 ```bash
 nmap -p- -T4 -n -Pn <IP_CIBLE> -oN rapport_ports.txt
@@ -120,7 +113,7 @@ nmap -p- -T4 -n -Pn <IP_CIBLE> -oN rapport_ports.txt
 
 **Scan SYN à débit élevé sur tous les ports TCP (résultats à confirmer)**
 
-<p class="oscp-command-note">Nmap : scan SYN rapide de tous les ports TCP ; --min-rate 5000 peut dégrader la fiabilité.</p>
+<p class="oscp-command-note">Nmap : scan SYN rapide ; confirmer les résultats si le débit est trop élevé.</p>
 
 ```bash
 sudo nmap -sS --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt <IP_CIBLE>
@@ -129,7 +122,7 @@ sudo nmap -sS --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt <IP_CIBLE>
 
 **Scan des 65 535 ports TCP avec les réglages Nmap par défaut**
 
-<p class="oscp-command-note">Nmap : scanner tous les ports TCP avec la cadence par défaut et enregistrer les résultats.</p>
+<p class="oscp-command-note">Nmap : scanner tous les ports TCP et enregistrer la sortie.</p>
 
 ```bash
 nmap -p- <IP_CIBLE> -oN rapport_ports.txt
@@ -138,7 +131,7 @@ nmap -p- <IP_CIBLE> -oN rapport_ports.txt
 
 **Scanner les 100 ports TCP les plus fréquents**
 
-<p class="oscp-command-note">Nmap : scanner les 100 ports les plus fréquents selon la base nmap-services.</p>
+<p class="oscp-command-note">Nmap : scanner les 100 ports les plus courants.</p>
 
 ```bash
 nmap --top-ports 100 192.0.2.10
