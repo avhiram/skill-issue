@@ -27,7 +27,7 @@ whois -h whois.nic.fr afnic.fr
 
 **Paramètres et repères :**
 `site:somesite.com` · `site:somesite.com -filetype:html` · `filetype:txt` · `ext:txt`  
-`intitle:"somethig"`  
+`intitle:"exemple"`  
 
 ## Énumération DNS
 
@@ -48,7 +48,7 @@ host www.example.com
 # Requête TXT avec un serveur DNS spécifique
 nslookup -type=TXT example.com 192.0.2.53
 
-# Résolution en boucle depuis une liste
+# Résoudre chaque sous-domaine de la liste (un nom par ligne ; fichier requis)
 while IFS= read -r sous_domaine; do [ -n "$sous_domaine" ] && host "${sous_domaine}.example.com"; done < sous_domaines.txt
 
 ```
@@ -59,31 +59,31 @@ Vérifier les ports et les services de la cible autorisée.
 
 ### Netcat
 
-<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Netcat».</p>
+<p class="oscp-command-note">Netcat : tester un port TCP, envoyer des datagrammes UDP ou ouvrir une écoute locale selon la commande.</p>
 
 ```bash
 nc -nv 192.0.2.10 80
 
-# Utiliser UDP plutôt que TCP
+# Envoyer des datagrammes UDP (aucune réponse ne garantit pas que le port est fermé)
 nc -u -nv 192.0.2.10 53
 
-# Attendre une connexion entrante
+# Écouter les connexions TCP entrantes sur le port local 4444
 nc -l 4444
 
-# Rester en écoute après la première connexion
+# Rester en écoute après une déconnexion (option -k selon la variante de Netcat)
 nc -k -l 4444
 
-# TCP Balayage dans la plage de port
+# Tester les ports TCP 1 à 1024 avec un délai maximal d'une seconde
 nc -nvv -w 1 -z 192.0.2.10 1-1024
 
-# -w est de spécifier le délai de connexion en secondes, ainsi que -z pour spécifier le mode zéro-I/O, qui sert au scan des ports et n'envoie aucune donnée
-nc -nv -u -z -w 1 [host] [beginning_port]-[finished_port]
+# Balayer une plage de ports UDP : -w fixe le délai, -z évite les échanges applicatifs ; résultat UDP incertain
+nc -nvu -z -w 1 192.0.2.10 53-55
 
-# -u utilise UDP plutôt que TCP.
-nc -zvu [host] [port]
+# Vérifier un port UDP précis ; l'absence de réponse ne confirme pas son ouverture
+nc -nvzu -w 2 192.0.2.10 53
 
-# Recevoir un shell inversé sur un port précis
-nc -nvlp [listening_port]
+# Écouter sur un port TCP local (aucun shell n'est créé par cette commande seule)
+nc -nvlp 4444
 
 ```
 
@@ -109,7 +109,7 @@ sudo nmap -sS -p- --min-rate 1000 --max-retries 1 -T4 <IP_CIBLE>
 
 ```
 
-**Alternative de scan rapide**
+**Scan TCP complet sans découverte préalable des hôtes**
 
 <p class="oscp-command-note">Scanner tous les ports.</p>
 
@@ -118,7 +118,7 @@ nmap -p- -T4 -n -Pn <IP_CIBLE> -oN rapport_ports.txt
 
 ```
 
-**Seconde alternative de scan rapide**
+**Scan SYN agressif de tous les ports TCP (risque de pertes)**
 
 <p class="oscp-command-note">Nmap : scanner tous les ports TCP avec un débit élevé et enregistrer la sortie grepable.</p>
 
@@ -127,7 +127,7 @@ sudo nmap -sS --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt <IP_CIBLE>
 
 ```
 
-**Découverte de tous les ports**
+**Scan TCP de tous les ports (cadence par défaut)**
 
 <p class="oscp-command-note">Scanner tous les ports.</p>
 
@@ -136,7 +136,7 @@ nmap -p- <IP_CIBLE> -oN rapport_ports.txt
 
 ```
 
-**Ports les plus courants**
+**Scanner les 100 ports TCP les plus fréquents**
 
 <p class="oscp-command-note">Nmap : scanner un nombre défini de ports parmi les plus fréquents.</p>
 
@@ -180,7 +180,7 @@ nmap -sT <IP_CIBLE>
 **Paramètres et repères :**
 `-sS` (SYN)  
 
-**Scan SYN (Stealth Scan, -sS)**
+**Scan TCP SYN (`-sS`, nécessite des privilèges de paquets bruts)**
 
 ```bash
 sudo nmap -sS <IP_CIBLE>
@@ -206,7 +206,7 @@ nmap -sn 192.0.2.0/24
 
 ```
 
-**20 ports les plus courants**
+**Scanner les 20 ports TCP les plus fréquents**
 
 <p class="oscp-command-note">Nmap : scanner les 20 ports les plus fréquents sur la cible.</p>
 
@@ -234,7 +234,7 @@ sudo nmap -O <IP_CIBLE>
 
 ```
 
-**Estimation du système d'exploitation (nécessite `-O`)**
+**Estimation plus souple du système d'exploitation (`-O --osscan-guess`)**
 
 ```bash
 sudo nmap -O --osscan-guess <IP_CIBLE>
