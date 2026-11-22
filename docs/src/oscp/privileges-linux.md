@@ -542,14 +542,14 @@ Vulnérabilité du noyau : confirmer les versions touchées dans l'avis du fourn
 
 Dirty Pipe : élévation locale liée aux pipes ; vérifier le correctif du noyau.
 
-## Exploitation des caractères génériques (Wildcards)
+## Caractères génériques du shell
 
-<p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>*</code></p>
-<p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>?</code></p>
-<p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>[]</code></p>
-### Exploitation des caractères génériques dans les commandes
+<p class="oscp-inline-ref"><strong>Zéro ou plusieurs caractères :</strong> <code>*</code></p>
+<p class="oscp-inline-ref"><strong>Un caractère :</strong> <code>?</code></p>
+<p class="oscp-inline-ref"><strong>Classe de caractères :</strong> <code>[]</code></p>
+### Comprendre l'expansion des motifs
 
-<p class="oscp-command-note">Afficher les fichiers correspondant à `*` dans `/var/log`.</p>
+<p class="oscp-command-note">Lister les entrées non cachées de `/var/log` sélectionnées par `*`.</p>
 
 ```bash
 ls /var/log/*
@@ -557,29 +557,29 @@ ls /var/log/*
 ```
 
 ```bash
-# Exemple de script vulnérable
-tar -cvf archive.tar /var/log/*
+# Exemple d'archivage ; le risque dépend du répertoire courant
+tar -cvf archive.tar /var/log/*  # Archive non compressée
 
 ```
 
-### Exploitation des caractères génériques dans les opérations sur les fichiers
+### Motifs littéraux et motifs développés
 
 ```bash
-touch '/tmp/file_*'  # Crée un nom contenant * ; sans guillemets, le shell peut développer le motif
+touch '/tmp/file_*'  # Les guillemets empêchent l'expansion  # Crée un nom contenant * ; sans guillemets, le shell peut développer le motif
 
 ```
 
-<p class="oscp-command-note">Copier les fichiers de `/etc` vers un dossier existant ; `*` ne sélectionne pas les fichiers cachés.</p>
+<p class="oscp-command-note">Copier les fichiers visibles de `/etc` ; les sous-dossiers nécessitent `-r`.</p>
 
 ```bash
-# Le dossier /tmp/backup/ doit exister et être accessible en écriture.
-cp /etc/* /tmp/backup/
+# Le dossier cible doit exister et être accessible en écriture.
+cp -v /etc/* /tmp/backup/
 
 ```
 
 #### Observer l'expansion du shell
 
-Afficher les fichiers qui seraient sélectionnés par * dans un répertoire de laboratoire.
+Afficher les noms correspondant au motif sans lire les fichiers.
 
 <p class="oscp-command-note">Afficher les noms sélectionnés par le motif `./*` sans les modifier.</p>
 
@@ -587,65 +587,72 @@ Afficher les fichiers qui seraient sélectionnés par * dans un répertoire de l
 printf '%s\n' ./*
 ```
 
-## Permissions du groupe disk
+## Groupe disk : accès brut aux volumes
 
-L'accès brut aux périphériques peut exposer des fichiers normalement protégés. Vérifier l'appartenance au groupe `disk` et adapter le périphérique.
+Vérifier `id` et les droits du périphérique ; `debugfs` cible les systèmes ext2/3/4.
+
+```bash
+id
+findmnt -no SOURCE /
+```
 
 ```text
-findmnt -no SOURCE /  # Identifier le périphérique monté sur /
-debugfs /dev/sda1  # Exemple : remplacer par le périphérique réel
-debugfs: cd /root
+debugfs /dev/sda1  # Adapter le périphérique et vérifier le type ext
+debugfs: cd /root  # Commande interne à debugfs
 debugfs: ls
 debugfs: cat /root/.ssh/id_rsa
 debugfs: cat /etc/shadow
 
 ```
 
-## Élévation de privilèges via MySQL
+## UDF MySQL : vérifier les prérequis
 
-Examiner les connexions, la configuration et les requêtes de la base de données.
+Les fonctions `sys_exec` et `sys_eval` nécessitent une UDF préinstallée.
 
 <p class="oscp-command-note">MySQL : ces fonctions ne sont pas natives ; elles exigent une UDF installée et autorisée.</p>
 
 ```sql
-select sys_exec('whoami');
-select sys_eval('whoami');
+SELECT sys_exec('whoami');
+SELECT sys_eval('whoami');
 
 ```
 
-## Logiciels installés par l’utilisateur
+## Logiciels installés manuellement
 
-<p class="oscp-command-note">Répertoires où rechercher des logiciels installés manuellement (chemins, pas commandes).</p>
+<p class="oscp-command-note">Chemins à inspecter ; il ne s'agit pas de commandes.</p>
 
 ```text
 /usr/local/
-/usr/local/src
-/usr/local/bin
+/usr/local/src/
+/usr/local/bin/
 /opt/
 /home/
 /var/
 /usr/src/
 ```
 
-<p class="oscp-command-note">Inventorier les logiciels installés via dpkg sur Debian ou rpm sur Fedora/RHEL.</p>
+<p class="oscp-command-note">Lister les paquets avec le gestionnaire de la distribution.</p>
 
 ```bash
 # Debian/Ubuntu
 dpkg -l
 
-# CentOS/openSUSE/Fedora/RHEL
+# Fedora/RHEL/CentOS/openSUSE
 rpm -qa
 
-# OpenBSD : pkg_info ; FreeBSD : pkg info
+# OpenBSD
 pkg_info
+
+# FreeBSD
+pkg info
 
 ```
 
-## Mots de passe faibles, réutilisés ou en clair
+## Repérer les secrets exposés
 
-Vérifier les comptes, les secrets et les mécanismes d'authentification.
+Examiner uniquement les données accessibles et utiles au périmètre autorisé.
 
-<p class="oscp-command-note">Exemples de mots de passe faibles (données, pas commandes).</p>
+<p class="oscp-command-note">Exemples de combinaisons faibles (données, pas commandes).</p>
 
 ```text
 root:root
@@ -659,7 +666,7 @@ username:password
 ```
 
 ```bash
-# Examiner les boîtes locales accessibles
+# Lister les boîtes aux lettres locales accessibles
 ls -lah /var/mail /var/spool/mail 2>/dev/null
 ```
 
@@ -668,56 +675,56 @@ ls -lah /var/mail /var/spool/mail 2>/dev/null
 
 ```
 
-### Connexions réseau actives
+### Ports et connexions réseau
 
-<p class="oscp-command-note">Examiner les ports et connexions réseau.</p>
+<p class="oscp-command-note">Identifier les sockets en écoute et les connexions TCP/UDP.</p>
 
 ```bash
-# Liste des services de réseau
+# Services en écoute
 ss -tulpen
-ss -tunap
+ss -tunap  # PID visibles selon les droits
 
 ```
 
-### Localiser les coffres KeePass
+### Rechercher les coffres KeePass
 
-Rechercher uniquement les fichiers .kdbx visibles par le compte courant.
+Un fichier `.kdbx` est chiffré ; sa présence ne donne pas le mot de passe.
 
-<p class="oscp-command-note">Localiser les coffres KeePass.</p>
+<p class="oscp-command-note">Rechercher les fichiers `.kdbx` accessibles sous `/home`.</p>
 
 ```bash
 find /home -type f -name '*.kdbx' 2>/dev/null
 ```
 
-### Répertoires de clés SSH
+### Repérer les dossiers SSH
 
-Rechercher les répertoires .ssh visibles puis examiner leurs permissions.
+Lister les dossiers `.ssh` accessibles ; leurs clés ne sont pas forcément lisibles.
 
-<p class="oscp-command-note">Répertoires de clés SSH.</p>
+<p class="oscp-command-note">Répertoires `.ssh` sous `/home`.</p>
 
 ```bash
 find /home -type d -name '.ssh' 2>/dev/null
 ```
 
-## Répertoires accessibles en écriture
+## Permissions des répertoires
 
-<p class="oscp-command-note">Identifier les répertoires modifiables ou traversables selon leurs permissions.</p>
+<p class="oscp-command-note">Distinguer les droits du compte courant des permissions accordées à tous.</p>
 
 ```bash
 # Répertoires modifiables par le compte courant, puis par tous
 find / -writable -type d 2>/dev/null
 find / -perm -002 -type d 2>/dev/null
-find / -perm -o=w -type d 2>/dev/null
+find / -perm -o=w -type d 2>/dev/null  # Équivalent à -002
 
-# Répertoires traversables par tous
-find / -perm -o x -type d 2>/dev/null
+# Dossiers traversables par « autres »
+find / -perm -o=x -type d 2>/dev/null
 
 # Répertoires modifiables et traversables par tous
-find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
+find / \( -perm -o=w -perm -o=x \) -type d 2>/dev/null
 
 ```
 
-## Systèmes de fichiers non montés
+## Examiner les montages et volumes
 
 ```bash
 mount -l
