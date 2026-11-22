@@ -1692,22 +1692,22 @@ nmap -sV -p 143,993 --script imap-ntlm-info <IP_CIBLE>
 <p class="oscp-command-note">Examiner une connexion TLS ou un certificat.</p>
 
 ```bash
-openssl s_client -connect <IP_CIBLE>:993
+openssl s_client -connect 192.0.2.10:993
 
 ```
 
 <p class="oscp-command-note">Rechercher des références de vulnérabilités connues.</p>
 
 ```bash
-searchsploit 'imap' '<VERSION>'
+searchsploit imap
 
 ```
 
 <p class="oscp-command-note">Exécuter check_imap.py avec les paramètres indiqués pour «IMAP».</p>
 
 ```bash
-# Utilisation
-python3 check_imap.py <IP_CIBLE> <PORT_IMAP>
+# Exemple : relever les capacités IMAP sans authentification
+python3 check_imap.py 192.0.2.10 143
 
 ```
 
@@ -1764,7 +1764,7 @@ sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=
 <p class="oscp-command-note">Interroger les paramètres SNMP.</p>
 
 ```bash
-# Version: 1, 2c, 3
+# Versions SNMP : v1, v2c et v3 (SNMPv3 utilise une authentification différente)
 # Chaînes de communauté SNMP possibles : public, private, security, etc.
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 
@@ -1778,7 +1778,7 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 # Tester des chaînes de communauté SNMP dans le laboratoire
 onesixtyone -c communautes.txt <IP_CIBLE>
 
-# Interroger un OID SNMP précis (remplacer OID par sa valeur numérique) accessibles
+# Interroger les objets SNMP accessibles ; ajouter un OID numérique pour limiter la recherche
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
 # Parcourir les objets SNMP avec des requêtes groupées
@@ -1811,21 +1811,21 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
 ```
 
 ```bash
-# Interroger les objets SNMP
-snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> <OID>
+# Interroger un OID précis avec une communauté autorisée
+snmpwalk -v2c -c public 192.0.2.10 1.3.6.1.2.1.1
 
 ```
 
 <p class="oscp-command-note">Identifiants SNMP (OID) et leur signification</p>
 
 ```text
-1.3.6.1.2.1.25.1.6.0 --> System Processes
-1.3.6.1.4.1.77.1.2.25 --> User Accounts
-1.3.6.1.2.1.6.13.1.3 --> TCP Local Ports
-1.3.6.1.2.1.25.4.2.1.2 --> Running Programs
-1.3.6.1.2.1.25.4.2.1.4 --> Processes Path
-1.3.6.1.2.1.25.2.3.1.4 --> Storage Units
-1.3.6.1.2.1.25.6.3.1.2 --> Softyware Name
+1.3.6.1.2.1.25.1.6.0 --> Nombre de processus
+1.3.6.1.4.1.77.1.2.25 --> Comptes utilisateurs (MIB Windows, si exposée)
+1.3.6.1.2.1.6.13.1.3 --> Ports TCP locaux
+1.3.6.1.2.1.25.4.2.1.2 --> Noms des processus
+1.3.6.1.2.1.25.4.2.1.4 --> Chemins des exécutables
+1.3.6.1.2.1.25.2.3.1.4 --> Unités d'allocation du stockage
+1.3.6.1.2.1.25.6.3.1.2 --> Noms des logiciels installés
 
 ```
 
@@ -1883,13 +1883,13 @@ nmap -n -sV -p 389,636 --script ldap-rootdse <IP_DC>
 <p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
 
 ```bash
-# Demande LDAP de base
-ldapsearch -x -H ldap://<target_ip>
+# Interroger le RootDSE LDAP sans authentification
+ldapsearch -LLL -x -H ldap://192.0.2.10 -s base -b '' namingContexts
 
-# Recherche LDAP à la racine de l’annuaire (Base DN)
+# Interroger le RootDSE : base DN vide et portée base
 ldapsearch -x -H ldap://<IP_DC> -s base -b ''
 
-# Afficher les contextes de nommage LDAP
+# Afficher les contextes de nommage publiés par le serveur LDAP
 ldapsearch -x -H ldap://<IP_DC> -s base -b '' namingContexts
 
 # Effectuer une recherche à partir d’un DN de base précis (Base DN)
@@ -1898,14 +1898,14 @@ ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>"
 # Énumérer les utilisateurs utilisant LDAP
 ldapsearch -v -x -b "DC=<domain>,DC=<tld>" -H "ldap://<target_ip>" "(objectclass=*)"
 
-# Récupérer le nom de compte des utilisateurs
+# Lister les attributs sAMAccountName des objets utilisateur visibles
 ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=exemple,DC=local' '(objectClass=user)' sAMAccountName
 
 # Rechercher avec les filtres
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=user)"
 ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=group)"
 
-# Recherche avec authentification
+# Requête LDAP authentifiée : utiliser -D pour le DN du compte et -W pour demander le mot de passe
 ldapsearch -x -H ldap://<IP_DC> -D 'utilisateur@exemple.local' -W -b 'DC=exemple,DC=local' '(objectClass=*)'
 
 # Filtres de recherche.
@@ -2060,11 +2060,11 @@ nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config
 <p class="oscp-command-note">Exécuter la commande distante indiquée via MSSQL avec CrackMapExec (droits requis).</p>
 
 ```bash
-# Vérifiez le service MSSQL et exécutez la commande
+# Vérifier les identifiants MSSQL ; l'option -x exécute une commande système, pas une requête SQL
 crackmapexec mssql -d <domain> -u <username> -p <password> -x "whoami" <target_ip>
 
-# Interroger les bases de données et les énumérer
-crackmapexec mssql -d <domain> -u <username> -p <password> -x "SELECT name FROM master.dbo.sysdatabases;" <target_ip>
+# Lister les bases MSSQL via une connexion SQL dédiée (la commande -x précédente n'est pas adaptée)
+# Après connexion avec impacket-mssqlclient, saisir : SELECT name FROM sys.databases;
 
 ```
 
