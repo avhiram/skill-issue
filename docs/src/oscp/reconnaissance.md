@@ -348,7 +348,7 @@ Observer les permissions et la configuration de Windows.
 
 **Vérifier un port TCP**
 
-<p class="oscp-command-note">PowerShell : vérifier la connexion TCP vers le port 445 avec Test-NetConnection.</p>
+<p class="oscp-command-note">PowerShell : tester l'accès TCP au port 445.</p>
 
 ```powershell
 Test-NetConnection -ComputerName 192.0.2.10 -Port 445
@@ -366,7 +366,7 @@ Test-NetConnection -ComputerName 192.0.2.10 -Port 445
 
 Découvrir les ports TCP puis identifier les services dans le périmètre autorisé.
 
-<p class="oscp-command-note">Nmap : scanner tous les ports TCP, puis identifier les services sur les ports ouverts relevés.</p>
+<p class="oscp-command-note">Nmap : détecter tous les ports TCP, puis identifier les services ouverts.</p>
 
 ```bash
 sudo nmap -sS -p- -Pn -n -oN rapport_ports.txt <IP_CIBLE>
@@ -377,7 +377,7 @@ nmap -sV -sC -p <LISTE_PORTS> -oN rapport_services.txt <IP_CIBLE>
 
 Afficher la documentation d'un script puis consulter son comportement avant de l'exécuter.
 
-<p class="oscp-command-note">Nmap NSE : lire l'aide d'un script, puis l'exécuter sur le port choisi après validation du périmètre.</p>
+<p class="oscp-command-note">Nmap : consulter l'aide d'un script NSE avant son exécution.</p>
 
 ```bash
 nmap --script-help <SCRIPT_NSE>
@@ -388,7 +388,7 @@ nmap -sV -p <PORT> --script <SCRIPT_NSE> <IP_CIBLE>
 
 Effectuer un ping sweep sans lancer de scan de ports. Les pare-feu peuvent masquer des hôtes présents.
 
-<p class="oscp-command-note">Nmap -sn -n : découvrir les hôtes d'un réseau sans scan de ports ni résolution DNS.</p>
+<p class="oscp-command-note">Nmap : rechercher les hôtes actifs sans scanner leurs ports.</p>
 
 ```bash
 nmap -sn -n 192.0.2.0/24
@@ -400,7 +400,7 @@ Vérifier les ports et les services de la cible autorisée.
 
 **Rechercher les ports TCP ouverts avec RustScan**
 
-<p class="oscp-command-note">RustScan : rechercher les ports TCP ouverts sur la plage 1 à 65535.</p>
+<p class="oscp-command-note">RustScan : rechercher les ports TCP ouverts de 1 à 65535.</p>
 
 ```bash
 rustscan -a <IP_CIBLE> -p 1-65535
@@ -488,7 +488,7 @@ rustscan -a <IP_CIBLE> -p 1-65535 -- -sS -sU
 
 Vérifier les hôtes répondant à ICMP dans un sous-réseau de laboratoire, sans considérer les non-répondants comme absents.
 
-<p class="oscp-command-note">fping : afficher les hôtes répondant à ICMP dans le réseau indiqué ; les autres peuvent être filtrés.</p>
+<p class="oscp-command-note">fping : afficher les hôtes qui répondent aux requêtes ICMP.</p>
 
 ```bash
 fping -a -g <RESEAU_CIDR> 2>/dev/null
@@ -502,14 +502,14 @@ Vérifier les ports et les services de la cible autorisée.
 
 Transférer ou récupérer des fichiers dans le laboratoire.
 
-<p class="oscp-command-note">Nmap FTP : vérifier l'accès anonyme, le rebond FTP et les informations système avec ftp-anon, ftp-bounce et ftp-syst.</p>
+<p class="oscp-command-note">Nmap : vérifier l'accès anonyme et les informations du serveur FTP.</p>
 
 ```bash
 nmap -p 21 --script ftp-anon,ftp-bounce,ftp-syst <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">FTP : ouvrir le client puis saisir anonymous à l'invite du nom d'utilisateur si l'accès anonyme est autorisé.</p>
+<p class="oscp-command-note">FTP : se connecter, puis saisir `anonymous` si l'accès anonyme est autorisé.</p>
 
 ```bash
 ftp 192.0.2.10
@@ -519,33 +519,27 @@ ftp 192.0.2.10
 ```
 
 ```bash
-# À saisir dans l'invite interactive FTP (sans recopier le préfixe ftp>) :
+# Dans la session FTP : passer en binaire, puis envoyer un fichier autorisé
 binary
 put fichier.bin
 
 ```
 
-<p class="oscp-command-note">Télécharger un répertoire FTP avec wget, puis rechercher des fichiers locaux avec find (deux opérations distinctes).</p>
+<p class="oscp-command-note">FTP : télécharger récursivement un dossier avec `wget`.</p>
 
 ```bash
 wget -r 'ftp://192.0.2.10/repertoire/'
 
-# Recherche locale d'un fichier précis (ne parcourt pas le serveur FTP)
-find / -name 'nom_fichier' 2>/dev/null
-
-# Recherche locale de fichiers nommés Settings.*
-find / -name 'Settings.*' 2>/dev/null
-
 ```
 
-<p class="oscp-command-note">Hydra FTP : tester un compte et un dictionnaire autorisés ; limiter les tentatives pour éviter les verrouillages.</p>
+<p class="oscp-command-note">Hydra : tester les mots de passe FTP autorisés. Risque de verrouillage.</p>
 
 ```bash
 hydra -l <UTILISATEUR> -P liste_mots_de_passe.txt -t 4 ftp://<IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">FTP : se connecter au serveur en mode passif (-p) si le client FTP utilisé prend cette option en charge.</p>
+<p class="oscp-command-note">FTP : demander le mode passif avec `-p` si le client le prend en charge.</p>
 
 ```bash
 ftp -p 192.0.2.10
@@ -556,7 +550,7 @@ ftp -p 192.0.2.10
 
 Vérifier si le serveur autorise une connexion anonyme, sans modifier les fichiers distants.
 
-<p class="oscp-command-note">FTP anonyme : tester la connexion et lister les fichiers sans modifier le serveur.</p>
+<p class="oscp-command-note">FTP anonyme : tester l'accès et lister les fichiers avec `curl`.</p>
 
 ```bash
 curl -v 'ftp://anonymous:anonymous@<IP_CIBLE>/'
