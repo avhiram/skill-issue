@@ -2628,7 +2628,7 @@ GET mykey
 
 Vérifier les ports et les services de la cible autorisée.
 
-<p class="oscp-command-note">Sur Kali, `nc -nv` ouvre une connexion TCP vers un port autorisé ; `-n` évite la résolution DNS et `-v` affiche les détails de connexion. Aucun protocole applicatif n'est présumé.</p>
+<p class="oscp-command-note">Sur Kali, `nc -nv` ouvre une connexion TCP vers le port indiqué, sans détecter automatiquement le protocole. `-n` désactive la résolution DNS et `-v` affiche les détails. Une connexion réussie ne démontre pas qu'un service applicatif répond correctement.</p>
 
 ```bash
 # Depuis Kali : établir une connexion TCP vers un port autorisé, sans présumer du protocole
@@ -2636,7 +2636,7 @@ nc -nv <IP_CIBLE> <PORT_TCP>
 
 ```
 
-Si le protocole identifié accepte explicitement la commande `help`, la saisir dans la session Netcat. Sinon, ne rien envoyer.
+N'envoyer de texte dans la session Netcat qu'après identification du protocole et vérification des commandes qu'il accepte. Un service binaire peut ne pas répondre à des instructions textuelles.
 
 <p class="oscp-command-note">Netcat n'effectue pas d'authentification générique : le format des messages dépend du protocole. Éviter d'envoyer des identifiants ou des commandes `list` sans spécification confirmée.</p>
 
@@ -2650,7 +2650,7 @@ nmap -sV --version-all -p <PORT_TCP> <IP_CIBLE>
 
 Sur un port inconnu, tester TLS seulement après avoir identifié le port et son contexte ; une connexion TLS directe ne convient pas à tous les protocoles.
 
-<p class="oscp-command-note">`openssl s_client` teste un service TLS direct. Un échec ne prouve pas l'absence de chiffrement : certains protocoles exigent STARTTLS et l'option `-starttls` correspondante.</p>
+<p class="oscp-command-note">`openssl s_client` tente une négociation TLS immédiate. Un échec ne prouve pas l'absence de TLS : SMTP, IMAP ou POP3 peuvent nécessiter une négociation STARTTLS avec l'option `-starttls` adaptée. Vérifier le nom d'hôte et le certificat avant de conclure.</p>
 
 ```bash
 openssl s_client -connect <IP_CIBLE>:<PORT> -brief
@@ -2662,7 +2662,7 @@ Ces contrôles complètent l'inventaire des ports sur les hôtes autorisés. Un 
 
 ### Nmap : examiner précisément un service
 
-Lire l'aide et les effets du script NSE `smb-ls` avant de l'utiliser sur un partage SMB autorisé ; son résultat dépend des droits du compte.
+Lire l'aide et les effets du script NSE `smb-ls` avant de l'utiliser sur un partage SMB autorisé. Sans identifiants adaptés, le script peut échouer même si SMB est accessible ; ne pas interpréter ce refus comme l'absence de fichiers.
 
 <p class="oscp-command-note">Nmap NSE : lire l'aide de smb-ls avant le scan SMB ; la présence du script ne garantit pas l'accès aux fichiers.</p>
 
@@ -2673,7 +2673,7 @@ nmap -sV -p 445 --script smb-ls <IP_CIBLE>
 
 ### Découverte via un proxy TCP
 
-Avec ProxyChains, utiliser `-sT -Pn` pour des connexions TCP ; les sondes SYN/UDP et certaines opérations de découverte ne sont pas relayées par SOCKS.
+Avec ProxyChains, utiliser `-sT -Pn` pour les connexions TCP ; les sondes SYN/UDP et certaines opérations de découverte ne passent pas par SOCKS. `--top-ports 200` ne garantit pas la découverte de tous les services ouverts.
 
 <p class="oscp-command-note">proxychains4 : scanner en TCP connect (-sT -Pn) ; vérifier d'abord le proxy SOCKS et éviter les scans SYN/UDP via ce chemin.</p>
 
@@ -2683,7 +2683,7 @@ proxychains4 -q nmap -sT -Pn -n --unprivileged --top-ports 200 <IP_CIBLE>
 
 ### NFS : identifier les exports
 
-`showmount -e` interroge les exports annoncés par `mountd` ; NFSv4 peut fonctionner sans ce service et ne pas répondre à cette commande.
+`showmount -e` interroge le service `mountd` pour les exports NFS. NFSv4 peut être accessible directement sur TCP 2049 sans `mountd` ; l'absence de réponse ne suffit donc pas à exclure NFS.
 
 <p class="oscp-command-note">showmount -e : afficher les exports annoncés par mountd ; l'absence de réponse ne prouve pas l'absence de NFSv4.</p>
 
@@ -2693,7 +2693,7 @@ showmount -e <IP_CIBLE>
 
 ### RPC : examiner les utilisateurs visibles
 
-Tester une énumération RPC anonyme seulement si elle est autorisée ; un refus d'accès ne signifie pas que le port SMB est fermé.
+`rpcclient -U '' -N` tente une session sans mot de passe. `enumdomusers` nécessite des permissions RPC suffisantes ; un refus d'accès ne signifie pas que SMB est fermé ou que le domaine ne contient aucun utilisateur.
 
 <p class="oscp-command-note">rpcclient : -U '' -N tente une session sans mot de passe ; enumdomusers dépend des permissions RPC.</p>
 
@@ -2703,7 +2703,7 @@ rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
 
 ### SNMP : interroger les informations système
 
-Utiliser uniquement une communauté SNMP fournie dans le périmètre ; SNMPv1/v2c transmet ses données sans chiffrement.
+Utiliser uniquement une communauté SNMPv2c autorisée. La commande parcourt l'OID `system` de MIB-II ; SNMPv1/v2c n'apporte ni chiffrement ni authentification forte, contrairement aux configurations SNMPv3 adaptées.
 
 <p class="oscp-command-note">snmpwalk : parcourir la branche system (1.3.6.1.2.1.1) avec une communauté SNMPv2c autorisée.</p>
 
@@ -2713,7 +2713,7 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> 1.3.6.1.2.1.1
 
 ### Redis : rechercher les informations du service
 
-Exécuter redis-info uniquement sur une cible autorisée ; confirmer ensuite la version et la configuration avec un client adapté.
+Exécuter le script NSE `redis-info` uniquement sur une cible autorisée. Il peut ne rien retourner si Redis exige une authentification ou si les ACL bloquent `INFO` ; confirmer la version avec un compte autorisé.
 
 <p class="oscp-command-note">Nmap NSE redis-info : relever les informations accessibles sur TCP 6379 ; un échec peut résulter d'une authentification obligatoire.</p>
 
@@ -2728,12 +2728,5 @@ nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 ---
 
 Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
-
-## Syntaxes complémentaires de la source
-
-Cette section rassemble les éléments complémentaires non encore classés ; vérifier leur syntaxe avant de les réutiliser.
-
-**Paramètres et repères :**
-`-m` : option dont le sens dépend de l'outil ; ne pas l'utiliser isolément sans commande et documentation associées.  
 
 <!-- refined-oscp -->
