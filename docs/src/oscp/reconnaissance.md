@@ -2445,52 +2445,25 @@ DROP TABLE IF EXISTS cmd_exec;
 
 ```
 
-<p class="oscp-command-note">Dans psql uniquement : les commandes commençant par une barre oblique inverse sont des méta-commandes ; SELECT est du SQL.</p>
+<p class="oscp-command-note">Dans psql : les méta-commandes commencent par une barre oblique inverse ; exécuter les requêtes SQL séparément.</p>
 
 ```text
-# Dans l'invite psql : lister les bases de données
+# Méta-commandes psql : saisir uniquement les lignes commençant par \
 \l
 
 \c postgres
 
-# Dans psql : basculer vers une autre base existante
+# Changer de base de données (remplacer le nom)
 \c <DB_NAME>
 
-# Dans psql : lister les tables visibles du schéma courant
+# Lister les tables visibles du schéma courant
 \dt
 
-# Dans psql : afficher les colonnes et les types d'une table
+# Afficher les colonnes et les types d'une table
 \d <TABLE_NAME>
-
-# Requête SQL : lire les lignes d'une table autorisée
-SELECT * FROM <TABLE_NAME>;
 
 # Afficher les colonnes, types et informations supplémentaires d'une table
 \d+ <TABLE_NAME>
-
-# Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
-SELECT * FROM users WHERE attribute = 'value';
-
-# Interroger information_schema pour obtenir les colonnes du schéma public
-SELECT table_name, column_name, data_type
-FROM information_schema.columns
-WHERE table_schema = 'public';
-
-# Créer une table de démonstration (modifie la base ; laboratoire uniquement)
-CREATE TABLE test_table (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-# Insérer une ligne dans la table de démonstration
-INSERT INTO test_table (name) VALUES ('example_data');
-
-# Modifier des données existantes (requête d'écriture ; vérifier WHERE)
-UPDATE test_table SET name = 'updated_data' WHERE id = 1;
-
-# Supprimer des données existantes (requête destructive ; vérifier WHERE)
-DELETE FROM test_table WHERE id = 1;
 
 ```
 
@@ -2503,7 +2476,7 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">VNC : ouvrir une session graphique avec TigerVNC sur TCP 5900 ; ces exemples ne concernent pas RDP.</p>
+<p class="oscp-command-note">TigerVNC : ouvrir une session graphique VNC sur TCP 5900 ; ::5900 indique le port TCP explicite.</p>
 
 ```bash
 # TigerVNC : ouvrir une session graphique sur TCP 5900
@@ -2521,7 +2494,7 @@ hydra -P mots_de_passe.txt vnc://192.0.2.10
 
 ```
 
-<p class="oscp-command-note">VNC : exemples de mots de passe faibles pour un laboratoire ; ce bloc n'est pas un résultat de scan.</p>
+<p class="oscp-command-note">VNC : exemples fictifs de mots de passe faibles ; aucune authentification réussie n'est implicite.</p>
 
 ```text
 # Exemples de mots de passe faibles à ne tester que dans un laboratoire
@@ -2543,14 +2516,14 @@ vnc
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">Nmap WinRM : identifier les services HTTP 5985 et HTTPS 5986 sans lancer de script NSE.</p>
+<p class="oscp-command-note">WinRM : détecter HTTP sur 5985 et HTTPS sur 5986 avec Nmap ; l'ouverture du port ne prouve pas l'accès distant.</p>
 
 ```bash
 nmap -sV -p 5985,5986 <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">NetExec WinRM : vérifier l'accès d'un compte de laboratoire sur TCP 5985/5986 selon la configuration.</p>
+<p class="oscp-command-note">NetExec WinRM : vérifier l'authentification d'un compte autorisé ; la connexion nécessite un service et des droits adaptés.</p>
 
 ```bash
 nxc winrm 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
@@ -2563,7 +2536,7 @@ Enter-PSSession -ComputerName 192.0.2.10 -Credential (Get-Credential)
 
 ```
 
-<p class="oscp-command-note">Evil-WinRM : ouvrir une session PowerShell distante depuis Kali avec un compte autorisé.</p>
+<p class="oscp-command-note">Evil-WinRM : ouvrir depuis Kali une session PowerShell distante si le compte possède les droits WinRM requis.</p>
 
 ```bash
 # Depuis Kali : ouvrir une session WinRM avec Evil-WinRM (compte autorisé requis)
@@ -2600,7 +2573,7 @@ nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Redis : se connecter avec redis-cli et demander le mot de passe de façon interactive.</p>
+<p class="oscp-command-note">Redis : --askpass demande le mot de passe interactif ; sans authentification, utiliser redis-cli sans cette option.</p>
 
 ```bash
 redis-cli -h <IP_CIBLE> -p 6379 --askpass
@@ -2621,7 +2594,7 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 
 ```
 
-<p class="oscp-command-note">Redis : ouvrir une session interactive, consulter INFO et SCAN, puis manipuler uniquement une clé de test.</p>
+<p class="oscp-command-note">Redis : distinguer la commande Linux redis-cli des commandes INFO, SCAN et GET saisies ensuite dans son invite.</p>
 
 ```text
 # Ouvrir le client Redis ; une authentification peut être nécessaire
@@ -2630,13 +2603,15 @@ redis-cli -h <IP_CIBLE> -p 6379
 # Dans l'invite redis-cli : afficher INFO puis lancer SCAN ; poursuivre avec le curseur retourné
 info
 scan 0
-select 0  # Sélectionner la base 0 (par défaut)
+# Dans redis-cli : sélectionner la base 0
+select 0
 
 # Créer puis lire une clé de test (modifie la base Redis ; laboratoire uniquement)
 set mykey myvalue
 get mykey
 
-config get '*'  # Afficher les paramètres de configuration accessibles
+# Afficher les paramètres de configuration accessibles
+config get '*'
 # Ne pas lancer SHUTDOWN : cette commande arrête le serveur Redis.
 
 ```
@@ -2672,7 +2647,7 @@ printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 ```
 
-<p class="oscp-command-note">Service inconnu : repères d'analyse, non exécutables ; identifier le protocole avant toute action.</p>
+<p class="oscp-command-note">Port inconnu : ces commentaires sont des repères, pas des commandes à copier ; identifier le protocole avant toute action.</p>
 
 ```bash
 # Après avoir identifié le service, référez-vous à sa documentation ou à sa commande par défaut
@@ -2691,7 +2666,7 @@ printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 Observer la négociation TLS d'un service inconnu avant de choisir l'outil d'énumération.
 
-<p class="oscp-command-note">TLS : tenter une négociation avec openssl s_client pour vérifier si un port accepte TLS.</p>
+<p class="oscp-command-note">TLS : utiliser openssl s_client pour tester la négociation ; un échec peut aussi provenir d'un protocole nécessitant STARTTLS.</p>
 
 ```bash
 openssl s_client -connect <IP_CIBLE>:<PORT> -brief
@@ -2716,7 +2691,7 @@ nmap -sV -p 445 --script smb-ls <IP_CIBLE>
 
 Utiliser un scan TCP connect lorsque l'accès réseau passe par un proxy SOCKS. Les scans SYN ou UDP ne se comportent pas comme un scan TCP connect derrière proxychains.
 
-<p class="oscp-command-note">Proxy SOCKS : utiliser Nmap en mode TCP connect (-sT) avec -Pn via proxychains4.</p>
+<p class="oscp-command-note">Proxy SOCKS : utiliser proxychains4 avec Nmap -sT -Pn ; la résolution DNS et les délais dépendent du proxy.</p>
 
 ```bash
 proxychains4 -q nmap -sT -Pn --top-ports 200 <IP_CIBLE>
