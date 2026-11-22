@@ -55,8 +55,6 @@ Vérifier les ports et les services de la cible autorisée.
 
 ### Netcat
 
-Vérifier les ports et les services de la cible autorisée.
-
 <p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Netcat».</p>
 
 ```bash
