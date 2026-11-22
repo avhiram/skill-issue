@@ -453,23 +453,23 @@ Contourne certaines vérifications de lecture et de parcours des fichiers et ré
 
 **CAP_KILL** — Contourner certaines vérifications de permission pour envoyer des signaux.
 
-**CAP_MAC_ADMIN**
+**CAP_MAC_ADMIN** — Modifier certaines règles de contrôle d'accès obligatoire (MAC).
 
 **CAP_NET_BIND_SERVICE** — Écouter sur les ports réseau privilégiés.
 
 **CAP_NET_RAW** — Utiliser des sockets réseau brutes.
 
-**CAP_SETGID**
+**CAP_SETGID** — Modifier les identifiants de groupe du processus.
 
-**CAP_SETPCAP**
+**CAP_SETPCAP** — Manipuler certaines capacités des processus.
 
-**CAP_SETUID**
+**CAP_SETUID** — Modifier les identifiants utilisateur du processus.
 
 ### Cron et minuteurs systemd
 
 Examiner les tâches configurées et les minuteurs systemd, lorsque disponibles.
 
-<p class="oscp-command-note">Cron et minuteurs systemd.</p>
+<p class="oscp-command-note">Lister les dossiers cron et les minuteurs systemd configurés.</p>
 
 ```bash
 ls -ld /etc/cron*
@@ -485,10 +485,10 @@ sudo -l
 
 ```
 
-<p class="oscp-command-note">Filtrer les journaux système par nom de processus.</p>
+<p class="oscp-command-note">Rechercher un processus dans syslog (si disponible).</p>
 
 ```bash
-grep [process_name] /var/log/syslog
+grep -F 'NOM_PROCESSUS' /var/log/syslog  # Si ce journal existe
 
 ```
 
@@ -553,7 +553,7 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 <p class="oscp-inline-ref"><strong>Caractère de recherche :</strong> <code>[]</code></p>
 ### Exploitation des caractères génériques dans les commandes
 
-<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Exploitation des caractères génériques dans les commandes».</p>
+<p class="oscp-command-note">Afficher les fichiers correspondant à `*` dans `/var/log`.</p>
 
 ```bash
 ls /var/log/*
@@ -562,21 +562,21 @@ ls /var/log/*
 
 ```bash
 # Exemple de script vulnérable
-tar -cvf archive.tar.gz /var/log/*
+tar -cvf archive.tar /var/log/*
 
 ```
 
 ### Exploitation des caractères génériques dans les opérations sur les fichiers
 
 ```bash
-touch /tmp/file_*
+touch '/tmp/file_*'  # Crée un nom contenant * ; sans guillemets, le shell peut développer le motif
 
 ```
 
-<p class="oscp-command-note">Copier les fichiers indiqués.</p>
+<p class="oscp-command-note">Copier les fichiers de `/etc` vers un dossier existant ; `*` ne sélectionne pas les fichiers cachés.</p>
 
 ```bash
-# Si un attaquant peut modifier des fichiers dans /etc/, il peut exploiter le wildcard pour écraser ou manipuler des fichiers de configuration critiques.
+# Le dossier /tmp/backup/ doit exister et être accessible en écriture.
 cp /etc/* /tmp/backup/
 
 ```
@@ -585,7 +585,7 @@ cp /etc/* /tmp/backup/
 
 Afficher les fichiers qui seraient sélectionnés par * dans un répertoire de laboratoire.
 
-<p class="oscp-command-note">Observer l'expansion du shell.</p>
+<p class="oscp-command-note">Afficher les noms sélectionnés par le motif `./*` sans les modifier.</p>
 
 ```bash
 printf '%s\n' ./*
@@ -617,17 +617,16 @@ select sys_eval('whoami');
 
 ## Logiciels installés par l’utilisateur
 
-<p class="oscp-command-note">Chemins de fichiers à examiner pour «Logiciels installés par l’utilisateur» (pas des commandes).</p>
+<p class="oscp-command-note">Répertoires où rechercher des logiciels installés manuellement (chemins, pas commandes).</p>
 
-```bash
+```text
 /usr/local/
 /usr/local/src
 /usr/local/bin
 /opt/
-/home
+/home/
 /var/
 /usr/src/
-
 ```
 
 <p class="oscp-command-note">Inventorier les logiciels installés via dpkg sur Debian ou rpm sur Fedora/RHEL.</p>
