@@ -1321,16 +1321,16 @@ nmap -sV -p 593 <IP_CIBLE>
 <p class="oscp-command-note">Examiner les objets exposés par RPC.</p>
 
 ```bash
-# Connexion avec une session null
+# Tenter une session RPC sans identifiants (peut être refusée)
 rpcclient -U '' -N <IP_CIBLE>
 
-# Se connecter à la cible et lister les actions disponibles
+# Afficher les informations serveur via srvinfo ; ne liste pas toutes les commandes
 rpcclient -U '' -N <IP_CIBLE> -c 'srvinfo'
 
-# Liste de tous les utilisateurs disponibles
+# Énumérer les comptes du domaine visibles par cette session
 rpcclient -U '' -N <IP_CIBLE> -c 'enumdomusers'
 
-# Énumérer les groupes de domaines
+# Énumérer les groupes du domaine accessibles à cette session
 rpcclient -U '' -N <IP_CIBLE> -c 'enumdomgroups'
 
 # Énumérer les utilisateurs avec un compte de domaine autorisé
@@ -1341,9 +1341,9 @@ rpcclient -U 'utilisateur' -W 'EXEMPLE' 192.0.2.10 -c 'enumdomusers'
 **Paramètres et repères :**
 `rpcclient`  
 
-<p class="oscp-command-note">Définir un objet ou une configuration SQL.</p>
+<p class="oscp-command-note">Commandes interactives rpcclient : consultation des utilisateurs, groupes, imprimantes et droits ; les opérations de modification exigent des autorisations spécifiques.</p>
 
-```sql
+```text
 enumdomusers
 enumdomgroups
 queryuser 0x450
@@ -1364,10 +1364,10 @@ dsenumdomtrusts
 # Lister les utilisateurs du domaine depuis une session rpcclient
 enumdomusers
 
-# Obtenir les détails de l'utilisateur
+# Interroger un utilisateur par son RID hexadécimal
 queryuser <0xrid>
 
-# Obtenir des groupes d'utilisateurs
+# Afficher les RID des groupes associés à cet utilisateur
 queryusergroups <0xrid>
 
 # Résoudre un nom de compte en SID
@@ -1378,7 +1378,7 @@ queryuseraliases [builtin|domain] <sid>
 
 ```
 
-<p class="oscp-command-note">RPC : examiner les groupes, utilisateurs et identifiants disponibles.</p>
+<p class="oscp-command-note">Dans rpcclient : énumérer les groupes, consulter un RID puis lister ses membres.</p>
 
 ```bash
 # Liste des groupes
@@ -1387,7 +1387,7 @@ enumdomgroups
 # Obtenir les détails du groupe
 querygroup <0xrid>
 
-# Obtenir des membres du groupe
+# Lister les membres du groupe identifié par son RID
 querygroupmem <0xrid>
 
 ```
@@ -1402,7 +1402,7 @@ queryaliasmem builtin|domain <0xrid>
 ```
 
 ```bash
-# Liste des domaines
+# Lister les domaines visibles depuis cette session rpcclient
 enumdomains
 
 # Interroger le SID et les informations de politique du domaine
@@ -1413,13 +1413,13 @@ querydominfo
 
 ```
 
-<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-brute ».</p>
+<p class="oscp-command-note">SMB : identifier le service, tester des identifiants autorisés avec NetExec et résoudre les SID avec Impacket ; aucun script smb-brute n'est exécuté.</p>
 
 ```bash
 # Nmap : vérifier la présence du service SMB
 nmap -sV -p 445 192.0.2.10
 
-# CrackMapExec
+# NetExec (nxc) : vérifier des identifiants de laboratoire ; attention aux verrouillages de comptes
 nxc smb 192.0.2.10 -u admin -p mots_de_passe.txt
 # Autre possibilité
 nxc smb 192.0.2.10 -u utilisateurs.txt -p 'MotDePasseTest'
@@ -1429,13 +1429,13 @@ impacket-lookupsid 'exemple.local/utilisateur@192.0.2.10'
 
 ```
 
-<p class="oscp-command-note">Localiser les fichiers correspondant aux critères indiqués.</p>
+<p class="oscp-command-note">Dans rpcclient : résoudre des noms de comptes et des SID ; ces commandes ne recherchent pas de fichiers.</p>
 
 ```bash
 # Résoudre un nom de compte en SID
 lookupnames utilisateur
 
-# Trouver d'autres SID
+# Énumérer les SID accessibles à la session RPC
 lsaenumsid
 
 # Résoudre un SID connu (ne lance pas de balayage RID)
@@ -1477,7 +1477,7 @@ net view \\192.0.2.10 /all
 
 ```
 
-<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-enum-shares ».</p>
+<p class="oscp-command-note">Nmap SMB : énumérer partages, comptes, groupes et protocoles ; tester MS17-010 uniquement dans le périmètre autorisé.</p>
 
 ```bash
 nmap -p 445 --script smb-enum-shares <IP_CIBLE>
@@ -1497,7 +1497,7 @@ nmap -p 445 --script smb-protocols 192.0.2.10
 <p class="oscp-command-note">Observer le trafic SMB et lister les partages accessibles.</p>
 
 ```bash
-# Capturer les échanges NetBIOS sur TCP 139 ; ce filtre ne décode pas SMB
+# Capturer le trafic TCP 139 avec ngrep ; ne décode pas les opérations SMB
 sudo ngrep -d eth0 '' 'tcp port 139'
 
 # Lister les partages SMB accessibles sans mot de passe
@@ -1508,7 +1508,7 @@ smbclient -L //<IP_CIBLE> -N
 **Paramètres et repères :**
 `smbmap`  
 
-<p class="oscp-command-note">Lister les partages SMB et leurs permissions.</p>
+<p class="oscp-command-note">SMBMap : tester les accès anonyme et invité, puis afficher les partages et permissions disponibles.</p>
 
 ```bash
 smbmap -H <IP_CIBLE>
@@ -1518,7 +1518,7 @@ smbmap -u '' -p '' -H <IP_CIBLE> -R
 
 ```
 
-<p class="oscp-command-note">Interroger le service SMB avec CrackMapExec.</p>
+<p class="oscp-command-note">Interroger SMB avec NetExec (`nxc`), successeur de CrackMapExec ; les essais de comptes doivent être autorisés.</p>
 
 ```bash
 nxc smb 192.0.2.10
@@ -1530,7 +1530,7 @@ nxc smb 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
 
-<p class="oscp-command-note">Examiner les informations SMB et du domaine.</p>
+<p class="oscp-command-note">Enum4linux : collecter les informations SMB/NetBIOS, utilisateurs et partages accessibles.</p>
 
 ```bash
 # Énumérer les informations SMB/NetBIOS accessibles avec enum4linux
