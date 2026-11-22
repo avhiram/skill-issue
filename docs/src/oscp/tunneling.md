@@ -112,7 +112,7 @@ ip route get 172.16.20.10
 
 Tester d'abord un service précis. Ligolo n'exige pas ProxyChains pour les réseaux routés par son interface. `--unprivileged` réduit le risque de faux positifs liés aux sondes brutes de Nmap.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+<p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
 ```bash
 nmap -sT -Pn -n --unprivileged -p 80,445,3389 172.16.20.10
@@ -155,7 +155,7 @@ Ensuite, sélectionner l'agent avec `session`, démarrer avec `tunnel_start --tu
 
 Cette route doit utiliser l'interface de l'agent concerné.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+<p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
 ```bash
 sudo ip route add 240.0.0.1/32 dev ligolo
@@ -225,7 +225,7 @@ tunnel_start --tun ligolo2
 
 Le second sous-réseau passe par `ligolo2`, pas `ligolo`.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+<p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
 ```bash
 sudo ip route add 172.16.30.0/24 dev ligolo2
@@ -319,7 +319,7 @@ Le port SOCKS `1080` apparaîtra sur Kali. Garder la commande ouverte pendant l'
 
 `--socks5-hostname` demande la résolution du nom côté proxy, utile pour les noms internes.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+<p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
 ```bash
 curl --socks5-hostname 127.0.0.1:1080 -I http://172.16.20.10/
@@ -400,7 +400,6 @@ La disponibilité et les options de `dnscat2` dépendent de l'installation. Exé
 | Réseau local de l'agent inaccessible | Utiliser `240.0.0.1/32` pour son `127.0.0.1` avec la bonne interface |
 | Port redirigé muet | Vérifier le vrai service sur Kali et l'adresse `--to` du listener |
 
-
 ## Arrêter et nettoyer
 
 ### Fermer le tunnel
@@ -419,7 +418,7 @@ listener_list
 
 Retirer les routes manuelles ajoutées pour la session, sans toucher aux routes VPN préexistantes.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+<p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
 ```bash
 sudo ip route del 172.16.20.0/24 dev ligolo
