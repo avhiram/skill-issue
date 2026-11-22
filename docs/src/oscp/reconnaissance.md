@@ -2399,7 +2399,7 @@ hydra -L utilisateurs.txt -P mots_de_passe.txt -s 5432 192.0.2.10 postgres
 
 ```
 
-<p class="oscp-command-note">PostgreSQL : lancer psql depuis Linux puis utiliser la méta-commande \\l pour lister les bases visibles.</p>
+<p class="oscp-command-note">Depuis Kali, `psql -c '\l'` exécute la méta-commande PostgreSQL qui liste les bases accessibles au compte connecté. Installer le client PostgreSQL et disposer d'identifiants autorisés.</p>
 
 ```bash
 psql -h <IP_CIBLE> -U <UTILISATEUR> -d postgres -c '\l'
@@ -2422,7 +2422,7 @@ SELECT version();
 SELECT current_user, current_database();
 ```
 
-<p class="oscp-command-note">PostgreSQL : COPY FROM PROGRAM exécute `id` sur le serveur sous le compte du service PostgreSQL, uniquement avec les droits superutilisateur ou `pg_execute_server_program`. Cette démonstration crée puis supprime une table : laboratoire uniquement.</p>
+<p class="oscp-command-note">PostgreSQL : `COPY FROM PROGRAM` lance `id` **sur le serveur de base de données**, pas sur Kali. Il exige les privilèges superutilisateur ou l'appartenance au rôle `pg_execute_server_program`. L'exemple supprime une table nommée `cmd_exec` si elle existe : utiliser exclusivement une base de laboratoire dédiée.</p>
 
 ```sql
 -- Démonstration SQL PostgreSQL : COPY FROM PROGRAM exige des privilèges élevés  
@@ -2434,7 +2434,7 @@ DROP TABLE IF EXISTS cmd_exec;
 
 ```
 
-<p class="oscp-command-note">Dans psql : les méta-commandes commencent par une barre oblique inverse ; exécuter les requêtes SQL séparément.</p>
+<p class="oscp-command-note">Dans `psql`, les méta-commandes commencent par une barre oblique inverse et ne se terminent pas par `;`. Elles ne sont pas des requêtes SQL exécutables dans n'importe quel client.</p>
 
 Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` liste les bases, `\c` change de base, `\dt` liste les tables et `\d` décrit une table. Remplacer les noms entre chevrons.
 
@@ -2447,7 +2447,7 @@ Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` lis
 \d+ <TABLE_NAME>
 ```
 
-<p class="oscp-command-note">Dans psql : requêtes SQL de lecture et modifications de données de démonstration, à exécuter séparément des méta-commandes.</p>
+<p class="oscp-command-note">Dans `psql` : les requêtes SQL se terminent par `;`. Les deux lectures sur `public.users` ne fonctionnent que si cette table et la colonne `username` existent ; les commandes de création et modification exigent des droits d'écriture et sont réservées à une base de test.</p>
 
 ```sql
 -- Exemple à adapter à une table existante et autorisée ; remplacer public.users par le schéma et la table réels
@@ -2487,7 +2487,7 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">TigerVNC : ouvrir une session graphique VNC sur TCP 5900 ; ::5900 indique le port TCP explicite.</p>
+<p class="oscp-command-note">TigerVNC : `::5900` désigne le port TCP 5900 explicitement, tandis que `:0` désigne l'écran VNC 0. Le client peut demander un mot de passe selon la configuration du serveur.</p>
 
 ```bash
 # TigerVNC : ::5900 désigne le port TCP 5900, tandis que :0 désigne l'écran VNC 0
@@ -2527,7 +2527,7 @@ vnc
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">WinRM : détecter HTTP sur 5985 et HTTPS sur 5986 avec Nmap ; l'ouverture du port ne prouve pas l'accès distant.</p>
+<p class="oscp-command-note">WinRM : identifier le service sur les ports habituels HTTP 5985 et HTTPS 5986 avec Nmap. Un port ouvert ne garantit ni une configuration WinRM utilisable ni les permissions de connexion distante.</p>
 
 ```bash
 nmap -sV -p 5985,5986 <IP_CIBLE>
@@ -2559,7 +2559,7 @@ evil-winrm -i 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 Identifier si le point de terminaison WinRM est accessible en HTTP et s'il demande une authentification.
 
-<p class="oscp-command-note">WinRM : examiner la réponse HTTP de /wsman sur 5985 ; un code 401 peut simplement signaler une authentification obligatoire.</p>
+<p class="oscp-command-note">Depuis Kali, interroger `/wsman` sur HTTP/5985 sans identifiants ; un code 401 indique souvent qu'une authentification est exigée, pas que la connexion WinRM a réussi.</p>
 
 ```bash
 curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
@@ -2591,7 +2591,7 @@ redis-cli -h <IP_CIBLE> -p 6379 --askpass
 
 ```
 
-<p class="oscp-command-note">Redis : identifier d'abord la version et la configuration accessible. `searchsploit` fournit des références locales, mais ne démontre pas qu'une cible est vulnérable. Les exemples de scripts externes non identifiés ont été retirés.</p>
+<p class="oscp-command-note">Redis : comparer la version retournée par `INFO server` avec les références trouvées par `searchsploit`. Une référence d'exploit ne prouve pas la vulnérabilité de la cible ; `INFO` peut être interdit par les ACL ou exiger une authentification.</p>
 
 ```bash
 # Rechercher des références publiques à examiner en fonction de la version détectée
@@ -2601,7 +2601,7 @@ searchsploit redis
 redis-cli -h <IP_CIBLE> -p 6379 INFO server
 ```
 
-<p class="oscp-command-note">Sur Kali : démarrer le client Redis. Une authentification peut être nécessaire.</p>
+<p class="oscp-command-note">Sur Kali : `redis-cli` ouvre une session interactive sur le service Redis. Sans identifiants, le serveur peut refuser les commandes avec `NOAUTH` ; utiliser alors un compte autorisé.</p>
 
 ```bash
 redis-cli -h <IP_CIBLE> -p 6379
@@ -2617,7 +2617,7 @@ GET mykey
 CONFIG GET '*'
 ```
 
-<p class="oscp-command-note">Écriture facultative, uniquement sur une base de test :</p>
+<p class="oscp-command-note">Écriture facultative, uniquement dans une base Redis de test : `SET mykey myvalue` crée ou **écrase** la clé `mykey` si elle existe déjà. Vérifier son absence avant le test.</p>
 
 ```text
 SET mykey myvalue
