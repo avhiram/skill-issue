@@ -924,7 +924,7 @@ smtp-user-enum -M RCPT -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
 
 Interroger les enregistrements DNS et identifier les services associés.
 
-<p class="oscp-command-note">Nmap (DNS) : lancer les scripts NSE « dns-brute, dns-nsid, dns-recursion ».</p>
+<p class="oscp-command-note">Nmap DNS : exécuter dns-nsid et dns-recursion sur UDP 53 (dns-brute n'est pas lancé ici).</p>
 
 ```bash
 nmap -sU -p 53 --script dns-nsid,dns-recursion <IP_CIBLE>
@@ -937,20 +937,20 @@ nmap -sU -p 53 --script dns-nsid <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Interroger les enregistrements DNS.</p>
+<p class="oscp-command-note">Requêtes DNS avec dig, puis dialogue interactif nslookup (saisir les trois dernières lignes dans nslookup).</p>
 
 ```bash
-dig @<SERVEUR_DNS> <DOMAINE> AXFR  # Tenter un transfert de zone DNS autorisé
-dig @<SERVEUR_DNS> <DOMAINE> ANY  # ANY ne garantit pas le retour de tous les enregistrements
+dig @192.0.2.53 exemple.local AXFR  # Tester un transfert de zone autorisé
+dig @192.0.2.53 exemple.local ANY  # ANY ne retourne pas nécessairement tous les enregistrements
 nslookup
-> server <dns_server_ip>
-> set type=any
-> <domain_name>  # Query any records
+server 192.0.2.53
+set type=any
+exemple.local
 
 ```
 
 ```bash
-# Énumérer les enregistrements DNS
+# Tester l'énumération DNS et le transfert AXFR sur le serveur indiqué
 dnsrecon -d <DOMAINE> -n <SERVEUR_DNS> -t axfr
 
 dnsenum --enum --dnsserver <SERVEUR_DNS> <DOMAINE>
@@ -1011,7 +1011,7 @@ sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
 ```
 
 ```bash
-# Utilisation : exécutez le script de dénombrement TFTP pour obtenir un fichier spécifique
+# Exécuter le script local tftp_enum.sh après l'avoir créé et rendu exécutable
 ./tftp_enum.sh <IP_CIBLE> <FICHIER>
 ./tftp_enum.sh 192.168.1.10 bootfile.bin  # Exemple sur une cible de laboratoire
 
@@ -1024,7 +1024,7 @@ sudo nmap -sU -p 69 --script tftp-enum <IP_CIBLE>
 
 # Script d'énumération TFTP
 if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <target_ip> <filename>"
+    echo "Utilisation : $0 <ip_cible> <nom_fichier>"
     exit 1
 fi
 
@@ -1035,7 +1035,7 @@ FILENAME=$2
 echo "Tentative de téléchargement de $FILENAME depuis $TARGET_IP"
 tftp "$TARGET_IP" -c get "$FILENAME"
 
-# Vérifiez si le fichier a été récupéré
+# Vérifier si le fichier existe localement (un ancien fichier peut fausser le résultat)
 if [ -f "$FILENAME" ]; then
     echo "Fichier $FILENAME présent localement après la requête TFTP"
 else
@@ -1046,32 +1046,32 @@ fi
 
 ```bash
 # Interroger le service TFTP
-tftp <IP_CIBLE> 69
-tftp> get <remote_file> <local_file>
-tftp> quit
+tftp 192.0.2.10
+get fichier_distant fichier_local
+quit
 
 ```
 
 ```bash
 # Interroger le service TFTP
-tftp <IP_CIBLE> 69
-tftp> put <local_file> <remote_file>
-tftp> quit
+tftp 192.0.2.10
+put fichier_local fichier_distant
+quit
 
 ```
 
-<p class="oscp-command-note">Exécuter la boucle de vérification des hôtes.</p>
+<p class="oscp-command-note">Parcourir une liste de noms de fichiers TFTP à télécharger ; la boucle ne découvre pas d'hôtes.</p>
 
 ```bash
-while IFS= read -r fichier; do [ -n "$fichier" ] && tftp <IP_CIBLE> -c get "$fichier"; done < liste_fichiers.txt
+while IFS= read -r fichier; do [ -n "$fichier" ] && tftp 192.0.2.10 -c get "$fichier"; done < liste_fichiers.txt
 
 ```
 
 <p class="oscp-command-note">Transmettre des instructions de téléchargement ou d'envoi à TFTP.</p>
 
 ```bash
-printf 'get fichier_distant fichier_local\nquit\n' | tftp <IP_CIBLE>
-printf 'put fichier_local fichier_distant\nquit\n' | tftp <IP_CIBLE>
+printf 'get fichier_distant fichier_local\nquit\n' | tftp 192.0.2.10
+printf 'put fichier_local fichier_distant\nquit\n' | tftp 192.0.2.10
 
 ```
 
@@ -1079,18 +1079,18 @@ printf 'put fichier_local fichier_distant\nquit\n' | tftp <IP_CIBLE>
 
 Examiner les objets, les droits et les services du domaine.
 
-<p class="oscp-command-note">Nmap (KERBEROS) : lancer les scripts NSE « kerberos-enum-users ».</p>
+<p class="oscp-command-note">Kerberos : détecter TCP 88 puis tenter l'énumération avec krb5-enum-users (script et paramètres à vérifier).</p>
 
 ```bash
-# Identifier le service Kerberos sur le port TCP 88
+# Identifier le service Kerberos sur TCP 88 ; UDP 88 peut également être utilisé
 nmap -sV -p 88 <IP_CIBLE>
 
-# Tester l'énumération d'utilisateurs uniquement dans le périmètre autorisé
+# Tester l'énumération d'utilisateurs uniquement dans le périmètre autorisé ; nécessite un domaine et des noms candidats
 nmap -p 88 --script krb5-enum-users <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Examiner les comptes Kerberos du domaine.</p>
+<p class="oscp-command-note">Kerbrute : tester l'existence des noms d'utilisateurs du fichier contre le contrôleur de domaine autorisé.</p>
 
 ```bash
 kerbrute userenum --dc <IP_DC> -d <DOMAINE> liste_utilisateurs.txt
@@ -1113,7 +1113,7 @@ impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
 
 ```
 
-<p class="oscp-command-note">Analyser des empreintes avec John.</p>
+<p class="oscp-command-note">Tester hors ligne des empreintes Kerberos avec John ; Hashcat -m 13100 concerne uniquement les TGS RC4-HMAC.</p>
 
 ```bash
 john --wordlist=liste_mots_de_passe.txt tickets.hash
