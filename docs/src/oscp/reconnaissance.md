@@ -2500,7 +2500,7 @@ DELETE FROM test_table WHERE id = 1;
 
 ### 5900: VNC (Virtual Network Computing)
 
-<p class="oscp-command-note">Nmap VNC : relever les informations du service sur TCP 5900 avec vnc-info.</p>
+<p class="oscp-command-note">Nmap VNC : relever le protocole RFB et les mécanismes d'authentification annoncés sur TCP 5900.</p>
 
 ```bash
 nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
@@ -2510,15 +2510,15 @@ nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
 <p class="oscp-command-note">TigerVNC : ouvrir une session graphique VNC sur TCP 5900 ; ::5900 indique le port TCP explicite.</p>
 
 ```bash
-# TigerVNC : ouvrir une session graphique sur TCP 5900
+# TigerVNC : ::5900 désigne le port TCP 5900, tandis que :0 désigne l'écran VNC 0
 vncviewer <IP_CIBLE>::5900
 
-# Utiliser un fichier de mot de passe VNC existant et protégé
+# Utiliser un fichier de mot de passe VNC existant ; ne pas confondre ce fichier avec un mot de passe en clair
 vncviewer -passwd /chemin/vers/fichier_mot_de_passe <IP_CIBLE>::5900
 
 ```
 
-<p class="oscp-command-note">Hydra VNC : tester des mots de passe autorisés ; VNC classique ne fournit pas de nom d'utilisateur.</p>
+<p class="oscp-command-note">Hydra VNC : tester une liste de mots de passe dans le laboratoire ; le protocole VNC classique n'utilise pas de nom d'utilisateur.</p>
 
 ```bash
 hydra -P mots_de_passe.txt vnc://192.0.2.10
@@ -2528,7 +2528,7 @@ hydra -P mots_de_passe.txt vnc://192.0.2.10
 <p class="oscp-command-note">VNC : exemples fictifs de mots de passe faibles ; aucune authentification réussie n'est implicite.</p>
 
 ```text
-# Exemples de mots de passe faibles à ne tester que dans un laboratoire
+# Exemples fictifs de mots de passe faibles ; ne pas les considérer comme des identifiants découverts
 (aucun mot de passe)
 vnc
 1234
@@ -2562,7 +2562,7 @@ nxc winrm 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 ```
 
 ```powershell
-# Depuis PowerShell : ouvrir une session distante WinRM (authentification et droits requis)
+# Windows PowerShell : ouvrir une session distante WinRM ; les règles TrustedHosts/Kerberos dépendent du contexte
 Enter-PSSession -ComputerName 192.0.2.10 -Credential (Get-Credential)
 
 ```
@@ -2570,7 +2570,7 @@ Enter-PSSession -ComputerName 192.0.2.10 -Credential (Get-Credential)
 <p class="oscp-command-note">Evil-WinRM : ouvrir depuis Kali une session PowerShell distante si le compte possède les droits WinRM requis.</p>
 
 ```bash
-# Depuis Kali : ouvrir une session WinRM avec Evil-WinRM (compte autorisé requis)
+# Kali : ouvrir une session WinRM via HTTP/5985 avec Evil-WinRM ; compte et droits adaptés requis
 evil-winrm -i 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
@@ -2579,7 +2579,7 @@ evil-winrm -i 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 Identifier si le point de terminaison WinRM est accessible en HTTP et s'il demande une authentification.
 
-<p class="oscp-command-note">WinRM : examiner les en-têtes HTTP de /wsman sur TCP 5985, sans authentification.</p>
+<p class="oscp-command-note">WinRM : examiner la réponse HTTP de /wsman sur 5985 ; un code 401 peut simplement signaler une authentification obligatoire.</p>
 
 ```bash
 curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
@@ -2589,7 +2589,7 @@ curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
 
 Tester des identifiants fournis pour l'audit sur une seule cible, sans mot de passe en masse.
 
-<p class="oscp-command-note">WinRM : vérifier un compte et un domaine fournis avec NetExec, sur une cible autorisée.</p>
+<p class="oscp-command-note">NetExec WinRM : tester un compte de domaine fourni pour l'audit ; vérifier les droits de connexion distante séparément.</p>
 
 ```bash
 nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
@@ -2611,16 +2611,16 @@ redis-cli -h <IP_CIBLE> -p 6379 --askpass
 
 ```
 
-<p class="oscp-command-note">Redis : rechercher des références SearchSploit ; les scripts tiers mentionnés ne sont ni fournis ni vérifiés.</p>
+<p class="oscp-command-note">Redis : SearchSploit sert à rechercher des références ; les scripts tiers ci-dessous ne sont pas des outils Redis installés par défaut.</p>
 
 ```bash
-# Rechercher les références Redis locales avec SearchSploit (ne prouve pas la vulnérabilité de la cible)
+# SearchSploit : consulter les références Redis disponibles localement, sans conclure que la cible est vulnérable
 searchsploit redis
 
-# Script externe non fourni : ne pas supposer que redis-rogue-server.py est installé ou fiable
+# Script externe absent du guide : ne pas exécuter sans récupérer et examiner sa source
 python3 redis-rogue-server.py -p 6379
 
-# Script externe non fourni : vérifier sa provenance, sa syntaxe et son périmètre avant tout usage
+# Script externe absent du guide : les arguments -h/-p/-c dépendent de sa version et doivent être vérifiés
 python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 
 ```
@@ -2628,20 +2628,20 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 <p class="oscp-command-note">Redis : distinguer la commande Linux redis-cli des commandes INFO, SCAN et GET saisies ensuite dans son invite.</p>
 
 ```text
-# Ouvrir le client Redis ; une authentification peut être nécessaire
+# Terminal Kali : démarrer redis-cli ; la connexion peut demander une authentification
 redis-cli -h <IP_CIBLE> -p 6379
 
-# Dans l'invite redis-cli : afficher INFO puis lancer SCAN ; poursuivre avec le curseur retourné
+# Dans redis-cli : INFO décrit le serveur ; répéter SCAN avec le curseur retourné jusqu'à 0
 info
 scan 0
 # Dans redis-cli : sélectionner la base 0
 select 0
 
-# Créer puis lire une clé de test (modifie la base Redis ; laboratoire uniquement)
+# Dans redis-cli : SET crée ou écrase une clé ; réserver cette modification à une base de laboratoire
 set mykey myvalue
 get mykey
 
-# Afficher les paramètres de configuration accessibles
+# Dans redis-cli : CONFIG GET affiche uniquement les paramètres autorisés par les ACL
 config get '*'
 # Ne pas lancer SHUTDOWN : cette commande arrête le serveur Redis.
 
@@ -2665,15 +2665,15 @@ help
 
 ```
 
-<p class="oscp-command-note">Service TCP inconnu : envoyer deux lignes de test ou une commande documentée via Netcat ; aucun fichier n'est créé.</p>
+<p class="oscp-command-note">Port TCP inconnu : n'envoyer du texte avec Netcat qu'après identification du protocole ; les exemples ne conviennent pas aux protocoles binaires.</p>
 
 ```bash
-# Exemple de protocole texte : envoyer des identifiants de test uniquement si le service attend deux lignes
+# Protocole texte uniquement : transmettre deux lignes de test si ce format est documenté
 # Définir les variables UTILISATEUR, MOT_DE_PASSE, IP_CIBLE et PORT_TCP avant exécution.
 printf '%s\n%s\n' "$UTILISATEUR" "$MOT_DE_PASSE" | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 # Si le service fournit des options de commande ou aide à la sortie, utilisez-les pour guider d'autres actions
-# La commande list n’est qu’un exemple : consulter d’abord la documentation du protocole
+# Ne transmettre list que si cette commande existe dans le protocole identifié
 printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 ```
