@@ -1,4 +1,4 @@
-# Lab — User Impersonation
+# Lab — User Impersonation (usurpation d’identité)
 
 > **Objectif :** récupérer le TGT d’un utilisateur depuis sa session de logon active et effectuer une impersonation pour accéder à ses ressources distantes sans connaître son mot de passe.
 
@@ -132,17 +132,17 @@ L’impersonation par token/ticket évite le cracking de hashes dans ce scénari
 
 | Objectif | Technique | Mot de passe en clair requis ? |
 |------|-----------|-----------------|
-| Lateral Movement | `steal_token` + `jump winrm64` | No |
-| Lateral Movement | `make_token` + `kerberos_ticket_use` + `jump winrm64` | No — fake pass works |
-| Lateral Movement NTLM | `pth` | NTLM hash only — no plaintext |
-| Reconnaissance domaine | `ldapsearch` BOF | No |
-| Accès au partage distant | stolen TGT + `kerberos_ticket_use` | No |
+| Lateral Movement | `steal_token` + `jump winrm64` | Non |
+| Lateral Movement | `make_token` + `kerberos_ticket_use` + `jump winrm64` | Non — mot de passe fictif dans le contexte du lab |
+| Lateral Movement NTLM | `pth` | Hash NTLM uniquement, pas de mot de passe en clair |
+| Reconnaissance domaine | `ldapsearch` BOF | Non |
+| Accès au partage distant | TGT récupéré + `kerberos_ticket_use` | Non |
 
 **Cas où un mot de passe en clair est nécessaire :**
 - RDP avec authentification par mot de passe (rare dans ce lab).
 - Credential spraying si aucun ticket n’est disponible.
 
-**Workflow d’examen :** `steal_token` → `jump winrm64` → new beacon as impersonated user. Token/ticket impersonation is always faster and stealthier than waiting on hashcat.
+**Déroulement illustré :** `steal_token` → `jump winrm64` → nouveau Beacon sous l’identité utilisée. L’impersonation de token ou de ticket est présentée ici comme une alternative au cassage de hash, selon les droits disponibles.
 
 ---
 
@@ -175,15 +175,15 @@ beacon> jump winrm64 lon-ws-1 smb
 
 | Propriété | Détail |
 |----------|--------|
-| Mécanisme | WinRM executes shellcode, injects into `wsmprovhost.exe` |
+| Mécanisme | WinRM exécute le payload dans le contexte de `wsmprovhost.exe` |
 | Service créé | Non |
-| Event 7045 | No |
-| Event 4648 | No (if steal_token used) |
+| Événement 7045 | Non |
+| Événement 4648 | Non dans le scénario `steal_token` décrit |
 | Écriture disque | Non |
 | Child process sur la source | Non |
 
 **Observations EDR (lab du 19/04/2026) :**
-`jump winrm64` generates the SMB beacon payload on-the-fly. Elastic Endpoint may kill it on first attempt (`ERROR_FILE_NOT_FOUND`). **Always retry once before falling down** — Elastic has a scan latency window and the second attempt often succeeds within 10–15 seconds of the first.
+Dans les observations du lab, `jump winrm64` génère le payload SMB lors de l’exécution. Elastic Endpoint aurait interrompu une première tentative (`ERROR_FILE_NOT_FOUND`), tandis qu’une seconde tentative aurait réussi. Ce résultat ponctuel ne garantit pas un comportement reproductible.
 
 ```
 Attempt 1 → ERROR_FILE_NOT_FOUND  (Elastic killed beacon before pipe created)
@@ -191,7 +191,7 @@ Wait 10-15 seconds
 Attempt 2 → established link      (payload executed inside EDR scan window gap)
 ```
 
-Only fall to Method `scshell64` if two consecutive attempts both return `ERROR_FILE_NOT_FOUND`.
+Dans ce lab, `scshell64` figure comme une méthode alternative lorsque la méthode WinRM ne fonctionne pas.
 
 ---
 
@@ -210,49 +210,49 @@ beacon> rev2self
 
 | Propriété | Détail |
 |----------|--------|
-| Mécanisme | Modifies existing service `ImagePath` via SCM RPC — runs payload as SYSTEM |
-| Service created | No (modifies existing) |
-| Event 7045 | No |
-| Event 7040 | **Yes** — service config changed |
+| Mécanisme | Modifie l’`ImagePath` d’un service existant via SCM RPC ; exécution sous SYSTEM dans le lab |
+| Service créé | Non, modification d’un service existant |
+| Événement 7045 | Non |
+| Événement 7040 | **Oui** — modification de la configuration du service |
 | Écriture disque | Non |
 | Prérequis | Administrateur local sur la cible |
 
-> SCShell restores the original service path after execution — Event 7040 fires twice (change + restore). Less noisy than psexec but still visible to a tuned SIEM.
+> SCShell restaure le chemin du service après l’exécution. L’événement 7040 peut alors être enregistré lors de la modification et du rétablissement. Ces opérations restent visibles dans les journaux.
 
 ---
 
 
 ### Comportement observé d’Elastic Endpoint (19/04/2026)
 
-**All hosts confirmed running:** `elastic-agent.exe`, `elastic-endpoint.exe`, `MsMpEng.exe`, `Sysmon64.exe`
+**Processus observés sur les hôtes du lab :** `elastic-agent.exe`, `elastic-endpoint.exe`, `MsMpEng.exe`, `Sysmon64.exe`
 
 **Résultats winrm64 — Lab Unconstrained Delegation :**
-- Source beacon died after `jump winrm64` — Elastic had already tracked/flagged the beacon process in that lab instance
-- Likely cause: beacon was already an active detection target before the jump — fresh lab instances behave differently
-- Not a reliable indicator of winrm64 capability — environment state matters
+- Le Beacon source s’est arrêté après `jump winrm64` ; Elastic surveillait déjà le processus Beacon dans cette instance.
+- Hypothèse mentionnée dans les notes : le Beacon était déjà surveillé avant le Jump. Le résultat dépend de l’état de l’instance.
+- Il ne s’agit pas d’une mesure fiable des capacités de WinRM : l’état de l’environnement influe sur le résultat.
 
 **Résultats winrm64 — Lab Constrained Delegation (instance neuve) :**
-- Attempt 1 with `smb` (TSVCPIPE-*) → `ERROR_FILE_NOT_FOUND` — Elastic kills beacon on lon-fs-1 before pipe created
-- Attempt 2 (13s later) with `smb` → `[+] established link` — **succeeded** via scan latency gap
-- `smb_custom` (mojo pipe) → `[+] established link` **first attempt** — may be pipe name effect, may be fresh Elastic state
-- Conclusion: **retry winrm64 once before falling to scshell64** — timing/environment state is a factor
+- Tentative 1 avec `smb` (TSVCPIPE-*) : `ERROR_FILE_NOT_FOUND` ; dans le lab, Elastic a interrompu le Beacon avant la création de la named pipe.
+- Tentative 2 (13 secondes plus tard) avec `smb` : `[+] established link` ; succès observé dans cette instance.
+- `smb_custom` : `[+] established link` dès la première tentative ; la cause exacte n’a pas été déterminée.
+- Conclusion de ces observations : le résultat varie selon l’état et le timing de l’environnement ; il ne constitue pas une règle générale.
 
 **Résultats scshell64 :**
 - `ak-settings spawnto_x64 C:\Windows\System32\svchost.exe` required first
-- Payload binary (`evil59.exe`) written to `\\target\C$\Windows\System32\` — transient, auto-deleted
-- `defragsvc` service path modified (Event 7040 × 2) — restored after execution
-- Beacon established **first attempt in both lab instances** — most reliable delivery method observed
-- OPSEC cost: Event 7040 × 2, brief disk write to System32
+- Le binaire `evil59.exe` a été écrit temporairement dans `\\target\C$\Windows\System32\`, puis supprimé automatiquement.
+- Le chemin du service `defragsvc` a été modifié puis restauré (événement 7040 observé deux fois).
+- Le Beacon a été établi dès la première tentative dans les deux instances observées. Ce résultat reste propre aux tests rapportés.
+- Impact OPSEC observé : deux événements 7040 et une écriture temporaire dans System32.
 
-**Conclusion sur la méthode d’authentification :** `steal_token` required for WinRM auth — uses real Kerberos TGT from the target process token. `make_token` without `kerberos_ticket_use` = `ERROR_LOGON_FAILURE` — WinRM rejects fake credentials. Never use `make_token` alone for WinRM lateral movement.
+**Conclusion sur la méthode d’authentification :** Dans les essais du lab, `steal_token` permettait l’authentification WinRM avec le contexte du processus ciblé. `make_token` seul, sans ticket Kerberos adapté, provoquait `ERROR_LOGON_FAILURE`.
 
-**Conclusion sur les named pipes :** Pipe name is NOT the primary Elastic detection vector — payload content in memory is. However, custom pipe names are still required for exam OPSEC score (examiner reviews artifacts) and to avoid MDI/threat hunting detections on `TSVCPIPE-*`. See pipe name guidance below.
+**Conclusion sur les named pipes :** Les observations du lab suggèrent que le contenu du payload en mémoire joue un rôle plus important que le seul nom de la named pipe. L’évaluation OPSEC peut néanmoins tenir compte des artefacts réseau et des noms utilisés.
 
 ---
 
 ### Named Pipes SMB Listener — Examen
 
-**Do NOT use `mojo.5688.8052.183894939787088877`** — this specific value has been documented in threat intelligence reports since 2019 (FalconForce, Red Canary, Elastic detection rules). It is as signatured as `TSVCPIPE-*` in modern detection tooling.
+**Attention au nom `mojo.5688.8052.183894939787088877` :** il est présenté dans ces notes comme un indicateur connu de Cobalt Strike, au même titre que le préfixe `TSVCPIPE-*`. Cette affirmation mérite une vérification dans les sources de détection.
 
 **Éviter ces noms : ce sont des IOCs Cobalt Strike documentés :**
 ```
@@ -263,7 +263,7 @@ postex_*         ← CS default
 MSSE-*-server    ← CS default
 ```
 
-**Use on exam day — blends with legitimate Windows/application pipes:**
+**Exemples de noms de named pipes cités dans les notes :**
 
 ```
 CS → Listeners → Add (SMB) → Pipename field:
@@ -280,6 +280,6 @@ Option 3 — Windows service pipe pattern:
   ntsvcs-########
 ```
 
-> `#` is a CS wildcard — replaced with a random hex digit when the listener is created. Use this format so your pipe name is unique each exam session and never matches a documented IOC list.
+> Dans Cobalt Strike, `#` sert de caractère générique remplacé lors de la création du listener. La valeur produite dépend du modèle choisi.
 
-Your malleable profile already sets `post-ex.pipename "dotnet-diagnostic-#####, ########-####-####-####-############"` — use `dotnet-diagnostic-#####` for the SMB listener too, so all CS named pipes follow the same pattern and blend together as .NET runtime diagnostic pipes.
+Le Malleable C2 Profile mentionné dans le lab définit `post-ex.pipename "dotnet-diagnostic-#####, ########-####-####-####-############"`. Vérifier la cohérence de cette configuration avec les règles de l’environnement de formation.
