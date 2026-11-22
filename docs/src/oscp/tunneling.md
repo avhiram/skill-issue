@@ -239,12 +239,14 @@ Un *listener* ouvre un port TCP sur **l'agent sélectionné** et relaie les conn
 
 ### Héberger le fichier sur Kali
 
-Sur Kali, servir le dossier local uniquement sur `127.0.0.1:8000`. Le listener Ligolo rend ce service accessible via l'adresse réseau du pivot ; le serveur HTTP Python ne permet pas l'envoi de fichiers vers Kali.
+Placer d'abord le fichier à partager dans `./partage/` sur Kali. Sur Kali, servir le dossier local uniquement sur `127.0.0.1:8000`. Le listener Ligolo rend ce service accessible via l'adresse réseau du pivot ; le serveur HTTP Python ne permet pas l'envoi de fichiers vers Kali.
 
 <p class="oscp-command-note">Sur Kali: terminal Linux séparé.</p>
 
 ```bash
 mkdir -p ./partage
+# Vérifier que le fichier attendu se trouve dans ce répertoire
+ls -l ./partage/outil.txt
 python3 -m http.server 8000 --bind 127.0.0.1 --directory ./partage
 ```
 
@@ -273,11 +275,11 @@ Pour **envoyer un fichier vers Kali**, `python3 -m http.server` ne suffit pas (p
 
 ## Chisel : autre solution de pivot
 
-**Chisel** transporte des redirections TCP et un proxy SOCKS via une connexion client/serveur HTTP encapsulée dans un tunnel chiffré lorsqu'il est configuré en conséquence. Contrairement au tunnel TUN de Ligolo, il peut nécessiter ProxyChains pour les outils qui ne prennent pas en charge SOCKS.
+**Chisel** transporte des redirections TCP et un proxy SOCKS via une connexion client/serveur HTTP ou WebSocket. Le chiffrement TLS dépend de la configuration de connexion : l'exemple `10.10.14.10:8001` ci-dessous ne doit pas être présenté comme une connexion HTTPS chiffrée. Contrairement au tunnel TUN de Ligolo, il peut nécessiter ProxyChains pour les outils qui ne prennent pas en charge SOCKS.
 
 ### Démarrer Chisel en mode reverse
 
-Le serveur Chisel de Kali écoute sur TCP `8001` et autorise les redirections inverses demandées par le client distant. Vérifier que ce port est joignable depuis le pivot et limiter l'exposition du serveur au réseau de laboratoire.
+Vérifier la version et la présence du binaire `chisel` sur Kali et `chisel.exe` sur Windows. Le serveur Chisel de Kali écoute sur TCP `8001` et autorise les redirections inverses demandées par le client distant. Vérifier que ce port est joignable depuis le pivot et limiter l'exposition du serveur au réseau de laboratoire.
 
 <p class="oscp-command-note">Sur Kali: serveur Chisel.</p>
 
@@ -287,7 +289,7 @@ chisel server --port 8001 --reverse
 
 ### Rediriger un port interne vers Kali
 
-Le client Chisel sur Windows demande l'ouverture du port `8080` **sur Kali**, relayé vers `127.0.0.1:80` **sur le pivot Windows**. Le service distant doit écouter sur ce port et la session Chisel doit rester ouverte.
+Ne pas utiliser simultanément les deux exemples Chisel si le port `8080` est déjà occupé sur Kali. Le client Chisel sur Windows demande l'ouverture du port `8080` **sur Kali**, relayé vers `127.0.0.1:80` **sur le pivot Windows**. Le service distant doit écouter sur ce port et la session Chisel doit rester ouverte.
 
 <p class="oscp-command-note">Sur le pivot Windows: client Chisel.</p>
 
@@ -307,7 +309,7 @@ curl -I http://127.0.0.1:8080/
 
 ### Créer un proxy SOCKS inversé
 
-Avec `R:1080:socks`, le serveur Chisel expose un proxy SOCKS sur le port `1080` côté Kali, qui utilise la connexion du client Windows pour atteindre le réseau du pivot. Garder les deux processus actifs.
+Le port `1080` doit être libre sur Kali ; une connexion à ce proxy peut accéder aux ressources réseau visibles depuis le pivot Windows. Avec `R:1080:socks`, le serveur Chisel expose un proxy SOCKS sur le port `1080` côté Kali, qui utilise la connexion du client Windows pour atteindre le réseau du pivot. Garder les deux processus actifs.
 
 <p class="oscp-command-note">Sur le pivot Windows: client Chisel.</p>
 
@@ -317,7 +319,7 @@ Avec `R:1080:socks`, le serveur Chisel expose un proxy SOCKS sur le port `1080` 
 
 ### Tester un site interne via SOCKS
 
-Avec `curl --socks5-hostname`, les noms DNS éventuels sont résolus via le proxy SOCKS ; l'IP `172.16.20.10` n'exige pas de résolution. Vérifier que le proxy local `127.0.0.1:1080` écoute sur Kali.
+Tester d'abord un service HTTP réellement accessible depuis le pivot, plutôt que supposer que l'hôte fictif répond. Avec `curl --socks5-hostname`, les noms DNS éventuels sont résolus via le proxy SOCKS ; l'IP `172.16.20.10` n'exige pas de résolution. Vérifier que le proxy local `127.0.0.1:1080` écoute sur Kali.
 
 <p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
@@ -333,7 +335,7 @@ curl --socks5-hostname 127.0.0.1:1080 -I http://172.16.20.10/
 
 ### Redirection SSH locale
 
-Sur Kali, `-L` écoute localement sur `127.0.0.1:8080`. Le serveur SSH du pivot tente ensuite la connexion à `172.16.20.10:80` ; ce service doit être accessible **depuis le pivot**.
+Le compte `etudiant` doit être autorisé à ouvrir une session SSH et le serveur doit autoriser la redirection TCP (`AllowTcpForwarding`). Sur Kali, `-L` écoute localement sur `127.0.0.1:8080`. Le serveur SSH du pivot tente ensuite la connexion à `172.16.20.10:80` ; ce service doit être accessible **depuis le pivot**.
 
 <p class="oscp-command-note">Sur Kali: le serveur SSH a accès au service interne.</p>
 
@@ -343,7 +345,7 @@ ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
 
 ### Proxy SOCKS par SSH
 
-Sur Kali, `ssh -D` ouvre un proxy SOCKS sur `127.0.0.1:9050` via le compte SSH du pivot. Conserver la session ouverte et configurer l'outil client pour utiliser ce proxy.
+Le port `9050` doit être libre sur Kali ; le serveur SSH doit autoriser les redirections TCP. Sur Kali, `ssh -D` ouvre un proxy SOCKS sur `127.0.0.1:9050` via le compte SSH du pivot. Conserver la session ouverte et configurer l'outil client pour utiliser ce proxy.
 
 <p class="oscp-command-note">Sur Kali: accès SSH à un pivot.</p>
 
@@ -353,7 +355,7 @@ ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
 
 ### Routage réseau avec sshuttle
 
-`sshuttle` redirige principalement les connexions TCP du sous-réseau vers le pivot SSH ; ce n'est pas un VPN de niveau IP et il ne transporte pas automatiquement tous les protocoles, notamment les scans SYN bruts.
+Installer `sshuttle` sur Kali, disposer d'un compte SSH fonctionnel et vérifier que le serveur distant peut joindre le sous-réseau demandé. `sshuttle` redirige principalement les connexions TCP du sous-réseau vers le pivot SSH ; ce n'est pas un VPN de niveau IP et il ne transporte pas automatiquement tous les protocoles, notamment les scans SYN bruts.
 
 <p class="oscp-command-note">Sur Kali: sshuttle et SSH accessibles.</p>
 
@@ -367,7 +369,7 @@ Le tunnel DNS dnscat2 est un exemple avancé réservé à un laboratoire où les
 
 ### Démarrer le serveur dnscat2
 
-Utiliser un domaine DNS réellement contrôlé par le laboratoire, avec les enregistrements nécessaires pour joindre le serveur, et un secret partagé.
+Vérifier le nom du binaire installé et la configuration du serveur DNS du laboratoire avant d'utiliser cet exemple. Utiliser un domaine DNS réellement contrôlé par le laboratoire, avec les enregistrements nécessaires pour joindre le serveur, et un secret partagé.
 
 <p class="oscp-command-note">Sur la machine Linux qui héberge le serveur DNS contrôlé.</p>
 
@@ -377,7 +379,7 @@ dnscat2-server laboratoire.example --secret 'SecretDeTest'
 
 ### Connecter un client dnscat2
 
-Le client doit utiliser le même domaine et le même secret que le serveur ; vérifier la délégation et l'accès DNS avant le test.
+Le client doit pouvoir émettre des requêtes DNS vers l'infrastructure contrôlée du laboratoire. Le client doit utiliser le même domaine et le même secret que le serveur ; vérifier la délégation et l'accès DNS avant le test.
 
 <p class="oscp-command-note">Sur le client Linux de laboratoire.</p>
 
@@ -391,14 +393,14 @@ Les noms de binaires et les options dnscat2 dépendent de la version compilée o
 
 | Symptôme | Cause à vérifier |
 |---|---|
-| L'agent n'apparaît pas | Proxy démarré, IP Kali correcte, TCP 11601 joignable et empreinte TLS valide ? |
+| L'agent n'apparaît pas | Proxy démarré, IP Kali correcte, TCP 11601 joignable depuis le pivot, version compatible et empreinte TLS valide ? |
 | Empreinte TLS refusée | Relever `certificate_fingerprint` sur le proxy actif et recopier l'empreinte sans erreur dans l'agent |
 | `no such device` / TUN absent | Vérifier `ip -br link show ligolo` sur Kali ; créer ou sélectionner l'interface TUN appropriée |
 | `RTNETLINK answers: File exists` | Une interface ou une route existe déjà ; vérifier `ip -br link` et `ip route` avant toute modification |
 | Tunnel lancé mais réseau inaccessible | Contrôler la session sélectionnée, le sous-réseau de l'agent, la route Kali et les pare-feu |
-| Second agent non connecté | Vérifier le listener TCP sur pivot A, son IP interne et l'accès depuis pivot B à `11602` |
+| Second agent non connecté | Vérifier que le premier tunnel est actif, que le listener écoute sur le pivot A, et que le pivot B atteint l'IP interne de A sur TCP 11602 |
 | Service sur `127.0.0.1` de l'agent inaccessible | Router `240.0.0.1/32` vers la bonne TUN et vérifier que le service écoute sur l'agent |
-| Port redirigé muet | Vérifier le service sur Kali, le port `--to`, le port `--addr` sur l'agent et le pare-feu |
+| Port redirigé muet | Vérifier que le service écoute côté Kali, que `--to` cible le bon port, que `--addr` écoute sur l'agent sélectionné et que les pare-feu autorisent le trafic |
 
 ## Arrêter et nettoyer
 
