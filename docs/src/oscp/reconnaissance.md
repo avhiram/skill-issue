@@ -149,12 +149,9 @@ nmap --top-ports 100 192.0.2.10
 
 Vérifier les ports et les services de la cible autorisée.
 
-**Paramètres et repères :**
-`-sU` (scan UDP)  
-
 **Scan combiné TCP SYN et UDP (`-sS -sU`)**
 
-<p class="oscp-command-note">Nmap : combiner SYN TCP et UDP sur les ports par défaut ; sudo permet l'envoi de paquets bruts.</p>
+<p class="oscp-command-note">Nmap : scanner les ports TCP SYN et UDP avec `sudo`.</p>
 
 ```bash
 sudo nmap -sU -sS <IP_CIBLE>
@@ -167,18 +164,12 @@ sudo nmap -sU --top-ports 500 -T3 <IP_CIBLE>
 
 ```
 
-**Paramètres et repères :**
-`-sT` (TCP connect)  
-
 **Connexion TCP complète (TCP Connect, -sT)**
 
 ```bash
 nmap -sT <IP_CIBLE>
 
 ```
-
-**Paramètres et repères :**
-`-sS` (SYN)  
 
 **Scan TCP SYN (`-sS`, nécessite des privilèges de paquets bruts)**
 
@@ -194,12 +185,9 @@ nmap -p 445 192.0.2.10
 
 ```
 
-**Paramètres et repères :**
-`-sn` (découverte d'hôtes)  
-
 **Découverte d'hôtes sans scan de ports (`-sn`)**
 
-<p class="oscp-command-note">Nmap -sn : rechercher les hôtes répondant aux sondes de découverte, sans scanner leurs ports.</p>
+<p class="oscp-command-note">Nmap : rechercher les hôtes actifs sans scanner les ports.</p>
 
 ```bash
 nmap -sn 192.0.2.0/24
@@ -208,26 +196,20 @@ nmap -sn 192.0.2.0/24
 
 **Scanner les 20 ports TCP les plus fréquents**
 
-<p class="oscp-command-note">Nmap : scanner les 20 ports les plus fréquents selon la base nmap-services.</p>
+<p class="oscp-command-note">Nmap : scanner les 20 ports les plus courants.</p>
 
 ```bash
 nmap --top-ports 20 <IP_CIBLE>
 
 ```
 
-**Paramètres et repères :**
-`/usr/share/nmap/nmap-services`  
-
 #### Identifier le système d’exploitation et les services
 
 Vérifier les ports et les services de la cible autorisée.
 
-**Paramètres et repères :**
-`-O` (détection du système)  
-
 **Détection du système d'exploitation (`-O`)**
 
-<p class="oscp-command-note">Nmap -O : tenter d'identifier le système d'exploitation par empreinte réseau.</p>
+<p class="oscp-command-note">Nmap : estimer le système d'exploitation de la cible.</p>
 
 ```bash
 sudo nmap -O <IP_CIBLE>
@@ -241,12 +223,9 @@ sudo nmap -O --osscan-guess <IP_CIBLE>
 
 ```
 
-**Paramètres et repères :**
-`-sV` (versions de service)  
-
 **Identifier les versions des services (`-sV`)**
 
-<p class="oscp-command-note">Nmap -sV : interroger les services détectés pour estimer leur produit et leur version.</p>
+<p class="oscp-command-note">Nmap : identifier les services et leurs versions.</p>
 
 ```bash
 nmap -sV 192.0.2.10
@@ -255,7 +234,7 @@ nmap -sV 192.0.2.10
 
 **Détection avancée des services, de l'OS et du chemin réseau (`-A`)**
 
-<p class="oscp-command-note">Nmap -A : regrouper détection d'OS, versions, scripts NSE et traceroute.</p>
+<p class="oscp-command-note">Nmap : détecter OS, versions, scripts NSE et traceroute.</p>
 
 ```bash
 sudo nmap -A <IP_CIBLE>
@@ -268,9 +247,6 @@ sudo nmap -A <IP_CIBLE>
 #### Enregistrer et exploiter les résultats Nmap
 
 Conserver les résultats de découverte puis extraire les adresses des hôtes détectés.
-
-**Paramètres et repères :**
-`-oG` (sortie grepable)  
 
 **Découverte d'hôtes avec sortie grepable (-oG)**
 
@@ -286,7 +262,7 @@ nmap -v -sn <RESEAU_CIDR> -oG decouverte.gnmap
 
 **Extraire les adresses IP des lignes « Status: Up » du fichier `.gnmap`**
 
-<p class="oscp-command-note">AWK : extraire la deuxième colonne des lignes Host marquées Up dans la sortie grepable Nmap.</p>
+<p class="oscp-command-note">AWK : extraire les IP des hôtes actifs du fichier `.gnmap`.</p>
 
 ```bash
 awk '/^Host: / && /Status: Up/{print $2}' decouverte.gnmap
