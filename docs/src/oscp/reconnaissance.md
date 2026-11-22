@@ -2281,14 +2281,14 @@ hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 
 ```
 
-<p class="oscp-command-note">Interroger une base de données MySQL.</p>
+<p class="oscp-command-note">MySQL : ouvrir une session interactive sur une base existante ; le client demande le mot de passe avec -p.</p>
 
 ```bash
 mysql -h <IP_CIBLE> -u <UTILISATEUR> -p <BASE_DE_DONNEES>
 
 ```
 
-<p class="oscp-command-note">MySQL : lister les bases, sélectionner une base et consulter ses tables avec un compte autorisé.</p>
+<p class="oscp-command-note">Dans le client MySQL : lister les bases, sélectionner une base puis consulter les tables autorisées.</p>
 
 ```sql
 SHOW DATABASES;
@@ -2307,18 +2307,17 @@ SELECT * FROM <table_name>;
 -- Lister les comptes MySQL visibles avec les privilèges du compte connecté
 SELECT user FROM mysql.user;
 
--- Modification des privilèges : opération administrative sensible, non nécessaire à l'énumération
-GRANT ALL PRIVILEGES ON *.* TO '<username>'@'%' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
+-- Pour consulter les privilèges sans les modifier :
+SHOW GRANTS FOR CURRENT_USER;
 
 ```
 
-```powershell
-# Exemple historique LOAD_FILE / INTO DUMPFILE : nécessite FILE, dépend de secure_file_priv et du système de fichiers
-SELECT LOAD_FILE('C:\\xampp\htdocs\\ncat.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
+```sql
+-- LOAD_FILE lit un fichier côté serveur si les droits FILE et secure_file_priv le permettent
+SELECT LOAD_FILE('C:/xampp/htdocs/ncat.exe');
 
-# La commande icacls ci-dessous doit être exécutée dans Windows CMD, pas dans le client SQL
-icacls 'C:\\xampp\htdocs\nc.exe'
+# Windows CMD, hors du client SQL : consulter les ACL d'un fichier existant
+icacls "C:\\xampp\\htdocs\\ncat.exe"
 
 # Exemple de sortie ACL Windows : les droits affichés ne prouvent pas que le compte SQL est administrateur.
 nc.exe WinServer\\apache:(I)(F)  
@@ -2331,7 +2330,7 @@ Successfully processed 1 files; Failed processing 0 files
 
 ### 3389: RDP
 
-<p class="oscp-command-note">Nmap RDP : relever les modes de chiffrement et les informations NTLM ; le script ms12-020 n'est pas lancé.</p>
+<p class="oscp-command-note">Nmap RDP : identifier les mécanismes de sécurité RDP et les informations NTLM exposées ; aucun test MS12-020.</p>
 
 ```bash
 nmap -sV -p 3389 --script rdp-enum-encryption,rdp-ntlm-info <IP_CIBLE>
@@ -2356,7 +2355,7 @@ nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">RDP : ouvrir une session avec FreeRDP ou rdesktop et, si nécessaire, partager un dossier local.</p>
+<p class="oscp-command-note">Linux RDP : utiliser FreeRDP pour une session graphique et un partage de dossier local ; rdesktop est une alternative historique.</p>
 
 ```bash
 # FreeRDP 2.x : ouvrir une session RDP ; vérifier le binaire disponible (xfreerdp ou xfreerdp3)
@@ -2368,8 +2367,8 @@ xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore /drive:partage,/home/kali/par
 # Activer le presse-papiers et régler la résolution (FreeRDP 2.x)
 xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore +clipboard /size:1920x1080
 
-# Alternative historique : rdesktop ; le mot de passe en argument est visible dans la liste des processus
-rdesktop -u $USER -p $PASSWORD -g 1920x1080 <ip>
+# Alternative historique : rdesktop ; éviter -p pour ne pas exposer le mot de passe dans les processus
+rdesktop -u utilisateur -g 1920x1080 <IP_CIBLE>
 
 # Ouvrir rdesktop et saisir les identifiants lorsque le serveur le demande
 rdesktop <ip>
@@ -2404,7 +2403,7 @@ hydra -L utilisateurs.txt -P mots_de_passe.txt -s 5432 192.0.2.10 postgres
 
 ```
 
-<p class="oscp-command-note">PostgreSQL : se connecter avec psql et afficher les bases accessibles.</p>
+<p class="oscp-command-note">PostgreSQL : lancer psql depuis Linux puis utiliser la méta-commande \\l pour lister les bases visibles.</p>
 
 ```bash
 psql -h <IP_CIBLE> -U <UTILISATEUR> -d postgres -c '\l'
@@ -2446,43 +2445,45 @@ DROP TABLE IF EXISTS cmd_exec;
 
 ```
 
-<p class="oscp-command-note">PostgreSQL : commandes interactives psql et requêtes SQL ; saisir les méta-commandes dans psql.</p>
+<p class="oscp-command-note">Dans psql uniquement : les commandes commençant par une barre oblique inverse sont des méta-commandes ; SELECT est du SQL.</p>
 
-```sql
--- Dans l'invite psql : lister les bases de données
+```text
+# Dans l'invite psql : lister les bases de données
 \l
 
--- Dans psql : basculer vers une base de données existante
+\c postgres
+
+# Dans psql : basculer vers une autre base existante
 \c <DB_NAME>
 
--- Dans psql : lister les tables visibles du schéma courant
+# Dans psql : lister les tables visibles du schéma courant
 \dt
 
--- Dans psql : afficher les colonnes et les types d'une table
+# Dans psql : afficher les colonnes et les types d'une table
 \d <TABLE_NAME>
 
--- Requête SQL : lire les lignes d'une table autorisée
+# Requête SQL : lire les lignes d'une table autorisée
 SELECT * FROM <TABLE_NAME>;
 
--- Afficher les colonnes, types et informations supplémentaires d'une table
+# Afficher les colonnes, types et informations supplémentaires d'une table
 \d+ <TABLE_NAME>
 
--- Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
+# Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
 SELECT * FROM users WHERE attribute = 'value';
 
--- Interroger information_schema pour obtenir les colonnes du schéma public
+# Interroger information_schema pour obtenir les colonnes du schéma public
 SELECT table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_schema = 'public';
 
--- Créer une table de démonstration (modifie la base ; laboratoire uniquement)
+# Créer une table de démonstration (modifie la base ; laboratoire uniquement)
 CREATE TABLE test_table (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insérer une ligne dans la table de démonstration
+# Insérer une ligne dans la table de démonstration
 INSERT INTO test_table (name) VALUES ('example_data');
 
 -- Modifier des données existantes (requête d'écriture ; vérifier WHERE)
