@@ -1130,7 +1130,7 @@ impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
 
 ```bash
 john --wordlist=<wordlist> <ticket_file>
-# or
+# Ou
 hashcat -m 13100 <ticket_file> <wordlist>
 
 ```
@@ -1154,7 +1154,7 @@ impacket-GetUserSPNs -dc-ip <dc_ip> -outputfile <tickets_file> <domain>/<usernam
 
 # Casser les mots de passe des tickets extraits avec John the Ripper ou Hashcat
 john --wordlist=<wordlist> <tickets_file>
-# or
+# Ou
 hashcat -m 13100 <tickets_file> <wordlist>
 
 ```
