@@ -2486,10 +2486,10 @@ CREATE TABLE test_table (
 # Insérer une ligne dans la table de démonstration
 INSERT INTO test_table (name) VALUES ('example_data');
 
--- Modifier des données existantes (requête d'écriture ; vérifier WHERE)
+# Modifier des données existantes (requête d'écriture ; vérifier WHERE)
 UPDATE test_table SET name = 'updated_data' WHERE id = 1;
 
--- Supprimer des données existantes (requête destructive ; vérifier WHERE)
+# Supprimer des données existantes (requête destructive ; vérifier WHERE)
 DELETE FROM test_table WHERE id = 1;
 
 ```
