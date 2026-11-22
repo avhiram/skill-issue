@@ -726,121 +726,124 @@ find / \( -perm -o=w -perm -o=x \) -type d 2>/dev/null
 
 ## Examiner les montages et volumes
 
+Comparer les montages actifs aux volumes configurés dans `fstab`.
+
 ```bash
-mount -l
+findmnt
 cat /etc/fstab
 
 ```
 
 ## Fichiers SUID et SGID
 
-Examiner les permissions et la configuration de Linux.
+Identifier les exécutables dotés de bits spéciaux, sans conclure automatiquement à une faille.
 
-### Comprendre les permissions SUID et SGID
+### Effet des bits SUID et SGID
 
-SUID exécute un fichier avec l'UID effectif de son propriétaire ; SGID utilise le GID effectif de son groupe.
+Sur un exécutable, SUID applique l'UID effectif du propriétaire ; SGID applique le GID effectif du groupe. Les systèmes de fichiers `nosuid` peuvent neutraliser ces bits.
 
-### Rechercher les fichiers SUID et SGID
+### Lister les exécutables SUID et SGID
 
-Lister les fichiers avec les bits SUID ou SGID activés.
+Chercher les fichiers réguliers concernés, y compris dans les dossiers où la lecture est autorisée.
 
-<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
+<p class="oscp-command-note">Lister séparément les fichiers SUID et SGID.</p>
 
 ```bash
-# Trouver des fichiers SUID
+# Fichiers SUID
 find / -perm -u=s -type f 2>/dev/null
 
-# Trouver des fichiers SGID
+# Fichiers SGID
 find / -perm -g=s -type f 2>/dev/null
 
 ```
 
-### Évaluer les possibilités d’exploitation
+### Analyser un exécutable SUID
 
-<p class="oscp-command-note">Examiner un binaire SUID : chaînes et appels de bibliothèque (outils disponibles selon la distribution).</p>
+<p class="oscp-command-note">`strings` lit le fichier ; `ltrace` exécute le programme et peut être bloqué sur un binaire SUID.</p>
 
 ```bash
-# Option 1 : rechercher les chaînes lisibles avec strings.
+# Rechercher des chaînes imprimables sans lancer le binaire
 strings /path/to/suid-binary
 
-# Option 2 : observer les appels de bibliothèque (ltrace, si disponible).
+# Tracer les appels de bibliothèque en laboratoire (exécute le binaire)
 ltrace /path/to/suid-binary
 
-# Option 3 : étudier si la résolution d'un exécutable via PATH peut modifier le comportement d'un programme SUID.
-# Créer un exécutable de test pour illustrer le risque de recherche dans PATH
-printf '#!/bin/sh\nexec /bin/sh\n' > /tmp/cp
+# Vérifier si un programme appelle une commande sans chemin absolu.
+# Préparer un exécutable de test dans un environnement isolé
+printf '#!/bin/sh\nprintf "test PATH\\n"\n' > /tmp/cp
 chmod +x /tmp/cp
 
-# Placer le répertoire du binaire de remplacement en priorité dans PATH
-export PATH=/tmp:$PATH
+# Préfixer PATH uniquement pour la commande de test
+PATH=/tmp:$PATH /chemin/vers/programme-de-test
 
-# Exécuter uniquement un programme de laboratoire dont le comportement est connu
-/path/to/suid-program
+# La présence d'un programme dans PATH ne prouve pas une élévation de privilèges.
 
 ```
 
-<p class="oscp-command-note">Repérer les fichiers et dossiers aux permissions sensibles.</p>
+<p class="oscp-command-note">Rechercher les exécutables SUID modifiables par le compte courant.</p>
 
 ```bash
-# Trouver des fichiers enregistrables SUID
+# Fichiers SUID accessibles en écriture
 find / -perm -u=s -writable -type f 2>/dev/null
 
-# Un fichier SUID modifiable est un risque ; l'effet dépend du propriétaire, du montage et du noyau.
+# Vérifier propriétaire, droits réels et options de montage avant de conclure.
 
 ```
 
 ```bash
-# Rechercher des fichiers SUID dans les répertoires cron accessibles
-find /etc/cron* /var/spool/cron/ -perm -u=s -type f 2>/dev/null
+# Vérifier les fichiers SUID dans les répertoires cron (cas inhabituel)
+find /etc/cron* /var/spool/cron/ -type f -perm -u=s 2>/dev/null
 
 ```
 
-#### Lire les dépendances ELF
+#### Inspecter les dépendances ELF
 
-Identifier les bibliothèques déclarées dans un exécutable sans exécuter le programme.
+`readelf -d` lit la section dynamique ; `NEEDED` indique les bibliothèques demandées.
 
-<p class="oscp-command-note">Lire les dépendances ELF.</p>
+<p class="oscp-command-note">Lister les entrées `NEEDED` du binaire ELF.</p>
 
 ```bash
-readelf -d <BINAIRE_ELF> | grep NEEDED
+readelf -d /chemin/vers/binaire | grep NEEDED
 ```
 
-#### Observer les accès aux fichiers d'un programme
+#### Tracer les accès aux fichiers
 
-`strace` exécute le programme observé : l'utiliser seulement sur un binaire de laboratoire connu, pour diagnostiquer les chemins et bibliothèques recherchés.
+`strace` lance réellement le programme. Le traçage d'un exécutable SUID peut modifier son comportement ou être refusé.
 
-<p class="oscp-command-note">Observer les accès aux fichiers d'un programme.</p>
+<p class="oscp-command-note">Observer les accès aux fichiers et les erreurs `ENOENT` en laboratoire.</p>
 
 ```bash
-strace -f -e trace=file <BINAIRE_DE_TEST> 2>&1 | grep -Ei 'ENOENT|openat|access'
+strace -f -e trace=file /chemin/vers/programme-de-test 2>&1 | grep -Ei 'ENOENT|openat|access'
 ```
 
-#### Afficher les chaînes d'un exécutable SUID
+#### Rechercher des chemins dans un binaire
 
-Chercher des références à des chemins et programmes externes sans exécuter le binaire.
+`strings` peut révéler des chemins ou noms de fonctions ; ces indices ne prouvent pas qu'ils sont utilisés.
 
-<p class="oscp-command-note">Rechercher les chemins et fonctions sensibles dans les chaînes d'un binaire SUID.</p>
+<p class="oscp-command-note">Filtrer les chaînes lisibles pour repérer chemins et appels potentiels.</p>
 
 ```bash
-strings <BINAIRE_SUID> | grep -Ei '(/bin/|/usr/|system|exec|sh )'
+strings /chemin/vers/binaire | grep -Ei '(/bin/|/usr/|system|exec|sh )'
 ```
 
 ### LinPEAS
 
+Exécuter le script seulement après avoir vérifié sa provenance et ses permissions.
+
 ```bash
-./linpeas.sh | tee linpeas_output.txt
+bash ./linpeas.sh | tee linpeas_output.txt
 
 ```
 
 <p class="oscp-command-note">Convertir le rapport LinPEAS avec les scripts `peas2json.py`, `json2html.py` et `json2pdf.py` s'ils sont installés.</p>
 
 ```bash
-# Copier le rapport sur la machine d'analyse autorisée.
+# Exécuter les conversions sur la machine d'analyse où les scripts sont installés.
 
-# Convertir le texte en JSON.
+# Transformer le rapport texte en JSON.
 python3 peas2json.py ./linpeas_output.txt peass.json
 
-# Convertir le JSON en HTML.
+# Produire une version HTML du rapport JSON.
 python3 json2html.py peass.json peass.html
 
 # Facultatif : convertir également le rapport au format PDF.
@@ -850,22 +853,26 @@ python3 json2pdf.py peass.json peass.pdf
 
 ### LinEnum
 
+Le script doit être présent localement ; certaines vérifications demandent des droits supplémentaires.
+
 <p class="oscp-command-note">LinEnum : lancer l'inventaire standard ou une recherche approfondie par mot-clé.</p>
 
 ```bash
 ./LinEnum.sh
 
-# Rechercher les mots de passe
+# Chercher les occurrences du mot « password »
 ./LinEnum.sh -t -k password
 
 ```
 
 ```bash
-./LinEnum.sh | tee linenum_output.txt
+bash ./LinEnum.sh | tee linenum_output.txt
 
 ```
 
 ### Unix-privesc-check
+
+Vérifier la compatibilité du script avec la machine cible avant exécution.
 
 ```bash
 ./unix-privesc-check.sh | tee unix_privesc_check_output.txt
@@ -874,6 +881,8 @@ python3 json2pdf.py peass.json peass.pdf
 
 ### Checksec
 
+Outil de contrôle des protections des exécutables, si installé.
+
 ```bash
 checksec --all
 
@@ -881,17 +890,19 @@ checksec --all
 
 ### Peepdf
 
+Analyseur de fichiers PDF, distinct des outils d'élévation de privilèges Linux.
+
 ```bash
 peepdf.py file.pdf
 
 ```
 
-### Outil de recherche de vulnérabilités
+### Recherche de vulnérabilités potentielles
 
-<p class="oscp-command-note">Exécuter le script `exploit-suggester.py` uniquement s'il est présent et compatible avec Python 3.</p>
+<p class="oscp-command-note">Le nom `exploit-suggester.py` ne garantit ni sa provenance ni sa compatibilité ; vérifier son aide avant usage.</p>
 
 ```bash
-python3 exploit-suggester.py
+python3 exploit-suggester.py --help
 
 ```
 
