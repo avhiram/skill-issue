@@ -2417,7 +2417,7 @@ psql -h <IP_CIBLE> -p 5432 -U <UTILISATEUR> -W
 
 ```
 
-<p class="oscp-command-note">PostgreSQL : relever la version du serveur avant de rechercher une vulnérabilité. Ne pas exécuter de script tiers sans avoir vérifié son origine, sa syntaxe et les conditions de la CVE.</p>
+<p class="oscp-command-note">PostgreSQL : afficher la version et le compte connecté.</p>
 
 ```sql
 -- Dans psql : afficher la version exacte du serveur PostgreSQL
@@ -2427,7 +2427,7 @@ SELECT version();
 SELECT current_user, current_database();
 ```
 
-<p class="oscp-command-note">PostgreSQL : `COPY FROM PROGRAM` lance `id` **sur le serveur de base de données**, pas sur Kali. Il exige les privilèges superutilisateur ou l'appartenance au rôle `pg_execute_server_program`. L'exemple supprime une table nommée `cmd_exec` si elle existe : utiliser exclusivement une base de laboratoire dédiée.</p>
+<p class="oscp-command-note">PostgreSQL : exécuter `id` sur le serveur. Droit superutilisateur ou `pg_execute_server_program` requis. Base de test uniquement.</p>
 
 ```sql
 -- Démonstration SQL PostgreSQL : COPY FROM PROGRAM exige des privilèges élevés  
@@ -2441,7 +2441,7 @@ DROP TABLE IF EXISTS cmd_exec;
 
 <p class="oscp-command-note">Dans `psql` : commandes `\l`, `\c`, `\dt` et `\d`, sans point-virgule.</p>
 
-Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` liste les bases, `\c` change de base, `\dt` liste les tables et `\d` décrit une table. Remplacer les noms entre chevrons.
+Dans `psql` : lister les bases, changer de base et décrire les tables. Remplacer les noms d'exemple.
 
 ```text
 \l
@@ -2485,7 +2485,7 @@ DELETE FROM test_table WHERE name = 'updated_data';
 
 ### 5900: VNC (Virtual Network Computing)
 
-<p class="oscp-command-note">Nmap VNC : relever le protocole RFB et les mécanismes d'authentification annoncés sur TCP 5900.</p>
+<p class="oscp-command-note">Nmap : identifier la version VNC et les modes d'authentification.</p>
 
 ```bash
 nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
@@ -2503,14 +2503,14 @@ vncviewer -passwd /chemin/vers/fichier_mot_de_passe <IP_CIBLE>::5900
 
 ```
 
-<p class="oscp-command-note">Hydra VNC : tester une liste de mots de passe dans le laboratoire ; le protocole VNC classique n'utilise pas de nom d'utilisateur.</p>
+<p class="oscp-command-note">Hydra : tester des mots de passe VNC autorisés. Pas de nom d'utilisateur en VNC classique.</p>
 
 ```bash
 hydra -P mots_de_passe.txt vnc://192.0.2.10
 
 ```
 
-<p class="oscp-command-note">VNC : exemples fictifs de mots de passe faibles ; aucune authentification réussie n'est implicite.</p>
+<p class="oscp-command-note">VNC : exemples de mots de passe faibles à reconnaître, pas des identifiants trouvés.</p>
 
 ```text
 # Exemples fictifs de mots de passe faibles ; ne pas les considérer comme des identifiants découverts
@@ -2532,14 +2532,14 @@ vnc
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">WinRM : identifier le service sur les ports habituels HTTP 5985 et HTTPS 5986 avec Nmap. Un port ouvert ne garantit ni une configuration WinRM utilisable ni les permissions de connexion distante.</p>
+<p class="oscp-command-note">WinRM : détecter les services HTTP (5985) et HTTPS (5986).</p>
 
 ```bash
 nmap -sV -p 5985,5986 <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">NetExec WinRM : vérifier l'authentification d'un compte autorisé ; la connexion nécessite un service et des droits adaptés.</p>
+<p class="oscp-command-note">NetExec : vérifier un compte sur WinRM.</p>
 
 ```bash
 nxc winrm 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
@@ -2552,7 +2552,7 @@ Enter-PSSession -ComputerName 192.0.2.10 -Credential (Get-Credential)
 
 ```
 
-<p class="oscp-command-note">Evil-WinRM : ouvrir depuis Kali une session PowerShell distante si le compte possède les droits WinRM requis.</p>
+<p class="oscp-command-note">Evil-WinRM : ouvrir une session PowerShell distante avec un compte autorisé.</p>
 
 ```bash
 # Kali : ouvrir une session WinRM via HTTP/5985 avec Evil-WinRM ; compte et droits adaptés requis
@@ -2574,7 +2574,7 @@ curl -i --max-time 5 http://<IP_CIBLE>:5985/wsman
 
 Tester des identifiants fournis pour l'audit sur une seule cible, sans mot de passe en masse.
 
-<p class="oscp-command-note">NetExec WinRM : tester un compte de domaine fourni pour l'audit ; vérifier les droits de connexion distante séparément.</p>
+<p class="oscp-command-note">NetExec : tester un compte de domaine sur WinRM.</p>
 
 ```bash
 nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
@@ -2589,14 +2589,14 @@ nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Redis : `--askpass` demande un mot de passe interactif et évite de l'exposer dans les arguments du processus. Sans mot de passe configuré, utiliser `redis-cli` sans cette option ; les ACL peuvent aussi exiger un nom d'utilisateur.</p>
+<p class="oscp-command-note">Redis : demander le mot de passe sans l'afficher dans la commande.</p>
 
 ```bash
 redis-cli -h <IP_CIBLE> -p 6379 --askpass
 
 ```
 
-<p class="oscp-command-note">Redis : comparer la version retournée par `INFO server` avec les références trouvées par `searchsploit`. Une référence d'exploit ne prouve pas la vulnérabilité de la cible ; `INFO` peut être interdit par les ACL ou exiger une authentification.</p>
+<p class="oscp-command-note">Redis : relever la version et chercher les vulnérabilités associées. Authentification parfois requise.</p>
 
 ```bash
 # Rechercher des références publiques à examiner en fonction de la version détectée
@@ -2606,13 +2606,13 @@ searchsploit redis
 redis-cli -h <IP_CIBLE> -p 6379 INFO server
 ```
 
-<p class="oscp-command-note">Sur Kali : `redis-cli` ouvre une session interactive sur le service Redis. Sans identifiants, le serveur peut refuser les commandes avec `NOAUTH` ; utiliser alors un compte autorisé.</p>
+<p class="oscp-command-note">Kali : ouvrir le client Redis. Identifiants parfois requis.</p>
 
 ```bash
 redis-cli -h <IP_CIBLE> -p 6379
 ```
 
-<p class="oscp-command-note">Dans l'invite `redis-cli` : `INFO` affiche les informations autorisées ; répéter `SCAN` avec le curseur renvoyé jusqu'à zéro. `SELECT 0` choisit la base 0 (non applicable aux configurations Redis Cluster) ; `CONFIG GET` dépend des ACL. `SET` modifie les données : laboratoire uniquement. Ne pas exécuter `SHUTDOWN`.</p>
+<p class="oscp-command-note">Redis : consulter les informations, parcourir les clés et lire la configuration selon les droits. Répéter `SCAN` jusqu'au curseur `0`.</p>
 
 ```text
 INFO
@@ -2622,7 +2622,7 @@ GET mykey
 CONFIG GET '*'
 ```
 
-<p class="oscp-command-note">Écriture facultative, uniquement dans une base Redis de test : `SET mykey myvalue` crée ou **écrase** la clé `mykey` si elle existe déjà. Vérifier son absence avant le test.</p>
+<p class="oscp-command-note">Redis : créer une clé de test. `SET` écrase une valeur existante.</p>
 
 ```text
 SET mykey myvalue
