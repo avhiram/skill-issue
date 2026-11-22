@@ -21,7 +21,7 @@ Download the installer to your local machine.
 ```
 
 
-<p class="oscp-command-note">Changer de répertoire.</p>
+<p class="oscp-command-note">Se placer dans le répertoire utilisé pour «Nessus».</p>
 
 ```bash
 # Il est important de vérifier l'intégrité du téléchargement avec `sha256sum`.
@@ -57,7 +57,7 @@ sudo systemctl start nessusd.service
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap NSE : lancer un script choisi et afficher sa documentation avec --script-help.</p>
 
 ```bash
 # Exécuter un script précis
@@ -78,7 +78,7 @@ sudo cp /path/to/script.nse /usr/share/nmap/scripts/
 # Actualiser la base de scripts
 sudo nmap --script-updatedb
 
-# Usage example
+# Exemple d'utilisation
 sudo nmap -sV -p 443 --script "http-vuln-cve2021-41773" 192.168.145.23
 
 ```

