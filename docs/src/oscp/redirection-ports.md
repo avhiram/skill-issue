@@ -28,7 +28,7 @@ Vous avez un accès SSH au pivot, qui peut joindre un service interne. **Kali cr
 
 `127.0.0.1:8080` sur Kali redirige vers `172.16.20.10:80` depuis le pivot SSH.
 
-<p class="oscp-command-note">Sur Kali — garder le terminal ouvert.</p>
+<p class="oscp-command-note">Sur Kali: garder le terminal ouvert.</p>
 
 ```bash
 ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
@@ -54,7 +54,7 @@ Le pivot peut joindre Kali par SSH, mais Kali ne peut pas accéder directement a
 
 `127.0.0.1:9090` écoute sur Kali (serveur SSH), puis conduit au `127.0.0.1:80` du pivot.
 
-<p class="oscp-command-note">Sur le pivot — Linux ou Windows avec client SSH.</p>
+<p class="oscp-command-note">Sur le pivot: Linux ou Windows avec client SSH.</p>
 
 ```bash
 ssh -N -R 127.0.0.1:9090:127.0.0.1:80 kali@10.10.14.10
@@ -80,7 +80,7 @@ Cette méthode est utile pour des outils capables d'utiliser SOCKS. **À la diff
 
 Le proxy SOCKS écoute uniquement sur `127.0.0.1:9050` de Kali.
 
-<p class="oscp-command-note">Sur Kali — connexion SSH au pivot.</p>
+<p class="oscp-command-note">Sur Kali: connexion SSH au pivot.</p>
 
 ```bash
 ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
@@ -106,7 +106,7 @@ Socat est pratique lorsqu'un pivot peut joindre le service interne et qu'un port
 
 Le pivot écoute sur TCP `8080` et retransmet vers `172.16.20.10:80`.
 
-<p class="oscp-command-note">Sur le pivot Linux — dans un laboratoire autorisé.</p>
+<p class="oscp-command-note">Sur le pivot Linux: dans un laboratoire autorisé.</p>
 
 ```bash
 socat TCP-LISTEN:8080,bind=0.0.0.0,reuseaddr,fork TCP:172.16.20.10:80
@@ -132,7 +132,7 @@ OpenSSH Client doit être installé sur Windows et Kali doit héberger SSH. Ici,
 
 Le port `9090` est lié à `127.0.0.1` sur Kali. Aucune règle pare-feu entrante Windows n'est nécessaire pour ce port SSH distant.
 
-<p class="oscp-command-note">Sur le pivot Windows — PowerShell.</p>
+<p class="oscp-command-note">Sur le pivot Windows: PowerShell.</p>
 
 ```powershell
 ssh.exe -N -R 127.0.0.1:9090:127.0.0.1:3389 kali@10.10.14.10
@@ -142,7 +142,7 @@ ssh.exe -N -R 127.0.0.1:9090:127.0.0.1:3389 kali@10.10.14.10
 
 Un client RDP peut utiliser le port local. La cible doit autoriser la session RDP et les identifiants utilisés.
 
-<p class="oscp-command-note">Sur Kali — terminal Linux.</p>
+<p class="oscp-command-note">Sur Kali: terminal Linux.</p>
 
 ```bash
 xfreerdp3 /v:127.0.0.1:9090 /u:etudiant /dynamic-resolution
@@ -156,7 +156,7 @@ Plink est l'outil SSH en ligne de commande de PuTTY. Utile si le client OpenSSH 
 
 Conserver la session active. Lors de la première connexion, **vérifier** l'empreinte de la clé SSH du serveur.
 
-<p class="oscp-command-note">Sur Windows — PowerShell ou CMD.</p>
+<p class="oscp-command-note">Sur Windows: PowerShell ou CMD.</p>
 
 ```powershell
 .\plink.exe -ssh -N -R 127.0.0.1:9090:127.0.0.1:3389 kali@10.10.14.10
@@ -172,7 +172,7 @@ Conserver la session active. Lors de la première connexion, **vérifier** l'emp
 
 Le pivot écoute sur `0.0.0.0:8080` et transmet vers `172.16.20.10:80`.
 
-<p class="oscp-command-note">Sur le pivot Windows — PowerShell administrateur.</p>
+<p class="oscp-command-note">Sur le pivot Windows: PowerShell administrateur.</p>
 
 ```powershell
 netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8080 connectaddress=172.16.20.10 connectport=80
@@ -182,7 +182,7 @@ netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8080 conne
 
 Lister les règles et vérifier le port d'écoute.
 
-<p class="oscp-command-note">Sur le même Windows — PowerShell.</p>
+<p class="oscp-command-note">Sur le même Windows: PowerShell.</p>
 
 ```powershell
 netsh interface portproxy show all
@@ -195,7 +195,7 @@ Get-NetTCPConnection -State Listen | Where-Object LocalPort -eq 8080
 
 Supprimer uniquement la redirection créée dans cet exemple.
 
-<p class="oscp-command-note">Sur Windows — PowerShell administrateur.</p>
+<p class="oscp-command-note">Sur Windows: PowerShell administrateur.</p>
 
 ```powershell
 netsh interface portproxy delete v4tov4 listenaddress=0.0.0.0 listenport=8080
@@ -222,8 +222,8 @@ Consulter la [fiche Ligolo-ng pas à pas](./tunneling.md) : tunnel simple, doubl
 
 - [Documentation officielle d'OpenSSH](https://man.openbsd.org/ssh)
 
-- [Microsoft — netsh interface portproxy](https://learn.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-interface-portproxy)
+- [Microsoft: netsh interface portproxy](https://learn.microsoft.com/en-us/windows-server/networking/technologies/netsh/netsh-interface-portproxy)
 
-- [Ligolo-ng — Quickstart](https://docs.ligolo.ng/Quickstart/)
+- [Ligolo-ng: Quickstart](https://docs.ligolo.ng/Quickstart/)
 
-- [krovs — exemples de redirection](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md)
+- [krovs: exemples de redirection](https://github.com/krovs/oscp-notes/blob/main/docs/17_port_red_tun.md)
