@@ -57,7 +57,25 @@ export default defineConfig({
           { text: 'Références', link: '/oscp/references' }
         ]
       },
-      { text: 'CRTO', link: '/crto/', collapsed: true }
+      {
+        text: 'CRTO', link: '/crto/', collapsed: true,
+        items: [
+          { text: 'Notes', items: [
+            { text: 'Windows et contexte de sécurité', link: '/crto/notes/windows' },
+            { text: 'Kerberos et Active Directory', link: '/crto/notes/kerberos' },
+            { text: 'Cobalt Strike et opérations réseau', link: '/crto/notes/cobalt-strike' },
+            { text: 'Identités dans SQL Server', link: '/crto/notes/sql-server' }
+          ] },
+          { text: 'Labs', items: [
+            { text: 'Session Windows', link: '/crto/labs/session-windows' },
+            { text: 'Session SQL', link: '/crto/labs/session-sql' },
+            { text: 'Scénario de délégation', link: '/crto/labs/delegation' }
+          ] },
+          { text: 'Cheatsheets', items: [
+            { text: 'Commandes Windows et SQL', link: '/crto/cheatsheets/identites' }
+          ] }
+        ]
+      }
     ],
     search: {
       provider: 'local',
