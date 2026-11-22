@@ -329,11 +329,11 @@ curl --socks5-hostname 127.0.0.1:1080 -I http://172.16.20.10/
 
 ## SSH : alternative simple avec un compte valide
 
-**Quand utiliser SSH ?** Lorsque le pivot possède déjà un serveur SSH et que vous avez des identifiants autorisés. Pour les transferts de fichiers, utiliser [SCP](./transferts.md).
+**Quand utiliser SSH ?** Si le pivot dispose d'un serveur SSH accessible et d'un compte autorisé, privilégier les redirections SSH pour les services nécessaires. Pour les transferts de fichiers, utiliser [SCP](./transferts.md).
 
 ### Redirection SSH locale
 
-Le port `8080` local dirige le trafic vers `172.16.20.10:80` depuis l'hôte SSH.
+Sur Kali, `-L` ouvre `127.0.0.1:8080` ; le serveur SSH du pivot se connecte ensuite à `172.16.20.10:80`.
 
 <p class="oscp-command-note">Sur Kali: le serveur SSH a accès au service interne.</p>
 
@@ -343,7 +343,7 @@ ssh -N -L 127.0.0.1:8080:172.16.20.10:80 etudiant@10.10.10.30
 
 ### Proxy SOCKS par SSH
 
-Un proxy SOCKS local apparaît sur le port `9050` de Kali.
+Sur Kali, `ssh -D` crée un proxy SOCKS sur `127.0.0.1:9050` ; conserver la session SSH ouverte pendant son utilisation.
 
 <p class="oscp-command-note">Sur Kali: accès SSH à un pivot.</p>
 
@@ -353,7 +353,7 @@ ssh -N -D 127.0.0.1:9050 etudiant@10.10.10.30
 
 ### Routage réseau avec sshuttle
 
-Acheminer le sous-réseau entier par le pivot, sans installer un agent Ligolo.
+`sshuttle` achemine les connexions TCP du sous-réseau via SSH ; il ne remplace pas un VPN complet pour tous les protocoles.
 
 <p class="oscp-command-note">Sur Kali: sshuttle et SSH accessibles.</p>
 
@@ -363,11 +363,11 @@ sshuttle -r etudiant@10.10.10.30 172.16.20.0/24
 
 ## Tunnel DNS avec dnscat2
 
-Alternative avancée, réservée au laboratoire dont les échanges DNS sont autorisés. **Ce n'est pas une étape nécessaire pour Ligolo-ng** : elle est conservée séparément pour éviter de mélanger les outils.
+Le tunnel DNS dnscat2 est un exemple avancé réservé à un laboratoire où les échanges DNS sont explicitement autorisés. **Ce n'est pas une étape nécessaire pour Ligolo-ng** : elle est conservée séparément pour éviter de mélanger les outils.
 
 ### Démarrer le serveur dnscat2
 
-Remplacer le domaine par un domaine appartenant au laboratoire et définir un secret partagé.
+Utiliser un domaine DNS réellement contrôlé par le laboratoire, avec les enregistrements nécessaires pour joindre le serveur, et un secret partagé.
 
 <p class="oscp-command-note">Sur la machine Linux qui héberge le serveur DNS contrôlé.</p>
 
@@ -377,7 +377,7 @@ dnscat2-server laboratoire.example --secret 'SecretDeTest'
 
 ### Connecter un client dnscat2
 
-Utiliser le domaine et le secret correspondants ; la résolution DNS doit parvenir au serveur.
+Le client doit utiliser le même domaine et le même secret que le serveur ; vérifier la délégation et l'accès DNS avant le test.
 
 <p class="oscp-command-note">Sur le client Linux de laboratoire.</p>
 
@@ -385,26 +385,26 @@ Utiliser le domaine et le secret correspondants ; la résolution DNS doit parven
 ./dnscat --secret='SecretDeTest' laboratoire.example
 ```
 
-La disponibilité et les options de `dnscat2` dépendent de l'installation. Exécuter `dnscat2-server --help` et `./dnscat --help` pour la version locale.
+Les noms de binaires et les options dnscat2 dépendent de la version compilée ou installée. Exécuter `dnscat2-server --help` et `./dnscat --help` pour la version locale.
 
 ## Dépannage Ligolo-ng
 
 | Symptôme | Cause à vérifier |
 |---|---|
-| L'agent n'apparaît pas | Proxy en écoute ? IP Kali correcte ? TCP 11601 joignable ? |
-| Empreinte TLS refusée | Copier l'empreinte exacte du proxy avec `certificate_fingerprint` |
-| `no such device` / TUN absent | Créer l'interface et vérifier `ip -br link` sur Kali |
-| `RTNETLINK answers: File exists` | La route existe déjà ; consulter `ip route` avant de la modifier |
-| Tunnel lancé mais réseau inaccessible | Mauvaise session, mauvais sous-réseau, pare-feu ou route locale absente |
-| Second agent non connecté | Le listener est ouvert sur le bon **premier pivot**, et joignable depuis le second ? |
-| Réseau local de l'agent inaccessible | Utiliser `240.0.0.1/32` pour son `127.0.0.1` avec la bonne interface |
-| Port redirigé muet | Vérifier le vrai service sur Kali et l'adresse `--to` du listener |
+| L'agent n'apparaît pas | Proxy démarré, IP Kali correcte, TCP 11601 joignable et empreinte TLS valide ? |
+| Empreinte TLS refusée | Relever `certificate_fingerprint` sur le proxy actif et recopier l'empreinte sans erreur dans l'agent |
+| `no such device` / TUN absent | Vérifier `ip -br link show ligolo` sur Kali ; créer ou sélectionner l'interface TUN appropriée |
+| `RTNETLINK answers: File exists` | Une interface ou une route existe déjà ; vérifier `ip -br link` et `ip route` avant toute modification |
+| Tunnel lancé mais réseau inaccessible | Contrôler la session sélectionnée, le sous-réseau de l'agent, la route Kali et les pare-feu |
+| Second agent non connecté | Vérifier le listener TCP sur pivot A, son IP interne et l'accès depuis pivot B à `11602` |
+| Service sur `127.0.0.1` de l'agent inaccessible | Router `240.0.0.1/32` vers la bonne TUN et vérifier que le service écoute sur l'agent |
+| Port redirigé muet | Vérifier le service sur Kali, le port `--to`, le port `--addr` sur l'agent et le pare-feu |
 
 ## Arrêter et nettoyer
 
 ### Fermer le tunnel
 
-Arrêter le tunnel sélectionné. Les listeners sont indépendants : les fermer aussi si nécessaire.
+Dans Ligolo, sélectionner l'agent concerné avant `tunnel_stop`. Les listeners restent indépendants : consulter `listener_list`, puis arrêter chacun par son identifiant.
 
 <p class="oscp-command-note">Dans la console Ligolo: sélectionner la bonne session.</p>
 
@@ -416,7 +416,7 @@ listener_list
 
 ### Supprimer la route après l'examen
 
-Retirer les routes manuelles ajoutées pour la session, sans toucher aux routes VPN préexistantes.
+Sur Kali, supprimer uniquement les routes ajoutées manuellement et présentes dans `ip route` ; ne pas toucher aux routes VPN préexistantes.
 
 <p class="oscp-command-note">Sur Kali : exécuter la commande dans un terminal.</p>
 
@@ -425,7 +425,7 @@ sudo ip route del 172.16.20.0/24 dev ligolo
 sudo ip route del 172.16.30.0/24 dev ligolo2
 ```
 
-Si les interfaces ont été créées manuellement et ne servent plus, vérifier leurs usages avant `sudo ip link delete ligolo` ou `sudo ip link delete ligolo2`. Les routes créées automatiquement par des versions récentes peuvent être gérées par Ligolo.
+Si les interfaces TUN ont été créées manuellement, vérifier qu'aucune session ne les utilise avant `sudo ip link delete ligolo` ou `sudo ip link delete ligolo2`. Les routes créées automatiquement par des versions récentes peuvent être gérées par Ligolo.
 
 ## Sources officielles
 
