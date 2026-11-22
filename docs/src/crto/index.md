@@ -5,16 +5,12 @@ description: Certified Red Team Operator
 
 # CRTO
 
-Notes CRTO originales en anglais, conservées sans modification. Choisis une fiche ci-dessous pour la consulter directement sur le site.
-
-Les images, scripts et documents annexes sont également conservés dans le [dossier GitHub CRTO](https://github.com/avhiram/skill-issue/tree/main/docs/src/crto/botesjuan).
+Notes CRTO en anglais.
 
 ## Accueil
 
 - [README original](botesjuan/README.md)
 - [Bibliothèque de commandes](botesjuan/crto-command-library.md)
-
-Les cours et exercices sont regroupés ci-dessous, avec leurs titres d’origine.
 
 ## Cheatsheets
 
