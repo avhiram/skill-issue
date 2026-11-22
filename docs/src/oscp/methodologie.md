@@ -431,7 +431,7 @@ Vérifier les comptes, les secrets et les mécanismes d'authentification.
 <p class="oscp-inline-ref"><strong>Champs de formulaire :</strong> <code>pass, passwd, pwd, user, usr, username, secret, cred, credential, auth, secret</code></p>
 
 
-<p class="oscp-command-note">Rechercher un motif textuel.</p>
+<p class="oscp-command-note">Chercher les occurrences de « PASSWORD » dans les fichiers accessibles. La recherche depuis / peut être longue.</p>
 
 ```bash
 grep --color=auto -rnw '/' -ie "PASSWORD" --color=always 2> /dev/null
