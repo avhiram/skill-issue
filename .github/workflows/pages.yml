@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
+      - '.github/scripts/prepare_crto_for_vitepress.py'
       - 'package.json'
       - 'package-lock.json'
   workflow_dispatch:
