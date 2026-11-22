@@ -605,27 +605,29 @@ debugfs: cat /etc/shadow
 
 ```
 
-## UDF MySQL : vérifier les prérequis
+## MySQL : vérifier les UDF disponibles
 
 Les fonctions `sys_exec` et `sys_eval` nécessitent une UDF préinstallée.
 
-<p class="oscp-command-note">MySQL : ces fonctions ne sont pas natives ; elles exigent une UDF installée et autorisée.</p>
+<p class="oscp-command-note">Les appels `sys_exec` et `sys_eval` échouent sans UDF correspondante ; ne pas les confondre avec des fonctions natives.</p>
 
 ```sql
+-- À utiliser seulement si l'UDF sys_exec existe
 SELECT sys_exec('whoami');
+-- À utiliser seulement si l'UDF sys_eval existe
 SELECT sys_eval('whoami');
 
 ```
 
-## Logiciels installés manuellement
+## Repérer les installations locales
 
-<p class="oscp-command-note">Chemins à inspecter ; il ne s'agit pas de commandes.</p>
+<p class="oscp-command-note">Ces chemins sont des repères, pas des commandes à exécuter.</p>
 
 ```text
-/usr/local/
+/usr/local/  # Installations locales
 /usr/local/src/
 /usr/local/bin/
-/opt/
+/opt/  # Applications tierces
 /home/
 /var/
 /usr/src/
@@ -634,30 +636,30 @@ SELECT sys_eval('whoami');
 <p class="oscp-command-note">Lister les paquets avec le gestionnaire de la distribution.</p>
 
 ```bash
-# Debian/Ubuntu
+# Debian/Ubuntu : base dpkg
 dpkg -l
 
-# Fedora/RHEL/CentOS/openSUSE
+# Fedora/RHEL/CentOS/openSUSE : base RPM
 rpm -qa
 
-# OpenBSD
+# OpenBSD : paquets installés
 pkg_info
 
-# FreeBSD
+# FreeBSD : paquets installés
 pkg info
 
 ```
 
-## Repérer les secrets exposés
+## Examiner les fichiers sensibles accessibles
 
 Examiner uniquement les données accessibles et utiles au périmètre autorisé.
 
-<p class="oscp-command-note">Exemples de combinaisons faibles (données, pas commandes).</p>
+<p class="oscp-command-note">Exemples pédagogiques de couples identifiant/mot de passe faibles ; pas de syntaxe shell.</p>
 
 ```text
 root:root
 username:username
-username:username1
+username:username1  # Exemple uniquement
 username:root
 username:admin
 username:qwerty
@@ -666,8 +668,8 @@ username:password
 ```
 
 ```bash
-# Lister les boîtes aux lettres locales accessibles
-ls -lah /var/mail /var/spool/mail 2>/dev/null
+# Vérifier l'existence et les droits des boîtes aux lettres locales
+ls -ld /var/mail /var/spool/mail 2>/dev/null
 ```
 
 ```bash
@@ -675,51 +677,51 @@ ls -lah /var/mail /var/spool/mail 2>/dev/null
 
 ```
 
-### Ports et connexions réseau
+### Vérifier les sockets TCP et UDP
 
-<p class="oscp-command-note">Identifier les sockets en écoute et les connexions TCP/UDP.</p>
+<p class="oscp-command-note">`ss` affiche les sockets locales ; les noms des processus peuvent nécessiter des privilèges.</p>
 
 ```bash
-# Services en écoute
-ss -tulpen
+# Ports TCP/UDP en écoute
+ss -tulpen  # Informations étendues si disponibles
 ss -tunap  # PID visibles selon les droits
 
 ```
 
-### Rechercher les coffres KeePass
+### Identifier les fichiers KeePass
 
-Un fichier `.kdbx` est chiffré ; sa présence ne donne pas le mot de passe.
+Les fichiers `.kdbx` sont chiffrés ; leur découverte ne signifie pas qu'ils sont déchiffrables.
 
-<p class="oscp-command-note">Rechercher les fichiers `.kdbx` accessibles sous `/home`.</p>
+<p class="oscp-command-note">Localiser les bases KeePass sous `/home` sans ouvrir leur contenu.</p>
 
 ```bash
-find /home -type f -name '*.kdbx' 2>/dev/null
+find /home -type f -iname '*.kdbx' 2>/dev/null
 ```
 
-### Repérer les dossiers SSH
+### Localiser les configurations SSH utilisateur
 
-Lister les dossiers `.ssh` accessibles ; leurs clés ne sont pas forcément lisibles.
+La présence de `.ssh` ne prouve pas que les clés privées sont accessibles.
 
-<p class="oscp-command-note">Répertoires `.ssh` sous `/home`.</p>
+<p class="oscp-command-note">Chercher les dossiers `.ssh` dans les répertoires personnels.</p>
 
 ```bash
-find /home -type d -name '.ssh' 2>/dev/null
+find /home -type d -name '.ssh' -print 2>/dev/null
 ```
 
-## Permissions des répertoires
+## Dossiers accessibles en écriture ou en parcours
 
-<p class="oscp-command-note">Distinguer les droits du compte courant des permissions accordées à tous.</p>
+<p class="oscp-command-note">`-writable` teste les droits effectifs du compte ; `-perm` inspecte les bits de permission.</p>
 
 ```bash
-# Répertoires modifiables par le compte courant, puis par tous
+# D'abord l'accès effectif du compte, puis les bits world-writable
 find / -writable -type d 2>/dev/null
 find / -perm -002 -type d 2>/dev/null
 find / -perm -o=w -type d 2>/dev/null  # Équivalent à -002
 
-# Dossiers traversables par « autres »
+# Dossiers accessibles en parcours par « autres »
 find / -perm -o=x -type d 2>/dev/null
 
-# Répertoires modifiables et traversables par tous
+# Dossiers avec écriture et parcours pour « autres »
 find / \( -perm -o=w -perm -o=x \) -type d 2>/dev/null
 
 ```
@@ -906,45 +908,45 @@ python3 exploit-suggester.py --help
 
 ```
 
-## Permissions et traces utiles sur Linux
+## Contrôles complémentaires en lecture seule
 
-Ces contrôles en lecture seule permettent de repérer des configurations faibles. Examiner les droits réellement accordés avant de conclure à une possibilité d'élévation de privilèges.
+Ces vérifications aident à repérer les permissions risquées ; elles ne démontrent pas une élévation possible.
 
-### Répertoires modifiables par tous
+### Identifier les dossiers world-writable
 
-Afficher les répertoires ouverts en écriture à d'autres utilisateurs. Un droit d'écriture seul ne constitue pas une vulnérabilité.
+Le bit d'écriture « autres » permet potentiellement la création de fichiers ; vérifier aussi les droits de parcours et le sticky bit.
 
-<p class="oscp-command-note">Répertoires modifiables par tous.</p>
+<p class="oscp-command-note">Dossiers dont le bit d'écriture « autres » est actif.</p>
 
 ```bash
-find / -type d -perm -0002 -print 2>/dev/null
+find / -type d -perm -0002 -print 2>/dev/null  # Vérifier aussi le sticky bit
 ```
 
-### Fichiers SUID et SGID
+### Contrôle croisé SUID et SGID
 
-Lister les exécutables ayant des permissions SUID ou SGID et distinguer ces deux mécanismes.
+Repérer les fichiers avec les bits spéciaux, sans les exécuter.
 
-<p class="oscp-command-note">Fichiers SUID et SGID.</p>
+<p class="oscp-command-note">Fichiers portant les bits SUID ou SGID.</p>
 
 ```bash
-find / -type f -perm -4000 2>/dev/null
-find / -type f -perm -2000 2>/dev/null
+find / -type f -perm -4000 2>/dev/null  # SUID
+find / -type f -perm -2000 2>/dev/null  # SGID
 ```
 
-### Lire les dernières entrées cron dans syslog
+### Consulter les dernières traces cron
 
-Cette commande demande un `/var/log/syslog` lisible qui reçoit les messages de cron.
+Sur Debian/Ubuntu, les événements cron peuvent être dans syslog ; sinon consulter `journalctl` si disponible.
 
 ```bash
-grep -i 'cron' /var/log/syslog | tail -n 30
+grep -i 'cron' /var/log/syslog 2>/dev/null | tail -n 30
 ```
 
-### Lire le fichier principal des exports NFS
+### Examiner les exports NFS du serveur
 
-Sur le serveur NFS, ce fichier décrit les partages configurés. Des définitions peuvent aussi figurer dans `/etc/exports.d/`.
+`/etc/exports` décrit les partages NFS ; les fichiers de `/etc/exports.d/` peuvent compléter la configuration.
 
 ```bash
-cat /etc/exports
+cat /etc/exports 2>/dev/null
 ```
 
 [Journal de cron](https://manpages.debian.org/trixie/cron/cron.8.en.html) · [Configuration des exports NFS](https://manpages.debian.org/trixie/nfs-kernel-server/exports.5.en.html).
