@@ -1274,7 +1274,7 @@ QUIT
 
 ### 111: RPC
 
-<p class="oscp-command-note">Nmap RPC : lister les programmes RPC exposés via le script rpcinfo sur TCP 111.</p>
+<p class="oscp-command-note">Nmap : lister les programmes RPC enregistrés sur le port 111.</p>
 
 ```bash
 nmap -sV -p 111 --script rpcinfo <IP_CIBLE>
@@ -1287,7 +1287,7 @@ rpcinfo -p <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">NFS : demander à mountd la liste des exports publiés ; un refus est possible.</p>
+<p class="oscp-command-note">NFS : afficher les exports publiés par mountd.</p>
 
 ```bash
 # Afficher les exports NFS annoncés par le serveur mountd (si accessible)
@@ -1297,15 +1297,12 @@ showmount -e <IP_CIBLE>
 
 ### 135, 593: MSRPC
 
-<p class="oscp-command-note">Nmap MSRPC : identifier le service sur TCP 135 ; aucun script NSE n'est exécuté ici.</p>
+<p class="oscp-command-note">Nmap : identifier le service MSRPC sur TCP 135.</p>
 
 ```bash
 nmap -sV -p 135 <IP_CIBLE>
 
 ```
-
-**Paramètres et repères :**
-`rpcdump`  
 
 ```bash
 # Lister les points de terminaison RPC via Impacket (outil installé requis)
@@ -1319,7 +1316,7 @@ nmap -sV -p 593 <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">rpcclient : ouvrir une session SMB/RPC et interroger les informations accessibles sans identifiants.</p>
+<p class="oscp-command-note">rpcclient : tester l'accès anonyme et lire les informations RPC accessibles.</p>
 
 ```bash
 # Tenter une session RPC sans identifiants (peut être refusée)
@@ -1339,10 +1336,7 @@ rpcclient -U 'utilisateur' -W 'EXEMPLE' 192.0.2.10 -c 'enumdomusers'
 
 ```
 
-**Paramètres et repères :**
-`rpcclient`  
-
-<p class="oscp-command-note">rpcclient : commandes interactives de lecture uniquement ; saisir ces lignes après connexion, pas dans Bash.</p>
+<p class="oscp-command-note">rpcclient : saisir ces commandes dans la session interactive, pas dans Bash.</p>
 
 ```text
 enumdomusers
@@ -1360,29 +1354,17 @@ dsenumdomtrusts
 ```
 
 ```text
-# Dans l'invite interactive rpcclient : lister les utilisateurs du domaine
-enumdomusers
-
-# Interroger un utilisateur par son RID hexadécimal
-queryuser 0x450
-
 # Afficher les RID des groupes associés à cet utilisateur
 queryusergroups 0x450
-
-# Résoudre un nom de compte en SID
-lookupnames utilisateur
 
 # Obtenir les alias associés à un utilisateur (selon les commandes prises en charge)
 queryuseraliases domain S-1-5-21-111111111-222222222-333333333-1000
 
 ```
 
-<p class="oscp-command-note">Dans rpcclient : énumérer les groupes, consulter un RID puis lister ses membres.</p>
+<p class="oscp-command-note">rpcclient : afficher les détails et membres d'un groupe par RID.</p>
 
 ```text
-# Dans l'invite rpcclient : lister les groupes
-enumdomgroups
-
 # Obtenir les détails du groupe
 querygroup 0x200
 
@@ -1406,9 +1388,6 @@ enumdomains
 
 # Interroger le SID et les informations de politique du domaine
 lsaquery
-
-# Obtenir des informations de domaine
-querydominfo
 
 ```
 
