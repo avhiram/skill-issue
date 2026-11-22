@@ -6,6 +6,7 @@ on:
     paths:
       - 'docs/**'
       - '.github/scripts/prepare_crto_for_vitepress.py'
+      - '.github/workflows/pages.yml'
       - 'package.json'
       - 'package-lock.json'
   workflow_dispatch:
