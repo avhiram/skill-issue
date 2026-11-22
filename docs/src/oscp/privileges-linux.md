@@ -257,7 +257,7 @@ Examiner les tâches planifiées, leurs propriétaires et les scripts exécutés
 
 ```bash
 grep -i 'cron' /var/log/syslog  # Debian/Ubuntu, si disponible
-# Autre possibilité
+# Autre journal selon la distribution
 grep -i 'cron' /var/log/cron  # RHEL/CentOS, si disponible
 
 ```
@@ -279,18 +279,18 @@ namei -l /chemin/vers/script.sh
 
 ```bash
 crontab -l
-ls -alh /var/spool/cron
-ls -al /etc/cron*
+ls -alh /var/spool/cron /var/spool/cron/crontabs 2>/dev/null
+ls -lah /etc/cron* 2>/dev/null
 ls -l /etc/at.allow /etc/at.deny /etc/cron.allow /etc/cron.deny 2>/dev/null
 cat /etc/crontab
-cat /etc/anacrontab
-sudo crontab -l -u root  # Uniquement si autorisé
+cat /etc/anacrontab 2>/dev/null
+sudo crontab -u root -l  # Uniquement si autorisé
 
 ```
 
-### Examiner les comptes locaux
+### Comptes Unix et identifiants privilégiés
 
-<p class="oscp-command-note">OpenSSL : générer interactivement un hash SHA-512 crypt pour un laboratoire.</p>
+<p class="oscp-command-note">Créer un hash SHA-512 crypt en saisissant le mot de passe dans l'invite OpenSSL.</p>
 
 ```bash
 openssl passwd -6
@@ -302,7 +302,7 @@ openssl passwd -6
 awk -F: '$3 == 0 {print $1 ":" $3 ":" $7}' /etc/passwd
 ```
 
-<p class="oscp-command-note">Vérifier l'identité du compte courant après authentification.</p>
+<p class="oscp-command-note">Se connecter à un compte de test connu, puis vérifier son UID et ses groupes.</p>
 
 ```bash
 su NOM_COMPTE
@@ -321,7 +321,7 @@ sudo grep '^root:' /etc/shadow > root_hash.txt
 
 ```
 
-<p class="oscp-command-note">John et Hashcat : tester hors ligne un hash sha512crypt (préfixe `$6$`).</p>
+<p class="oscp-command-note">Tester hors ligne un hash SHA-512 crypt (`$6$`) avec une liste de mots de passe autorisée.</p>
 
 ```bash
 # John the Ripper : tester l'empreinte extraite
@@ -334,7 +334,7 @@ hashcat -m 1800 sha512crypt.hash /usr/share/wordlists/rockyou.txt
 ```
 
 ```bash
-# Avec John the Ripper
+# Afficher les résultats enregistrés par John
 john --show root_hash.txt
 
 # Hashcat : afficher les correspondances déjà trouvées
@@ -342,39 +342,39 @@ hashcat -m 1800 sha512crypt.hash --show
 
 ```
 
-### Binaires SUID
+### Inventorier les exécutables SUID
 
-<p class="oscp-command-note">SUID : rechercher les exécutables dont le bit SUID est actif.</p>
+<p class="oscp-command-note">Lister les fichiers réguliers avec le bit SUID ; ce n'est pas une preuve de vulnérabilité.</p>
 
 ```bash
 find / -perm -4000 -type f 2>/dev/null
 
 ```
 
-<p class="oscp-command-note">SUID : afficher les permissions des exécutables trouvés.</p>
+<p class="oscp-command-note">Afficher le propriétaire et les permissions des fichiers SUID.</p>
 
 ```bash
 find / -perm -4000 -type f -exec ls -l {} + 2>/dev/null
 
 ```
 
-### Exploitation des binaires setuid
+### Examiner le comportement des binaires SUID
 
-<p class="oscp-command-note">Lister les processus correspondant au nom d'un binaire.</p>
+<p class="oscp-command-note">Remplacer `NOM_BINAIRE` par un nom réel pour afficher les processus correspondants.</p>
 
 ```bash
 ps u -C NOM_BINAIRE
 
 ```
 
-<p class="oscp-command-note">Afficher les UID d'un processus dans `/proc`.</p>
+<p class="oscp-command-note">Lire les UID réel, effectif, sauvegardé et de système de fichiers d'un PID.</p>
 
 ```bash
 grep '^Uid:' /proc/1234/status  # Remplacer 1234 par le PID
 
 ```
 
-<p class="oscp-command-note">`find -exec` : lancer une commande sur les fichiers trouvés, sans élévation automatique.</p>
+<p class="oscp-command-note">Exécuter `ls -l` sur chaque fichier trouvé ; aucun privilège supplémentaire n'est accordé.</p>
 
 ```bash
 find /chemin -type f -exec ls -l {} \;
@@ -383,11 +383,13 @@ find /chemin -type f -exec ls -l {} \;
 
 ```bash
 # Rechercher le binaire ciblé ; la recherche seule n'élève aucun privilège
-find / -name '<NOM_BINAIRE>' -type f 2>/dev/null
+find / -type f -name 'NOM_BINAIRE' 2>/dev/null
 
 ```
 
-### Capacités Linux (Capabilities)
+### Rechercher les capacités Linux
+
+<p class="oscp-command-note">Lister les capacités associées aux fichiers accessibles.</p>
 
 ```bash
 getcap -r / 2>/dev/null
@@ -399,10 +401,12 @@ getcap -r / 2>/dev/null
 ```bash
 getcap /chemin/vers/binaire
 
-# Par exemple
+# Exemple : si le fichier existe
 getcap /usr/bin/nmap
 
 ```
+
+<p class="oscp-command-note">Attribuer `CAP_NET_BIND_SERVICE` dans un laboratoire ; nécessite root ou `CAP_SETFCAP`.</p>
 
 ```bash
 sudo setcap cap_net_bind_service=ep /chemin/vers/binaire
@@ -412,6 +416,8 @@ getcap /chemin/vers/binaire
 
 ```
 
+<p class="oscp-command-note">Supprimer les capacités d'un exécutable (droits élevés requis).</p>
+
 ```bash
 sudo setcap -r /chemin/vers/binaire
 
@@ -420,25 +426,19 @@ sudo setcap -r /usr/bin/nmap
 
 ```
 
-### Capacités et permissions Linux
+### Comprendre les capacités Linux
 
-**CAP_AUDIT_CONTROL**
+**CAP_AUDIT_CONTROL** — Contrôler l'audit du noyau, notamment son activation.
 
-Permet de contrôler l'audit du noyau, notamment son activation ou sa désactivation.
+**CAP_AUDIT_WRITE** — Écrire des événements dans le journal d'audit.
 
-**CAP_AUDIT_WRITE**
-
-Permet d'écrire des événements dans le journal d'audit du noyau.
-
-**CAP_BLOCK_SUSPEND** — Empêcher certaines mises en veille du système.
+**CAP_BLOCK_SUSPEND** — Bloquer la mise en veille via certaines interfaces du noyau.
 
 **CAP_CHOWN** — Modifier le propriétaire des fichiers.
 
-**CAP_DAC_OVERRIDE** — Contourner les permissions classiques des fichiers.
+**CAP_DAC_OVERRIDE** — Contourner des contrôles classiques de lecture, écriture et parcours.
 
-**CAP_DAC_READ_SEARCH**
-
-Contourne certaines vérifications de lecture et de parcours des fichiers et répertoires.
+**CAP_DAC_READ_SEARCH** — Contourner certaines restrictions de lecture et de parcours.
 
 **CAP_FOWNER** — Effectuer certaines opérations réservées au propriétaire d'un fichier.
 
@@ -448,9 +448,9 @@ Contourne certaines vérifications de lecture et de parcours des fichiers et ré
 
 **CAP_MAC_ADMIN** — Modifier certaines règles de contrôle d'accès obligatoire (MAC).
 
-**CAP_NET_BIND_SERVICE** — Écouter sur les ports réseau privilégiés.
+**CAP_NET_BIND_SERVICE** — Lier un socket aux ports privilégiés (généralement inférieurs à 1024).
 
-**CAP_NET_RAW** — Utiliser des sockets réseau brutes.
+**CAP_NET_RAW** — Créer des sockets RAW et PACKET.
 
 **CAP_SETGID** — Modifier les identifiants de groupe du processus.
 
@@ -458,9 +458,9 @@ Contourne certaines vérifications de lecture et de parcours des fichiers et ré
 
 **CAP_SETUID** — Modifier les identifiants utilisateur du processus.
 
-### Cron et minuteurs systemd
+### Minuteurs systemd et cron système
 
-Examiner les tâches configurées et les minuteurs systemd, lorsque disponibles.
+Comparer les fichiers cron aux minuteurs systemd ; `systemctl` exige un système compatible.
 
 <p class="oscp-command-note">Lister les dossiers cron et les minuteurs systemd configurés.</p>
 
@@ -469,75 +469,78 @@ ls -ld /etc/cron*
 systemctl list-timers --all
 ```
 
-## Risques liés à sudo
+## Autorisations sudo
 
-Examiner les permissions et la configuration de Linux.
+Vérifier les commandes autorisées pour le compte courant.
+
+<p class="oscp-command-note">Lister les droits sudo accordés.</p>
 
 ```bash
 sudo -l
-
 ```
 
-<p class="oscp-command-note">Rechercher un processus dans syslog (si disponible).</p>
+<p class="oscp-command-note">Chercher un nom de processus dans `/var/log/syslog` (Debian/Ubuntu, si présent).</p>
 
 ```bash
 grep -F 'NOM_PROCESSUS' /var/log/syslog  # Si ce journal existe
 
 ```
 
-## Vulnérabilités du noyau
+## CVE Linux à vérifier selon la version
+
+Ces CVE sont des pistes historiques, pas une preuve d'exploitabilité. Vérifier les correctifs rétroportés et les conditions exactes avant tout test.
 
 **CVE-2010-3904**
 
-RDS · Linux Kernel <= 2.6.36-rc8 · Exploit
+RDS : vulnérabilité historique du noyau Linux ; vérifier la version et les correctifs.
 
 **CVE-2010-4258**
 
-Full Nelson · Linux Kernel 2.6.37 (RedHat / Ubuntu 10.04) · Exploit
+Full Nelson : élévation locale historique ; vérifier la distribution et ses correctifs.
 
 **CVE-2012-0056**
 
-Mempodipper · Linux Kernel 2.6.39 < 3.2.2 (Gentoo / Ubuntu x86/x64) · Exploit
+Mempodipper : élévation locale historique ; vérifier la version et la configuration.
 
 **CVE-2016-5195**
 
-DirtyCow · Linux Kernel <= 3.19.0-73.8 · Exploit 1 Exploit 2
+Dirty COW : faille de concurrence dans la gestion mémoire ; vérifier les correctifs.
 
 **CVE-2016-5696**
 
-TCP Remote Code Execution · Linux Kernel 3.6 - 4.7 · Exploit
+Vulnérabilité TCP du noyau ; ne pas la présenter comme une exécution de code à distance garantie.
 
 **CVE-2017-8890**
 
-Race Condition in Linux Kernel · Linux Kernel < 4.11.6 · Exploit
+Condition de concurrence du noyau ; vérifier les conditions d'exploitation.
 
 **CVE-2018-8897**
 
-Insecure Use of a Memory Barrier · Linux Kernel 3.14 - 4.15 · Exploit
+Vulnérabilité liée à la gestion des interruptions ; vérifier le noyau et ses correctifs.
 
 **CVE-2019-7304**
 
-Race Condition in OverlayFS · Linux Kernel 4.10 - 4.15 · Exploit
+Vulnérabilité historique : vérifier l'avis CVE avant de l'associer à OverlayFS.
 
 **CVE-2021-4034**
 
-PwnKit · Linux Kernel 4.4 - 5.8 · Exploit
+PwnKit : élévation locale dans `pkexec` (polkit), pas une CVE du noyau.
 
 **CVE-2020-14386**
 
-Privilege Escalation via OverlayFS · Linux Kernel 4.8 - 5.7 · Exploit
+Vulnérabilité du noyau : vérifier l'avis CVE et les correctifs, sans supposer OverlayFS.
 
 **CVE-2021-3156**
 
-Sudo Privilege Escalation · Sudo versions < 1.9.5p2 · Exploit
+Baron Samedit : vulnérabilité de `sudo` ; vérifier le paquet et les correctifs rétroportés.
 
 **CVE-2021-33034**
 
-Privilege Escalation via the Kernel · Linux Kernel 5.4 - 5.10.4 · Exploit
+Vulnérabilité du noyau : confirmer les versions touchées dans l'avis du fournisseur.
 
 **CVE-2022-0847**
 
-DirtyPipe · Linux Kernel 5.8 < 5.16.11 · Exploit
+Dirty Pipe : élévation locale liée aux pipes ; vérifier le correctif du noyau.
 
 ## Exploitation des caractères génériques (Wildcards)
 
