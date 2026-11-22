@@ -939,7 +939,7 @@ nmap -sU -p 53 --script dns-nsid,dns-recursion <IP_CIBLE>
 
 ```bash
 # Exécuter les scripts NSE sélectionnés
-nmap -p 53 --script "dns-nsid,dns-srv-enum" <target_ip>
+nmap -sU -p 53 --script dns-nsid <IP_CIBLE>
 
 ```
 
@@ -957,9 +957,9 @@ nslookup
 
 ```bash
 # Énumérer les enregistrements DNS
-dnsrecon -d <domain_name> -n <dns_server_ip> -t axfr
+dnsrecon -d <DOMAINE> -n <SERVEUR_DNS> -t axfr
 
-dnsenum --enum -f /usr/share/dnsenum/dns.txt --dnsserver <dns_server_ip> <domain_name>
+dnsenum --enum --dnsserver <SERVEUR_DNS> <DOMAINE>
 
 ```
 
@@ -1088,57 +1088,57 @@ Examiner les objets, les droits et les services du domaine.
 <p class="oscp-command-note">Nmap (KERBEROS) : lancer les scripts NSE « kerberos-enum-users ».</p>
 
 ```bash
-# Vérifiez la disponibilité du service Kerberos et obtenez des informations de base
-nmap -p 88 --script kerberos-enum-users <target_ip>
+# Vérifier la présence de Kerberos sur le port TCP 88
+nmap -sV -p 88 <IP_CIBLE>
 
-# Vérifier les vulnérabilités communes de Kerberos
-nmap -p 88 --script kerberos-brute <target_ip>
+# L'énumération Kerberos nécessite un périmètre de test autorisé
+nmap -p 88 --script krb5-enum-users <IP_CIBLE>
 
-# Énumérer les NSP (Noms principaux des services)
-nmap -p 88 --script krb5-enum-users,krb5-scan <target_ip>
+# Énumérer les utilisateurs Kerberos si le contrôleur de domaine répond
+nmap -p 88 --script krb5-enum-users <IP_CIBLE>
 
 ```
 
 <p class="oscp-command-note">Examiner les comptes Kerberos du domaine.</p>
 
 ```bash
-kerbrute userenum -d <domain> -p <userlist> <target_ip>
+kerbrute userenum --dc <IP_DC> -d <DOMAINE> liste_utilisateurs.txt
 # Autre possibilité
-./kerbrute_linux_amd64 userenum -d <target_ip> /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
+./kerbrute_linux_amd64 userenum --dc <IP_DC> -d <DOMAINE> /usr/share/seclists/Usernames/xato-net-10-million-usernames.txt
 
 ```
 
 <p class="oscp-command-note">Examiner les comptes sans préauthentification Kerberos.</p>
 
 ```bash
-impacket-GetNPUsers -dc-ip <dc_ip> -request -usersfile <userlist> <target_domain>
+impacket-GetNPUsers -dc-ip <IP_DC> -request -usersfile liste_utilisateurs.txt <DOMAINE>/
 
 ```
 
 <p class="oscp-command-note">Demander un ticket Kerberos TGT.</p>
 
 ```bash
-impacket-GetTGT -dc-ip <dc_ip> -outputfile <outputfile> <username>@<domain>
+impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
 
 ```
 
 <p class="oscp-command-note">Analyser des empreintes avec John.</p>
 
 ```bash
-john --wordlist=<wordlist> <ticket_file>
+john --wordlist=liste_mots_de_passe.txt tickets.hash
 # Ou
-hashcat -m 13100 <ticket_file> <wordlist>
+hashcat -m 13100 tickets_tgs.hash liste_mots_de_passe.txt
 
 ```
 
 <p class="oscp-command-note">Kerberos : demander des tickets d'authentification de test.</p>
 
 ```bash
-# Demander un ticket TGT (Ticket Granting Ticket)
-python3 GetTGT.py -dc-ip <dc_ip> <domain>/<username>:<password>
+# Demander un TGT Kerberos avec des identifiants autorisés
+impacket-getTGT -dc-ip <IP_DC> <DOMAINE>/<UTILISATEUR>
 
-# Demander un ticket de service (TGS)
-python3 GetST.py -dc-ip <dc_ip> <domain>/<username>:<password> -spn <service>/<target>
+# Demander un ticket de service pour un SPN existant avec des identifiants autorisés
+impacket-getST -dc-ip <IP_DC> -spn <SERVICE>/<HOTE> <DOMAINE>/<UTILISATEUR>
 
 ```
 
