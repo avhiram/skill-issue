@@ -267,7 +267,7 @@ sudo nmap -A <IP_CIBLE>
 
 #### Enregistrer et exploiter les résultats Nmap
 
-Observer les permissions et la configuration de Windows.
+Identifier WinRM sur TCP 5985 (HTTP) ou 5986 (HTTPS) ; la présence du port ne prouve pas les droits d’accès.
 
 **Paramètres et repères :**
 `-oG` (sortie grepable)  
@@ -1792,7 +1792,7 @@ snmp-check <IP_CIBLE>
 **Paramètres et repères :**
 `onesixtyone`  
 
-<p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
+<p class="oscp-command-note">Envoyer des lignes de texte à un service TCP : uniquement si son protocole les accepte ; aucun fichier local n’est créé.</p>
 
 ```bash
 printf '%s\n' public private monitoring > communautes.txt
@@ -2379,7 +2379,7 @@ nxc rdp 192.0.2.10 -u utilisateurs.txt -p mots_de_passe.txt
 
 ```
 
-<p class="oscp-command-note">Ouvrir un accès graphique à la cible via VNC ou RDP.</p>
+<p class="oscp-command-note">Se connecter à un serveur VNC autorisé avec TigerVNC ; ce bloc ne concerne pas RDP.</p>
 
 ```bash
 # Se connecter au bureau distant avec FreeRDP (vérifier la version installée)
@@ -2518,7 +2518,7 @@ DELETE FROM test_table WHERE id = 1;
 
 ### 5900: VNC (Virtual Network Computing)
 
-<p class="oscp-command-note">Nmap (VNC) : lancer les scripts NSE « vnc-info, vnc-auth-bypass ».</p>
+<p class="oscp-command-note">Nmap : récupérer les informations du service VNC avec le script vnc-info (aucun contournement d’authentification ici).</p>
 
 ```bash
 nmap -sV -p 5900 --script vnc-info <IP_CIBLE>
@@ -2543,7 +2543,7 @@ hydra -L <user_list> -P <password_list> vnc://<ip>
 
 ```
 
-<p class="oscp-command-note">Exemple de résultat d'un service VNC</p>
+<p class="oscp-command-note">Exemples de mots de passe faibles : il ne s’agit pas d’une sortie de scan VNC.</p>
 
 ```text
 # Exemples de mots de passe faibles à ne tester que dans un laboratoire
@@ -2565,23 +2565,23 @@ vnc
 
 Observer les permissions et la configuration de Windows.
 
-<p class="oscp-command-note">Nmap (WINRM) : lancer les scripts NSE « winrm-info ».</p>
+<p class="oscp-command-note">Nmap : détecter les services présents sur les ports WinRM 5985 et 5986 (aucun script NSE lancé).</p>
 
 ```bash
 nmap -sV -p 5985,5986 <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">Tester les identifiants fournis sur le service WINRM avec CrackMapExec.</p>
+<p class="oscp-command-note">Vérifier un compte WinRM autorisé avec NetExec, successeur de CrackMapExec.</p>
 
 ```bash
-crackmapexec winrm <IP> -u <USER> -p <PASSWORD>
+nxc winrm 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
 
 ```powershell
 # Depuis PowerShell : ouvrir une session distante WinRM (authentification et droits requis)
-Enter-PSSession -ComputerName <IP_CIBLE> -Credential (Get-Credential)
+Enter-PSSession -ComputerName 192.0.2.10 -Credential (Get-Credential)
 
 ```
 
@@ -2589,7 +2589,7 @@ Enter-PSSession -ComputerName <IP_CIBLE> -Credential (Get-Credential)
 
 ```bash
 # Depuis Kali : ouvrir une session WinRM avec Evil-WinRM (compte autorisé requis)
-evil-winrm -i <ip> -u <USER> -p <PASSWORD>
+evil-winrm -i 192.0.2.10 -u utilisateur -p 'MotDePasseTest'
 
 ```
 
@@ -2615,7 +2615,7 @@ nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
 
 ### 6379: Redis
 
-<p class="oscp-command-note">Nmap (REDIS) : lancer les scripts NSE « redis-info, redis-rce ».</p>
+<p class="oscp-command-note">Nmap : relever les informations Redis avec redis-info ; aucune exécution distante n’est tentée.</p>
 
 ```bash
 nmap -sV -p 6379 --script redis-info <IP_CIBLE>
@@ -2635,10 +2635,10 @@ redis-cli -h <IP_CIBLE> -p 6379 --askpass
 # Rechercher les références Redis locales avec SearchSploit (ne prouve pas la vulnérabilité de la cible)
 searchsploit redis
 
-# Exécutez un serveur Redis rogue pour capturer des données ou exécuter des commandes
+# Script externe non fourni : ne pas supposer que redis-rogue-server.py est installé ou fiable
 python3 redis-rogue-server.py -p 6379
 
-# Exécutez l'exploitation de Redis RCE à l'aide d'un script personnalisé (remplacez la charge utile souhaitée)
+# Script externe non fourni : vérifier sa provenance, sa syntaxe et son périmètre avant tout usage
 python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 
 ```
@@ -2649,7 +2649,7 @@ python3 redis-rce-exploit.py -h <ip> -p 6379 -c "payload"
 # Ouvrir le client Redis ; une authentification peut être nécessaire
 redis-cli -h <IP_CIBLE> -p 6379
 
-# Après connexion, afficher les informations et les clés de la base sélectionnée
+# Après connexion, afficher les informations et parcourir les clés avec SCAN (résultat paginé)
 info
 scan 0
 select 0  # Sélectionner la base 0 (par défaut)
@@ -2667,10 +2667,10 @@ config get '*'  # Afficher les paramètres de configuration accessibles
 
 Vérifier les ports et les services de la cible autorisée.
 
-<p class="oscp-command-note">Netcat/Telnet : établir la connexion TCP au service «Port inconnu».</p>
+<p class="oscp-command-note">Netcat : ouvrir une connexion TCP vers un service non identifié (le protocole reste à déterminer).</p>
 
 ```bash
-# Connectez-vous au port inconnu pour identifier le service
+# Tenter une connexion TCP à un port identifié dans le périmètre autorisé
 nc -nv <IP_CIBLE> <PORT_TCP>
 
 ```
@@ -2684,17 +2684,17 @@ help
 <p class="oscp-command-note">Écrire le contenu précisé dans le fichier de destination.</p>
 
 ```bash
-# Tentative de connexion avec des identifiants connus ou devinés
-# Vous devrez peut-être remplacer <USERNAME> et <PASSWORD> par des valeurs appropriées.
+# Exemple de protocole texte : envoyer des identifiants de test uniquement si le service attend deux lignes
+# Définir les variables UTILISATEUR, MOT_DE_PASSE, IP_CIBLE et PORT_TCP avant exécution.
 printf '%s\n%s\n' "$UTILISATEUR" "$MOT_DE_PASSE" | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 # Si le service fournit des options de commande ou aide à la sortie, utilisez-les pour guider d'autres actions
-# Par exemple, si le service a des commandes comme 'list', 'status' ou 'config', utilisez ces
+# La commande list n’est qu’un exemple : consulter d’abord la documentation du protocole
 printf 'list\n' | nc -nv "$IP_CIBLE" "$PORT_TCP"
 
 ```
 
-<p class="oscp-command-note">Exemple ou valeur de référence pour «Port inconnu» : vérifier le contexte avant usage.</p>
+<p class="oscp-command-note">Repères méthodologiques pour un service inconnu ; il ne s’agit pas de commandes prêtes à exécuter.</p>
 
 ```bash
 # Après avoir identifié le service, référez-vous à sa documentation ou à sa commande par défaut
