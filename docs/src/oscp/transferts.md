@@ -5,7 +5,7 @@ description: "Copier un fichier entre Linux et Windows, depuis la machine qui l�
 
 # Transferts de fichiers
 
-La **source** possède le fichier, la **destination** le reçoit. Adapte les adresses et les comptes. Les exemples utilisent `rapport.txt` dans le dossier courant sous Linux et dans `C:\Users\Public` sous Windows.
+La **source** possède le fichier, la **destination** le reçoit. Exécute chaque commande sur la machine indiquée et adapte les adresses et les comptes. Les exemples utilisent `rapport.txt` dans le dossier courant sous Linux et dans `C:\Users\Public` sous Windows.
 
 | Machine d’exemple | Adresse |
 | --- | --- |
@@ -24,9 +24,9 @@ ip -br address
 ip route
 ```
 
-### Depuis Kali, tester SSH ou SMB
+### Depuis Kali, vérifier les ports SSH et SMB
 
-Teste uniquement le port du service que tu comptes utiliser.
+`nc -zv` teste l'ouverture TCP sans transférer de fichier. Teste uniquement le service nécessaire.
 
 ```bash
 nc -zv 10.10.10.20 22
@@ -35,7 +35,7 @@ nc -zv 10.10.10.30 445
 
 ### Depuis Windows, tester le port HTTP de Kali
 
-`TcpTestSucceeded` indique si PowerShell a pu ouvrir la connexion TCP.
+`TcpTestSucceeded : True` confirme la connexion TCP, pas les droits de téléchargement HTTP.
 
 ```powershell
 Test-NetConnection 10.10.14.10 -Port 8000
@@ -45,7 +45,7 @@ Test-NetConnection 10.10.14.10 -Port 8000
 
 ### Depuis la source, envoyer un fichier par SCP {#ll-scp}
 
-Le serveur SSH/SFTP distant doit être joignable et le compte `etudiant` doit pouvoir écrire dans `/tmp`.
+À exécuter sur Linux source. Le serveur SSH/SFTP du Linux destination doit écouter sur 22 et `etudiant` doit pouvoir écrire dans `/tmp`.
 
 ```bash
 scp ./rapport.txt etudiant@10.10.10.20:/tmp/
@@ -53,13 +53,13 @@ scp ./rapport.txt etudiant@10.10.10.20:/tmp/
 
 ### Depuis la destination, récupérer un fichier par SCP {#ll-scp-reception}
 
-Ici, `10.10.10.20` possède déjà le fichier et le Linux qui exécute la commande le reçoit.
+À exécuter sur Linux destination : `10.10.10.20` possède le fichier ; le répertoire courant reçoit la copie.
 
 ```bash
 scp etudiant@10.10.10.20:/tmp/rapport.txt ./rapport.txt
 ```
 
-### Depuis la source, envoyer un dossier par SCP {#ll-scp-dossier}
+### Depuis Linux source, envoyer un dossier complet par SCP {#ll-scp-dossier}
 
 ```bash
 scp -r ./dossier etudiant@10.10.10.20:/tmp/
@@ -67,13 +67,13 @@ scp -r ./dossier etudiant@10.10.10.20:/tmp/
 
 ### Depuis la source, synchroniser un dossier avec rsync {#ll-rsync}
 
-Installe `rsync` des deux côtés. La barre finale de `./dossier/` copie son contenu.
+`rsync` doit être installé sur les deux Linux et SSH accessible. Le `/` final de `./dossier/` copie le contenu, pas le dossier lui-même.
 
 ```bash
 rsync -avP ./dossier/ etudiant@10.10.10.20:/tmp/dossier/
 ```
 
-### Depuis Linux, ouvrir une session SFTP {#ll-sftp}
+### Depuis Linux source, ouvrir une session SFTP vers Linux destination {#ll-sftp}
 
 ```bash
 sftp etudiant@10.10.10.20
@@ -81,7 +81,7 @@ sftp etudiant@10.10.10.20
 
 ### Dans SFTP, envoyer et récupérer un fichier
 
-`put` envoie le fichier local et `get` récupère un fichier déjà présent dans le dossier distant.
+À saisir dans l'invite `sftp>` : `put` envoie un fichier local et `get` récupère un fichier distant. Ce ne sont pas des commandes Bash.
 
 ```text
 put rapport.txt
@@ -91,7 +91,7 @@ bye
 
 ### Depuis la destination, télécharger par HTTP {#ll-http}
 
-[Ouvre le serveur HTTP sur le Linux source](#http-source), puis télécharge le fichier sur le second Linux.
+[Démarre le serveur HTTP sur Linux source](#http-source), puis exécute `curl` sur Linux destination. Le port 8000 doit être accessible.
 
 ```bash
 curl --fail --show-error --location --output ./rapport.txt http://10.10.14.10:8000/rapport.txt
@@ -99,7 +99,7 @@ curl --fail --show-error --location --output ./rapport.txt http://10.10.14.10:80
 
 ### Sur la destination, recevoir avec Netcat {#ll-netcat}
 
-Avec `netcat-openbsd` sur un réseau isolé, démarre cette écoute avant l’envoi. Le fichier local est écrasé et le transfert circule en clair.
+Avec `netcat-openbsd`, démarre l'écoute sur Linux destination avant l'envoi. `>` écrase le fichier existant ; le transfert est en clair.
 
 ```bash
 nc -l 9001 > ./rapport.txt
@@ -107,7 +107,7 @@ nc -l 9001 > ./rapport.txt
 
 ### Depuis la source, envoyer avec Netcat
 
-`-N` ferme le flux réseau à la fin du fichier.
+Avec `netcat-openbsd`, `-N` ferme le flux réseau après la fin de l'entrée standard ; exécuter sur Linux source.
 
 ```bash
 nc -N 10.10.10.20 9001 < ./rapport.txt
@@ -117,7 +117,7 @@ nc -N 10.10.10.20 9001 < ./rapport.txt
 
 ### Sur Kali, servir le fichier par HTTP {#http-source}
 
-Laisse le terminal ouvert pendant le téléchargement. Seul le contenu de `partage` doit être destiné au réseau de test.
+Sur Kali source, laisse ce serveur HTTP ouvert pendant la copie. Le contenu de `partage` est accessible sans authentification sur le réseau de test.
 
 ```bash
 mkdir -p ./partage
@@ -127,7 +127,7 @@ python3 -m http.server 8000 --bind 10.10.14.10 --directory ./partage
 
 ### Depuis Windows, télécharger avec PowerShell {#lw-http-ps}
 
-[Démarre le serveur HTTP de Kali](#http-source) avant la copie.
+Sur Windows destination, [démarre d'abord le serveur HTTP de Kali](#http-source). Le dossier `C:\Users\Public` doit exister.
 
 ```powershell
 Invoke-WebRequest -UseBasicParsing -Uri 'http://10.10.14.10:8000/rapport.txt' -OutFile 'C:\Users\Public\rapport.txt'
@@ -135,7 +135,7 @@ Invoke-WebRequest -UseBasicParsing -Uri 'http://10.10.14.10:8000/rapport.txt' -O
 
 ### Depuis Windows, télécharger avec curl.exe {#lw-http-curl}
 
-Cette variante utilise le même serveur HTTP et fonctionne dans PowerShell ou CMD.
+Cette variante utilise `curl.exe` natif sous Windows, depuis PowerShell ou CMD ; `--fail` fait échouer la commande sur une erreur HTTP.
 
 ```bat
 curl.exe --fail --location --output "C:\Users\Public\rapport.txt" "http://10.10.14.10:8000/rapport.txt"
@@ -143,12 +143,12 @@ curl.exe --fail --location --output "C:\Users\Public\rapport.txt" "http://10.10.
 
 ### Sur Kali, partager le fichier par SMB {#lw-smb-kali}
 
-Le serveur SMB d’Impacket demande le mot de passe du compte temporaire `audit`. Le port 445 doit être libre.
+Sur Kali, Impacket SMB doit être installé et le port TCP 445 libre. Définis un mot de passe de laboratoire pour le compte `audit` avant le démarrage.
 
 ```bash
 mkdir -p ./partage
 cp ./rapport.txt ./partage/
-sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit partage ./partage
+sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password 'MotDePasseTemporaire' partage ./partage
 ```
 
 ### Depuis Windows, récupérer le fichier du partage Kali
@@ -181,11 +181,11 @@ scp ./rapport.txt etudiant@10.10.10.30:rapport.txt
 
 ### Sur Kali, ouvrir un partage SMB de réception {#wl-smb-kali}
 
-Laisse le serveur ouvert pendant la copie. Impacket demande le mot de passe temporaire de `audit`.
+Sur Kali destination, garde Impacket actif pendant l'envoi ; utilise un compte temporaire dédié et supprime le partage après le test.
 
 ```bash
 mkdir -p ./reception
-sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit partage ./reception
+sudo impacket-smbserver -ip 10.10.14.10 -smb2support -username audit -password 'MotDePasseTemporaire' partage ./reception
 ```
 
 ### Depuis Windows, déposer le fichier dans le partage Kali
