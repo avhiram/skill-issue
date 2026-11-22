@@ -344,7 +344,7 @@ Examiner les permissions et la configuration de Linux.
 Examiner les objets, les droits et les services du domaine.
 
 
-#### Autres utilitaires
+#### Utilitaires complémentaires : consulter les commandes ci-dessous
 
 
 <p class="oscp-command-note">Gérer les paquets Debian/Ubuntu.</p>
