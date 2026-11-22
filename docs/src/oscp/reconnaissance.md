@@ -1661,28 +1661,28 @@ nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
 
 ### 143, 993: IMAP
 
-<p class="oscp-command-note">Nmap IMAP : identifier les services 143/993 et relever les informations NTLM si elles sont exposées.</p>
+<p class="oscp-command-note">Nmap : détecter IMAP et les informations NTLM disponibles.</p>
 
 ```bash
 nmap -sV -p 143,993 --script imap-ntlm-info <IP_CIBLE>
 
 ```
 
-<p class="oscp-command-note">IMAPS : examiner la négociation TLS et le certificat du service sur TCP 993.</p>
+<p class="oscp-command-note">IMAPS : vérifier la connexion TLS sur le port 993.</p>
 
 ```bash
-openssl s_client -connect 192.0.2.10:993
+openssl s_client -connect 192.0.2.10:993 -brief
 
 ```
 
-<p class="oscp-command-note">SearchSploit : rechercher des références d'exploits IMAP, sans conclure à une vulnérabilité exploitable.</p>
+<p class="oscp-command-note">SearchSploit : rechercher des exploits IMAP connus.</p>
 
 ```bash
 searchsploit imap
 
 ```
 
-<p class="oscp-command-note">Lancer le script Python check_imap.py défini ci-dessous pour afficher les capacités IMAP annoncées.</p>
+<p class="oscp-command-note">Python : afficher les capacités annoncées par IMAP.</p>
 
 ```bash
 # Exemple : relever les capacités IMAP sans authentification
@@ -1690,7 +1690,7 @@ python3 check_imap.py 192.0.2.10 143
 
 ```
 
-<p class="oscp-command-note">Script Python 3 utilisant imaplib : connexion IMAP/IMAPS, affichage des capacités et fermeture de session.</p>
+<p class="oscp-command-note">Python 3 : se connecter à IMAP (143) ou IMAPS (993), puis afficher les capacités.</p>
 
 ```python
 import imaplib
@@ -1711,9 +1711,15 @@ if __name__ == "__main__":
         sys.exit(1)
     
     host = sys.argv[1]
-    port = int(sys.argv[2])
-    
-    check_imap_capabilities(host, port)
+    try:
+        port = int(sys.argv[2])
+    except ValueError:
+        sys.exit("Erreur : le port doit être un nombre.")
+
+    try:
+        check_imap_capabilities(host, port)
+    except (OSError, imaplib.IMAP4.error) as exc:
+        sys.exit(f"Erreur IMAP : {exc}")
 
 ```
 
@@ -1721,7 +1727,7 @@ if __name__ == "__main__":
 
 Examiner le certificat d'un service IMAPS sans tenter d'authentification.
 
-<p class="oscp-command-note">IMAPS : afficher le certificat et un résumé de la négociation TLS sur TCP 993.</p>
+<p class="oscp-command-note">IMAPS : afficher le résumé TLS et vérifier le certificat du serveur.</p>
 
 ```bash
 openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
@@ -1729,7 +1735,7 @@ openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
 
 ### 161 (UDP): SNMP
 
-<p class="oscp-command-note">SNMP UDP 161 : repérer les hôtes, relever les informations SNMP et tester les communautés autorisées.</p>
+<p class="oscp-command-note">SNMP : rechercher les agents UDP 161 et tester les communautés autorisées.</p>
 
 ```bash
 sudo nmap -sU --open -p 161 <RESEAU_CIDR> -oG open-snmp.txt
@@ -1740,7 +1746,7 @@ sudo nmap -sU -p 161 --script snmp-brute --script-args snmp-brute.communitiesdb=
 
 ```
 
-<p class="oscp-command-note">SNMPv2c : parcourir les OID accessibles avec une communauté autorisée ; trafic non chiffré.</p>
+<p class="oscp-command-note">SNMPv2c : parcourir les OID accessibles. Trafic non chiffré.</p>
 
 ```bash
 # Versions SNMP : v1, v2c et v3 (SNMPv3 utilise une authentification différente)
@@ -1749,7 +1755,7 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> .1
 
 ```
 
-<p class="oscp-command-note">Énumérer SNMP avec une communauté autorisée et examiner les résultats.</p>
+<p class="oscp-command-note">SNMP : tester une communauté, puis lire les informations accessibles.</p>
 
 ```bash
 # Dictionnaire SNMP : vérifier la présence de SecLists dans /usr/share/seclists/Discovery/SNMP/ avant usage
@@ -1763,15 +1769,12 @@ snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 # SNMPv2c : parcourir les objets par lots avec GETBULK (si pris en charge par l'agent)
 snmpbulkwalk -v2c -c <COMMUNAUTE> <IP_CIBLE>
 
-# Afficher un inventaire SNMP avec snmp-check ; la communauté par défaut peut échouer
-snmp-check <IP_CIBLE>
+# Afficher un inventaire SNMP avec une communauté autorisée
+snmp-check <IP_CIBLE> -c <COMMUNAUTE>
 
 ```
 
-**Paramètres et repères :**
-`onesixtyone`  
-
-<p class="oscp-command-note">Créer les fichiers locaux de communautés et d'adresses IP, puis les fournir à onesixtyone pour tester SNMP/UDP 161.</p>
+<p class="oscp-command-note">onesixtyone : tester des communautés SNMP sur une liste d'hôtes de laboratoire.</p>
 
 ```bash
 printf '%s\n' public private monitoring > communautes.txt
@@ -1782,7 +1785,7 @@ onesixtyone -c communautes.txt -i adresses.txt
 
 ```
 
-<p class="oscp-command-note">Lire les sorties NET-SNMP-EXTEND-MIB exposées par l'agent SNMP, si cette MIB est disponible.</p>
+<p class="oscp-command-note">SNMP : lire les sorties `extend` si l'agent les expose.</p>
 
 ```bash
 snmpwalk -v2c -c <COMMUNAUTE> <IP_CIBLE> NET-SNMP-EXTEND-MIB::nsExtendOutputFull
