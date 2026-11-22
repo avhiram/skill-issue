@@ -1,115 +1,120 @@
-# Shadow Credentials to Ransomware Kill Chain
+# Shadow Credentials vers Ransomware — Kill Chain
 
-## Monday morning  
+## Lundi matin
 
-A phishing email lands in an HR employee's inbox. She clicks a link, enters her credentials into a fake login page. The attacker now has her username and password — but her account has MFA, so the password alone is useless.
+Un e-mail de **phishing** arrive dans la boîte d’une employée des ressources humaines. Elle clique sur un lien et saisit ses credentials sur une fausse page de connexion. L’attaquant obtient son identifiant et son mot de passe, mais le compte utilise la **MFA** : le mot de passe seul ne suffit pas.
 
-## Foothold  
+## Foothold
 
-⚠️ *The attacker doesn't panic. He has a foothold via a macro in the attachment she also opened.*
+⚠️ *L’attaquant dispose également d’un foothold grâce à une macro dans la pièce jointe qu’elle a ouverte.*
 
-## Enumeration   
+## Énumération
 
-💬 **The attacker is now a low-privilege user on her workstation.**
+💬 **L’attaquant possède désormais un accès peu privilégié à la workstation.**
 
-He runs BloodHound quietly in the background. The graph lights up. He finds something interesting — a service account named `svc_backup` has **GenericWrite** permission over a domain computer object called `FS01` (the file server).
+Il lance **BloodHound** en arrière-plan et analyse les relations Active Directory. Il découvre que le compte de service `svc_backup` dispose du droit **GenericWrite** sur un objet ordinateur nommé `FS01`, le serveur de fichiers.
 
-He doesn't know the password for `svc_backup`. He doesn't need to.
+Il ne connaît pas le mot de passe de `svc_backup`. Dans ce scénario, il n’en a pas besoin.
 
-👉 **Here's where Shadow Credentials enters the story.**
+👉 **C’est ici qu’interviennent les Shadow Credentials.**
 
-Think of every computer and user account in Active Directory as having a small lockbox on it. Normally only the domain knows what key opens that lockbox — it's a secret stored as a password hash.
+Imagine que chaque compte utilisateur ou ordinateur d’Active Directory possède un petit coffre. Habituellement, seule la clé connue du domaine permet de l’ouvrir : un secret associé au hash du mot de passe.
 
-But Microsoft added a newer feature to AD called **Key Trust** (for passwordless login). It lets you attach *an extra key* to any account's lockbox. The account will accept *either* the original password **or** this new extra key.
+Microsoft a ajouté à Active Directory la fonctionnalité **Key Trust**, utilisée pour l’authentification sans mot de passe. Elle permet d’associer *une clé supplémentaire* à un compte. Celui-ci peut alors accepter le mot de passe d’origine **ou** cette nouvelle clé.
 
-## Exploitation  
+## Exploitation
 
-The attacker abuses his `GenericWrite` permission on `FS01` to **add his own key to FS01's lockbox** — without touching or changing the original password. Nobody notices. No password was reset. No alerts fire.
+Dans cette histoire, l’attaquant exploite le droit `GenericWrite` sur `FS01` pour **ajouter sa propre clé**, sans changer le mot de passe du compte. Aucun reset de mot de passe n’a lieu et l’activité passe inaperçue dans le scénario.
 
-🏢 He now has a key that the file server `FS01` will accept as proof of identity.
+🏢 Il dispose désormais d’une clé que le serveur `FS01` peut accepter comme preuve d’identité.
 
-**He uses his forged key to request a Kerberos ticket for FS01.**
+**Il utilise cette clé pour demander un ticket Kerberos au nom de FS01.**
 
-The domain controller sees a valid key, hands over a TGT (a golden pass for that machine), and the attacker extracts the `NTLM hash` of the machine account from that ticket.
+Le Domain Controller reconnaît la clé et délivre un **TGT**. L’attaquant récupère ensuite le **hash NTLM** du compte machine.
 
-Now he has the machine account credential for `FS01` — the file server — **without ever logging into it, touching LSASS, or making noise.**
+Il obtient ainsi les credentials du compte machine `FS01`, sans ouvrir de session interactive sur le serveur ni accéder directement à LSASS.
 
-## Persistence  
+## Persistence
 
-**Machine accounts are trusted inside the domain.**
+**Les comptes machines sont des identités du domaine.**
 
-🧱 With `FS01$`'s credential, he performs a **DCSync-style** attack — machine accounts with certain roles can pull credential data from the domain controller. He dumps the `krbtgt` hash and several domain admin hashes.
+🧱 Avec les credentials de `FS01$`, l’attaquant réalise, dans ce scénario, une attaque de type **DCSync** : certains comptes disposant des permissions nécessaires peuvent demander des données de réplication au Domain Controller. Il récupère le hash `krbtgt` et plusieurs hashes de comptes Domain Admin.
 
-He now owns the domain. Quietly. No brute force. No service creation. No loud lateral movement.
+Le domaine est désormais compromis dans cette histoire. Aucun brute force ni nouveau service n’a été nécessaire.
 
-**Friday night. The ransomware deploys.**
+**Vendredi soir : déploiement du ransomware.**
 
-## Ransomware  
+## Ransomware
 
-🎯 With DA credentials he moves to every server simultaneously — backup servers first, then production. He deletes shadow copies, encrypts file shares, and drops a ransom note.
+🎯 Avec les credentials Domain Admin, l’attaquant atteint les serveurs de sauvegarde, puis ceux de production. Il supprime les **Shadow Copies**, chiffre les file shares et dépose une demande de rançon.
 
-By the time IT arrives Monday morning, 3,000 file shares are encrypted and the backup server is gone.
+Le lundi matin suivant, 3 000 partages sont chiffrés et le serveur de sauvegarde est indisponible.
 
 ---
 
-## Why Shadow Credentials Was the Turning Point
+## Pourquoi Shadow Credentials a été décisif
 
-| Stage | What happened |
+| Étape | Ce qui s’est passé |
 |---|---|
-| Initial access | Phishing → low-priv foothold |
-| Pivoting point | Found `GenericWrite` on a computer object |
-| **Shadow Credential abuse** | **Added a rogue key to FS01 — silent, no password change** |
-| Escalation | Used rogue key → Kerberos TGT → extracted machine NTLM hash |
-| Domain compromise | Machine hash → DCSync → domain admin hashes |
-| Impact | Ransomware deployed domain-wide |
+| Initial Access | Phishing puis foothold peu privilégié |
+| Pivot | Découverte du droit `GenericWrite` sur un objet ordinateur |
+| **Abus de Shadow Credentials** | **Ajout d’une clé sur FS01 sans modifier le mot de passe** |
+| Escalation | Clé ajoutée → Kerberos TGT → hash NTLM du compte machine |
+| Compromission du domaine | Hash machine → DCSync → hashes Domain Admin |
+| Impact | Déploiement du ransomware dans le domaine |
 
 ---
 
-## The Key Insight (Non-Technical)
+## L’idée essentielle, sans jargon
 
-> Shadow Credentials is like making a **copy of a building's master key** by exploiting a feature designed for convenience — and nobody in the building knows an extra copy exists, because the original key was never touched and the lock was never changed.
+> Shadow Credentials ressemble à la création d’une **copie d’un passe-partout** grâce à une fonction prévue pour simplifier l’accès. La serrure et la clé d’origine restent inchangées : personne ne remarque forcément qu’une seconde clé existe.
 
-The defender looks for password changes, new accounts, failed logins. None of those happened. The attacker just *added a silent spare key to a door they had permission to modify* — and walked in through the back whenever they wanted.
+Les défenseurs surveillent les changements de mots de passe, les nouveaux comptes ou les échecs de connexion. Dans cette histoire, aucun de ces événements ne se produit : l’attaquant a simplement *ajouté une clé supplémentaire à un compte qu’il pouvait modifier*.
 
 ---
 
-## Detection Remediation
+## Détection et remédiation
 
-🎂 Blue team catches this via:
-- `Event ID 5136` — DS Object Modified (`msDS-KeyCredentialLink` attribute changed)
-- Anomalous Kerberos PKINIT requests for machine accounts
-- BloodHound edge: `AddKeyCredentialLink`
+La Blue Team peut notamment rechercher :
 
-## Forensic Investigation Questions
+- `Event ID 5136` — **DS Object Modified**, modification de l’attribut `msDS-KeyCredentialLink`.
+- Des requêtes **Kerberos PKINIT** inhabituelles pour des comptes machines.
+- La relation BloodHound `AddKeyCredentialLink`.
+
+## Questions pour l’investigation forensique
 
 ### Identity & Access
-* 🔍 Did some account have ability to write to the `KeyCredentialLink` attribute of other objects?
-* What key pair was created and appended by which compromised account under malicious control?
-* What account was compromised after initial foothold to gain write access?
-* Which accounts held `GenericWrite` or `WriteProperty` over computer/user objects, and were those permissions intentional or misconfigured?
-* Was the `msDS-KeyCredentialLink` attribute ever legitimately written to in this environment, or is any write an anomaly?
-* Which accounts performed PKINIT authentication (Certificate/Key Trust Kerberos) — is that normal for this environment?
+
+- 🔍 Un compte pouvait-il écrire dans l’attribut `KeyCredentialLink` d’autres objets ?
+- Quelle paire de clés a été créée, et par quel compte compromis a-t-elle été ajoutée ?
+- Quel compte a été compromis après l’Initial Access pour obtenir les permissions d’écriture ?
+- Quels comptes détenaient `GenericWrite` ou `WriteProperty` sur les objets utilisateurs ou ordinateurs ? Ces droits étaient-ils attendus ?
+- Des modifications légitimes de `msDS-KeyCredentialLink` existaient-elles déjà dans cet environnement ?
+- Quels comptes ont réalisé une authentification **PKINIT** (Certificate / Key Trust Kerberos) ? Était-ce habituel ?
 
 ### Timeline & Scope
-* ⚠️ What is the earliest `Event ID 5136` for `msDS-KeyCredentialLink` modifications, and how far back does that pre-date the ransomware deployment?
-* Were multiple computer or user objects targeted with Shadow Credentials, or only one pivot point?
-* What is the time delta between the Shadow Credential write and the first DCSync event — was this scripted/automated?
+
+- ⚠️ Quel est le premier `Event ID 5136` concernant `msDS-KeyCredentialLink` ? Combien de temps avant le ransomware est-il survenu ?
+- Plusieurs objets utilisateurs ou ordinateurs ont-ils été ciblés par des Shadow Credentials, ou un seul pivot ?
+- Quel délai sépare l’ajout de Shadow Credentials du premier événement DCSync ? La séquence semble-t-elle automatisée ?
 
 ### Lateral Movement & Privilege Escalation
-* Which DC processed the PKINIT TGT request, and does its KDC log (`Event ID 4768`) show certificate-based pre-auth against a machine account?
-* Did the `FS01$` machine account perform any unusual LDAP replication requests (`Event ID 4662` — replication GUID)?
-* 🔥 Were any other machine accounts abused after initial DCSync, or did the attacker move straight to domain admin credentials?
+
+- Quel DC a traité la demande de TGT PKINIT ? Son journal KDC (`Event ID 4768`) révèle-t-il une pré-authentification par certificat sur un compte machine ?
+- Le compte machine `FS01$` a-t-il réalisé des requêtes de réplication LDAP inhabituelles (`Event ID 4662` et GUID de réplication) ?
+- 🔥 D’autres comptes machines ont-ils été utilisés après le premier DCSync, ou l’attaquant est-il passé directement aux credentials Domain Admin ?
 
 ### Persistence & Cleanup
-* 🧩 Were any Shadow Credential keys left in place after the attack — `msDS-KeyCredentialLink` should be empty on all objects post-remediation?
-* Were Golden or Silver tickets generated from the dumped `krbtgt` hash — check for `Event ID 4769` with unusual encryption types (`0x17` RC4 anomaly)?
-* Were any new domain admin accounts or scheduled tasks created as persistence before ransomware?
 
-### Initial Access (Phishing Chain)
-* What process spawned the macro execution — was it `WINWORD.EXE` or `EXCEL.EXE`, and what child process did it create?
-* 💡 Does email gateway logging show the original phishing sender, and were other users targeted by the same campaign?
+- 🧩 Des clés Shadow Credentials sont-elles restées en place après l’attaque ? Vérifier les valeurs `msDS-KeyCredentialLink` dans le contexte de l’environnement.
+- Des Golden Tickets ou Silver Tickets ont-ils été créés à partir du hash `krbtgt` ? Vérifier les événements `4769` et les types de chiffrement inhabituels (par exemple `0x17`, RC4).
+- Des comptes Domain Admin ou Scheduled Tasks ont-ils été créés pour la persistence avant le ransomware ?
+
+### Initial Access — Phishing Chain
+
+- Quel processus a lancé la macro : `WINWORD.EXE` ou `EXCEL.EXE` ? Quel child process a été créé ?
+- 💡 Les logs de la messagerie permettent-ils d’identifier l’expéditeur du phishing et d’éventuelles autres cibles ?
 
 ---
 
->[Shadow Credentials - Hacker Recipes](https://www.thehacker.recipes/ad/movement/kerberos/shadow-credentials)
-
+> [Shadow Credentials — Hacker Recipes](https://www.thehacker.recipes/ad/movement/kerberos/shadow-credentials)
