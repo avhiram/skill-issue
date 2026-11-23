@@ -103,7 +103,7 @@ const sections = [
 const supplementary: Level[] = [
   {
     id: 'bonus-windows-labs',
-    title: 'Windows : s'entraîner sur des machines',
+    title: "Windows : s'entraîner sur des machines",
     intro: 'Applique les fondamentaux Windows, Active Directory et pentest sur des rooms dédiées.',
     learn: ['Analyse les services Windows, les permissions et les configurations du lab.'],
     exercise: 'Résoudre deux rooms Windows puis consigner les commandes, résultats et corrections.',
