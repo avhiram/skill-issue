@@ -1,155 +1,83 @@
 # Lab — Initial Access
 
-> **Read this first — two scenarios, one lab**
->
-> This lab covers techniques used in two different contexts. Understanding which applies to
-> the exam saves you wasting time on steps that are not needed on exam day.
->
-> | Scenario | When it applies | What you do |
-> |----------|----------------|-------------|
-> | **Exam (assume-breach)** | You are given creds and can log into the foothold workstation yourself | Build the DLL on the dev box, copy to workstation, set env vars, run `ngentask.exe` manually — no ISO, no LNK, no social engineering |
-> | **Real engagement (no direct access)** | You cannot log in — you need a user to execute something for you | The full chain: payload → decoy → LNK trigger → ISO container → delivery via CS site clone |
->
-> **The exam does NOT require you to socially engineer anyone.** The phishing delivery
-> chain (decoy, LNK, ISO, site clone) teaches real-world tradecraft. On exam day you run
-> the payload yourself on the machine you already have access to.
->
-> **What both scenarios share:** the core payload technique —
-> AppDomainManager injection via `ngentask.exe` + process hollowing into `msedge.exe`.
-> That is what this lab is really teaching. Everything else is the delivery wrapper.
+> **Deux scénarios, un même lab.** Cette fiche distingue l’examen Assume Breach, avec une session Windows déjà accessible, de l’exercice de livraison à distance présenté dans le cours.
+
+| Scénario | Situation | Objectif du cours |
+|---|---|---|
+| Examen — Assume Breach | Identifiants et accès à la workstation fournis | Préparer la DLL du lab et étudier son chargement avec `ngentask.exe` ; ni ISO, ni LNK, ni phishing requis |
+| Livraison à distance | Aucun accès direct à la session cible | Comprendre les risques du document leurre, du raccourci LNK, du conteneur ISO et de la distribution web |
+
+**Point essentiel :** la technique commune est le chargement d’une assembly via `AppDomainManager` et `ngentask.exe`, avec un scénario de Process Hollowing vers `msedge.exe`. Les étapes de livraison ne sont pas nécessaires dans la variante Assume Breach.
 
 ---
 
-## The Core Technique — AppDomainManager Injection
+## Comprendre AppDomainManager Injection
 
-**Why this technique exists (the problem it solves):**
+**Principe :** sous .NET Framework, une classe dérivée de `AppDomainManager` peut intervenir pendant l’initialisation d’un domaine d’application. Le runtime peut la charger selon les paramètres d’environnement fournis ; dans un contexte non maîtrisé, cette fonctionnalité peut être détournée.
 
-You need to run a beacon on a machine with Defender ON. Simply running `http_x64.exe` gets
-blocked — the exe artifact is flagged by static or memory scan. You need a way to execute
-shellcode that:
-- Does not use a suspicious loader process (no `rundll32.exe`, no `regsvr32.exe`)
-- Places the beacon inside a process that legitimately makes network connections
-- Does not write obvious malware to disk (the loader itself must be clean)
+Le cours étudie une DLL .NET possédant une classe `AppDomainManager`, les variables `APPDOMAIN_MANAGER_TYPE` et `APPDOMAIN_MANAGER_ASM`, et le chargement de cette DLL depuis un exécutable .NET Framework.
 
-**How AppDomainManager injection solves this:**
+### Pourquoi `ngentask.exe` ?
 
-.NET Framework applications support a feature called `AppDomainManager` — it lets you hook
-into the startup of any .NET app and run your own code before the app's real code runs.
-You exploit this by:
+`ngentask.exe` est un binaire lié à .NET Framework. Le lab présente une version conservée dans le magasin de composants Windows `WinSxS`. Le comportement exact varie selon les versions de Windows et du runtime.
 
-1. Building a malicious DLL that inherits from `AppDomainManager` and contains your beacon shellcode
-2. Setting two environment variables (`APPDOMAIN_MANAGER_TYPE` and `APPDOMAIN_MANAGER_ASM`)
-   that tell the .NET runtime to load YOUR DLL as the domain manager
-3. Running any .NET Framework binary — the runtime loads your DLL automatically before the
-   app starts, executing your code in the context of a legitimate, signed Microsoft binary
+La signature numérique d’un exécutable Microsoft ne garantit pas que les assemblies chargées dans son contexte soient toutes légitimes.
 
-**Why `ngentask.exe` specifically:**
+### Pourquoi `msedge.exe` ?
 
-`ngentask.exe` is a legitimate Microsoft-signed .NET Framework binary (`ngen` = Native Image
-Generator, part of the .NET runtime). The version from `WinSxS` is an older build that still
-has the DLL search path vulnerability that makes this technique work. Crucially:
-- It is a signed Microsoft binary — Defender trusts it
-- It is a .NET Framework app — the `APPDOMAIN_MANAGER` env vars apply to it
-- It does nothing visible when run — no window, no output — so it runs silently
-- It exists on every Windows system with .NET Framework installed
+Le scénario décrit un Beacon fonctionnant dans un processus Microsoft Edge. Il sert à étudier les relations parent-enfant, les écritures mémoire et les connexions réseau. Le fait qu’un navigateur puisse légitimement accéder à Internet ne garantit pas que son activité échappe aux contrôles EDR.
 
-**Why `msedge.exe` as the injection target:**
+### Éléments OPSEC à contrôler
 
-The shellcode performs **process hollowing** into `msedge.exe`:
-- Microsoft Edge legitimately makes outbound HTTPS/HTTP connections — perfect cover for beacon C2 traffic
-- Edge is expected to be running on any workstation — its presence in the process list is not suspicious
-- Beacon's C2 callbacks look like browser traffic (`Host: www.bleepincomputer.com` from an Edge process)
-- If the EDR checks which process is making outbound connections, it sees Edge
+| Élément | Catégorie des notes | Télémétrie potentielle |
+|---|---|---|
+| `AppDomainHijack.dll` sur disque | CAUTION | Présence du fichier, analyse statique et ressources intégrées |
+| `ngentask.exe` | SAFE dans les notes | Processus signé et chargements associés |
+| Variables `APPDOMAIN_MANAGER_*` | SAFE dans les notes | Variables de session et chargement des assemblies |
+| Process Hollowing vers `msedge.exe` | SAFE dans les notes | Écritures en mémoire et arborescence des processus |
+| Communications depuis `msedge.exe` | SAFE dans les notes | Activité HTTP/S et journaux réseau |
 
-**OPSEC summary of the full technique:**
-
-| Component | OPSEC | Why |
-|-----------|-------|-----|
-| AppDomainHijack.dll on disk | CAUTION | A DLL must exist on disk — run ThreatCheck against it |
-| ngentask.exe execution | SAFE | Signed Microsoft binary — not suspicious to run |
-| APPDOMAIN env vars | SAFE | Set in process memory only — no registry, no disk write |
-| Process hollowing into msedge.exe | SAFE | Beacon runs inside legitimate Edge browser process |
-| Beacon C2 traffic from msedge.exe | SAFE | Edge legitimately makes HTTP outbound — traffic blends in |
+Ces catégories OPSEC sont indicatives et **ne garantissent pas l’absence de détection**.
 
 ---
 
-# Payload
+## Préparer le payload du lab
 
-> **EXAM DAY — do this on the Windows attacker dev box before touching the exam workstation.**
-> The DLL you build here is what you will copy to (or run from) the foothold machine.
-> Defence evasion setup (Artifact Kit, Resource Kit, malleable profile) must already be done.
+La préparation se déroule sur l’Attacker Desktop Windows. Le Malleable C2 Profile, l’Artifact Kit et le Resource Kit sont étudiés dans la fiche Defense Evasion.
 
-## Step 1 — Generate raw Beacon shellcode
+### Générer le fichier binaire du Beacon
 
-1. Launch Cobalt Strike and connect to the team server.
-2. Generate Beacon shellcode.
-    1. Go to **Payloads > Windows Stageless Payload**.
-    2. Listener: **http**
-    3. Output: **Raw**
-    4. Click **Generate**.
-    5. Save to *C:\Payloads\http_x64.xprocess.bin*.
+Dans Cobalt Strike, ouvrir **Payloads > Windows Stageless Payload**. Le lab présente le listener `http`, le format `Raw` et le fichier `C:\Payloads\http_x64.xprocess.bin`.
 
-> **Why raw output and not exe?** You are embedding the shellcode inside a custom .NET DLL
-> loader that you control. The DLL is the artifact — not a CS-generated exe. Raw output gives
-> you the pure shellcode bytes to embed as a resource. The Artifact Kit you built earlier
-> handles CS-generated exe/dll/ps1 artifacts — this DLL is your own custom loader, so you
-> control the evasion yourself.
->
-> **Why `.xprocess.bin` naming?** The extension `.xprocess.bin` is arbitrary — it is used
-> so that when added to the Visual Studio project, it can be set as an Embedded Resource.
-> The name is also referenced in the code as `AppDomainHijack.http_x64.xprocess.bin` — the
-> resource stream name is the namespace + filename.
+**Explication :** le format Raw produit des octets sans conteneur PE. Dans le scénario, ces données sont intégrées comme ressource à l’assembly .NET. Le suffixe `.xprocess.bin` est le nom choisi dans le lab.
 
-<img src="/images/initial-access-lab-01.png" width=800>  
+<img src="/images/initial-access-lab-01.png" width=800>
 
-## Step 2 — Create the project directory
+### Préparer le dossier de travail
 
-1. Open a Terminal window and create a new directory to hold the dependencies for the infection chain.
-  1. `mkdir C:\Payloads\deals`
+Créer le répertoire `C:\Payloads\deals\`, utilisé pour regrouper les fichiers d’exercice. Le reste de la fiche reprend ce chemin d’exemple.
 
-> **Why a separate directory?** The full infection chain (DLL + ngentask.exe + decoy + LNK)
-> needs to co-locate. When the trigger runs, the current working directory must contain all
-> these files because ngentask.exe searches the CWD for the DLL to sideload.
+### Créer le projet .NET Framework
 
-## Step 3 — Build the AppDomainHijack DLL
+Dans Visual Studio, créer une **Class Library (.NET Framework)** nommée `AppDomainHijack`, avec solution et projet dans le même répertoire.
 
-1. Open Visual Studio and create a new `Class Library (.NET Framework)` project.
+**Pourquoi .NET Framework ?** Les variables `APPDOMAIN_MANAGER_*` concernées par l’exercice appartiennent au modèle de chargement .NET Framework. Elles ne sont pas équivalentes aux mécanismes des versions modernes de .NET.
 
-⚠️ Make sure it specifically says `.NET Framework`, otherwise it won't work.  
+<img src="/images/initial-access-lab-02.png" width=800>
 
-    1. Use `AppDomainHijack` as the project name.
-    2. Check the *place solution and project in the same directory* box.
+### Ajouter le fichier en Embedded Resource
 
-> **Why `.NET Framework` specifically (not .NET Core / .NET 5+)?** The `AppDomainManager`
-> class and the `APPDOMAIN_MANAGER_*` environment variables only apply to the legacy .NET
-> Framework runtime (CLR 4.x). Modern .NET (Core/5/6/7/8) uses a different hosting model
-> and ignores these variables. `ngentask.exe` from WinSxS runs on .NET Framework — so your
-> DLL must target the same runtime.
+Dans Solution Explorer, sélectionner **Add > Existing Item**, choisir `C:\Payloads\http_x64.xprocess.bin`, puis définir **Build Action > Embedded Resource**.
 
-<img src="/images/initial-access-lab-02.png" width=800>  
+**Explication :** les octets du fichier sont inclus dans les ressources de la DLL. Le code du lab les lit avec `Assembly.GetManifestResourceStream(...)`. Le nom de ressource doit correspondre au nom attendu dans le projet.
 
-3. Add the shellcode to the project.
-    1. Right-click the project in the Solution Explorer and select **Add > Existing Item**.
-    2. Browse to *C:\Payloads*.
-    3. Change the file filter to *All Files*.
-    4. Select *http_x64.xprocess.bin* and click **Add**.
-    5. Right-click the shellcode file in the Solution Explorer and select **Properties**.
-    6. Set its *Build Action* to **Embedded Resource**.
+**Observation :** le fichier binaire inclus dans la DLL reste susceptible d’être contrôlé par Microsoft Defender et les outils d’analyse mémoire.
 
-> **Why Embedded Resource?** Setting the shellcode as an Embedded Resource compiles the raw
-> bytes directly into the DLL's `.rsrc` section. At runtime, the code reads it via
-> `Assembly.GetManifestResourceStream(...)` — the shellcode never touches disk again after
-> the initial DLL build. The bytes are inside the DLL itself.
->
-> **OPSEC note:** The raw shellcode is stored unencrypted inside the DLL's resource section.
-> Defender will scan it there. Run ThreatCheck against the compiled DLL — if flagged, you need
-> to XOR-encrypt the shellcode bytes in the resource and decrypt them in `InitializeNewDomain`
-> before calling `WriteProcessMemory`. The lab assumes the Malleable C2 profile's stage block
-> modifications make the beacon shellcode bytes unrecognisable — confirm with ThreatCheck.
+<img src="/images/initial-access-lab-03.png" width=800>
 
-<img src="/images/initial-access-lab-03.png" width=800>  
+### Examiner le code `Class1.cs`
 
-4. Copy the following code into `Class1.cs`:  
+Le code suivant est celui du scénario de formation ; il est conservé pour référence.
 
     ```c
     using System;
