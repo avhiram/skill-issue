@@ -1,6 +1,6 @@
 ---
 title: OSINT
-description: Méthode, ressources et commandes de recherche en sources ouvertes.
+description: Outils et ressources OSINT.
 aside: false
 prev: false
 next: false
@@ -8,11 +8,9 @@ next: false
 
 # OSINT
 
-Une bibliothèque pratique pour la recherche en sources ouvertes. Les outils sont classés selon la **question à résoudre**, pas selon leur popularité.
+Outils OSINT classés par usage.
 
 **[Cheatsheet OSINT - commandes à copier](./cheatsheet.md)**
-
-Choisis un point de départ : **pseudonyme**, **e-mail**, **nom**, **domaine**, **image** ou **infrastructure**. Les résultats se recoupent avant toute conclusion.
 
 ## Recherche Web et dorks
 
@@ -89,14 +87,3 @@ Choisis un point de départ : **pseudonyme**, **e-mail**, **nom**, **domaine**, 
 - **[OSINT Framework](https://osintframework.com/)** - Choisir un outil selon le type de renseignement.
 - **[CyberChef](https://gchq.github.io/CyberChef/)** - Convertir et décoder des données.
 - **[MITRE ATT&CK](https://attack.mitre.org/)** - Relier des indices cyber aux techniques documentées.
-
-## Méthode de recherche
-
-1. **Définir** la question, la cible et le périmètre.
-2. **Collecter** les informations publiques avec deux sources différentes.
-3. **Recouper** les identifiants, dates, domaines et relations sans conclure sur un seul indice.
-4. **Conserver** les URL, les dates UTC et les captures nécessaires au compte rendu.
-
-La disponibilité et les fonctionnalités de certains services varient selon leur formule. Une correspondance de pseudonyme ou de nom n'est pas une preuve d'identité.
-
-**[Consulter les commandes OSINT](./cheatsheet.md)**
