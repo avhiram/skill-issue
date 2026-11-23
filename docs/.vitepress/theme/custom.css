@@ -600,7 +600,8 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   gap: .7rem;
   margin: .85rem 0 1.4rem;
 }
-.vp-doc .profile-proof a {
+.vp-doc .profile-proof a,
+.vp-doc .profile-proof .profile-proof-entry {
   display: block;
   border: 1px solid #382b49;
   border-radius: 9px;
