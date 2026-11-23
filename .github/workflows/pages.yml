@@ -49,5 +49,16 @@ jobs:
           git add -A
           if ! git diff --cached --quiet; then
             git commit -m "Publish compiled VitePress site"
-            git push origin HEAD:main
+            # Le dépôt peut recevoir une modification pendant le build.
+            # Rebase sans force, puis réessaye pour éviter un rejet non-fast-forward.
+            for attempt in 1 2 3 4; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              sleep 2
+            done
+            echo "Publication refusée après plusieurs tentatives" >&2
+            exit 1
           fi
