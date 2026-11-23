@@ -1698,6 +1698,42 @@ export const academyExtraResources = [
     "routeLevel": "blue-logs",
     "description": "Guide libre pour observer les alertes et journaux d'un moteur IDS sur son lab.",
     "access": "Gratuit"
+  },
+  {
+    "id": "added-110",
+    "title": "OffSec PEN-200 - OSCP / OSCP+",
+    "url": "https://www.offsec.com/courses/pen-200/",
+    "routeLevel": "certifications",
+    "access": "Payant",
+    "description": "Présentation officielle du cursus et de l'examen OSCP/OSCP+. Préparation et certification payantes.",
+    "category": "additional"
+  },
+  {
+    "id": "added-111",
+    "title": "OffSec - formations par métier (Red, Blue, Web)",
+    "url": "https://www.offsec.com/learning/",
+    "routeLevel": "certifications",
+    "access": "Accès selon offre",
+    "description": "Vue d'ensemble des cursus OffSec en pentest, sécurité Web, SOC, chasse aux menaces et réponse à incident.",
+    "category": "additional"
+  },
+  {
+    "id": "added-112",
+    "title": "INE - eJPT : certification Junior Pentester",
+    "url": "https://ine.com/security/certifications/ejpt-certification",
+    "routeLevel": "certifications",
+    "access": "Payant",
+    "description": "Parcours d'entrée vers le pentest. INE indique qu'abonnement et voucher d'examen sont requis.",
+    "category": "additional"
+  },
+  {
+    "id": "added-113",
+    "title": "INE - eCPPT : certification Pentest",
+    "url": "https://ine.com/security/certifications/ecppt-certification",
+    "routeLevel": "certifications",
+    "access": "Payant",
+    "description": "Cursus intermédiaire en pentest ; certificat accessible selon l'abonnement INE Premium et son voucher.",
+    "category": "additional"
   }
 ] as const
 
