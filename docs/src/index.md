@@ -23,11 +23,11 @@ aside: false
   <div class="profile-marquee-track">
 <div class="profile-marquee-group">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Ministère de l’Économie</span><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Intérieur">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="Logo du ministère de l’Intérieur" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Ministère de l’Intérieur</span><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="Logo du ministère de l’Intérieur" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Ministère de l’Intérieur</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Police nationale">
@@ -35,19 +35,19 @@ aside: false
     <span class="profile-logo-label">Police nationale</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/terre" target="_blank" rel="noopener noreferrer" title="Armée de Terre">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="Logo de l’Armée de Terre" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Police nationale</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="Logo de l’Armée de Terre" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Armée de Terre</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/comcyber" target="_blank" rel="noopener noreferrer" title="COMCYBER">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="Insigne du Commandement de la cyberdéfense" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">COMCYBER</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="Insigne du Commandement de la cyberdéfense" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">COMCYBER</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nasa.gov/" target="_blank" rel="noopener noreferrer" title="NASA">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="Logo de la NASA" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">NASA</span><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="Logo de la NASA" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" title="Locked Shields 2025">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="Emblème Locked Shields 2025" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Locked Shields 2025</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="Emblème Locked Shields 2025" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Locked Shields 2025</span>
   </a>
 
@@ -56,11 +56,11 @@ aside: false
     <span class="profile-logo-label">Police judiciaire · DNPJ</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" title="OFMIN">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="Logo OFMIN" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">DNPJ</span><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="Logo OFMIN" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.capital.fr/" target="_blank" rel="noopener noreferrer" title="Capital">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://static.wixstatic.com/media/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg/v1/fill/w_1000%2Ch_500%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg" alt="Logo du magazine Capital" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Capital</span><img src="https://static.wixstatic.com/media/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg/v1/fill/w_1000%2Ch_500%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg" alt="Logo du magazine Capital" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Capital</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" title="École 2600">
@@ -70,11 +70,11 @@ aside: false
 </div>
 <div class="profile-marquee-group" aria-hidden="true">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">École 2600</span><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Intérieur">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Ministère de l’Intérieur</span><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Ministère de l’Intérieur</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Police nationale">
@@ -82,19 +82,19 @@ aside: false
     <span class="profile-logo-label">Police nationale</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/terre" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Armée de Terre">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Police nationale</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Armée de Terre</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/comcyber" target="_blank" rel="noopener noreferrer" tabindex="-1" title="COMCYBER">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">COMCYBER</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">COMCYBER</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nasa.gov/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="NASA">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">NASA</span><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Locked Shields 2025">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Locked Shields 2025</span><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Locked Shields 2025</span>
   </a>
 
@@ -103,11 +103,11 @@ aside: false
     <span class="profile-logo-label">Police judiciaire · DNPJ</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OFMIN">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">DNPJ</span><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.capital.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Capital">
-    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">LOGO</span><img src="https://static.wixstatic.com/media/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg/v1/fill/w_1000%2Ch_500%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><span class="profile-logo-placeholder" aria-hidden="true">Capital</span><img src="https://static.wixstatic.com/media/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg/v1/fill/w_1000%2Ch_500%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
     <span class="profile-logo-label">Capital</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="École 2600">
@@ -160,7 +160,7 @@ aside: false
 <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/68c56fc9806f169445f5b8ab" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CRTA"><span class="profile-credential-image"><img src="https://media.licdn.com/dms/image/v2/D4D22AQGmAbjpbxp-5g/feedshare-shrink_2048_1536/feedshare-shrink_2048_1536/0/1733229872664?e=2147483647&amp;t=6vx_ry5tdND_gPj2OENaZ10bdAqoCVCOITcZmrqoGe4&amp;v=beta" alt="Emblème CRTA" loading="lazy" decoding="async" onerror="this.style.display='none'"><span class="profile-credential-fallback">CRTA</span></span><span class="profile-credential-name">CRTA</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/68f53d1242b3b10b486f5c93" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CRT-ID"><span class="profile-credential-image"><img src="https://redteamshell.com/images/CRT-ID-Badge.png" alt="Emblème CRT-ID" loading="lazy" decoding="async" onerror="this.style.display='none'"><span class="profile-credential-fallback">CRT-ID</span></span><span class="profile-credential-name">CRT-ID</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://labs.hackthebox.com/achievement/badge/1543889/216" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif APTLabs"><span class="profile-credential-image"><span class="profile-credential-fallback">APTLabs</span></span><span class="profile-credential-name">APTLabs</span><span class="profile-credential-issuer">Hack The Box · Pro Lab</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
-<a class="profile-credential" href="https://drive.google.com/file/d/1MfyKGqUnnigKTa1kYU8Kxp29k0YGhaUI/view" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CCDCOE"><span class="profile-credential-image"><span class="profile-credential-fallback">CCDCOE</span></span><span class="profile-credential-name">CCDCOE</span><span class="profile-credential-issuer">OTAN · Formation</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+<a class="profile-credential" href="https://drive.google.com/file/d/1MfyKGqUnnigKTa1kYU8Kxp29k0YGhaUI/view" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CCDCOE"><span class="profile-credential-image"><img src="https://ccdcoe.org/uploads/2014/12/ccdcoe-cmyk_horizontal-short.jpg" alt="Emblème NATO CCDCOE" loading="lazy" decoding="async" onerror="this.style.display=\'none\'"><span class="profile-credential-fallback">CCDCOE</span></span><span class="profile-credential-name">CCDCOE</span><span class="profile-credential-issuer">OTAN · Formation</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://www.credly.com/badges/288e1eda-2869-49de-bce7-df94921952be" target="_blank" rel="noopener noreferrer" title="CBBH, ancienne appellation de CWES : même justificatif"><span class="profile-credential-image"><img src="https://media.licdn.com/dms/image/sync/v2/D5627AQGJrFwGaZb3pQ/articleshare-shrink_800/articleshare-shrink_800/0/1730739412552?e=2147483647&amp;t=kJKqEY9syvhnZMDtDxr8gMPBv14htzWrThHdS9wrJHM&amp;v=beta" alt="Emblème historique CBBH" loading="lazy" decoding="async" onerror="this.style.display='none'"><span class="profile-credential-fallback">CBBH</span></span><span class="profile-credential-name">CBBH</span><span class="profile-credential-issuer">Ancien nom de CWES</span><span class="profile-credential-link">Même justificatif CWES ↗</span></a>
 <div class="profile-credential profile-credential-unlinked"><span class="profile-credential-image"><span class="profile-credential-fallback">COPO</span></span><span class="profile-credential-name">COPO</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Justificatif à ajouter</span></div>
 </div>
