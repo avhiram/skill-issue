@@ -9,6 +9,6 @@ next: false
 
 # Academy
 
-Une roadmap pour apprendre la cybersécurité gratuitement, depuis les bases jusqu'aux spécialisations. Les exercices sont à réaliser uniquement sur des environnements autorisés.
+Un parcours concret de Level 0 à Level 4 : terminal, Linux, réseau, Web, CTF et labs open source. Apprendre en pratiquant, uniquement sur des environnements autorisés.
 
-<AcademyRoadmap />
+<AcademyPractical />
