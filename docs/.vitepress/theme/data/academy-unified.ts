@@ -1554,6 +1554,132 @@ export const academyExtraResources = [
     "routeLevel": "blue-threat",
     "description": "Challenges d'enquête et d'analyse d'incident; conditions d'accès à vérifier.",
     "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-094",
+    "title": "OffSec - PEN-103 Kali Linux Revealed (accès gratuit)",
+    "url": "https://help.offsec.com/hc/en-us/articles/360044925031-How-to-get-access-to-free-content-in-the-OffSec-Learning-Library",
+    "routeLevel": "linux-admin",
+    "description": "Cours OffSec gratuit avec création de compte, présenté dans la documentation officielle.",
+    "access": "Gratuit avec compte",
+    "category": "additional"
+  },
+  {
+    "id": "added-095",
+    "title": "OffSec - Proving Grounds Play (3 heures par jour)",
+    "url": "https://help.offsec.com/hc/en-us/articles/360048318472-Getting-Started-with-PG-Play-and-Practice",
+    "routeLevel": "ctf-intermediate",
+    "description": "Machines de pratique gratuites dans la limite de trois heures par jour. PG Practice est payant.",
+    "access": "Gratuit avec limites",
+    "category": "additional"
+  },
+  {
+    "id": "added-096",
+    "title": "OffSec - accès aux labs gratuits",
+    "url": "https://portal.offsec.com/sign-up/pg",
+    "routeLevel": "ctf-intermediate",
+    "description": "Inscription gratuite aux labs Proving Grounds Play et au contenu PEN-103.",
+    "access": "Gratuit avec compte",
+    "category": "additional"
+  },
+  {
+    "id": "added-097",
+    "title": "OffSec - cursus et certifications",
+    "url": "https://www.offsec.com/courses/",
+    "routeLevel": "certifications",
+    "description": "Catalogue OffSec : PEN-200, PEN-300, WEB, SOC, DFIR et autres formations selon les tarifs en vigueur.",
+    "access": "Payant / selon formule",
+    "category": "additional"
+  },
+  {
+    "id": "added-098",
+    "title": "INE Security - formations cybersécurité",
+    "url": "https://ine.com/security",
+    "routeLevel": "certifications",
+    "description": "Présentation des cursus techniques, labs et certifications INE (eJPT, eCPPT, eWPT, défensif et cloud).",
+    "access": "Payant / selon formule",
+    "category": "additional"
+  },
+  {
+    "id": "added-099",
+    "title": "INE Security - catalogue complet des cours cyber",
+    "url": "https://courses.ine.com/area/cyber-security/",
+    "routeLevel": "certifications",
+    "description": "Catalogue thématique officiel INE : offensive, SOC, cloud, DFIR, GRC et autres domaines ; accès à vérifier par cours.",
+    "access": "Accès selon abonnement",
+    "category": "additional"
+  },
+  {
+    "id": "added-100",
+    "title": "INE Security - offres et accès",
+    "url": "https://ine.com/pricing",
+    "routeLevel": "certifications",
+    "description": "Tarifs et conditions INE à consulter pour éviter de considérer tous les cours comme gratuits.",
+    "access": "Offres variables",
+    "category": "additional"
+  },
+  {
+    "id": "added-101",
+    "title": "HTB Academy - modules Tier 0 gratuits",
+    "url": "https://academy.hackthebox.com/faq",
+    "routeLevel": "ctf-beginner",
+    "description": "Modules Tier 0 annoncés gratuits ; les autres contenus utilisent crédits ou abonnements.",
+    "access": "Gratuit (Tier 0)",
+    "category": "additional"
+  },
+  {
+    "id": "added-102",
+    "title": "Linux - documentation Ubuntu Server",
+    "url": "https://ubuntu.com/server/docs/",
+    "routeLevel": "linux-admin",
+    "description": "Guides officiels gratuits sur utilisateurs, droits, SSH, services et administration Linux.",
+    "access": "Gratuit",
+    "category": "additional"
+  },
+  {
+    "id": "added-103",
+    "title": "MDN - fonctionnement des requêtes HTTP",
+    "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview",
+    "routeLevel": "web-basics",
+    "description": "Explication libre et accessible des échanges HTTP client-serveur.",
+    "access": "Gratuit",
+    "category": "additional"
+  },
+  {
+    "id": "added-104",
+    "title": "Sécurité Windows - documentation Microsoft",
+    "url": "https://learn.microsoft.com/en-us/windows/security/",
+    "routeLevel": "bonus-windows-labs",
+    "description": "Documentation gratuite pour examiner les mécanismes de protection de son propre poste Windows.",
+    "access": "Gratuit",
+    "category": "additional"
+  },
+  {
+    "id": "added-105",
+    "title": "pwn.college - Program Security",
+    "url": "https://pwn.college/program-security/",
+    "routeLevel": "extremely-hard-rooms",
+    "description": "Challenges de sécurité des programmes, avec des exercices difficiles et sans abonnement.",
+    "access": "Gratuit avec compte",
+    "category": "additional"
+  },
+  {
+    "id": "added-106",
+    "title": "OWASP - Web Security Testing Guide",
+    "url": "https://owasp.org/projects/web-security-testing-guide",
+    "routeLevel": "final-project",
+    "description": "Guide OWASP ouvert pour préparer la méthodologie d'audit et rédiger un rapport final.",
+    "access": "Gratuit",
+    "category": "additional"
+  },
+  {
+    "id": "added-107",
+    "title": "Open Source Security Testing Methodology Manual",
+    "url": "https://www.isecom.org/OSSTMM.3.pdf",
+    "routeLevel": "final-project",
+    "description": "Méthodologie d'audit à titre de référence ; disponibilité à confirmer.",
+    "access": "À vérifier",
+    "category": "additional"
   }
 ] as const
 
