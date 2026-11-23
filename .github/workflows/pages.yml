@@ -40,7 +40,7 @@ jobs:
           grep -q 'SKILL-ISSUE' docs/.vitepress/dist/index.html
           test -d docs/.vitepress/dist/assets
       - name: Audit all rendered HTML for visible Markdown fences
-        run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json
+        run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
       - name: Restore CRTO sources before publishing
         run: git restore --worktree -- docs/src/crto/liham
       - name: Publish compiled website at GitHub Pages root
