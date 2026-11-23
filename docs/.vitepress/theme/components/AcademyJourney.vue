@@ -459,32 +459,37 @@ const freeSets = new Map(Object.entries(freeSelections).map(([id, urls]) => [
 ]))
 const storageKey = 'skill-issue-academy-single-route-v1'
 const completed = ref<string[]>([])
-const viewMode = ref<'free' | 'all'>('free')
 const search = ref('')
 const showUrls = ref(false)
 const doneCount = computed(() => orderedLevels.filter(l => completed.value.includes(l.id)).length)
 const progress = computed(() => Math.round((doneCount.value / orderedLevels.length) * 100))
 const query = computed(() => simplify(search.value.trim()))
-function modeLinks(id: string): AssignedResource[] {
-  const list = levelLinks(id)
-  if (viewMode.value === 'all') return list
-  const free = freeSets.get(id)
-  return free ? list.filter(item => free.has(normalizeUrl(item.url))) : []
-}
-function visibleLinks(id: string) {
-  const base = modeLinks(id)
+// Toutes les URL restent visibles, sans onglets ni filtre qui raccourcit la page.
+function visibleLinks(id: string): AssignedResource[] {
+  const base = levelLinks(id)
   if (!query.value) return base
   const level = byId.get(id)
   if (level && simplify(level.title + ' ' + level.intro).includes(query.value)) return base
   return base.filter(item => simplify(item.title + ' ' + item.url + ' ' + (item.description || '')).includes(query.value))
+}
+function freeLinks(id: string): AssignedResource[] {
+  const free = freeSets.get(id)
+  return free ? visibleLinks(id).filter(item => free.has(normalizeUrl(item.url))) : []
+}
+function otherLinks(id: string): AssignedResource[] {
+  const free = freeSets.get(id)
+  return visibleLinks(id).filter(item => !free?.has(normalizeUrl(item.url)))
 }
 function visibleLevels(section: typeof sections[number]) {
   if (!query.value) return levelsIn(section)
   return levelsIn(section).filter(level => visibleLinks(level.id).length > 0)
 }
 const searchCount = computed(() => orderedLevels.reduce((n, l) => n + visibleLinks(l.id).length, 0))
-const filteredCount = computed(() => orderedLevels.reduce((n, l) => n + modeLinks(l.id).length, 0))
-const freeComplete = computed(() => orderedLevels.every(l => modeLinks(l.id).length > 0))
+const freeCount = orderedLevels.reduce((n, l) => {
+  const free = freeSets.get(l.id)
+  return n + levelLinks(l.id).filter(item => free?.has(normalizeUrl(item.url))).length
+}, 0)
+
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify(completed.value)) } catch {}
 }
@@ -512,19 +517,10 @@ onMounted(() => {
         <div class="progress-track" role="progressbar" aria-label="Progression de la roadmap" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length"><span :style="{width: progress + '%'}"></span></div>
         <span class="progress-note">{{ catalog.length }} liens uniques dans la vue « Toutes les ressources ». Progression enregistrée sur cet appareil.</span>
       </div>
-      <div class="mode-panel">
-        <div class="mode-switch" role="group" aria-label="Choisir les ressources à afficher">
-          <button type="button" :class="{active: viewMode === 'free'}" :aria-pressed="viewMode === 'free'" @click="viewMode = 'free'">100 % gratuit</button>
-          <button type="button" :class="{active: viewMode === 'all'}" :aria-pressed="viewMode === 'all'" @click="viewMode = 'all'">Toutes les ressources</button>
-        </div>
-        <p v-if="viewMode === 'free'" class="mode-explainer">
-          {{ filteredCount }} ressources sélectionnées sans achat de cours, réparties dans les {{ orderedLevels.length }} niveaux.
-          Certains labs nécessitent un compte gratuit, une machine personnelle ou des ressources système. Les certificats eux-mêmes peuvent être payants.
-        </p>
-        <p v-else class="mode-explainer">
-          {{ catalog.length }} ressources : cours gratuits, freemium, open source et formations payantes (OffSec, INE, etc.).
-          Vérifie les conditions d'accès avant toute inscription.
-        </p>
+      <div class="free-guide" id="parcours-gratuit">
+        <strong>Parcours gratuit - {{ orderedLevels.length }} niveaux</strong>
+        <p>Pour apprendre sans acheter de cours, suis les ressources sous <em>Pour commencer gratuitement</em> à chaque niveau, du début jusqu'au projet final. Les autres ressources restent juste en dessous, sans changer de page.</p>
+        <p class="free-guide-note">{{ freeCount }} ressources sélectionnées sans achat de cours, sur {{ catalog.length }} liens au total. Certains labs nécessitent un compte gratuit et les examens ou le matériel peuvent être payants.</p>
       </div>
       <nav class="contents" aria-label="Sommaire de la roadmap">
         <a v-for="(section, i) in sections" :key="section.id" :href="'#' + section.id"><span class="contents-number">{{ i + 1 }}</span>{{ section.title }}</a>
@@ -547,14 +543,13 @@ onMounted(() => {
       <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="level">
         <div class="level-head">
           <h3><span class="level-prefix">Niveau {{ numberFor(level.id) }}</span> <span class="dash">-</span> {{ level.title }}</h3>
-          <div class="level-meta"><span class="level-count">{{ modeLinks(level.id).length }} liens</span><label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label></div>
+          <div class="level-meta"><span class="level-count">{{ freeLinks(level.id).length }} gratuits / {{ levelLinks(level.id).length }} liens</span><label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label></div>
         </div>
         <p class="level-info">{{ level.intro }}</p>
-        <ul class="link-list">
-          <template v-for="(item, resourceIndex) in visibleLinks(level.id)" :key="item.id + item.url">
-            <li v-if="!query && resourceIndex === 0" class="resource-group-title">Pour commencer</li>
-            <li v-if="!query && resourceIndex === 3" class="resource-group-title further">Pour approfondir</li>
-            <li :class="{ 'key-resource': !query && resourceIndex < 3 }">
+        <div v-if="freeLinks(level.id).length" class="resource-block free-resources">
+          <h4>Pour commencer gratuitement <span>{{ freeLinks(level.id).length }} lien{{ freeLinks(level.id).length > 1 ? 's' : '' }}</span></h4>
+          <ul class="link-list">
+            <li v-for="item in freeLinks(level.id)" :key="item.id + item.url" class="key-resource">
               <span class="arrow" aria-hidden="true">»</span>
               <div class="resource-line">
                 <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
@@ -562,9 +557,22 @@ onMounted(() => {
                 <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
               </div>
             </li>
-          </template>
-        </ul>
-        <div v-if="!query && !modeLinks(level.id).length" class="no-resource">
+          </ul>
+        </div>
+        <div v-if="otherLinks(level.id).length" class="resource-block other-resources">
+          <h4>Pour aller plus loin <span>{{ otherLinks(level.id).length }} lien{{ otherLinks(level.id).length > 1 ? 's' : '' }}</span></h4>
+          <ul class="link-list">
+            <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
+              <span class="arrow" aria-hidden="true">»</span>
+              <div class="resource-line">
+                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                <span class="description"> - {{ describe(item) }}</span>
+                <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div v-if="!query && !levelLinks(level.id).length" class="no-resource">
           Exercice final : réutilise les ressources des niveaux précédents.
         </div>
         <details v-if="!query" class="level-exercise">
@@ -577,7 +585,7 @@ onMounted(() => {
       <a class="back-top" href="#about">↑ Retour au début</a>
     </section>
 
-    <p class="footer-note">Le filtre gratuit sélectionne des supports accessibles sans abonnement ou achat de cours connu. Il ne garantit pas la gratuité du matériel, de l'hébergement Cloud ou des examens. Certaines plateformes limitent les heures ou demandent un compte. Les conditions changent : vérifie-les à chaque inscription. N'utilise que des labs et environnements explicitement autorisés.</p>
+    <p class="footer-note">Le parcours gratuit signale des supports accessibles sans achat de cours connu, sans garantir les coûts matériels, Cloud ou les examens. Les autres liens incluent des ressources gratuites, freemium et payantes. Les conditions d'accès évoluent : vérifie-les avant l'inscription. Utilise uniquement des labs et environnements explicitement autorisés.</p>
   </div>
 </template>
 
@@ -714,11 +722,18 @@ onMounted(() => {
   .link-list li { font-size:.8rem; }
 }
 
-.mode-panel { background:#160f20; border:1px solid #493354; border-radius:9px; padding:13px 15px; margin:19px 0 22px; }
-.mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
-.mode-switch button { background:#22182e; border:1px solid #5a4071; border-radius:6px; padding:11px 16px; color:#cbbbd9; font:inherit; font-size:.85rem; font-weight:650; cursor:pointer; }
-.mode-switch button:hover { border-color:#b690e1; color:#f4e5ff; }
-.mode-switch button.active { background:#604381; color:#fff; border-color:#b38cde; }
-.mode-explainer { margin:11px 0 0!important; color:#c3b2d0!important; font-size:.78rem; line-height:1.7; max-width:820px; }
-@media(max-width:460px){ .mode-switch button { flex:1; padding:11px 9px; font-size:.8rem; } }
+/* Une seule page longue, avec les liens gratuits visibles sous chaque niveau. */
+.free-guide { margin:21px 0 25px; padding:15px 19px; border-left:3px solid #ba8ee5; background:#171021; border-radius:0 7px 7px 0; }
+.free-guide strong { display:block; font-size:.94rem; color:#ecdcff; margin-bottom:6px; }
+.free-guide p { margin:5px 0!important; font-size:.83rem; line-height:1.65; color:#c7b8d7!important; }
+.free-guide em { font-style:normal; font-weight:650; color:#d5acff; }
+.free-guide .free-guide-note { color:#a99bb9!important; font-size:.73rem; }
+.resource-block { margin:12px 0 17px; }
+.resource-block h4 { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; font-weight:670; letter-spacing:0; font-size:.8rem!important; margin:0 0 9px!important; color:#cfb3e9!important; padding:0 0 6px!important; border-bottom:1px solid #382a48!important; }
+.resource-block h4 span { color:#9e8dac; font-size:.7rem; font-weight:500; }
+.free-resources h4 { color:#d9b7ff!important; }
+.other-resources h4 { color:#a99db4!important; }
+.free-resources .resource-line>a { color:#ebd4ff!important; }
+.other-resources .resource-line>a { color:#bf9add!important; }
+@media(max-width:640px){ .free-guide { padding:12px 14px; } }
 </style>
