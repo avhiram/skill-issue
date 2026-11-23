@@ -458,6 +458,7 @@ const freeSets = new Map(Object.entries(freeSelections).map(([id, urls]) => [
   id, new Set(urls.map(normalizeUrl))
 ]))
 const storageKey = 'skill-issue-academy-single-route-v1'
+const resourceView = ref<'free' | 'all'>('free')
 const completed = ref<string[]>([])
 const search = ref('')
 const showUrls = ref(false)
@@ -482,9 +483,13 @@ function otherLinks(id: string): AssignedResource[] {
 }
 function visibleLevels(section: typeof sections[number]) {
   if (!query.value) return levelsIn(section)
-  return levelsIn(section).filter(level => visibleLinks(level.id).length > 0)
+  return levelsIn(section).filter(level =>
+    (resourceView.value === 'free' ? freeLinks(level.id) : visibleLinks(level.id)).length > 0
+  )
 }
-const searchCount = computed(() => orderedLevels.reduce((n, l) => n + visibleLinks(l.id).length, 0))
+const searchCount = computed(() => orderedLevels.reduce((n, l) =>
+  n + (resourceView.value === 'free' ? freeLinks(l.id) : visibleLinks(l.id)).length, 0
+))
 const freeCount = orderedLevels.reduce((n, l) => {
   const free = freeSets.get(l.id)
   return n + levelLinks(l.id).filter(item => free?.has(normalizeUrl(item.url))).length
@@ -510,7 +515,7 @@ onMounted(() => {
     <header id="about" class="intro">
       <p class="eyebrow">SKILL-ISSUE / ACADEMY</p>
       <h1>Roadmap cybersécurité</h1>
-      <p class="lead">Une progression du débutant aux labs avancés. Tout est sur cette page : commence par le parcours gratuit, puis consulte les ressources complémentaires selon tes besoins.</p>
+      <p class="lead">Un parcours chronologique, de zéro aux labs avancés. Choisis les ressources sans achat ou affiche tout le catalogue, niveau par niveau, sur cette même page.</p>
       <div class="figures">
         <span><strong>{{ orderedLevels.length }}</strong> niveaux dans l'ordre</span>
         <span><strong>{{ freeCount }}</strong> liens sélectionnés sans achat</span>
@@ -525,13 +530,21 @@ onMounted(() => {
       </div>
       <p class="progress-help">Les niveaux cochés restent enregistrés sur cet appareil.</p>
 
+      <div class="route-choice">
+        <p class="choice-label">Choisir son parcours</p>
+        <div class="choice-buttons" role="group" aria-label="Afficher les ressources">
+          <button type="button" :class="{ active: resourceView === 'free' }" :aria-pressed="resourceView === 'free'" @click="resourceView = 'free'">Sans budget</button>
+          <button type="button" :class="{ active: resourceView === 'all' }" :aria-pressed="resourceView === 'all'" @click="resourceView = 'all'">Toutes les ressources</button>
+        </div>
+        <p class="choice-help">Les mêmes niveaux, dans le même ordre. Les ressources complémentaires sont facultatives : aucun achat de cours n'est nécessaire pour suivre la sélection gratuite.</p>
+      </div>
+
       <nav class="roadmap-index" aria-label="Sommaire">
         <p class="index-label">Sur cette page</p>
-        <a href="#parcours-gratuit">Parcours gratuit - commencer de zéro</a>
+        <a href="#parcours-gratuit">Le parcours - du début au projet final</a>
         <div class="index-subitems">
           <a v-for="section in sections" :key="section.id" :href="'#' + section.id">{{ section.title }}</a>
         </div>
-        <a href="#ressources-complementaires">Ressources complémentaires - OffSec, INE, labs et documentation</a>
       </nav>
       <div class="search-controls">
         <label for="academy-query">Rechercher dans la roadmap</label>
@@ -545,9 +558,9 @@ onMounted(() => {
       <section id="parcours-gratuit" class="free-path" aria-labelledby="free-title">
         <div class="major-heading">
           <p class="eyebrow">DU PREMIER NIVEAU AU PROJET FINAL</p>
-          <h2 id="free-title">Parcours gratuit</h2>
-          <p>Commence ici. Les ressources choisies pour chaque niveau sont affichées directement sous le titre, sans ouvrir de menu ni passer à une autre page.</p>
-          <p class="small-disclaimer">Sans achat de cours identifié. Un compte gratuit ou un ordinateur personnel peut être nécessaire, et les examens ne sont pas inclus.</p>
+          <h2 id="free-title">Le parcours</h2>
+          <p>Avance dans l'ordre. « Pour commencer » rassemble les ressources sélectionnées sans achat. « Pour approfondir » apparaît si tu choisis « Toutes les ressources ».</p>
+          <p class="small-disclaimer">Un compte gratuit, un ordinateur ou une installation locale peuvent être nécessaires. Les abonnements, les examens et certains usages du Cloud ne sont pas inclus.</p>
         </div>
 
         <section v-for="section in sections" :id="section.id" :key="section.id" class="course-section">
@@ -565,6 +578,7 @@ onMounted(() => {
               </label>
             </div>
             <p class="level-description">{{ level.intro }}</p>
+            <p v-if="freeLinks(level.id).length" class="resource-group-title">Pour commencer <span>- sans achat</span></p>
             <ul v-if="freeLinks(level.id).length" class="resource-list">
               <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
                 <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
@@ -573,6 +587,17 @@ onMounted(() => {
               </li>
             </ul>
             <p v-else-if="!query" class="empty-message">Exercice de synthèse avec les ressources déjà étudiées.</p>
+            <div v-if="resourceView === 'all' && otherLinks(level.id).length" class="extra-resources">
+              <p class="resource-group-title">Pour approfondir <span>- facultatif, accès parfois payant</span></p>
+              <ul class="resource-list">
+                <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
+                  <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                  <span class="resource-description"> - {{ describe(item) }}</span>
+                  <small v-if="item.access" class="resource-access">{{ item.access }}</small>
+                  <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+                </li>
+              </ul>
+            </div>
             <details v-if="!query" class="exercise">
               <summary>Exercice pratique et validation</summary>
               <p><strong>À faire :</strong> {{ level.exercise }}</p>
@@ -584,33 +609,8 @@ onMounted(() => {
         </section>
       </section>
 
-      <section id="ressources-complementaires" class="library" aria-labelledby="library-title">
-        <header class="major-heading">
-          <p class="eyebrow">POUR APPROFONDIR</p>
-          <h2 id="library-title">Toutes les autres ressources</h2>
-          <p>Tu as accès ici au reste des liens du catalogue, toujours classés dans le même ordre que le parcours gratuit. Cela comprend les autres cours libres, les plateformes freemium, OffSec, INE et les cursus payants.</p>
-          <p class="small-disclaimer">Les prix, comptes nécessaires et accès aux labs peuvent changer. Vérifie chaque programme avant de t'inscrire.</p>
-        </header>
-
-        <section v-for="section in sections" :key="section.id" class="library-section">
-          <h3 v-if="levelsIn(section).some(level => otherLinks(level.id).length)" class="library-section-title">{{ section.title }}</h3>
-          <div v-for="level in visibleLevels(section)" :key="level.id" class="library-level">
-            <template v-if="otherLinks(level.id).length">
-              <h4>{{ level.title }}</h4>
-              <ul class="resource-list">
-                <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
-                  <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                  <span class="resource-description"> - {{ describe(item) }}</span>
-                  <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
-                </li>
-              </ul>
-            </template>
-          </div>
-        </section>
-        <a class="return-link" href="#about">Retour au début ↑</a>
-      </section>
     </main>
-    <p class="closing">Pratique uniquement sur les cibles et environnements explicitement autorisés. La sélection gratuite porte sur l'accès aux ressources pédagogiques ; elle ne garantit pas la gratuité du matériel, des services Cloud ou des certifications.</p>
+    <p class="closing">Entraîne-toi uniquement sur des environnements autorisés. « Sans budget » signifie sans achat de cours pour les liens sélectionnés, pas une garantie de gratuité du matériel, des crédits Cloud ou des certifications. Les conditions d'accès des plateformes peuvent évoluer.</p>
   </div>
 </template>
 
@@ -643,6 +643,14 @@ onMounted(() => {
 .progress-track { height:6px; max-width:790px; background:#2a2033; border-radius:10px; overflow:hidden; }
 .progress-track span { display:block; height:100%; background:linear-gradient(90deg,#7650aa,#c79bea); transition:width .2s; }
 .progress-help { color:#9789a5!important; font-size:.7rem; margin:8px 0 22px!important; }
+.route-choice { margin:20px 0 26px; }
+.choice-label { color:#ddc5f2!important; font-size:.8rem!important; font-weight:670; margin:0 0 10px!important; }
+.choice-buttons { display:flex; flex-wrap:wrap; gap:8px; }
+.choice-buttons button { border:1px solid #50385f; background:transparent; border-radius:5px; color:#bdaecb; padding:9px 15px; font:inherit; font-size:.8rem; cursor:pointer; }
+.choice-buttons button.active { border-color:#ad81d1; color:#f3e8ff; background:#241630; }
+.choice-buttons button:hover { border-color:#a176c4; color:#f3e8ff; }
+.choice-buttons button:focus-visible { outline:2px solid #d1a0f2; outline-offset:2px; }
+.choice-help { margin:9px 0 0!important; max-width:750px; color:#a99ab6!important; font-size:.73rem; line-height:1.7; }
 .roadmap-index { border-left:2px solid #674782; padding:1px 0 1px 19px; margin:25px 0; display:flex; flex-direction:column; gap:8px; }
 .index-label { color:#d4b5f1!important; font-size:.77rem; font-weight:680; margin:0 0 5px!important; }
 .roadmap-index a { display:block; width:fit-content; color:#d5c1e9!important; text-decoration:none!important; font-size:.82rem; line-height:1.45; }
@@ -673,6 +681,10 @@ onMounted(() => {
 .done-toggle { flex-shrink:0; display:flex; align-items:center; gap:6px; cursor:pointer; color:#a99db3; font-size:.73rem; padding-top:4px; }
 .done-toggle input { width:15px; height:15px; accent-color:#9970c3; }
 .level-description { margin:0 0 12px!important; color:#a99db3!important; font-size:.8rem; line-height:1.75; }
+.resource-group-title { margin:12px 0 7px!important; color:#d4adef!important; font-size:.78rem!important; font-weight:680; }
+.resource-group-title span { color:#9e8bad; font-weight:450; }
+.extra-resources { margin:17px 0 12px; padding:3px 0 1px 13px; border-left:1px solid #382645; }
+.resource-access { display:inline; margin-left:6px; color:#9c8cac; font-size:.7rem; }
 .resource-list { margin:0 0 12px 15px!important; padding:0!important; list-style:none!important; }
 .resource-list li { position:relative; margin:4px 0!important; padding:0!important; color:#bfb1c7; font-size:.82rem; line-height:1.65; overflow-wrap:anywhere; }
 .resource-list li:before { content:'›'; position:absolute; left:-16px; color:#ad80cf; font-weight:800; }
@@ -688,12 +700,6 @@ onMounted(() => {
 .empty-message { color:#9a8baa!important; font-size:.78rem; margin:5px 0!important; }
 .return-link { display:inline-block; margin:6px 0 12px; font-size:.72rem; color:#a68dbd!important; text-decoration:none!important; }
 .return-link:hover { color:#e9d2ff!important; }
-.library { scroll-margin-top:90px; margin-top:32px; }
-.library-section { border-bottom:1px solid #30243b; padding:20px 0 12px; }
-.library-section-title { color:#cda7e7!important; font-size:1.19rem!important; margin:0 0 16px!important; padding:0!important; border:0!important; }
-.library-level { margin-bottom:17px; }
-.library-level h4 { color:#e0d5e8!important; font-size:.91rem!important; font-weight:660; margin:0 0 9px!important; padding:0!important; border:0!important; }
-.library-level .resource-list { margin-left:16px!important; }
 .closing { color:#8e809c!important; font-size:.73rem; margin:23px 0 0!important; line-height:1.7; }
 @media(max-width:650px) {
   .academy-roadmap { padding:9px 0 30px; }
