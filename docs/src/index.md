@@ -142,13 +142,13 @@ aside: false
     <strong>Régiment de cyberdéfense</strong>
     <span>Sergent-chef · Réserve opérationnelle</span>
   </div>
-  <div class="profile-proof-entry">
+  <a href="https://www.linkedin.com/posts/ecole2600_cyberharcelement-aezcole2600-cybersaezcuritaez-ugcPost-7528002547261898752-Mbb_" target="_blank" rel="noopener noreferrer" title="Publication École 2600 - cyberharcèlement">
     <strong>Première dame de France</strong>
     <span>Échange sur le cyberharcèlement</span>
-  </div>
+  </a>
   <div class="profile-proof-entry">
     <strong>DefHack · COMCYBER</strong>
-    <span>Équipe lauréate</span>
+    <span>Participation · 2024</span>
   </div>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
     <strong>Capital</strong>
@@ -173,5 +173,4 @@ aside: false
 <a class="profile-credential" href="https://labs.hackthebox.com/achievement/badge/1543889/80" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif APTLabs"><span class="profile-credential-image"><img src="../public/credentials/aptlabs.webp" alt="Emblème APTLabs" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="profile-credential-fallback">APTLabs</span></span><span class="profile-credential-name">APTLabs</span><span class="profile-credential-issuer">Hack The Box · Pro Lab</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://drive.google.com/file/d/1MfyKGqUnnigKTa1kYU8Kxp29k0YGhaUI/view" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CCDCOE"><span class="profile-credential-image"><img src="https://ccdcoe.org/uploads/2014/12/ccdcoe-cmyk_horizontal-short.jpg" alt="Emblème NATO CCDCOE" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="profile-credential-fallback">CCDCOE</span></span><span class="profile-credential-name">CCDCOE</span><span class="profile-credential-issuer">OTAN · Formation</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/69fdacf31b56196d1f214b5d" target="_blank" rel="noopener noreferrer" title="Vérifier la certification COPO"><span class="profile-credential-image"><img src="../public/credentials/copo.webp" alt="Emblème COPO" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="profile-credential-fallback">COPO</span></span><span class="profile-credential-name">COPO</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
-<div class="profile-credential profile-credential-unlinked" title="CBBH"><span class="profile-credential-image"><span class="profile-credential-fallback">CBBH</span></span><span class="profile-credential-name">CBBH</span><span class="profile-credential-issuer">Hack The Box</span></div>
 </div>
