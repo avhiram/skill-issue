@@ -443,35 +443,35 @@ sudo setcap -r /usr/bin/nmap
 
 ### Comprendre les capacités Linux
 
-**CAP_AUDIT_CONTROL** — Contrôler l'audit du noyau, notamment son activation.
+**CAP_AUDIT_CONTROL** - Contrôler l'audit du noyau, notamment son activation.
 
-**CAP_AUDIT_WRITE** — Écrire des événements dans le journal d'audit.
+**CAP_AUDIT_WRITE** - Écrire des événements dans le journal d'audit.
 
-**CAP_BLOCK_SUSPEND** — Bloquer la mise en veille via certaines interfaces du noyau.
+**CAP_BLOCK_SUSPEND** - Bloquer la mise en veille via certaines interfaces du noyau.
 
-**CAP_CHOWN** — Modifier le propriétaire des fichiers.
+**CAP_CHOWN** - Modifier le propriétaire des fichiers.
 
-**CAP_DAC_OVERRIDE** — Contourner des contrôles classiques de lecture, écriture et parcours.
+**CAP_DAC_OVERRIDE** - Contourner des contrôles classiques de lecture, écriture et parcours.
 
-**CAP_DAC_READ_SEARCH** — Contourner certaines restrictions de lecture et de parcours.
+**CAP_DAC_READ_SEARCH** - Contourner certaines restrictions de lecture et de parcours.
 
-**CAP_FOWNER** — Effectuer certaines opérations réservées au propriétaire d'un fichier.
+**CAP_FOWNER** - Effectuer certaines opérations réservées au propriétaire d'un fichier.
 
-**CAP_IPC_LOCK** — Verrouiller des pages mémoire.
+**CAP_IPC_LOCK** - Verrouiller des pages mémoire.
 
-**CAP_KILL** — Contourner certaines vérifications de permission pour envoyer des signaux.
+**CAP_KILL** - Contourner certaines vérifications de permission pour envoyer des signaux.
 
-**CAP_MAC_ADMIN** — Modifier certaines règles de contrôle d'accès obligatoire (MAC).
+**CAP_MAC_ADMIN** - Modifier certaines règles de contrôle d'accès obligatoire (MAC).
 
-**CAP_NET_BIND_SERVICE** — Lier un socket aux ports privilégiés (généralement inférieurs à 1024).
+**CAP_NET_BIND_SERVICE** - Lier un socket aux ports privilégiés (généralement inférieurs à 1024).
 
-**CAP_NET_RAW** — Créer des sockets RAW et PACKET.
+**CAP_NET_RAW** - Créer des sockets RAW et PACKET.
 
-**CAP_SETGID** — Modifier les identifiants de groupe du processus.
+**CAP_SETGID** - Modifier les identifiants de groupe du processus.
 
-**CAP_SETPCAP** — Manipuler certaines capacités des processus.
+**CAP_SETPCAP** - Manipuler certaines capacités des processus.
 
-**CAP_SETUID** — Modifier les identifiants utilisateur du processus.
+**CAP_SETUID** - Modifier les identifiants utilisateur du processus.
 
 ### Minuteurs systemd et cron système
 
