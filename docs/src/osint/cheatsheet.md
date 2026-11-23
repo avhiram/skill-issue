@@ -86,9 +86,9 @@ git clone https://github.com/laramies/theHarvester.git "$HOME/outils/theHarveste
 (cd "$HOME/outils/theHarvester" && uv sync)
 ```
 
-### Subfinder - facultatif
+### Subfinder - version Go (alternative)
 
-Installer avec Go déjà présent sur le poste.
+Nécessite une version de Go compatible avec la version téléchargée. Sur Kali, utilise plutôt le paquet ci-dessous.
 
 ```bash
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
@@ -162,6 +162,26 @@ Installe l'outil de collecte OSINT.
 
 ```bash
 sudo apt install -y spiderfoot
+```
+
+## Démarrer l'enquête
+
+Crée le dossier de travail, puis lance les recherches à partir des éléments disponibles.
+
+### Préparer un dossier
+
+Créer une structure simple pour les fichiers de travail.
+
+```bash
+mkdir -p dossier_osint/{notes,captures,rapports,documents}
+```
+
+### Heure d'observation
+
+Afficher l'heure UTC au format ISO 8601.
+
+```bash
+date -u '+%Y-%m-%dT%H:%M:%SZ'
 ```
 
 ## Première recherche - partir de l'information connue
@@ -240,7 +260,7 @@ Rechercher le nom complet avec des guillemets.
 "Camille Exemple"
 ```
 
-### Documents PDF
+### PDF avec le nom
 
 Repérer des documents publics associés au nom.
 
@@ -280,7 +300,7 @@ Lister les pages publiques d'un domaine.
 site:example.com
 ```
 
-### Documents PDF
+### PDF du domaine
 
 Trouver les documents PDF publics du domaine.
 
@@ -816,25 +836,9 @@ Exporte les métadonnées de plusieurs images au format CSV.
 exiftool -csv -r dossier_images/ > images-metadonnees.csv
 ```
 
-## Résultats - sauvegarder les éléments utiles
+## Exporter les résultats
 
-Conserver les sorties de commandes et les fichiers utiles à l'analyse.
-
-### Préparer un dossier
-
-Créer une structure simple pour les fichiers de travail.
-
-```bash
-mkdir -p dossier_osint/{notes,captures,rapports,documents}
-```
-
-### Heure d'observation
-
-Afficher l'heure UTC au format ISO 8601.
-
-```bash
-date -u '+%Y-%m-%dT%H:%M:%SZ'
-```
+Enregistrer les résultats au fur et à mesure des recherches.
 
 ### Sauver une recherche Sherlock
 
