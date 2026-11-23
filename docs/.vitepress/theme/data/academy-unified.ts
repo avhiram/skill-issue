@@ -30,8 +30,7 @@ export const academyLevels = [
     "exercise": "Dessiner ton réseau local et calculer deux sous-réseaux fictifs.",
     "ready": "Tu peux expliquer une résolution DNS et une connexion TCP.",
     "featured": [
-      "https://www.practicalnetworking.net/",
-      "https://www.netacad.com/courses/packet-tracer"
+      "https://www.practicalnetworking.net/"
     ]
   },
   {
@@ -1075,9 +1074,7 @@ export const academyAssignments: Record<string,string> = {
   "lab-owasp-wrongsecrets": "cloud-security",
   "lab-kubernetes-goat": "containers",
   "lab-cloudgoat": "cloud-security",
-  "off-001": "environment",
   "off-002": "environment",
-  "off-003": "network-basics",
   "off-004": "network-basics",
   "off-005": "network-practice",
   "off-007": "windows-basics",
@@ -1086,7 +1083,6 @@ export const academyAssignments: Record<string,string> = {
   "off-010": "python-basics",
   "off-011": "scripting",
   "off-012": "environment",
-  "off-013": "security-basics",
   "off-014": "security-basics",
   "off-016": "ctf-beginner",
   "off-018": "ctf-beginner",
@@ -1257,7 +1253,6 @@ export const academyAssignments: Record<string,string> = {
   "hm-009": "network-basics",
   "hm-010": "network-basics",
   "hm-011": "network-practice",
-  "hm-012": "network-practice",
   "hm-013": "network-practice",
   "hm-014": "network-practice",
   "hm-015": "network-basics",
@@ -1314,13 +1309,11 @@ export const academyAssignments: Record<string,string> = {
   "hm-066": "blue-siem",
   "hm-067": "ctf-beginner",
   "hm-068": "blue-siem",
-  "hm-069": "blue-siem",
   "hm-070": "blue-siem",
   "hm-071": "blue-siem",
   "hm-072": "blue-siem",
   "hm-073": "network-practice",
   "hm-074": "network-practice",
-  "hm-075": "network-practice",
   "hm-076": "network-practice",
   "hm-077": "network-practice",
   "hm-078": "network-practice",
