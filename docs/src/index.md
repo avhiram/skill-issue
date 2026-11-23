@@ -1,13 +1,13 @@
 ---
-title: Morad Halmi — SKILL-ISSUE
-description: Notes techniques, Pentest, Red Team et parcours de Morad Halmi.
+title: Morad H. — SKILL-ISSUE
+description: Notes techniques, Pentest, Red Team et parcours de Morad H.
 next: false
 aside: false
 ---
 
 <div class="profile-intro">
   <p class="profile-eyebrow">SKILL-ISSUE · LIHAM</p>
-  <h1>Morad Halmi.</h1>
+  <h1>Morad H..</h1>
   <p class="profile-subtitle">Adversary Simulation · Penetration Testing · Cyberdéfense</p>
   <p>Audits de sécurité, simulation d’adversaire et recherche de vulnérabilités. Un parcours entre service public, défense et recherche indépendante.</p>
   <div class="profile-links">
@@ -31,7 +31,7 @@ aside: false
     <span class="profile-logo-label">Ministère de l’Intérieur</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Police nationale">
-    <span class="profile-logo-frame"><img src="https://mobile.interieur.gouv.fr/var/miomcti/storage/images/media/police-nationale/images/logo-police-nationale-500-px/270879-2-fre-FR/Logo-police-nationale-500-px.jpg" alt="Logo de la Police nationale" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-frame"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Logo-police-nationale-france.svg" alt="Logo de la Police nationale" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Police nationale</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/terre" target="_blank" rel="noopener noreferrer" title="Armée de Terre">
@@ -50,12 +50,21 @@ aside: false
     <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="Emblème Locked Shields 2025" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Locked Shields 2025</span>
   </a>
+
+  <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/nous-decouvrir/notre-organisation/organisation/direction-nationale-de-police-judiciaire-dnpj" target="_blank" rel="noopener noreferrer" title="DNPJ">
+    <span class="profile-logo-wordmark profile-logo-dnpj">DNPJ</span>
+    <span class="profile-logo-label">Police judiciaire · DNPJ</span>
+  </a>
+  <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" title="OFMIN">
+    <span class="profile-logo-frame"><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="Logo OFMIN" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-label">Office mineurs · OFMIN</span>
+  </a>
   <a class="profile-marquee-item" href="https://www.capital.fr/" target="_blank" rel="noopener noreferrer" title="Capital">
     <span class="profile-logo-frame"><img src="https://static.wixstatic.com/media/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg/v1/fill/w_1000%2Ch_500%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg" alt="Logo du magazine Capital" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Capital</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" title="École 2600">
-    <span class="profile-logo-frame"><img src="https://www.pole-excellence-cyber.org/wp-content/uploads/2023/12/Ecole-2600.png" alt="Logo de l’École 2600" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-frame"><img src="https://pbs.twimg.com/profile_images/1853791786063327232/0t7luytx_400x400.jpg" alt="Logo de l’École 2600" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
@@ -69,7 +78,7 @@ aside: false
     <span class="profile-logo-label">Ministère de l’Intérieur</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Police nationale">
-    <span class="profile-logo-frame"><img src="https://mobile.interieur.gouv.fr/var/miomcti/storage/images/media/police-nationale/images/logo-police-nationale-500-px/270879-2-fre-FR/Logo-police-nationale-500-px.jpg" alt="" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-frame"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Logo-police-nationale-france.svg" alt="" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Police nationale</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/terre" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Armée de Terre">
@@ -88,12 +97,21 @@ aside: false
     <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Locked Shields 2025</span>
   </a>
+
+  <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/nous-decouvrir/notre-organisation/organisation/direction-nationale-de-police-judiciaire-dnpj" target="_blank" rel="noopener noreferrer" tabindex="-1" title="DNPJ">
+    <span class="profile-logo-wordmark profile-logo-dnpj">DNPJ</span>
+    <span class="profile-logo-label">Police judiciaire · DNPJ</span>
+  </a>
+  <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OFMIN">
+    <span class="profile-logo-frame"><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-label">Office mineurs · OFMIN</span>
+  </a>
   <a class="profile-marquee-item" href="https://www.capital.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Capital">
     <span class="profile-logo-frame"><img src="https://static.wixstatic.com/media/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg/v1/fill/w_1000%2Ch_500%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01/a3fe0e_e9af9dcd1b274315b97a20bdc54e5572~mv2.jpg" alt="" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Capital</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="École 2600">
-    <span class="profile-logo-frame"><img src="https://www.pole-excellence-cyber.org/wp-content/uploads/2023/12/Ecole-2600.png" alt="" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-frame"><img src="https://pbs.twimg.com/profile_images/1853791786063327232/0t7luytx_400x400.jpg" alt="" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
@@ -127,21 +145,22 @@ aside: false
 
 ## Certifications
 
-<div class="profile-cert-list">
-  <a href="https://credentials.offsec.com/bcdddac4-a517-4bee-a403-25186e3ef64d#acc.vMybJWGj" target="_blank" rel="noopener noreferrer" title="Voir le justificatif OSCP+">OSCP+</a>
-  <a href="https://credentials.offsec.com/755cac44-117f-407d-8d71-a8fda4aed16e#acc.DNIqrLYR" target="_blank" rel="noopener noreferrer" title="Voir le justificatif OSCP">OSCP</a>
-  <a href="https://certs.zeropointsecurity.co.uk/97e8bb4c-2937-4c21-bf35-ad5cc17f6cb0#acc.eHDIiFMZ" target="_blank" rel="noopener noreferrer" title="Voir le justificatif CRTO">CRTO</a>
-  <a href="https://www.credly.com/badges/b8c441d3-32fe-4c4c-a5d9-a4bf3603518a" target="_blank" rel="noopener noreferrer" title="Voir le justificatif CPTS">CPTS</a>
-  <a href="https://www.credly.com/badges/288e1eda-2869-49de-bce7-df94921952be" target="_blank" rel="noopener noreferrer" title="Voir le justificatif CWES">CWES</a>
-  <a href="https://www.credential.net/d12bd51b-a46f-465b-a0a0-864836ebbabe#acc.YSC4fPQl" target="_blank" rel="noopener noreferrer" title="Voir le justificatif eCPPT">eCPPT</a>
-  <a href="https://certs.ine.com/760a7a7b-45c6-4c7c-9f9d-b2cc242bff98#acc.68u4fLsA" target="_blank" rel="noopener noreferrer" title="Voir le justificatif eWPT">eWPT</a>
-  <a href="https://certs.ine.com/64620d1c-4fa1-42a4-b5db-b5bed9d8043f#acc.xdi6rWLK" target="_blank" rel="noopener noreferrer" title="Voir le justificatif eCDFP">eCDFP</a>
-  <a href="https://www.credential.net/9fa9a030-586f-4619-8239-da3707ac43f0#acc.ywcSZvLV" target="_blank" rel="noopener noreferrer" title="Voir le justificatif CELMS">CELMS</a>
-  <a href="https://labs.cyberwarfare.live/credential/achievement/68c56fc9806f169445f5b8ab" target="_blank" rel="noopener noreferrer" title="Voir le justificatif CRTA">CRTA</a>
-  <a href="https://labs.cyberwarfare.live/credential/achievement/68f53d1242b3b10b486f5c93" target="_blank" rel="noopener noreferrer" title="Voir le justificatif CRT-ID">CRT-ID</a>
-  <span title="Justificatif public non renseigné">CBBH</span>
-  <span title="Justificatif public non renseigné">COPO</span>
-  <span title="Justificatif public non renseigné">HTB APTLabs (Pro Lab)</span>
+<div class="profile-cert-gallery">
+  <a class="profile-credential" href="https://credentials.offsec.com/bcdddac4-a517-4bee-a403-25186e3ef64d#acc.vMybJWGj" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif OSCP+"><span class="profile-credential-image"><img src="https://miro.medium.com/1%2AMrDGl7_T06fD7JRr-gX16Q.png" alt="Emblème OSCP+" loading="lazy" decoding="async"><span class="profile-credential-fallback">OSCP+</span></span><span class="profile-credential-name">OSCP+</span><span class="profile-credential-issuer">OffSec</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://credentials.offsec.com/755cac44-117f-407d-8d71-a8fda4aed16e#acc.DNIqrLYR" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif OSCP"><span class="profile-credential-image"><img src="https://www.aevengroup.com/media/kxphmcmg/offensive-security-certified-professional-oscp.png?height=800&amp;quality=80&amp;rnd=133887487040270000&amp;width=800" alt="Emblème OSCP" loading="lazy" decoding="async"><span class="profile-credential-fallback">OSCP</span></span><span class="profile-credential-name">OSCP</span><span class="profile-credential-issuer">OffSec</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://www.credly.com/badges/b8c441d3-32fe-4c4c-a5d9-a4bf3603518a" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CPTS"><span class="profile-credential-image"><img src="https://academy.hackthebox.com/storage/badges/htb-certified-penetration-testing-specialist.png" alt="Emblème CPTS" loading="lazy" decoding="async"><span class="profile-credential-fallback">CPTS</span></span><span class="profile-credential-name">CPTS</span><span class="profile-credential-issuer">Hack The Box</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://www.credly.com/badges/288e1eda-2869-49de-bce7-df94921952be" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CWES"><span class="profile-credential-image"><img src="https://cdn.services-k8s.prod.aws.htb.systems/content/exams/overview_footer_banner/7b8a7b28-dea2-40fb-9547-84f93af43436.png" alt="Emblème CWES" loading="lazy" decoding="async"><span class="profile-credential-fallback">CWES</span></span><span class="profile-credential-name">CWES</span><span class="profile-credential-issuer">Hack The Box</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://certs.zeropointsecurity.co.uk/97e8bb4c-2937-4c21-bf35-ad5cc17f6cb0#acc.eHDIiFMZ" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CRTO"><span class="profile-credential-image"><img src="https://miro.medium.com/1%2AotiV9Az7L0Xtw3w-tsYa4w.png" alt="Emblème CRTO" loading="lazy" decoding="async"><span class="profile-credential-fallback">CRTO</span></span><span class="profile-credential-name">CRTO</span><span class="profile-credential-issuer">Zero-Point Security</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://www.credential.net/d12bd51b-a46f-465b-a0a0-864836ebbabe#acc.YSC4fPQl" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif eCPPT"><span class="profile-credential-image"><img src="https://checkout.ine.com/img/eCPPT-badge.7afec493.png" alt="Emblème eCPPT" loading="lazy" decoding="async"><span class="profile-credential-fallback">eCPPT</span></span><span class="profile-credential-name">eCPPT</span><span class="profile-credential-issuer">INE</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://certs.ine.com/760a7a7b-45c6-4c7c-9f9d-b2cc242bff98#acc.68u4fLsA" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif eWPT"><span class="profile-credential-image"><img src="https://images.squarespace-cdn.com/content/v1/600a61aba3706134b7274171/eb2c77cb-e767-4f39-bec1-66dd29cf0722/6574476d-4bef-425f-a144-c3b90feb257d.png" alt="Emblème eWPT" loading="lazy" decoding="async"><span class="profile-credential-fallback">eWPT</span></span><span class="profile-credential-name">eWPT</span><span class="profile-credential-issuer">INE</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://certs.ine.com/64620d1c-4fa1-42a4-b5db-b5bed9d8043f#acc.xdi6rWLK" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif eCDFP"><span class="profile-credential-image"><img src="https://assets.ine.com/certifications/badges/eCDFP.png" alt="Emblème eCDFP" loading="lazy" decoding="async"><span class="profile-credential-fallback">eCDFP</span></span><span class="profile-credential-name">eCDFP</span><span class="profile-credential-issuer">INE</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://www.credential.net/9fa9a030-586f-4619-8239-da3707ac43f0#acc.ywcSZvLV" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CELMS"><span class="profile-credential-image"><span class="profile-credential-fallback">CELMS</span></span><span class="profile-credential-name">CELMS</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/68c56fc9806f169445f5b8ab" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CRTA"><span class="profile-credential-image"><img src="https://media.licdn.com/dms/image/v2/D4D22AQGmAbjpbxp-5g/feedshare-shrink_2048_1536/feedshare-shrink_2048_1536/0/1733229872664?e=2147483647&amp;t=6vx_ry5tdND_gPj2OENaZ10bdAqoCVCOITcZmrqoGe4&amp;v=beta" alt="Emblème CRTA" loading="lazy" decoding="async"><span class="profile-credential-fallback">CRTA</span></span><span class="profile-credential-name">CRTA</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/68f53d1242b3b10b486f5c93" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CRT-ID"><span class="profile-credential-image"><img src="https://redteamshell.com/images/CRT-ID-Badge.png" alt="Emblème CRT-ID" loading="lazy" decoding="async"><span class="profile-credential-fallback">CRT-ID</span></span><span class="profile-credential-name">CRT-ID</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://labs.hackthebox.com/achievement/badge/1543889/216" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif APTLabs"><span class="profile-credential-image"><span class="profile-credential-fallback">APTLabs</span></span><span class="profile-credential-name">APTLabs</span><span class="profile-credential-issuer">Hack The Box · Pro Lab</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <a class="profile-credential" href="https://drive.google.com/file/d/1MfyKGqUnnigKTa1kYU8Kxp29k0YGhaUI/view" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CCDCOE"><span class="profile-credential-image"><span class="profile-credential-fallback">CCDCOE</span></span><span class="profile-credential-name">CCDCOE</span><span class="profile-credential-issuer">OTAN · Formation</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+  <div class="profile-credential profile-credential-unlinked"><span class="profile-credential-image"><span class="profile-credential-fallback">CBBH</span></span><span class="profile-credential-name">CBBH</span><span class="profile-credential-issuer">Hack The Box</span><span class="profile-credential-link">Justificatif à ajouter</span></div>
+  <div class="profile-credential profile-credential-unlinked"><span class="profile-credential-image"><span class="profile-credential-fallback">COPO</span></span><span class="profile-credential-name">COPO</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Justificatif à ajouter</span></div>
 </div>
 
-<p class="profile-note">Les certifications soulignées par un lien ouvrent leur justificatif. Certains certificats et attestations ne disposent pas encore d’un lien public vérifié. Les documents Google Drive peuvent nécessiter des droits de consultation.</p>
+<p class="profile-note">Les badges illustrent les certifications ; ils ne sont pas des reproductions des certificats personnels. Chaque carte disposant d’un lien mène vers le justificatif correspondant. Les accès Google Drive peuvent nécessiter une autorisation.</p>
