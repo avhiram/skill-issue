@@ -132,7 +132,7 @@ aside: false
 <div class="profile-proof">
   <a class="profile-proof-featured" href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
     <strong>NASA</strong>
-    <span>Reconnaissance · Divulgation responsable</span>
+    <span>Lettre de reconnaissance de la NASA</span>
   </a>
   <a class="profile-proof-featured" href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
     <strong>Locked Shields · OTAN</strong>
@@ -144,11 +144,11 @@ aside: false
   </a>
   <a href="https://www.linkedin.com/posts/ecole2600_cyberharcelement-aezcole2600-cybersaezcuritaez-ugcPost-7528002547261898752-Mbb_" target="_blank" rel="noopener noreferrer" title="Publication École 2600 - cyberharcèlement">
     <strong>Première dame de France</strong>
-    <span>Échange sur le cyberharcèlement</span>
+    <span>Projet avec la Première dame de France</span>
   </a>
   <a href="/skill-issue/justificatifs/defhack-extrait.webp" target="_blank" rel="noopener noreferrer" title="Attestation DefHack 2024 - extrait masqué">
     <strong>DefHack · COMCYBER</strong>
-    <span>Participation · 2024</span>
+    <span>Équipe gagnante · 2024</span>
   </a>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
     <strong>Capital</strong>
