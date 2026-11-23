@@ -1680,6 +1680,24 @@ export const academyExtraResources = [
     "description": "Méthodologie d'audit à titre de référence ; disponibilité à confirmer.",
     "access": "À vérifier",
     "category": "additional"
+  },
+  {
+    "id": "added-108",
+    "category": "additional",
+    "title": "PEASS-ng - vérifications Linux et Windows en lab",
+    "url": "https://github.com/peass-ng/PEASS-ng",
+    "routeLevel": "pentest-system",
+    "description": "Scripts open source d'audit et d'inventaire des configurations pour un environnement autorisé.",
+    "access": "Open source"
+  },
+  {
+    "id": "added-109",
+    "category": "additional",
+    "title": "Suricata - Quickstart journalisation réseau",
+    "url": "https://docs.suricata.io/en/latest/quickstart.html",
+    "routeLevel": "blue-logs",
+    "description": "Guide libre pour observer les alertes et journaux d'un moteur IDS sur son lab.",
+    "access": "Gratuit"
   }
 ] as const
 
