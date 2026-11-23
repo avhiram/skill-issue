@@ -21,7 +21,7 @@ Installation sous Kali, Debian ou Ubuntu. À exécuter une fois. Les exemples ut
 Installer les outils de recherche, de métadonnées et de rapports.
 
 ```bash
-sudo apt update && sudo apt install -y git curl jq whois dnsutils openssl pipx python3-venv libimage-exiftool-perl poppler-utils
+sudo apt update && sudo apt install -y git curl jq whois dnsutils openssl pipx python3-venv libimage-exiftool-perl poppler-utils xdg-utils
 ```
 
 ### Préparer les applications Python
@@ -85,7 +85,7 @@ go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
 ## Dorks - pseudonyme
 
-Chaque bloc ouvre une recherche Google. Remplace seulement la valeur de PSEUDO.
+Copie la recherche dans Google et remplace `pseudo_exemple`.
 
 ### Occurrences exactes
 
@@ -129,7 +129,7 @@ Retrouver des messages associés au pseudo.
 
 ## Dorks - adresse e-mail
 
-Recherche d'occurrences publiques. Remplace EMAIL ; les résultats n'établissent pas à eux seuls qui détient le compte.
+Copie la recherche dans Google et remplace `exemple@example.com`.
 
 ### Occurrences exactes d'un e-mail
 
@@ -157,7 +157,7 @@ Rechercher les pages de code indexées contenant l'adresse.
 
 ## Dorks - prénom et nom
 
-Deux champs à remplacer : PRENOM et NOM. Les homonymes imposent un recoupement.
+Copie la recherche dans Google et remplace `Camille Exemple`.
 
 ### Nom exact
 
@@ -201,7 +201,7 @@ Recouper le nom avec une organisation déclarée.
 
 ## Dorks - domaine et organisation
 
-Remplace DOMAINE ou ORGANISATION par la valeur recherchée.
+Remplace `example.com` ou `Organisation Exemple` dans la requête Google.
 
 ### Pages indexées
 
@@ -532,7 +532,7 @@ Pour les pages Web, conserver l'URL et la date ; les réponses HTTP peuvent chan
 Ouvrir les versions disponibles d'un domaine dans le navigateur.
 
 ```bash
-python3 -c 'import sys,webbrowser;webbrowser.open("https://web.archive.org/web/*/"+sys.argv[1])' example.com
+xdg-open 'https://web.archive.org/web/*/example.com'
 ```
 
 ### En-têtes HTTP
@@ -572,7 +572,7 @@ grep -inF contact page.html
 Ouvrir une requête ciblée dans le moteur Shodan.
 
 ```bash
-python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://www.shodan.io/search?query="+u.quote("hostname:"+sys.argv[1]))' example.com
+xdg-open 'https://www.shodan.io/search?query=hostname%3Aexample.com'
 ```
 
 ### urlscan.io - domaine
@@ -580,7 +580,7 @@ python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://www
 Ouvrir une recherche d'observations associées au domaine.
 
 ```bash
-python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://urlscan.io/search/#"+u.quote("domain:"+sys.argv[1]))' example.com
+xdg-open 'https://urlscan.io/search/#domain%3Aexample.com'
 ```
 
 ## Images et documents
