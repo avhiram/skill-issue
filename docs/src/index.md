@@ -12,6 +12,7 @@ aside: false
   <p>Audits de sécurité, simulation d’adversaire et recherche de vulnérabilités. Un parcours entre service public, défense et recherche indépendante.</p>
   <div class="profile-links">
     <a href="/skill-issue/academy/">Academy</a>
+    <a href="/skill-issue/osint/">OSINT</a>
     <a href="/skill-issue/oscp/">Notes OSCP</a>
     <a href="/skill-issue/crto/">Notes CRTO</a>
     <a href="https://www.linkedin.com/in/l14m" target="_blank" rel="noopener noreferrer">LinkedIn</a>
