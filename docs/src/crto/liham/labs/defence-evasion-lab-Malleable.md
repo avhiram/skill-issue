@@ -1,87 +1,77 @@
 # Lab — Defense Evasion : Malleable C2, Artifact Kit et Resource Kit
 
-> **Relevance:** This is one of the highest-value prep topics. The OPSEC score (50 pts) is
-> where most people fail. Defender must NOT block your payloads or fork&run post-ex commands.
-> Every technique in this lab maps directly to an OPSEC scoring criterion.  
+> **Objectif :** comprendre les surfaces de détection de Cobalt Strike dans l’environnement CRTO et les paramètres du lab associés au Malleable C2 Profile, à l’Artifact Kit et au Resource Kit.
 
-> **Objective**: make Beacon more resilient against Windows Defender antivirus.  
-
-> **Application order (do this before touching any target):**
-> 1. SSH to team server → update Malleable C2 profile
-> 2. Patch and build Artifact Kit → ThreatCheck clean
-> 3. Build Resource Kit → fix templates → ThreatCheck AMSI clean
-> 4. Load both `.cna` scripts into CS Script Manager
-> 5. Test a beacon callback with Defender ON before engaging scope
+**Parcours présenté dans les notes :** examiner le profil C2 du team server, les composants Artifact Kit et Resource Kit, les scripts CNA, puis vérifier les comportements sur les machines de formation. Le barème OPSEC doit être confirmé auprès de l’organisme de certification.
 
 ---
 
-## 🚨 SIEM EDR Stack in CRTO Lab 🚨  
+## Outils SIEM, EDR et antivirus du lab
 
-| Process | Role | OPSEC implication |
-|---------|------|-------------------|
-| `elastic-agent.exe` | Elastic EDR agent | Behavioural telemetry shipped to SIEM |
-| `elastic-endpoint.exe` | Elastic endpoint protection | Process injection and anomalous thread detection |
-| `Sysmon64.exe` | Sysmon telemetry | Event 1 (process create), Event 8 (remote thread), Event 17/18 (named pipes) |
-| `MsMpEng.exe` | Windows Defender AV | Static + memory scan |
-| `NisSrv.exe` | Defender Network Inspection | Network-based signature detection |
+| Processus | Rôle | Télémétrie possible |
+|---|---|---|
+| `elastic-agent.exe` | Agent Elastic | Collecte des événements transmis au SIEM |
+| `elastic-endpoint.exe` | Protection Elastic Endpoint | Surveillance des processus et comportements |
+| `Sysmon64.exe` | Sysmon | Création de processus, threads distants, named pipes |
+| `MsMpEng.exe` | Microsoft Defender Antivirus | Analyse de fichiers et de mémoire |
+| `NisSrv.exe` | Network Inspection Service de Defender | Analyse de certaines communications réseau |
 
-**Every** process spawn, named pipe, remote thread, and network connection is logged.
-The malleable profile `post-ex` block (`ppid`, `spawnto`, `pipename`, `thread_hint`) is not
-optional — it is the minimum required to avoid generating 🚨 alerts on this stack.
+**Attention :** la télémétrie réellement disponible dépend des politiques d’audit, versions et règles de détection. Il ne faut pas présumer que toutes les actions sont systématiquement journalisées, ni qu’un réglage du profil empêche une détection.
 
 ---
 
-## Defence Evasion — Detection Layers
+## Les différentes couches de détection
 
-Defender (and any EDR) operates at multiple scan layers. 👁️ passing one does not mean passing all:
+| Couche | Moment | Éléments observés | Éléments étudiés dans le lab |
+|---|---|---|---|
+| **Statique / disque** | Accès ou écriture d’un fichier | En-têtes PE, signatures et octets particuliers | Artifact Kit, `magic_mz` |
+| **AMSI** | Traitement de scripts | Contenu des scripts et chaînes de caractères | Resource Kit, templates PowerShell |
+| **Mémoire** | Pendant l’exécution | Pages RWX, en-têtes PE et séquences mémoire | Bloc `stage` du profil |
+| **Comportement** | Pendant l’activité du processus | Parents/enfants, threads, named pipes | `post-ex` et `process-inject` |
+| **Kernel Callbacks** | Création ou manipulation de processus | Image du processus et ligne de commande | Contrôles PPID et exécution |
 
-| Layer | When it runs | What it checks | Lab fix |
-|-------|-------------|----------------|---------|
-| **Static / disk scan** | When file is written to disk | PE headers, byte signatures, magic bytes | Artifact Kit (`magic_mz`, loop bytecode) |
-| **AMSI (script)** | Before PS1/script executes | Script block content, string patterns | Resource Kit (string concat, Marshal.Copy, obfuscation) |
-| **Memory scan** | After process starts, periodic | RWX pages, PE structures in memory, known byte sequences | `stage` block (userwx, copyheaders, module_x64, strrep) |
-| **Behaviour / telemetry** | Runtime, continuous | Child process creation, thread start addresses, pipe names, parent-child chains | `post-ex` + `process-inject` blocks, ppid, spawnto |
-| **Kernel callbacks** | Process creation | Command-line patterns, image names | ppid spoofing, alternative execution methods |
+Réussir un test statique ne signifie pas réussir les contrôles AMSI, mémoire, comportement et réseau.
 
 ---
 
-## Background — Malware Development Essentials (Pre-Lab Context)
+## Rappels — Malware Development Essentials
 
-> **Why this section is here:** The Defence Evasion lab assumes 👁️ understand *how* shellcode executes inside a process. The Malware Development Essentials chapter (no standalone lab in the course) teaches the three-step progression that underpins every payload 👁️ build here. The Artifact Kit + process-inject settings only make sense once 👁️ understand what they're protecting.
+Le cours s’appuie sur trois modèles d’exécution de shellcode. Leur différence essentielle concerne **l’emplacement d’exécution**, **l’allocation mémoire** et **les appels API** qui deviennent visibles aux mécanismes de sécurité.
 
-### Shellcode Execution — Three-Step Progression
+### Trois modèles étudiés
 
-Each step increases stealth by hiding the beacon inside a more legitimate parent process context.
+| Étape | Modèle | Contexte | Indicateurs potentiels |
+|---|---|---|---|
+| 1 | Exécution locale | Processus du programme initial | Nouvelle allocation mémoire et démarrage d’un thread |
+| 2 | Injection distante | Processus déjà existant | `OpenProcess`, écritures mémoire et threads distants |
+| 3 | Process Hollowing | Processus nouvellement créé puis suspendu | `CREATE_SUSPENDED` et `WriteProcessMemory` |
 
-| Step | Technique | Beacon parent | Stealth | OPSEC risk |
-|------|-----------|--------------|---------|------------|
-| 1 | Local execution (own process) | injector EXE | Low — injector is a new anomalous process | Injector path visible in process list |
-| 2 | Remote injection (existing PID) | Any running process | Medium — legitimate parent | `OpenProcess` + `CreateRemoteThread` = EDR hook bait |
-| 3 | Process hollowing (suspended spawn) | New legitimate process spawn | High — signed process, normal parent chain | `CREATE_SUSPENDED` + `WriteProcessMemory` sequence is a known signature — mitigated by Artifact Kit |
+### Exécution locale
 
-### Step 1 — Local Execution
 ```csharp
 byte[] buf  = new byte[] { /* shellcode */ };
 IntPtr ptr  = VirtualAlloc(IntPtr.Zero, (uint)buf.Length, 0x3000, 0x40);
 Marshal.Copy(buf, 0, ptr, buf.Length);
 CreateThread(IntPtr.Zero, 0, ptr, IntPtr.Zero, 0, IntPtr.Zero);
 ```
-**What Defender sees:** New process → RWX memory allocation → thread start at non-module address → signatured immediately.
+**Observation EDR :** le lab représente une allocation de mémoire exécutable et le démarrage d’un thread dans un nouveau processus. Une page `PAGE_EXECUTE_READWRITE` peut attirer l’attention des outils de sécurité.
 
-**stage block fix:** `set userwx "false"` forces RW→RX transition and removes the RWX page entirely.
+**Paramètre étudié :** `stage.userwx` concerne les permissions mémoire associées au Beacon.
 
-### Step 2 — Remote Process Injection
+### Injection dans un processus distant
+
 ```csharp
 IntPtr hProc = OpenProcess(0x001F0FFF, false, targetPid);
 IntPtr mem   = VirtualAllocEx(hProc, IntPtr.Zero, (uint)buf.Length, 0x3000, 0x40);
 WriteProcessMemory(hProc, mem, buf, (uint)buf.Length, out _);
 CreateRemoteThread(hProc, IntPtr.Zero, 0, mem, IntPtr.Zero, 0, IntPtr.Zero);
 ```
-**What Defender sees:** `VirtualAllocEx` + `WriteProcessMemory` + `CreateRemoteThread` in sequence = classic injection triple. EDR hooks all three.
+**Observation EDR :** les appels `VirtualAllocEx`, `WriteProcessMemory` et `CreateRemoteThread` font partie des opérations couramment surveillées pendant l’injection interprocessus.
 
-**process-inject block fix:** `set startrwx "false"` + `set userwx "false"` + custom `execute` methods (`NtQueueApcThread-s`, `SetThreadContext`) swap `CreateRemoteThread` for less-signatured alternatives.
+**Paramètres étudiés :** les options `process-inject.startrwx`, `userwx` et les méthodes `execute` influencent la manière dont Cobalt Strike gère l’allocation et l’exécution.
 
-### Step 3 — Process Hollowing (used in Initial Access ngentask.exe technique)
+### Process Hollowing dans le lab Initial Access
+
 ```csharp
 // Spawn legitimate process in suspended state
 CreateProcessA(null, "msedge.exe", null, null, false, CREATE_SUSPENDED, null, null, ref si, out pi);
@@ -100,15 +90,15 @@ WriteProcessMemory(pi.hProcess, entryPoint, shellcode, shellcode.Length, out _);
 // Resume → jumps straight into shellcode, process appears as msedge.exe
 ResumeThread(pi.hThread);
 ```
-**What Defender sees:** Legitimate process spawning → process immediately resumes into shellcode bytes not backed by any module = memory anomaly. Mitigated by `stage.module_x64` (module stomping maps a legit DLL over the shellcode region).
+**Observation EDR :** un processus créé en état suspendu puis modifié en mémoire peut présenter des différences entre son exécutable sur disque et son contenu mémoire.
 
-> **Connection to this lab:** Every `stage` block setting (`userwx`, `copyheaders`, `module_x64`, `strrep`) directly mitigates one detection vector from the above three steps. The Artifact Kit patches the shellcode loader itself (the XOR decryption loop that executes the beacon). Both must be clean for a beacon to survive.
+**Lien avec ce lab :** les paramètres `stage`, `process-inject` et l’Artifact Kit correspondent à des parties différentes de la chaîne d’exécution. Les paramètres doivent être étudiés avec leurs effets observables ; ils n’effacent pas nécessairement les traces.
 
 ---
 
-## Part 1 — Malleable C2 Profile
+## Partie 1 — Malleable C2 Profile
 
-### Connect to team server
+### Connexion au team server
 
 ```bash
 ssh attacker@10.0.0.5
@@ -119,7 +109,7 @@ nano default.profile
 
 ---
 
-### Stage Block
+### Bloc `stage` du Malleable C2 Profile
 
 ```
 stage {
@@ -138,31 +128,29 @@ stage {
 }
 ```
 
-**Why each setting:**
+**Comprendre les principaux réglages :**
 
-| Setting | Default | What it fixes | Defender alert prevented |
-|---------|---------|--------------|--------------------------|
-| `userwx "false"` | Single `PAGE_EXECUTE_READWRITE` (RWX) region | Allocates RW → copies beacon → sets per-section perms (`.text`=RX, `.data`=RW). RWX pages do not exist in legitimate code. | Memory scan alert with `sms` postfix in Defender logs |
-| `cleanup "true"` | Loader stays in memory | Removes the beacon loader stub after the beacon DLL is mapped — reduces in-memory footprint | Reduces memory scan surface |
-| `copy_pe_header "false"` | DOS + NT PE headers loaded in memory | PE headers are not needed at runtime. Their presence is a fingerprint — Defender's memory scanner identifies the in-memory PE. | In-memory PE fingerprint detection |
-| `module_x64 "Hydrogen.dll"` | Beacon memory has no backing file on disk | **Module stomping:** CS loads `Hydrogen.dll` from `System32` into a new memory region, then overwrites it with Beacon shellcode. The memory region now appears backed by `Hydrogen.dll` — legitimate. Without this, tools like System Informer show a memory region with no backing module — an immediate anomaly. | Anomalous unbacked memory region detection |
+| Réglage | Fonction étudiée | Observation possible |
+|---|---|---|
+| `userwx "false"` | Gestion des permissions des pages mémoire | Transitions entre permissions RW et RX |
+| `cleanup "true"` | Suppression de certains éléments temporaires du chargeur | Modification du contenu mémoire après le chargement |
+| `copy_pe_header "false"` | Gestion des en-têtes PE chargés | Visibilité des signatures DOS et NT |
+| `module_x64 "Hydrogen.dll"` | Association à un module DLL dans le lab | Correspondance entre fichiers et régions mémoire |
 
-**Why the `transform-x64 strrep` entries:**
+**Bloc `transform-x64 strrep` :** le scénario présente une série de remplacements de chaînes ou d’octets dans la DLL du Beacon. Les exemples comprennent `beacon.x64.dll`, des formats de date, des messages d’état et une séquence hexadécimale.
 
-The Beacon DLL contains literal strings that Defender has static signatures for. The `strrep` directive patches these bytes in the DLL before it is mapped into memory — the bytes on disk / in memory no longer match the known signature.
+| Élément de l’exemple | Rôle | Points de contrôle |
+|---|---|---|
+| `beacon.x64.dll` | Nom présent dans l’exemple de binaire | Chaînes accessibles dans la DLL |
+| `%02d/%02d/%02d` | Chaîne de format de date | Format de texte attendu par le programme |
+| `%s as %s\\%s: %d` | Format d’un message | Intégrité des chaînes et des sorties |
+| Octets `\x48\x89...` | Séquence binaire de référence | Comportement à vérifier après modification |
 
-| Original string | Why signatured | Replacement |
-|----------------|---------------|-------------|
-| `beacon.x64.dll` | Trivially identifies the DLL as Cobalt Strike beacon by name | `bacon.x64.dll` — arbitrary rename |
-| `%02d/%02d/%02d` (date format) | Defender recognises the specific date/time format strings used in beacon's internal logging | Modified to `%04d` year format — same function, different bytes |
-| `%s as %s\\%s: %d` | Beacon impersonation log format — signatured by Defender | Delimiter changed to `-` |
-| Raw hex bytes (`\x48\x89...`) | A specific byte sequence in beacon's internal code that Defender has a pattern for | Single byte flipped: `\xB8\x00` → `\xB8\x01` — breaks the signature without breaking functionality. The byte being changed is in a memory size constant — both values are valid in context. |
-
-> **`strrep` constraint:** replacement string must be ≤ the original string length. Beacon DLL sections are fixed size 👁️ cannot add bytes, only replace or pad with nulls.
+**Contrainte de format :** une substitution dans une zone de taille fixe doit respecter les limites d’espace prévues par l’outil.
 
 ---
 
-### Post-ex Block
+### Bloc `post-ex`
 
 ```
 post-ex {
@@ -182,44 +170,38 @@ post-ex {
 }
 ```
 
-**Context — what fork & run is:**
-Commands like `execute-assembly`, `powerpick`, `mimikatz`, `portscan` use **fork & run** — CS
-spawns a sacrificial child process (the `spawnto` target), injects a post-ex DLL into it, runs
-the task, receives output via a named pipe, then kills the child. This entire chain is what the
-`post-ex` block controls.
+**Fonctionnement :** certaines commandes de Cobalt Strike s’exécutent selon le mécanisme fork-and-run : création d’un processus temporaire, chargement du module post-exploitation et récupération de ses résultats, souvent par named pipe.
 
-**Setting:**
+| Paramètre | Exemple du lab | Fonction |
+|---|---|---|
+| `spawnto_x64` | `werfault.exe` | Choix du processus temporaire |
+| `cleanup` | `true` | Nettoyage d’éléments temporaires après exécution |
+| `pipename` | `dotnet-diagnostic-#####` | Modèle de nom de named pipe pour les échanges post-exploitation |
+| `thread_hint` | `ntdll.dll!RtlUserThreadStart+0x2c` | Indication associée au point de départ d’un thread |
+| `amsi_disable` | `true` | Paramètre relatif au traitement AMSI dans le lab |
 
-| Setting | Default | What it fixes | OPSEC detection prevented |
-|---------|---------|--------------|--------------------------|
-| `spawnto_x64 "werfault.exe"` | `rundll32.exe` | `rundll32.exe` is heavily signatured as a CS spawnto default. Defender, SysMon, and EDRs have detection rules for CS beacons spawning `rundll32`. `werfault.exe` (Windows Error Reporting) is a legitimate system process that spawns frequently and makes sense as a child of many processes. | Suspicious process hierarchy / default CS indicator |
-| `cleanup "true"` | Post-ex DLL stays in sacrificial process | Removes the injected shellcode from the sacrificial process memory once the task finishes — no leftover artifacts for a memory scanner to find | Memory scan of completed process |
-| `pipename "dotnet-diagnostic-#####, ..."` | `msagent_*`, `postex_*`, `MSSE-*` patterns | **Critical for 🕵️  OPSEC score.** Default CS pipe names are on Defender's signature list. The `dotnet-diagnostic-` prefix blends with .NET runtime named pipes (CLR debugging/profiling) — legitimate on any Windows system with .NET. The `#####` and `####-####...` are wildcards CS replaces with random digits at runtime. | Default CS named pipe detection — **explicit OPSEC scoring criterion** |
-| `thread_hint "ntdll.dll!RtlUserThreadStart+0x2c"` | Suspicious thread start address | Threads created by CS injection start at an address that points into the injected shellcode — anomalous. `thread_hint` spoofs the thread start address to look like it began from `ntdll!RtlUserThreadStart`, which is where all legitimate user-mode threads start. EDR thread start address checks pass. | Anomalous thread start address detection |
-| `amsi_disable "true"` | AMSI active in sacrificial process | **For execute-assembly and powerpick to work, AMSI must be disabled in the sacrificial process.** AMSI in the fork&run process would scan the .NET assembly or PS script block before it runs. This setting patches AMSI in the sacrificial process memory before the post-ex DLL executes. Without this, Defender blocks execute-assembly and powerpick. | AMSI blocking execute-assembly / powerpick |
+**OPSEC :** les noms de processus et de named pipes, les appels mémoire et le comportement du runtime peuvent être visibles indépendamment de ces réglages. Une classification « SAFE » dans le support de formation n’est pas une garantie.
 
-** `strrepex` transform entries:**
-
-The post-ex DLLs (PowerPick.x64.dll, ExecuteAssembly.x64.dll) contain error message strings that Defender signatures recognise as CS-specific. `strrepex` patches strings in a named specific module only (unlike `strrep` which applies to the main beacon DLL):
+**Chaînes `strrepex` :** le bloc suivant illustre les remplacements de chaînes propres à certains modules post-exploitation.
 
 ```
 strrepex "<Module>" "<original>" "<replacement>";
 # Module = "PowerPick" or "ExecuteAssembly"
 ```
 
-| Module | Original string | Why flagged | Fix |
-|--------|----------------|------------|-----|
-| `PowerPick` | `CLRCreateInstance failed w/hr 0x%08lx` | Exact error string in CS PowerPick DLL — signatured | Changed `w/hr` → `:` — different bytes, same meaning |
-| `PowerPick` | `Failed to get default AppDomain w/hr 0x%08lx` | Same pattern | Same fix |
-| `ExecuteAssembly` | `Invoke_3 on EntryPoint failed.` | CS-specific error string | Replaced with generic `Unhandled exception.` |
-| `ExecuteAssembly` | `Failed to load the assembly w/hr 0x%08lx` | Same pattern | `w/hr` → `:` |
-| (main beacon DLL) | `This program cannot be run in DOS mode.` | Default DOS stub string present in beacon DLL in-memory | Replaced with arbitrary string — breaks PE header signature |
+| Module | Chaîne originale du lab | Exemple de différence étudiée |
+|---|---|---|
+| `PowerPick` | `CLRCreateInstance failed w/hr 0x%08lx` | Format du message d’erreur |
+| `PowerPick` | `Failed to get default AppDomain w/hr 0x%08lx` | Structure de l’erreur CLR |
+| `ExecuteAssembly` | `Invoke_3 on EntryPoint failed.` | Message associé au point d’entrée |
+| `ExecuteAssembly` | `Failed to load the assembly w/hr 0x%08lx` | Message de chargement de l’assembly |
+| Beacon principal | `This program cannot be run in DOS mode.` | Chaîne de l’en-tête DOS |
 
-> **`strrepex` vs `strrep`:** `strrep` in `transform-x64` patches the main beacon DLL. `strrepex` in `post-ex.transform-x64` patches the specific named post-ex DLL. They are different targets 👁️ need both.
+**Différence :** `strrep` concerne notamment les transformations appliquées au Beacon principal ; `strrepex` cible un module post-exploitation précis dans le contexte du profil.
 
 ---
 
-### Process-Inject Block
+### Bloc `process-inject`
 
 ```
 process-inject {
@@ -239,38 +221,33 @@ process-inject {
 }
 ```
 
-**Context — what this controls:**
-This block governs two things: (1) how BOF (Beacon Object File / `inline-execute`) memory is
-managed in the beacon process itself, and (2) how shellcode is injected and executed when CS
-injects into a remote process (fork&run, explicit injection).
+**Objectif :** décrire les paramètres liés à l’allocation mémoire pour les BOF et à l’injection dans un autre processus.
 
-**setting:**
+| Paramètre | Rôle |
+|---|---|
+| `allocator "VirtualAllocEx"` | Allocation mémoire distante |
+| `bof_allocator "VirtualAlloc"` | Allocation locale des BOF |
+| `bof_reuse_memory "true"` | Réutilisation de certaines zones mémoire |
+| `min_alloc "8192"` | Taille minimale d’allocation |
+| `startrwx "false"` | Permission de la zone mémoire initiale |
+| `userwx "false"` | Permission des pages lors de l’exécution |
 
-| Setting | Value | Why |
-|---------|-------|-----|
-| `allocator "VirtualAllocEx"` | Remote alloc via `VirtualAllocEx` Win32 API | Standard cross-process memory allocation for remote injection. With `userwx false`, memory starts RW, shellcode is copied, then marked RX — no RWX at any point. |
-| `bof_allocator "VirtualAlloc"` | Local alloc for BOFs | BOFs run in the beacon thread — they allocate local (not remote) memory. No cross-process operations. |
-| `bof_reuse_memory "true"` | Reuse previously allocated BOF slots | Reduces the number of `VirtualAlloc`/`VirtualFree` events visible to EDR hooks — reuses the same allocation across multiple BOF calls. |
-| `min_alloc "8192"` | Minimum 8KB allocation | Prevents zero-size or tiny allocation anomalies. |
-| `startrwx "false"` | Initial allocation is RW, not RWX | No RWX page is ever created — allocation starts RW, shellcode copied, then changed to RX. |
-| `userwx "false"` | Final page is RX, not RWX | Same principle. Combined with `startrwx false` this guarantees no RWX at any stage. |
+### Méthodes `execute`
 
-**Why the `execute` block methods:**
+Le profil du lab présente plusieurs méthodes d’exécution. Elles diffèrent par les API utilisées et les événements potentiellement observables.
 
-CS tries each execution method in listed order until one succeeds. The order matters for OPSEC:
+| Méthode | Mécanisme |
+|---|---|
+| `CreateThread` | Création d’un thread |
+| `NtQueueApcThread-s` | APC synchrone |
+| `NtQueueApcThread` | APC |
+| `SetThreadContext` | Modification du contexte d’un thread |
 
-| Method | How it works | OPSEC 🧠 |
-|--------|-------------|-----------|
-| `CreateThread "ntdll.dll!RtlUserThreadStart+0x2c"` | Creates thread with spoofed start address | Most compatible. Thread start address points to ntdll — looks legitimate. Listed first → used when possible. |
-| `NtQueueApcThread-s` | Synchronous APC — queued to a thread in alertable wait state | No new thread created — executes in existing thread context. Harder for EDR to correlate. Works only if target thread is in alertable wait. |
-| `NtQueueApcThread` | Standard APC | As above but standard (asynchronous). |
-| `SetThreadContext` | Hijacks thread via context modification | Last resort — most disruptive to the target thread. Only used if all others fail. |
-
-<img src="/images/defence-evasion-lab-01.png" width=1024>  
+<img src="/images/defence-evasion-lab-01.png" width=1024>
 
 ---
 
-### Validate and restart the team server
+### Vérifier le profil et le fonctionnement du team server
 
 ```bash
 # restart:
@@ -280,30 +257,19 @@ sudo /usr/bin/docker restart cobaltstrike-cs-1
 sudo /usr/bin/docker logs cobaltstrike-cs-1
 ```
 
-> If the docker log shows `[!]` errors, the profile has syntax errors — the team server will
-> load without it. Fix and restart again. A team server running without a malleable profile uses
-> CS defaults — all default indicators present.
+> **Dépannage :** les erreurs `[!]` dans les logs Docker peuvent indiquer un problème de syntaxe du profil. Vérifier le fichier chargé et les messages de démarrage du team server avant les tests.
 
 ---
 
-## Part 2 — Artifact Kit
+## Partie 2 — Artifact Kit
 
-### Why the Artifact Kit exists
+### Rôle de l’Artifact Kit
 
-Every CS payload (`.exe`, `.dll`, `.ps1`) contains a **stub/loader** that decrypts and loads
-the Beacon shellcode. This stub is compiled C code — the **artifact**. Defender has static
-signatures for the exact bytecode patterns in CS's default artifact stubs, specifically the
-decryption loop.
+L’Artifact Kit contient le code source C de plusieurs chargeurs de Cobalt Strike. Les artifacts `.exe`, `.dll` ou `.ps1` peuvent comporter des routines dont la représentation binaire est examinée par des outils antivirus.
 
-The Artifact Kit is CS's source code for these stubs. By modifying and recompiling the source,
-you produce different bytecode — the logic is identical but the bytes on disk don't match the
-known signature.
+Dans le lab, le fichier `patch.c` est utilisé pour étudier le code généré après compilation. Deux versions logiquement proches peuvent produire des séquences d’octets différentes, mais **ce résultat ne suffit pas à démontrer l’absence de détection**.
 
-**Do this first 🕵️ Defender will block default CS payloads immediately.**
-
----
-
-### Step 1 — Patch `patch.c` in VSCode (Windows dev box)
+### Étudier `patch.c` dans Visual Studio Code
 
 ```
 Launch Visual Studio Code
@@ -311,10 +277,7 @@ File > Open Folder → C:\Tools\cobaltstrike\arsenal-kit\kits\artifact
 Open: src-common\patch.c
 ```
 
-**Line ~45 — the svc.exe payload decryption loop:**
-
-The original loop is a standard forward `for` loop. Defender has a signature for its exact
-compiled bytecode (the specific opcodes a forward for-loop on this data structure produces).
+**Ligne ~45 :** le cours compare une boucle de traitement dans le binaire de service `svc.exe` et sa représentation après compilation. L’objectif documentaire est d’identifier la correspondance entre code C, opcodes et résultats de ThreatCheck.
 
 ```c
 // REPLACE WITH (backwards while loop — different compiled bytecode, identical logic):
@@ -326,9 +289,7 @@ while ( x-- ) {
 
 <img src="/images/defence-evasion-lab-04.png" width=1024>
 
-**Line ~116 — the normal .exe payload decryption loop:**
-
-Same concept — same signature target, same fix:
+**Ligne ~116 :** un second exemple de boucle figure dans l’exécutable standard du lab.
 
 ```c
 // REPLACE WITH:
@@ -338,19 +299,11 @@ while ( x-- ) {
 }
 ```
 
-**Why this works:** Defender's static signature matches a specific sequence of x86/x64 opcodes
-that the compiler produces from the original for-loop. The while-loop iterating backwards produces
-different opcode sequences for the loop control logic (decrement + conditional jump vs increment +
-compare + conditional jump). The XOR operation itself is identical — the decryption works exactly
-the same — but the surrounding control flow bytecodes are different, so the pattern match fails.
+**Interprétation :** deux structures de boucle C peuvent produire des séquences machine différentes malgré une opération logique semblable. Les comparaisons de fichiers doivent être validées par une compilation et des tests reproductibles.
 
-> Comment out the old code rather than deleting — easy rollback if the build fails.
+Conserver les versions dans Git pour comparer les résultats ou revenir à un état antérieur.
 
-Save the changes (File > Save) then close the folder (File > Close Folder).
-
----
-
-### Step 2 — Build in WSL (Ubuntu)
+### Compiler dans Ubuntu WSL
 
 ```bash
 # Right-click Terminal taskbar icon → Ubuntu WSL
@@ -360,37 +313,31 @@ cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
 ./build.sh mailslot VirtualAlloc 351363 0 false false none /mnt/c/Tools/cobaltstrike/custom-artifacts
 ```
 
-**Build parameter:**
+**Paramètres du build Artifact Kit :**
 
-| # | Param | Value | Why |
-|---|-------|-------|-----|
-| 1 | `technique` | `mailslot` | stub passes shellcode internally — mailslot IPC is less signatured than the default `pipe`. `readfile` is OPSEC-🟠CAUTION (writes to disk). |
-| 2 | `allocator` | `VirtualAlloc` | Memory allocation method. `VirtualAlloc` with no-RWX profile settings |
-| 3 | `magic_mz_x86` | `351363` | Replaces the `MZ` magic bytes (0x4D5A) at PE offset 0 with custom bytes (351363 decimal = 0x055C03 → bytes `03 5C`). On disk/scan: `03 5C ...` doesn't look like a PE → passes static scan. At runtime the stub patches it back to `4D 5A` before executing. |
-| 4 | `magic_mz_x64` | `0` | `0` = no substitution for x64 in this build. use a non-zero value for both archs — lab used 0 for x64. |
-| 5 | `rdll_x86` | `false` | No reflective DLL staging for x86 (not needed here). |
-| 6 | `rdll_x64` | `false` | Same for x64. |
-| 7 | `stack_spoof` | `none` | No call stack spoofing in this build. |
-| 8 | `output_dir` | `/mnt/c/Tools/cobaltstrike/custom-artifacts` | compiled artifacts |
+| # | Paramètre | Exemple du lab | Fonction |
+|---|---|---|---|
+| 1 | `technique` | `mailslot` | Méthode IPC utilisée par l’artifact |
+| 2 | `allocator` | `VirtualAlloc` | Méthode d’allocation mémoire |
+| 3 | `magic_mz_x86` | `351363` | Paramètre d’en-tête PE x86 |
+| 4 | `magic_mz_x64` | `0` | Paramètre d’en-tête PE x64 |
+| 5 | `rdll_x86` | `false` | Chargement Reflective DLL x86 |
+| 6 | `rdll_x64` | `false` | Chargement Reflective DLL x64 |
+| 7 | `stack_spoof` | `none` | Option relative à la pile d’appels |
+| 8 | `output_dir` | `/mnt/c/Tools/cobaltstrike/custom-artifacts` | Répertoire de sortie |
 
----
-
-### Step 3 — ❗ ThreatCheck after build ❗ 
+### Vérifier le résultat avec ThreatCheck
 
 ```cmd
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe"
 ```
 
-- **No output** = clean. Proceed to load.
-- **Output with hex offset** = Defender still has a signature for something in the artifact.
+- **Aucune sortie :** aucune correspondance signalée par ce test précis ; cela ne prouve pas qu’un autre moteur ne détectera pas le fichier.
+- **Offset hexadécimal indiqué :** une région du fichier a été signalée et peut être étudiée avec Ghidra.
 
-**detected:** Use Ghidra to locate the flagged code at the offset ThreatCheck gives,
-find the corresponding source in `patch.c`, modify the implementation different loop structure,
-different variable operations, rebuild, and ThreatCheck again. Repeat until clean.
+Documenter les résultats, la version de l’échantillon et la configuration du moteur avant toute comparaison.
 
----
-
-### Step 4 — Load into CS
+### Charger le résultat dans Cobalt Strike
 
 ```
 Cobalt Strike > Script Manager > Load
