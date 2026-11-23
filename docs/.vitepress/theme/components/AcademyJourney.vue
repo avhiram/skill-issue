@@ -161,6 +161,7 @@ for (const item of sourceItems) {
   const title = simplify(item.title.trim())
   let routeLevel = item.routeLevel || academyAssignments[item.id] || 'research'
   if (localLabUrls.has(key)) routeLevel = 'local-labs'
+  else if (key === normalizeUrl('https://tryhackme.com/free-rooms')) routeLevel = 'ctf-intermediate'
   else if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
   else if (hardRooms.has(title)) routeLevel = 'extremely-hard-rooms'
   else if (bonusLabs.has(title)) routeLevel = 'ctf-intermediate'
