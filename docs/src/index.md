@@ -118,8 +118,6 @@ aside: false
   </div>
 </div>
 
-<p class="profile-note">Institutions, expériences, exercices, publications et reconnaissances. Les logos identifient les organismes cités ; ils ne signifient pas que ce site est officiel ou soutenu par ces organismes.</p>
-
 ## Repères
 
 <div class="profile-proof">
