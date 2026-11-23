@@ -1,6 +1,6 @@
 ---
 title: OSINT - Cheatsheet
-description: Commandes OSINT prêtes à copier pour la recherche en sources ouvertes.
+description: OSINT, commandes et installations pour une enquête chronologique.
 aside: false
 prev: false
 next: false
@@ -8,20 +8,31 @@ next: false
 
 # Cheatsheet OSINT
 
-Remplace directement le pseudo, l’e-mail, le nom ou le domaine dans la commande. Pour les dorks, colle la requête dans Google.
+Tu commences avec **une information**. Voici où démarrer, puis quelles commandes utiliser.
 
-[Revenir à la bibliothèque OSINT](./index.md)
+| Tu disposes de | D'abord | Ensuite |
+| --- | --- | --- |
+| Pseudonyme | Recherche exacte Google | Sherlock, Maigret, Blackbird |
+| E-mail | Recherche exacte Google | Holehe, Blackbird |
+| Prénom et nom | Nom exact + organisation | Profils, documents et publications |
+| Domaine | Google `site:`, WHOIS | DNS, certificats, theHarvester, Subfinder |
+| URL ou site | HTTP et redirections | Archives, Photon |
+| Photo ou PDF | ExifTool, `pdfinfo` | Recouper avec les résultats Web |
+
+Remplace directement `pseudo_exemple`, `exemple@example.com`, `Camille Exemple` ou `example.com` dans les exemples. Les dorks sont des requêtes à coller dans Google.
+
+[Outils et ressources OSINT](./index.md)
 
 ## Installer les outils
 
-Installation sous Kali, Debian ou Ubuntu. À exécuter une fois. Les exemples utilisent ensuite les mêmes chemins.
+Sur Kali Linux. À exécuter une fois selon les outils que tu souhaites utiliser. Les moteurs de recherche et sites Web n'ont rien à installer.
 
 ### Utilitaires de base
 
 Installer les outils de recherche, de métadonnées et de rapports.
 
 ```bash
-sudo apt update && sudo apt install -y git curl jq whois dnsutils openssl pipx python3-venv libimage-exiftool-perl poppler-utils xdg-utils
+sudo apt update && sudo apt install -y file coreutils grep git curl jq whois dnsutils openssl pipx python3-venv libimage-exiftool-perl poppler-utils xdg-utils
 ```
 
 ### Préparer les applications Python
@@ -83,9 +94,79 @@ Installer avec Go déjà présent sur le poste.
 go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 ```
 
-## Dorks - pseudonyme
+### Subfinder - Kali
 
-Copie la recherche dans Google et remplace `pseudo_exemple`.
+Installation via les dépôts de Kali Linux.
+
+```bash
+sudo apt install -y subfinder
+```
+
+### Blackbird
+
+Installation dans un environnement Python séparé.
+
+```bash
+mkdir -p "$HOME/outils"
+git clone https://github.com/antoniaci/blackbird.git "$HOME/outils/blackbird"
+python3 -m venv "$HOME/.venvs/blackbird"
+"$HOME/.venvs/blackbird/bin/pip" install -r "$HOME/outils/blackbird/requirements.txt"
+```
+
+### Photon
+
+Installation dans un environnement Python séparé.
+
+```bash
+mkdir -p "$HOME/outils"
+git clone https://github.com/s0md3v/Photon.git "$HOME/outils/Photon"
+python3 -m venv "$HOME/.venvs/photon"
+"$HOME/.venvs/photon/bin/pip" install -r "$HOME/outils/Photon/requirements.txt"
+```
+
+### dnstwist - Kali
+
+Installe l'outil de recherche de domaines ressemblants.
+
+```bash
+sudo apt install -y dnstwist
+```
+
+### Fierce - Kali
+
+Installe l'outil de reconnaissance DNS.
+
+```bash
+sudo apt install -y fierce
+```
+
+### Amass - Kali
+
+Installe l'outil de découverte de domaines.
+
+```bash
+sudo apt install -y amass
+```
+
+### Recon-ng - Kali
+
+Installe le framework de reconnaissance.
+
+```bash
+sudo apt install -y recon-ng
+```
+
+### SpiderFoot - Kali
+
+Installe l'outil de collecte OSINT.
+
+```bash
+sudo apt install -y spiderfoot
+```
+
+## Première recherche - partir de l'information connue
+
+Commence par le pseudo, l'e-mail, le nom ou le domaine que tu possèdes. Ces requêtes sont à coller directement dans Google.
 
 ### Occurrences exactes
 
@@ -127,10 +208,6 @@ Retrouver des messages associés au pseudo.
 "pseudo_exemple" (forum OR discussion OR communauté)
 ```
 
-## Dorks - adresse e-mail
-
-Copie la recherche dans Google et remplace `exemple@example.com`.
-
 ### Occurrences exactes d'un e-mail
 
 Chercher l'adresse exacte dans les pages indexées.
@@ -154,10 +231,6 @@ Rechercher les pages de code indexées contenant l'adresse.
 ```text
 "exemple@example.com" (site:github.com OR site:gitlab.com)
 ```
-
-## Dorks - prénom et nom
-
-Copie la recherche dans Google et remplace `Camille Exemple`.
 
 ### Nom exact
 
@@ -198,10 +271,6 @@ Recouper le nom avec une organisation déclarée.
 ```text
 "Camille Exemple" "Organisation Exemple"
 ```
-
-## Dorks - domaine et organisation
-
-Remplace `example.com` ou `Organisation Exemple` dans la requête Google.
 
 ### Pages indexées
 
@@ -259,9 +328,9 @@ Filtrer les publications selon une date de début à adapter.
 "Organisation Exemple" after:2026-01-01
 ```
 
-## Pseudonymes - Sherlock et Maigret
+## Pseudonyme - rechercher les comptes
 
-Recherche de profils publics et exports.
+Après les premières occurrences, vérifie les profils sur plusieurs plateformes et exporte les résultats.
 
 ### Sherlock - recherche simple
 
@@ -367,9 +436,25 @@ Rechercher les identifiants listés un par ligne.
 maigret --input-file pseudos.txt --html
 ```
 
-## Adresse e-mail - Holehe
+### Blackbird - pseudonyme
 
-Recherche d'inscriptions associées à un e-mail.
+Cherche les comptes publics correspondant au pseudo.
+
+```bash
+"$HOME/.venvs/blackbird/bin/python" "$HOME/outils/blackbird/blackbird.py" --username pseudo_exemple
+```
+
+### Blackbird - export JSON
+
+Enregistre les profils trouvés au format JSON.
+
+```bash
+"$HOME/.venvs/blackbird/bin/python" "$HOME/outils/blackbird/blackbird.py" --username pseudo_exemple --json
+```
+
+## E-mail - rechercher les comptes
+
+Vérifie les traces d'un e-mail déjà trouvé dans une publication ou un profil.
 
 ### Holehe - recherche par e-mail
 
@@ -387,61 +472,17 @@ Lire les options présentes sur l'installation locale.
 "$HOME/.venvs/holehe/bin/holehe" --help
 ```
 
-## Domaines - theHarvester et Subfinder
+### Blackbird - e-mail
 
-Choisir d'abord les sources passives. Les requêtes vont aux fournisseurs de données, pas nécessairement à la cible.
-
-### theHarvester - certificats publics
-
-Utiliser crt.sh et CertSpotter.
+Cherche les profils publics associés à une adresse.
 
 ```bash
-(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b crtsh,certspotter)
+"$HOME/.venvs/blackbird/bin/python" "$HOME/outils/blackbird/blackbird.py" --email exemple@example.com
 ```
 
-### theHarvester - plusieurs sources
+## Domaine - commencer par le DNS
 
-Comparer certificats et Common Crawl.
-
-```bash
-(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b crtsh,certspotter,commoncrawl)
-```
-
-### theHarvester - rechercher les e-mails
-
-Chercher les adresses publiques et les URL associées.
-
-```bash
-(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b emails,urls,certspotter)
-```
-
-### theHarvester - exporter
-
-Sauvegarder les rapports locaux selon les formats du projet.
-
-```bash
-(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b crtsh,certspotter -f example.com-rapport)
-```
-
-### Subfinder - sous-domaines passifs
-
-Collecter les noms publics, sans scan de ports.
-
-```bash
-"$HOME/go/bin/subfinder" -d example.com -silent -o sous-domaines.txt
-```
-
-### crt.sh - certificats en JSON
-
-Extraire les noms des certificats ; le service peut limiter les requêtes.
-
-```bash
-curl -fsSG --data-urlencode "q=%.example.com" --data-urlencode "output=json" https://crt.sh/ | jq -r '.[].name_value' | sort -u
-```
-
-## Domaines - DNS, WHOIS et TLS
-
-Commandes système simples pour comprendre les informations d'un domaine.
+Quand tu obtiens un domaine, vérifie ses enregistrements publics avant d'aller plus loin.
 
 ### WHOIS
 
@@ -523,9 +564,117 @@ Afficher sujet, émetteur et dates du certificat présenté.
 openssl s_client -connect example.com:443 -servername example.com </dev/null 2>/dev/null | openssl x509 -noout -subject -issuer -dates
 ```
 
-## Archives, sites Web et données publiques
+### SOA - zone DNS
 
-Pour les pages Web, conserver l'URL et la date ; les réponses HTTP peuvent changer.
+Affiche les informations de gestion de zone publiées.
+
+```bash
+dig example.com SOA +short
+```
+
+## Domaine - trouver les sous-domaines
+
+Croise les certificats, les sources passives et les domaines ressemblants. Certaines sources nécessitent une clé API.
+
+### theHarvester - certificats publics
+
+Utiliser crt.sh et CertSpotter.
+
+```bash
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b crtsh,certspotter)
+```
+
+### theHarvester - plusieurs sources
+
+Comparer certificats et Common Crawl.
+
+```bash
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b crtsh,certspotter,commoncrawl)
+```
+
+### theHarvester - rechercher les e-mails
+
+Chercher les adresses publiques et les URL associées.
+
+```bash
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b emails,urls,certspotter)
+```
+
+### theHarvester - exporter
+
+Sauvegarder les rapports locaux selon les formats du projet.
+
+```bash
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d example.com -b crtsh,certspotter -f example.com-rapport)
+```
+
+### Subfinder - sous-domaines passifs
+
+Collecter les noms publics, sans scan de ports.
+
+```bash
+"$HOME/go/bin/subfinder" -d example.com -silent -o sous-domaines.txt
+```
+
+### crt.sh - certificats en JSON
+
+Extraire les noms des certificats ; le service peut limiter les requêtes.
+
+```bash
+curl -fsSG --data-urlencode "q=%.example.com" --data-urlencode "output=json" https://crt.sh/ | jq -r '.[].name_value' | sort -u
+```
+
+### Amass - passif
+
+Recherche des sous-domaines en mode passif et enregistre le résultat.
+
+```bash
+amass enum -passive -d example.com -o amass-resultats.txt
+```
+
+### dnstwist - domaines similaires
+
+Vérifie les domaines ressemblants déjà enregistrés.
+
+```bash
+dnstwist --registered example.com
+```
+
+### dnstwist - exporter
+
+Exporte les domaines ressemblants au format CSV.
+
+```bash
+dnstwist --format csv example.com > domaines-similaires.csv
+```
+
+### Fierce - DNS
+
+Recherche des noms d'hôtes par requêtes DNS dans le périmètre autorisé.
+
+```bash
+fierce --domain example.com --subdomains mail
+```
+
+### Recon-ng - espace de travail
+
+Ouvre un espace de travail Recon-ng pour regrouper les recherches.
+
+```bash
+recon-ng -w enquete-exemple
+```
+
+### SpiderFoot - collecte passive
+
+Exécute une collecte OSINT passive et affiche le résultat en CSV.
+
+```bash
+spiderfoot -s example.com -u passive -o csv
+```
+
+## Site Web et archives - retrouver les versions précédentes
+
+Quand tu as une URL, regarde sa réponse HTTP, ses archives et les services indexés.
 
 ### Wayback Machine - ouvrir les archives
 
@@ -583,9 +732,17 @@ Ouvrir une recherche d'observations associées au domaine.
 xdg-open 'https://urlscan.io/search/#domain%3Aexample.com'
 ```
 
-## Images et documents
+### Photon - explorer un site
 
-Examiner la copie locale de l'image ou du document. Les métadonnées peuvent être absentes ou modifiées.
+Explore un niveau de pages publiques sur un site dont l'exploration est autorisée.
+
+```bash
+"$HOME/.venvs/photon/bin/python" "$HOME/outils/Photon/photon.py" -u https://example.com/ -l 1
+```
+
+## Images et documents - exploiter les fichiers
+
+Examiner les métadonnées des fichiers trouvés au cours de l'enquête.
 
 ### Type réel du fichier
 
@@ -643,7 +800,25 @@ Extraire le texte d'un PDF textuel ; n'effectue pas d'OCR.
 pdftotext -layout document.pdf document.txt
 ```
 
-## Fichiers et exports
+### Dates EXIF
+
+Affiche les champs de dates disponibles dans une image.
+
+```bash
+exiftool -time:all -G1 -s photo.jpg
+```
+
+### Métadonnées d'un dossier
+
+Exporte les métadonnées de plusieurs images au format CSV.
+
+```bash
+exiftool -csv -r dossier_images/ > images-metadonnees.csv
+```
+
+## Résultats - sauvegarder les éléments utiles
+
+Conserver les sorties de commandes et les fichiers utiles à l'analyse.
 
 ### Préparer un dossier
 
@@ -700,3 +875,20 @@ Afficher les lignes et numéros où apparaît le mot.
 ```bash
 grep -inF domaine notes.txt
 ```
+
+### Inventaire des fichiers
+
+Liste les fichiers enregistrés pour l'enquête.
+
+```bash
+find dossier_osint -type f | sort
+```
+
+### Exporter les MX
+
+Enregistre les serveurs de messagerie dans le dossier de rapports.
+
+```bash
+dig example.com MX +short | tee dossier_osint/rapports/dns-mx.txt
+```
+
