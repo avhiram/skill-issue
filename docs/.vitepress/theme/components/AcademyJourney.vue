@@ -220,6 +220,13 @@ const localLabUrls = new Set([
   'https://www.vulnhub.com/',
   'https://github.com/rapid7/metasploitable3'
 ].map(normalizeUrl))
+const osintToolUrls = new Set([
+  'https://github.com/sherlock-project/sherlock',
+  'https://github.com/laramies/theHarvester',
+  'https://github.com/soxoj/maigret',
+  'https://github.com/megadose/holehe',
+  'https://github.com/jivoi/awesome-osint'
+].map(normalizeUrl))
 const sourceItems: Resource[] = [...resources, ...masteryResources, ...academyExtraResources] as Resource[]
 const resourceMap = new Map<string, AssignedResource>()
 for (const item of sourceItems) {
@@ -229,6 +236,7 @@ for (const item of sourceItems) {
   if (resourceMap.has(key)) continue
   const title = simplify(item.title.trim())
   let routeLevel = item.routeLevel || academyAssignments[item.id] || 'research'
+  if (osintToolUrls.has(key)) routeLevel = 'osint-recon'
   if (localLabUrls.has(key)) routeLevel = 'local-labs'
   else if (key === normalizeUrl('https://tryhackme.com/free-rooms')) routeLevel = 'ctf-intermediate'
   else if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
@@ -262,6 +270,11 @@ for (const [id, links] of linksByLevel) {
 }
 
 const manualDescriptions: Record<string, string> = {
+  'sherlock': 'Recherche de comptes publics à partir d’un pseudonyme.',
+  'theharvester': 'Collecte de sous-domaines et d’informations publiques sur un domaine.',
+  'maigret - recherche de profils': 'Recherche de profils publics avec rapports.',
+  'holehe - recherche par e-mail': 'Recherche d’indices d’inscription liés à une adresse e-mail.',
+  'awesome osint - repertoire d’outils': 'Catalogue d’outils et ressources OSINT.',
   'threat intelligence 101': 'Introduction au renseignement sur les cybermenaces.',
   'threat intelligence tools': 'Découverte des outils d’OSINT et de Threat Intelligence.',
   'martryohka doll': 'Challenge d’analyse de fichiers pour débuter.',
@@ -477,7 +490,12 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://cryptopals.com/"
   ],
   "osint-recon": [
-    "https://osintframework.com/"
+    "https://osintframework.com/",
+    "https://github.com/sherlock-project/sherlock",
+    "https://github.com/soxoj/maigret",
+    "https://github.com/megadose/holehe",
+    "https://github.com/laramies/theHarvester",
+    "https://github.com/jivoi/awesome-osint"
   ],
   "osint-practice": [
     "https://bellingcat.gitbook.io/toolkit"
