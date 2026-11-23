@@ -276,15 +276,202 @@ function levelsIn(section: typeof sections[number]) {
 }
 function numberFor(id: string) { return indexOf.get(id) || 0 }
 
+// Une seule roadmap, avec une sélection de ressources sans achat pour chaque niveau.
+// Les offres freemium ou les certifications payantes restent dans la vue complète.
+const freeSelections: Record<string, readonly string[]> = {
+  "environment": [
+    "https://cs50.harvard.edu/x/",
+    "https://www.virtualbox.org/"
+  ],
+  "network-basics": [
+    "https://www.cloudflare.com/learning/network-layer/what-is-a-computer-network/",
+    "https://www.practicalnetworking.net/"
+  ],
+  "network-practice": [
+    "https://wiki.wireshark.org/SampleCaptures",
+    "https://www.wireshark.org/"
+  ],
+  "linux-basics": [
+    "https://overthewire.org/wargames/bandit/",
+    "https://linuxjourney.com/"
+  ],
+  "linux-admin": [
+    "https://ubuntu.com/server/docs/",
+    "https://help.offsec.com/hc/en-us/articles/360044925031-How-to-get-access-to-free-content-in-the-OffSec-Learning-Library"
+  ],
+  "windows-basics": [
+    "https://learn.microsoft.com/fr-fr/windows-server/administration/windows-commands/windows-commands"
+  ],
+  "powershell": [
+    "https://learn.microsoft.com/en-us/powershell/"
+  ],
+  "python-basics": [
+    "https://cs50.harvard.edu/python/",
+    "https://www.freecodecamp.org/learn/scientific-computing-with-python/"
+  ],
+  "scripting": [
+    "https://skills.github.com/",
+    "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/"
+  ],
+  "web-basics": [
+    "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Overview"
+  ],
+  "web-api": [
+    "https://owasp.org/www-project-api-security/"
+  ],
+  "security-basics": [
+    "https://www.nist.gov/cyberframework",
+    "https://learn.microsoft.com/en/security"
+  ],
+  "crypto": [
+    "https://cryptohack.org/",
+    "https://cryptopals.com/"
+  ],
+  "osint-recon": [
+    "https://osintframework.com/"
+  ],
+  "osint-practice": [
+    "https://bellingcat.gitbook.io/toolkit"
+  ],
+  "scanning": [
+    "https://nmap.org/"
+  ],
+  "web-security": [
+    "https://portswigger.net/web-security/",
+    "https://owasp.org/www-project-top-ten/"
+  ],
+  "web-labs": [
+    "https://portswigger.net/web-security/all-labs",
+    "https://overthewire.org/wargames/natas/"
+  ],
+  "local-labs": [
+    "https://github.com/digininja/DVWA",
+    "https://github.com/juice-shop/juice-shop",
+    "https://github.com/WebGoat/WebGoat"
+  ],
+  "bug-bounty": [
+    "https://www.hackerone.com/hackers/how-to-start-hacking",
+    "https://docs.bugcrowd.com/researchers/participating-in-program/finding-program/"
+  ],
+  "ctf-beginner": [
+    "https://picoctf.org/",
+    "https://www.root-me.org/"
+  ],
+  "ctf-intermediate": [
+    "https://help.offsec.com/hc/en-us/articles/360048318472-Getting-Started-with-PG-Play-and-Practice",
+    "https://tryhackme.com/free-rooms"
+  ],
+  "pentest-system": [
+    "https://github.com/peass-ng/PEASS-ng"
+  ],
+  "bonus-windows-labs": [
+    "https://learn.microsoft.com/en-us/windows/security/"
+  ],
+  "ad-intro": [
+    "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview"
+  ],
+  "ad-minilab": [
+    "https://orange-cyberdefense.github.io/GOAD/labs/MINILAB/"
+  ],
+  "ad-light": [
+    "https://orange-cyberdefense.github.io/GOAD/labs/GOAD-Light/"
+  ],
+  "ad-full": [
+    "https://github.com/Orange-Cyberdefense/GOAD"
+  ],
+  "c2": [
+    "https://github.com/BishopFox/sliver",
+    "https://github.com/apache/caldera",
+    "https://github.com/its-a-feature/Mythic"
+  ],
+  "red-advanced": [
+    "https://github.com/redcanaryco/atomic-red-team"
+  ],
+  "blue-logs": [
+    "https://docs.suricata.io/en/latest/quickstart.html"
+  ],
+  "blue-siem": [
+    "https://wazuh.com/",
+    "https://github.com/SigmaHQ/sigma"
+  ],
+  "blue-threat": [
+    "https://attack.mitre.org/"
+  ],
+  "dfir-network": [
+    "https://play.picoctf.org/practice/challenge/286?category=4&page=2&solved=0"
+  ],
+  "dfir-host": [
+    "https://github.com/volatilityfoundation/volatility3",
+    "https://cloud.google.com/learn/security/mandiant-academy-courses/free-cyber-defense-training"
+  ],
+  "reverse": [
+    "https://opensecuritytraining.info/",
+    "https://ghidra-sre.org/"
+  ],
+  "malware": [
+    "https://remnux.org/",
+    "https://www.malware-traffic-analysis.net/"
+  ],
+  "cloud-foundations": [
+    "https://learn.microsoft.com/en-us/training/azure/"
+  ],
+  "cloud-security": [
+    "https://github.com/OWASP/wrongsecrets"
+  ],
+  "containers": [
+    "https://kubernetes.io/docs/concepts/security/",
+    "https://github.com/madhuakula/kubernetes-goat"
+  ],
+  "mobile": [
+    "https://mas.owasp.org/"
+  ],
+  "iot": [
+    "https://github.com/OWASP/IoTGoat"
+  ],
+  "ot": [
+    "https://csrc.nist.gov/pubs/sp/800/82/r3/final"
+  ],
+  "grc": [
+    "https://csrc.nist.gov/publications/sp"
+  ],
+  "ctf-advanced": [
+    "https://hackropole.fr/fr/challenges/"
+  ],
+  "extremely-hard-rooms": [
+    "https://pwn.college/program-security/"
+  ],
+  "certifications": [
+    "https://pauljerimy.com/security-certification-roadmap/"
+  ],
+  "community": [
+    "https://www.defcon.org/"
+  ],
+  "research": [
+    "https://nvd.nist.gov/"
+  ],
+  "final-project": [
+    "https://owasp.org/projects/web-security-testing-guide"
+  ]
+}
+const freeSets = new Map(Object.entries(freeSelections).map(([id, urls]) => [
+  id, new Set(urls.map(normalizeUrl))
+]))
 const storageKey = 'skill-issue-academy-single-route-v1'
 const completed = ref<string[]>([])
+const viewMode = ref<'free' | 'all'>('free')
 const search = ref('')
 const showUrls = ref(false)
 const doneCount = computed(() => orderedLevels.filter(l => completed.value.includes(l.id)).length)
 const progress = computed(() => Math.round((doneCount.value / orderedLevels.length) * 100))
 const query = computed(() => simplify(search.value.trim()))
+function modeLinks(id: string): AssignedResource[] {
+  const list = levelLinks(id)
+  if (viewMode.value === 'all') return list
+  const free = freeSets.get(id)
+  return free ? list.filter(item => free.has(normalizeUrl(item.url))) : []
+}
 function visibleLinks(id: string) {
-  const base = levelLinks(id)
+  const base = modeLinks(id)
   if (!query.value) return base
   const level = byId.get(id)
   if (level && simplify(level.title + ' ' + level.intro).includes(query.value)) return base
@@ -294,7 +481,9 @@ function visibleLevels(section: typeof sections[number]) {
   if (!query.value) return levelsIn(section)
   return levelsIn(section).filter(level => visibleLinks(level.id).length > 0)
 }
-const searchCount = computed(() => query.value ? orderedLevels.reduce((n, l) => n + visibleLinks(l.id).length, 0) : catalog.length)
+const searchCount = computed(() => orderedLevels.reduce((n, l) => n + visibleLinks(l.id).length, 0))
+const filteredCount = computed(() => orderedLevels.reduce((n, l) => n + modeLinks(l.id).length, 0))
+const freeComplete = computed(() => orderedLevels.every(l => modeLinks(l.id).length > 0))
 function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify(completed.value)) } catch {}
 }
@@ -316,11 +505,25 @@ onMounted(() => {
       <p class="academy-eyebrow">SKILL-ISSUE / ACADEMY</p>
       <h1>Roadmap cybersécurité</h1>
       <h2>Commence ici</h2>
-      <p>Pars de zéro et avance dans l'ordre. Chaque niveau te dit quoi apprendre, te donne les liens utiles et propose un exercice. Tu peux cocher les niveaux au fur et à mesure.</p>
+      <p>Du réseau à Linux, au pentest, au SOC, au forensic, au Cloud et aux certifications : une seule progression pour explorer tous les domaines. Avance à ton rythme, avec ou sans budget.</p>
       <div class="progress-wrap">
         <div class="progress-head"><span>Progression</span><strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong></div>
         <div class="progress-track" role="progressbar" aria-label="Progression de la roadmap" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length"><span :style="{width: progress + '%'}"></span></div>
-        <span class="progress-note">{{ catalog.length }} liens uniques, classés dans une seule roadmap. Progression enregistrée sur cet appareil.</span>
+        <span class="progress-note">{{ catalog.length }} liens uniques dans la bibliothèque complète. Progression enregistrée sur cet appareil.</span>
+      </div>
+      <div class="mode-panel">
+        <div class="mode-switch" role="group" aria-label="Choisir les ressources à afficher">
+          <button type="button" :class="{active: viewMode === 'free'}" :aria-pressed="viewMode === 'free'" @click="viewMode = 'free'">100 % gratuit</button>
+          <button type="button" :class="{active: viewMode === 'all'}" :aria-pressed="viewMode === 'all'" @click="viewMode = 'all'">Toutes les ressources</button>
+        </div>
+        <p v-if="viewMode === 'free'" class="mode-explainer">
+          {{ filteredCount }} ressources sélectionnées sans achat de cours, réparties dans les {{ orderedLevels.length }} niveaux.
+          Certains labs nécessitent un compte gratuit, une machine personnelle ou des ressources système. Les certificats eux-mêmes peuvent être payants.
+        </p>
+        <p v-else class="mode-explainer">
+          {{ catalog.length }} ressources : cours gratuits, freemium, open source et formations payantes (OffSec, INE, etc.).
+          Vérifie les conditions d'accès avant toute inscription.
+        </p>
       </div>
       <nav class="contents" aria-label="Sommaire de la roadmap">
         <a v-for="(section, i) in sections" :key="section.id" :href="'#' + section.id"><span class="contents-number">{{ i + 1 }}</span>{{ section.title }}</a>
@@ -343,7 +546,7 @@ onMounted(() => {
       <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="level">
         <div class="level-head">
           <h3><span class="level-prefix">Niveau {{ numberFor(level.id) }}</span> <span class="dash">-</span> {{ level.title }}</h3>
-          <div class="level-meta"><span class="level-count">{{ levelLinks(level.id).length }} liens</span><label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label></div>
+          <div class="level-meta"><span class="level-count">{{ modeLinks(level.id).length }} liens</span><label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label></div>
         </div>
         <p class="level-info">{{ level.intro }}</p>
         <ul class="link-list">
@@ -360,7 +563,7 @@ onMounted(() => {
             </li>
           </template>
         </ul>
-        <div v-if="!query && !levelLinks(level.id).length" class="no-resource">
+        <div v-if="!query && !modeLinks(level.id).length" class="no-resource">
           Exercice final : réutilise les ressources des niveaux précédents.
         </div>
         <details v-if="!query" class="level-exercise">
@@ -373,7 +576,7 @@ onMounted(() => {
       <a class="back-top" href="#about">↑ Retour au début</a>
     </section>
 
-    <p class="footer-note">Les liens externes peuvent évoluer ou nécessiter un compte ou un abonnement. Vérifie les conditions d’accès avant de commencer. Utilise uniquement des labs ou environnements pour lesquels tu disposes d’une autorisation.</p>
+    <p class="footer-note">Le filtre gratuit sélectionne des supports accessibles sans abonnement ou achat de cours connu. Il ne garantit pas la gratuité du matériel, de l'hébergement Cloud ou des examens. Certaines plateformes limitent les heures ou demandent un compte. Les conditions changent : vérifie-les à chaque inscription. N'utilise que des labs et environnements explicitement autorisés.</p>
   </div>
 </template>
 
@@ -509,4 +712,12 @@ onMounted(() => {
   .link-list { margin-left:0!important; }
   .link-list li { font-size:.8rem; }
 }
+
+.mode-panel { background:#160f20; border:1px solid #493354; border-radius:9px; padding:13px 15px; margin:19px 0 22px; }
+.mode-switch { display:flex; gap:8px; flex-wrap:wrap; }
+.mode-switch button { background:#22182e; border:1px solid #5a4071; border-radius:6px; padding:11px 16px; color:#cbbbd9; font:inherit; font-size:.85rem; font-weight:650; cursor:pointer; }
+.mode-switch button:hover { border-color:#b690e1; color:#f4e5ff; }
+.mode-switch button.active { background:#604381; color:#fff; border-color:#b38cde; }
+.mode-explainer { margin:11px 0 0!important; color:#c3b2d0!important; font-size:.78rem; line-height:1.7; max-width:820px; }
+@media(max-width:460px){ .mode-switch button { flex:1; padding:11px 9px; font-size:.8rem; } }
 </style>
