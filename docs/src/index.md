@@ -7,7 +7,7 @@ aside: false
 
 <div class="profile-intro">
   <p class="profile-eyebrow">SKILL-ISSUE · LIHAM</p>
-  <h1>Morad H..</h1>
+  <h1>Morad H.</h1>
   <p class="profile-subtitle">Adversary Simulation · Penetration Testing · Cyberdéfense</p>
   <p>Audits de sécurité, simulation d’adversaire et recherche de vulnérabilités. Un parcours entre service public, défense et recherche indépendante.</p>
   <div class="profile-links">
@@ -159,7 +159,7 @@ aside: false
   <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/68f53d1242b3b10b486f5c93" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CRT-ID"><span class="profile-credential-image"><img src="https://redteamshell.com/images/CRT-ID-Badge.png" alt="Emblème CRT-ID" loading="lazy" decoding="async"><span class="profile-credential-fallback">CRT-ID</span></span><span class="profile-credential-name">CRT-ID</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
   <a class="profile-credential" href="https://labs.hackthebox.com/achievement/badge/1543889/216" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif APTLabs"><span class="profile-credential-image"><span class="profile-credential-fallback">APTLabs</span></span><span class="profile-credential-name">APTLabs</span><span class="profile-credential-issuer">Hack The Box · Pro Lab</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
   <a class="profile-credential" href="https://drive.google.com/file/d/1MfyKGqUnnigKTa1kYU8Kxp29k0YGhaUI/view" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CCDCOE"><span class="profile-credential-image"><span class="profile-credential-fallback">CCDCOE</span></span><span class="profile-credential-name">CCDCOE</span><span class="profile-credential-issuer">OTAN · Formation</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
-  <div class="profile-credential profile-credential-unlinked"><span class="profile-credential-image"><span class="profile-credential-fallback">CBBH</span></span><span class="profile-credential-name">CBBH</span><span class="profile-credential-issuer">Hack The Box</span><span class="profile-credential-link">Justificatif à ajouter</span></div>
+  <div class="profile-credential profile-credential-unlinked"><span class="profile-credential-image"><img src="https://media.licdn.com/dms/image/sync/v2/D5627AQGJrFwGaZb3pQ/articleshare-shrink_800/articleshare-shrink_800/0/1730739412552?e=2147483647&amp;t=kJKqEY9syvhnZMDtDxr8gMPBv14htzWrThHdS9wrJHM&amp;v=beta" alt="Emblème CBBH" loading="lazy" decoding="async"><span class="profile-credential-fallback">CBBH</span></span><span class="profile-credential-name">CBBH</span><span class="profile-credential-issuer">Hack The Box</span><span class="profile-credential-link">Justificatif à ajouter</span></div>
   <div class="profile-credential profile-credential-unlinked"><span class="profile-credential-image"><span class="profile-credential-fallback">COPO</span></span><span class="profile-credential-name">COPO</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Justificatif à ajouter</span></div>
 </div>
 
