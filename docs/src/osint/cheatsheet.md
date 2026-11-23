@@ -572,7 +572,7 @@ grep -inF contact page.html
 Ouvrir une requête ciblée dans le moteur Shodan.
 
 ```bash
-python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://www.shodan.io/search?query="+u.quote(hostname:+sys.argv[1]))' example.com
+python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://www.shodan.io/search?query="+u.quote("hostname:"+sys.argv[1]))' example.com
 ```
 
 ### urlscan.io - domaine
@@ -580,7 +580,7 @@ python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://www
 Ouvrir une recherche d'observations associées au domaine.
 
 ```bash
-python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://urlscan.io/search/#"+u.quote(domain:+sys.argv[1]))' example.com
+python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://urlscan.io/search/#"+u.quote("domain:"+sys.argv[1]))' example.com
 ```
 
 ## Images et documents
