@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { journey, branches } from '../data/academy-journey'
 import { resources, categories } from '../data/academy-organized'
 import { masteryResources } from '../data/academy-mastery'
@@ -11,6 +11,7 @@ const selectedBranchId = ref('pentest')
 const completed = ref<string[]>([])
 const query = ref('')
 const filterCategory = ref('reseau')
+watch(query, value => { if (value.trim()) filterCategory.value = 'all' })
 
 const classNames: Record<string,string> = {
   fondamentaux: 'Bases',
