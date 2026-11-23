@@ -1,4 +1,4 @@
-# Initial Access Lab
+# Lab — Initial Access
 
 > **Read this first — two scenarios, one lab**
 >
