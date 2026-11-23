@@ -5,14 +5,14 @@
 export const categories = [
   {
     "id": "fondamentaux",
-    "name": "Fondamentaux",
+    "name": "IT Fundamentals",
     "group": "Bases",
     "summary": "Informatique, sécurité et premiers exercices.",
-    "order": "Ordinateur et Internet → notions de sécurité → premiers défis"
+    "order": "Architecture IT → systèmes → sécurité"
   },
   {
     "id": "reseau",
-    "name": "Réseau",
+    "name": "Réseaux",
     "group": "Bases",
     "summary": "IP, DNS, TCP/UDP, HTTP, Wireshark et Nmap.",
     "order": "IP et DNS → protocoles → captures et découverte"
@@ -26,21 +26,21 @@ export const categories = [
   },
   {
     "id": "programmation",
-    "name": "Programmation",
+    "name": "Scripting",
     "group": "Bases",
     "summary": "Python, Bash, scripting et développement Web.",
     "order": "Python → scripts → HTML, JavaScript et HTTP"
   },
   {
     "id": "web",
-    "name": "Web & API",
+    "name": "Web Security",
     "group": "Offensif",
     "summary": "Failles Web, Burp Suite, OWASP et applications vulnérables.",
     "order": "Requêtes HTTP → premières failles → labs OWASP"
   },
   {
     "id": "red",
-    "name": "Red Team & Pentest",
+    "name": "Pentest & Red Team",
     "group": "Offensif",
     "summary": "Reconnaissance, scans, méthodologie et exploitation en lab.",
     "order": "Reconnaissance → outils → machines guidées"
@@ -54,28 +54,28 @@ export const categories = [
   },
   {
     "id": "blue",
-    "name": "Blue Team & SOC",
+    "name": "Blue Team / SOC",
     "group": "Défensif",
     "summary": "Journaux, SIEM, détection et réponse aux alertes.",
     "order": "Logs → détection → investigation d'incident"
   },
   {
     "id": "dfir",
-    "name": "DFIR & Forensic",
+    "name": "DFIR",
     "group": "Défensif",
     "summary": "Mémoire, disques, PCAP et analyse de traces.",
     "order": "Artefacts → captures réseau → disques et mémoire"
   },
   {
     "id": "cloud",
-    "name": "Cloud & Conteneurs",
+    "name": "Cloud Security",
     "group": "Spécialités",
     "summary": "AWS, Azure, Kubernetes, Docker et sécurité cloud.",
     "order": "Cloud et IAM → Docker → environnements vulnérables"
   },
   {
     "id": "reverse",
-    "name": "Reverse & Malware",
+    "name": "Reverse Engineering",
     "group": "Spécialités",
     "summary": "Assembly, Ghidra, binaires et analyse de malware.",
     "order": "Assembly → reverse simple → analyse de malware"
@@ -89,14 +89,14 @@ export const categories = [
   },
   {
     "id": "ot",
-    "name": "OT & ICS",
+    "name": "OT / ICS",
     "group": "Spécialités",
     "summary": "Systèmes industriels et principes de leur sécurité.",
     "order": "Architecture industrielle → protocoles → sécurité OT"
   },
   {
     "id": "ctf",
-    "name": "CTF & Machines",
+    "name": "CTF & Labs",
     "group": "Pratique",
     "summary": "Challenges, wargames et machines pour s'exercer.",
     "order": "Défis guidés → machines faciles → challenges avancés"

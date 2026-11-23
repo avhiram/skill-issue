@@ -4,37 +4,37 @@
  export const academyStages = [
   {
     "id": "informatique",
-    "title": "Comprendre l'informatique",
+    "title": "IT Fundamentals",
     "summary": "Ordinateur, système d'exploitation, fichiers, navigateur et ligne de commande.",
     "goal": "Savoir expliquer ce que fait un système, installer un logiciel et manipuler des fichiers."
   },
   {
     "id": "reseaux",
-    "title": "Comprendre les réseaux",
+    "title": "Réseaux",
     "summary": "IP, DNS, TCP/UDP, ports, HTTP, routage et captures réseau.",
     "goal": "Savoir lire une adresse IP, comprendre une requête Web et identifier un service."
   },
   {
     "id": "systemes",
-    "title": "Pratiquer Linux et Windows",
+    "title": "Linux & Windows",
     "summary": "Terminal, permissions, utilisateurs, processus, services et journaux.",
     "goal": "Savoir se déplacer dans les répertoires, utiliser SSH et comprendre les droits."
   },
   {
     "id": "programmation",
-    "title": "Apprendre le scripting et le Web",
+    "title": "Scripting & Web",
     "summary": "Python, Bash, HTML, JavaScript, requêtes HTTP et JSON.",
     "goal": "Savoir écrire un petit script et comprendre comment fonctionne une application Web."
   },
   {
     "id": "securite",
-    "title": "Acquérir les bases en cybersécurité",
+    "title": "Security Fundamentals",
     "summary": "Risques, authentification, chiffrement, vulnérabilités et défense.",
     "goal": "Comprendre les concepts de sécurité et les bonnes pratiques en laboratoire."
   },
   {
     "id": "pratique",
-    "title": "Résoudre ses premiers labs",
+    "title": "CTF & Labs",
     "summary": "Exercices guidés, énigmes, CTF et environnements autorisés.",
     "goal": "Terminer plusieurs exercices débutants sans consulter immédiatement la solution."
   }
@@ -42,22 +42,22 @@
  export const academyTracks = [
   {
     "id": "red",
-    "title": "Pentest et Red Team",
+    "title": "Pentest & Red Team",
     "summary": "Reconnaissance, services, machines et méthodologie."
   },
   {
     "id": "web",
-    "title": "Sécurité Web et API",
+    "title": "Web Security",
     "summary": "HTTP, OWASP Top 10, Burp Suite et labs Web."
   },
   {
     "id": "blue",
-    "title": "Blue Team et SOC",
+    "title": "Blue Team / SOC",
     "summary": "Logs, SIEM, détection et investigation d'alertes."
   },
   {
     "id": "dfir",
-    "title": "Forensic et réponse à incident",
+    "title": "DFIR",
     "summary": "Disques, mémoire, PCAP, journaux et timeline."
   },
   {
@@ -72,7 +72,7 @@
   },
   {
     "id": "reverse",
-    "title": "Reverse Engineering et Malware",
+    "title": "Reverse Engineering",
     "summary": "Assembly, analyse de binaires et rétro-ingénierie."
   },
   {

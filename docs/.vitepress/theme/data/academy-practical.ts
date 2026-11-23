@@ -2,7 +2,7 @@
 export const academyLevels = [
   {
     "id": 0,
-    "title": "Prendre en main le terminal",
+    "title": "Linux Basics",
     "desc": "Savoir manipuler des fichiers, se déplacer dans Linux et utiliser SSH.",
     "validate": "Tu peux naviguer, lire un fichier et te connecter à un serveur SSH sans suivre un corrigé.",
     "required": 2,
@@ -27,7 +27,7 @@ export const academyLevels = [
   },
   {
     "id": 1,
-    "title": "Linux et réseaux",
+    "title": "Réseaux & Systèmes",
     "desc": "Comprendre permissions, services, IP, DNS, TCP et captures réseau.",
     "validate": "Tu sais retrouver un service dans un PCAP, manipuler des permissions et utiliser grep/find.",
     "required": 2,
@@ -60,7 +60,7 @@ export const academyLevels = [
   },
   {
     "id": 2,
-    "title": "Python, Web et CTF",
+    "title": "Scripting / Web / CTF",
     "desc": "Écrire du code simple, comprendre HTTP et résoudre des défis de découverte.",
     "validate": "Tu as écrit un petit script Python, identifié les éléments d'une requête Web et résolu plusieurs défis.",
     "required": 2,
@@ -93,7 +93,7 @@ export const academyLevels = [
   },
   {
     "id": 3,
-    "title": "Vulnérabilités et premiers labs",
+    "title": "Web Security Labs",
     "desc": "Observer de vraies requêtes, reconnaître des failles et tester dans des labs dédiés.",
     "validate": "Tu as terminé deux labs Web et tu peux expliquer ce que tu as modifié dans les requêtes.",
     "required": 2,
@@ -126,7 +126,7 @@ export const academyLevels = [
   },
   {
     "id": 4,
-    "title": "Autonomie et premier projet",
+    "title": "Hands-on Labs",
     "desc": "Choisir un lab complet, tenir des notes et expliquer ce qui a fonctionné.",
     "validate": "Tu as terminé au moins un défi en autonomie et rédigé un compte rendu court : objectif, méthode et résultat.",
     "required": 1,
