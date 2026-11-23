@@ -47,7 +47,7 @@ function toggle(id:string){checked.value=checked.value.includes(id)?checked.valu
     <div class="a-progress" role="progressbar" :aria-valuenow="doneCount" aria-valuemin="0" aria-valuemax="5" aria-label="Niveaux terminés"><span :style="{width:doneCount*20+'%'}"></span></div>
     <small>Les cases cochées sont mémorisées sur cet appareil.</small>
   </div>
-  <div class="a-links"><a href="#academy-levels">Les levels</a><a href="#academy-open-source">Labs open source</a><a href="#academy-university">Cyber University - 140 ressources</a><a href="#academy-online">Labs en ligne</a></div>
+  <div class="a-links"><a href="#academy-levels">Les levels</a><a href="#academy-open-source">Labs open source</a><a href="#academy-university">Ressources complémentaires</a><a href="#academy-online">Labs en ligne</a></div>
 
   <h2 id="academy-levels">Roadmap - Level 0 à Level 4</h2>
   <p class="a-description">Commence au Level 0. Ouvre un niveau pour voir les exercices, puis coche ce que tu as réellement terminé.</p>
@@ -108,8 +108,8 @@ function toggle(id:string){checked.value=checked.value.includes(id)?checked.valu
 
 
   <section id="academy-university" class="a-section">
-    <h2>Cyber University - 140 ressources</h2>
-    <p class="a-description">Les 140 ressources d'<a href="https://github.com/brootware/awesome-cyber-security-university" target="_blank" rel="noopener noreferrer">Awesome Cyber Security University</a>, classées selon la roadmap Level 0 à Level 4. Les défis avancés et les ressources Red/Blue Team sont regroupés ici, pour ne pas surcharger le parcours débutant.</p>
+    <h2>Ressources complémentaires</h2>
+    <p class="a-description">Liens regroupés par niveau et par parcours.</p>
     <div class="a-university-filters">
       <label><span>Recherche</span><input v-model="librarySearch" type="search" placeholder="Bandit, Nmap, Splunk, Windows..."></label>
       <label><span>Level</span><select v-model="libraryLevel"><option value="all">Tous</option><option v-for="i in 5" :key="i" :value="String(i-1)">Level {{i-1}}</option></select></label>

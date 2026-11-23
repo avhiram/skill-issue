@@ -149,14 +149,12 @@ function jumpToCatalog(id: string) {
           <h3><a :href="resource.url" target="_blank" rel="noopener noreferrer">{{ resource.title }} <span aria-hidden="true">↗</span></a></h3>
           <p>{{ resource.detail }}</p>
           <p v-if="resource.note" class="academy-result-note">{{ resource.note }}</p>
-          <small v-if="resource.checked">Documentation consultée : {{ resource.checked }}</small>
-          <small v-else>Source : Awesome Cyber Security University - accès non revérifié.</small>
+
         </article>
       </div>
       <p v-if="!found.length" class="academy-empty">Aucune ressource trouvée. Essaie un autre domaine ou efface les filtres.</p>
       <button v-if="found.length > visible.length" type="button" class="academy-show-more" @click="limit += 24">Afficher 24 ressources supplémentaires ({{ found.length - visible.length }} restantes)</button>
       <p class="academy-note">Les ressources freemium disposent d'une partie gratuite, mais pas d'un accès intégral. La date indiquée correspond à la consultation documentaire, pas à un test de connexion individuel. Les liens « Accès à confirmer » ne sont pas garantis gratuits aujourd'hui. Les exercices doivent être réalisés uniquement sur les plateformes et laboratoires autorisés.</p>
-      <p class="academy-note">Sélection complémentaire inspirée de <a href="https://github.com/brootware/awesome-cyber-security-university" target="_blank" rel="noopener noreferrer">Awesome Cyber Security University</a> (CC0-1.0). Les cours et labs restent la propriété de leurs auteurs. Academy présente des ressources pédagogiques, jamais des certifications professionnelles obtenues.</p>
     </section>
   </div>
 </template>

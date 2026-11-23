@@ -50,16 +50,6 @@ function clearSearch() {
   search.value = ''
   level.value = 'all'
 }
-function accessLabel(v: string) {
-  if (v.includes('Freemium')) return 'Freemium'
-  if (v === 'Accès à confirmer') return 'À vérifier'
-  if (v === 'Coûts cloud possibles') return 'Coût cloud'
-  if (v === 'Gratuit limité') return 'Gratuit limité'
-  return v
-}
-function accessClass(v: string) {
-  return v.includes('Freemium') || v === 'Accès à confirmer' || v === 'Coûts cloud possibles' ? 'is-caution' : ''
-}
 </script>
 
 <template>
@@ -140,15 +130,8 @@ function accessClass(v: string) {
                   {{ r.title }}
                   <span aria-hidden="true" class="ac-out">↗</span>
                 </span>
-                <span class="ac-resource-meta">
-                  {{ r.provider }} <span aria-hidden="true">·</span> {{ r.type }}
-                  <span v-if="isSearching" class="ac-resource-category">· {{ categories.find(c => c.id === r.category)?.name }}</span>
-                </span>
-                <span v-if="r.description" class="ac-description">{{ r.description }}</span>
-              </div>
-              <div class="ac-resource-side">
-                <span class="ac-access" :class="accessClass(r.access)" :title="r.warning || r.access">{{ accessLabel(r.access) }}</span>
-                <span v-if="r.source === 'opensource'" class="ac-setup">À installer</span>
+                <span class="ac-resource-url">{{ r.url }}</span>
+                <span v-if="isSearching" class="ac-resource-category">{{ categories.find(c => c.id === r.category)?.name }}</span>
               </div>
             </a>
           </div>
@@ -158,16 +141,7 @@ function accessClass(v: string) {
       <button v-if="matches.length > visible.length" class="ac-show-more" type="button" @click="limit += 15">
         Afficher 15 ressources supplémentaires ({{ matches.length - visible.length }} restantes)
       </button>
-      <p class="ac-bottom-note">
-        Ressources classées de Level 0 à Level 4 à titre pédagogique.
-        Priorité aux exercices, labs et outils open source.
-        Les accès gratuits de certaines rooms TryHackMe et plateformes freemium ne sont pas garantis et doivent être vérifiés.
-        Les labs vulnérables se déploient uniquement dans un environnement isolé.
-      </p>
-      <p class="ac-bottom-note ac-credit">
-        Répertoire enrichi à partir d'<a href="https://github.com/brootware/awesome-cyber-security-university" target="_blank" rel="noopener noreferrer">Awesome Cyber Security University</a> (CC0 1.0).
-        Les certifications OSCP et CRTO restent dans leurs sections dédiées.
-      </p>
+
     </section>
   </div>
 </template>
@@ -215,20 +189,20 @@ function accessClass(v: string) {
 .ac-resource-main{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
 .ac-resource-name{font-size:.9rem;font-weight:620;line-height:1.4;color:#eee3fa}
 .ac-out{font-size:.75rem;color:#a489bf}
-.ac-resource-meta{font-size:.75rem;color:#a79aac}
-.ac-resource-category{color:#8d80a0}
-.ac-description{font-size:.79rem;line-height:1.5;color:#aa9eae;max-width:660px}
-.ac-resource-side{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;max-width:155px}
-.ac-access{border:1px solid #49375d;color:#c7b2df;background:#231a30;border-radius:5px;padding:3px 7px;white-space:normal;text-align:right;font-size:.71rem;line-height:1.3}
-.ac-access.is-caution{background:transparent;border-color:#3e3346;color:#a99eb1}
-.ac-setup{font-size:.7rem;color:#94839f}
+.ac-resource-url{font-size:.77rem;color:#a79aac;overflow-wrap:anywhere;line-height:1.35}
+.ac-resource-category{font-size:.72rem;color:#8d80a0}
+
+
+
+
+
 .ac-empty{font-size:.88rem;color:#ab9db9;padding:18px 0}
 .ac-show-more{display:block;margin:15px auto 0;padding:9px 15px;border-radius:7px;border:1px solid #58416c;background:#251b31;color:#decaf2;cursor:pointer;font-size:.81rem}
 .ac-show-more:hover{border-color:#9170ba}
-.ac-bottom-note{font-size:.75rem!important;line-height:1.55;color:#94889f!important;margin-top:24px!important}
-.ac-credit{margin-top:7px!important}
-.ac-credit a{color:#c1a1e0}
+
+
+
 @media(min-width:980px){.ac-category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:590px){.ac-category-grid{grid-template-columns:1fr}.ac-category{min-height:72px;padding:12px 14px}.ac-results-head{align-items:flex-start}.ac-resource{gap:8px;align-items:flex-start}.ac-resource-side{max-width:105px}.ac-description{font-size:.76rem}.ac-start-links{gap:6px}.ac-category-summary{font-size:.78rem}}
+@media(max-width:590px){.ac-category-grid{grid-template-columns:1fr}.ac-category{min-height:72px;padding:12px 14px}.ac-results-head{align-items:flex-start}.ac-resource{gap:8px;align-items:flex-start}.ac-start-links{gap:6px}.ac-category-summary{font-size:.78rem}}
 @media(prefers-reduced-motion:reduce){.ac-category{transition:none}}
 </style>
