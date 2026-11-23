@@ -35,6 +35,14 @@ Installer les outils de recherche, de métadonnées et de rapports.
 sudo apt update && sudo apt install -y file coreutils grep git curl jq whois dnsutils openssl pipx python3-venv libimage-exiftool-perl poppler-utils xdg-utils
 ```
 
+### FFprobe et MediaInfo
+
+Installer les outils complémentaires pour analyser les vidéos.
+
+```bash
+sudo apt install -y ffmpeg mediainfo
+```
+
 ### Préparer les applications Python
 
 Ajouter au PATH les programmes installés par pipx.
@@ -1310,6 +1318,158 @@ Exporte les métadonnées de plusieurs images au format CSV.
 
 ```bash
 exiftool -csv -r dossier_images/ > images-metadonnees.csv
+```
+
+## Photos et vidéos - analyser un fichier
+
+ExifTool lit les métadonnées disponibles dans les photos et vidéos.
+
+### Photo - toutes les métadonnées
+
+Lire les champs disponibles, avec leur groupe et les doublons.
+
+```bash
+exiftool -a -G1 -s "photo.jpg"
+```
+
+### Vidéo - toutes les métadonnées
+
+Lire les champs présents dans la vidéo et son conteneur.
+
+```bash
+exiftool -a -G1 -s "video.mp4"
+```
+
+### Photo - GPS
+
+Afficher les coordonnées GPS présentes, si elles existent.
+
+```bash
+exiftool -a -G1 -s -GPS:all "photo.jpg"
+```
+
+### Vidéo - GPS
+
+Afficher les éventuelles métadonnées de localisation.
+
+```bash
+exiftool -a -G1 -s -GPS:all "video.mp4"
+```
+
+### Photo - date et appareil
+
+Afficher les champs de date et le modèle de l’appareil.
+
+```bash
+exiftool -a -G1 -s -time:all -Make -Model -Software "photo.jpg"
+```
+
+### Vidéo - dates
+
+Afficher les dates et le logiciel déclarés dans les métadonnées.
+
+```bash
+exiftool -a -G1 -s -time:all -Software "video.mp4"
+```
+
+### Vidéo - FFprobe en JSON
+
+Extraire les pistes, codecs, résolution, durée et informations de conteneur.
+
+```bash
+ffprobe -v error -show_format -show_streams -of json "video.mp4" > video-ffprobe.json
+```
+
+### Vidéo - MediaInfo en JSON
+
+Exporter les informations techniques des pistes vidéo et audio.
+
+```bash
+mediainfo --Output=JSON "video.mp4" > video-mediainfo.json
+```
+
+## Dossiers complets - analyse récursive
+
+Remplace uniquement `/chemin/du/dossier` par le chemin réel. L'option `-r` parcourt également les sous-dossiers. Ces commandes ne modifient pas les fichiers d'origine.
+
+### Analyser tous les fichiers
+
+Lire les métadonnées des fichiers reconnus, sous-dossiers compris.
+
+```bash
+exiftool -r -a -G1 -s "/chemin/du/dossier/"
+```
+
+### Rapport texte complet
+
+Enregistrer les métadonnées dans un fichier texte.
+
+```bash
+exiftool -r -a -G1 -s "/chemin/du/dossier/" > rapport-metadonnees.txt
+```
+
+### Rapport JSON complet
+
+Exporter les métadonnées dans un fichier JSON.
+
+```bash
+exiftool -r -j -G1 "/chemin/du/dossier/" > rapport-metadonnees.json
+```
+
+### Rapport CSV complet
+
+Créer un tableau de métadonnées de tous les fichiers reconnus.
+
+```bash
+exiftool -r -csv "/chemin/du/dossier/" > rapport-metadonnees.csv
+```
+
+### Photos et vidéos uniquement
+
+Limiter le rapport CSV aux formats photo et vidéo indiqués.
+
+```bash
+exiftool -r -csv -ext jpg -ext jpeg -ext png -ext heic -ext webp -ext gif -ext tif -ext mp4 -ext mov -ext avi -ext mkv -ext webm "/chemin/du/dossier/" > rapport-medias.csv
+```
+
+### GPS de tout le dossier
+
+Extraire les coordonnées et autres champs GPS disponibles.
+
+```bash
+exiftool -r -a -G1 -s -GPS:all "/chemin/du/dossier/" > rapport-gps.txt
+```
+
+### Dates de tout le dossier
+
+Extraire les dates renseignées dans les métadonnées.
+
+```bash
+exiftool -r -a -G1 -s -time:all "/chemin/du/dossier/" > rapport-dates.txt
+```
+
+### Vidéos - rapport MediaInfo
+
+Analyser toutes les vidéos prises en charge dans les sous-dossiers.
+
+```bash
+find "/chemin/du/dossier/" -type f \( -iname '*.mp4' -o -iname '*.mov' -o -iname '*.mkv' -o -iname '*.avi' -o -iname '*.webm' \) -exec mediainfo '{}' \; > rapport-videos-mediainfo.txt
+```
+
+### Vidéos - rapport FFprobe
+
+Extraire les pistes et informations des fichiers vidéo trouvés.
+
+```bash
+find "/chemin/du/dossier/" -type f \( -iname '*.mp4' -o -iname '*.mov' -o -iname '*.mkv' -o -iname '*.avi' -o -iname '*.webm' \) -exec ffprobe -v error -show_format -show_streams '{}' \; > rapport-videos-ffprobe.txt
+```
+
+### Empreintes SHA-256 du dossier
+
+Créer un inventaire des empreintes sans modifier les fichiers.
+
+```bash
+find "/chemin/du/dossier/" -type f -print0 | sort -z | xargs -0 -r sha256sum > rapport-sha256.txt
 ```
 
 ## Exporter les résultats
