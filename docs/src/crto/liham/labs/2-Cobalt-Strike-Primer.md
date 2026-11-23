@@ -1,4 +1,4 @@
-# Cobalt Strike Prepare & Beyond  
+# Lab — Préparation de Cobalt Strike  
 
 The objective is to setup Cobalt Strike.  Update Malleable C2 profile, create artifact, resource kit, listeners, load scripts, and disable AppLocker controls for first Beacon.  
 
