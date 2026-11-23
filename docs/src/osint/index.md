@@ -25,6 +25,8 @@ Outils OSINT classés par usage.
 - **[Sherlock](https://github.com/sherlock-project/sherlock)** - Rechercher les comptes liés à un pseudonyme.
 - **[Maigret](https://github.com/soxoj/maigret)** - Croiser les profils publics et produire un rapport.
 - **[WhatsMyName](https://github.com/WebBreacher/WhatsMyName)** - Vérifier des pseudonymes sur des plateformes.
+- **[Blackbird](https://github.com/antoniaci/blackbird)** - Rechercher des comptes publics par pseudonyme ou e-mail.
+- **[Namechk](https://namechk.com/)** - Vérifier un pseudonyme sur les réseaux sociaux et les domaines.
 - **[Social Analyzer](https://github.com/qeeqbox/social-analyzer)** - Compléter l'analyse des profils sociaux publics.
 - **[Reddit Search](https://www.reddit.com/search/)** - Retrouver des publications et commentaires publics.
 - **[X - Recherche avancée](https://x.com/search-advanced)** - Combiner mots-clés, comptes et périodes lorsque la recherche est disponible.
@@ -42,9 +44,14 @@ Outils OSINT classés par usage.
 - **[crt.sh](https://crt.sh/)** - Explorer les noms figurant dans les certificats publics.
 - **[Subfinder](https://github.com/projectdiscovery/subfinder)** - Rassembler des sous-domaines à partir de sources passives.
 - **[Amass](https://github.com/owasp-amass/amass)** - Cartographier la surface d'exposition d'un domaine.
+- **[dnstwist](https://github.com/elceef/dnstwist)** - Repérer les domaines ressemblants et les tentatives de typosquatting.
+- **[DNSDumpster](https://dnsdumpster.com/)** - Explorer gratuitement les enregistrements DNS et les sous-domaines.
+- **[Fierce](https://github.com/mschwager/fierce)** - Effectuer une reconnaissance DNS de domaines.
 - **[SecurityTrails](https://securitytrails.com/dns-trails)** - Consulter des données DNS et leurs évolutions.
 - **[BGP.tools](https://bgp.tools/)** - Identifier les annonces BGP et les réseaux associés.
 - **[ICANN Lookup](https://lookup.icann.org/)** - Consulter les informations d'enregistrement disponibles.
+- **[Recon-ng](https://github.com/lanmaster53/recon-ng)** - Organiser les recherches OSINT dans un framework modulaire.
+- **[Photon](https://github.com/s0md3v/Photon)** - Explorer un site Web et en extraire des URL et des données publiques.
 
 ## Infrastructure et cybermenaces
 
@@ -52,6 +59,7 @@ Outils OSINT classés par usage.
 - **[Censys](https://search.censys.io/)** - Explorer les hôtes, certificats et services connus.
 - **[VirusTotal](https://www.virustotal.com/)** - Recouper IP, domaines, URL et empreintes de fichiers.
 - **[urlscan.io](https://urlscan.io/)** - Examiner les observations publiques de pages et URL.
+- **[Security Headers](https://securityheaders.com/)** - Analyser les en-têtes HTTP de sécurité d'un site.
 - **[AbuseIPDB](https://www.abuseipdb.com/)** - Consulter les signalements associés à une adresse IP.
 - **[AlienVault OTX](https://otx.alienvault.com/)** - Recouper des indicateurs de compromission.
 - **[URLhaus](https://urlhaus.abuse.ch/)** - Rechercher des URL associées à la diffusion de malware.
