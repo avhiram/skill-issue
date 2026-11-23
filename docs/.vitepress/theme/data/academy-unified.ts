@@ -1734,6 +1734,33 @@ export const academyExtraResources = [
     "access": "Payant",
     "description": "Cursus intermédiaire en pentest ; certificat accessible selon l'abonnement INE Premium et son voucher.",
     "category": "additional"
+  },
+  {
+    "id": "added-osint-maigret",
+    "title": "Maigret - recherche de profils",
+    "url": "https://github.com/soxoj/maigret",
+    "category": "osint",
+    "routeLevel": "osint-recon",
+    "access": "Open source",
+    "description": "Recherche de comptes associés à un pseudonyme et génération de rapports."
+  },
+  {
+    "id": "added-osint-holehe",
+    "title": "Holehe - recherche par e-mail",
+    "url": "https://github.com/megadose/holehe",
+    "category": "osint",
+    "routeLevel": "osint-recon",
+    "access": "Open source",
+    "description": "Recherche d'indices d'inscription associés à une adresse e-mail."
+  },
+  {
+    "id": "added-osint-awesome",
+    "title": "Awesome OSINT - répertoire d'outils",
+    "url": "https://github.com/jivoi/awesome-osint",
+    "category": "osint",
+    "routeLevel": "osint-recon",
+    "access": "Gratuit",
+    "description": "Catalogue de moteurs, outils et ressources de recherche en sources ouvertes."
   }
 ] as const
 
