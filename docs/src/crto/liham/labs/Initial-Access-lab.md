@@ -340,79 +340,73 @@ Le code suivant est celui du scénario de formation ; il est conservé pour réf
     }
     ```
 
-> **What this code does — step by step:**
+> **Lecture du code :** la classe `DomainManager` hérite de `AppDomainManager`. Le runtime .NET peut appeler `InitializeNewDomain()` au démarrage du processus hôte, avant l’exécution normale du programme.
 >
-> The `DomainManager` class inherits from `AppDomainManager`. The .NET runtime calls
-> `InitializeNewDomain()` automatically when the host process starts — before the app's
-> real code runs. Everything inside that method is your malicious execution.
->
-> **Phase 1 — Spawn a hidden, suspended Edge process (process hollowing setup):**
+> **Partie 1 — Création d’un processus Edge suspendu :**
+
 > ```
 > CreateProcessA(msedge.exe, CREATE_SUSPENDED | CREATE_NO_WINDOW, ...)
 > ```
-> Edge is launched with `CREATE_SUSPENDED` — the main thread is created but not running.
-> `CREATE_NO_WINDOW` makes it completely invisible. The process exists in memory but has
-> not executed a single instruction of its own code yet. You now own its memory space.
+
+> Le lab utilise `CREATE_SUSPENDED` pour créer le thread principal sans démarrer son exécution, ainsi que `CREATE_NO_WINDOW` pour éviter l’ouverture d’une fenêtre. Ces indicateurs et la création du processus peuvent être visibles dans la télémétrie système.
 >
-> **Phase 2 — Find the entry point of the suspended Edge process:**
+> **Partie 2 — Lecture des structures du processus :**
+
 > ```
 > NtQueryInformationProcess → read PEB → read image base → read PE headers → calculate entry point
 > ```
-> The PEB (Process Environment Block) is a Windows structure containing the base address of
-> the loaded executable. Adding `0x10` to the PEB address gives the `ImageBaseAddress` field.
-> From there: read 512 bytes of the PE headers → find `e_lfanew` (offset to NT headers at
-> `0x3C`) → read the `AddressOfEntryPoint` RVA at `e_lfanew + 0x28` → calculate absolute
-> entry point address = base + RVA.
+
+> Le **PEB (Process Environment Block)** contient notamment des informations sur l’exécutable chargé. L’exemple analyse les en-têtes PE, dont `ImageBaseAddress`, `e_lfanew` et `AddressOfEntryPoint`. Il illustre la différence entre une adresse relative RVA et une adresse virtuelle absolue.
 >
-> **Phase 3 — Read shellcode from embedded resource:**
+> **Partie 3 — Lecture de la ressource intégrée à la DLL :**
+
 > ```
 > Assembly.GetManifestResourceStream("AppDomainHijack.http_x64.xprocess.bin")
 > ```
-> Reads the raw beacon shellcode bytes from the DLL's embedded resource section into a
-> `byte[]` array. The shellcode never touches disk — it was compiled into the DLL.
+
+> Le code lit les données binaires placées dans les ressources de l’assembly et les stocke dans un tableau `byte[]`. Une ressource intégrée reste présente dans le fichier DLL et peut être inspectée.
 >
-> **Phase 4 — Write shellcode over Edge's entry point:**
+> **Partie 4 — Écriture dans la mémoire du processus :**
+
 > ```
 > WriteProcessMemory(pi.hProcess, lpEntryPoint, shellcode, ...)
 > ```
-> Overwrites the suspended Edge process's entry point code with your beacon shellcode.
-> When the thread resumes, instead of running Edge's startup code it executes your shellcode.
+
+> Cette partie illustre le principe du **Process Hollowing** : le code présent au point d’entrée d’un processus suspendu est remplacé, ce qui change son comportement à la reprise du thread.
 >
-> **Phase 5 — Resume the thread:**
+> **Partie 5 — Reprise du thread :**
+
 > ```
 > ResumeThread(pi.hThread)
 > ```
-> Unfreezes the main thread. Edge's entry point is now your shellcode → beacon executes →
-> beacon calls back to team server → beacon session appears in CS running as `msedge.exe`.
+
+> Le thread suspendu est repris dans le scénario. Le cours présente ensuite une nouvelle session Beacon associée à `msedge.exe` et au team server Cobalt Strike.
 >
-> **OPSEC:** `WriteProcessMemory` from a .NET process into `msedge.exe` is visible to EDR
-> hooks on this API call. The parent process is `ngentask.exe` (legitimate). The cross-process
-> write is the most detectable moment — it is why the malleable profile's stage block
-> settings (no RWX, module stomping, string replacement) must be active so the written
-> shellcode does not match known beacon signatures in memory.
+> **Observation OPSEC :** les appels mémoire comme `WriteProcessMemory`, la création de processus et la modification de leur mémoire sont surveillables par les EDR. L’utilisation d’un exécutable Microsoft signé ne garantit pas l’absence de détection.
+>
+> **Référence du cours :** Process Hollowing, chapitre *Malware Essentials*.
 
-⚠️ Process Hollowing
-⚠️ Above is the process hollowing code from the ***Malware Essentials chapter***.
+### Compiler et vérifier la DLL
 
-## Step 4 — Build and stage the DLL
+Dans Visual Studio, compiler le projet en mode **Release**. Le chemin de sortie présenté est :
 
-1. Build the project in Release mode.
+`C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll`
 
-	The DLL should be written to the following path: *C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll*.
+**Vérification :** un chemin de sortie contenant `net8.0` peut indiquer qu’un projet .NET moderne a été choisi au lieu de la Class Library .NET Framework attendue.
 
-⚠️ If your path contains something like *net8.0*, then you chose the wrong project type on step 2.  
+Examiner ensuite la DLL générée avec ThreatCheck, selon les outils du lab :
 
-> **Before copying: run ThreatCheck against the compiled DLL.**
 > ```cmd
 > C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll"
 > ```
-> If Defender flags the DLL: the embedded shellcode bytes are being matched by a static
-> signature. Solutions: XOR-encrypt the shellcode in the embedded resource and decrypt it
-> at runtime in `InitializeNewDomain` before passing to `WriteProcessMemory`, OR regenerate
-> the shellcode after confirming your malleable C2 profile stage block is applied correctly
-> (the profile modifies beacon DLL strings that the raw shellcode bytes may still contain).
 
-1. Go ahead and copy the DLL to the deals payload directory.
+> **Interprétation du résultat :** une alerte ThreatCheck signale une correspondance avec certaines signatures utilisées par le moteur de test. L’absence d’alerte ne permet pas d’affirmer que le fichier ne sera pas détecté par d’autres contrôles.
+>
+> Le cours compare les octets du payload et les paramètres du Malleable C2 Profile lorsqu’un résultat de détection est observé.
+
+### Conserver la DLL dans le dossier du lab
+
+Le bloc suivant reprend le transfert du fichier de l’exercice vers le dossier `deals` :
 
 	```Terminal-nocolor
 	cp C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll C:\Payloads\deals\
