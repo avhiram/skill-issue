@@ -611,8 +611,7 @@ function otherLinks(id: string): AssignedResource[] {
     </nav>
 
     <p class="academy-legend">
-      <strong>Tu commences sans argent ?</strong> Suis les liens marqués « Gratuit » dans chaque niveau.
-      Les autres ressources restent disponibles pour aller plus loin.
+      <strong>Parcours gratuit</strong> - Les liens marqués « Gratuit » sont à suivre en priorité.
     </p>
 
     <main class="academy-chapters">
@@ -630,7 +629,6 @@ function otherLinks(id: string): AssignedResource[] {
             <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
               <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
-              <small v-if="item.access && item.access !== 'Gratuit' && item.access !== 'Open source'" class="academy-access">({{ item.access }})</small>
             </li>
           </ul>
         </div>
@@ -638,7 +636,6 @@ function otherLinks(id: string): AssignedResource[] {
     </main>
 
     <footer class="academy-footer">
-      <p>Pour les plateformes freemium, certains contenus restent payants. Le matériel, les services Cloud et les certifications peuvent aussi entraîner des frais. Travaille uniquement sur des environnements autorisés.</p>
       <a href="#academy-top">Retour au début</a>
     </footer>
   </div>
@@ -801,8 +798,7 @@ function otherLinks(id: string): AssignedResource[] {
 }
 .academy-links a:hover { color: #edcfff !important; text-decoration: underline !important; }
 .academy-explanation { color: #d0c9d3; }
-.academy-free,
-.academy-access {
+.academy-free {
   display: inline;
   margin-left: 7px;
   color: #ad92be;
@@ -815,12 +811,6 @@ function otherLinks(id: string): AssignedResource[] {
   margin: 40px 0 0;
   padding: 18px 0 0;
   border-top: 1px solid #33283e;
-}
-.academy-footer p {
-  margin: 0 0 13px !important;
-  font-size: .76rem;
-  line-height: 1.6;
-  color: #93899e !important;
 }
 .academy-footer a { color: #bea2d3 !important; font-size: .82rem; text-decoration: none !important; }
 .academy-footer a:hover { text-decoration: underline !important; }
