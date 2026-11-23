@@ -310,15 +310,15 @@ Utilise le [générateur de recherches](./index.md#générateur-de-dorks) pour c
 
 | Recherche | Dork | Utilité |
 | --- | --- | --- |
-| Pseudonyme | \`"pseudo_exemple"\` | Mentions exactes d'un identifiant. |
-| Profils techniques | \`"pseudo_exemple" site:github.com\` | Profils ou discussions indexés. |
-| E-mail | \`"exemple@domaine.fr"\` | Occurrences exactes de l'adresse. |
-| Nom complet | \`"Prénom Nom" filetype:pdf\` | Documents publics qui mentionnent le nom. |
-| Domaine | \`site:example.com\` | Pages indexées sur un domaine. |
-| Documents | \`site:example.com filetype:pdf\` | PDF publics d'un domaine. |
-| Pages de contact | \`site:example.com inurl:contact\` | Pages de contact indexées. |
+| Pseudonyme | `"pseudo_exemple"` | Mentions exactes d'un identifiant. |
+| Profils techniques | `"pseudo_exemple" site:github.com` | Profils ou discussions indexés. |
+| E-mail | `"exemple@domaine.fr"` | Occurrences exactes de l'adresse. |
+| Nom complet | `"Prénom Nom" filetype:pdf` | Documents publics qui mentionnent le nom. |
+| Domaine | `site:example.com` | Pages indexées sur un domaine. |
+| Documents | `site:example.com filetype:pdf` | PDF publics d'un domaine. |
+| Pages de contact | `site:example.com inurl:contact` | Pages de contact indexées. |
 
-Les opérateurs essentiels : \`site:\` (domaine), \`filetype:\` (format), \`inurl:\` (URL), guillemets (expression exacte) et \`-\` (exclusion).
+Les opérateurs essentiels : `site:` (domaine), `filetype:` (format), `inurl:` (URL), guillemets (expression exacte) et `-` (exclusion).
 
 ## Vérifier les résultats
 
