@@ -123,23 +123,23 @@ aside: false
 <div class="profile-proof">
   <a href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
     <strong>NASA · 2024</strong>
-    <span>Lettre de reconnaissance · Découverte d’une vulnérabilité.</span>
+    <span>Lettre de reconnaissance.</span>
   </a>
   <a href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
     <strong>Locked Shields · OTAN 2025</strong>
-    <span>Sélectionné pour représenter la France (2ᵉ/17). Insigne COMCYBER et médaille de l’État-major des armées.</span>
+    <span>Équipe française · 2ᵉ/17.</span>
   </a>
   <div class="profile-proof-entry">
     <strong>Première dame de France · 2026</strong>
-    <span>Sélectionné parmi quatre étudiants pour un échange avec Mme Brigitte Macron sur le cyberharcèlement.</span>
+    <span>Rencontre avec Mme Brigitte Macron.</span>
   </div>
   <div class="profile-proof-entry">
     <strong>Ministère des Armées · DefHack 2024</strong>
-    <span>Membre de l’équipe lauréate · COMCYBER.</span>
+    <span>Équipe lauréate · COMCYBER.</span>
   </div>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
     <strong>Capital · 2025</strong>
-    <span>« À l’école des hackers éthiques » · Témoignage.</span>
+    <span>« À l’école des hackers éthiques ».</span>
   </a>
 </div>
 
