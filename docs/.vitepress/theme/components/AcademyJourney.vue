@@ -537,17 +537,16 @@ function otherLinks(id: string): AssignedResource[] {
 </script>
 
 <template>
-  <div class="academy-longpage">
-    <header id="academy-top" class="academy-hero">
-      <p class="eyebrow">SKILL-ISSUE / ACADEMY</p>
+  <div class="academy-syllabus">
+    <header id="academy-top" class="academy-intro">
+      <p class="academy-kicker">SKILL-ISSUE / ACADEMY</p>
       <h1>Cyber University</h1>
-      <p class="hero-lead">Une roadmap chronologique pour apprendre la cybersécurité, des premières bases aux labs avancés. Un chemin gratuit est proposé à chaque niveau.</p>
-      <a class="start-button" href="#premiers-pas">Commencer gratuitement <span aria-hidden="true">→</span></a>
-      <p class="hero-meta">{{ orderedLevels.length }} niveaux · {{ catalog.length }} ressources · Une seule page</p>
+      <p class="academy-description">Apprendre la cybersécurité de zéro, étape par étape. Une roadmap complète avec des cours, des exercices et des labs, y compris sans budget.</p>
+      <a class="academy-start" href="#premiers-pas">Commencer gratuitement</a>
     </header>
 
-    <nav class="academy-index" aria-label="Sommaire">
-      <h2>Les chapitres</h2>
+    <nav class="academy-contents" aria-label="Chapitres de la roadmap">
+      <p>Parcours</p>
       <ul>
         <li v-for="section in sections" :key="section.id">
           <a :href="'#' + section.id">{{ section.title }}</a>
@@ -555,120 +554,234 @@ function otherLinks(id: string): AssignedResource[] {
       </ul>
     </nav>
 
-    <main>
-      <div class="reading-note">
-        <p><strong>Sans budget ?</strong> Suis les liens « Pour commencer » à chaque niveau. Les ressources « Pour approfondir » sont facultatives, et restent visibles juste après.</p>
-        <p>Certains sites demandent un compte gratuit. Le matériel, les crédits Cloud et les examens peuvent entraîner des frais.</p>
-      </div>
+    <p class="academy-legend">
+      <strong>Tu commences sans argent ?</strong> Suis les liens marqués « Gratuit » dans chaque niveau.
+      Les autres ressources restent disponibles pour aller plus loin.
+    </p>
 
-      <section v-for="section in sections" :id="section.id" :key="section.id" class="chapter">
-        <header class="chapter-heading">
-          <h2>{{ section.title }}</h2>
-          <p>{{ section.summary }}</p>
-        </header>
+    <main class="academy-chapters">
+      <section v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
+        <h2>{{ section.title }}</h2>
+        <div v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="academy-level">
+          <h3>Level {{ numberFor(level.id) }} - {{ level.title }}</h3>
 
-        <article v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="level">
-          <h3><span>Level {{ numberFor(level.id) }}</span> - {{ level.title }}</h3>
-          <p class="level-intro">{{ level.intro }}</p>
-
-          <div v-if="freeLinks(level.id).length" class="resource-group">
-            <h4>Pour commencer <span>· sans achat</span></h4>
-            <ul class="resource-links">
-              <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
-                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                <span> - {{ describe(item) }}</span>
-              </li>
-            </ul>
-          </div>
-
-          <div v-if="otherLinks(level.id).length" class="resource-group more">
-            <h4>Pour approfondir <span>· facultatif</span></h4>
-            <ul class="resource-links">
-              <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
-                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                <span> - {{ describe(item) }}</span>
-                <small v-if="item.access && item.access !== 'Gratuit' && item.access !== 'Open source'"> ({{ item.access }})</small>
-              </li>
-            </ul>
-          </div>
-
-          <p class="practice"><strong>À pratiquer :</strong> {{ level.exercise }}</p>
-        </article>
+          <ul class="academy-links">
+            <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+              <span class="academy-explanation"> - {{ describe(item) }}</span>
+              <small class="academy-free" title="Sélection sans achat">Gratuit</small>
+            </li>
+            <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+              <span class="academy-explanation"> - {{ describe(item) }}</span>
+              <small v-if="item.access && item.access !== 'Gratuit' && item.access !== 'Open source'" class="academy-access">({{ item.access }})</small>
+            </li>
+          </ul>
+        </div>
       </section>
     </main>
 
     <footer class="academy-footer">
-      <p>Vérifie les conditions d'accès avant de t'inscrire. Pratique uniquement sur des systèmes et labs autorisés.</p>
-      <a href="#academy-top">Retour en haut ↑</a>
+      <p>Pour les plateformes freemium, certains contenus restent payants. Le matériel, les services Cloud et les certifications peuvent aussi entraîner des frais. Travaille uniquement sur des environnements autorisés.</p>
+      <a href="#academy-top">Retour au début</a>
     </footer>
   </div>
 </template>
-
 <style scoped>
-.academy-longpage {
-  --line: #30243c;
-  --violet: #c7a0eb;
-  --body: #c7bbd0;
-  max-width: 980px; margin: 0 auto; padding: 12px 5px 55px;
-  color: #e9e0ee; font-family: inherit;
+/*
+ * Une seule longue page, sans cartes, accordéons ni changement de vue.
+ * Hiérarchie : chapitre > niveau > lien et courte description.
+ */
+.academy-syllabus {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 10px 0 54px;
+  color: #d6d0dc;
+  font-family: inherit;
 }
-.academy-longpage * { box-sizing: border-box; }
-:global(.academy-page), :global(.academy-page .VPContent), :global(.academy-page .VPDoc) { background: #0c0912; }
-:global(.academy-page .VPDoc .container), :global(.academy-page .VPDoc .content), :global(.academy-page .VPDoc .content-container) { max-width: 1050px !important; }
-.academy-hero { padding: 30px 0 42px; border-bottom: 1px solid var(--line); }
-.eyebrow { margin: 0 0 14px !important; color: #a88ac8 !important; font-size: .7rem !important; font-weight: 730; letter-spacing: .14em; }
-.academy-hero h1 { margin: 0 0 15px !important; padding: 0 !important; border: 0 !important; color: #f7efff !important; font-size: clamp(2.3rem, 5.2vw, 3.35rem) !important; line-height: 1.14; letter-spacing: -.04em; font-weight: 740; }
-.hero-lead { max-width: 690px; margin: 0 0 24px !important; color: #cfc2da !important; font-size: 1rem; line-height: 1.72; }
-.start-button { display: inline-flex; align-items: center; gap: 12px; padding: 11px 19px; border-radius: 5px; border: 1px solid #c5a0eb; background: #ac86d0; color: #160f21 !important; font-size: .9rem; font-weight: 730; text-decoration: none !important; }
-.start-button:hover { background: #caa6e8; }
-.hero-meta { margin: 17px 0 0 !important; color: #9183a0 !important; font-size: .74rem; }
-.academy-index { padding: 25px 0 27px; border-bottom: 1px solid var(--line); }
-.academy-index h2 { margin: 0 0 14px !important; padding: 0 !important; border: 0 !important; font-size: .89rem !important; color: #ded1ea !important; }
-.academy-index ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 22px; list-style: none !important; padding: 0 !important; margin: 0 !important; }
-.academy-index li { margin: 0 !important; padding: 0 !important; }
-.academy-index a { font-size: .86rem; color: #bfa8d2 !important; text-decoration: none !important; line-height: 1.6; }
-.academy-index a:hover { color: #f1dfff !important; text-decoration: underline !important; }
-.reading-note { padding: 24px 0 0; }
-.reading-note p { margin: 0 0 7px !important; max-width: 850px; color: #ab9eb7 !important; font-size: .82rem; line-height: 1.65; }
-.reading-note strong { color: #ddbeef; }
-.chapter { padding-top: 52px; scroll-margin-top: 96px; }
-.chapter-heading { border-bottom: 1px solid #483551; padding: 0 0 14px; margin-bottom: 26px; }
-.chapter-heading h2 { margin: 0 0 7px !important; padding: 0 !important; border: 0 !important; color: #e1c5f8 !important; font-size: clamp(1.45rem, 3vw, 1.95rem) !important; font-weight: 710; line-height: 1.32; letter-spacing: -.02em; }
-.chapter-heading p { margin: 0 !important; color: #b0a3bc !important; font-size: .88rem; line-height: 1.64; }
-.level { margin-bottom: 39px; scroll-margin-top: 96px; }
-.level h3 { margin: 0 0 7px !important; padding: 0 !important; border: 0 !important; color: #f1e9f7 !important; font-size: clamp(1.075rem, 2.2vw, 1.24rem) !important; line-height: 1.5; font-weight: 680; overflow-wrap: break-word; }
-.level h3 span { color: #c5a0ee; }
-.level-intro { margin: 0 0 15px !important; color: #b2a4bc !important; font-size: .87rem; line-height: 1.68; }
-.resource-group { margin: 13px 0 15px; }
-.resource-group h4 { margin: 0 0 9px !important; padding: 0 !important; border: 0 !important; color: #dcbff4 !important; font-size: .84rem !important; line-height: 1.4; font-weight: 680; }
-.resource-group h4 span { color: #9b8ba8; font-weight: 430; }
-.resource-group.more h4 { color: #bfaecc !important; }
-.resource-links { list-style: none !important; margin: 0 !important; padding: 0 0 0 22px !important; }
-.resource-links li { position: relative; margin: 0 0 7px !important; padding: 0 !important; color: var(--body); font-size: .93rem; line-height: 1.68; overflow-wrap: anywhere; }
-.resource-links li::before { content: "»"; position: absolute; left: -22px; color: #a47bce; font-weight: 750; }
-.resource-links a { color: #d9b6fa !important; text-decoration: none !important; font-weight: 640; }
-.resource-links a:hover { color: #f7eaff !important; text-decoration: underline !important; text-underline-offset: 3px; }
-.resource-links small { color: #9a8aac; font-size: .74rem; }
-.practice { margin: 19px 0 0 !important; padding-top: 10px; border-top: 1px solid #231a2d; font-size: .8rem; color: #9b8da9 !important; line-height: 1.65; }
-.practice strong { color: #b7a0c7; font-weight: 640; }
-.academy-footer { border-top: 1px solid var(--line); margin-top: 54px; padding-top: 22px; }
-.academy-footer p { margin: 0 0 13px !important; font-size: .77rem; color: #978ba3 !important; line-height: 1.7; }
-.academy-footer a { color: #d0b0ed !important; font-size: .84rem; text-decoration: none !important; }
+.academy-syllabus * { box-sizing: border-box; }
+:global(.academy-page),
+:global(.academy-page .VPContent),
+:global(.academy-page .VPDoc) { background: #151119; }
+:global(.academy-page .VPDoc .container),
+:global(.academy-page .VPDoc .content),
+:global(.academy-page .VPDoc .content-container) {
+  max-width: 1070px !important;
+}
+.academy-intro {
+  padding: 24px 0 27px;
+}
+.academy-kicker {
+  margin: 0 0 13px !important;
+  color: #a999bc !important;
+  font-size: .69rem !important;
+  letter-spacing: .13em;
+  font-weight: 650;
+}
+.academy-intro h1 {
+  padding: 0 !important;
+  margin: 0 0 12px !important;
+  border: 0 !important;
+  color: #f4eef7 !important;
+  font-size: clamp(2.05rem, 4.4vw, 2.7rem) !important;
+  line-height: 1.17;
+  letter-spacing: -.035em;
+  font-weight: 590;
+}
+.academy-description {
+  max-width: 710px;
+  margin: 0 0 20px !important;
+  color: #bfb7c8 !important;
+  font-size: .95rem;
+  line-height: 1.65;
+}
+.academy-start {
+  display: inline-block;
+  padding: 9px 16px;
+  color: #ead8f7 !important;
+  border: 1px solid #735884;
+  border-radius: 4px;
+  background: #31233e;
+  font-size: .83rem;
+  font-weight: 590;
+  text-decoration: none !important;
+}
+.academy-start:hover { background: #3e2b50; color: #fff !important; }
+.academy-contents {
+  padding: 22px 0 23px;
+  border-top: 1px solid #30273a;
+  border-bottom: 1px solid #30273a;
+}
+.academy-contents p {
+  margin: 0 0 11px !important;
+  font-size: .83rem;
+  font-weight: 620;
+  color: #e2d3e9 !important;
+}
+.academy-contents ul {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  column-gap: 21px;
+  row-gap: 5px;
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none !important;
+}
+.academy-contents li { padding: 0 !important; margin: 0 !important; }
+.academy-contents a {
+  color: #bca9ca !important;
+  font-size: .83rem;
+  line-height: 1.45;
+  text-decoration: none !important;
+}
+.academy-contents a:hover { color: #f0d7ff !important; text-decoration: underline !important; }
+.academy-legend {
+  padding: 0;
+  margin: 25px 0 0 !important;
+  max-width: 820px;
+  color: #a99fb0 !important;
+  font-size: .82rem;
+  line-height: 1.65;
+}
+.academy-legend strong { color: #d7bfea; font-weight: 630; }
+.academy-chapter {
+  padding: 32px 0 4px;
+  scroll-margin-top: 90px;
+}
+.academy-chapter h2 {
+  padding: 0 !important;
+  margin: 0 0 20px !important;
+  border: 0 !important;
+  color: #eee8f1 !important;
+  font-size: clamp(1.7rem, 3.1vw, 2.05rem) !important;
+  line-height: 1.3;
+  font-weight: 480;
+  letter-spacing: -.012em;
+}
+.academy-level {
+  margin: 0 0 29px;
+  scroll-margin-top: 85px;
+}
+.academy-level h3 {
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: #bdb7c4 !important;
+  font-size: clamp(1.11rem, 2.1vw, 1.24rem) !important;
+  font-weight: 460;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.academy-links {
+  list-style: none !important;
+  padding: 0 0 0 35px !important;
+  margin: 0 !important;
+}
+.academy-links li {
+  position: relative;
+  margin: 0 0 4px !important;
+  padding: 0 !important;
+  font-size: .98rem;
+  line-height: 1.58;
+  color: #d0c9d3;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.academy-links li::before {
+  content: "»";
+  position: absolute;
+  top: 0;
+  left: -25px;
+  font-weight: 560;
+  font-size: 1.13rem;
+  line-height: 1.39;
+  color: #9f93a7;
+}
+.academy-links a {
+  color: #cfa6f1 !important;
+  font-weight: 540;
+  text-decoration: none !important;
+  text-underline-offset: 3px;
+}
+.academy-links a:hover { color: #edcfff !important; text-decoration: underline !important; }
+.academy-explanation { color: #d0c9d3; }
+.academy-free,
+.academy-access {
+  display: inline;
+  margin-left: 7px;
+  color: #ad92be;
+  font-size: .74rem;
+  font-weight: 500;
+  white-space: normal;
+}
+.academy-free { color: #b2a1bf; }
+.academy-footer {
+  margin: 40px 0 0;
+  padding: 18px 0 0;
+  border-top: 1px solid #33283e;
+}
+.academy-footer p {
+  margin: 0 0 13px !important;
+  font-size: .76rem;
+  line-height: 1.6;
+  color: #93899e !important;
+}
+.academy-footer a { color: #bea2d3 !important; font-size: .82rem; text-decoration: none !important; }
 .academy-footer a:hover { text-decoration: underline !important; }
-.start-button:focus-visible, .academy-index a:focus-visible, .resource-links a:focus-visible, .academy-footer a:focus-visible { outline: 2px solid #dab4fd; outline-offset: 3px; }
+.academy-syllabus a:focus-visible { outline: 2px solid #bd92dd; outline-offset: 3px; }
 @media (max-width: 650px) {
-  .academy-longpage { padding: 5px 0 43px; }
-  .academy-hero { padding: 20px 0 31px; }
-  .academy-hero h1 { font-size: clamp(2.15rem, 10vw, 2.9rem) !important; }
-  .hero-lead { font-size: .96rem; }
-  .academy-index ul { grid-template-columns: 1fr; }
-  .chapter { padding-top: 36px; }
-  .chapter-heading { margin-bottom: 22px; }
-  .level { margin-bottom: 34px; }
-  .level h3 { font-size: 1.1rem !important; }
-  .resource-links li { font-size: .92rem; line-height: 1.65; margin-bottom: 9px !important; }
-  .resource-links { padding-left: 20px !important; }
-  .resource-links li::before { left: -20px; }
+  .academy-syllabus { padding: 3px 0 40px; }
+  .academy-intro { padding: 20px 0 23px; }
+  .academy-intro h1 { font-size: 2.15rem !important; }
+  .academy-description { font-size: .9rem; }
+  .academy-contents { padding: 17px 0 18px; }
+  .academy-contents ul { grid-template-columns: 1fr; row-gap: 4px; }
+  .academy-chapter { padding-top: 30px; }
+  .academy-chapter h2 { font-size: 1.63rem !important; margin-bottom: 17px !important; }
+  .academy-level { margin-bottom: 27px; }
+  .academy-level h3 { font-size: 1.14rem !important; margin-bottom: 10px !important; }
+  .academy-links { padding-left: 34px !important; }
+  .academy-links li { font-size: .96rem; line-height: 1.6; margin-bottom: 4px !important; }
+  .academy-links li::before { left: -24px; }
 }
-@media (prefers-reduced-motion: reduce) { .start-button { transition: none; } }
 </style>
