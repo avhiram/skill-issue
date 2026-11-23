@@ -806,3 +806,127 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   position: relative;
   z-index: 1;
 }
+
+
+/* Accueil : bandes de certificats et logos résistants aux erreurs de chargement */
+.vp-doc .profile-logo-frame {
+  position: relative;
+  overflow: hidden;
+}
+.vp-doc .profile-logo-placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  box-sizing: border-box;
+  color: #2b2334;
+  background: #f8f7f9;
+  font-size: .69rem;
+  letter-spacing: .045em;
+  font-weight: 760;
+  text-align: center;
+}
+.vp-doc .profile-logo-frame > img {
+  position: relative;
+  z-index: 1;
+  background: #f8f7f9;
+  max-width: 100%;
+  max-height: 100%;
+}
+.vp-doc .profile-cert-marquee-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #352743;
+  background: #100d17;
+  border-radius: 12px;
+  margin: .75rem 0 1.1rem;
+}
+.vp-doc .profile-cert-marquee-wrap::before,
+.vp-doc .profile-cert-marquee-wrap::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: 38px;
+}
+.vp-doc .profile-cert-marquee-wrap::before {
+  left: 0;
+  background: linear-gradient(to right,#100d17,transparent);
+}
+.vp-doc .profile-cert-marquee-wrap::after {
+  right: 0;
+  background: linear-gradient(to left,#100d17,transparent);
+}
+.vp-doc .profile-cert-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: profile-credential-scroll 75s linear infinite;
+}
+.vp-doc .profile-cert-marquee-group {
+  display: flex;
+  gap: .65rem;
+  padding: .7rem .65rem .7rem 0;
+  align-items: stretch;
+}
+.vp-doc .profile-cert-marquee-group .profile-credential {
+  flex: 0 0 137px;
+  width: 137px;
+  height: 169px;
+  min-height: 169px;
+  padding: .7rem .45rem .55rem;
+  border-radius: 9px;
+  transform: none;
+}
+.vp-doc .profile-cert-marquee-group .profile-credential-image {
+  width: 77px;
+  height: 77px;
+  flex: 0 0 77px;
+  margin-bottom: .4rem;
+}
+.vp-doc .profile-cert-marquee-group .profile-credential-image img {
+  width: 67px;
+  height: 67px;
+}
+.vp-doc .profile-cert-marquee-group .profile-credential-name {
+  font-size: .84rem;
+}
+.vp-doc .profile-cert-marquee-group .profile-credential-issuer {
+  font-size: .64rem;
+}
+.vp-doc .profile-cert-marquee-group .profile-credential-link {
+  font-size: .6rem;
+  padding-top: .3rem;
+}
+.vp-doc .profile-cert-marquee-wrap:hover .profile-cert-marquee-track,
+.vp-doc .profile-cert-marquee-wrap:focus-within .profile-cert-marquee-track,
+.vp-doc .profile-cert-marquee-wrap:active .profile-cert-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes profile-credential-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (max-width: 640px) {
+  .vp-doc .profile-cert-marquee-group { gap: .45rem; padding-block: .55rem; }
+  .vp-doc .profile-cert-marquee-group .profile-credential {
+    flex-basis: 123px;
+    width: 123px;
+    min-height: 160px;
+    height: 160px;
+  }
+  .vp-doc .profile-cert-marquee-wrap::before,
+  .vp-doc .profile-cert-marquee-wrap::after { width: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vp-doc .profile-cert-marquee-wrap { overflow-x: auto; }
+  .vp-doc .profile-cert-marquee-track { animation: none; }
+  .vp-doc .profile-cert-marquee-group[aria-hidden="true"] { display: none; }
+  .vp-doc .profile-cert-marquee-wrap::before,
+  .vp-doc .profile-cert-marquee-wrap::after { display: none; }
+}
