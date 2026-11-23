@@ -26,10 +26,19 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: 'SKILL-ISSUE',
     nav: [
+      { text: 'Academy', link: '/academy/' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' }
     ],
-    sidebar: [
+    sidebar: {
+      '/academy/': [
+        { text: 'Academy', link: '/academy/', collapsed: false, items: [
+          { text: 'Roadmap débutant', link: '/academy/#parcours' },
+          { text: 'Spécialisations', link: '/academy/#specialisations' },
+          { text: 'Toutes les ressources', link: '/academy/#catalogue' }
+        ] }
+      ],
+      '/': [
       {
         text: 'OSCP',
         link: '/oscp/',
@@ -130,7 +139,8 @@ export default defineConfig({
           { text: 'Shadow Credentials · Étude de cas', link: '/crto/liham/notes/shadow-credential-to-ransomware-storytime' }
         ]
       }
-    ],
+    ]
+    },
     search: {
       provider: 'local',
       options: {
