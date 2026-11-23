@@ -27,7 +27,7 @@ type Level = {
 const sections = [
   {
     "id": "premiers-pas",
-    "title": "Introduction et pré-sécurité",
+    "title": "Fondamentaux informatiques",
     "summary": "Comprendre son ordinateur, le réseau et les premiers outils.",
     "levels": [
       "environment",
@@ -37,7 +37,7 @@ const sections = [
   },
   {
     "id": "linux-windows",
-    "title": "Linux et Windows",
+    "title": "Sécurité des systèmes",
     "summary": "Apprendre les commandes, les fichiers, les comptes et les permissions.",
     "levels": [
       "linux-basics",
@@ -59,7 +59,7 @@ const sections = [
   },
   {
     "id": "notions-securite",
-    "title": "Fondamentaux de la cybersécurité",
+    "title": "Principes de sécurité de l'information",
     "summary": "Acquérir les réflexes de sécurité, découvrir la cryptographie et pratiquer l'OSINT.",
     "levels": [
       "security-basics",
@@ -70,7 +70,7 @@ const sections = [
   },
   {
     "id": "premiers-labs",
-    "title": "Red Team - parcours débutant",
+    "title": "Sécurité des applications Web",
     "summary": "Découvrir les outils, les failles Web et les premiers labs autorisés.",
     "levels": [
       "scanning",
@@ -85,7 +85,7 @@ const sections = [
   },
   {
     "id": "bonus-windows",
-    "title": "Bonus Windows",
+    "title": "Protection des postes Windows",
     "summary": "Consolider ses bases sur des environnements Windows dédiés à la pratique.",
     "levels": [
       "bonus-windows-labs"
@@ -93,7 +93,7 @@ const sections = [
   },
   {
     "id": "active-directory-red-team",
-    "title": "Active Directory et Red Team",
+    "title": "Sécurité offensive",
     "summary": "Passer des domaines Windows aux labs GOAD, puis aux environnements Red Team.",
     "levels": [
       "ad-intro",
@@ -106,7 +106,7 @@ const sections = [
   },
   {
     "id": "blue-team",
-    "title": "Blue Team - parcours débutant",
+    "title": "Sécurité défensive",
     "summary": "Comprendre les journaux, la détection et l'analyse d'incidents.",
     "levels": [
       "blue-logs",
@@ -116,7 +116,7 @@ const sections = [
   },
   {
     "id": "forensic-reverse",
-    "title": "Forensic, reverse et malware",
+    "title": "Digital Forensics et analyse de malware",
     "summary": "Étudier les captures réseau, la mémoire, les binaires et les traces.",
     "levels": [
       "dfir-network",
@@ -127,7 +127,7 @@ const sections = [
   },
   {
     "id": "cloud-et-specialites",
-    "title": "Cloud et domaines spécialisés",
+    "title": "Cloud Security et domaines spécialisés",
     "summary": "Explorer le Cloud, les conteneurs, le mobile, l'IoT, l'OT et la conformité.",
     "levels": [
       "cloud-foundations",
@@ -141,7 +141,7 @@ const sections = [
   },
   {
     "id": "challenges-avances",
-    "title": "CTF et challenges avancés",
+    "title": "Capture The Flag (CTF)",
     "summary": "Appliquer sa méthode sur des défis complexes, jusqu'aux rooms très difficiles.",
     "levels": [
       "ctf-advanced",
@@ -150,7 +150,7 @@ const sections = [
   },
   {
     "id": "veilles-certifications",
-    "title": "Veille, CVE et certifications",
+    "title": "Développement professionnel",
     "summary": "Suivre les vulnérabilités, préparer ses examens et rejoindre les communautés.",
     "levels": [
       "research",
@@ -344,6 +344,62 @@ function levelsIn(section: typeof sections[number]) {
   return section.levels.map(id => byId.get(id)!).filter(Boolean)
 }
 function numberFor(id: string) { return indexOf.get(id) || 0 }
+
+// Intitulés courts repris des thèmes du README Cybersecurity Mastery Roadmap.
+const levelTitles: Record<string, string> = {
+  "environment": "Systèmes d'exploitation",
+  "network-basics": "Bases des réseaux",
+  "network-practice": "Protocoles réseau",
+  "linux-basics": "Fondamentaux Linux",
+  "linux-admin": "Sécurité Linux",
+  "windows-basics": "Fondamentaux Windows",
+  "powershell": "PowerShell",
+  "python-basics": "Python",
+  "scripting": "Scripting",
+  "web-basics": "Fondamentaux du Web",
+  "web-api": "Sécurité des API",
+  "security-basics": "Principes de sécurité",
+  "crypto": "Cryptographie",
+  "osint-recon": "Reconnaissance et OSINT",
+  "osint-practice": "Pratique OSINT",
+  "scanning": "Scan de vulnérabilités",
+  "web-security": "OWASP Top 10",
+  "web-labs": "Pentest Web",
+  "local-labs": "Labs et environnements pratiques",
+  "bug-bounty": "Bug Bounty",
+  "ctf-beginner": "CTF débutant",
+  "ctf-intermediate": "CTF intermédiaire",
+  "pentest-system": "Méthodologie de pentest",
+  "bonus-windows-labs": "Labs Windows",
+  "ad-intro": "Active Directory",
+  "ad-minilab": "GOAD - MINILAB",
+  "ad-light": "GOAD - GOAD-Light",
+  "ad-full": "GOAD",
+  "c2": "Frameworks C2",
+  "red-advanced": "Red Team",
+  "blue-logs": "Security Operations Center (SOC)",
+  "blue-siem": "SIEM et détection",
+  "blue-threat": "Réponse à incident",
+  "dfir-network": "Forensic réseau",
+  "dfir-host": "Forensic système",
+  "reverse": "Reverse Engineering",
+  "malware": "Analyse de malware",
+  "cloud-foundations": "Fondamentaux Cloud",
+  "cloud-security": "Architecture et sécurité Cloud",
+  "containers": "Sécurité des conteneurs",
+  "mobile": "Sécurité mobile",
+  "iot": "Sécurité IoT",
+  "ot": "Sécurité OT / ICS",
+  "grc": "Politiques et conformité",
+  "ctf-advanced": "CTF avancés",
+  "extremely-hard-rooms": "CTF très difficiles",
+  "research": "Recherche en sécurité",
+  "certifications": "Certifications",
+  "community": "Communautés",
+  "final-project": "Projet final"
+}
+function titleFor(id: string, fallback: string) { return levelTitles[id] || fallback }
+
 
 // Une seule roadmap, avec une sélection de ressources sans achat pour chaque niveau.
 // Les offres freemium ou les certifications payantes restent dans la vue complète.
@@ -563,7 +619,7 @@ function otherLinks(id: string): AssignedResource[] {
       <section v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
         <h2>{{ section.title }}</h2>
         <div v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="academy-level">
-          <h3>Level {{ numberFor(level.id) }} - {{ level.title }}</h3>
+          <h3>Level {{ numberFor(level.id) }} - {{ titleFor(level.id, level.title) }}</h3>
 
           <ul class="academy-links">
             <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
