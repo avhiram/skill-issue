@@ -1,0 +1,14 @@
+{
+  "checked_html_pages": 73,
+  "affected_pages": 1,
+  "total_visible_fences": 1,
+  "issues": [
+    {
+      "file": "oscp/mots-de-passe.html",
+      "visible_markdown_fences": 1,
+      "examples": [
+        "```text fm_usr=user&fm_pwd=^PASS^"
+      ]
+    }
+  ]
+}
