@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { categories, resources } from '../data/academy-organized'
 
 const groups = ['Bases', 'Offensif', 'Défensif', 'Spécialités', 'Pratique']
 const current = ref('fondamentaux')
 const search = ref('')
 const level = ref('all')
-const limit = ref(15)
 const category = computed(() => categories.find(c => c.id === current.value) || categories[0])
 const isSearching = computed(() => search.value.trim().length > 0)
 const simplify = (v: string) => v.toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -17,19 +16,17 @@ const matches = computed(() => {
     if (!needle && r.category !== current.value) return false
     if (level.value !== 'all' && String(r.level) !== level.value) return false
     if (!needle) return true
-    return simplify([r.title, r.provider, r.category, r.type, r.description].join(' ')).includes(needle)
+    return simplify([r.title, r.url, r.provider, r.category, r.type, r.description].join(' ')).includes(needle)
   }).sort((a, b) => a.level - b.level
     || Number(b.featured) - Number(a.featured)
     || Number(b.handsOn) - Number(a.handsOn)
     || a.title.localeCompare(b.title, 'fr'))
 })
-const visible = computed(() => matches.value.slice(0, limit.value))
 const levelGroups = computed(() => [0, 1, 2, 3, 4]
-  .map(n => ({ n, items: visible.value.filter(r => r.level === n) }))
+  .map(n => ({ n, items: matches.value.filter(r => r.level === n) }))
   .filter(g => g.items.length))
 const categoryCount = (id: string) => resources.filter(r => r.category === id).length
 
-watch([current, search, level], () => { limit.value = 15 })
 onMounted(() => {
   const hash = decodeURIComponent(window.location.hash.slice(1))
   if (categories.some(c => c.id === hash)) current.value = hash
@@ -138,9 +135,7 @@ function clearSearch() {
         </section>
       </div>
       <p v-else class="ac-empty">Aucun résultat pour cette sélection. Essaie un autre niveau ou une autre recherche.</p>
-      <button v-if="matches.length > visible.length" class="ac-show-more" type="button" @click="limit += 15">
-        Afficher 15 ressources supplémentaires ({{ matches.length - visible.length }} restantes)
-      </button>
+
 
     </section>
   </div>
@@ -197,8 +192,6 @@ function clearSearch() {
 
 
 .ac-empty{font-size:.88rem;color:#ab9db9;padding:18px 0}
-.ac-show-more{display:block;margin:15px auto 0;padding:9px 15px;border-radius:7px;border:1px solid #58416c;background:#251b31;color:#decaf2;cursor:pointer;font-size:.81rem}
-.ac-show-more:hover{border-color:#9170ba}
 
 
 
