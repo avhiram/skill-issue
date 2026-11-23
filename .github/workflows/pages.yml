@@ -49,16 +49,15 @@ jobs:
           git add -A
           if ! git diff --cached --quiet; then
             git commit -m "Publish compiled VitePress site"
-            # Le dépôt peut recevoir une modification pendant le build.
-            # Rebase sans force, puis réessaye pour éviter un rejet non-fast-forward.
-            for attempt in 1 2 3 4; do
-              git fetch origin main
-              git rebase origin/main
-              if git push origin HEAD:main; then
-                exit 0
-              fi
-              sleep 2
-            done
-            echo "Publication refusée après plusieurs tentatives" >&2
-            exit 1
+            # Un build obsolète ne doit pas écraser une version source plus récente.
+            # Pas de rebase des pages HTML générées : il créerait des conflits massifs.
+            git fetch origin main
+            if [ "$(git rev-parse HEAD^)" != "$(git rev-parse origin/main)" ]; then
+              echo "Une mise à jour plus récente existe : publication obsolète ignorée."
+              exit 0
+            fi
+            if ! git push origin HEAD:main; then
+              echo "La branche a évolué pendant la publication : laisser le build suivant publier."
+              exit 0
+            fi
           fi
