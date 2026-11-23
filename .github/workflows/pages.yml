@@ -10,6 +10,7 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'scripts/audit_rendered_markdown.py'
+      - '.github/scripts/normalize_site_dashes.py'
   workflow_dispatch:
 
 permissions:
@@ -32,6 +33,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Prepare CRTO placeholders for Vue rendering (working copy only)
         run: python3 .github/scripts/prepare_crto_for_vitepress.py
+      - name: Normalize published prose typography
+        run: python3 .github/scripts/normalize_site_dashes.py
       - name: Build VitePress website
         run: npm run docs:build
       - name: Verify generated website
