@@ -505,10 +505,13 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "web-security": [
     "https://portswigger.net/web-security/",
+    "https://portswigger.net/web-security/learning-paths",
     "https://owasp.org/www-project-top-ten/"
   ],
   "web-labs": [
     "https://portswigger.net/web-security/all-labs",
+    "https://www.root-me.org/fr/Challenges/Web-Serveur/",
+    "https://www.root-me.org/fr/Challenges/Web-Client/",
     "https://overthewire.org/wargames/natas/"
   ],
   "local-labs": [
@@ -522,7 +525,8 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "ctf-beginner": [
     "https://picoctf.org/",
-    "https://www.root-me.org/"
+    "https://www.root-me.org/",
+    "https://blog.root-me.org/posts/how-to-start/"
   ],
   "ctf-intermediate": [
     "https://help.offsec.com/hc/en-us/articles/360048318472-Getting-Started-with-PG-Play-and-Practice",
@@ -664,6 +668,12 @@ async function toggleFreePath() {
       <strong>{{ freeOnly ? 'Parcours gratuit' : 'Parcours complet' }}</strong>
       - {{ freeOnly ? 'Les ressources sélectionnées sans achat.' : 'Toutes les ressources, gratuites et payantes.' }}
     </p>
+    <p v-if="freeOnly" class="academy-free-picks">
+      <strong>Labs pour commencer :</strong>
+      <a href="https://www.root-me.org/" target="_blank" rel="noopener noreferrer">Root-Me</a>
+      <span aria-hidden="true"> · </span>
+      <a href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">PortSwigger Academy</a>
+    </p>
 
     <main class="academy-chapters">
       <section v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
@@ -790,6 +800,10 @@ async function toggleFreePath() {
   line-height: 1.65;
 }
 .academy-legend strong { color: #d7bfea; font-weight: 630; }
+.academy-free-picks { margin: 8px 0 0 !important; font-size: .83rem; color: #b3a4c0 !important; line-height: 1.7; }
+.academy-free-picks strong { color: #d8c2e6; font-weight: 600; }
+.academy-free-picks a { color: #d4abf1 !important; text-decoration: none !important; }
+.academy-free-picks a:hover { text-decoration: underline !important; }
 .academy-chapter {
   padding: 32px 0 4px;
   scroll-margin-top: 90px;
