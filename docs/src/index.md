@@ -118,28 +118,30 @@ aside: false
   </div>
 </div>
 
-## Repères
+## Distinctions
 
 <div class="profile-proof">
   <a href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
     <strong>NASA · 2024</strong>
-    <span>Lettre de reconnaissance pour un signalement responsable de vulnérabilité. ↗</span>
+    <span>Lettre de reconnaissance officielle · Vulnerability Disclosure Program.</span>
   </a>
   <a href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
-    <strong>Locked Shields · 2025</strong>
-    <span>Opérateur cyber au sein de l’équipe franco-polonaise, 2e sur 17. Attestation. ↗</span>
-  </a>
-  <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
-    <strong>Capital · février 2025</strong>
-    <span>Témoignage dans l’article « À l’école des hackers éthiques ». ↗</span>
+    <strong>Locked Shields · OTAN 2025</strong>
+    <span>Sélectionné pour représenter la France · 2ᵉ sur 17.</span>
   </a>
   <div class="profile-proof-entry">
-    <strong>École 2600 · novembre 2026</strong>
-    <span>Échange avec Mme Brigitte Macron autour du cyberharcèlement.</span>
+    <strong>Première dame de France · 2026</strong>
+    <span>Sélectionné parmi quatre étudiants pour un échange avec Mme Brigitte Macron sur le cyberharcèlement.</span>
   </div>
+  <div class="profile-proof-entry">
+    <strong>Ministère des Armées · DefHack 2024</strong>
+    <span>Membre de l’équipe lauréate · COMCYBER.</span>
+  </div>
+  <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
+    <strong>Capital · 2025</strong>
+    <span>« À l’école des hackers éthiques » · Témoignage.</span>
+  </a>
 </div>
-
-<p class="profile-note">DefHack 2024 · Équipe lauréate d’un exercice de cyberdéfense organisé par le COMCYBER.</p>
 
 ## Certifications
 
