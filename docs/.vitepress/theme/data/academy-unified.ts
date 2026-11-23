@@ -269,6 +269,25 @@ export const academyLevels = [
     ]
   },
   {
+    "id": "bug-bounty",
+    "title": "Bug Bounty : apprendre à signaler une faille",
+    "phase": "Pentest",
+    "intro": "Après les labs Web, apprends à choisir un programme autorisé, lire son périmètre et rédiger un signalement exploitable.",
+    "learn": [
+      "Différencier un exercice de Web hacking, un programme Bug Bounty et un programme de divulgation (VDP).",
+      "Lire le scope, les exclusions, les règles d'engagement et les critères de rapport.",
+      "Identifier les plateformes publiques et comprendre les accès sur sélection, comme Yogosha Strike Force."
+    ],
+    "exercise": "Choisir un programme public, lire intégralement son règlement et préparer un rapport fictif avec contexte, preuve sur lab et proposition de correction. Ne tester que les cibles explicitement autorisées.",
+    "ready": "Tu sais repérer ce qui est dans le périmètre, respecter les règles et structurer un rapport de vulnérabilité.",
+    "featured": [
+      "https://www.hackerone.com/hackers/how-to-start-hacking",
+      "https://docs.bugcrowd.com/researchers/participating-in-program/finding-program/",
+      "https://www.yeswehack.com/fr/researchers/start-hunting",
+      "https://www.intigriti.com/researchers/bug-bounty-programs"
+    ]
+  },
+  {
     "id": "ctf-beginner",
     "title": "CTF : résoudre ses premiers challenges",
     "phase": "Pentest",
@@ -1048,6 +1067,222 @@ export const academyExtraResources = [
     "category": "additional",
     "routeLevel": "ctf-intermediate",
     "access": ""
+  },
+  {
+    "id": "added-044",
+    "title": "CodinGame - commencer",
+    "url": "https://www.codingame.com/start/",
+    "category": "additional",
+    "routeLevel": "python-basics",
+    "description": "Plateforme de puzzles et jeux pour pratiquer la programmation et les algorithmes.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-045",
+    "title": "CodinGame - puzzles faciles",
+    "url": "https://www.codingame.com/training",
+    "category": "additional",
+    "routeLevel": "python-basics",
+    "description": "Exercices progressifs : boucles, conditions, tableaux et logique de programmation.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-046",
+    "title": "CodinGame - niveau intermédiaire",
+    "url": "https://www.codingame.com/training/medium",
+    "category": "additional",
+    "routeLevel": "scripting",
+    "description": "Puzzles de programmation pour approfondir les algorithmes.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-047",
+    "title": "Root-Me - Web Serveur",
+    "url": "https://www.root-me.org/fr/Challenges/Web-Serveur/",
+    "category": "additional",
+    "routeLevel": "web-labs",
+    "description": "Challenges sur la sécurité côté serveur. L’accès peut déclencher une protection anti-bot.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-048",
+    "title": "Root-Me - Web Client",
+    "url": "https://www.root-me.org/fr/Challenges/Web-Client/",
+    "category": "additional",
+    "routeLevel": "web-labs",
+    "description": "Challenges sur la sécurité côté navigateur. L’accès peut déclencher une protection anti-bot.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-049",
+    "title": "Root-Me - par où commencer",
+    "url": "https://blog.root-me.org/posts/how-to-start/",
+    "category": "additional",
+    "routeLevel": "ctf-beginner",
+    "description": "Conseils officiels pour commencer les exercices et les challenges Root-Me.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-050",
+    "title": "Hacker101 - formation Web gratuite",
+    "url": "https://www.hackerone.com/hackers/hacker101",
+    "category": "additional",
+    "routeLevel": "web-labs",
+    "description": "Cours gratuits pour découvrir les vulnérabilités Web et les fondamentaux du Bug Bounty.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-051",
+    "title": "Bugcrowd University - cours libres",
+    "url": "https://github.com/bugcrowd/bugcrowd_university",
+    "category": "additional",
+    "routeLevel": "web-labs",
+    "description": "Supports de formation open source pour apprendre les tests de sécurité.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-052",
+    "title": "Intigriti Hackademy - apprendre le Web hacking",
+    "url": "https://www.intigriti.com/researchers/hackademy",
+    "category": "additional",
+    "routeLevel": "web-labs",
+    "description": "Ressources gratuites sur les vulnérabilités Web et la rédaction des rapports.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-053",
+    "title": "YesWeHack Dojo - challenges Web",
+    "url": "https://www.yeswehack.com/dojo/unveiling-dojo-v2-our-new-ctf-and-realistic-challenge-building-framework",
+    "category": "additional",
+    "routeLevel": "web-labs",
+    "description": "Présentation des challenges CTF Dojo pour pratiquer en environnement de test.",
+    "access": "Voir les conditions d'accès"
+  },
+  {
+    "id": "added-054",
+    "title": "HackerOne - commencer le Bug Bounty",
+    "url": "https://www.hackerone.com/hackers/how-to-start-hacking",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Guide officiel pour les nouveaux chercheurs et les premiers rapports.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-055",
+    "title": "HackerOne - programmes publics",
+    "url": "https://hackerone.com/directory/programs",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Annuaire des programmes et de leurs règles de participation.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-056",
+    "title": "HackerOne - rapports divulgués (Hacktivity)",
+    "url": "https://hackerone.com/hacktivity/overview",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Exemples de signalements rendus publics pour apprendre à rédiger un rapport.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-057",
+    "title": "HackerOne - programmes publics ou privés",
+    "url": "https://docs.hackerone.com/en/articles/8368948-private-vs-public-programs",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Différences entre programmes publics et programmes sur invitation.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-058",
+    "title": "Bugcrowd - espace chercheur",
+    "url": "https://www.bugcrowd.com/hackers/",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Présentation de la participation aux programmes Bugcrowd.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-059",
+    "title": "Bugcrowd - annuaire des programmes",
+    "url": "https://bugcrowd.com/engagements",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Consulter les programmes disponibles et leurs périmètres.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-060",
+    "title": "Bugcrowd - choisir un programme",
+    "url": "https://docs.bugcrowd.com/researchers/participating-in-program/finding-program/",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Documentation officielle pour choisir un programme autorisé.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-061",
+    "title": "YesWeHack - programmes",
+    "url": "https://yeswehack.com/programs",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Annuaire officiel des programmes publics de Bug Bounty.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-062",
+    "title": "YesWeHack - démarrer en Bug Bounty",
+    "url": "https://www.yeswehack.com/fr/researchers/start-hunting",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Guide français pour commencer comme chercheur en vulnérabilités.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-063",
+    "title": "Intigriti - programmes publics",
+    "url": "https://www.intigriti.com/researchers/bug-bounty-programs",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Liste officielle des programmes publics et de divulgation.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-064",
+    "title": "Intigriti - ressources Bug Bounty",
+    "url": "https://kb.intigriti.com/en/articles/3471127-useful-resources-about-web-hacking-bug-bounty",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Sélection de ressources pour apprendre le Web hacking et le Bug Bounty.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-065",
+    "title": "Yogosha - plateforme de sécurité offensive",
+    "url": "https://yogosha.com/fr/",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Plateforme française de tests offensifs et de Bug Bounty, avec une communauté sélectionnée.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-066",
+    "title": "Yogosha Strike Force - rejoindre les chercheurs",
+    "url": "https://yogosha.com/fr/hackers/rejoindre-yogosha-strike-force/",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Candidature à la communauté Yogosha Strike Force, accessible après sélection technique.",
+    "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-067",
+    "title": "Bugcrowd - liste des programmes publics",
+    "url": "https://www.bugcrowd.com/bug-bounty-list/",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "description": "Répertoire de programmes de divulgation et de récompense, selon leurs conditions.",
+    "access": "Consulter les conditions du programme"
   }
 ] as const
 
