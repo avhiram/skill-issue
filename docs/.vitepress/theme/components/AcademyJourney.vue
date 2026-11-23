@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, nextTick } from 'vue'
 import { resources } from '../data/academy-organized'
 import { masteryResources } from '../data/academy-mastery'
 import { academyLevels, academyExtraResources, academyAssignments } from '../data/academy-unified'
@@ -613,6 +614,14 @@ function otherLinks(id: string): AssignedResource[] {
   const selected = freeSets.get(id)
   return levelLinks(id).filter(item => !selected?.has(normalizeUrl(item.url)))
 }
+
+// La vue complète reste identique. La vue gratuite affiche uniquement la sélection sans achat.
+const freeOnly = ref(false)
+async function toggleFreePath() {
+  freeOnly.value = !freeOnly.value
+  await nextTick()
+  document.getElementById('premiers-pas')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
 </script>
 
 <template>
@@ -621,7 +630,7 @@ function otherLinks(id: string): AssignedResource[] {
       <p class="academy-kicker">SKILL-ISSUE / ACADEMY</p>
       <h1>Cyber University</h1>
       <p class="academy-description">Apprendre la cybersécurité de zéro, étape par étape. Une roadmap complète avec des cours, des exercices et des labs, y compris sans budget.</p>
-      <a class="academy-start" href="#premiers-pas">Commencer gratuitement</a>
+      <button class="academy-start" type="button" :aria-pressed="freeOnly" @click="toggleFreePath">{{ freeOnly ? 'Voir toutes les ressources' : 'Commencer gratuitement' }}</button>
     </header>
 
     <nav class="academy-contents" aria-label="Chapitres de la roadmap">
@@ -633,8 +642,9 @@ function otherLinks(id: string): AssignedResource[] {
       </ul>
     </nav>
 
-    <p class="academy-legend">
-      <strong>Parcours gratuit</strong> - Les liens marqués « Gratuit » sont à suivre en priorité.
+    <p class="academy-legend" aria-live="polite">
+      <strong>{{ freeOnly ? 'Parcours gratuit' : 'Parcours complet' }}</strong>
+      - {{ freeOnly ? 'Les ressources sélectionnées sans achat.' : 'Toutes les ressources, gratuites et payantes.' }}
     </p>
 
     <main class="academy-chapters">
@@ -647,9 +657,9 @@ function otherLinks(id: string): AssignedResource[] {
             <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
               <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
-              <small class="academy-free" title="Sélection sans achat">Gratuit</small>
+              <small v-if="!freeOnly" class="academy-free" title="Sélection sans achat">Gratuit</small>
             </li>
-            <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
+            <li v-for="item in freeOnly ? [] : otherLinks(level.id)" :key="item.id + item.url">
               <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
             </li>
@@ -723,6 +733,8 @@ function otherLinks(id: string): AssignedResource[] {
   text-decoration: none !important;
 }
 .academy-start:hover { background: #3e2b50; color: #fff !important; }
+.academy-start { font-family: inherit; cursor: pointer; }
+.academy-start:focus-visible { outline: 2px solid #bd92dd; outline-offset: 3px; }
 .academy-contents {
   padding: 22px 0 23px;
   border-top: 1px solid #30273a;
