@@ -47,14 +47,14 @@ const sections = [
   {
     id: 'notions-securite',
     title: "Comprendre les bases de la sécurité",
-    summary: "Mettre des mots sur les risques, la cryptographie et la recherche d'informations publiques.",
-    levels: ["security-basics","crypto","osint-recon"]
+    summary: "Apprendre les notions de sécurité, la cryptographie et l'OSINT, puis les pratiquer sur des challenges.",
+    levels: ["security-basics","crypto","osint-recon","osint-practice"]
   },
   {
     id: 'premiers-labs',
     title: "Premiers outils, pentest et CTF",
-    summary: "Découvrir Nmap, comprendre les vulnérabilités et pratiquer progressivement sur des labs autorisés.",
-    levels: ["scanning","web-security","web-labs","ctf-beginner","ctf-intermediate","pentest-system","bonus-windows-labs"]
+    summary: "Découvrir Nmap, installer ses labs locaux, apprendre le Bug Bounty puis résoudre des CTF autorisés.",
+    levels: ["scanning","web-security","web-labs","local-labs","bug-bounty","ctf-beginner","ctf-intermediate","pentest-system","bonus-windows-labs"]
   },
   {
     id: 'active-directory-red-team',
@@ -142,6 +142,15 @@ const routeAdjustments: Record<string, string> = {
   'post exploitation basics': 'red-advanced',
   'buffer overflow prep': 'ctf-advanced'
 }
+const localLabUrls = new Set([
+  'https://github.com/digininja/DVWA',
+  'https://github.com/juice-shop/juice-shop',
+  'https://owasp.org/www-project-juice-shop/',
+  'https://github.com/WebGoat/WebGoat',
+  'https://owasp.org/www-project-webgoat/',
+  'https://www.vulnhub.com/',
+  'https://github.com/rapid7/metasploitable3'
+].map(normalizeUrl))
 const sourceItems: Resource[] = [...resources, ...masteryResources, ...academyExtraResources] as Resource[]
 const resourceMap = new Map<string, AssignedResource>()
 for (const item of sourceItems) {
@@ -151,7 +160,8 @@ for (const item of sourceItems) {
   if (resourceMap.has(key)) continue
   const title = simplify(item.title.trim())
   let routeLevel = item.routeLevel || academyAssignments[item.id] || 'research'
-  if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
+  if (localLabUrls.has(key)) routeLevel = 'local-labs'
+  else if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
   else if (hardRooms.has(title)) routeLevel = 'extremely-hard-rooms'
   else if (bonusLabs.has(title)) routeLevel = 'ctf-intermediate'
   else if (routeAdjustments[title]) routeLevel = routeAdjustments[title]
@@ -209,7 +219,14 @@ const manualDescriptions: Record<string, string> = {
   'red team engagements': 'Introduction à la préparation d’un engagement Red Team.',
   'cobalt strike - manuel officiel': 'Documentation officielle du logiciel Cobalt Strike.',
   'sliver - framework c2 open source': 'Framework C2 open source pour un environnement de lab.',
-  'caldera - émulation et lab c2': 'Plateforme open source d’émulation adversaire.'
+  'caldera - émulation et lab c2': 'Plateforme open source d’émulation adversaire.',
+  'letsdefend - challenges gratuits': 'Challenges de SOC, avec une sélection accessible gratuitement. Le catalogue migre vers Hack The Box.',
+  'dvwa - premiers défis': 'Application Web vulnérable pour pratiquer localement les failles courantes.',
+  'owasp juice shop': 'Application Web volontairement vulnérable, adaptée aux exercices locaux.',
+  'owasp webgoat': 'Environnement Web pédagogique à installer dans un lab isolé.',
+  'vulnhub': 'Machines virtuelles vulnérables téléchargeables pour un lab personnel.',
+  'cryptopals': 'Défis progressifs de cryptographie qui nécessitent de savoir coder.',
+  'root-me - challenges': 'Challenges de sécurité organisés par domaine et difficulté.'
 }
 const topicLabels: Record<string, string> = {
   fondamentaux: 'bases informatiques',
