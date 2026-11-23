@@ -792,6 +792,7 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   overflow: hidden;
 }
 .vp-doc .profile-logo-dnpj-fallback {
+  display: none !important;
   position: absolute;
   inset: 0;
   display: grid;
@@ -895,3 +896,7 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 @media (max-width: 360px) {
   .vp-doc .profile-cert-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* Bandeau institutions : aucune légende superposée aux insignes */
+.vp-doc .profile-marquee-wrap .profile-logo-placeholder,
+.vp-doc .profile-marquee-wrap .profile-logo-dnpj-fallback { display: none !important; }
