@@ -165,9 +165,9 @@ beacon> ak-settings spawnto_x64 C:\Windows\System32\svchost.exe
 
 Ce réglage concerne un autre mécanisme d’exécution :
 
-`beacon> spawnto x64 <path>` s’applique aux opérations fork-and-run du **Beacon courant**. When you run `powerpick` or `execute-assembly` from this beacon, it spawns the process you specified.
+`beacon> spawnto x64 <path>` s’applique aux opérations fork-and-run du **Beacon courant**. Les commandes `powerpick` et `execute-assembly` de ce Beacon utilisent alors le processus temporaire défini.
 
-`beacon> ak-settings spawnto_x64 <path>` concerne les **binaires service générés par l’Artifact Kit**. A service EXE payload (`Windows Service EXE`) is a standalone binary that runs under the Service Control Manager as SYSTEM. It is **not** the beacon yet — it is the loader that creates the beacon. When it executes, it spawns a child process to inject the beacon shellcode into. `ak-settings` controls what that child is.
+`beacon> ak-settings spawnto_x64 <path>` concerne les **binaires service générés par l’Artifact Kit**. Le payload `Windows Service EXE` fonctionne dans le contexte du Service Control Manager. Il sert de chargeur au Beacon et ses paramètres sont définis séparément, notamment par `ak-settings`.
 
 ```
 Without ak-settings:
@@ -287,7 +287,7 @@ beacon> sc_start BadWindowsService
 |-------|----|---------------|--------------|
 | Service démarré | 7036 | Démarrage standard d’un service | Événement attendu après l’arrêt |
 | Nouveau service installé | **7045** | **Non généré dans ce scénario** — you modified existing service | **À noter** — no 7045 = no explicit OPSEC deduction |
-| Création de processus | 4688 | `http_x64.svc.exe` starts, then `svchost.exe` starts | Processus pouvant être observés par un EDR |
+| Création de processus | 4688 | Démarrage de `http_x64.svc.exe`, puis de `svchost.exe` | Processus pouvant être observés par un EDR |
 
 > **Observation :** modifier un service existant et créer un nouveau service ne produisent pas nécessairement les mêmes événements. L’absence d’événement 7045 ne garantit pas l’absence de détection.
 
