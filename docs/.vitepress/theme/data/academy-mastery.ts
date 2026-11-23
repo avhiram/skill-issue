@@ -90,14 +90,6 @@ export const masteryResources = [
     "level": 0
   },
   {
-    "id": "hm-012",
-    "title": "Cisco Networking – Packet Tracer",
-    "url": "https://www.netacad.com/courses/packet-tracer",
-    "category": "reseau",
-    "stage": "Foundation Phase",
-    "level": 0
-  },
-  {
     "id": "hm-013",
     "title": "Wireshark",
     "url": "https://www.wireshark.org/",
@@ -546,14 +538,6 @@ export const masteryResources = [
     "level": 2
   },
   {
-    "id": "hm-069",
-    "title": "Cisco Firewall Configuration",
-    "url": "https://www.cisco.com/c/en/us/solutions/small-business/resource-center/security/how-to-setup-a-firewall.html",
-    "category": "blue",
-    "stage": "Technical Skills Phase",
-    "level": 2
-  },
-  {
     "id": "hm-070",
     "title": "pfSense",
     "url": "https://www.pfsense.org/",
@@ -589,14 +573,6 @@ export const masteryResources = [
     "id": "hm-074",
     "title": "WireGuard VPN Tutorial",
     "url": "https://www.wireguard.com/quickstart/",
-    "category": "reseau",
-    "stage": "Technical Skills Phase",
-    "level": 2
-  },
-  {
-    "id": "hm-075",
-    "title": "IPsec VPN Configuration",
-    "url": "https://www.cisco.com/c/en/us/support/docs/routers/1700-series-modular-access-routers/71462-rtr-l2l-ipsec-split.html",
     "category": "reseau",
     "stage": "Technical Skills Phase",
     "level": 2
