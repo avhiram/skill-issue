@@ -1761,6 +1761,15 @@ export const academyExtraResources = [
     "routeLevel": "osint-recon",
     "access": "Gratuit",
     "description": "Catalogue de moteurs, outils et ressources de recherche en sources ouvertes."
+  },
+  {
+    "id": "added-web-portswigger-learning-paths",
+    "title": "PortSwigger - parcours Web Security",
+    "url": "https://portswigger.net/web-security/learning-paths",
+    "category": "additional",
+    "routeLevel": "web-security",
+    "access": "Gratuit",
+    "description": "Parcours structurés et labs gratuits pour progresser en sécurité Web."
   }
 ] as const
 
