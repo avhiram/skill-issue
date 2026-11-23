@@ -785,3 +785,24 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
     padding: .75rem .35rem;
   }
 }
+
+/* Logo DNPJ du bandeau */
+.vp-doc .profile-logo-dnpj-frame {
+  position: relative;
+  overflow: hidden;
+}
+.vp-doc .profile-logo-dnpj-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #262034;
+  background: #f8f7f9;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+.vp-doc .profile-logo-dnpj-frame img {
+  position: relative;
+  z-index: 1;
+}
