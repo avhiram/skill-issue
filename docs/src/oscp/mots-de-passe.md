@@ -176,6 +176,7 @@ hydra -l <username> -P <wordlist> <target_ip> http-post-form "/<login_uri>:<user
 <p class="oscp-inline-ref"><strong>Chemin de référence :</strong> <code>/&lt;login_uri&gt;</code></p>
 
 <p class="oscp-inline-ref"><strong>Paramètre de formulaire :</strong> <code>&lt;user_field&gt;=&lt;username&gt;&amp;&lt;pass_field&gt;=^PASS^</code></p>
+
 ```text
 fm_usr=user&fm_pwd=^PASS^
 
