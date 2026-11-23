@@ -52,7 +52,7 @@ aside: false
   </a>
 
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/nous-decouvrir/notre-organisation/organisation/direction-nationale-de-police-judiciaire-dnpj" target="_blank" rel="noopener noreferrer" title="DNPJ">
-    <span class="profile-logo-wordmark profile-logo-dnpj">DNPJ</span>
+    <span class="profile-logo-frame profile-logo-dnpj-frame"><span class="profile-logo-dnpj-fallback">DNPJ</span><img src="https://domraza.fr/wp-content/uploads/2023/07/DNPJ.jpg" alt="Logo de la DNPJ" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Police judiciaire · DNPJ</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" title="OFMIN">
@@ -99,7 +99,7 @@ aside: false
   </a>
 
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/nous-decouvrir/notre-organisation/organisation/direction-nationale-de-police-judiciaire-dnpj" target="_blank" rel="noopener noreferrer" tabindex="-1" title="DNPJ">
-    <span class="profile-logo-wordmark profile-logo-dnpj">DNPJ</span>
+    <span class="profile-logo-frame profile-logo-dnpj-frame"><span class="profile-logo-dnpj-fallback">DNPJ</span><img src="https://domraza.fr/wp-content/uploads/2023/07/DNPJ.jpg" alt="" loading="lazy" decoding="async"></span>
     <span class="profile-logo-label">Police judiciaire · DNPJ</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OFMIN">
