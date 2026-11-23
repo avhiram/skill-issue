@@ -510,7 +510,7 @@ onMounted(() => {
       <div class="progress-wrap">
         <div class="progress-head"><span>Progression</span><strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong></div>
         <div class="progress-track" role="progressbar" aria-label="Progression de la roadmap" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length"><span :style="{width: progress + '%'}"></span></div>
-        <span class="progress-note">{{ catalog.length }} liens uniques dans la bibliothèque complète. Progression enregistrée sur cet appareil.</span>
+        <span class="progress-note">{{ catalog.length }} liens uniques dans la vue « Toutes les ressources ». Progression enregistrée sur cet appareil.</span>
       </div>
       <div class="mode-panel">
         <div class="mode-switch" role="group" aria-label="Choisir les ressources à afficher">
