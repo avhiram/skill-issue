@@ -507,233 +507,203 @@ onMounted(() => {
 
 <template>
   <div class="academy-roadmap">
-    <header id="about" class="about">
-      <p class="academy-eyebrow">SKILL-ISSUE / ACADEMY</p>
+    <header id="about" class="intro">
+      <p class="eyebrow">SKILL-ISSUE / ACADEMY</p>
       <h1>Roadmap cybersécurité</h1>
-      <h2>Commence ici</h2>
-      <p>Du réseau à Linux, au pentest, au SOC, au forensic, au Cloud et aux certifications : une seule progression pour explorer tous les domaines. Avance à ton rythme, avec ou sans budget.</p>
-      <div class="progress-wrap">
-        <div class="progress-head"><span>Progression</span><strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong></div>
-        <div class="progress-track" role="progressbar" aria-label="Progression de la roadmap" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length"><span :style="{width: progress + '%'}"></span></div>
-        <span class="progress-note">{{ catalog.length }} liens uniques dans la vue « Toutes les ressources ». Progression enregistrée sur cet appareil.</span>
+      <p class="lead">Une progression du débutant aux labs avancés. Tout est sur cette page : commence par le parcours gratuit, puis consulte les ressources complémentaires selon tes besoins.</p>
+      <div class="figures">
+        <span><strong>{{ orderedLevels.length }}</strong> niveaux dans l'ordre</span>
+        <span><strong>{{ freeCount }}</strong> liens sélectionnés sans achat</span>
+        <span><strong>{{ catalog.length }}</strong> ressources au total</span>
       </div>
-      <div class="free-guide" id="parcours-gratuit">
-        <strong>Parcours gratuit - {{ orderedLevels.length }} niveaux</strong>
-        <p>Pour apprendre sans acheter de cours, suis les ressources sous <em>Pour commencer gratuitement</em> à chaque niveau, du début jusqu'au projet final. Les autres ressources restent juste en dessous, sans changer de page.</p>
-        <p class="free-guide-note">{{ freeCount }} ressources sélectionnées sans achat de cours, sur {{ catalog.length }} liens au total. Certains labs nécessitent un compte gratuit et les examens ou le matériel peuvent être payants.</p>
+      <div class="progress-heading">
+        <span>Progression personnelle</span>
+        <strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong>
       </div>
-      <nav class="contents" aria-label="Sommaire de la roadmap">
-        <a v-for="(section, i) in sections" :key="section.id" :href="'#' + section.id"><span class="contents-number">{{ i + 1 }}</span>{{ section.title }}</a>
+      <div class="progress-track" role="progressbar" aria-label="Niveaux terminés" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length">
+        <span :style="{ width: progress + '%' }"></span>
+      </div>
+      <p class="progress-help">Les niveaux cochés restent enregistrés sur cet appareil.</p>
+
+      <nav class="roadmap-index" aria-label="Sommaire">
+        <p class="index-label">Sur cette page</p>
+        <a href="#parcours-gratuit">Parcours gratuit - commencer de zéro</a>
+        <div class="index-subitems">
+          <a v-for="section in sections" :key="section.id" :href="'#' + section.id">{{ section.title }}</a>
+        </div>
+        <a href="#ressources-complementaires">Ressources complémentaires - OffSec, INE, labs et documentation</a>
       </nav>
-      <div class="tools-line">
-        <label for="academy-query">Rechercher un cours, une room ou un outil</label>
-        <input id="academy-query" v-model="search" type="search" placeholder="Ex. Wireshark, Cobalt Strike, GOAD, Root-Me..." autocomplete="off">
-        <label class="urls-checkbox"><input v-model="showUrls" type="checkbox"><span>Afficher les URL complètes</span></label>
-        <p v-if="query" class="search-note">{{ searchCount }} lien{{ searchCount > 1 ? 's' : '' }} trouvé{{ searchCount > 1 ? 's' : '' }}</p>
+      <div class="search-controls">
+        <label for="academy-query">Rechercher dans la roadmap</label>
+        <input id="academy-query" v-model="search" type="search" placeholder="Python, Linux, Cobalt Strike, GOAD, Bug Bounty..." autocomplete="off">
+        <label class="show-urls"><input v-model="showUrls" type="checkbox"> Afficher les URL complètes</label>
+        <p v-if="query" class="search-note">{{ searchCount }} ressources correspondant à ta recherche</p>
       </div>
     </header>
 
-    <section v-for="(section, groupIndex) in sections" :id="section.id" :key="section.id" class="curriculum-section">
-      <header class="section-header">
-        <span class="section-step">PARTIE {{ groupIndex + 1 }} / {{ sections.length }}</span>
-        <h2>{{ section.title }}</h2>
-        <p>{{ section.summary }}</p>
-      </header>
+    <main>
+      <section id="parcours-gratuit" class="free-path" aria-labelledby="free-title">
+        <div class="major-heading">
+          <p class="eyebrow">DU PREMIER NIVEAU AU PROJET FINAL</p>
+          <h2 id="free-title">Parcours gratuit</h2>
+          <p>Commence ici. Les ressources choisies pour chaque niveau sont affichées directement sous le titre, sans ouvrir de menu ni passer à une autre page.</p>
+          <p class="small-disclaimer">Sans achat de cours identifié. Un compte gratuit ou un ordinateur personnel peut être nécessaire, et les examens ne sont pas inclus.</p>
+        </div>
 
-      <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="level">
-        <div class="level-head">
-          <h3><span class="level-prefix">Niveau {{ numberFor(level.id) }}</span> <span class="dash">-</span> {{ level.title }}</h3>
-          <div class="level-meta"><span class="level-count">{{ freeLinks(level.id).length }} gratuits / {{ levelLinks(level.id).length }} liens</span><label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label></div>
-        </div>
-        <p class="level-info">{{ level.intro }}</p>
-        <div v-if="freeLinks(level.id).length" class="resource-block free-resources">
-          <h4>Pour commencer gratuitement <span>{{ freeLinks(level.id).length }} lien{{ freeLinks(level.id).length > 1 ? 's' : '' }}</span></h4>
-          <ul class="link-list">
-            <li v-for="item in freeLinks(level.id)" :key="item.id + item.url" class="key-resource">
-              <span class="arrow" aria-hidden="true">»</span>
-              <div class="resource-line">
-                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                <span class="description"> - {{ describe(item) }}</span>
-                <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div v-if="otherLinks(level.id).length" class="resource-block other-resources">
-          <h4>Pour aller plus loin <span>{{ otherLinks(level.id).length }} lien{{ otherLinks(level.id).length > 1 ? 's' : '' }}</span></h4>
-          <ul class="link-list">
-            <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
-              <span class="arrow" aria-hidden="true">»</span>
-              <div class="resource-line">
-                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                <span class="description"> - {{ describe(item) }}</span>
-                <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div v-if="!query && !levelLinks(level.id).length" class="no-resource">
-          Exercice final : réutilise les ressources des niveaux précédents.
-        </div>
-        <details v-if="!query" class="level-exercise">
-          <summary>Exercice pratique et objectif à atteindre</summary>
-          <p><strong>À pratiquer :</strong> {{ level.exercise }}</p>
-          <p><strong>Pour valider :</strong> {{ level.ready }}</p>
-        </details>
-      </article>
-      <p v-if="query && !visibleLevels(section).length" class="no-result">Aucun résultat dans cette partie.</p>
-      <a class="back-top" href="#about">↑ Retour au début</a>
-    </section>
+        <section v-for="section in sections" :id="section.id" :key="section.id" class="course-section">
+          <header class="course-section-heading">
+            <h3>{{ section.title }}</h3>
+            <p>{{ section.summary }}</p>
+          </header>
 
-    <p class="footer-note">Le parcours gratuit signale des supports accessibles sans achat de cours connu, sans garantir les coûts matériels, Cloud ou les examens. Les autres liens incluent des ressources gratuites, freemium et payantes. Les conditions d'accès évoluent : vérifie-les avant l'inscription. Utilise uniquement des labs et environnements explicitement autorisés.</p>
+          <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="course-level">
+            <div class="course-level-heading">
+              <h4><span class="level-label">Niveau {{ numberFor(level.id) }}</span> - {{ level.title }}</h4>
+              <label class="done-toggle">
+                <input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))">
+                <span>Terminé</span>
+              </label>
+            </div>
+            <p class="level-description">{{ level.intro }}</p>
+            <ul v-if="freeLinks(level.id).length" class="resource-list">
+              <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
+                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                <span class="resource-description"> - {{ describe(item) }}</span>
+                <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+              </li>
+            </ul>
+            <p v-else-if="!query" class="empty-message">Exercice de synthèse avec les ressources déjà étudiées.</p>
+            <details v-if="!query" class="exercise">
+              <summary>Exercice pratique et validation</summary>
+              <p><strong>À faire :</strong> {{ level.exercise }}</p>
+              <p><strong>Tu peux continuer quand :</strong> {{ level.ready }}</p>
+            </details>
+          </article>
+          <p v-if="query && !visibleLevels(section).length" class="empty-message">Aucun résultat dans cette partie.</p>
+          <a class="return-link" href="#about">Retour au début ↑</a>
+        </section>
+      </section>
+
+      <section id="ressources-complementaires" class="library" aria-labelledby="library-title">
+        <header class="major-heading">
+          <p class="eyebrow">POUR APPROFONDIR</p>
+          <h2 id="library-title">Toutes les autres ressources</h2>
+          <p>Tu as accès ici au reste des liens du catalogue, toujours classés dans le même ordre que le parcours gratuit. Cela comprend les autres cours libres, les plateformes freemium, OffSec, INE et les cursus payants.</p>
+          <p class="small-disclaimer">Les prix, comptes nécessaires et accès aux labs peuvent changer. Vérifie chaque programme avant de t'inscrire.</p>
+        </header>
+
+        <section v-for="section in sections" :key="section.id" class="library-section">
+          <h3 v-if="levelsIn(section).some(level => otherLinks(level.id).length)" class="library-section-title">{{ section.title }}</h3>
+          <div v-for="level in visibleLevels(section)" :key="level.id" class="library-level">
+            <template v-if="otherLinks(level.id).length">
+              <h4>{{ level.title }}</h4>
+              <ul class="resource-list">
+                <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
+                  <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                  <span class="resource-description"> - {{ describe(item) }}</span>
+                  <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+                </li>
+              </ul>
+            </template>
+          </div>
+        </section>
+        <a class="return-link" href="#about">Retour au début ↑</a>
+      </section>
+    </main>
+    <p class="closing">Pratique uniquement sur les cibles et environnements explicitement autorisés. La sélection gratuite porte sur l'accès aux ressources pédagogiques ; elle ne garantit pas la gratuité du matériel, des services Cloud ou des certifications.</p>
   </div>
 </template>
 
 <style scoped>
-.academy-roadmap { color:#e4e1e9; max-width:980px; padding:3px 4px 24px; margin:auto; font-family:inherit; }
+.academy-roadmap {
+  --page-bg:#0c0912;
+  --page-panel:#130d1c;
+  --line:#342742;
+  --purple:#b892ee;
+  --purple-soft:#e1ccff;
+  --text:#e7e0ee;
+  --muted:#b0a4bd;
+  max-width:1010px;
+  margin:0 auto;
+  padding:16px 2px 38px;
+  color:var(--text);
+  font-family:inherit;
+}
 .academy-roadmap * { box-sizing:border-box; }
-.about { scroll-margin-top:88px; padding:11px 0 25px; border-bottom:1px solid #37303c; }
-.academy-eyebrow { font-size:.73rem!important; letter-spacing:.15em; font-weight:680; color:#b3a1d1!important; margin:0 0 13px!important; }
-.about h1 { font-size:clamp(1.9rem,4vw,2.65rem)!important; letter-spacing:-.025em; color:#f6effd!important; line-height:1.17; border:0!important; margin:0 0 25px!important; padding:0!important; }
-.about h2 { color:#ebe6f0!important; margin:0 0 8px!important; padding:0!important; border:0!important; font-size:1.35rem!important; }
-.about>p:not(.academy-eyebrow) { color:#b9b3c1!important; max-width:770px; font-size:.9rem; line-height:1.75; margin:0 0 20px!important; }
-.progress-wrap { margin:20px 0 22px; max-width:720px; }
-.progress-head { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 7px; font-size:.75rem; color:#b3a8bf; }
-.progress-head strong { color:#d6c4e7; font-weight:650; }
-.progress-track { height:5px; background:#34303a; border-radius:6px; overflow:hidden; }
-.progress-track span { display:block; height:100%; background:#a783cb; transition:width .2s; }
-.progress-note { display:block; font-size:.73rem; color:#98909e; margin-top:8px; }
-.contents { display:flex; flex-direction:column; gap:7px; margin:25px 0 21px; border-left:2px solid #534260; padding-left:18px; max-width:720px; }
-.contents a { color:#ccc5d2; text-decoration:none!important; font-size:.88rem; line-height:1.5; width:fit-content; }
-.contents a:hover { color:#f0c95c; text-decoration:underline!important; }
-.tools-line { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:8px 16px; max-width:800px; margin:18px 0 0; }
-.tools-line>label:first-child { grid-column:1 / -1; font-size:.76rem; color:#b7aaba; }
-.tools-line input[type=search] { border:1px solid #51445d; border-radius:5px; padding:11px 12px; background:#19151e; color:#e8e2ee; font:inherit; font-size:.84rem; width:100%; min-width:0; }
-.tools-line input[type=search]:focus { outline:2px solid #9d79c1; }
-.urls-checkbox { display:flex; align-items:center; gap:7px; white-space:nowrap; font-size:.77rem; color:#afa4b7; cursor:pointer; padding-bottom:9px; }
-.urls-checkbox input { accent-color:#ab87d4; }
-.search-note { grid-column:1 / -1; font-size:.76rem; color:#b3a9ba!important; margin:3px 0!important; }
-.curriculum-section { padding:22px 0 7px; border-bottom:1px solid #37303c; scroll-margin-top:82px; }
-.section-header { margin:0 0 23px; }
-.section-header h2 { font-size:clamp(1.35rem,3vw,1.7rem)!important; font-weight:580; color:#e4e1e7!important; letter-spacing:-.01em; border:0!important; padding:0!important; margin:0 0 7px!important; }
-.section-header p { font-size:.85rem; color:#aaa3af!important; line-height:1.65; margin:0!important; }
-.level { padding:0 0 28px 0; margin-bottom:25px; border-bottom:1px solid #29252f; scroll-margin-top:88px; }
-.level:last-of-type { border:0; margin-bottom:0; }
-.level-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
-.level h3 { margin:0 0 5px!important; font-weight:520!important; font-size:1.07rem!important; line-height:1.55; padding:0!important; border:0!important; color:#d7d4dc!important; }
-.level-prefix { color:#c8b5df; white-space:nowrap; font-weight:650; }
-.dash { color:#807589; }
-.done-toggle { flex-shrink:0; display:flex; gap:6px; align-items:center; color:#9c93a4; font-size:.74rem; cursor:pointer; }
-.done-toggle input { width:14px; height:14px; accent-color:#9a75c3; }
-.level-info { font-size:.8rem!important; color:#9e97a4!important; line-height:1.65; margin:0 0 11px!important; max-width:820px; }
-.link-list { padding:0!important; margin:10px 0 0 21px!important; list-style:none!important; }
-.link-list li { display:flex; align-items:flex-start; gap:9px; margin:0 0 3px!important; padding:0; line-height:1.62; font-size:.845rem; }
-.arrow { flex:0 0 11px; font-weight:700; color:#b9acc9; line-height:1.55; }
-.resource-line { flex:1; min-width:0; overflow-wrap:anywhere; }
-.resource-line>a { color:#f1c953!important; font-size:inherit; text-decoration:none!important; font-weight:550; }
-.resource-line>a:hover { color:#ffe18a!important; text-decoration:underline!important; }
-.description { color:#c9c2cf; font-weight:400; }
-.raw-url { display:block; font-size:.7rem; line-height:1.6; color:#8d8594; overflow-wrap:anywhere; }
-.level-exercise { margin:13px 0 0 40px; font-size:.77rem; line-height:1.65; color:#aaa2b0; }
-.level-exercise summary { width:fit-content; cursor:pointer; color:#bca9d1; }
-.level-exercise summary:hover { color:#ead3fb; }
-.level-exercise p { font-size:.77rem; color:#b8aabf!important; line-height:1.65; margin:8px 0!important; }
-.level-exercise strong { color:#dbc6e9; font-weight:650; }
-.no-resource { margin:7px 0 0 40px; color:#a69baf; font-size:.79rem; }
-.no-result { font-size:.82rem; color:#a69faf!important; margin:0 0 18px!important; }
-.back-top { display:inline-block; margin:8px 0 23px; font-size:.75rem; color:#a99ab7!important; text-decoration:none!important; }
-.back-top:hover { color:#f1c953!important; }
-.footer-note { margin:25px 0 0!important; font-size:.74rem; line-height:1.8; color:#9d93a6!important; }
-@media(max-width:640px) { .academy-roadmap { padding:2px 0 20px; } .tools-line { display:flex; flex-direction:column; align-items:stretch; } .urls-checkbox { padding:4px 0; } .level-head { align-items:flex-start; } .done-toggle span { display:none; } .section-header { margin-bottom:21px; } .level { margin-bottom:23px; padding-bottom:25px; } .link-list { margin-left:5px!important; } .link-list li { font-size:.8rem; gap:7px; line-height:1.6; } .level-exercise { margin-left:21px; } .about h1 { margin-bottom:21px!important; } }
+:global(.Layout.academy-page),
+:global(.academy-page .VPContent) { background:#0c0912; }
+.intro { scroll-margin-top:88px; padding:9px 0 28px; border-bottom:1px solid var(--line); }
+.eyebrow { margin:0 0 12px!important; color:var(--purple)!important; font-size:.69rem!important; letter-spacing:.14em; font-weight:750; }
+.intro h1 { color:#f9f2ff!important; border:0!important; padding:0!important; margin:0 0 12px!important; font-size:clamp(1.8rem,4vw,2.55rem)!important; letter-spacing:-.035em; line-height:1.2; }
+.lead { color:#c8bcd3!important; font-size:.91rem; line-height:1.8; max-width:790px; margin:0 0 20px!important; }
+.figures { display:flex; flex-wrap:wrap; gap:8px 24px; margin-bottom:25px; color:#bcaece; font-size:.78rem; }
+.figures strong { color:#e7d0ff; font-size:1rem; padding-right:4px; }
+.progress-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#ae9ebb; font-size:.75rem; margin-bottom:8px; }
+.progress-heading strong { font-weight:620; color:#dcc3f5; }
+.progress-track { height:6px; max-width:790px; background:#2a2033; border-radius:10px; overflow:hidden; }
+.progress-track span { display:block; height:100%; background:linear-gradient(90deg,#7650aa,#c79bea); transition:width .2s; }
+.progress-help { color:#9789a5!important; font-size:.7rem; margin:8px 0 22px!important; }
+.roadmap-index { border-left:2px solid #674782; padding:1px 0 1px 19px; margin:25px 0; display:flex; flex-direction:column; gap:8px; }
+.index-label { color:#d4b5f1!important; font-size:.77rem; font-weight:680; margin:0 0 5px!important; }
+.roadmap-index a { display:block; width:fit-content; color:#d5c1e9!important; text-decoration:none!important; font-size:.82rem; line-height:1.45; }
+.roadmap-index a:hover { color:#fff1ff!important; text-decoration:underline!important; }
+.index-subitems { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:20px; row-gap:6px; margin-left:13px; padding:3px 0 6px; }
+.index-subitems a { color:#ada0be!important; font-size:.75rem; }
+.search-controls { max-width:780px; display:flex; gap:8px; flex-direction:column; margin-top:18px; }
+.search-controls>label:first-child { font-size:.75rem; color:#c6b0dd; font-weight:650; }
+.search-controls input[type=search] { width:100%; padding:11px 12px; border-radius:5px; border:1px solid #59426c; background:#17101f; color:#eee5f5; font:inherit; font-size:.86rem; }
+.search-controls input[type=search]:focus { outline:2px solid #9e74c9; outline-offset:1px; }
+.show-urls { width:fit-content; color:#a99bb4; font-size:.73rem; display:flex; align-items:center; gap:7px; cursor:pointer; }
+.show-urls input { accent-color:#a879d8; }
+.search-note { margin:2px 0!important; color:#c5b1d8!important; font-size:.74rem; }
+.major-heading { border-bottom:1px solid #4a355b; padding:26px 0 23px; margin-bottom:16px; scroll-margin-top:86px; }
+.major-heading h2 { color:#f0e1ff!important; padding:0!important; border:0!important; font-size:clamp(1.55rem,3vw,2rem)!important; font-weight:680; letter-spacing:-.022em; margin:0 0 9px!important; }
+.major-heading p:not(.eyebrow) { color:#c7b9d2!important; font-size:.87rem; line-height:1.7; max-width:830px; margin:0 0 8px!important; }
+.major-heading .small-disclaimer { color:#94869e!important; font-size:.74rem!important; }
+.course-section { padding:22px 0 8px; scroll-margin-top:90px; }
+.course-section-heading { padding:0 0 15px; margin-bottom:18px; border-bottom:1px solid #32253f; }
+.course-section-heading h3 { color:#d1aaed!important; font-size:clamp(1.18rem,2.6vw,1.46rem)!important; padding:0!important; margin:0 0 7px!important; border:0!important; font-weight:660; }
+.course-section-heading p { color:#ada0bd!important; font-size:.82rem; line-height:1.7; margin:0!important; }
+.course-level { margin:0 0 23px 8px; padding:0 0 20px 20px; border-left:2px solid #49305c; position:relative; scroll-margin-top:90px; }
+.course-level:before { content:''; position:absolute; top:8px; left:-6px; width:10px; height:10px; background:#130d1c; border:2px solid #a580ca; border-radius:50%; }
+.course-level:has(.done-toggle input:checked):before { background:#b38be0; }
+.course-level-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+.course-level h4 { color:#e7dbf0!important; font-size:1rem!important; font-weight:670!important; line-height:1.55; padding:0!important; margin:0 0 5px!important; border:0!important; }
+.level-label { color:#c2a2e7; font-weight:710; }
+.done-toggle { flex-shrink:0; display:flex; align-items:center; gap:6px; cursor:pointer; color:#a99db3; font-size:.73rem; padding-top:4px; }
+.done-toggle input { width:15px; height:15px; accent-color:#9970c3; }
+.level-description { margin:0 0 12px!important; color:#a99db3!important; font-size:.8rem; line-height:1.75; }
+.resource-list { margin:0 0 12px 15px!important; padding:0!important; list-style:none!important; }
+.resource-list li { position:relative; margin:4px 0!important; padding:0!important; color:#bfb1c7; font-size:.82rem; line-height:1.65; overflow-wrap:anywhere; }
+.resource-list li:before { content:'›'; position:absolute; left:-16px; color:#ad80cf; font-weight:800; }
+.resource-list a { color:#d8b2f3!important; font-size:inherit; font-weight:615; text-decoration:none!important; }
+.resource-list a:hover { color:#fff0ff!important; text-decoration:underline!important; }
+.resource-description { color:#b6abbf; }
+.raw-url { display:block; margin:2px 0 6px; color:#9485a3; font-size:.69rem; overflow-wrap:anywhere; }
+.exercise { margin:8px 0 0 15px; color:#aca0b9; font-size:.77rem; }
+.exercise summary { width:fit-content; color:#b89bcf; cursor:pointer; font-size:.77rem; }
+.exercise summary:hover { color:#f0dcff; }
+.exercise p { margin:6px 0!important; color:#b9adbf!important; font-size:.77rem; line-height:1.6; }
+.exercise strong { color:#dec6f0; }
+.empty-message { color:#9a8baa!important; font-size:.78rem; margin:5px 0!important; }
+.return-link { display:inline-block; margin:6px 0 12px; font-size:.72rem; color:#a68dbd!important; text-decoration:none!important; }
+.return-link:hover { color:#e9d2ff!important; }
+.library { scroll-margin-top:90px; margin-top:32px; }
+.library-section { border-bottom:1px solid #30243b; padding:20px 0 12px; }
+.library-section-title { color:#cda7e7!important; font-size:1.19rem!important; margin:0 0 16px!important; padding:0!important; border:0!important; }
+.library-level { margin-bottom:17px; }
+.library-level h4 { color:#e0d5e8!important; font-size:.91rem!important; font-weight:660; margin:0 0 9px!important; padding:0!important; border:0!important; }
+.library-level .resource-list { margin-left:16px!important; }
+.closing { color:#8e809c!important; font-size:.73rem; margin:23px 0 0!important; line-height:1.7; }
+@media(max-width:650px) {
+  .academy-roadmap { padding:9px 0 30px; }
+  .index-subitems { grid-template-columns:1fr; gap:5px; }
+  .figures { gap:9px 14px; font-size:.73rem; }
+  .course-level { margin-left:4px; padding-left:14px; }
+  .course-level-heading h4 { font-size:.93rem!important; }
+  .done-toggle span { display:none; }
+  .resource-list li { font-size:.79rem; }
+  .major-heading { padding-top:19px; }
+}
 @media(prefers-reduced-motion:reduce) { .progress-track span { transition:none; } }
-
-/* Academy - noir profond et violet, sans cartes superflues. */
-:global(.Layout.academy-page) {
-  --vp-c-bg: #0e0a15;
-  --vp-c-bg-soft: #17101f;
-  --vp-c-bg-alt: #130e1b;
-  --vp-c-border: #34263f;
-  background-color:#0e0a15;
-}
-:global(.academy-page .VPContent) { background:#0e0a15; }
-.academy-roadmap { color:#e9e3f1; max-width:1040px; padding:14px 8px 38px; }
-.about { border-bottom-color:#3e2c51; padding-bottom:31px; }
-.academy-eyebrow { color:#b892e7!important; }
-.about h1 { color:#faf5ff!important; font-weight:650!important; letter-spacing:-.035em; }
-.about h2 { color:#d7b9ff!important; }
-.about>p:not(.academy-eyebrow) { color:#c9bed4!important; }
-.progress-wrap { border:1px solid #392848; border-radius:9px; padding:15px 18px; background:linear-gradient(110deg,#160f20,#110c1a); max-width:100%; }
-.progress-track { background:#362742; height:6px; }
-.progress-track span { background:linear-gradient(90deg,#7955b1,#c297fa); }
-.progress-note { color:#aa9aba; }
-.contents { max-width:none; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px 15px; border:0; padding:0; margin:23px 0; }
-.contents a { display:flex; align-items:baseline; gap:11px; width:auto; border:1px solid #33263e; border-radius:6px; background:#140e1c; padding:10px 13px; color:#dfd3ea!important; font-size:.79rem; }
-.contents a:hover { border-color:#8160ad; background:#1c1328; color:#dfbfff!important; text-decoration:none!important; }
-.contents-number { font-size:.71rem; font-weight:740; color:#bc96e7; min-width:17px; }
-.tools-line { max-width:100%; border-top:1px solid #32243d; padding-top:17px; }
-.tools-line input[type=search] { background:#1a1225; border-color:#5a4272; }
-.tools-line input[type=search]:focus { outline-color:#aa83d3; }
-.tools-line>label:first-child { color:#c7b8d8; }
-.curriculum-section { border-bottom:1px solid #3a2b49; padding-top:37px; scroll-margin-top:80px; }
-.section-header { margin-bottom:27px; }
-.section-step { display:block; font-size:.7rem; color:#c09bfa; font-weight:730; letter-spacing:.095em; margin:0 0 7px; }
-.section-header h2 { color:#f1e8ff!important; font-weight:650!important; font-size:clamp(1.35rem,2.6vw,1.75rem)!important; }
-.section-header p { color:#bbaeC7!important; max-width:780px; }
-.level { position:relative; border-bottom:0; border-left:2px solid #49335e; padding:0 0 25px 23px; margin-left:8px; margin-bottom:2px; }
-.level:last-of-type { margin-bottom:0; border-left-color:transparent; }
-.level:before { content:''; position:absolute; top:9px; left:-6px; width:10px; height:10px; background:#160e20; border:2px solid #9b74ca; border-radius:50%; }
-.level:has(.done-toggle input:checked):before { background:#ba8be9; border-color:#ba8be9; }
-.level-head { align-items:center; }
-.level h3 { color:#f1e7fb!important; font-size:1.02rem!important; font-weight:670!important; }
-.level-prefix { color:#c49aed; font-weight:740; }
-.dash { color:#a48bb8; }
-.level-meta { display:flex; gap:15px; align-items:center; }
-.level-count { white-space:nowrap; font-size:.72rem; color:#a593b5; }
-.done-toggle { color:#b8a9c4; }
-.level-info { color:#bdb1c9!important; line-height:1.75; margin:3px 0 9px!important; }
-.link-list { margin-left:0!important; }
-.link-list li { color:#c8bfcc; font-size:.825rem; margin-bottom:4px!important; }
-.link-list li.resource-group-title { margin:15px 0 8px!important; color:#cba7f6; font-size:.74rem; font-weight:740; letter-spacing:.035em; list-style:none; }
-.link-list li.resource-group-title:first-child { margin-top:9px!important; }
-.link-list li.resource-group-title.further { padding-top:8px; border-top:1px solid #32243e; color:#a999b8; }
-.link-list .arrow { color:#a27ac8; }
-.link-list .key-resource .arrow { color:#c7a2f3; }
-.link-list .resource-line>a { color:#d9b6ff!important; font-weight:650; }
-.link-list .key-resource .resource-line>a { color:#ead6ff!important; }
-.link-list .resource-line>a:hover { color:#fff1ff!important; text-decoration:underline!important; }
-.link-list .description { color:#bcb0c6; }
-.raw-url { color:#9f90ae; }
-.level-exercise summary { color:#bfa2dc; font-weight:560; }
-.level-exercise summary:hover { color:#ead6ff; }
-.level-exercise p { color:#bdb0c9!important; }
-.level-exercise strong { color:#dfc8fa; }
-.back-top { color:#a99bc0!important; }
-.back-top:hover { color:#ead4ff!important; }
-@media(max-width:700px) {
-  .academy-roadmap { padding:8px 0 26px; }
-  .contents { grid-template-columns:1fr; gap:5px; }
-  .progress-wrap { padding:12px; }
-  .level { padding-left:15px; margin-left:6px; }
-  .level-meta { flex-direction:column; gap:5px; align-items:flex-end; }
-  .level-count { font-size:.67rem; }
-  .level h3 { font-size:.96rem!important; }
-  .level-head { align-items:flex-start; }
-  .link-list { margin-left:0!important; }
-  .link-list li { font-size:.8rem; }
-}
-
-/* Une seule page longue, avec les liens gratuits visibles sous chaque niveau. */
-.free-guide { margin:21px 0 25px; padding:15px 19px; border-left:3px solid #ba8ee5; background:#171021; border-radius:0 7px 7px 0; }
-.free-guide strong { display:block; font-size:.94rem; color:#ecdcff; margin-bottom:6px; }
-.free-guide p { margin:5px 0!important; font-size:.83rem; line-height:1.65; color:#c7b8d7!important; }
-.free-guide em { font-style:normal; font-weight:650; color:#d5acff; }
-.free-guide .free-guide-note { color:#a99bb9!important; font-size:.73rem; }
-.resource-block { margin:12px 0 17px; }
-.resource-block h4 { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; font-weight:670; letter-spacing:0; font-size:.8rem!important; margin:0 0 9px!important; color:#cfb3e9!important; padding:0 0 6px!important; border-bottom:1px solid #382a48!important; }
-.resource-block h4 span { color:#9e8dac; font-size:.7rem; font-weight:500; }
-.free-resources h4 { color:#d9b7ff!important; }
-.other-resources h4 { color:#a99db4!important; }
-.free-resources .resource-line>a { color:#ebd4ff!important; }
-.other-resources .resource-line>a { color:#bf9add!important; }
-@media(max-width:640px){ .free-guide { padding:12px 14px; } }
 </style>
