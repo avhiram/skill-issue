@@ -12,9 +12,9 @@ Tu commences avec **une information**. Voici où démarrer, puis quelles command
 
 | Tu disposes de | D'abord | Ensuite |
 | --- | --- | --- |
-| Pseudonyme | Recherche exacte Google | Sherlock, Maigret, Blackbird |
-| E-mail | Recherche exacte Google | Holehe, Blackbird |
-| Prénom et nom | Nom exact + organisation | Profils, documents et publications |
+| Pseudonyme | Recherche exacte Google | Réseaux sociaux, Sherlock, Maigret, Blackbird |
+| E-mail | Recherche exacte Google | Documents publics, Holehe, Blackbird |
+| Prénom et nom | Nom exact + organisation | Réseaux, documents publics et publications |
 | Domaine | Google `site:`, WHOIS | DNS, certificats, theHarvester, Subfinder |
 | URL ou site | HTTP et redirections | Archives, Photon |
 | Photo ou PDF | ExifTool, `pdfinfo` | Recouper avec les résultats Web |
@@ -346,6 +346,482 @@ Filtrer les publications selon une date de début à adapter.
 
 ```text
 "Organisation Exemple" after:2026-01-01
+```
+
+## Réseaux sociaux - rechercher les profils
+
+Recherches Google sur les **profils et publications publics**. Pour les résultats non indexés, consulte aussi la recherche interne de chaque réseau.
+
+### Facebook - nom
+
+Profils ou publications publiques portant ce nom.
+
+```text
+"Camille Exemple" site:facebook.com
+```
+
+### Facebook - pseudo
+
+Mentions et profils publics associés au pseudo.
+
+```text
+"pseudo_exemple" site:facebook.com
+```
+
+### Instagram - pseudo
+
+Profils et publications Instagram indexés.
+
+```text
+"pseudo_exemple" site:instagram.com
+```
+
+### Instagram - nom
+
+Publications et mentions du nom.
+
+```text
+"Camille Exemple" site:instagram.com
+```
+
+### Snapchat - pseudo
+
+Profils Snapchat publics accessibles via l'URL d'ajout.
+
+```text
+"pseudo_exemple" site:snapchat.com/add
+```
+
+### Snapchat - nom
+
+Mentions publiques sur le site Snapchat.
+
+```text
+"Camille Exemple" site:snapchat.com
+```
+
+### X - pseudo
+
+Retrouver les profils et publications publiques sur X.
+
+```text
+"pseudo_exemple" site:x.com
+```
+
+### X - anciens liens Twitter
+
+Compléter avec les anciennes URL twitter.com indexées.
+
+```text
+"pseudo_exemple" site:twitter.com
+```
+
+### X - nom
+
+Chercher les mentions du nom sur X.
+
+```text
+"Camille Exemple" site:x.com
+```
+
+### X - publications d'un compte
+
+Requête pour la recherche interne X (à coller sur X).
+
+```text
+from:pseudo_exemple
+```
+
+### LinkedIn - nom
+
+Profils professionnels publics au nom recherché.
+
+```text
+"Camille Exemple" site:linkedin.com/in/
+```
+
+### LinkedIn - pseudo
+
+Mentions du pseudo dans les profils publics.
+
+```text
+"pseudo_exemple" site:linkedin.com
+```
+
+### TikTok - pseudo
+
+Profils et vidéos indexés.
+
+```text
+"pseudo_exemple" site:tiktok.com/@
+```
+
+### TikTok - nom
+
+Mentions publiques d'un nom sur TikTok.
+
+```text
+"Camille Exemple" site:tiktok.com
+```
+
+### YouTube - nom
+
+Chaînes, vidéos et descriptions publiques.
+
+```text
+"Camille Exemple" site:youtube.com
+```
+
+### YouTube - pseudo
+
+Rechercher les chaînes utilisant ce nom public.
+
+```text
+"pseudo_exemple" site:youtube.com/@
+```
+
+### Reddit - pseudo
+
+Comptes, posts et discussions publics.
+
+```text
+"pseudo_exemple" site:reddit.com/user/
+```
+
+### Reddit - nom
+
+Mentions publiques dans les fils et commentaires indexés.
+
+```text
+"Camille Exemple" site:reddit.com
+```
+
+### Threads - pseudo
+
+Profils et publications indexés.
+
+```text
+"pseudo_exemple" site:threads.net
+```
+
+### Bluesky - pseudo
+
+Profils et posts publics indexés.
+
+```text
+"pseudo_exemple" site:bsky.app
+```
+
+### Mastodon - pseudo
+
+Rechercher des profils publics sur une instance connue.
+
+```text
+"pseudo_exemple" site:mastodon.social
+```
+
+### Telegram - pseudo
+
+Comptes ou canaux publics mentionnant ce pseudo.
+
+```text
+"pseudo_exemple" site:t.me
+```
+
+### Telegram - nom
+
+Mentions publiques dans les canaux indexés.
+
+```text
+"Camille Exemple" site:t.me
+```
+
+### Twitch - pseudo
+
+Chaînes et profils Twitch publics.
+
+```text
+"pseudo_exemple" site:twitch.tv
+```
+
+### Pinterest - pseudo
+
+Profils et tableaux Pinterest publics.
+
+```text
+"pseudo_exemple" site:pinterest.com
+```
+
+### GitHub - pseudo
+
+Comptes, dépôts et pages publiques.
+
+```text
+"pseudo_exemple" site:github.com
+```
+
+### GitLab - pseudo
+
+Dépôts et profils techniques publics.
+
+```text
+"pseudo_exemple" site:gitlab.com
+```
+
+### Steam - pseudo
+
+Profils Steam Community publics indexés.
+
+```text
+"pseudo_exemple" site:steamcommunity.com
+```
+
+### SoundCloud - pseudo
+
+Profils et contenus audio publics.
+
+```text
+"pseudo_exemple" site:soundcloud.com
+```
+
+### VK - pseudo
+
+Profils et mentions publiques du réseau VK.
+
+```text
+"pseudo_exemple" site:vk.com
+```
+
+## Identité publique - nom, surnom et recoupements
+
+Recherches à partir des noms connus, variations d'écriture et éléments biographiques **publiquement mentionnés**.
+
+### Nom + ville
+
+Rechercher une personne avec le lieu connu.
+
+```text
+"Camille Exemple" "Paris"
+```
+
+### Prénom + nom + surnom
+
+Chercher les mentions qui associent le nom au surnom.
+
+```text
+"Camille Exemple" "pseudo_exemple"
+```
+
+### Pseudo + e-mail
+
+Chercher les pages publiant les deux identifiants.
+
+```text
+"pseudo_exemple" "exemple@example.com"
+```
+
+### Pseudo + autre pseudo
+
+Trouver des mentions reliant deux identifiants.
+
+```text
+"pseudo_exemple" "autre_pseudo"
+```
+
+### Nom - autre graphie
+
+Rechercher une variante orthographique ou un ancien nom publiquement employé.
+
+```text
+"Camille AutreNom"
+```
+
+### Nom + année
+
+Rechercher les publications citant un nom à une période donnée.
+
+```text
+"Camille Exemple" "2024"
+```
+
+### Nom + date de naissance
+
+Mentions explicites d'une date de naissance dans des sources publiques.
+
+```text
+"Camille Exemple" "date de naissance"
+```
+
+### Nom + né/née le
+
+Rechercher les notices biographiques ouvertes.
+
+```text
+"Camille Exemple" ("né le" OR "née le")
+```
+
+### Nom + anniversaire
+
+Rechercher des mentions publiques d'anniversaire.
+
+```text
+"Camille Exemple" "anniversaire"
+```
+
+### Nom + ancien pseudo
+
+Rechercher les annonces publiques d'un changement d'identifiant.
+
+```text
+"Camille Exemple" "ancien pseudo"
+```
+
+### Nom + entreprise
+
+Rechercher le nom dans le contexte d'un employeur ou projet.
+
+```text
+"Camille Exemple" "Organisation Exemple"
+```
+
+### Nom + association
+
+Chercher des publications associatives publiques.
+
+```text
+"Camille Exemple" association
+```
+
+### Nom + conférence
+
+Rechercher conférences, interventions et événements publics.
+
+```text
+"Camille Exemple" (conférence OR présentation OR interview)
+```
+
+## Documents publics - PDF, CV, registres et publications
+
+Cherche les documents **indexés et accessibles publiquement** ; adapte le nom et, si besoin, le site ou le domaine.
+
+### CV PDF
+
+Chercher les curriculum vitae rendus publics.
+
+```text
+"Camille Exemple" (CV OR "curriculum vitae") filetype:pdf
+```
+
+### Documents Word
+
+Chercher le nom dans des fichiers Word indexés.
+
+```text
+"Camille Exemple" filetype:docx
+```
+
+### Présentations PowerPoint
+
+Retrouver des présentations publiques mentionnant le nom.
+
+```text
+"Camille Exemple" filetype:pptx
+```
+
+### Tableurs publics
+
+Repérer les tableurs indexés mentionnant le nom.
+
+```text
+"Camille Exemple" filetype:xlsx
+```
+
+### Rapports publics PDF
+
+Rechercher le nom dans les rapports publics.
+
+```text
+"Camille Exemple" rapport filetype:pdf
+```
+
+### Communiqués et bulletins
+
+Retrouver les bulletins publics mentionnant le nom.
+
+```text
+"Camille Exemple" (communiqué OR bulletin) filetype:pdf
+```
+
+### E-mail dans les documents Word
+
+Rechercher l'adresse dans des documents publics indexés.
+
+```text
+"exemple@example.com" filetype:docx
+```
+
+### Pseudo dans les PDF
+
+Chercher un identifiant cité dans un document public.
+
+```text
+"pseudo_exemple" filetype:pdf
+```
+
+### Nom dans un site ciblé
+
+Concentrer la recherche sur un site connu.
+
+```text
+"Camille Exemple" site:example.com
+```
+
+### Rapports sur un site
+
+Trouver les PDF publics du site qui citent le nom.
+
+```text
+"Camille Exemple" site:example.com filetype:pdf
+```
+
+### Publications scientifiques HAL
+
+Rechercher les publications et affiliations ouvertes.
+
+```text
+"Camille Exemple" site:hal.science
+```
+
+### Identifiants ORCID
+
+Retrouver un profil de recherche public.
+
+```text
+"Camille Exemple" site:orcid.org
+```
+
+### Registre des entreprises
+
+Retrouver les mentions publiques associées à une entreprise.
+
+```text
+"Camille Exemple" site:annuaire-entreprises.data.gouv.fr
+```
+
+### Registres d'entreprise
+
+Rechercher les sociétés mentionnant publiquement ce nom.
+
+```text
+"Camille Exemple" site:pappers.fr
+```
+
+### Presse locale et archives
+
+Retrouver les articles publics associés à un nom et un lieu.
+
+```text
+"Camille Exemple" "Paris" (article OR presse)
 ```
 
 ## Pseudonyme - rechercher les comptes
