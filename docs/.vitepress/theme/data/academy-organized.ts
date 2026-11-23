@@ -488,21 +488,6 @@ export const resources = [
     "setup": "Compte AWS, IAM, Terraform et maîtrise des coûts"
   },
   {
-    "id": "off-001",
-    "url": "https://www.netacad.com/",
-    "title": "Cisco Networking Academy - Introduction à l'informatique",
-    "category": "fondamentaux",
-    "level": 0,
-    "provider": "netacad.com",
-    "type": "Cours",
-    "access": "Gratuit limité",
-    "description": "Cours d'initiation et ressources de base pour débuter en informatique.",
-    "handsOn": false,
-    "featured": false,
-    "source": "selection",
-    "warning": "Le catalogue comprend aussi des parcours aux conditions différentes."
-  },
-  {
     "id": "off-002",
     "url": "https://cs50.harvard.edu/x/",
     "title": "CS50x - Introduction à l'informatique",
@@ -514,21 +499,6 @@ export const resources = [
     "description": "Formation universitaire pour découvrir l'informatique et la programmation.",
     "handsOn": true,
     "featured": true,
-    "source": "selection",
-    "warning": ""
-  },
-  {
-    "id": "off-003",
-    "url": "https://www.cisco.com/site/us/en/learn/training-certifications/training/netacad/index.html",
-    "title": "Cisco Networking Academy - Networking Basics",
-    "category": "reseau",
-    "level": 0,
-    "provider": "cisco.com",
-    "type": "Cours",
-    "access": "Gratuit",
-    "description": "Premières notions de réseau et fonctionnement d'Internet.",
-    "handsOn": false,
-    "featured": false,
     "source": "selection",
     "warning": ""
   },
@@ -651,21 +621,6 @@ export const resources = [
     "featured": true,
     "source": "selection",
     "warning": ""
-  },
-  {
-    "id": "off-013",
-    "url": "https://www.netacad.com/fr/catalogs/learn/cybersecurity",
-    "title": "Cisco Networking Academy - Cybersécurité",
-    "category": "fondamentaux",
-    "level": 0,
-    "provider": "netacad.com",
-    "type": "Cours",
-    "access": "Gratuit limité",
-    "description": "Cours d'introduction aux menaces et aux principes de protection.",
-    "handsOn": false,
-    "featured": false,
-    "source": "selection",
-    "warning": "Sélectionner les modules gratuits du catalogue."
   },
   {
     "id": "off-014",
