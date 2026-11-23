@@ -1,6 +1,6 @@
 ---
 title: OSINT - Cheatsheet
-description: Commandes essentielles de reconnaissance OSINT, expliquées en français.
+description: Commandes OSINT prêtes à copier pour la recherche en sources ouvertes.
 aside: false
 prev: false
 next: false
@@ -8,322 +8,707 @@ next: false
 
 # Cheatsheet OSINT
 
-Une sélection de commandes pour la **recherche de comptes**, la **reconnaissance de domaines** et la **conservation de résultats**.
+**Copier, remplacer, exécuter.** Chaque bloc est indépendant : remplace les valeurs entre guillemets (`PSEUDO`, `EMAIL`, `PRENOM`, `NOM`, `DOMAINE`, `URL` ou `FICHIER`), puis colle le bloc dans ton terminal.
 
-[Retour aux outils](./index.md) · [Générateur de dorks](./index.md#générateur-de-dorks)
+Les recherches Google **ouvrent directement le navigateur** depuis le terminal, sans formulaire sur le site. Elles ne renvoient que les pages indexées.
 
-Les exemples utilisent des identifiants fictifs et le domaine `example.com`.
+[Revenir à la bibliothèque OSINT](./index.md)
 
 ## Installer les outils
 
-Sous Kali, Debian ou Ubuntu. Les commandes d'installation ne sont à exécuter qu'une fois.
+Installation sous Kali, Debian ou Ubuntu. À exécuter une fois. Les exemples utilisent ensuite les mêmes chemins.
 
-### Installer les utilitaires système
+### Utilitaires de base
 
-~~~bash
-sudo apt update && sudo apt install -y git pipx python3-venv whois dnsutils curl jq libimage-exiftool-perl poppler-utils
-# Installe Git, les outils DNS, WHOIS, JSON, métadonnées et PDF.
-~~~
+```bash
+# Installer les outils de recherche, de métadonnées et de rapports.
+sudo apt update && sudo apt install -y git curl jq whois dnsutils openssl pipx python3-venv libimage-exiftool-perl poppler-utils
+```
 
-### Activer les commandes pipx
+### Préparer les applications Python
 
-~~~bash
+```bash
+# Ajouter au PATH les programmes installés par pipx.
 pipx ensurepath
-# Ajoute les commandes des applications Python installées par pipx au PATH (rouvrir le terminal si nécessaire).
-~~~
+```
 
-### Installer Sherlock
+### Sherlock
 
-~~~bash
+```bash
+# Installer l'outil de recherche de pseudonymes.
 pipx install sherlock-project
-# Installe Sherlock dans un environnement Python isolé.
-~~~
+```
 
-### Installer Maigret
+### Maigret
 
-~~~bash
+```bash
+# Installer Maigret et ses fonctions d'export.
 pipx install maigret
-# Installe Maigret dans un environnement Python isolé.
-~~~
+```
 
-### Créer un environnement pour Holehe
+### Holehe
 
-~~~bash
-python3 -m venv ~/.venvs/holehe
-# Prépare un environnement Python dédié à Holehe.
-~~~
+```bash
+# Installer Holehe dans un environnement séparé.
+python3 -m venv "$HOME/.venvs/holehe"
+"$HOME/.venvs/holehe/bin/pip" install holehe
+```
 
-### Installer Holehe
+### uv
 
-~~~bash
-~/.venvs/holehe/bin/pip install holehe
-# Installe Holehe dans l'environnement dédié.
-~~~
-
-### Récupérer theHarvester
-
-~~~bash
-git clone https://github.com/laramies/theHarvester.git
-# Récupère les sources officielles de theHarvester.
-~~~
-
-**Installer uv**
-
-~~~bash
+```bash
+# Installer le gestionnaire utilisé par theHarvester actuel.
 pipx install uv
-# Installe uv pour lancer la version actuelle de theHarvester.
-~~~
+```
 
-### Installer les dépendances theHarvester
+### theHarvester
 
-Dans le dossier du dépôt cloné, uv utilise la version Python et les dépendances définies par le projet.
+```bash
+# Installer la version du dépôt ; uv choisit ses dépendances et son Python.
+mkdir -p "$HOME/outils"
+git clone https://github.com/laramies/theHarvester.git "$HOME/outils/theHarvester"
+(cd "$HOME/outils/theHarvester" && uv sync)
+```
 
-~~~bash
-cd theHarvester && uv sync
-# Installe les dépendances depuis le dépôt ; nécessite uv et la version Python demandée par le projet.
-~~~
+### Subfinder - facultatif
 
-## Rechercher un pseudonyme
+```bash
+# Installer avec Go déjà présent sur le poste.
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+export PATH="$PATH:$HOME/go/bin"
+```
 
-Sherlock et Maigret recherchent des profils publics ; Holehe fournit des indices d'inscription liés à une adresse e-mail. **Un résultat ne prouve pas une identité.**
+## Dorks - pseudonyme
 
-### Rechercher un pseudonyme
+Chaque bloc ouvre une recherche Google. Remplace seulement la valeur de PSEUDO.
 
-~~~bash
-sherlock pseudo_exemple
-# Cherche les comptes publics correspondant au pseudonyme.
-~~~
+### Occurrences exactes
 
-### Afficher uniquement les résultats positifs
+```bash
+# Retrouver les pages publiques qui contiennent le pseudo.
+PSEUDO="pseudo_exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PSEUDO\""
+```
 
-~~~bash
-sherlock pseudo_exemple --print-found
-# Affiche les sites où Sherlock signale un compte.
-~~~
+### Profils GitHub
 
-### Enregistrer un rapport texte
+```bash
+# Rechercher ce pseudo sur GitHub indexé.
+PSEUDO="pseudo_exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PSEUDO\" site:github.com"
+```
 
-~~~bash
-sherlock pseudo_exemple --output sherlock-resultats.txt
-# Enregistre les profils identifiés dans un fichier.
-~~~
+### Discussions Reddit
 
-### Rechercher un identifiant
+```bash
+# Rechercher les mentions du pseudo sur Reddit.
+PSEUDO="pseudo_exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PSEUDO\" site:reddit.com"
+```
 
-~~~bash
-maigret pseudo_exemple
-# Recherche les comptes publics associés à un pseudonyme.
-~~~
+### Profils LinkedIn
 
-### Lire une liste d'identifiants
+```bash
+# Chercher un profil public portant le même identifiant.
+PSEUDO="pseudo_exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PSEUDO\" site:linkedin.com/in/"
+```
 
-~~~bash
-maigret --input-file pseudos.txt
-# Recherche les identifiants figurant dans un fichier, un par ligne.
-~~~
+### Forums et communautés
 
-### Exporter un rapport HTML
+```bash
+# Retrouver des messages associés au pseudo.
+PSEUDO="pseudo_exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PSEUDO\" (forum OR discussion OR communauté)"
+```
 
-~~~bash
-maigret pseudo_exemple --html
-# Produit un rapport HTML lisible dans un navigateur.
-~~~
+## Dorks - adresse e-mail
 
-### Exporter un rapport JSON
+Recherche d'occurrences publiques. Remplace EMAIL ; les résultats n'établissent pas à eux seuls qui détient le compte.
 
-~~~bash
-maigret pseudo_exemple --json simple
-# Génère un rapport JSON simplifié.
-~~~
+### Occurrences exactes d'un e-mail
 
-### Rechercher des inscriptions
+```bash
+# Chercher l'adresse exacte dans les pages indexées.
+EMAIL="exemple@example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$EMAIL\""
+```
 
-Utiliser une adresse e-mail de démonstration ou examinée dans un cadre autorisé.
+### E-mail dans les PDF
 
-~~~bash
-~/.venvs/holehe/bin/holehe exemple@example.com
-# Interroge les indices d'inscription liés à l'adresse indiquée.
-~~~
+```bash
+# Rechercher les documents publics où l'adresse apparaît.
+EMAIL="exemple@example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$EMAIL\" filetype:pdf"
+```
 
-## Domaine et reconnaissance passive
+### E-mail sur les plateformes de code
 
-Avec theHarvester, se placer dans son dossier cloné. Les sources passives interrogent des fournisseurs tiers ; la résolution DNS implique des requêtes supplémentaires.
+```bash
+# Rechercher les pages de code indexées contenant l'adresse.
+EMAIL="exemple@example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$EMAIL\" (site:github.com OR site:gitlab.com)"
+```
 
-### Interroger deux sources passives
+## Dorks - prénom et nom
 
-~~~bash
-uv run theHarvester -d example.com -b crtsh,certspotter
-# Recherche les données publiques de certificats liées au domaine.
-~~~
+Deux champs à remplacer : PRENOM et NOM. Les homonymes imposent un recoupement.
 
-### Rechercher les e-mails et URL publics
+### Nom exact
 
-~~~bash
-uv run theHarvester -d example.com -b emails,urls,certspotter
-# Collecte les adresses et les URL accessibles dans les sources choisies.
-~~~
+```bash
+# Rechercher le nom complet avec des guillemets.
+PRENOM="Camille"
+NOM="Exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PRENOM $NOM\""
+```
 
-### Exporter les résultats
+### Documents PDF
 
-~~~bash
-uv run theHarvester -d example.com -b crtsh,certspotter -f rapport
-# Enregistre des rapports locaux JSONL, JSON et XML.
-~~~
+```bash
+# Repérer des documents publics associés au nom.
+PRENOM="Camille"
+NOM="Exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PRENOM $NOM\" filetype:pdf"
+```
 
-### Consulter WHOIS
+### Profils professionnels
 
-~~~bash
-whois example.com
-# Affiche les informations publiques disponibles dans le service WHOIS.
-~~~
+```bash
+# Chercher des profils LinkedIn indexés au même nom.
+PRENOM="Camille"
+NOM="Exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PRENOM $NOM\" site:linkedin.com/in/"
+```
 
-### Lire l'adresse IPv4
+### Presse et interviews
 
-~~~bash
-dig example.com A +short
-# Affiche les adresses IPv4 publiées pour le domaine.
-~~~
+```bash
+# Repérer des publications qui mentionnent le nom.
+PRENOM="Camille"
+NOM="Exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PRENOM $NOM\" (interview OR conférence OR article)"
+```
 
-### Trouver les serveurs de messagerie
+### Nom et organisation
 
-~~~bash
-dig example.com MX +short
-# Affiche les serveurs de courrier déclarés.
-~~~
+```bash
+# Recouper le nom avec une organisation déclarée.
+PRENOM="Camille"
+NOM="Exemple"
+ORGANISATION="Organisation Exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$PRENOM $NOM\" \"$ORGANISATION\""
+```
 
-### Lire les serveurs DNS
+## Dorks - domaine et organisation
 
-~~~bash
-dig example.com NS +short
-# Affiche les serveurs de noms du domaine.
-~~~
+Remplace DOMAINE ou ORGANISATION par la valeur recherchée.
 
-### Lire les enregistrements TXT
+### Pages indexées
 
-~~~bash
-dig example.com TXT +short
-# Affiche les informations TXT, dont d'éventuelles politiques de messagerie.
-~~~
+```bash
+# Lister les pages publiques d'un domaine.
+DOMAINE="example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "site:$DOMAINE"
+```
 
-### Lire les informations TLS
+### Documents PDF
 
-~~~bash
-openssl s_client -connect example.com:443 -servername example.com </dev/null 2>/dev/null | openssl x509 -noout -subject -issuer -dates
-# Affiche le sujet, l'émetteur et les dates du certificat présenté par le serveur.
-~~~
+```bash
+# Trouver les documents PDF publics du domaine.
+DOMAINE="example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "site:$DOMAINE filetype:pdf"
+```
 
-## Pages et archives
+### Documents bureautiques
 
-### Examiner les en-têtes HTTP
+```bash
+# Trouver les feuilles de calcul publiquement indexées.
+DOMAINE="example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "site:$DOMAINE filetype:xlsx"
+```
 
-~~~bash
-curl -sSI --max-time 15 https://example.com/
-# Affiche les en-têtes de réponse HTTP, sans le corps de page.
-~~~
+### Pages de contact
 
-### Voir une redirection
+```bash
+# Rechercher les pages contact ou à propos.
+DOMAINE="example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "site:$DOMAINE (inurl:contact OR inurl:about)"
+```
 
-~~~bash
-curl -sSL -o /dev/null -w '%{http_code} %{url_effective}\n' https://example.com/
-# Affiche le statut final et l'adresse obtenue après redirection.
-~~~
+### Sous-domaines indexés
 
-### Récupérer une page pour analyse locale
+```bash
+# Repérer certaines pages hors du sous-domaine www ; résultat non exhaustif.
+DOMAINE="example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "site:$DOMAINE -site:www.$DOMAINE"
+```
 
-~~~bash
-curl -sSL --max-time 20 https://example.com/ -o page.html
-# Enregistre le HTML public d'une page dans un fichier.
-~~~
+### Mentions externes d'une organisation
+
+```bash
+# Identifier des pages extérieures au site principal.
+ORGANISATION="Organisation Exemple"
+DOMAINE="example.com"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$ORGANISATION\" -site:$DOMAINE"
+```
+
+### Mentions récentes
+
+```bash
+# Filtrer les publications selon une date de début à adapter.
+ORGANISATION="Organisation Exemple"
+python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://www.google.com/search?q=" + u.quote(sys.argv[1]))' "\"$ORGANISATION\" after:2026-01-01"
+```
+
+## Pseudonymes - Sherlock et Maigret
+
+Recherche de profils publics et exports. Les résultats indiquent une correspondance technique, pas une identité confirmée.
+
+### Sherlock - recherche simple
+
+```bash
+# Recherche sur les plateformes connues de Sherlock.
+PSEUDO="pseudo_exemple"
+sherlock "$PSEUDO"
+```
+
+### Sherlock - résultats trouvés
+
+```bash
+# Masquer les sites où aucun profil n'a été signalé.
+PSEUDO="pseudo_exemple"
+sherlock "$PSEUDO" --print-found
+```
+
+### Sherlock - une plateforme
+
+```bash
+# Limiter les requêtes à GitHub.
+PSEUDO="pseudo_exemple"
+sherlock "$PSEUDO" --site GitHub --print-found
+```
+
+### Sherlock - enregistrer en texte
+
+```bash
+# Conserver un rapport des résultats.
+PSEUDO="pseudo_exemple"
+sherlock "$PSEUDO" --output "sherlock-$PSEUDO.txt"
+```
+
+### Sherlock - CSV
+
+```bash
+# Produire un tableau des résultats.
+PSEUDO="pseudo_exemple"
+sherlock "$PSEUDO" --csv
+```
+
+### Sherlock - comparer plusieurs pseudos
+
+```bash
+# Vérifier plusieurs variantes sans générer de noms au hasard.
+PSEUDO1="pseudo_exemple"
+PSEUDO2="pseudo_variante"
+sherlock "$PSEUDO1" "$PSEUDO2" --print-found
+```
+
+### Maigret - recherche rapide
+
+```bash
+# Chercher les comptes correspondant à un identifiant.
+PSEUDO="pseudo_exemple"
+maigret "$PSEUDO"
+```
+
+### Maigret - sites principaux
+
+```bash
+# Limiter la recherche à un ensemble de sites mieux classés.
+PSEUDO="pseudo_exemple"
+maigret "$PSEUDO" --top-sites 100
+```
+
+### Maigret - catégories
+
+```bash
+# Restreindre à des plateformes liées à la photo.
+PSEUDO="pseudo_exemple"
+maigret "$PSEUDO" --tags photo
+```
+
+### Maigret - HTML
+
+```bash
+# Générer un rapport navigable.
+PSEUDO="pseudo_exemple"
+maigret "$PSEUDO" --html
+```
+
+### Maigret - CSV
+
+```bash
+# Exporter les résultats au format tableur.
+PSEUDO="pseudo_exemple"
+maigret "$PSEUDO" --csv
+```
+
+### Maigret - JSON
+
+```bash
+# Exporter les résultats au format structuré.
+PSEUDO="pseudo_exemple"
+maigret "$PSEUDO" --json simple
+```
+
+### Maigret - fichier de pseudos
+
+```bash
+# Rechercher les identifiants listés un par ligne.
+FICHIER="pseudos.txt"
+maigret --input-file "$FICHIER" --html
+```
+
+## Adresse e-mail - Holehe
+
+L'outil interroge des mécanismes publics des plateformes. Un résultat est un indice, jamais une preuve d'identité.
+
+### Holehe - recherche par e-mail
+
+```bash
+# Tester une adresse de démonstration ou appartenant au périmètre autorisé.
+EMAIL="exemple@example.com"
+"$HOME/.venvs/holehe/bin/holehe" "$EMAIL"
+```
+
+### Holehe - vérifier la version
+
+```bash
+# Lire les options présentes sur l'installation locale.
+"$HOME/.venvs/holehe/bin/holehe" --help
+```
+
+## Domaines - theHarvester et Subfinder
+
+Choisir d'abord les sources passives. Les requêtes vont aux fournisseurs de données, pas nécessairement à la cible.
+
+### theHarvester - certificats publics
+
+```bash
+# Utiliser crt.sh et CertSpotter.
+DOMAINE="example.com"
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d "$DOMAINE" -b crtsh,certspotter)
+```
+
+### theHarvester - plusieurs sources
+
+```bash
+# Comparer certificats et Common Crawl.
+DOMAINE="example.com"
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d "$DOMAINE" -b crtsh,certspotter,commoncrawl)
+```
+
+### theHarvester - rechercher les e-mails
+
+```bash
+# Chercher les adresses publiques et les URL associées.
+DOMAINE="example.com"
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d "$DOMAINE" -b emails,urls,certspotter)
+```
+
+### theHarvester - exporter
+
+```bash
+# Sauvegarder les rapports locaux selon les formats du projet.
+DOMAINE="example.com"
+(cd "$HOME/outils/theHarvester" && uv run theHarvester -d "$DOMAINE" -b crtsh,certspotter -f "$DOMAINE-rapport")
+```
+
+### Subfinder - sous-domaines passifs
+
+```bash
+# Collecter les noms publics, sans scan de ports.
+DOMAINE="example.com"
+subfinder -d "$DOMAINE" -silent -o sous-domaines.txt
+```
+
+### crt.sh - certificats en JSON
+
+```bash
+# Extraire les noms des certificats ; le service peut limiter les requêtes.
+DOMAINE="example.com"
+curl -fsSG --data-urlencode "q=%.$DOMAINE" --data-urlencode "output=json" https://crt.sh/ | jq -r '.[].name_value' | sort -u
+```
+
+## Domaines - DNS, WHOIS et TLS
+
+Commandes système simples pour comprendre les informations d'un domaine.
+
+### WHOIS
+
+```bash
+# Afficher les informations d'enregistrement disponibles.
+DOMAINE="example.com"
+whois "$DOMAINE"
+```
+
+### IPv4
+
+```bash
+# Afficher les enregistrements A.
+DOMAINE="example.com"
+dig "$DOMAINE" A +short
+```
+
+### IPv6
+
+```bash
+# Afficher les enregistrements AAAA.
+DOMAINE="example.com"
+dig "$DOMAINE" AAAA +short
+```
+
+### Serveurs de messagerie
+
+```bash
+# Identifier les MX déclarés.
+DOMAINE="example.com"
+dig "$DOMAINE" MX +short
+```
+
+### Serveurs de noms
+
+```bash
+# Identifier les NS déclarés.
+DOMAINE="example.com"
+dig "$DOMAINE" NS +short
+```
+
+### TXT et SPF
+
+```bash
+# Lire les politiques et autres TXT publiés.
+DOMAINE="example.com"
+dig "$DOMAINE" TXT +short
+```
+
+### DMARC
+
+```bash
+# Lire la politique de messagerie DMARC.
+DOMAINE="example.com"
+dig "_dmarc.$DOMAINE" TXT +short
+```
+
+### CAA
+
+```bash
+# Voir les autorités de certification déclarées.
+DOMAINE="example.com"
+dig "$DOMAINE" CAA +short
+```
+
+### DNS inverse
+
+```bash
+# Trouver le PTR éventuellement déclaré pour une IP.
+IP="8.8.8.8"
+dig -x "$IP" +short
+```
+
+### Certificat TLS
+
+```bash
+# Afficher sujet, émetteur et dates du certificat présenté.
+DOMAINE="example.com"
+openssl s_client -connect "$DOMAINE:443" -servername "$DOMAINE" </dev/null 2>/dev/null | openssl x509 -noout -subject -issuer -dates
+```
+
+## Archives, sites Web et données publiques
+
+Pour les pages Web, conserver l'URL et la date ; les réponses HTTP peuvent changer.
+
+### Wayback Machine - ouvrir les archives
+
+```bash
+# Ouvrir les versions disponibles d'un domaine dans le navigateur.
+DOMAINE="example.com"
+python3 -c 'import sys,webbrowser;webbrowser.open("https://web.archive.org/web/*/"+sys.argv[1])' "$DOMAINE"
+```
+
+### En-têtes HTTP
+
+```bash
+# Examiner les en-têtes d'une URL publique.
+URL="https://example.com/"
+curl -sSI --max-time 15 "$URL"
+```
+
+### Redirection HTTP
+
+```bash
+# Voir le code final et l'URL obtenue.
+URL="https://example.com/"
+curl -sSL -o /dev/null -w '%{http_code} %{url_effective}\n' "$URL"
+```
+
+### Enregistrer le HTML d'une page
+
+```bash
+# Conserver une copie locale du HTML public.
+URL="https://example.com/"
+curl -sSL --max-time 20 "$URL" -o page.html
+```
+
+### Rechercher un terme dans le HTML
+
+```bash
+# Filtrer un fichier sauvegardé par mots-clés.
+MOT="contact"
+grep -inF "$MOT" page.html
+```
+
+### Shodan - rechercher un domaine
+
+```bash
+# Ouvrir une requête ciblée dans le moteur Shodan.
+DOMAINE="example.com"
+python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://www.shodan.io/search?query="+u.quote("hostname:"+sys.argv[1]))' "$DOMAINE"
+```
+
+### urlscan.io - domaine
+
+```bash
+# Ouvrir une recherche d'observations associées au domaine.
+DOMAINE="example.com"
+python3 -c 'import sys,urllib.parse as u,webbrowser;webbrowser.open("https://urlscan.io/search/#"+u.quote("domain:"+sys.argv[1]))' "$DOMAINE"
+```
 
 ## Images et documents
 
-Les métadonnées peuvent être absentes ou modifiées.
+Examiner la copie locale de l'image ou du document. Les métadonnées peuvent être absentes ou modifiées.
 
-### Identifier le type d'un fichier
+### Type réel du fichier
 
-~~~bash
-file document.pdf
-# Affiche le type détecté à partir du contenu du fichier.
-~~~
+```bash
+# Identifier le format reconnu par l'outil file.
+FICHIER="photo.jpg"
+file "$FICHIER"
+```
 
-### Lire les métadonnées d'une image
+### Métadonnées de l'image
 
-~~~bash
-exiftool photo.jpg
-# Affiche les informations EXIF et autres métadonnées disponibles.
-~~~
+```bash
+# Afficher toutes les métadonnées lisibles d'un fichier.
+FICHIER="photo.jpg"
+exiftool "$FICHIER"
+```
 
-### Lire les données GPS
+### Métadonnées par groupe
 
-~~~bash
-exiftool -GPS:all photo.jpg
-# Affiche les champs GPS présents, sans déduire qu'ils sont authentiques.
-~~~
+```bash
+# Voir les groupes de tags et leurs noms techniques.
+FICHIER="photo.jpg"
+exiftool -G1 -a -s "$FICHIER"
+```
 
-### Exporter les métadonnées en JSON
+### Champs GPS
 
-~~~bash
-exiftool -json photo.jpg > photo-metadata.json
-# Enregistre les métadonnées de l'image au format JSON.
-~~~
+```bash
+# Afficher les champs GPS présents dans le fichier.
+FICHIER="photo.jpg"
+exiftool -GPS:all "$FICHIER"
+```
 
-### Lire les informations d'un PDF
+### Exporter les métadonnées
 
-~~~bash
-pdfinfo document.pdf
-# Affiche les métadonnées courantes et les propriétés du PDF.
-~~~
+```bash
+# Créer un export JSON local.
+FICHIER="photo.jpg"
+exiftool -json "$FICHIER" > metadonnees.json
+```
 
-## Conserver les preuves
+### Informations d'un PDF
 
-### Créer un dossier de travail
+```bash
+# Lire le producteur et les autres champs PDF disponibles.
+FICHIER="document.pdf"
+pdfinfo "$FICHIER"
+```
 
-~~~bash
-mkdir -p dossier_osint/{captures,rapports,notes,donnees}
-# Prépare une arborescence pour les éléments collectés.
-~~~
+### Texte d'un PDF
 
-### Noter la date UTC
+```bash
+# Extraire le texte d'un PDF textuel ; n'effectue pas d'OCR.
+FICHIER="document.pdf"
+pdftotext -layout "$FICHIER" document.txt
+```
 
-~~~bash
+## Conserver et recouper les résultats
+
+Enregistrer les observations avec leur date, leur origine et leurs limites.
+
+### Préparer un dossier
+
+```bash
+# Créer une structure simple pour les fichiers de travail.
+mkdir -p dossier_osint/{notes,captures,rapports,documents}
+```
+
+### Heure d'observation
+
+```bash
+# Afficher l'heure UTC au format ISO 8601.
 date -u '+%Y-%m-%dT%H:%M:%SZ'
-# Affiche l'heure UTC de l'observation.
-~~~
+```
 
-### Calculer une empreinte SHA-256
+### Sauver une recherche Sherlock
 
-~~~bash
-sha256sum capture.png > capture.png.sha256
-# Enregistre l'empreinte SHA-256 d'une capture locale.
-~~~
+```bash
+# Afficher et enregistrer simultanément la sortie standard.
+PSEUDO="pseudo_exemple"
+sherlock "$PSEUDO" --print-found | tee rapport-sherlock.txt
+```
 
-### Contrôler l'intégrité d'une capture
+### Empreinte SHA-256
 
-~~~bash
-sha256sum -c capture.png.sha256
-# Vérifie que la capture correspond à l'empreinte enregistrée.
-~~~
+```bash
+# Conserver l'empreinte d'un fichier de travail.
+FICHIER="capture.png"
+sha256sum "$FICHIER" > "$FICHIER.sha256"
+```
 
-## Dorks utiles
+### Vérifier l'empreinte
 
-Utilise le [générateur de recherches](./index.md#générateur-de-dorks) pour construire directement les liens Google.
+```bash
+# Vérifier qu'un fichier est identique à la version enregistrée.
+EMPREINTE="capture.png.sha256"
+sha256sum -c "$EMPREINTE"
+```
 
-| Recherche | Dork | Utilité |
-| --- | --- | --- |
-| Pseudonyme | `"pseudo_exemple"` | Mentions exactes d'un identifiant. |
-| Profils techniques | `"pseudo_exemple" site:github.com` | Profils ou discussions indexés. |
-| E-mail | `"exemple@domaine.fr"` | Occurrences exactes de l'adresse. |
-| Nom complet | `"Prénom Nom" filetype:pdf` | Documents publics qui mentionnent le nom. |
-| Domaine | `site:example.com` | Pages indexées sur un domaine. |
-| Documents | `site:example.com filetype:pdf` | PDF publics d'un domaine. |
-| Pages de contact | `site:example.com inurl:contact` | Pages de contact indexées. |
+### Dédoublonner une liste
 
-Les opérateurs essentiels : `site:` (domaine), `filetype:` (format), `inurl:` (URL), guillemets (expression exacte) et `-` (exclusion).
+```bash
+# Trier les résultats en supprimant les lignes identiques.
+FICHIER="sous-domaines.txt"
+sort -u "$FICHIER" > liste-unique.txt
+```
 
-## Vérifier les résultats
+### Chercher un terme dans les notes
 
-- **Source** - Noter l'URL exacte et la date d'observation.
-- **Contexte** - Confirmer le résultat dans la page d'origine et dans une seconde source.
-- **Identité** - Ne pas assimiler deux profils à une même personne sur la seule base d'un pseudo.
-- **Traçabilité** - Conserver les sorties ou captures utiles à l'analyse.
+```bash
+# Afficher les lignes et numéros où apparaît le mot.
+MOT="domaine"
+grep -inF "$MOT" notes.txt
+```
+
+## Notes de recherche
+
+- **Recouper** chaque information avec au moins une deuxième source.
+- **Conserver** les URL, la date UTC et les fichiers réellement examinés.
+- **Distinguer** une correspondance de pseudonyme d'une identité confirmée.
+- **Limiter** la collecte aux informations pertinentes et au périmètre autorisé.
+
+La syntaxe des outils peut évoluer. Les exemples de theHarvester reprennent la forme actuelle de ses commandes, avec `uv run`.
 
