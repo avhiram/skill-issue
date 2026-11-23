@@ -27,11 +27,18 @@ export default defineConfig({
     siteTitle: 'SKILL-ISSUE',
     nav: [
       { text: 'Academy', link: '/academy/' },
+      { text: 'OSINT', link: '/osint/' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' }
     ],
     sidebar: {
       '/academy/': [],
+      '/osint/': [
+        { text: 'OSINT', link: '/osint/', items: [
+          { text: 'Ressources', link: '/osint/' },
+          { text: 'Cheatsheet', link: '/osint/cheatsheet' }
+        ] }
+      ],
       '/': [
       {
         text: 'OSCP',
