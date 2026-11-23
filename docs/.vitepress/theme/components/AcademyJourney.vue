@@ -322,7 +322,30 @@ const topicLabels: Record<string, string> = {
   formations: 'ressources de formation',
   outils: 'outils de sécurité'
 }
+const minimalTitles: Record<string, string> = {
+  "letsdefend - conditions et migration hack the box": "LetsDefend - évolution des labs",
+  "ine security - offres et acces": "INE Security - offres",
+  "offsec - acces aux labs gratuits": "OffSec - labs gratuits",
+  "offsec - pen-103 kali linux revealed (acces gratuit)": "OffSec - PEN-103 Kali Linux Revealed"
+}
+function displayTitle(item: AssignedResource) { return minimalTitles[simplify(item.title.trim())] || item.title }
+const minimalDescriptions: Record<string, string> = {
+  "root-me - web serveur": "Challenges Web sur la sécurité côté serveur.",
+  "root-me - web client": "Challenges Web sur la sécurité côté navigateur.",
+  "bugcrowd - liste des programmes publics": "Répertoire de programmes publics de Bug Bounty.",
+  "osint-fr - challenges ctf": "Challenges OSINT proposés par la communauté OSINT-FR.",
+  "letsdefend - environnement soc": "Labs et alertes pour s'entraîner à l'analyse SOC.",
+  "letsdefend - conditions et migration hack the box": "Informations sur l'évolution des labs LetsDefend.",
+  "hack the box - sherlocks (investigation)": "Challenges d'enquête et d'analyse d'incident.",
+  "ine security - catalogue complet des cours cyber": "Catalogue de formations en offensive, SOC, Cloud, DFIR et GRC.",
+  "ine security - offres et acces": "Présentation des offres de formation INE.",
+  "open source security testing methodology manual": "Méthodologie de test et d'audit de sécurité.",
+  "google skills - parcours cloud": "Formations et exercices sur Google Cloud.",
+  "offsec - acces aux labs gratuits": "Présentation des labs Proving Grounds Play et du cours PEN-103."
+}
 function describe(item: AssignedResource) {
+  const concise = minimalDescriptions[simplify(item.title.trim())]
+  if (concise) return concise
   const known = manualDescriptions[simplify(item.title.trim())]
   if (known) return known
   if (item.description?.trim()) return item.description.trim()
@@ -622,12 +645,12 @@ function otherLinks(id: string): AssignedResource[] {
 
           <ul class="academy-links">
             <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
               <small class="academy-free" title="Sélection sans achat">Gratuit</small>
             </li>
             <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
             </li>
           </ul>
