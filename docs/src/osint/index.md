@@ -1,6 +1,6 @@
 ---
 title: OSINT
-description: Outils et ressources de recherche en sources ouvertes, en français.
+description: Recherche en sources ouvertes, ressources et dorks pratiques.
 aside: false
 prev: false
 next: false
@@ -8,64 +8,48 @@ next: false
 
 # OSINT
 
-Recherche en sources ouvertes : outils, moteurs de recherche et méthodes d'investigation.
+Outils et méthodes pour rechercher, recouper et documenter des informations publiques.
 
-**[Cheatsheet OSINT](./cheatsheet.md)** - Commandes prêtes à adapter, avec une explication en français pour chaque usage.
+## Générateur de dorks
 
-## Bibliothèque OSINT
+Saisis un **pseudonyme**, un **e-mail**, un **prénom et nom** ou un **domaine** pour obtenir des recherches Google prêtes à ouvrir.
 
-- **Awesome OSINT** - Catalogue de ressources classées par domaine. <https://github.com/jivoi/awesome-osint>
-- **OSINT Framework** - Répertoire d'outils organisé par type de recherche. <https://osintframework.com/>
-- **Bellingcat Toolkit** - Outils pour rechercher, recouper et vérifier des informations. <https://bellingcat.gitbook.io/toolkit>
+<OsintSearch />
 
-## Pseudonymes et comptes
+**[Cheatsheet OSINT](./cheatsheet.md)** - Les commandes essentielles, expliquées en français.
 
-- **Sherlock** - Recherche de profils publics associés à un pseudonyme. <https://github.com/sherlock-project/sherlock>
-- **Maigret** - Recherche de comptes à partir d'un identifiant et génération de rapports. <https://github.com/soxoj/maigret>
-- **Holehe** - Vérifie les traces d'inscription associées à une adresse e-mail. <https://github.com/megadose/holehe>
-- **Have I Been Pwned** - Recherche d'exposition d'adresses e-mail dans des incidents connus. <https://haveibeenpwned.com/>
+## Pseudonymes et e-mails
 
-## Recherche Web
+- **[Sherlock](https://github.com/sherlock-project/sherlock)** - Retrouver les profils publics d'un pseudonyme.
+- **[Maigret](https://github.com/soxoj/maigret)** - Rechercher des comptes et créer des rapports.
+- **[Holehe](https://github.com/megadose/holehe)** - Identifier des indices d'inscription liés à un e-mail.
+- **[Have I Been Pwned](https://haveibeenpwned.com/)** - Contrôler l'exposition d'une adresse dans des fuites connues.
 
-- **Google** - Recherche générale avec opérateurs avancés. <https://www.google.com/>
-- **Bing** - Moteur de recherche complémentaire pour recouper des résultats. <https://www.bing.com/>
-- **Brave Search** - Moteur indépendant pour diversifier les résultats. <https://search.brave.com/>
-- **Wayback Machine** - Consultation de versions archivées de pages Web. <https://web.archive.org/>
+## Domaines et sites Web
 
-## Domaines et infrastructures
+- **[theHarvester](https://github.com/laramies/theHarvester)** - Collecter des domaines, sous-domaines et e-mails publics.
+- **[crt.sh](https://crt.sh/)** - Consulter les noms figurant dans les certificats publics.
+- **[Shodan](https://www.shodan.io/)** - Rechercher des services publics sur Internet.
+- **[Censys](https://search.censys.io/)** - Explorer les hôtes et certificats Internet.
+- **[VirusTotal](https://www.virustotal.com/)** - Recouper les données publiques d'un domaine, d'une IP ou d'une URL.
+- **[Wayback Machine](https://web.archive.org/)** - Comparer les versions archivées d'un site.
 
-- **theHarvester** - Collecte passive de domaines, sous-domaines et adresses publiques. <https://github.com/laramies/theHarvester>
-- **crt.sh** - Recherche de noms de domaine présents dans les certificats publics. <https://crt.sh/>
-- **Shodan** - Recherche de services exposés sur Internet. <https://www.shodan.io/>
-- **Censys** - Recherche d'hôtes et de certificats Internet. <https://search.censys.io/>
-- **SecurityTrails** - Recherche DNS et historique d'infrastructures. <https://securitytrails.com/dns-trails>
-- **VirusTotal** - Recherche contextuelle sur des URL, domaines, IP et fichiers. <https://www.virustotal.com/>
+## Images et documents
 
-## Images et géolocalisation
+- **[Google Lens](https://lens.google.com/)** - Rechercher une image ou un élément visuel.
+- **[TinEye](https://tineye.com/)** - Retrouver les occurrences publiques d'une image.
+- **[ExifTool](https://exiftool.org/)** - Consulter les métadonnées d'un fichier.
 
-- **Google Lens** - Recherche inversée et analyse visuelle d'images. <https://lens.google.com/>
-- **TinEye** - Recherche des occurrences publiques d'une image. <https://tineye.com/>
-- **Google Earth** - Consultation de vues géographiques et d'images satellites. <https://www.google.com/earth/>
-- **ExifTool** - Lecture des métadonnées de photos et de documents. <https://exiftool.org/>
+## Entreprises et recoupements
 
-## Entreprises et organisations
+- **[Annuaire des entreprises](https://annuaire-entreprises.data.gouv.fr/)** - Vérifier les informations publiques d'une société française.
+- **[OpenCorporates](https://opencorporates.com/)** - Consulter les informations de registres d'entreprises.
+- **[Bellingcat Toolkit](https://bellingcat.gitbook.io/toolkit)** - Vérifier des images, lieux et informations publiques.
 
-- **OpenCorporates** - Recherche de sociétés et d'informations de registre. <https://opencorporates.com/>
-- **Annuaire des entreprises** - Informations publiques sur les entreprises françaises. <https://annuaire-entreprises.data.gouv.fr/>
+## Bibliothèques complémentaires
 
-## Analyse et vérification
+- **[Awesome OSINT](https://github.com/jivoi/awesome-osint)** - Répertoire d'outils classés par domaine.
+- **[OSINT Framework](https://osintframework.com/)** - Retrouver des outils par type de recherche.
+- **[CyberChef](https://gchq.github.io/CyberChef/)** - Décoder et convertir des données.
 
-- **CyberChef** - Décodage, conversion et analyse de chaînes et de fichiers. <https://gchq.github.io/CyberChef/>
-- **MITRE ATT&CK** - Base de connaissances des techniques adverses. <https://attack.mitre.org/>
-- **MISP** - Partage et organisation d'indicateurs de menace. <https://www.misp-project.org/>
-
-## Méthode
-
-1. **Définir** la question à résoudre et le périmètre.
-2. **Collecter** les informations publiques et enregistrer les URL.
-3. **Recouper** les résultats avant d'associer deux comptes ou identités.
-4. **Conserver** la date, la source, le contexte et les limites de chaque observation.
-
-Les correspondances de pseudonymes, d'e-mails ou d'images sont des indices, pas des preuves d'identité.
-
-**[Ouvrir la cheatsheet OSINT](./cheatsheet.md)**
+Un même pseudonyme ou nom ne suffit jamais à établir une identité. Conserve l'URL, la date et les éléments permettant de recouper chaque observation.
