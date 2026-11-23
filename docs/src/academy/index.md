@@ -9,6 +9,6 @@ next: false
 
 # Academy
 
-Un parcours concret de Level 0 à Level 4 : terminal, Linux, réseau, Web, CTF et labs open source. Apprendre en pratiquant, uniquement sur des environnements autorisés.
+Cours, exercices et labs classés par catégorie. Avance du Level 0 au Level 4, à ton rythme.
 
-<AcademyPractical />
+<AcademyCategories />

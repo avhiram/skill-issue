@@ -31,13 +31,7 @@ export default defineConfig({
       { text: 'CRTO', link: '/crto/' }
     ],
     sidebar: {
-      '/academy/': [
-        { text: 'Academy', link: '/academy/', collapsed: false, items: [
-          { text: 'Roadmap débutant', link: '/academy/#parcours' },
-          { text: 'Spécialisations', link: '/academy/#specialisations' },
-          { text: 'Toutes les ressources', link: '/academy/#catalogue' }
-        ] }
-      ],
+      '/academy/': [],
       '/': [
       {
         text: 'OSCP',
