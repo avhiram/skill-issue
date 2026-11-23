@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
 import { resources } from '../data/academy-organized'
 import { masteryResources } from '../data/academy-mastery'
 import { academyLevels, academyExtraResources, academyAssignments } from '../data/academy-unified'
@@ -27,76 +26,145 @@ type Level = {
 
 const sections = [
   {
-    id: 'premiers-pas',
-    title: "Bien démarrer",
-    summary: "Comprendre son ordinateur, préparer ses outils et apprendre les réseaux avant de passer aux systèmes.",
-    levels: ["environment","network-basics","network-practice"]
+    "id": "premiers-pas",
+    "title": "Introduction et pré-sécurité",
+    "summary": "Comprendre son ordinateur, le réseau et les premiers outils.",
+    "levels": [
+      "environment",
+      "network-basics",
+      "network-practice"
+    ]
   },
   {
-    id: 'linux-windows',
-    title: "Comprendre Linux et Windows",
-    summary: "Se repérer dans les deux systèmes, utiliser les commandes et identifier les permissions.",
-    levels: ["linux-basics","linux-admin","windows-basics","powershell"]
+    "id": "linux-windows",
+    "title": "Linux et Windows",
+    "summary": "Apprendre les commandes, les fichiers, les comptes et les permissions.",
+    "levels": [
+      "linux-basics",
+      "linux-admin",
+      "windows-basics",
+      "powershell"
+    ]
   },
   {
-    id: 'code-et-web',
-    title: "Apprendre à coder et comprendre le Web",
-    summary: "Écrire ses premiers scripts, puis comprendre les échanges entre navigateur, serveur et API.",
-    levels: ["python-basics","scripting","web-basics","web-api"]
+    "id": "code-et-web",
+    "title": "Programmation et Web",
+    "summary": "Écrire ses premiers scripts et comprendre les applications Web.",
+    "levels": [
+      "python-basics",
+      "scripting",
+      "web-basics",
+      "web-api"
+    ]
   },
   {
-    id: 'notions-securite',
-    title: "Comprendre les bases de la sécurité",
-    summary: "Apprendre les notions de sécurité, la cryptographie et l'OSINT, puis les pratiquer sur des challenges.",
-    levels: ["security-basics","crypto","osint-recon","osint-practice"]
+    "id": "notions-securite",
+    "title": "Fondamentaux de la cybersécurité",
+    "summary": "Acquérir les réflexes de sécurité, découvrir la cryptographie et pratiquer l'OSINT.",
+    "levels": [
+      "security-basics",
+      "crypto",
+      "osint-recon",
+      "osint-practice"
+    ]
   },
   {
-    id: 'premiers-labs',
-    title: "Premiers outils, pentest et CTF",
-    summary: "Découvrir Nmap, installer ses labs locaux, apprendre le Bug Bounty puis résoudre des CTF autorisés.",
-    levels: ["scanning","web-security","web-labs","local-labs","bug-bounty","ctf-beginner","ctf-intermediate","pentest-system","bonus-windows-labs"]
+    "id": "premiers-labs",
+    "title": "Red Team - parcours débutant",
+    "summary": "Découvrir les outils, les failles Web et les premiers labs autorisés.",
+    "levels": [
+      "scanning",
+      "web-security",
+      "web-labs",
+      "local-labs",
+      "bug-bounty",
+      "ctf-beginner",
+      "ctf-intermediate",
+      "pentest-system"
+    ]
   },
   {
-    id: 'active-directory-red-team',
-    title: "Active Directory et Red Team",
-    summary: "Commencer par les domaines Windows, suivre GOAD dans l'ordre, puis explorer les labs C2.",
-    levels: ["ad-intro","ad-minilab","ad-light","ad-full","c2","red-advanced"]
+    "id": "bonus-windows",
+    "title": "Bonus Windows",
+    "summary": "Consolider ses bases sur des environnements Windows dédiés à la pratique.",
+    "levels": [
+      "bonus-windows-labs"
+    ]
   },
   {
-    id: 'blue-team',
-    title: "Blue Team : détection et réponse",
-    summary: "Apprendre à lire des traces, comprendre un SIEM et enquêter sur une activité.",
-    levels: ["blue-logs","blue-siem","blue-threat"]
+    "id": "active-directory-red-team",
+    "title": "Active Directory et Red Team",
+    "summary": "Passer des domaines Windows aux labs GOAD, puis aux environnements Red Team.",
+    "levels": [
+      "ad-intro",
+      "ad-minilab",
+      "ad-light",
+      "ad-full",
+      "c2",
+      "red-advanced"
+    ]
   },
   {
-    id: 'forensic-reverse',
-    title: "Forensic, reverse et analyse de malware",
-    summary: "Analyser le réseau, la mémoire et les programmes avant de reconstituer les faits.",
-    levels: ["dfir-network","dfir-host","reverse","malware"]
+    "id": "blue-team",
+    "title": "Blue Team - parcours débutant",
+    "summary": "Comprendre les journaux, la détection et l'analyse d'incidents.",
+    "levels": [
+      "blue-logs",
+      "blue-siem",
+      "blue-threat"
+    ]
   },
   {
-    id: 'cloud-et-specialites',
-    title: "Cloud et autres domaines de sécurité",
-    summary: "Aborder le Cloud, les conteneurs, les applications mobiles, l'IoT, l'OT et les risques.",
-    levels: ["cloud-foundations","cloud-security","containers","mobile","iot","ot","grc"]
+    "id": "forensic-reverse",
+    "title": "Forensic, reverse et malware",
+    "summary": "Étudier les captures réseau, la mémoire, les binaires et les traces.",
+    "levels": [
+      "dfir-network",
+      "dfir-host",
+      "reverse",
+      "malware"
+    ]
   },
   {
-    id: 'challenges-avances',
-    title: "Challenges avancés",
-    summary: "Réutiliser les compétences acquises sur des CTF de difficulté supérieure.",
-    levels: ["ctf-advanced","extremely-hard-rooms"]
+    "id": "cloud-et-specialites",
+    "title": "Cloud et domaines spécialisés",
+    "summary": "Explorer le Cloud, les conteneurs, le mobile, l'IoT, l'OT et la conformité.",
+    "levels": [
+      "cloud-foundations",
+      "cloud-security",
+      "containers",
+      "mobile",
+      "iot",
+      "ot",
+      "grc"
+    ]
   },
   {
-    id: 'veilles-certifications',
-    title: "Veille, certifications et communautés",
-    summary: "Identifier des sources fiables, préparer un examen et continuer à progresser.",
-    levels: ["research","certifications","community"]
+    "id": "challenges-avances",
+    "title": "CTF et challenges avancés",
+    "summary": "Appliquer sa méthode sur des défis complexes, jusqu'aux rooms très difficiles.",
+    "levels": [
+      "ctf-advanced",
+      "extremely-hard-rooms"
+    ]
   },
   {
-    id: 'projet-final',
-    title: "Projet final",
-    summary: "Mettre toute la méthode en pratique et rédiger un rapport clair sur un lab.",
-    levels: ["final-project"]
+    "id": "veilles-certifications",
+    "title": "Veille, CVE et certifications",
+    "summary": "Suivre les vulnérabilités, préparer ses examens et rejoindre les communautés.",
+    "levels": [
+      "research",
+      "certifications",
+      "community"
+    ]
+  },
+  {
+    "id": "projet-final",
+    "title": "Projet final",
+    "summary": "Rassembler ses acquis dans un lab complet et rédiger son rapport.",
+    "levels": [
+      "final-project"
+    ]
   }
 ] as const
 
@@ -457,259 +525,150 @@ const freeSelections: Record<string, readonly string[]> = {
 const freeSets = new Map(Object.entries(freeSelections).map(([id, urls]) => [
   id, new Set(urls.map(normalizeUrl))
 ]))
-const storageKey = 'skill-issue-academy-single-route-v1'
-const resourceView = ref<'free' | 'all'>('free')
-const completed = ref<string[]>([])
-const search = ref('')
-const showUrls = ref(false)
-const doneCount = computed(() => orderedLevels.filter(l => completed.value.includes(l.id)).length)
-const progress = computed(() => Math.round((doneCount.value / orderedLevels.length) * 100))
-const query = computed(() => simplify(search.value.trim()))
-// Toutes les URL restent visibles, sans onglets ni filtre qui raccourcit la page.
-function visibleLinks(id: string): AssignedResource[] {
-  const base = levelLinks(id)
-  if (!query.value) return base
-  const level = byId.get(id)
-  if (level && simplify(level.title + ' ' + level.intro).includes(query.value)) return base
-  return base.filter(item => simplify(item.title + ' ' + item.url + ' ' + (item.description || '')).includes(query.value))
-}
+
 function freeLinks(id: string): AssignedResource[] {
-  const free = freeSets.get(id)
-  return free ? visibleLinks(id).filter(item => free.has(normalizeUrl(item.url))) : []
+  const selected = freeSets.get(id)
+  return selected ? levelLinks(id).filter(item => selected.has(normalizeUrl(item.url))) : []
 }
 function otherLinks(id: string): AssignedResource[] {
-  const free = freeSets.get(id)
-  return visibleLinks(id).filter(item => !free?.has(normalizeUrl(item.url)))
+  const selected = freeSets.get(id)
+  return levelLinks(id).filter(item => !selected?.has(normalizeUrl(item.url)))
 }
-function visibleLevels(section: typeof sections[number]) {
-  if (!query.value) return levelsIn(section)
-  return levelsIn(section).filter(level =>
-    (resourceView.value === 'free' ? freeLinks(level.id) : visibleLinks(level.id)).length > 0
-  )
-}
-const searchCount = computed(() => orderedLevels.reduce((n, l) =>
-  n + (resourceView.value === 'free' ? freeLinks(l.id) : visibleLinks(l.id)).length, 0
-))
-const freeCount = orderedLevels.reduce((n, l) => {
-  const free = freeSets.get(l.id)
-  return n + levelLinks(l.id).filter(item => free?.has(normalizeUrl(item.url))).length
-}, 0)
-
-function persist() {
-  try { localStorage.setItem(storageKey, JSON.stringify(completed.value)) } catch {}
-}
-function toggle(id: string, checked: boolean) {
-  completed.value = checked ? [...new Set([...completed.value, id])] : completed.value.filter(x => x !== id)
-  persist()
-}
-onMounted(() => {
-  try {
-    const stored = JSON.parse(localStorage.getItem(storageKey) || '[]')
-    if (Array.isArray(stored)) completed.value = stored.filter((x: unknown): x is string => typeof x === 'string' && byId.has(x))
-  } catch { completed.value = [] }
-})
 </script>
 
 <template>
-  <div class="academy-roadmap">
-    <header id="about" class="intro">
+  <div class="academy-longpage">
+    <header id="academy-top" class="academy-hero">
       <p class="eyebrow">SKILL-ISSUE / ACADEMY</p>
-      <h1>Roadmap cybersécurité</h1>
-      <p class="lead">Un parcours chronologique, de zéro aux labs avancés. Choisis les ressources sans achat ou affiche tout le catalogue, niveau par niveau, sur cette même page.</p>
-      <div class="figures">
-        <span><strong>{{ orderedLevels.length }}</strong> niveaux dans l'ordre</span>
-        <span><strong>{{ freeCount }}</strong> liens sélectionnés sans achat</span>
-        <span><strong>{{ catalog.length }}</strong> ressources au total</span>
-      </div>
-      <div class="progress-heading">
-        <span>Progression personnelle</span>
-        <strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong>
-      </div>
-      <div class="progress-track" role="progressbar" aria-label="Niveaux terminés" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length">
-        <span :style="{ width: progress + '%' }"></span>
-      </div>
-      <p class="progress-help">Les niveaux cochés restent enregistrés sur cet appareil.</p>
-
-      <div class="route-choice">
-        <p class="choice-label">Choisir son parcours</p>
-        <div class="choice-buttons" role="group" aria-label="Afficher les ressources">
-          <button type="button" :class="{ active: resourceView === 'free' }" :aria-pressed="resourceView === 'free'" @click="resourceView = 'free'">Sans budget</button>
-          <button type="button" :class="{ active: resourceView === 'all' }" :aria-pressed="resourceView === 'all'" @click="resourceView = 'all'">Toutes les ressources</button>
-        </div>
-        <p class="choice-help">Les mêmes niveaux, dans le même ordre. Les ressources complémentaires sont facultatives : aucun achat de cours n'est nécessaire pour suivre la sélection gratuite.</p>
-      </div>
-
-      <nav class="roadmap-index" aria-label="Sommaire">
-        <p class="index-label">Sur cette page</p>
-        <a href="#parcours-gratuit">Le parcours - du début au projet final</a>
-        <div class="index-subitems">
-          <a v-for="section in sections" :key="section.id" :href="'#' + section.id">{{ section.title }}</a>
-        </div>
-      </nav>
-      <div class="search-controls">
-        <label for="academy-query">Rechercher dans la roadmap</label>
-        <input id="academy-query" v-model="search" type="search" placeholder="Python, Linux, Cobalt Strike, GOAD, Bug Bounty..." autocomplete="off">
-        <label class="show-urls"><input v-model="showUrls" type="checkbox"> Afficher les URL complètes</label>
-        <p v-if="query" class="search-note">{{ searchCount }} ressources correspondant à ta recherche</p>
-      </div>
+      <h1>Cyber University</h1>
+      <p class="hero-lead">Une roadmap chronologique pour apprendre la cybersécurité, des premières bases aux labs avancés. Un chemin gratuit est proposé à chaque niveau.</p>
+      <a class="start-button" href="#premiers-pas">Commencer gratuitement <span aria-hidden="true">→</span></a>
+      <p class="hero-meta">{{ orderedLevels.length }} niveaux · {{ catalog.length }} ressources · Une seule page</p>
     </header>
 
+    <nav class="academy-index" aria-label="Sommaire">
+      <h2>Les chapitres</h2>
+      <ul>
+        <li v-for="section in sections" :key="section.id">
+          <a :href="'#' + section.id">{{ section.title }}</a>
+        </li>
+      </ul>
+    </nav>
+
     <main>
-      <section id="parcours-gratuit" class="free-path" aria-labelledby="free-title">
-        <div class="major-heading">
-          <p class="eyebrow">DU PREMIER NIVEAU AU PROJET FINAL</p>
-          <h2 id="free-title">Le parcours</h2>
-          <p>Avance dans l'ordre. « Pour commencer » rassemble les ressources sélectionnées sans achat. « Pour approfondir » apparaît si tu choisis « Toutes les ressources ».</p>
-          <p class="small-disclaimer">Un compte gratuit, un ordinateur ou une installation locale peuvent être nécessaires. Les abonnements, les examens et certains usages du Cloud ne sont pas inclus.</p>
-        </div>
+      <div class="reading-note">
+        <p><strong>Sans budget ?</strong> Suis les liens « Pour commencer » à chaque niveau. Les ressources « Pour approfondir » sont facultatives, et restent visibles juste après.</p>
+        <p>Certains sites demandent un compte gratuit. Le matériel, les crédits Cloud et les examens peuvent entraîner des frais.</p>
+      </div>
 
-        <section v-for="section in sections" :id="section.id" :key="section.id" class="course-section">
-          <header class="course-section-heading">
-            <h3>{{ section.title }}</h3>
-            <p>{{ section.summary }}</p>
-          </header>
+      <section v-for="section in sections" :id="section.id" :key="section.id" class="chapter">
+        <header class="chapter-heading">
+          <h2>{{ section.title }}</h2>
+          <p>{{ section.summary }}</p>
+        </header>
 
-          <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="course-level">
-            <div class="course-level-heading">
-              <h4><span class="level-label">Niveau {{ numberFor(level.id) }}</span> - {{ level.title }}</h4>
-              <label class="done-toggle">
-                <input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))">
-                <span>Terminé</span>
-              </label>
-            </div>
-            <p class="level-description">{{ level.intro }}</p>
-            <p v-if="freeLinks(level.id).length" class="resource-group-title">Pour commencer <span>- sans achat</span></p>
-            <ul v-if="freeLinks(level.id).length" class="resource-list">
+        <article v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="level">
+          <h3><span>Level {{ numberFor(level.id) }}</span> - {{ level.title }}</h3>
+          <p class="level-intro">{{ level.intro }}</p>
+
+          <div v-if="freeLinks(level.id).length" class="resource-group">
+            <h4>Pour commencer <span>· sans achat</span></h4>
+            <ul class="resource-links">
               <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
                 <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                <span class="resource-description"> - {{ describe(item) }}</span>
-                <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+                <span> - {{ describe(item) }}</span>
               </li>
             </ul>
-            <p v-else-if="!query" class="empty-message">Exercice de synthèse avec les ressources déjà étudiées.</p>
-            <div v-if="resourceView === 'all' && otherLinks(level.id).length" class="extra-resources">
-              <p class="resource-group-title">Pour approfondir <span>- facultatif, accès parfois payant</span></p>
-              <ul class="resource-list">
-                <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
-                  <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-                  <span class="resource-description"> - {{ describe(item) }}</span>
-                  <small v-if="item.access" class="resource-access">{{ item.access }}</small>
-                  <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
-                </li>
-              </ul>
-            </div>
-            <details v-if="!query" class="exercise">
-              <summary>Exercice pratique et validation</summary>
-              <p><strong>À faire :</strong> {{ level.exercise }}</p>
-              <p><strong>Tu peux continuer quand :</strong> {{ level.ready }}</p>
-            </details>
-          </article>
-          <p v-if="query && !visibleLevels(section).length" class="empty-message">Aucun résultat dans cette partie.</p>
-          <a class="return-link" href="#about">Retour au début ↑</a>
-        </section>
-      </section>
+          </div>
 
+          <div v-if="otherLinks(level.id).length" class="resource-group more">
+            <h4>Pour approfondir <span>· facultatif</span></h4>
+            <ul class="resource-links">
+              <li v-for="item in otherLinks(level.id)" :key="item.id + item.url">
+                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                <span> - {{ describe(item) }}</span>
+                <small v-if="item.access && item.access !== 'Gratuit' && item.access !== 'Open source'"> ({{ item.access }})</small>
+              </li>
+            </ul>
+          </div>
+
+          <p class="practice"><strong>À pratiquer :</strong> {{ level.exercise }}</p>
+        </article>
+      </section>
     </main>
-    <p class="closing">Entraîne-toi uniquement sur des environnements autorisés. « Sans budget » signifie sans achat de cours pour les liens sélectionnés, pas une garantie de gratuité du matériel, des crédits Cloud ou des certifications. Les conditions d'accès des plateformes peuvent évoluer.</p>
+
+    <footer class="academy-footer">
+      <p>Vérifie les conditions d'accès avant de t'inscrire. Pratique uniquement sur des systèmes et labs autorisés.</p>
+      <a href="#academy-top">Retour en haut ↑</a>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.academy-roadmap {
-  --page-bg:#0c0912;
-  --page-panel:#130d1c;
-  --line:#342742;
-  --purple:#b892ee;
-  --purple-soft:#e1ccff;
-  --text:#e7e0ee;
-  --muted:#b0a4bd;
-  max-width:1010px;
-  margin:0 auto;
-  padding:16px 2px 38px;
-  color:var(--text);
-  font-family:inherit;
+.academy-longpage {
+  --line: #30243c;
+  --violet: #c7a0eb;
+  --body: #c7bbd0;
+  max-width: 980px; margin: 0 auto; padding: 12px 5px 55px;
+  color: #e9e0ee; font-family: inherit;
 }
-.academy-roadmap * { box-sizing:border-box; }
-:global(.Layout.academy-page),
-:global(.academy-page .VPContent) { background:#0c0912; }
-.intro { scroll-margin-top:88px; padding:9px 0 28px; border-bottom:1px solid var(--line); }
-.eyebrow { margin:0 0 12px!important; color:var(--purple)!important; font-size:.69rem!important; letter-spacing:.14em; font-weight:750; }
-.intro h1 { color:#f9f2ff!important; border:0!important; padding:0!important; margin:0 0 12px!important; font-size:clamp(1.8rem,4vw,2.55rem)!important; letter-spacing:-.035em; line-height:1.2; }
-.lead { color:#c8bcd3!important; font-size:.91rem; line-height:1.8; max-width:790px; margin:0 0 20px!important; }
-.figures { display:flex; flex-wrap:wrap; gap:8px 24px; margin-bottom:25px; color:#bcaece; font-size:.78rem; }
-.figures strong { color:#e7d0ff; font-size:1rem; padding-right:4px; }
-.progress-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#ae9ebb; font-size:.75rem; margin-bottom:8px; }
-.progress-heading strong { font-weight:620; color:#dcc3f5; }
-.progress-track { height:6px; max-width:790px; background:#2a2033; border-radius:10px; overflow:hidden; }
-.progress-track span { display:block; height:100%; background:linear-gradient(90deg,#7650aa,#c79bea); transition:width .2s; }
-.progress-help { color:#9789a5!important; font-size:.7rem; margin:8px 0 22px!important; }
-.route-choice { margin:20px 0 26px; }
-.choice-label { color:#ddc5f2!important; font-size:.8rem!important; font-weight:670; margin:0 0 10px!important; }
-.choice-buttons { display:flex; flex-wrap:wrap; gap:8px; }
-.choice-buttons button { border:1px solid #50385f; background:transparent; border-radius:5px; color:#bdaecb; padding:9px 15px; font:inherit; font-size:.8rem; cursor:pointer; }
-.choice-buttons button.active { border-color:#ad81d1; color:#f3e8ff; background:#241630; }
-.choice-buttons button:hover { border-color:#a176c4; color:#f3e8ff; }
-.choice-buttons button:focus-visible { outline:2px solid #d1a0f2; outline-offset:2px; }
-.choice-help { margin:9px 0 0!important; max-width:750px; color:#a99ab6!important; font-size:.73rem; line-height:1.7; }
-.roadmap-index { border-left:2px solid #674782; padding:1px 0 1px 19px; margin:25px 0; display:flex; flex-direction:column; gap:8px; }
-.index-label { color:#d4b5f1!important; font-size:.77rem; font-weight:680; margin:0 0 5px!important; }
-.roadmap-index a { display:block; width:fit-content; color:#d5c1e9!important; text-decoration:none!important; font-size:.82rem; line-height:1.45; }
-.roadmap-index a:hover { color:#fff1ff!important; text-decoration:underline!important; }
-.index-subitems { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:20px; row-gap:6px; margin-left:13px; padding:3px 0 6px; }
-.index-subitems a { color:#ada0be!important; font-size:.75rem; }
-.search-controls { max-width:780px; display:flex; gap:8px; flex-direction:column; margin-top:18px; }
-.search-controls>label:first-child { font-size:.75rem; color:#c6b0dd; font-weight:650; }
-.search-controls input[type=search] { width:100%; padding:11px 12px; border-radius:5px; border:1px solid #59426c; background:#17101f; color:#eee5f5; font:inherit; font-size:.86rem; }
-.search-controls input[type=search]:focus { outline:2px solid #9e74c9; outline-offset:1px; }
-.show-urls { width:fit-content; color:#a99bb4; font-size:.73rem; display:flex; align-items:center; gap:7px; cursor:pointer; }
-.show-urls input { accent-color:#a879d8; }
-.search-note { margin:2px 0!important; color:#c5b1d8!important; font-size:.74rem; }
-.major-heading { border-bottom:1px solid #4a355b; padding:26px 0 23px; margin-bottom:16px; scroll-margin-top:86px; }
-.major-heading h2 { color:#f0e1ff!important; padding:0!important; border:0!important; font-size:clamp(1.55rem,3vw,2rem)!important; font-weight:680; letter-spacing:-.022em; margin:0 0 9px!important; }
-.major-heading p:not(.eyebrow) { color:#c7b9d2!important; font-size:.87rem; line-height:1.7; max-width:830px; margin:0 0 8px!important; }
-.major-heading .small-disclaimer { color:#94869e!important; font-size:.74rem!important; }
-.course-section { padding:22px 0 8px; scroll-margin-top:90px; }
-.course-section-heading { padding:0 0 15px; margin-bottom:18px; border-bottom:1px solid #32253f; }
-.course-section-heading h3 { color:#d1aaed!important; font-size:clamp(1.18rem,2.6vw,1.46rem)!important; padding:0!important; margin:0 0 7px!important; border:0!important; font-weight:660; }
-.course-section-heading p { color:#ada0bd!important; font-size:.82rem; line-height:1.7; margin:0!important; }
-.course-level { margin:0 0 23px 8px; padding:0 0 20px 20px; border-left:2px solid #49305c; position:relative; scroll-margin-top:90px; }
-.course-level:before { content:''; position:absolute; top:8px; left:-6px; width:10px; height:10px; background:#130d1c; border:2px solid #a580ca; border-radius:50%; }
-.course-level:has(.done-toggle input:checked):before { background:#b38be0; }
-.course-level-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-.course-level h4 { color:#e7dbf0!important; font-size:1rem!important; font-weight:670!important; line-height:1.55; padding:0!important; margin:0 0 5px!important; border:0!important; }
-.level-label { color:#c2a2e7; font-weight:710; }
-.done-toggle { flex-shrink:0; display:flex; align-items:center; gap:6px; cursor:pointer; color:#a99db3; font-size:.73rem; padding-top:4px; }
-.done-toggle input { width:15px; height:15px; accent-color:#9970c3; }
-.level-description { margin:0 0 12px!important; color:#a99db3!important; font-size:.8rem; line-height:1.75; }
-.resource-group-title { margin:12px 0 7px!important; color:#d4adef!important; font-size:.78rem!important; font-weight:680; }
-.resource-group-title span { color:#9e8bad; font-weight:450; }
-.extra-resources { margin:17px 0 12px; padding:3px 0 1px 13px; border-left:1px solid #382645; }
-.resource-access { display:inline; margin-left:6px; color:#9c8cac; font-size:.7rem; }
-.resource-list { margin:0 0 12px 15px!important; padding:0!important; list-style:none!important; }
-.resource-list li { position:relative; margin:4px 0!important; padding:0!important; color:#bfb1c7; font-size:.82rem; line-height:1.65; overflow-wrap:anywhere; }
-.resource-list li:before { content:'›'; position:absolute; left:-16px; color:#ad80cf; font-weight:800; }
-.resource-list a { color:#d8b2f3!important; font-size:inherit; font-weight:615; text-decoration:none!important; }
-.resource-list a:hover { color:#fff0ff!important; text-decoration:underline!important; }
-.resource-description { color:#b6abbf; }
-.raw-url { display:block; margin:2px 0 6px; color:#9485a3; font-size:.69rem; overflow-wrap:anywhere; }
-.exercise { margin:8px 0 0 15px; color:#aca0b9; font-size:.77rem; }
-.exercise summary { width:fit-content; color:#b89bcf; cursor:pointer; font-size:.77rem; }
-.exercise summary:hover { color:#f0dcff; }
-.exercise p { margin:6px 0!important; color:#b9adbf!important; font-size:.77rem; line-height:1.6; }
-.exercise strong { color:#dec6f0; }
-.empty-message { color:#9a8baa!important; font-size:.78rem; margin:5px 0!important; }
-.return-link { display:inline-block; margin:6px 0 12px; font-size:.72rem; color:#a68dbd!important; text-decoration:none!important; }
-.return-link:hover { color:#e9d2ff!important; }
-.closing { color:#8e809c!important; font-size:.73rem; margin:23px 0 0!important; line-height:1.7; }
-@media(max-width:650px) {
-  .academy-roadmap { padding:9px 0 30px; }
-  .index-subitems { grid-template-columns:1fr; gap:5px; }
-  .figures { gap:9px 14px; font-size:.73rem; }
-  .course-level { margin-left:4px; padding-left:14px; }
-  .course-level-heading h4 { font-size:.93rem!important; }
-  .done-toggle span { display:none; }
-  .resource-list li { font-size:.79rem; }
-  .major-heading { padding-top:19px; }
+.academy-longpage * { box-sizing: border-box; }
+:global(.academy-page), :global(.academy-page .VPContent), :global(.academy-page .VPDoc) { background: #0c0912; }
+:global(.academy-page .VPDoc .container), :global(.academy-page .VPDoc .content), :global(.academy-page .VPDoc .content-container) { max-width: 1050px !important; }
+.academy-hero { padding: 30px 0 42px; border-bottom: 1px solid var(--line); }
+.eyebrow { margin: 0 0 14px !important; color: #a88ac8 !important; font-size: .7rem !important; font-weight: 730; letter-spacing: .14em; }
+.academy-hero h1 { margin: 0 0 15px !important; padding: 0 !important; border: 0 !important; color: #f7efff !important; font-size: clamp(2.3rem, 5.2vw, 3.35rem) !important; line-height: 1.14; letter-spacing: -.04em; font-weight: 740; }
+.hero-lead { max-width: 690px; margin: 0 0 24px !important; color: #cfc2da !important; font-size: 1rem; line-height: 1.72; }
+.start-button { display: inline-flex; align-items: center; gap: 12px; padding: 11px 19px; border-radius: 5px; border: 1px solid #c5a0eb; background: #ac86d0; color: #160f21 !important; font-size: .9rem; font-weight: 730; text-decoration: none !important; }
+.start-button:hover { background: #caa6e8; }
+.hero-meta { margin: 17px 0 0 !important; color: #9183a0 !important; font-size: .74rem; }
+.academy-index { padding: 25px 0 27px; border-bottom: 1px solid var(--line); }
+.academy-index h2 { margin: 0 0 14px !important; padding: 0 !important; border: 0 !important; font-size: .89rem !important; color: #ded1ea !important; }
+.academy-index ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 22px; list-style: none !important; padding: 0 !important; margin: 0 !important; }
+.academy-index li { margin: 0 !important; padding: 0 !important; }
+.academy-index a { font-size: .86rem; color: #bfa8d2 !important; text-decoration: none !important; line-height: 1.6; }
+.academy-index a:hover { color: #f1dfff !important; text-decoration: underline !important; }
+.reading-note { padding: 24px 0 0; }
+.reading-note p { margin: 0 0 7px !important; max-width: 850px; color: #ab9eb7 !important; font-size: .82rem; line-height: 1.65; }
+.reading-note strong { color: #ddbeef; }
+.chapter { padding-top: 52px; scroll-margin-top: 96px; }
+.chapter-heading { border-bottom: 1px solid #483551; padding: 0 0 14px; margin-bottom: 26px; }
+.chapter-heading h2 { margin: 0 0 7px !important; padding: 0 !important; border: 0 !important; color: #e1c5f8 !important; font-size: clamp(1.45rem, 3vw, 1.95rem) !important; font-weight: 710; line-height: 1.32; letter-spacing: -.02em; }
+.chapter-heading p { margin: 0 !important; color: #b0a3bc !important; font-size: .88rem; line-height: 1.64; }
+.level { margin-bottom: 39px; scroll-margin-top: 96px; }
+.level h3 { margin: 0 0 7px !important; padding: 0 !important; border: 0 !important; color: #f1e9f7 !important; font-size: clamp(1.075rem, 2.2vw, 1.24rem) !important; line-height: 1.5; font-weight: 680; overflow-wrap: break-word; }
+.level h3 span { color: #c5a0ee; }
+.level-intro { margin: 0 0 15px !important; color: #b2a4bc !important; font-size: .87rem; line-height: 1.68; }
+.resource-group { margin: 13px 0 15px; }
+.resource-group h4 { margin: 0 0 9px !important; padding: 0 !important; border: 0 !important; color: #dcbff4 !important; font-size: .84rem !important; line-height: 1.4; font-weight: 680; }
+.resource-group h4 span { color: #9b8ba8; font-weight: 430; }
+.resource-group.more h4 { color: #bfaecc !important; }
+.resource-links { list-style: none !important; margin: 0 !important; padding: 0 0 0 22px !important; }
+.resource-links li { position: relative; margin: 0 0 7px !important; padding: 0 !important; color: var(--body); font-size: .93rem; line-height: 1.68; overflow-wrap: anywhere; }
+.resource-links li::before { content: "»"; position: absolute; left: -22px; color: #a47bce; font-weight: 750; }
+.resource-links a { color: #d9b6fa !important; text-decoration: none !important; font-weight: 640; }
+.resource-links a:hover { color: #f7eaff !important; text-decoration: underline !important; text-underline-offset: 3px; }
+.resource-links small { color: #9a8aac; font-size: .74rem; }
+.practice { margin: 19px 0 0 !important; padding-top: 10px; border-top: 1px solid #231a2d; font-size: .8rem; color: #9b8da9 !important; line-height: 1.65; }
+.practice strong { color: #b7a0c7; font-weight: 640; }
+.academy-footer { border-top: 1px solid var(--line); margin-top: 54px; padding-top: 22px; }
+.academy-footer p { margin: 0 0 13px !important; font-size: .77rem; color: #978ba3 !important; line-height: 1.7; }
+.academy-footer a { color: #d0b0ed !important; font-size: .84rem; text-decoration: none !important; }
+.academy-footer a:hover { text-decoration: underline !important; }
+.start-button:focus-visible, .academy-index a:focus-visible, .resource-links a:focus-visible, .academy-footer a:focus-visible { outline: 2px solid #dab4fd; outline-offset: 3px; }
+@media (max-width: 650px) {
+  .academy-longpage { padding: 5px 0 43px; }
+  .academy-hero { padding: 20px 0 31px; }
+  .academy-hero h1 { font-size: clamp(2.15rem, 10vw, 2.9rem) !important; }
+  .hero-lead { font-size: .96rem; }
+  .academy-index ul { grid-template-columns: 1fr; }
+  .chapter { padding-top: 36px; }
+  .chapter-heading { margin-bottom: 22px; }
+  .level { margin-bottom: 34px; }
+  .level h3 { font-size: 1.1rem !important; }
+  .resource-links li { font-size: .92rem; line-height: 1.65; margin-bottom: 9px !important; }
+  .resource-links { padding-left: 20px !important; }
+  .resource-links li::before { left: -20px; }
 }
-@media(prefers-reduced-motion:reduce) { .progress-track span { transition:none; } }
+@media (prefers-reduced-motion: reduce) { .start-button { transition: none; } }
 </style>
