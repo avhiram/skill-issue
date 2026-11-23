@@ -4,7 +4,7 @@
 export const academyLevels = [
   {
     "id": "environment",
-    "title": "Prendre en main son environnement",
+    "title": "Ordinateur, outils et machines virtuelles",
     "phase": "Fondamentaux",
     "intro": "Partir de zéro : ordinateur, fichiers, outils et machines virtuelles.",
     "learn": [
@@ -20,7 +20,7 @@ export const academyLevels = [
   },
   {
     "id": "network-basics",
-    "title": "Réseau : IP, DNS et sous-réseaux",
+    "title": "Réseau : comprendre IP, DNS et les ports",
     "phase": "Fondamentaux",
     "intro": "Comprendre comment les machines communiquent avant de les analyser.",
     "learn": [
@@ -35,7 +35,7 @@ export const academyLevels = [
   },
   {
     "id": "network-practice",
-    "title": "Réseau : captures et protocoles",
+    "title": "Réseau : observer le trafic avec Wireshark",
     "phase": "Fondamentaux",
     "intro": "Observer les communications dans une capture, pas seulement en théorie.",
     "learn": [
@@ -51,7 +51,7 @@ export const academyLevels = [
   },
   {
     "id": "linux-basics",
-    "title": "Linux : commandes essentielles",
+    "title": "Linux : se repérer dans le terminal",
     "phase": "Fondamentaux",
     "intro": "Se repérer et travailler efficacement dans un terminal Linux.",
     "learn": [
@@ -67,7 +67,7 @@ export const academyLevels = [
   },
   {
     "id": "linux-admin",
-    "title": "Linux : utilisateurs et administration",
+    "title": "Linux : permissions, processus et SSH",
     "phase": "Fondamentaux",
     "intro": "Comprendre les permissions, services et communications entre machines.",
     "learn": [
@@ -82,7 +82,7 @@ export const academyLevels = [
   },
   {
     "id": "windows-basics",
-    "title": "Windows : système et commandes",
+    "title": "Windows : fichiers, comptes et services",
     "phase": "Fondamentaux",
     "intro": "Prendre les mêmes repères sur Windows.",
     "learn": [
@@ -97,7 +97,7 @@ export const academyLevels = [
   },
   {
     "id": "powershell",
-    "title": "Windows : PowerShell et sécurité",
+    "title": "PowerShell : commandes et journaux Windows",
     "phase": "Fondamentaux",
     "intro": "Automatiser les tâches simples et lire les traces Windows.",
     "learn": [
@@ -113,7 +113,7 @@ export const academyLevels = [
   },
   {
     "id": "python-basics",
-    "title": "Python : bases et automatisation",
+    "title": "Python : écrire ses premiers scripts",
     "phase": "Développement",
     "intro": "Apprendre à écrire du code utile au quotidien.",
     "learn": [
@@ -129,7 +129,7 @@ export const academyLevels = [
   },
   {
     "id": "scripting",
-    "title": "Bash, JavaScript et Git",
+    "title": "Bash, JavaScript et Git : les bases",
     "phase": "Développement",
     "intro": "Passer des commandes isolées à de petits projets reproductibles.",
     "learn": [
@@ -145,7 +145,7 @@ export const academyLevels = [
   },
   {
     "id": "web-basics",
-    "title": "Web : HTML, HTTP et navigateur",
+    "title": "Web : comprendre HTML et HTTP",
     "phase": "Développement",
     "intro": "Comprendre ce qui se passe lorsqu'une page se charge.",
     "learn": [
@@ -161,7 +161,7 @@ export const academyLevels = [
   },
   {
     "id": "web-api",
-    "title": "Web : applications et API",
+    "title": "Web : comprendre les API et les données",
     "phase": "Développement",
     "intro": "Comprendre l'architecture des services que tu analyseras.",
     "learn": [
@@ -176,7 +176,7 @@ export const academyLevels = [
   },
   {
     "id": "security-basics",
-    "title": "Sécurité : principes et risques",
+    "title": "Cybersécurité : les notions essentielles",
     "phase": "Sécurité",
     "intro": "Construire une méthode et un vocabulaire précis.",
     "learn": [
@@ -192,7 +192,7 @@ export const academyLevels = [
   },
   {
     "id": "crypto",
-    "title": "Cryptographie, hash et encodage",
+    "title": "Cryptographie : hash, chiffrement et TLS",
     "phase": "Sécurité",
     "intro": "Différencier les mécanismes souvent confondus.",
     "learn": [
@@ -208,7 +208,7 @@ export const academyLevels = [
   },
   {
     "id": "osint-recon",
-    "title": "OSINT et reconnaissance",
+    "title": "OSINT : chercher et vérifier des informations",
     "phase": "Sécurité",
     "intro": "Apprendre à rechercher puis vérifier des informations publiques.",
     "learn": [
@@ -223,7 +223,7 @@ export const academyLevels = [
   },
   {
     "id": "scanning",
-    "title": "Nmap et diagnostic technique",
+    "title": "Nmap : découvrir les services d’une machine",
     "phase": "Pentest",
     "intro": "Passer de la théorie réseau à une reconnaissance maîtrisée.",
     "learn": [
@@ -238,7 +238,7 @@ export const academyLevels = [
   },
   {
     "id": "web-security",
-    "title": "Web Security : vulnérabilités",
+    "title": "Sécurité Web : comprendre les vulnérabilités",
     "phase": "Pentest",
     "intro": "Découvrir les failles Web avec un cadre de test clair.",
     "learn": [
@@ -254,7 +254,7 @@ export const academyLevels = [
   },
   {
     "id": "web-labs",
-    "title": "Web Security : labs et API",
+    "title": "Sécurité Web : s’entraîner sur des labs",
     "phase": "Pentest",
     "intro": "Mettre en pratique sur des applications volontairement vulnérables.",
     "learn": [
@@ -270,7 +270,7 @@ export const academyLevels = [
   },
   {
     "id": "ctf-beginner",
-    "title": "CTF : premiers challenges",
+    "title": "CTF : résoudre ses premiers challenges",
     "phase": "Pentest",
     "intro": "Commencer par des exercices guidés, sans perdre le fil.",
     "learn": [
@@ -286,7 +286,7 @@ export const academyLevels = [
   },
   {
     "id": "ctf-intermediate",
-    "title": "CTF : machines et scénarios",
+    "title": "CTF : passer aux machines complètes",
     "phase": "Pentest",
     "intro": "Assembler plusieurs compétences dans un exercice complet.",
     "learn": [
@@ -302,7 +302,7 @@ export const academyLevels = [
   },
   {
     "id": "pentest-system",
-    "title": "Pentest Linux et Windows",
+    "title": "Pentest : analyser Linux et Windows",
     "phase": "Pentest",
     "intro": "Comprendre les erreurs de configuration dans un lab.",
     "learn": [
@@ -318,7 +318,7 @@ export const academyLevels = [
   },
   {
     "id": "ad-intro",
-    "title": "Active Directory : DNS et Kerberos",
+    "title": "Active Directory : comprendre un domaine",
     "phase": "Active Directory",
     "intro": "Comprendre le fonctionnement d'un domaine Windows.",
     "learn": [
@@ -333,7 +333,7 @@ export const academyLevels = [
   },
   {
     "id": "ad-minilab",
-    "title": "GOAD : MINILAB",
+    "title": "GOAD : démarrer avec MINILAB",
     "phase": "Active Directory",
     "intro": "Première mise en pratique Active Directory dans un petit environnement.",
     "learn": [
@@ -348,7 +348,7 @@ export const academyLevels = [
   },
   {
     "id": "ad-light",
-    "title": "GOAD : Light",
+    "title": "GOAD : progresser avec GOAD-Light",
     "phase": "Active Directory",
     "intro": "Passer à un environnement plus complet sans changer de méthode.",
     "learn": [
@@ -363,7 +363,7 @@ export const academyLevels = [
   },
   {
     "id": "ad-full",
-    "title": "GOAD : complet",
+    "title": "GOAD : pratiquer sur le lab complet",
     "phase": "Active Directory",
     "intro": "Approfondir plusieurs domaines et relations dans un lab isolé.",
     "learn": [
@@ -378,7 +378,7 @@ export const academyLevels = [
   },
   {
     "id": "c2",
-    "title": "Command & Control : Cobalt Strike et C2 open source",
+    "title": "C2 : comprendre Cobalt Strike et les alternatives libres",
     "phase": "Red Team",
     "intro": "Comprendre le rôle d'un C2 et apprendre à l'observer dans un lab autorisé.",
     "learn": [
@@ -396,7 +396,7 @@ export const academyLevels = [
   },
   {
     "id": "red-advanced",
-    "title": "Red Team : simulation et méthodologie",
+    "title": "Red Team : préparer une simulation",
     "phase": "Red Team",
     "intro": "Préparer un scénario de simulation et l'évaluer avec la défense.",
     "learn": [
@@ -412,7 +412,7 @@ export const academyLevels = [
   },
   {
     "id": "blue-logs",
-    "title": "Blue Team : logs et événements",
+    "title": "Blue Team : comprendre les journaux",
     "phase": "Défense",
     "intro": "Savoir où regarder lorsqu'une activité doit être expliquée.",
     "learn": [
@@ -427,7 +427,7 @@ export const academyLevels = [
   },
   {
     "id": "blue-siem",
-    "title": "Blue Team : SIEM, règles et alertes",
+    "title": "Blue Team : détecter avec un SIEM",
     "phase": "Défense",
     "intro": "Passer des traces aux alertes utiles.",
     "learn": [
@@ -443,7 +443,7 @@ export const academyLevels = [
   },
   {
     "id": "blue-threat",
-    "title": "Blue Team : Threat Hunting et réponse",
+    "title": "Blue Team : enquêter sur une alerte",
     "phase": "Défense",
     "intro": "Approfondir la détection et l'analyse des comportements.",
     "learn": [
@@ -458,7 +458,7 @@ export const academyLevels = [
   },
   {
     "id": "dfir-network",
-    "title": "DFIR : réseau et chronologie",
+    "title": "Forensic : analyser le trafic réseau",
     "phase": "Investigation",
     "intro": "Reconstituer une activité à partir des données réseau.",
     "learn": [
@@ -473,7 +473,7 @@ export const academyLevels = [
   },
   {
     "id": "dfir-host",
-    "title": "DFIR : mémoire et disques",
+    "title": "Forensic : examiner disques et mémoire",
     "phase": "Investigation",
     "intro": "Étudier les artefacts d'un poste ou d'une VM.",
     "learn": [
@@ -488,7 +488,7 @@ export const academyLevels = [
   },
   {
     "id": "reverse",
-    "title": "Reverse Engineering : fondamentaux",
+    "title": "Reverse engineering : comprendre un programme",
     "phase": "Recherche technique",
     "intro": "Lire le fonctionnement d'un programme dans un environnement de test.",
     "learn": [
@@ -503,7 +503,7 @@ export const academyLevels = [
   },
   {
     "id": "malware",
-    "title": "Malware Analysis : environnement et détection",
+    "title": "Malware : analyser les comportements",
     "phase": "Recherche technique",
     "intro": "Observer des programmes de test dans un environnement confiné.",
     "learn": [
@@ -519,7 +519,7 @@ export const academyLevels = [
   },
   {
     "id": "cloud-foundations",
-    "title": "Cloud : AWS, Azure et IAM",
+    "title": "Cloud : comprendre AWS, Azure et les identités",
     "phase": "Cloud et infrastructures",
     "intro": "Comprendre les identités, services et responsabilités.",
     "learn": [
@@ -534,7 +534,7 @@ export const academyLevels = [
   },
   {
     "id": "cloud-security",
-    "title": "Cloud Security : erreurs de configuration",
+    "title": "Cloud : repérer les mauvaises configurations",
     "phase": "Cloud et infrastructures",
     "intro": "Identifier les risques cloud dans des environnements pédagogiques.",
     "learn": [
@@ -549,7 +549,7 @@ export const academyLevels = [
   },
   {
     "id": "containers",
-    "title": "Docker, Kubernetes et DevSecOps",
+    "title": "Docker et Kubernetes : les bases de la sécurité",
     "phase": "Cloud et infrastructures",
     "intro": "Appliquer les principes de sécurité aux applications déployées.",
     "learn": [
@@ -580,7 +580,7 @@ export const academyLevels = [
   },
   {
     "id": "iot",
-    "title": "IoT : firmware et équipements",
+    "title": "IoT : comprendre les objets connectés",
     "phase": "Domaines avancés",
     "intro": "Étudier les particularités des objets connectés.",
     "learn": [
@@ -595,7 +595,7 @@ export const academyLevels = [
   },
   {
     "id": "ot",
-    "title": "OT / ICS : réseaux industriels",
+    "title": "OT / ICS : comprendre les réseaux industriels",
     "phase": "Domaines avancés",
     "intro": "Découvrir les contraintes des environnements industriels.",
     "learn": [
@@ -610,7 +610,7 @@ export const academyLevels = [
   },
   {
     "id": "grc",
-    "title": "GRC : risques, normes et conformité",
+    "title": "Risques, normes et conformité",
     "phase": "Domaines avancés",
     "intro": "Relier les exercices techniques aux exigences de sécurité.",
     "learn": [
@@ -625,7 +625,7 @@ export const academyLevels = [
   },
   {
     "id": "ctf-advanced",
-    "title": "CTF : challenges avancés et Hackropole",
+    "title": "CTF avancés : combiner les techniques",
     "phase": "Validation",
     "intro": "Reprendre l'ensemble des domaines sans se limiter aux exercices guidés.",
     "learn": [
@@ -641,7 +641,7 @@ export const academyLevels = [
   },
   {
     "id": "certifications",
-    "title": "Certifications et plans de révision",
+    "title": "Certifications : choisir et se préparer",
     "phase": "Validation",
     "intro": "Choisir un examen selon les compétences déjà travaillées.",
     "learn": [
@@ -657,7 +657,7 @@ export const academyLevels = [
   },
   {
     "id": "community",
-    "title": "Communautés, événements et entraide",
+    "title": "Communautés : échanger et progresser",
     "phase": "Validation",
     "intro": "Partager et apprendre dans un cadre professionnel.",
     "learn": [
@@ -672,7 +672,7 @@ export const academyLevels = [
   },
   {
     "id": "research",
-    "title": "Veille, CVE et recherche",
+    "title": "Veille : suivre les CVE et les vulnérabilités",
     "phase": "Validation",
     "intro": "Garder sa méthode à jour une fois les bases acquises.",
     "learn": [
@@ -688,7 +688,7 @@ export const academyLevels = [
   },
   {
     "id": "final-project",
-    "title": "Projet final : audit et restitution",
+    "title": "Projet final : réaliser un audit de lab",
     "phase": "Validation",
     "intro": "Rassembler apprentissage offensif, défensif et restitution.",
     "learn": [
