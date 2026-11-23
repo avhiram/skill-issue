@@ -138,18 +138,18 @@ aside: false
     <strong>Locked Shields · OTAN</strong>
     <span>Équipe de France · 2e sur 17</span>
   </a>
-  <div class="profile-proof-entry">
+  <a href="/skill-issue/justificatifs/reserve-extrait.png" target="_blank" rel="noopener noreferrer" title="Arrêté de nomination - extrait masqué">
     <strong>Régiment de cyberdéfense</strong>
     <span>Sergent-chef · Réserve opérationnelle</span>
-  </div>
+  </a>
   <a href="https://www.linkedin.com/posts/ecole2600_cyberharcelement-aezcole2600-cybersaezcuritaez-ugcPost-7528002547261898752-Mbb_" target="_blank" rel="noopener noreferrer" title="Publication École 2600 - cyberharcèlement">
     <strong>Première dame de France</strong>
     <span>Échange sur le cyberharcèlement</span>
   </a>
-  <div class="profile-proof-entry">
+  <a href="/skill-issue/justificatifs/defhack-extrait.webp" target="_blank" rel="noopener noreferrer" title="Attestation DefHack 2024 - extrait masqué">
     <strong>DefHack · COMCYBER</strong>
     <span>Participation · 2024</span>
-  </div>
+  </a>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
     <strong>Capital</strong>
     <span>« À l’école des hackers éthiques »</span>
