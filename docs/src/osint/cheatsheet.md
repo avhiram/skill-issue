@@ -8,9 +8,7 @@ next: false
 
 # Cheatsheet OSINT
 
-**Copier, remplacer, exécuter.** Chaque bloc est indépendant : remplace les valeurs entre guillemets (`PSEUDO`, `EMAIL`, `PRENOM`, `NOM`, `DOMAINE`, `URL` ou `FICHIER`), puis colle le bloc dans ton terminal.
-
-Les recherches Google **ouvrent directement le navigateur** depuis le terminal, sans formulaire sur le site. Elles ne renvoient que les pages indexées.
+Remplace `PSEUDO`, `EMAIL`, `PRENOM`, `NOM`, `DOMAINE`, `URL` ou `FICHIER`, puis copie la commande. Les dorks ouvrent Google dans ton navigateur.
 
 [Revenir à la bibliothèque OSINT](./index.md)
 
@@ -263,7 +261,7 @@ python3 -c 'import sys, urllib.parse as u, webbrowser; webbrowser.open("https://
 
 ## Pseudonymes - Sherlock et Maigret
 
-Recherche de profils publics et exports. Les résultats indiquent une correspondance technique, pas une identité confirmée.
+Recherche de profils publics et exports.
 
 ### Sherlock - recherche simple
 
@@ -372,7 +370,7 @@ maigret --input-file "$FICHIER" --html
 
 ## Adresse e-mail - Holehe
 
-L'outil interroge des mécanismes publics des plateformes. Un résultat est un indice, jamais une preuve d'identité.
+Recherche d'inscriptions associées à un e-mail.
 
 ### Holehe - recherche par e-mail
 
@@ -645,9 +643,7 @@ FICHIER="document.pdf"
 pdftotext -layout "$FICHIER" document.txt
 ```
 
-## Conserver et recouper les résultats
-
-Enregistrer les observations avec leur date, leur origine et leurs limites.
+## Fichiers et exports
 
 ### Préparer un dossier
 
@@ -702,13 +698,3 @@ sort -u "$FICHIER" > liste-unique.txt
 MOT="domaine"
 grep -inF "$MOT" notes.txt
 ```
-
-## Notes de recherche
-
-- **Recouper** chaque information avec au moins une deuxième source.
-- **Conserver** les URL, la date UTC et les fichiers réellement examinés.
-- **Distinguer** une correspondance de pseudonyme d'une identité confirmée.
-- **Limiter** la collecte aux informations pertinentes et au périmètre autorisé.
-
-La syntaxe des outils peut évoluer. Les exemples de theHarvester reprennent la forme actuelle de ses commandes, avec `uv run`.
-
