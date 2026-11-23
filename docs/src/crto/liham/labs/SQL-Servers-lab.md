@@ -57,12 +57,12 @@ ldapsearch (&(samAccountType=268435456)(|(name=*SQL*)(name=*DB*)(name=*Database*
 
     > **Explication :** dans ce lab, `rsteel` dispose du rôle `sysadmin` sur `lon-db-1`. L’identité Windows utilisée pour la connexion SQL détermine les permissions accordées.
 
-    **Vérifier d’abord les tickets Kerberos et les processus appartenant à `rsteel` :**
+**Vérifier d’abord les tickets Kerberos et les processus appartenant à `rsteel` :**
 
-    ```
-    krb_triage
-    process_browser
-    ```
+```
+krb_triage
+process_browser
+```
 
     > `krb_triage` recense les tickets Kerberos accessibles ; rechercher le TGT de `rsteel` associé au service `krbtgt`.  
     > `process_browser` affiche les processus et leurs propriétaires ; rechercher ceux qui appartiennent à `rsteel`.  
