@@ -1,4 +1,4 @@
-# Defence Evasion Lab — Malleable C2 & Artifact/Resource Kit
+# Lab — Defense Evasion : Malleable C2, Artifact Kit et Resource Kit
 
 > **Relevance:** This is one of the highest-value prep topics. The OPSEC score (50 pts) is
 > where most people fail. Defender must NOT block your payloads or fork&run post-ex commands.
