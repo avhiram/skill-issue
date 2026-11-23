@@ -69,7 +69,7 @@ aside: false
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" title="École 2600">
-    <span class="profile-logo-frame"><img src="https://pbs.twimg.com/profile_images/1853791786063327232/0t7luytx_400x400.jpg" alt="Logo de l’École 2600" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><span class="profile-school-logo" aria-hidden="true"></span></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
@@ -120,7 +120,7 @@ aside: false
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="École 2600">
-    <span class="profile-logo-frame"><img src="https://pbs.twimg.com/profile_images/1853791786063327232/0t7luytx_400x400.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><span class="profile-school-logo" aria-hidden="true"></span></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
@@ -130,29 +130,29 @@ aside: false
 ## Distinctions
 
 <div class="profile-proof">
-  <a href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
+  <a class="profile-proof-featured" href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
     <strong>NASA</strong>
-    <span>Lettre de reconnaissance.</span>
+    <span>Reconnaissance · Divulgation responsable</span>
   </a>
-  <a href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
+  <a class="profile-proof-featured" href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
     <strong>Locked Shields · OTAN</strong>
-    <span>Sélectionné pour représenter la France · 2ᵉ/17.</span>
+    <span>Équipe de France · 2e sur 17</span>
   </a>
   <div class="profile-proof-entry">
     <strong>Régiment de cyberdéfense</strong>
-    <span>Sergent-chef de réserve · Armée de Terre.</span>
+    <span>Sergent-chef · Réserve opérationnelle</span>
   </div>
   <div class="profile-proof-entry">
     <strong>Première dame de France</strong>
-    <span>Rencontre avec Mme Brigitte Macron.</span>
+    <span>Échange sur le cyberharcèlement</span>
   </div>
   <div class="profile-proof-entry">
-    <strong>Ministère des Armées · DefHack</strong>
-    <span>Équipe lauréate · COMCYBER.</span>
+    <strong>DefHack · COMCYBER</strong>
+    <span>Équipe lauréate</span>
   </div>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
     <strong>Capital</strong>
-    <span>« À l’école des hackers éthiques ».</span>
+    <span>« À l’école des hackers éthiques »</span>
   </a>
 </div>
 
@@ -173,4 +173,5 @@ aside: false
 <a class="profile-credential" href="https://labs.hackthebox.com/achievement/badge/1543889/80" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif APTLabs"><span class="profile-credential-image"><img src="../public/credentials/aptlabs.webp" alt="Emblème APTLabs" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="profile-credential-fallback">APTLabs</span></span><span class="profile-credential-name">APTLabs</span><span class="profile-credential-issuer">Hack The Box · Pro Lab</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://drive.google.com/file/d/1MfyKGqUnnigKTa1kYU8Kxp29k0YGhaUI/view" target="_blank" rel="noopener noreferrer" title="Consulter le justificatif CCDCOE"><span class="profile-credential-image"><img src="https://ccdcoe.org/uploads/2014/12/ccdcoe-cmyk_horizontal-short.jpg" alt="Emblème NATO CCDCOE" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="profile-credential-fallback">CCDCOE</span></span><span class="profile-credential-name">CCDCOE</span><span class="profile-credential-issuer">OTAN · Formation</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
 <a class="profile-credential" href="https://labs.cyberwarfare.live/credential/achievement/69fdacf31b56196d1f214b5d" target="_blank" rel="noopener noreferrer" title="Vérifier la certification COPO"><span class="profile-credential-image"><img src="../public/credentials/copo.webp" alt="Emblème COPO" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="profile-credential-fallback">COPO</span></span><span class="profile-credential-name">COPO</span><span class="profile-credential-issuer">CyberWarFare Labs</span><span class="profile-credential-link">Vérifier la certification ↗</span></a>
+<div class="profile-credential profile-credential-unlinked" title="CBBH"><span class="profile-credential-image"><span class="profile-credential-fallback">CBBH</span></span><span class="profile-credential-name">CBBH</span><span class="profile-credential-issuer">Hack The Box</span></div>
 </div>
