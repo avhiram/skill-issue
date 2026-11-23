@@ -123,11 +123,11 @@ aside: false
 <div class="profile-proof">
   <a href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
     <strong>NASA · 2024</strong>
-    <span>Lettre de reconnaissance officielle · Vulnerability Disclosure Program.</span>
+    <span>Lettre de reconnaissance · Découverte d’une vulnérabilité.</span>
   </a>
   <a href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
     <strong>Locked Shields · OTAN 2025</strong>
-    <span>Sélectionné pour représenter la France · 2ᵉ sur 17.</span>
+    <span>Sélectionné pour représenter la France (2ᵉ/17). Insigne COMCYBER et médaille de l’État-major des armées.</span>
   </a>
   <div class="profile-proof-entry">
     <strong>Première dame de France · 2026</strong>
