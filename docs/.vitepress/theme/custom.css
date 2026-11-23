@@ -370,8 +370,9 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .Layout.crto-page .vp-doc div[class*="language-"] > pre,
 .Layout.crto-page .vp-doc div[class*="language-"] > pre > code,
 .Layout.crto-page .vp-doc div[class*="language-"] .vp-code .line {
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
+  /* Keep code indentation and prevent arbitrary breaks on mobile. */
+  white-space: pre;
+  overflow-wrap: normal;
   word-break: normal;
 }
 .Layout.crto-page .vp-doc div[class*="language-"] > pre {
