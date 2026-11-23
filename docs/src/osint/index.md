@@ -31,6 +31,27 @@ Outils OSINT classés par usage.
 - **[Reddit Search](https://www.reddit.com/search/)** - Retrouver des publications et commentaires publics.
 - **[X - Recherche avancée](https://x.com/search-advanced)** - Combiner mots-clés, comptes et périodes lorsque la recherche est disponible.
 
+## Réseaux sociaux
+
+- **[Facebook](https://www.facebook.com/)** - Profils, pages et publications publiques.
+- **[Instagram](https://www.instagram.com/)** - Profils et publications publics.
+- **[Snapchat](https://www.snapchat.com/)** - Profils publics et contenus visibles.
+- **[TikTok](https://www.tiktok.com/)** - Profils et vidéos publics.
+- **[LinkedIn](https://www.linkedin.com/)** - Profils professionnels et publications.
+- **[YouTube](https://www.youtube.com/)** - Chaînes, vidéos et descriptions.
+- **[X](https://x.com/)** - Profils, messages et recherche avancée.
+- **[Threads](https://www.threads.net/)** - Profils et échanges publics.
+- **[Bluesky](https://bsky.app/)** - Profils et publications publiques.
+- **[Mastodon](https://mastodon.social/)** - Profils publics d'une instance.
+- **[Telegram](https://t.me/)** - Canaux et groupes publics.
+- **[Reddit](https://www.reddit.com/)** - Publications et commentaires.
+- **[Pinterest](https://www.pinterest.com/)** - Profils et tableaux publics.
+- **[Twitch](https://www.twitch.tv/)** - Chaînes et contenus publics.
+- **[GitLab](https://gitlab.com/)** - Profils et projets techniques publics.
+- **[SoundCloud](https://soundcloud.com/)** - Profils et contenus audio publics.
+- **[Steam Community](https://steamcommunity.com/)** - Profils et groupes publics.
+- **[VK](https://vk.com/)** - Profils et publications publics.
+
 ## E-mails et exposition
 
 - **[Holehe](https://github.com/megadose/holehe)** - Rechercher des indices d'inscription à partir d'un e-mail.
@@ -72,6 +93,14 @@ Outils OSINT classés par usage.
 - **[DocumentCloud](https://www.documentcloud.org/)** - Explorer des documents publics et leurs annotations.
 - **[Google Dataset Search](https://datasetsearch.research.google.com/)** - Retrouver des jeux de données publics.
 - **[GitHub Search](https://github.com/search)** - Retrouver projets, dépôts et discussions indexés.
+
+## Personnes et documents publics
+
+- **[HAL](https://hal.science/)** - Publications scientifiques et affiliations.
+- **[ORCID](https://orcid.org/)** - Identifiants et profils de chercheurs publics.
+- **[Google Scholar](https://scholar.google.com/)** - Publications et citations.
+- **[Legifrance](https://www.legifrance.gouv.fr/)** - Textes et décisions accessibles publiquement.
+- **[Data BnF](https://data.bnf.fr/)** - Notices d'auteurs et publications.
 
 ## Images, vidéos et géolocalisation
 
