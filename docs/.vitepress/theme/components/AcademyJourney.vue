@@ -27,47 +27,83 @@ type Level = {
 
 const sections = [
   {
-    id: 'introduction-and-pre-security',
-    title: 'Introduction and Pre-Security',
-    summary: 'Les bases indispensables avant les premiers challenges.',
-    levels: ['environment', 'linux-basics', 'linux-admin', 'network-basics', 'network-practice', 'windows-basics', 'powershell', 'python-basics', 'scripting', 'web-basics', 'web-api', 'security-basics', 'crypto']
+    id: 'premiers-pas',
+    title: "Bien démarrer",
+    summary: "Comprendre son ordinateur, préparer ses outils et apprendre les réseaux avant de passer aux systèmes.",
+    levels: ["environment","network-basics","network-practice"]
   },
   {
-    id: 'free-beginner-red-team-path',
-    title: 'Free Beginner Red Team Path',
-    summary: 'Reconnaissance, outils, Web, pentest, Active Directory et C2.',
-    levels: ['osint-recon', 'scanning', 'web-security', 'web-labs', 'ctf-beginner', 'pentest-system', 'ad-intro', 'ad-minilab', 'ad-light', 'ad-full', 'c2', 'red-advanced']
+    id: 'linux-windows',
+    title: "Comprendre Linux et Windows",
+    summary: "Se repérer dans les deux systèmes, utiliser les commandes et identifier les permissions.",
+    levels: ["linux-basics","linux-admin","windows-basics","powershell"]
   },
   {
-    id: 'free-beginner-blue-team-path',
-    title: 'Free Beginner Blue Team Path',
-    summary: 'Détection, investigation, forensic, analyse de malware et autres environnements.',
-    levels: ['blue-logs', 'blue-siem', 'blue-threat', 'dfir-network', 'dfir-host', 'reverse', 'malware', 'cloud-foundations', 'cloud-security', 'containers', 'mobile', 'iot', 'ot', 'grc']
+    id: 'code-et-web',
+    title: "Apprendre à coder et comprendre le Web",
+    summary: "Écrire ses premiers scripts, puis comprendre les échanges entre navigateur, serveur et API.",
+    levels: ["python-basics","scripting","web-basics","web-api"]
   },
   {
-    id: 'bonus-ctf-practice-and-latest-cves',
-    title: 'Bonus CTF practice and Latest CVEs',
-    summary: 'Challenges supplémentaires, CVE, veille et ressources pour aller plus loin.',
-    levels: ['ctf-intermediate', 'research', 'certifications', 'community']
+    id: 'notions-securite',
+    title: "Comprendre les bases de la sécurité",
+    summary: "Mettre des mots sur les risques, la cryptographie et la recherche d'informations publiques.",
+    levels: ["security-basics","crypto","osint-recon"]
   },
   {
-    id: 'bonus-windows',
-    title: 'Bonus Windows',
-    summary: 'Machines et challenges Windows complémentaires.',
-    levels: ['bonus-windows-labs']
+    id: 'premiers-labs',
+    title: "Premiers outils, pentest et CTF",
+    summary: "Découvrir Nmap, comprendre les vulnérabilités et pratiquer progressivement sur des labs autorisés.",
+    levels: ["scanning","web-security","web-labs","ctf-beginner","ctf-intermediate","pentest-system","bonus-windows-labs"]
   },
   {
-    id: 'extremely-hard-rooms-to-do',
-    title: 'Extremely Hard Rooms to do',
-    summary: 'Challenges exigeants et projet de synthèse.',
-    levels: ['ctf-advanced', 'extremely-hard-rooms', 'final-project']
+    id: 'active-directory-red-team',
+    title: "Active Directory et Red Team",
+    summary: "Commencer par les domaines Windows, suivre GOAD dans l'ordre, puis explorer les labs C2.",
+    levels: ["ad-intro","ad-minilab","ad-light","ad-full","c2","red-advanced"]
+  },
+  {
+    id: 'blue-team',
+    title: "Blue Team : détection et réponse",
+    summary: "Apprendre à lire des traces, comprendre un SIEM et enquêter sur une activité.",
+    levels: ["blue-logs","blue-siem","blue-threat"]
+  },
+  {
+    id: 'forensic-reverse',
+    title: "Forensic, reverse et analyse de malware",
+    summary: "Analyser le réseau, la mémoire et les programmes avant de reconstituer les faits.",
+    levels: ["dfir-network","dfir-host","reverse","malware"]
+  },
+  {
+    id: 'cloud-et-specialites',
+    title: "Cloud et autres domaines de sécurité",
+    summary: "Aborder le Cloud, les conteneurs, les applications mobiles, l'IoT, l'OT et les risques.",
+    levels: ["cloud-foundations","cloud-security","containers","mobile","iot","ot","grc"]
+  },
+  {
+    id: 'challenges-avances',
+    title: "Challenges avancés",
+    summary: "Réutiliser les compétences acquises sur des CTF de difficulté supérieure.",
+    levels: ["ctf-advanced","extremely-hard-rooms"]
+  },
+  {
+    id: 'veilles-certifications',
+    title: "Veille, certifications et communautés",
+    summary: "Identifier des sources fiables, préparer un examen et continuer à progresser.",
+    levels: ["research","certifications","community"]
+  },
+  {
+    id: 'projet-final',
+    title: "Projet final",
+    summary: "Mettre toute la méthode en pratique et rédiger un rapport clair sur un lab.",
+    levels: ["final-project"]
   }
 ] as const
 
 const supplementary: Level[] = [
   {
     id: 'bonus-windows-labs',
-    title: 'Windows - challenges complémentaires',
+    title: 'Windows : s'entraîner sur des machines',
     intro: 'Applique les fondamentaux Windows, Active Directory et pentest sur des rooms dédiées.',
     learn: ['Analyse les services Windows, les permissions et les configurations du lab.'],
     exercise: 'Résoudre deux rooms Windows puis consigner les commandes, résultats et corrections.',
@@ -75,7 +111,7 @@ const supplementary: Level[] = [
   },
   {
     id: 'extremely-hard-rooms',
-    title: 'Rooms très difficiles',
+    title: 'CTF : réussir des rooms très difficiles',
     intro: 'Consolide les acquis sur des environnements complexes, après les labs précédents.',
     learn: ['Prépare une méthodologie, une prise de notes et un rapport reproductible.'],
     exercise: 'Résoudre une room difficile sans write-up, dans le cadre du lab proposé.',
@@ -90,18 +126,22 @@ const indexOf = new Map(orderedLevels.map((level, i) => [level.id, i + 1]))
 const normalizeUrl = (value: string) => value.trim().replace(/^http:/i, 'https:').replace(/^https:\/\/www\./i, 'https://').replace(/\/+$/, '').toLowerCase()
 const simplify = (value: string) => value.toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
-const windowsRooms = new Set(['attacktive directory', 'retro', 'blue print', 'anthem', 'relevant'])
+const windowsRooms = new Set(['retro', 'blue print', 'anthem', 'relevant'])
 const hardRooms = new Set([
   'ra', 'cct2019', 'theseus', 'ironcorp', 'carpe diem 1', 'borderlands',
   'jeff', 'year of the owl', 'anonymous playground', 'enterprize',
   'racetrack bank', 'python playground'
 ])
-const bonusLabs = new Set([
-  'smag grotto', 'dogcat', 'buffer overflow prep', 'break out the cage',
-  'lian yu', 'insecure kubernetes', 'the great escape (docker)',
-  'solr exploiting log4j', 'spring4shell', 'most recent threats',
-  'post exploitation basics', 'bandit', 'natas'
-])
+const bonusLabs = new Set(['smag grotto', 'dogcat', 'break out the cage', 'lian yu'])
+const routeAdjustments: Record<string, string> = {
+  'insecure kubernetes': 'containers',
+  'the great escape (docker)': 'containers',
+  'solr exploiting log4j': 'web-labs',
+  'spring4shell': 'web-labs',
+  'most recent threats': 'research',
+  'post exploitation basics': 'red-advanced',
+  'buffer overflow prep': 'ctf-advanced'
+}
 const sourceItems: Resource[] = [...resources, ...masteryResources, ...academyExtraResources] as Resource[]
 const resourceMap = new Map<string, AssignedResource>()
 for (const item of sourceItems) {
@@ -114,6 +154,7 @@ for (const item of sourceItems) {
   if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
   else if (hardRooms.has(title)) routeLevel = 'extremely-hard-rooms'
   else if (bonusLabs.has(title)) routeLevel = 'ctf-intermediate'
+  else if (routeAdjustments[title]) routeLevel = routeAdjustments[title]
   if (!byId.has(routeLevel)) routeLevel = 'research'
   resourceMap.set(key, { ...item, routeLevel })
 }
@@ -121,6 +162,24 @@ const catalog = [...resourceMap.values()]
 const linksByLevel = new Map<string, AssignedResource[]>()
 for (const level of orderedLevels) linksByLevel.set(level.id, [])
 for (const item of catalog) linksByLevel.get(item.routeLevel)?.push(item)
+// Mettre les ressources choisies pour démarrer avant les références longues et les outils.
+const featuredByLevel = new Map(academyLevels.map(level => [
+  level.id, level.featured.map(normalizeUrl)
+]))
+for (const [id, links] of linksByLevel) {
+  const featured = featuredByLevel.get(id) || []
+  links.sort((a, b) => {
+    const aOrder = featured.indexOf(normalizeUrl(a.url))
+    const bOrder = featured.indexOf(normalizeUrl(b.url))
+    if (aOrder !== -1 && bOrder !== -1) return aOrder - bOrder
+    if (aOrder !== -1) return -1
+    if (bOrder !== -1) return 1
+    const aIntro = /intro|début|beginner|fundamental|basics|premier|getting started/i.test(a.title)
+    const bIntro = /intro|début|beginner|fundamental|basics|premier|getting started/i.test(b.title)
+    if (aIntro !== bIntro) return aIntro ? -1 : 1
+    return 0
+  })
+}
 
 const manualDescriptions: Record<string, string> = {
   'threat intelligence 101': 'Introduction au renseignement sur les cybermenaces.',
@@ -238,17 +297,16 @@ onMounted(() => {
   <div class="academy-roadmap">
     <header id="about" class="about">
       <p class="academy-eyebrow">SKILL-ISSUE / ACADEMY</p>
-      <h1>Cybersecurity Roadmap</h1>
-      <h2>About</h2>
-      <p>Une seule route, du premier terminal aux labs avancés. Les niveaux se suivent dans l’ordre. Les ressources sont directement accessibles sous chaque niveau, avec une courte explication.</p>
+      <h1>Roadmap cybersécurité</h1>
+      <h2>Commence ici</h2>
+      <p>Pars de zéro et avance dans l'ordre. Chaque niveau te dit quoi apprendre, te donne les liens utiles et propose un exercice. Tu peux cocher les niveaux au fur et à mesure.</p>
       <div class="progress-wrap">
         <div class="progress-head"><span>Progression</span><strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong></div>
         <div class="progress-track" role="progressbar" aria-label="Progression de la roadmap" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length"><span :style="{width: progress + '%'}"></span></div>
         <span class="progress-note">{{ catalog.length }} liens uniques, classés dans une seule roadmap. Progression enregistrée sur cet appareil.</span>
       </div>
       <nav class="contents" aria-label="Sommaire de la roadmap">
-        <a href="#about">About</a>
-        <a v-for="section in sections" :key="section.id" :href="'#' + section.id">{{ section.title }}</a>
+        <a v-for="(section, i) in sections" :key="section.id" :href="'#' + section.id"><span class="contents-number">{{ i + 1 }}</span>{{ section.title }}</a>
       </nav>
       <div class="tools-line">
         <label for="academy-query">Rechercher un cours, une room ou un outil</label>
@@ -258,39 +316,44 @@ onMounted(() => {
       </div>
     </header>
 
-    <section v-for="section in sections" :id="section.id" :key="section.id" class="curriculum-section">
+    <section v-for="(section, groupIndex) in sections" :id="section.id" :key="section.id" class="curriculum-section">
       <header class="section-header">
+        <span class="section-step">PARTIE {{ groupIndex + 1 }} / {{ sections.length }}</span>
         <h2>{{ section.title }}</h2>
         <p>{{ section.summary }}</p>
       </header>
 
       <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="level">
         <div class="level-head">
-          <h3><span class="level-prefix">Level {{ numberFor(level.id) }}</span> <span class="dash">-</span> {{ level.title }}</h3>
-          <label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label>
+          <h3><span class="level-prefix">Niveau {{ numberFor(level.id) }}</span> <span class="dash">-</span> {{ level.title }}</h3>
+          <div class="level-meta"><span class="level-count">{{ levelLinks(level.id).length }} liens</span><label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label></div>
         </div>
         <p class="level-info">{{ level.intro }}</p>
         <ul class="link-list">
-          <li v-for="item in visibleLinks(level.id)" :key="item.id + item.url">
-            <span class="arrow" aria-hidden="true">»</span>
-            <div class="resource-line">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
-              <span class="description"> - {{ describe(item) }}</span>
-              <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
-            </div>
-          </li>
+          <template v-for="(item, resourceIndex) in visibleLinks(level.id)" :key="item.id + item.url">
+            <li v-if="!query && resourceIndex === 0" class="resource-group-title">Pour commencer</li>
+            <li v-if="!query && resourceIndex === 3" class="resource-group-title further">Pour approfondir</li>
+            <li :class="{ 'key-resource': !query && resourceIndex < 3 }">
+              <span class="arrow" aria-hidden="true">»</span>
+              <div class="resource-line">
+                <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+                <span class="description"> - {{ describe(item) }}</span>
+                <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+              </div>
+            </li>
+          </template>
         </ul>
         <div v-if="!query && !levelLinks(level.id).length" class="no-resource">
           Exercice final : réutilise les ressources des niveaux précédents.
         </div>
         <details v-if="!query" class="level-exercise">
-          <summary>Exercice et validation</summary>
+          <summary>Exercice pratique et objectif à atteindre</summary>
           <p><strong>À pratiquer :</strong> {{ level.exercise }}</p>
           <p><strong>Pour valider :</strong> {{ level.ready }}</p>
         </details>
       </article>
       <p v-if="query && !visibleLevels(section).length" class="no-result">Aucun résultat dans cette partie.</p>
-      <a class="back-top" href="#about">↑ Retour au sommaire</a>
+      <a class="back-top" href="#about">↑ Retour au début</a>
     </section>
 
     <p class="footer-note">Les liens externes peuvent évoluer ou nécessiter un compte ou un abonnement. Vérifie les conditions d’accès avant de commencer. Utilise uniquement des labs ou environnements pour lesquels tu disposes d’une autorisation.</p>
@@ -354,4 +417,79 @@ onMounted(() => {
 .footer-note { margin:25px 0 0!important; font-size:.74rem; line-height:1.8; color:#9d93a6!important; }
 @media(max-width:640px) { .academy-roadmap { padding:2px 0 20px; } .tools-line { display:flex; flex-direction:column; align-items:stretch; } .urls-checkbox { padding:4px 0; } .level-head { align-items:flex-start; } .done-toggle span { display:none; } .section-header { margin-bottom:21px; } .level { margin-bottom:23px; padding-bottom:25px; } .link-list { margin-left:5px!important; } .link-list li { font-size:.8rem; gap:7px; line-height:1.6; } .level-exercise { margin-left:21px; } .about h1 { margin-bottom:21px!important; } }
 @media(prefers-reduced-motion:reduce) { .progress-track span { transition:none; } }
+
+/* Academy - noir profond et violet, sans cartes superflues. */
+:global(.Layout.academy-page) {
+  --vp-c-bg: #0e0a15;
+  --vp-c-bg-soft: #17101f;
+  --vp-c-bg-alt: #130e1b;
+  --vp-c-border: #34263f;
+  background-color:#0e0a15;
+}
+:global(.academy-page .VPContent) { background:#0e0a15; }
+.academy-roadmap { color:#e9e3f1; max-width:1040px; padding:14px 8px 38px; }
+.about { border-bottom-color:#3e2c51; padding-bottom:31px; }
+.academy-eyebrow { color:#b892e7!important; }
+.about h1 { color:#faf5ff!important; font-weight:650!important; letter-spacing:-.035em; }
+.about h2 { color:#d7b9ff!important; }
+.about>p:not(.academy-eyebrow) { color:#c9bed4!important; }
+.progress-wrap { border:1px solid #392848; border-radius:9px; padding:15px 18px; background:linear-gradient(110deg,#160f20,#110c1a); max-width:100%; }
+.progress-track { background:#362742; height:6px; }
+.progress-track span { background:linear-gradient(90deg,#7955b1,#c297fa); }
+.progress-note { color:#aa9aba; }
+.contents { max-width:none; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px 15px; border:0; padding:0; margin:23px 0; }
+.contents a { display:flex; align-items:baseline; gap:11px; width:auto; border:1px solid #33263e; border-radius:6px; background:#140e1c; padding:10px 13px; color:#dfd3ea!important; font-size:.79rem; }
+.contents a:hover { border-color:#8160ad; background:#1c1328; color:#dfbfff!important; text-decoration:none!important; }
+.contents-number { font-size:.71rem; font-weight:740; color:#bc96e7; min-width:17px; }
+.tools-line { max-width:100%; border-top:1px solid #32243d; padding-top:17px; }
+.tools-line input[type=search] { background:#1a1225; border-color:#5a4272; }
+.tools-line input[type=search]:focus { outline-color:#aa83d3; }
+.tools-line>label:first-child { color:#c7b8d8; }
+.curriculum-section { border-bottom:1px solid #3a2b49; padding-top:37px; scroll-margin-top:80px; }
+.section-header { margin-bottom:27px; }
+.section-step { display:block; font-size:.7rem; color:#c09bfa; font-weight:730; letter-spacing:.095em; margin:0 0 7px; }
+.section-header h2 { color:#f1e8ff!important; font-weight:650!important; font-size:clamp(1.35rem,2.6vw,1.75rem)!important; }
+.section-header p { color:#bbaeC7!important; max-width:780px; }
+.level { position:relative; border-bottom:0; border-left:2px solid #49335e; padding:0 0 25px 23px; margin-left:8px; margin-bottom:2px; }
+.level:last-of-type { margin-bottom:0; border-left-color:transparent; }
+.level:before { content:''; position:absolute; top:9px; left:-6px; width:10px; height:10px; background:#160e20; border:2px solid #9b74ca; border-radius:50%; }
+.level:has(.done-toggle input:checked):before { background:#ba8be9; border-color:#ba8be9; }
+.level-head { align-items:center; }
+.level h3 { color:#f1e7fb!important; font-size:1.02rem!important; font-weight:670!important; }
+.level-prefix { color:#c49aed; font-weight:740; }
+.dash { color:#a48bb8; }
+.level-meta { display:flex; gap:15px; align-items:center; }
+.level-count { white-space:nowrap; font-size:.72rem; color:#a593b5; }
+.done-toggle { color:#b8a9c4; }
+.level-info { color:#bdb1c9!important; line-height:1.75; margin:3px 0 9px!important; }
+.link-list { margin-left:0!important; }
+.link-list li { color:#c8bfcc; font-size:.825rem; margin-bottom:4px!important; }
+.link-list li.resource-group-title { margin:15px 0 8px!important; color:#cba7f6; font-size:.74rem; font-weight:740; letter-spacing:.035em; list-style:none; }
+.link-list li.resource-group-title:first-child { margin-top:9px!important; }
+.link-list li.resource-group-title.further { padding-top:8px; border-top:1px solid #32243e; color:#a999b8; }
+.link-list .arrow { color:#a27ac8; }
+.link-list .key-resource .arrow { color:#c7a2f3; }
+.link-list .resource-line>a { color:#d9b6ff!important; font-weight:650; }
+.link-list .key-resource .resource-line>a { color:#ead6ff!important; }
+.link-list .resource-line>a:hover { color:#fff1ff!important; text-decoration:underline!important; }
+.link-list .description { color:#bcb0c6; }
+.raw-url { color:#9f90ae; }
+.level-exercise summary { color:#bfa2dc; font-weight:560; }
+.level-exercise summary:hover { color:#ead6ff; }
+.level-exercise p { color:#bdb0c9!important; }
+.level-exercise strong { color:#dfc8fa; }
+.back-top { color:#a99bc0!important; }
+.back-top:hover { color:#ead4ff!important; }
+@media(max-width:700px) {
+  .academy-roadmap { padding:8px 0 26px; }
+  .contents { grid-template-columns:1fr; gap:5px; }
+  .progress-wrap { padding:12px; }
+  .level { padding-left:15px; margin-left:6px; }
+  .level-meta { flex-direction:column; gap:5px; align-items:flex-end; }
+  .level-count { font-size:.67rem; }
+  .level h3 { font-size:.96rem!important; }
+  .level-head { align-items:flex-start; }
+  .link-list { margin-left:0!important; }
+  .link-list li { font-size:.8rem; }
+}
 </style>
