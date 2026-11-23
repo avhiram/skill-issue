@@ -1,12 +1,30 @@
 <script setup lang="ts">
-import {computed,onMounted,ref} from 'vue'
+import {computed,onMounted,ref,watch} from 'vue'
 import {academyLevels,academyOpenSource,academyOnlineLabs} from '../data/academy-practical'
+import {cyberUniversity} from '../data/cyber-university'
 
 const storageKey='skill-issue-academy-levels-v3'
 const checked=ref<string[]>([])
 const activeCategory=ref('all')
 const search=ref('')
 const showAll=ref(false)
+const librarySearch=ref('')
+const libraryLevel=ref('all')
+const libraryPath=ref('all')
+const libraryLimit=ref(20)
+const filteredLibrary=computed(()=>{
+ const q=librarySearch.value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
+ return cyberUniversity.filter(x=>(libraryLevel.value==='all'||String(x.level)===libraryLevel.value)&&(libraryPath.value==='all'||x.path===libraryPath.value)&&(!q||[x.title,x.provider,x.category,x.type].join(' ').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q)))
+})
+const visibleLibrary=computed(()=>filteredLibrary.value.slice(0,libraryLimit.value))
+const levelExtras=(n:number)=>cyberUniversity.filter(x=>x.level===n).slice(0,3)
+const levelTotal=(n:number)=>cyberUniversity.filter(x=>x.level===n).length
+watch([librarySearch,libraryLevel,libraryPath],()=>libraryLimit.value=20)
+function browseLevel(n:number){
+ libraryLevel.value=String(n);libraryPath.value='all';librarySearch.value='';libraryLimit.value=20;
+ document.getElementById('academy-university')?.scrollIntoView({behavior:'smooth',block:'start'})
+}
+
 const completed=(level:typeof academyLevels[number])=>level.tasks.filter(t=>checked.value.includes(t.id)).length>=level.required
 const doneCount=computed(()=>academyLevels.filter(completed).length)
 const labFilter=computed(()=>{
@@ -29,7 +47,7 @@ function toggle(id:string){checked.value=checked.value.includes(id)?checked.valu
     <div class="a-progress" role="progressbar" :aria-valuenow="doneCount" aria-valuemin="0" aria-valuemax="5" aria-label="Niveaux terminés"><span :style="{width:doneCount*20+'%'}"></span></div>
     <small>Les cases cochées sont mémorisées sur cet appareil.</small>
   </div>
-  <div class="a-links"><a href="#academy-levels">Les levels</a><a href="#academy-open-source">Labs open source</a><a href="#academy-online">Labs en ligne</a></div>
+  <div class="a-links"><a href="#academy-levels">Les levels</a><a href="#academy-open-source">Labs open source</a><a href="#academy-university">Cyber University - 140 ressources</a><a href="#academy-online">Labs en ligne</a></div>
 
   <h2 id="academy-levels">Roadmap - Level 0 à Level 4</h2>
   <p class="a-description">Commence au Level 0. Ouvre un niveau pour voir les exercices, puis coche ce que tu as réellement terminé.</p>
@@ -54,6 +72,13 @@ function toggle(id:string){checked.value=checked.value.includes(id)?checked.valu
             </div>
           </div>
         </div>
+        <div class="a-extra-level">
+  <p class="a-subhead">Exercices supplémentaires du Level {{level.id}}</p>
+  <div class="a-extra-items">
+    <a v-for="x in levelExtras(level.id)" :key="x.id" :href="x.url" target="_blank" rel="noopener noreferrer">{{x.title}} <small>{{x.provider}} - {{x.access}}</small></a>
+  </div>
+  <button class="a-text-button" type="button" @click="browseLevel(level.id)">Voir les {{levelTotal(level.id)}} ressources de ce niveau →</button>
+</div>
         <p class="a-validation"><b>Tu peux passer à la suite si :</b> {{level.validate}}</p>
       </div>
     </details>
@@ -81,6 +106,27 @@ function toggle(id:string){checked.value=checked.value.includes(id)?checked.valu
     <button v-if="labFilter.length>6" type="button" class="a-more" @click="showAll=!showAll">{{showAll?'Afficher moins':'Voir les '+labFilter.length+' labs'}}</button>
   </section>
 
+
+  <section id="academy-university" class="a-section">
+    <h2>Cyber University - 140 ressources</h2>
+    <p class="a-description">Les 140 ressources d'<a href="https://github.com/brootware/awesome-cyber-security-university" target="_blank" rel="noopener noreferrer">Awesome Cyber Security University</a>, classées selon la roadmap Level 0 à Level 4. Les défis avancés et les ressources Red/Blue Team sont regroupés ici, pour ne pas surcharger le parcours débutant.</p>
+    <div class="a-university-filters">
+      <label><span>Recherche</span><input v-model="librarySearch" type="search" placeholder="Bandit, Nmap, Splunk, Windows..."></label>
+      <label><span>Level</span><select v-model="libraryLevel"><option value="all">Tous</option><option v-for="i in 5" :key="i" :value="String(i-1)">Level {{i-1}}</option></select></label>
+      <label><span>Parcours</span><select v-model="libraryPath"><option value="all">Tous</option><option value="bases">Fondamentaux</option><option value="red">Red Team</option><option value="blue">Blue Team</option><option value="bonus">Bonus / CTF</option><option value="expert">Défis avancés</option></select></label>
+    </div>
+    <p class="a-counter" aria-live="polite">{{filteredLibrary.length}} ressources trouvées</p>
+    <div class="a-university-list">
+      <div v-for="x in visibleLibrary" :key="x.id" class="a-university-row">
+        <span class="a-university-level">L{{x.level}}</span>
+        <div class="a-university-text"><a :href="x.url" target="_blank" rel="noopener noreferrer">{{x.title}} <span aria-hidden="true">↗</span></a><small>{{x.provider}} · {{x.category}}</small></div>
+        <span class="a-university-access">{{x.access}}</span>
+      </div>
+    </div>
+    <p v-if="filteredLibrary.length===0" class="a-description">Aucun résultat. Modifie les filtres.</p>
+    <button v-if="visibleLibrary.length<filteredLibrary.length" type="button" class="a-more" @click="libraryLimit+=20">Afficher 20 liens supplémentaires</button>
+    <p class="a-foot">Les ressources sont annoncées comme gratuites dans le dépôt d'origine, mais certaines rooms TryHackMe, machines Hack The Box ou enquêtes CyberDefenders sont aujourd'hui soumises à des limites. Le statut d'accès des 140 liens n'a pas été revérifié individuellement. « Freemium » et « Accès à confirmer » ne garantissent pas la gratuité du défi. Le catalogue d'origine est publié sous licence CC0 1.0 ; les contenus externes restent ceux de leurs auteurs.</p>
+  </section>
   <section id="academy-online" class="a-section">
     <h2>Labs en ligne</h2>
     <p class="a-description">Pour pratiquer sans installer de machines virtuelles. Les offres freemium ne donnent pas accès à tous les labs.</p>
@@ -159,4 +205,26 @@ function toggle(id:string){checked.value=checked.value.includes(id)?checked.valu
 .a-level-completion{font-size:.7rem}.a-content{padding:0 10px 13px}
 .a-grid,.a-online,.a-controls{grid-template-columns:1fr}
 }
+
+.a-extra-level{border-top:1px solid #322640;margin-top:16px;padding-top:10px}
+.a-extra-items{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.a-extra-items a{border:1px solid #3a2a4c;background:#1b1426;border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;color:#dbc7f8;text-decoration:none!important;font-size:.84rem}
+.a-extra-items small{color:#a99cb8;font-size:.73rem}
+.a-text-button{padding:10px 0 0;border:0;background:transparent;color:#c4a9e5;cursor:pointer;font-size:.83rem}
+.a-text-button:hover{text-decoration:underline}
+.a-university-filters{display:grid;grid-template-columns:1.5fr .7fr .9fr;gap:10px;margin-bottom:12px}
+.a-university-filters label{display:grid;gap:5px;color:#b5a8c6;font-size:.8rem}
+.a-university-filters :is(input,select){min-width:0;width:100%;box-sizing:border-box;border:1px solid #544064;background:#171020;color:#f0eafb;border-radius:8px;padding:10px;font-size:.85rem}
+.a-university-filters :is(input,select):focus{outline:2px solid #a083d9}
+.a-university-list{border:1px solid #392b49;background:#110d19;border-radius:10px;overflow:hidden}
+.a-university-row{padding:12px 14px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #2d2337}
+.a-university-row:last-child{border-bottom:0}
+.a-university-level{flex:0 0 32px;padding:4px 0;text-align:center;font-weight:720;background:#2a1f39;border:1px solid #4e3b65;color:#d6c0f6;border-radius:6px;font-size:.73rem}
+.a-university-text{min-width:0;display:flex;flex:1;flex-direction:column;gap:3px}
+.a-university-text a{color:#ebdffb;text-decoration:none!important;overflow-wrap:anywhere;font-weight:650;font-size:.87rem}
+.a-university-text a:hover{text-decoration:underline!important}
+.a-university-text small{color:#a99db8;font-size:.74rem}
+.a-university-access{max-width:154px;flex:0 0 auto;text-align:right;color:#a99db8;font-size:.72rem;line-height:1.35}
+@media(max-width:680px){.a-extra-items,.a-university-filters{grid-template-columns:1fr}.a-university-row{padding:10px;gap:8px;align-items:flex-start}.a-university-access{max-width:100px}}
+
 </style>
