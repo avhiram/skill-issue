@@ -1,364 +1,357 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { resources } from '../data/academy-organized'
 import { masteryResources } from '../data/academy-mastery'
 import { academyLevels, academyExtraResources, academyAssignments } from '../data/academy-unified'
 
-type Resource = { id: string; title: string; url: string; category?: string; access?: string; description?: string; featured?: boolean; routeLevel?: string }
-type RouteResource = Resource & { routeLevel: string }
+type Resource = {
+  id: string
+  title: string
+  url: string
+  category?: string
+  type?: string
+  description?: string
+  access?: string
+  level?: number | null
+  routeLevel?: string
+}
+type AssignedResource = Resource & { routeLevel: string }
+type Level = {
+  id: string
+  title: string
+  intro: string
+  learn: readonly string[]
+  exercise: string
+  ready: string
+}
+
+const sections = [
+  {
+    id: 'introduction-and-pre-security',
+    title: 'Introduction and Pre-Security',
+    summary: 'Les bases indispensables avant les premiers challenges.',
+    levels: ['environment', 'linux-basics', 'linux-admin', 'network-basics', 'network-practice', 'windows-basics', 'powershell', 'python-basics', 'scripting', 'web-basics', 'web-api', 'security-basics', 'crypto']
+  },
+  {
+    id: 'free-beginner-red-team-path',
+    title: 'Free Beginner Red Team Path',
+    summary: 'Reconnaissance, outils, Web, pentest, Active Directory et C2.',
+    levels: ['osint-recon', 'scanning', 'web-security', 'web-labs', 'ctf-beginner', 'pentest-system', 'ad-intro', 'ad-minilab', 'ad-light', 'ad-full', 'c2', 'red-advanced']
+  },
+  {
+    id: 'free-beginner-blue-team-path',
+    title: 'Free Beginner Blue Team Path',
+    summary: 'Détection, investigation, forensic, analyse de malware et autres environnements.',
+    levels: ['blue-logs', 'blue-siem', 'blue-threat', 'dfir-network', 'dfir-host', 'reverse', 'malware', 'cloud-foundations', 'cloud-security', 'containers', 'mobile', 'iot', 'ot', 'grc']
+  },
+  {
+    id: 'bonus-ctf-practice-and-latest-cves',
+    title: 'Bonus CTF practice and Latest CVEs',
+    summary: 'Challenges supplémentaires, CVE, veille et ressources pour aller plus loin.',
+    levels: ['ctf-intermediate', 'research', 'certifications', 'community']
+  },
+  {
+    id: 'bonus-windows',
+    title: 'Bonus Windows',
+    summary: 'Machines et challenges Windows complémentaires.',
+    levels: ['bonus-windows-labs']
+  },
+  {
+    id: 'extremely-hard-rooms-to-do',
+    title: 'Extremely Hard Rooms to do',
+    summary: 'Challenges exigeants et projet de synthèse.',
+    levels: ['ctf-advanced', 'extremely-hard-rooms', 'final-project']
+  }
+] as const
+
+const supplementary: Level[] = [
+  {
+    id: 'bonus-windows-labs',
+    title: 'Windows - challenges complémentaires',
+    intro: 'Applique les fondamentaux Windows, Active Directory et pentest sur des rooms dédiées.',
+    learn: ['Analyse les services Windows, les permissions et les configurations du lab.'],
+    exercise: 'Résoudre deux rooms Windows puis consigner les commandes, résultats et corrections.',
+    ready: 'Tu peux expliquer le cheminement d’une room Windows sans solution préremplie.'
+  },
+  {
+    id: 'extremely-hard-rooms',
+    title: 'Rooms très difficiles',
+    intro: 'Consolide les acquis sur des environnements complexes, après les labs précédents.',
+    learn: ['Prépare une méthodologie, une prise de notes et un rapport reproductible.'],
+    exercise: 'Résoudre une room difficile sans write-up, dans le cadre du lab proposé.',
+    ready: 'Tu sais justifier chaque étape et documenter une résolution complète.'
+  }
+]
+
+const allLevels: Level[] = [...academyLevels, ...supplementary]
+const byId = new Map(allLevels.map(level => [level.id, level]))
+const orderedLevels: Level[] = sections.flatMap(section => section.levels.map(id => byId.get(id)!).filter(Boolean))
+const indexOf = new Map(orderedLevels.map((level, i) => [level.id, i + 1]))
+const normalizeUrl = (value: string) => value.trim().replace(/^http:/i, 'https:').replace(/^https:\/\/www\./i, 'https://').replace(/\/+$/, '').toLowerCase()
+const simplify = (value: string) => value.toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+const windowsRooms = new Set(['attacktive directory', 'retro', 'blue print', 'anthem', 'relevant'])
+const hardRooms = new Set([
+  'ra', 'cct2019', 'theseus', 'ironcorp', 'carpe diem 1', 'borderlands',
+  'jeff', 'year of the owl', 'anonymous playground', 'enterprize',
+  'racetrack bank', 'python playground'
+])
+const bonusLabs = new Set([
+  'smag grotto', 'dogcat', 'buffer overflow prep', 'break out the cage',
+  'lian yu', 'insecure kubernetes', 'the great escape (docker)',
+  'solr exploiting log4j', 'spring4shell', 'most recent threats',
+  'post exploitation basics', 'bandit', 'natas'
+])
+const sourceItems: Resource[] = [...resources, ...masteryResources, ...academyExtraResources] as Resource[]
+const resourceMap = new Map<string, AssignedResource>()
+for (const item of sourceItems) {
+  // Retirer les ressources Cisco, NetAcad et Packet Tracer, pas les cours réseau neutres.
+  if (/cisco|netacad|packet.?tracer/i.test(item.title + ' ' + item.url)) continue
+  const key = normalizeUrl(item.url)
+  if (resourceMap.has(key)) continue
+  const title = simplify(item.title.trim())
+  let routeLevel = item.routeLevel || academyAssignments[item.id] || 'research'
+  if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
+  else if (hardRooms.has(title)) routeLevel = 'extremely-hard-rooms'
+  else if (bonusLabs.has(title)) routeLevel = 'ctf-intermediate'
+  if (!byId.has(routeLevel)) routeLevel = 'research'
+  resourceMap.set(key, { ...item, routeLevel })
+}
+const catalog = [...resourceMap.values()]
+const linksByLevel = new Map<string, AssignedResource[]>()
+for (const level of orderedLevels) linksByLevel.set(level.id, [])
+for (const item of catalog) linksByLevel.get(item.routeLevel)?.push(item)
+
+const manualDescriptions: Record<string, string> = {
+  'threat intelligence 101': 'Introduction au renseignement sur les cybermenaces.',
+  'threat intelligence tools': 'Découverte des outils d’OSINT et de Threat Intelligence.',
+  'martryohka doll': 'Challenge d’analyse de fichiers pour débuter.',
+  'the glory of the garden': 'Challenge débutant d’analyse d’image.',
+  'packets primer': 'Première analyse de paquets réseau.',
+  'wireshark doo doo doo': 'Challenge débutant d’analyse de paquets.',
+  'wireshark two two two': 'Challenge débutant d’analyse réseau.',
+  'trivial flag transfer protocol': 'Challenge d’analyse de trafic réseau.',
+  'what lies within': 'Challenge de décodage et d’analyse.',
+  'illumination': 'Challenge forensic de difficulté intermédiaire.',
+  'emo': 'Challenge forensic de difficulté intermédiaire.',
+  'obsecure': 'Challenge forensic de difficulté intermédiaire.',
+  'intel101 challenge': 'Challenge de Threat Intelligence intermédiaire.',
+  'sleuthkit intro': 'Premiers exercices d’analyse forensique de disque.',
+  'reminiscent': 'Challenge forensique sur une image disque.',
+  'hunter - windows disk image forensics': 'Analyse forensique d’une image disque Windows.',
+  'spotlight - mac disk image forensics': 'Analyse forensique d’une image disque macOS.',
+  'ulysses - linux disk image forensics': 'Analyse forensique d’une image disque Linux.',
+  'banking troubles - windows memory image forensics': 'Analyse forensique de mémoire Windows.',
+  'detect log4j': 'Investigation sur la vulnérabilité Log4j.',
+  'nmap,curl and netcat': 'Prise en main des outils de diagnostic réseau.',
+  'linux fundamentals 1': 'Premières commandes Linux dans un terminal interactif.',
+  'linux fundamentals 2': 'Poursuite des fondamentaux Linux.',
+  'linux fundamentals 3': 'Approfondissement des commandes Linux.',
+  'red team engagements': 'Introduction à la préparation d’un engagement Red Team.',
+  'cobalt strike - manuel officiel': 'Documentation officielle du logiciel Cobalt Strike.',
+  'sliver - framework c2 open source': 'Framework C2 open source pour un environnement de lab.',
+  'caldera - émulation et lab c2': 'Plateforme open source d’émulation adversaire.'
+}
+const topicLabels: Record<string, string> = {
+  fondamentaux: 'bases informatiques',
+  systemes: 'Linux et Windows',
+  reseau: 'réseau et protocoles',
+  programmation: 'programmation et scripting',
+  web: 'sécurité Web et API',
+  crypto: 'cryptographie',
+  osint: 'recherche OSINT',
+  red: 'pentest et Red Team',
+  ad: 'Active Directory',
+  ctf: 'CTF et challenges',
+  blue: 'Blue Team et SOC',
+  dfir: 'investigation forensic',
+  reverse: 'reverse engineering',
+  cloud: 'sécurité cloud',
+  mobile: 'sécurité mobile',
+  iot: 'sécurité IoT',
+  ot: 'sécurité OT/ICS',
+  grc: 'gestion des risques et conformité',
+  veille: 'veille cybersécurité',
+  carriere: 'formations et certifications',
+  communaute: 'communautés cybersécurité',
+  formations: 'ressources de formation',
+  outils: 'outils de sécurité'
+}
+function describe(item: AssignedResource) {
+  const known = manualDescriptions[simplify(item.title.trim())]
+  if (known) return known
+  if (item.description?.trim()) return item.description.trim()
+  const url = item.url.toLowerCase()
+  if (/tryhackme\.com\/room\//.test(url)) return 'Room pratique TryHackMe.'
+  if (/root-me\.org/.test(url)) return 'Challenges pratiques Root-Me.'
+  if (/picoctf\.org/.test(url)) return 'Challenges pratiques picoCTF.'
+  if (/hackthebox\.com|hackthebox\.eu/.test(url)) return 'Labs et exercices Hack The Box.'
+  if (/portswigger\.net\/web-security/.test(url)) return 'Cours et labs pratiques sur la sécurité Web.'
+  if (/github\.com\//.test(url)) return 'Dépôt GitHub avec documentation ou outils techniques.'
+  if (/learn\.microsoft\.com/.test(url)) return 'Documentation technique Microsoft.'
+  if (/youtube\.com|youtu\.be/.test(url)) return 'Vidéo ou formation technique.'
+  if (/sans\.org/.test(url)) return 'Présentation d’une formation SANS.'
+  if (item.type?.trim()) return item.type.trim() + ' - ' + (topicLabels[item.category || ''] || 'cybersécurité') + '.'
+  return 'Ressource sur ' + (topicLabels[item.category || ''] || 'la cybersécurité') + '.'
+}
+function levelLinks(id: string): AssignedResource[] { return linksByLevel.get(id) || [] }
+function levelsIn(section: typeof sections[number]) {
+  return section.levels.map(id => byId.get(id)!).filter(Boolean)
+}
+function numberFor(id: string) { return indexOf.get(id) || 0 }
 
 const storageKey = 'skill-issue-academy-single-route-v1'
-const oldStorageKey = 'skill-issue-academy-path-v1'
-const activeIndex = ref(0)
 const completed = ref<string[]>([])
 const search = ref('')
-const openPhase = ref('')
-const showAll = ref(false)
-const normUrl = (s: string) => s.trim().replace(/^http:/i, 'https:').replace(/^https:\/\/www\./i, 'https://').replace(/\/+$/, '').toLowerCase()
-const norm = (s: string) => s.toLocaleLowerCase('fr').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-const levelIds = new Set<string>(academyLevels.map(x => x.id))
-const levelNumbers = new Map<string, number>(academyLevels.map((x, i) => [x.id, i]))
-const catalogMap = new Map<string, RouteResource>()
-
-// Une URL ne figure qu'une fois dans la route. Les liens des deux catalogues d'origine sont tous importés.
-for (const item of [...resources, ...masteryResources, ...academyExtraResources] as Resource[]) {
-  const key = normUrl(item.url)
-  if (catalogMap.has(key)) continue
-  const selectedLevel = item.routeLevel || academyAssignments[item.id] || 'research'
-  catalogMap.set(key, { ...item, routeLevel: levelIds.has(selectedLevel) ? selectedLevel : 'research' })
+const showUrls = ref(false)
+const doneCount = computed(() => orderedLevels.filter(l => completed.value.includes(l.id)).length)
+const progress = computed(() => Math.round((doneCount.value / orderedLevels.length) * 100))
+const query = computed(() => simplify(search.value.trim()))
+function visibleLinks(id: string) {
+  const base = levelLinks(id)
+  if (!query.value) return base
+  const level = byId.get(id)
+  if (level && simplify(level.title + ' ' + level.intro).includes(query.value)) return base
+  return base.filter(item => simplify(item.title + ' ' + item.url + ' ' + (item.description || '')).includes(query.value))
 }
-const catalog = [...catalogMap.values()]
-const groups = (() => {
-  const result: Array<{ name: string; items: Array<{ id: string; title: string }> }> = []
-  for (const level of academyLevels) {
-    let group = result.find(g => g.name === level.phase)
-    if (!group) {
-      group = { name: level.phase, items: [] }
-      result.push(group)
-    }
-    group.items.push(level)
-  }
-  return result
-})()
-const phaseOf = (index: number) => academyLevels[index].phase
-const doneCount = computed(() => completed.value.filter(id => levelIds.has(id)).length)
-const progress = computed(() => Math.round(doneCount.value / academyLevels.length * 100))
-const active = computed(() => academyLevels[activeIndex.value])
-const activeLinks = computed(() => {
-  const top = active.value.featured.map(x => normUrl(x))
-  return catalog.filter(x => x.routeLevel === active.value.id).sort((a, b) => {
-    const ia = top.indexOf(normUrl(a.url))
-    const ib = top.indexOf(normUrl(b.url))
-    if (ia !== -1 && ib !== -1) return ia - ib
-    if (ia !== -1) return -1
-    if (ib !== -1) return 1
-    if (a.featured && !b.featured) return -1
-    if (!a.featured && b.featured) return 1
-    return a.title.localeCompare(b.title, 'fr')
-  })
-})
-const priorityLinks = computed(() => activeLinks.value.slice(0, 4))
-const otherLinks = computed(() => activeLinks.value.slice(4))
-const byLevel = (id: string) => catalog.filter(x => x.routeLevel === id).length
-const completedInPhase = (items: Array<{ id: string }>) => items.filter(x => completed.value.includes(x.id)).length
-const matches = computed(() => {
-  const query = norm(search.value.trim())
-  if (!query) return []
-  return catalog.filter(x => {
-    const i = levelNumbers.get(x.routeLevel) ?? 0
-    const level = academyLevels[i]
-    return norm([x.title, x.url, x.category || '', level.title, level.phase].join(' ')).includes(query)
-  })
-})
-const shownMatches = computed(() => matches.value.slice(0, 60))
-watch(activeIndex, () => { showAll.value = false; openPhase.value = phaseOf(activeIndex.value) })
-
-function save() {
+function visibleLevels(section: typeof sections[number]) {
+  if (!query.value) return levelsIn(section)
+  return levelsIn(section).filter(level => visibleLinks(level.id).length > 0)
+}
+const searchCount = computed(() => query.value ? orderedLevels.reduce((n, l) => n + visibleLinks(l.id).length, 0) : catalog.length)
+function persist() {
   try { localStorage.setItem(storageKey, JSON.stringify(completed.value)) } catch {}
 }
-function choose(index: number, scroll = true) {
-  if (index < 0 || index >= academyLevels.length) return
-  activeIndex.value = index
-  openPhase.value = phaseOf(index)
-  if (typeof window !== 'undefined') {
-    window.history.replaceState(null, '', '#level-' + academyLevels[index].id)
-    if (scroll) nextTick(() => document.getElementById('academy-level-detail')?.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-      block: 'start'
-    }))
-  }
+function toggle(id: string, checked: boolean) {
+  completed.value = checked ? [...new Set([...completed.value, id])] : completed.value.filter(x => x !== id)
+  persist()
 }
-function finish() {
-  const id = active.value.id
-  if (!completed.value.includes(id)) completed.value = [...completed.value, id]
-  save()
-  if (activeIndex.value < academyLevels.length - 1) choose(activeIndex.value + 1)
-}
-function toggleDone(id: string) {
-  completed.value = completed.value.includes(id) ? completed.value.filter(x => x !== id) : [...completed.value, id]
-  save()
-}
-function goToResource(item: RouteResource) {
-  const index = levelNumbers.get(item.routeLevel)
-  if (typeof index === 'number') choose(index)
-  search.value = ''
-}
-
 onMounted(() => {
   try {
-    const raw = JSON.parse(localStorage.getItem(storageKey) || '[]')
-    if (Array.isArray(raw)) completed.value = raw.filter((x: unknown): x is string => typeof x === 'string' && levelIds.has(x))
-    else completed.value = []
+    const stored = JSON.parse(localStorage.getItem(storageKey) || '[]')
+    if (Array.isArray(stored)) completed.value = stored.filter((x: unknown): x is string => typeof x === 'string' && byId.has(x))
   } catch { completed.value = [] }
-  if (!completed.value.length) {
-    // Conserver les niveaux déjà validés dans l'ancienne Academy.
-    const oldToNew: Record<string, string> = {
-      environment: 'environment', network: 'network-basics', linux: 'linux-basics',
-      windows: 'windows-basics', web: 'web-basics', scripting: 'python-basics',
-      security: 'security-basics', tools: 'scanning', challenges: 'ctf-beginner',
-      'local-lab': 'web-labs', project: 'final-project'
-    }
-    try {
-      const old = JSON.parse(localStorage.getItem(oldStorageKey) || '[]')
-      if (Array.isArray(old)) {
-        completed.value = [...new Set(old.filter((x: unknown): x is string => typeof x === 'string' && x.startsWith('core-'))
-          .map(x => oldToNew[x.slice(5)]).filter((x): x is string => !!x))]
-        if (completed.value.length) save()
-      }
-    } catch {}
-  }
-  let index = academyLevels.findIndex(level => !completed.value.includes(level.id))
-  const hash = decodeURIComponent(window.location.hash.slice(1))
-  if (hash.startsWith('level-')) {
-    const found = academyLevels.findIndex(level => level.id === hash.slice(6))
-    if (found >= 0) index = found
-  }
-  activeIndex.value = index >= 0 ? index : academyLevels.length - 1
-  openPhase.value = phaseOf(activeIndex.value)
 })
 </script>
 
 <template>
-  <div class="academy">
-    <header class="intro">
-      <div class="eyebrow"><span class="pulse"></span> ACADEMY / CYBERSECURITY</div>
-      <h1>Une seule roadmap.<br><span>Du premier terminal aux labs avancés.</span></h1>
-      <p class="intro-copy">Suis les niveaux dans l'ordre. Chaque étape contient les notions à apprendre, un exercice et ses ressources. Toutes les thématiques font partie du même parcours.</p>
-      <div class="top-stats">
-        <div><strong>{{ academyLevels.length }}</strong><span>Niveaux</span></div>
-        <div><strong>{{ catalog.length }}</strong><span>Ressources classées</span></div>
-        <div><strong>{{ progress }} %</strong><span>Progression</span></div>
+  <div class="academy-roadmap">
+    <header id="about" class="about">
+      <p class="academy-eyebrow">SKILL-ISSUE / ACADEMY</p>
+      <h1>Cybersecurity Roadmap</h1>
+      <h2>About</h2>
+      <p>Une seule route, du premier terminal aux labs avancés. Les niveaux se suivent dans l’ordre. Les ressources sont directement accessibles sous chaque niveau, avec une courte explication.</p>
+      <div class="progress-wrap">
+        <div class="progress-head"><span>Progression</span><strong>{{ doneCount }} / {{ orderedLevels.length }} niveaux terminés</strong></div>
+        <div class="progress-track" role="progressbar" aria-label="Progression de la roadmap" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="orderedLevels.length"><span :style="{width: progress + '%'}"></span></div>
+        <span class="progress-note">{{ catalog.length }} liens uniques, classés dans une seule roadmap. Progression enregistrée sur cet appareil.</span>
       </div>
-      <div class="progress-line" role="progressbar" aria-label="Avancement du parcours" :aria-valuenow="doneCount" :aria-valuemin="0" :aria-valuemax="academyLevels.length">
-        <span :style="{ width: progress + '%' }"></span>
+      <nav class="contents" aria-label="Sommaire de la roadmap">
+        <a href="#about">About</a>
+        <a v-for="section in sections" :key="section.id" :href="'#' + section.id">{{ section.title }}</a>
+      </nav>
+      <div class="tools-line">
+        <label for="academy-query">Rechercher un cours, une room ou un outil</label>
+        <input id="academy-query" v-model="search" type="search" placeholder="Ex. Wireshark, Cobalt Strike, GOAD, Root-Me..." autocomplete="off">
+        <label class="urls-checkbox"><input v-model="showUrls" type="checkbox"><span>Afficher les URL complètes</span></label>
+        <p v-if="query" class="search-note">{{ searchCount }} lien{{ searchCount > 1 ? 's' : '' }} trouvé{{ searchCount > 1 ? 's' : '' }}</p>
       </div>
-      <div class="progress-caption"><span>{{ doneCount }} / {{ academyLevels.length }} niveaux terminés</span><span>Enregistré sur cet appareil</span></div>
     </header>
 
-    <section class="search-panel" aria-label="Trouver une ressource">
-      <label for="academy-search">Rechercher dans toute la roadmap</label>
-      <div class="search-wrap">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.7"/><path d="m16 16 5 5"/></svg>
-        <input id="academy-search" v-model="search" type="search" autocomplete="off" placeholder="Cobalt Strike, Root-Me, GOAD, Python, Wireshark...">
-      </div>
-      <div v-if="search.trim()" class="search-results">
-        <p>{{ matches.length }} résultat{{ matches.length > 1 ? 's' : '' }} dans le parcours <span v-if="matches.length > shownMatches.length">- 60 premiers affichés</span></p>
-        <div v-for="item in shownMatches" :key="item.id + item.url" class="search-hit">
-          <button type="button" @click="goToResource(item)">
-            <small>NIVEAU {{ String((levelNumbers.get(item.routeLevel) ?? 0) + 1).padStart(2, '0') }}</small>
-            <strong>{{ item.title }}</strong>
-          </button>
-          <a :href="item.url" target="_blank" rel="noopener noreferrer" :aria-label="'Ouvrir '+item.title">↗</a>
+    <section v-for="section in sections" :id="section.id" :key="section.id" class="curriculum-section">
+      <header class="section-header">
+        <h2>{{ section.title }}</h2>
+        <p>{{ section.summary }}</p>
+      </header>
+
+      <article v-for="level in visibleLevels(section)" :id="'level-' + level.id" :key="level.id" class="level">
+        <div class="level-head">
+          <h3><span class="level-prefix">Level {{ numberFor(level.id) }}</span> <span class="dash">-</span> {{ level.title }}</h3>
+          <label class="done-toggle"><input type="checkbox" :checked="completed.includes(level.id)" @change="toggle(level.id, !completed.includes(level.id))"><span>Terminé</span></label>
         </div>
-        <p v-if="!matches.length">Aucune ressource trouvée.</p>
-      </div>
+        <p class="level-info">{{ level.intro }}</p>
+        <ul class="link-list">
+          <li v-for="item in visibleLinks(level.id)" :key="item.id + item.url">
+            <span class="arrow" aria-hidden="true">»</span>
+            <div class="resource-line">
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>
+              <span class="description"> - {{ describe(item) }}</span>
+              <small v-if="showUrls" class="raw-url">{{ item.url }}</small>
+            </div>
+          </li>
+        </ul>
+        <div v-if="!query && !levelLinks(level.id).length" class="no-resource">
+          Exercice final : réutilise les ressources des niveaux précédents.
+        </div>
+        <details v-if="!query" class="level-exercise">
+          <summary>Exercice et validation</summary>
+          <p><strong>À pratiquer :</strong> {{ level.exercise }}</p>
+          <p><strong>Pour valider :</strong> {{ level.ready }}</p>
+        </details>
+      </article>
+      <p v-if="query && !visibleLevels(section).length" class="no-result">Aucun résultat dans cette partie.</p>
+      <a class="back-top" href="#about">↑ Retour au sommaire</a>
     </section>
 
-    <div class="workspace">
-      <nav class="path" aria-label="Roadmap chronologique">
-        <div class="path-heading"><span>LE PARCOURS</span><strong>{{ academyLevels.length }} étapes</strong></div>
-        <section v-for="(group, gi) in groups" :key="group.name" class="phase">
-          <button type="button" class="phase-button" :aria-expanded="openPhase === group.name"
-            @click="openPhase = openPhase === group.name ? '' : group.name">
-            <span class="phase-dot" :class="{ visited: completedInPhase(group.items) === group.items.length }"></span>
-            <span class="phase-name">{{ group.name }}</span>
-            <span class="phase-progress">{{ completedInPhase(group.items) }}/{{ group.items.length }}</span>
-            <span class="chevron" :class="{ expanded: openPhase === group.name }">⌄</span>
-          </button>
-          <div v-if="openPhase === group.name" class="phase-items">
-            <button v-for="entry in group.items" :key="entry.id" type="button" class="path-entry"
-              :class="{ selected: active.id === entry.id, finished: completed.includes(entry.id) }"
-              :aria-current="active.id === entry.id ? 'step' : undefined"
-              @click="choose(levelNumbers.get(entry.id) ?? 0)">
-              <span class="level-number">{{ String((levelNumbers.get(entry.id) ?? 0) + 1).padStart(2, '0') }}</span>
-              <span class="level-label">{{ entry.title }}</span>
-              <span v-if="completed.includes(entry.id)" class="checkmark" aria-label="Terminé">✓</span>
-            </button>
-          </div>
-        </section>
-      </nav>
-
-      <main id="academy-level-detail" class="level-card">
-        <div class="level-meta">
-          <span class="level-chip">NIVEAU {{ String(activeIndex + 1).padStart(2, '0') }} / {{ academyLevels.length }}</span>
-          <span class="phase-tag">{{ active.phase }}</span>
-        </div>
-        <h2>{{ active.title }}</h2>
-        <p class="level-intro">{{ active.intro }}</p>
-        <div class="section-divider"></div>
-        <section class="lesson-section">
-          <h3><span class="section-index">01</span> Ce que tu vas apprendre</h3>
-          <ul class="learn-list"><li v-for="l in active.learn" :key="l">{{ l }}</li></ul>
-        </section>
-        <section class="lesson-section">
-          <h3><span class="section-index">02</span> Exercice pratique</h3>
-          <p class="exercise">{{ active.exercise }}</p>
-        </section>
-        <section class="lesson-section">
-          <div class="resource-title">
-            <h3><span class="section-index">03</span> Ressources du niveau</h3>
-            <span class="count">{{ activeLinks.length }} liens</span>
-          </div>
-          <p class="subline">Commence par ces ressources. Les autres liens sont juste en dessous, dans ce même niveau.</p>
-          <div class="resource-grid">
-            <a v-for="r in priorityLinks" :key="r.url" :href="r.url" target="_blank" rel="noopener noreferrer" class="resource primary-resource">
-              <span class="resource-kind">Ressource recommandée</span>
-              <span class="resource-name">{{ r.title }} <span aria-hidden="true">↗</span></span>
-              <small>{{ r.url }}</small>
-            </a>
-          </div>
-          <div v-if="otherLinks.length" class="extra-links">
-            <button type="button" class="show-more" :aria-expanded="showAll" @click="showAll = !showAll">
-              <span>{{ showAll ? 'Masquer les ressources complémentaires' : 'Afficher les '+otherLinks.length+' autres ressources du niveau' }}</span>
-              <span>{{ showAll ? '−' : '+' }}</span>
-            </button>
-            <div v-if="showAll" class="extra-resource-list">
-              <a v-for="r in otherLinks" :key="r.url" :href="r.url" target="_blank" rel="noopener noreferrer" class="extra-resource">
-                <span>{{ r.title }}</span>
-                <small>{{ r.url }}</small>
-                <span class="open-symbol" aria-hidden="true">↗</span>
-              </a>
-            </div>
-          </div>
-          <p v-if="!activeLinks.length" class="empty-links">Projet de synthèse : réutilise les ressources des niveaux précédents et rédige ton propre rapport.</p>
-        </section>
-        <section class="check-section">
-          <div><span class="check-label">POUR VALIDER CE NIVEAU</span><p>{{ active.ready }}</p></div>
-          <label class="manual-done"><input type="checkbox" :checked="completed.includes(active.id)" @change="toggleDone(active.id)"><span>Validé</span></label>
-        </section>
-        <footer class="actions">
-          <button type="button" class="secondary-btn" :disabled="activeIndex === 0" @click="choose(activeIndex - 1)">← Précédent</button>
-          <button type="button" class="next-btn" @click="finish">{{ activeIndex === academyLevels.length - 1 ? 'Terminer le parcours ✓' : 'Valider et continuer →' }}</button>
-        </footer>
-        <p class="last-note">Les ressources sont classées par thème et par progression. Certaines nécessitent un compte, sont payantes ou peuvent avoir changé d'adresse. Les labs doivent rester isolés et autorisés.</p>
-      </main>
-    </div>
+    <p class="footer-note">Les liens externes peuvent évoluer ou nécessiter un compte ou un abonnement. Vérifie les conditions d’accès avant de commencer. Utilise uniquement des labs ou environnements pour lesquels tu disposes d’une autorisation.</p>
   </div>
 </template>
 
 <style scoped>
-.academy { --bg:#100d17; --surface:#171120; --border:#362945; --ink:#f0e9f7; --muted:#b1a4be; --accent:#c1a4ed; width:100%; max-width:1180px; margin:0 auto; color:var(--ink); font-family:inherit; }
-.academy * { box-sizing:border-box; }
-.intro { border:1px solid var(--border); border-radius:14px; padding:28px 30px 23px; background:radial-gradient(ellipse at top right,rgba(125,79,175,.19),transparent 55%),#110e19; }
-.eyebrow { font-size:.72rem; font-weight:750; letter-spacing:.13em; color:#bda4d9; display:flex; align-items:center; gap:9px; margin-bottom:13px; }
-.pulse { width:7px; height:7px; border-radius:50%; background:#c19bf5; box-shadow:0 0 0 4px #38254e; }
-.intro h1 { font-size:clamp(1.55rem,3vw,2.35rem)!important; line-height:1.22; margin:0 0 12px!important; color:#f6efff!important; letter-spacing:-.035em; border:0!important; padding:0!important; }
-.intro h1 span { color:#be9fea; }
-.intro-copy { max-width:720px; font-size:.92rem; line-height:1.65; color:#c0b4cf!important; margin:0 0 25px!important; }
-.top-stats { display:flex; gap:0; margin:0 0 14px; }
-.top-stats>div { display:flex; flex-direction:column; min-width:150px; gap:3px; padding:0 21px; border-left:1px solid #423252; }
-.top-stats>div:first-child { padding-left:0; border-left:0; }
-.top-stats strong { font-size:1.5rem; font-weight:750; color:#ecdefa; }
-.top-stats span { font-size:.75rem; color:#a99aba; }
-.progress-line { height:7px; background:#31263c; border-radius:30px; overflow:hidden; }
-.progress-line span { background:linear-gradient(90deg,#8e61c5,#c8a4f3); display:block; height:100%; transition:width .22s ease; }
-.progress-caption { display:flex; justify-content:space-between; gap:10px; font-size:.72rem; color:#9e90af; margin-top:9px; }
-.search-panel { margin:17px 0 20px; border:1px solid var(--border); border-radius:11px; padding:14px 16px; background:#120e1b; }
-.search-panel>label { display:block; margin-bottom:8px; font-size:.77rem; font-weight:680; color:#c5b3dd; }
-.search-wrap { display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:7px; border:1px solid #48365b; background:#1b1426; color:#a990c7; }
-.search-wrap:focus-within { outline:2px solid #9470b9; outline-offset:1px; }
-.search-wrap input { flex:1; min-width:0; background:transparent; border:0; outline:0; color:#f5ecff; font:inherit; font-size:.87rem; }
-.search-wrap input::placeholder { color:#9a88ae; }
-.search-results { border-top:1px solid #3c2d4b; margin-top:13px; padding-top:8px; max-height:400px; overflow-y:auto; }
-.search-results>p { margin:3px 0 10px!important; color:#ad9cbe!important; font-size:.76rem; }
-.search-hit { display:flex; align-items:center; border-bottom:1px solid #30253d; }
-.search-hit button { text-align:left; display:flex; gap:9px; flex:1; align-items:center; padding:10px 4px; color:#dfcef1; border:0; background:transparent; cursor:pointer; font:inherit; }
-.search-hit button:hover strong { text-decoration:underline; }
-.search-hit small { font-size:.69rem; flex-shrink:0; color:#b399d0; font-weight:680; }
-.search-hit strong { font-size:.81rem; font-weight:590; }
-.search-hit a { color:#bda3db; padding:8px 10px; text-decoration:none!important; }
-.workspace { display:grid; grid-template-columns:minmax(245px,320px) minmax(0,1fr); gap:18px; align-items:start; }
-.path { border:1px solid var(--border); border-radius:12px; background:#100d17; padding:9px; position:sticky; top:76px; max-height:calc(100vh - 90px); overflow-y:auto; scrollbar-width:thin; }
-.path-heading { padding:12px 11px 14px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #32263f; }
-.path-heading span { font-size:.73rem; letter-spacing:.1em; font-weight:750; color:#c3a9e2; }
-.path-heading strong { font-size:.71rem; color:#9e8db1; font-weight:600; }
-.phase { position:relative; border-bottom:1px solid #2c2235; padding:3px 0; }
-.phase:last-child { border-bottom:0; }
-.phase-button { display:flex; width:100%; align-items:center; gap:10px; padding:13px 8px; color:#ded0ed; background:transparent; border:0; border-radius:7px; font:inherit; text-align:left; cursor:pointer; }
-.phase-button:hover { background:#1b1524; }
-.phase-dot { flex:0 0 9px; width:9px; height:9px; border:2px solid #9871b6; border-radius:50%; }
-.phase-dot.visited { background:#b79ae0; }
-.phase-name { font-size:.84rem; font-weight:700; flex:1; }
-.phase-progress { color:#aa98be; font-size:.72rem; }
-.chevron { color:#ab97c0; font-size:1.1rem; transition:transform .15s; }
-.chevron.expanded { transform:rotate(180deg); }
-.phase-items { margin-left:12px; padding:2px 0 11px 12px; border-left:1px solid #443050; }
-.path-entry { display:flex; align-items:center; gap:10px; padding:10px 9px; width:100%; background:transparent; color:#afa1bf; border:1px solid transparent; border-radius:7px; cursor:pointer; text-align:left; font:inherit; transition:background .14s; }
-.path-entry:hover { background:#21182c; color:#ece0f6; }
-.path-entry.selected { background:#2e1e40; border-color:#8055a6; color:#f4eaff; box-shadow:inset 3px 0 #b58bde; }
-.path-entry.finished:not(.selected) { color:#d3c0e9; }
-.level-number { font-size:.71rem; font-weight:760; color:#ad91d0; flex:0 0 19px; }
-.level-label { flex:1; font-size:.79rem; font-weight:570; line-height:1.37; }
-.checkmark { color:#c5aae9; font-size:.83rem; font-weight:700; }
-.level-card { min-width:0; scroll-margin-top:82px; padding:27px 28px 22px; background:#15101d; border:1px solid #49355c; border-radius:13px; box-shadow:0 8px 30px #00000015; }
-.level-meta { display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; gap:8px; }
-.level-chip { color:#cbaaf1; background:#2a1b3a; border:1px solid #63487f; border-radius:5px; padding:6px 9px; font-size:.69rem; font-weight:760; letter-spacing:.055em; }
-.phase-tag { color:#a89ab5; font-size:.73rem; }
-.level-card h2 { font-size:clamp(1.25rem,2.5vw,1.8rem)!important; margin:18px 0 8px!important; padding:0!important; border:0!important; color:#f5ecff!important; line-height:1.24; letter-spacing:-.018em; }
-.level-intro { color:#bdafcb!important; font-size:.88rem; line-height:1.7; margin:0!important; }
-.section-divider { height:1px; background:#382943; margin:22px 0 20px; }
-.lesson-section { margin-bottom:23px; }
-.lesson-section h3 { display:flex; align-items:center; gap:12px; margin:0 0 12px!important; color:#eee0fb!important; font-size:.99rem!important; font-weight:700; border:0!important; padding:0!important; }
-.section-index { font-size:.71rem; font-weight:750; color:#b899d9; flex:0 0 21px; }
-.learn-list { padding-left:23px!important; margin:0!important; color:#c7b9d2; font-size:.84rem; line-height:1.8; }
-.learn-list li { padding-left:5px; margin:4px 0; }
-.exercise { background:#20172b; border-left:2px solid #a47bcb; border-radius:0 7px 7px 0; padding:12px 15px; margin:0!important; font-size:.83rem; line-height:1.7; color:#dfd1eb!important; }
-.resource-title { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-.resource-title h3 { margin-bottom:6px!important; }
-.count { font-size:.72rem; color:#b69ccc; white-space:nowrap; }
-.subline { font-size:.77rem; line-height:1.55; color:#a99bb6!important; margin:0 0 13px!important; }
-.resource-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
-.resource { display:flex; flex-direction:column; gap:8px; background:#211729; border:1px solid #4d385e; border-radius:8px; padding:12px 13px; min-width:0; text-decoration:none!important; transition:border-color .16s,background .16s; }
-.resource:hover { background:#2a1e36; border-color:#b78cdd; }
-.resource-kind { font-size:.68rem; color:#aa91c7; }
-.resource-name { font-size:.83rem; line-height:1.45; font-weight:680; color:#f0e3ff; }
-.resource-name>span { color:#b8a0d4; }
-.resource small { font-size:.68rem; line-height:1.4; color:#a89ab7; overflow-wrap:anywhere; }
-.extra-links { margin-top:10px; }
-.show-more { width:100%; display:flex; justify-content:space-between; align-items:center; gap:15px; border:1px solid #473453; background:#1c1425; border-radius:8px; padding:11px 12px; text-align:left; font:inherit; color:#d6bdec; font-size:.82rem; cursor:pointer; }
-.show-more:hover { border-color:#8b69ae; background:#23182e; }
-.extra-resource-list { margin-top:7px; border:1px solid #352942; border-radius:8px; overflow:hidden; }
-.extra-resource { display:grid; grid-template-columns:1fr auto; gap:3px 10px; border-bottom:1px solid #30253b; padding:11px 12px; text-decoration:none!important; }
-.extra-resource:last-child { border-bottom:0; }
-.extra-resource:hover { background:#201729; }
-.extra-resource>span:first-child { color:#dccced; font-size:.79rem; font-weight:610; grid-column:1; }
-.extra-resource small { grid-column:1; color:#9586a5; font-size:.67rem; overflow-wrap:anywhere; }
-.extra-resource .open-symbol { grid-column:2; grid-row:1 / span 2; align-self:center; color:#b79ad5; }
-.empty-links { padding:15px; background:#20182b; border-radius:7px; color:#baacc8!important; font-size:.82rem; line-height:1.65; }
-.check-section { border:1px solid #58406d; border-radius:9px; background:#24182f; display:flex; align-items:center; gap:12px; justify-content:space-between; padding:14px 16px; }
-.check-label { font-size:.67rem; color:#c4a2e8; letter-spacing:.075em; font-weight:740; }
-.check-section p { color:#d5c7e2!important; font-size:.8rem; line-height:1.6; margin:5px 0 0!important; }
-.manual-done { display:flex; gap:7px; align-items:center; flex-shrink:0; color:#e3c9f7; font-size:.77rem; cursor:pointer; }
-.manual-done input { width:16px; height:16px; accent-color:#9970ca; }
-.actions { display:flex; justify-content:space-between; gap:10px; margin-top:18px; }
-.actions button { padding:12px 15px; border-radius:8px; font-size:.82rem; font-weight:680; font-family:inherit; cursor:pointer; }
-.secondary-btn { color:#d3bde5; background:transparent; border:1px solid #6a507e; }
-.secondary-btn:disabled { opacity:.4; cursor:not-allowed; }
-.next-btn { color:#fff7ff; background:#6a468d; border:1px solid #906bb1; }
-.next-btn:hover { background:#79549c; }
-.last-note { font-size:.71rem; color:#9689a5!important; line-height:1.65; margin:16px 0 0!important; }
-@media(max-width:960px) { .workspace { grid-template-columns:minmax(210px,270px) minmax(0,1fr); gap:12px; } .level-card { padding:22px 20px; } .intro { padding:23px; } }
-@media(max-width:760px) { .workspace { grid-template-columns:1fr; } .path { position:static; max-height:300px; } .top-stats>div { min-width:0; flex:1; padding:0 12px; } .top-stats strong { font-size:1.2rem; } .path-heading { position:sticky; top:0; background:#100d17; z-index:2; } .resource-grid { grid-template-columns:1fr; } .level-card { padding:20px 17px; } .intro { padding:20px 17px; } .intro-copy { font-size:.85rem; } .progress-caption { flex-wrap:wrap; } .phase-items { padding-bottom:7px; } }
-@media(max-width:400px) { .check-section { flex-direction:column; align-items:flex-start; } .actions button { padding:11px 10px; } }
-@media(prefers-reduced-motion:reduce) { .progress-line span, .resource, .phase-button, .path-entry { transition:none; } }
+.academy-roadmap { color:#e4e1e9; max-width:980px; padding:3px 4px 24px; margin:auto; font-family:inherit; }
+.academy-roadmap * { box-sizing:border-box; }
+.about { scroll-margin-top:88px; padding:11px 0 25px; border-bottom:1px solid #37303c; }
+.academy-eyebrow { font-size:.73rem!important; letter-spacing:.15em; font-weight:680; color:#b3a1d1!important; margin:0 0 13px!important; }
+.about h1 { font-size:clamp(1.9rem,4vw,2.65rem)!important; letter-spacing:-.025em; color:#f6effd!important; line-height:1.17; border:0!important; margin:0 0 25px!important; padding:0!important; }
+.about h2 { color:#ebe6f0!important; margin:0 0 8px!important; padding:0!important; border:0!important; font-size:1.35rem!important; }
+.about>p:not(.academy-eyebrow) { color:#b9b3c1!important; max-width:770px; font-size:.9rem; line-height:1.75; margin:0 0 20px!important; }
+.progress-wrap { margin:20px 0 22px; max-width:720px; }
+.progress-head { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 0 7px; font-size:.75rem; color:#b3a8bf; }
+.progress-head strong { color:#d6c4e7; font-weight:650; }
+.progress-track { height:5px; background:#34303a; border-radius:6px; overflow:hidden; }
+.progress-track span { display:block; height:100%; background:#a783cb; transition:width .2s; }
+.progress-note { display:block; font-size:.73rem; color:#98909e; margin-top:8px; }
+.contents { display:flex; flex-direction:column; gap:7px; margin:25px 0 21px; border-left:2px solid #534260; padding-left:18px; max-width:720px; }
+.contents a { color:#ccc5d2; text-decoration:none!important; font-size:.88rem; line-height:1.5; width:fit-content; }
+.contents a:hover { color:#f0c95c; text-decoration:underline!important; }
+.tools-line { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:8px 16px; max-width:800px; margin:18px 0 0; }
+.tools-line>label:first-child { grid-column:1 / -1; font-size:.76rem; color:#b7aaba; }
+.tools-line input[type=search] { border:1px solid #51445d; border-radius:5px; padding:11px 12px; background:#19151e; color:#e8e2ee; font:inherit; font-size:.84rem; width:100%; min-width:0; }
+.tools-line input[type=search]:focus { outline:2px solid #9d79c1; }
+.urls-checkbox { display:flex; align-items:center; gap:7px; white-space:nowrap; font-size:.77rem; color:#afa4b7; cursor:pointer; padding-bottom:9px; }
+.urls-checkbox input { accent-color:#ab87d4; }
+.search-note { grid-column:1 / -1; font-size:.76rem; color:#b3a9ba!important; margin:3px 0!important; }
+.curriculum-section { padding:22px 0 7px; border-bottom:1px solid #37303c; scroll-margin-top:82px; }
+.section-header { margin:0 0 23px; }
+.section-header h2 { font-size:clamp(1.35rem,3vw,1.7rem)!important; font-weight:580; color:#e4e1e7!important; letter-spacing:-.01em; border:0!important; padding:0!important; margin:0 0 7px!important; }
+.section-header p { font-size:.85rem; color:#aaa3af!important; line-height:1.65; margin:0!important; }
+.level { padding:0 0 28px 0; margin-bottom:25px; border-bottom:1px solid #29252f; scroll-margin-top:88px; }
+.level:last-of-type { border:0; margin-bottom:0; }
+.level-head { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+.level h3 { margin:0 0 5px!important; font-weight:520!important; font-size:1.07rem!important; line-height:1.55; padding:0!important; border:0!important; color:#d7d4dc!important; }
+.level-prefix { color:#c8b5df; white-space:nowrap; font-weight:650; }
+.dash { color:#807589; }
+.done-toggle { flex-shrink:0; display:flex; gap:6px; align-items:center; color:#9c93a4; font-size:.74rem; cursor:pointer; }
+.done-toggle input { width:14px; height:14px; accent-color:#9a75c3; }
+.level-info { font-size:.8rem!important; color:#9e97a4!important; line-height:1.65; margin:0 0 11px!important; max-width:820px; }
+.link-list { padding:0!important; margin:10px 0 0 21px!important; list-style:none!important; }
+.link-list li { display:flex; align-items:flex-start; gap:9px; margin:0 0 3px!important; padding:0; line-height:1.62; font-size:.845rem; }
+.arrow { flex:0 0 11px; font-weight:700; color:#b9acc9; line-height:1.55; }
+.resource-line { flex:1; min-width:0; overflow-wrap:anywhere; }
+.resource-line>a { color:#f1c953!important; font-size:inherit; text-decoration:none!important; font-weight:550; }
+.resource-line>a:hover { color:#ffe18a!important; text-decoration:underline!important; }
+.description { color:#c9c2cf; font-weight:400; }
+.raw-url { display:block; font-size:.7rem; line-height:1.6; color:#8d8594; overflow-wrap:anywhere; }
+.level-exercise { margin:13px 0 0 40px; font-size:.77rem; line-height:1.65; color:#aaa2b0; }
+.level-exercise summary { width:fit-content; cursor:pointer; color:#bca9d1; }
+.level-exercise summary:hover { color:#ead3fb; }
+.level-exercise p { font-size:.77rem; color:#b8aabf!important; line-height:1.65; margin:8px 0!important; }
+.level-exercise strong { color:#dbc6e9; font-weight:650; }
+.no-resource { margin:7px 0 0 40px; color:#a69baf; font-size:.79rem; }
+.no-result { font-size:.82rem; color:#a69faf!important; margin:0 0 18px!important; }
+.back-top { display:inline-block; margin:8px 0 23px; font-size:.75rem; color:#a99ab7!important; text-decoration:none!important; }
+.back-top:hover { color:#f1c953!important; }
+.footer-note { margin:25px 0 0!important; font-size:.74rem; line-height:1.8; color:#9d93a6!important; }
+@media(max-width:640px) { .academy-roadmap { padding:2px 0 20px; } .tools-line { display:flex; flex-direction:column; align-items:stretch; } .urls-checkbox { padding:4px 0; } .level-head { align-items:flex-start; } .done-toggle span { display:none; } .section-header { margin-bottom:21px; } .level { margin-bottom:23px; padding-bottom:25px; } .link-list { margin-left:5px!important; } .link-list li { font-size:.8rem; gap:7px; line-height:1.6; } .level-exercise { margin-left:21px; } .about h1 { margin-bottom:21px!important; } }
+@media(prefers-reduced-motion:reduce) { .progress-track span { transition:none; } }
 </style>
