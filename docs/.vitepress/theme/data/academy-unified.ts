@@ -222,6 +222,24 @@ export const academyLevels = [
     ]
   },
   {
+    "id": "osint-practice",
+    "title": "OSINT : challenges et enquêtes pratiques",
+    "phase": "Sécurité",
+    "intro": "Après les moteurs de recherche, apprends à recouper les sources et à vérifier des images, lieux et informations dans des défis conçus pour l'entraînement.",
+    "learn": [
+      "Commencer par des challenges de recherche publique, d'analyse d'images et de géolocalisation.",
+      "Recouper plusieurs sources et distinguer un indice d'une preuve.",
+      "Conserver une chronologie, les URL et une justification vérifiable."
+    ],
+    "exercise": "Résoudre deux défis d'initiation OSINT4Fun ou OSINTOPIA puis documenter chaque recherche avec sa source et son degré de certitude.",
+    "ready": "Tu sais rechercher, recouper et expliquer tes conclusions sans inventer de résultats.",
+    "featured": [
+      "https://challenges.osintopia.fr/",
+      "https://www.osint4fun.eu/challenges/",
+      "https://challenge.bellingcat.com/learn-more/"
+    ]
+  },
+  {
     "id": "scanning",
     "title": "Nmap : découvrir les services d’une machine",
     "phase": "Pentest",
@@ -266,6 +284,25 @@ export const academyLevels = [
     "featured": [
       "https://github.com/juice-shop/juice-shop",
       "https://github.com/OWASP/crAPI"
+    ]
+  },
+  {
+    "id": "local-labs",
+    "title": "Labs locaux : DVWA, Juice Shop et VulnHub",
+    "phase": "Pentest",
+    "intro": "Installer des applications volontairement vulnérables et des machines virtuelles pour pratiquer sans dépendre d'une plateforme en ligne.",
+    "learn": [
+      "Différencier une application Docker, une VM vulnérable et un environnement de plusieurs machines.",
+      "Isoler les labs en réseau privé/host-only, limiter les ports exposés et prendre un snapshot.",
+      "Commencer par Juice Shop ou DVWA, puis déployer une VM VulnHub adaptée à son niveau."
+    ],
+    "exercise": "Déployer DVWA ou Juice Shop sur localhost ou dans une VM isolée, terminer trois exercices, puis documenter le réseau, les commandes et l'arrêt du lab.",
+    "ready": "Tu sais installer et arrêter une cible locale, vérifier son isolation et rendre compte d'un exercice.",
+    "featured": [
+      "https://vwad.owasp.org/",
+      "https://github.com/digininja/DVWA",
+      "https://github.com/juice-shop/juice-shop",
+      "https://www.vulnhub.com/"
     ]
   },
   {
@@ -1283,6 +1320,240 @@ export const academyExtraResources = [
     "routeLevel": "bug-bounty",
     "description": "Répertoire de programmes de divulgation et de récompense, selon leurs conditions.",
     "access": "Consulter les conditions du programme"
+  },
+  {
+    "id": "added-068",
+    "title": "OSINTOPIA - communauté et méthodes",
+    "url": "https://osintopia.fr/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Présentation de la communauté francophone, de ses outils et de ses challenges.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-069",
+    "title": "OSINTOPIA - challenges progressifs",
+    "url": "https://challenges.osintopia.fr/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Défis OSINT accessibles à plusieurs niveaux. Création de compte requise.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-070",
+    "title": "Oscar Zulu - CTF OSINT",
+    "url": "https://oscarzulu.org/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Collectif francophone proposant des CTF et des exercices d'investigation en sources ouvertes.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-071",
+    "title": "Oscar Zulu - boîte à outils",
+    "url": "https://oscarzulu.org/outils/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Outils et références publiés par la communauté Oscar Zulu.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-072",
+    "title": "OSINT-FR - communauté francophone",
+    "url": "https://osintfr.com/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Association et communauté d'entraide autour du renseignement en sources ouvertes.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-073",
+    "title": "OSINT-FR - challenges CTF",
+    "url": "https://ctf.challenge-osint.fr/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Plateforme de challenges de la communauté OSINT-FR. Disponibilité des défis à vérifier.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-074",
+    "title": "OSINT4Fun - challenges de difficulté progressive",
+    "url": "https://www.osint4fun.eu/challenges/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Exercices pratiques OSINT, analyse d'images, GEOINT et recoupement de sources.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-075",
+    "title": "Bellingcat - challenges d'investigation",
+    "url": "https://challenge.bellingcat.com/learn-more/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Exercices pour apprendre à vérifier et analyser des informations publiques.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-076",
+    "title": "Trace Labs - challenges OSINT hebdomadaires",
+    "url": "https://docs.tracelabs.org/osint-challenges/osint-challenges-intro",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Défis OSINT guidés et méthodes d'enquête en sources ouvertes.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-077",
+    "title": "OSINT Dojo - méthodes et ressources",
+    "url": "https://www.osintdojo.com/resources/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Bibliothèque thématique de guides, formations, outils et challenges.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-078",
+    "title": "Bellingcat - boîte à outils d'investigation",
+    "url": "https://bellingcat.gitbook.io/toolkit",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Catalogue d'outils d'enquête OSINT avec descriptions et exemples d'usage.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-079",
+    "title": "OSINT4Fun - tutoriels et exercices",
+    "url": "https://www.osint4fun.eu/about/",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "description": "Présentation des objectifs et de la méthode de la plateforme OSINT4Fun.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-080",
+    "title": "Projet FOX - analyses et enquêtes",
+    "url": "https://projetfox.com/",
+    "category": "additional",
+    "routeLevel": "research",
+    "description": "Articles et études de cas sur les enquêtes en sources ouvertes et la géopolitique.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-081",
+    "title": "Bellingcat France - enquêtes et cas pratiques",
+    "url": "https://fr.bellingcat.com/",
+    "category": "additional",
+    "routeLevel": "research",
+    "description": "Études et investigations publiées en français à analyser pour apprendre la méthode.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-082",
+    "title": "École de Guerre Économique - intelligence économique",
+    "url": "https://www.ege.fr/",
+    "category": "additional",
+    "routeLevel": "research",
+    "description": "Formations et publications de l'établissement sur le renseignement et l'intelligence économique.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-083",
+    "title": "AEGE LAB'OSINT - ressources et communauté",
+    "url": "https://ctf-osint.aege.fr/sources",
+    "category": "additional",
+    "routeLevel": "research",
+    "description": "Sources de référence proposées par la communauté des challenges OSINT de l'AEGE.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-084",
+    "title": "OWASP - annuaire des applications vulnérables",
+    "url": "https://vwad.owasp.org/",
+    "category": "additional",
+    "routeLevel": "local-labs",
+    "description": "Annuaire de labs Web et mobiles volontairement vulnérables, à installer pour s'entraîner.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-085",
+    "title": "OWASP Juice Shop - guide de démarrage",
+    "url": "https://devguide.owasp.org/en/07-training-education/01-vulnerable-apps/01-juice-shop/",
+    "category": "additional",
+    "routeLevel": "local-labs",
+    "description": "Guide officiel pour installer Juice Shop et commencer les exercices.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-086",
+    "title": "OWASP Security Shepherd - lab Web et mobile",
+    "url": "https://github.com/OWASP/SecurityShepherd",
+    "category": "additional",
+    "routeLevel": "local-labs",
+    "description": "Application d'entraînement Web et mobile à déployer dans un environnement contrôlé.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-087",
+    "title": "OWASP NodeGoat - lab Node.js",
+    "url": "https://github.com/OWASP/NodeGoat",
+    "category": "additional",
+    "routeLevel": "local-labs",
+    "description": "Application volontairement vulnérable pour pratiquer les risques OWASP sur Node.js.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-088",
+    "title": "OWASP VulnerableApp - lab extensible",
+    "url": "https://vwad.owasp.org/app/owasp-vulnerableapp/",
+    "category": "additional",
+    "routeLevel": "local-labs",
+    "description": "Application d'entraînement pour tests de vulnérabilités en environnement isolé.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-089",
+    "title": "CryptoHack - challenges d'introduction",
+    "url": "https://cryptohack.org/challenges/introduction/",
+    "category": "additional",
+    "routeLevel": "crypto",
+    "description": "Premiers défis guidés pour distinguer encodage, cryptographie et résolution technique.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-090",
+    "title": "Cryptopals - série 1 Bases",
+    "url": "https://cryptopals.com/sets/1",
+    "category": "additional",
+    "routeLevel": "crypto",
+    "description": "Exercices de cryptographie progressifs, utiles après les bases du scripting.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-091",
+    "title": "LetsDefend - environnement SOC",
+    "url": "https://letsdefend.io/",
+    "category": "additional",
+    "routeLevel": "blue-logs",
+    "description": "Labs et alertes SOC. Migration du catalogue de cours et challenges vers Hack The Box en 2026.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-092",
+    "title": "LetsDefend - conditions et migration Hack The Box",
+    "url": "https://app.letsdefend.io/pricing",
+    "category": "additional",
+    "routeLevel": "blue-logs",
+    "description": "Vérifier l'offre gratuite et les changements de plateforme annoncés pour 2026.",
+    "access": "Conditions d'accès à vérifier"
+  },
+  {
+    "id": "added-093",
+    "title": "Hack The Box - Sherlocks (investigation)",
+    "url": "https://app.hackthebox.com/sherlocks",
+    "category": "additional",
+    "routeLevel": "blue-threat",
+    "description": "Challenges d'enquête et d'analyse d'incident; conditions d'accès à vérifier.",
+    "access": "Conditions d'accès à vérifier"
   }
 ] as const
 
