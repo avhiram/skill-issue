@@ -623,6 +623,5 @@ Get-ChildItem -LiteralPath $bureau -Filter '*.lnk' -File | ForEach-Object {
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

@@ -2450,6 +2450,5 @@ Get-Process | Select-Object Name, Id, Path
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

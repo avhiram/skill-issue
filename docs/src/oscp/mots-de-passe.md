@@ -1699,6 +1699,5 @@ cewl -w <LISTE_MOTS>.txt 'https://<HOTE_AUTORISE>/'
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

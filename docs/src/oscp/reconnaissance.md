@@ -2560,6 +2560,5 @@ nmap -sV -p 6379 --script redis-info <IP_CIBLE>
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

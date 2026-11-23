@@ -504,6 +504,5 @@ msfvenom -p windows/x64/shell_reverse_tcp --list-options
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

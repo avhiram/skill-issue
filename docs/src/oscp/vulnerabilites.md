@@ -114,6 +114,5 @@ searchsploit --nmap <RAPPORT_NMAP>.xml
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

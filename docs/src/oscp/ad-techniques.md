@@ -1397,7 +1397,6 @@ ldapsearch -LLL -x -H ldap://<DC_IP> -D '<DN_COMPTE>' -W -b '<BASE_DN>' '(msDS-K
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->
 

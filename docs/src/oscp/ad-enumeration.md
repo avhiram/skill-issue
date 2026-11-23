@@ -2240,6 +2240,5 @@ grep -Rni --include='*.xml' 'cpassword' <DOSSIER_SYSVOL>
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->

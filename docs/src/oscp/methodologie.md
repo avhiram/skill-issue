@@ -1183,6 +1183,5 @@ net group "Domain Admins" new_admin /add /domain
 
 ---
 
-Source documentaire : [OSCP+ Cheatsheet d'Emmanuel Solis](https://www.emmanuelsolis.com/oscp.html).
 
 <!-- refined-oscp -->
