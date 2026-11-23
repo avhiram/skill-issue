@@ -8,8 +8,7 @@ aside: false
 <div class="profile-intro">
   <p class="profile-eyebrow">SKILL-ISSUE · LIHAM</p>
   <h1>Morad H.</h1>
-  <p class="profile-subtitle">Adversary Simulation · Penetration Testing · Cyberdéfense</p>
-  <p>Audits de sécurité, simulation d’adversaire et recherche de vulnérabilités. Un parcours entre service public, défense et recherche indépendante.</p>
+  <p class="profile-subtitle">Adversary Simulation · Cyberdéfense</p>
   <div class="profile-links">
     <a href="/skill-issue/academy/">Academy</a>
     <a href="/skill-issue/osint/">OSINT</a>
