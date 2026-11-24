@@ -21,11 +21,11 @@ Objectif : choisir un programme, comprendre les règles et préparer son environ
 ## Dossier de travail
 
 ```bash
-mkdir -p bug-bounty/{scope,recon,requests,preuves,rapports}
+mkdir -p bug-bounty/{scope,recon,requests,preuves,rapports,javascript}
 cd bug-bounty
 ```
 
-Crée les dossiers du programme pour classer le scope, les résultats, les requêtes, les preuves et les rapports. Conserver le même répertoire de travail entre les chapitres : les exemples utilisent des chemins relatifs. Les fichiers de scope, requêtes et wordlists doivent être préparés séparément.
+Crée les dossiers du programme pour classer le scope, les résultats, les requêtes, les preuves et les rapports. Conserver le même répertoire de travail entre les chapitres : les exemples utilisent des chemins relatifs. Les fichiers de scope, requêtes et wordlists doivent être préparés séparément. Enregistrer les domaines autorisés dans `scope/domains.txt`, à raison d'un nom par ligne. Les inventaires TXT des exemples sont stockés à la racine du dossier du programme ; `javascript/` accueille les scripts obtenus dans le cadre autorisé.
 
 ## Préparer les outils
 
