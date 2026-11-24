@@ -103,13 +103,7 @@ Identifier les réseaux et les systèmes autonomes associés à une organisation
 
 ### Checklist de reconnaissance
 
-- [ ] Collecte passive et déduplication des sous-domaines.
-- [ ] Validation DNS et contrôle du scope.
-- [ ] Inventaire HTTP et identification des technologies.
-- [ ] Cartographie ASN/IP et reconnaissance visuelle.
-- [ ] Collecte des URL, paramètres et références JavaScript.
-- [ ] Inventaire des interfaces API et des fonctionnalités.
-- [ ] Vérification manuelle des observations et préparation du rapport.
+<BountyChecklist storage-key="reconnaissance-generale" :items='["Collecte passive et déduplication des sous-domaines.","Validation DNS et contrôle du scope.","Inventaire HTTP et identification des technologies.","Cartographie ASN/IP et reconnaissance visuelle.","Collecte des URL, paramètres et références JavaScript.","Inventaire des interfaces API et des fonctionnalités.","Vérification manuelle des observations et préparation du rapport."]' />
 
 ## Nmap - rapport XML local
 
