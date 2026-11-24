@@ -235,7 +235,29 @@ Une association IP/MAC falsifiée peut détourner des échanges sur un segment I
 Get-NetNeighbor -AddressFamily IPv4
 ```
 
-Les branches coercition, PXE et TimeRoasting restent à examiner séparément.
+### Coercition d’authentification SMB
+
+La coercition d’authentification désigne le fait de provoquer une authentification réseau non sollicitée. La mind map cite PetitPotam et CVE-2022-26925, une vulnérabilité Windows LSA associée aux risques de relais NTLM. Distinguer la coercition, qui déclenche une authentification, du relay, qui tente de réutiliser celle-ci auprès d’un autre service.
+
+Cette technique est documentée au niveau conceptuel. Les commandes suivantes sont des contrôles complémentaires en lecture seule, à exécuter sur les postes et serveurs Windows autorisés avec le module SmbShare et les permissions nécessaires. Vérifier également les mises à jour de sécurité, les restrictions NTLM et l’Extended Protection for Authentication (EPA) des services concernés. La signature SMB ne protège pas à elle seule les autres protocoles.
+
+#### PowerShell - vérifier la signature SMB côté client
+
+<p class="oscp-command-note">Afficher si la signature SMB est exigée pour les connexions sortantes. True indique une signature obligatoire ; False signifie qu’elle n’est pas imposée par ce réglage.</p>
+
+```powershell
+Get-SmbClientConfiguration | Select-Object RequireSecuritySignature
+```
+
+#### PowerShell - vérifier la signature SMB côté serveur
+
+<p class="oscp-command-note">Afficher si la signature SMB est exigée pour les connexions entrantes. Ce réglage est distinct de celui du client et doit être contrôlé sur le serveur concerné. Le résultat ne confirme pas à lui seul la présence ou l’absence de CVE-2022-26925.</p>
+
+```powershell
+Get-SmbServerConfiguration | Select-Object RequireSecuritySignature
+```
+
+Les branches PXE et TimeRoasting restent à examiner séparément.
 
 [Énumération Active Directory](ad-enumeration.md)
 
