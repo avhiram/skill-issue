@@ -167,8 +167,7 @@ Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de
 
 ## Avant de poursuivre
 
-- Inventaire des services et technologies observés.
-- Périmètre confirmé avant de poursuivre.
+<BountyChecklist storage-key="checkpoint-scan-reseau" :items='["Inventaire des services et technologies observés.","Périmètre confirmé avant de poursuivre."]' />
 
 ---
 
