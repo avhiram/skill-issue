@@ -1847,6 +1847,246 @@ export const academyExtraResources = [
     "type": "Ressources",
     "access": "Catalogue librement accessible",
     "description": "Catalogue de plus de 900 ressources annoncées par le projet : IoT, hardware, firmware, radio, Bluetooth, systèmes embarqués, OT/ICS, automobile, robotique, labs et CTF. Certaines formations ou matériels peuvent être payants."
+  },
+  {
+    "id": "added-video-tcm-ethical-12",
+    "title": "TCM Security - Ethical Hacking (12 h)",
+    "url": "https://www.youtube.com/watch?v=fNzpcB7ODxQ",
+    "description": "Cours d’introduction au pentest en environnement autorisé. Version antérieure au cours de 2023.",
+    "category": "additional",
+    "routeLevel": "pentest-system",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-windows-priv",
+    "title": "TCM Security - Windows Privilege Escalation for Beginners",
+    "url": "https://www.youtube.com/watch?v=uTcrbNBcoxQ",
+    "description": "Cours historique d’environ 3 h sur les permissions et les risques de configuration Windows, dans un lab.",
+    "category": "additional",
+    "routeLevel": "pentest-system",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-linux-priv",
+    "title": "TCM Security - Linux Privilege Escalation for Beginners",
+    "url": "https://www.youtube.com/watch?v=ZTnwg3qCdVM",
+    "description": "Cours historique sur les permissions et les risques de configuration Linux, dans un lab.",
+    "category": "additional",
+    "routeLevel": "pentest-system",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-python",
+    "title": "TCM Security - Python for Beginners",
+    "url": "https://www.youtube.com/watch?v=7utwZYKweho",
+    "description": "Cours vidéo pour apprendre les bases de Python.",
+    "category": "additional",
+    "routeLevel": "python-basics",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-buffer",
+    "title": "TCM Security - Buffer Overflows Made Easy",
+    "url": "https://www.youtube.com/watch?v=ncBblM920jw",
+    "description": "Introduction à la sécurité mémoire et aux débordements de tampon dans un contexte pédagogique.",
+    "category": "additional",
+    "routeLevel": "reverse",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-osint",
+    "title": "TCM Security - OSINT (5 h)",
+    "url": "https://www.youtube.com/watch?v=qwA6MmbeGNo",
+    "description": "Formation vidéo de cinq heures sur la recherche et l’analyse de sources ouvertes.",
+    "category": "additional",
+    "routeLevel": "osint-practice",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-bug-bounty",
+    "title": "TCM Security - Practical Bug Bounty",
+    "url": "https://www.youtube.com/watch?v=wS2z5lt34Cc",
+    "description": "Introduction pratique au Bug Bounty et à la sécurité des applications dans un lab.",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-iot",
+    "title": "TCM Security - IoT & Hardware Hacking for Beginners (9 h+)",
+    "url": "https://www.youtube.com/watch?v=j8SqZLr64NA",
+    "description": "Plus de neuf heures de fondamentaux IoT et hardware. Le matériel et la formation complète peuvent être payants.",
+    "category": "additional",
+    "routeLevel": "iot",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-linux",
+    "title": "TCM Security - Linux for Ethical Hackers",
+    "url": "https://www.youtube.com/watch?v=U1w4T03B30I",
+    "description": "Cours Kali Linux de 2022 : prise en main du système et du terminal.",
+    "category": "additional",
+    "routeLevel": "linux-basics",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-soc",
+    "title": "TCM Security - Security Operations (SOC) 101 (10 h+)",
+    "url": "https://www.youtube.com/watch?v=56NDgBOSpUg",
+    "description": "Plus de dix heures de cours vidéo sur les fondamentaux SOC.",
+    "category": "additional",
+    "routeLevel": "blue-logs",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-ethical-2023-1",
+    "title": "TCM Security - Ethical Hacking 2023 (partie 1/2)",
+    "url": "https://www.youtube.com/watch?v=3FNYvj2U0HM",
+    "description": "Première partie de la formation Ethical Hacking 2023, annoncée à 15 h au total.",
+    "category": "additional",
+    "routeLevel": "pentest-system",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-ethical-2023-2",
+    "title": "TCM Security - Ethical Hacking 2023 (partie 2/2)",
+    "url": "https://www.youtube.com/watch?v=sH4JCwjybGs",
+    "description": "Suite de la formation vidéo Ethical Hacking 2023.",
+    "category": "additional",
+    "routeLevel": "pentest-system",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-lostsec-bug-bounty",
+    "title": "Lostsec - Bug Bounty",
+    "url": "https://www.youtube.com/@lostsec_ftw",
+    "description": "Chaîne spécialisée dans le Bug Bounty, les retours d’expérience et les démonstrations. Ressource complémentaire, pas un cours structuré.",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-haddix-bug-bounty",
+    "title": "Jason Haddix - Méthodologie Bug Bounty",
+    "url": "https://www.youtube.com/watch?v=p4JgIu1mceI",
+    "description": "Conférence associée aux ressources de méthodologie de Jason Haddix.",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-bbv-hackbots",
+    "title": "Bug Bounty Village - Hackbots (DEF CON)",
+    "url": "https://www.youtube.com/watch?v=cRKToFkZMvk",
+    "description": "Conférence sur les agents IA appliqués à la recherche en sécurité. Ressource avancée.",
+    "category": "additional",
+    "routeLevel": "bug-bounty",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-playlist-forensics",
+    "title": "Forensics - playlist vidéo",
+    "url": "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVPNh6Q8k1fpU97vhJc_c45",
+    "description": "Collection de vidéos sur le forensic numérique.",
+    "category": "additional",
+    "routeLevel": "dfir-host",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-playlist-web",
+    "title": "Web Security - playlist vidéo",
+    "url": "https://www.youtube.com/playlist?list=PL1H1sBF1VAKX9Mz0UVU2eR7EdGmtb5XJK",
+    "description": "Collection de vidéos sur la sécurité des applications Web.",
+    "category": "additional",
+    "routeLevel": "web-security",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-playlist-ad",
+    "title": "Active Directory - playlist vidéo",
+    "url": "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVoU6Q2u7BBGPsnkn-rajlp",
+    "description": "Collection de vidéos consacrées à Active Directory.",
+    "category": "additional",
+    "routeLevel": "ad-intro",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-playlist-investigations",
+    "title": "Cybercrime Investigations - playlist vidéo",
+    "url": "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVmjZZr162aUNCt2Uy5ozAG",
+    "description": "Collection de vidéos consacrées aux enquêtes cybercriminelles.",
+    "category": "additional",
+    "routeLevel": "dfir-host",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-tcm-web-intro",
+    "title": "TCM Security - Beginner Web Application Hacking",
+    "url": "https://www.youtube.com/watch?v=24fHLWXGS-M",
+    "description": "Introduction vidéo à la sécurité des applications Web.",
+    "category": "additional",
+    "routeLevel": "web-security",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-jh-assembly",
+    "title": "John Hammond - Introduction à l’assembleur x86",
+    "url": "https://www.youtube.com/watch?v=HgEGAaYdABA",
+    "description": "Premiers pas en assembleur x86 avec un programme Hello World.",
+    "category": "additional",
+    "routeLevel": "reverse",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-jh-malware-intro",
+    "title": "David Bombal & John Hammond - Débuter en analyse de malware",
+    "url": "https://www.youtube.com/watch?v=sBuxwMAfGnI",
+    "description": "Introduction à l’analyse de logiciels malveillants et aux ressources pour débuter.",
+    "category": "additional",
+    "routeLevel": "malware",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-jh-malware-vbscript",
+    "title": "John Hammond - Malware Analysis : VBScript",
+    "url": "https://www.youtube.com/watch?v=3Q9-X_NRlJc",
+    "description": "Étude de cas d’analyse et de désobfuscation de VBScript.",
+    "category": "additional",
+    "routeLevel": "malware",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-jh-playlists",
+    "title": "John Hammond - Playlists de cybersécurité",
+    "url": "https://www.youtube.com/@_JohnHammond/playlists",
+    "description": "Bibliothèque de séries vidéo sur les CTF, le reverse, la programmation et l’analyse de malware ; complément aux cours.",
+    "category": "additional",
+    "routeLevel": "ctf-intermediate",
+    "type": "Cours",
+    "access": "Gratuit (vidéo en ligne)"
   }
 ] as const
 
