@@ -57,19 +57,29 @@ Consulter [Security Tools et Browser Extensions](./ressources.md). Vérifier les
 
 ```bash
 for tool in subfinder amass assetfinder findomain chaos dnsx httpx httprobe katana gau waybackurls urlfinder gospider arjun nmap nuclei ffuf curl jq sort grep anew unfurl urldedupe gf dig mktemp cp sha256sum; do
-  command -v "$tool" >/dev/null 2>&1 || printf 'Manquant : %s\n' "$tool"
+  if [[ "$tool" == "httpx" ]]; then
+    help="$(httpx -h 2>&1 || true)"
+    [[ "$help" == *"-sc"* && "$help" == *"-title"* ]] && continue
+  elif command -v "$tool" >/dev/null 2>&1; then
+    continue
+  fi
+  printf 'Manquant : %s\\n' "$tool"
 done
 ```
 
-Affiche uniquement les outils absents du PATH. `httpx` désigne le binaire ProjectDiscovery, pas le client Python.
+Affiche les commandes absentes du PATH. Pour `httpx`, le contrôle vérifie aussi qu'il s'agit du binaire ProjectDiscovery et non du client Python.
 
 ## Installer les outils manquants
 
-L'installateur ci-dessous traite les quatre outils manquants relevés lors du contrôle : `urlfinder`, `gospider`, `unfurl` et `urldedupe`. Il vérifie chacun avant d'agir, ignore ceux déjà présents, installe les trois outils Go et compile `urldedupe` depuis son dépôt source. Go est nécessaire ; si `git`, `cmake` ou `g++` manque, le script les installe avec APT sur Debian, Ubuntu ou Kali.
+L'installateur couvre toute la liste ci-dessus. Il conserve les outils déjà présents, installe uniquement les commandes manquantes, puis relance un contrôle complet. Il gère les dépendances APT, les outils Go, Arjun avec pipx, le binaire officiel de Findomain et la compilation de urldedupe depuis ses sources.
 
-<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/bug-bounty/install-tools.sh -o /tmp/skill-issue-install-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-tools.sh &amp;&amp; less /tmp/skill-issue-install-tools.sh &amp;&amp; bash /tmp/skill-issue-install-tools.sh&quot;" language="bash" />
+<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/bug-bounty/install-tools.sh -o /tmp/skill-issue-install-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-tools.sh &amp;&amp; bash /tmp/skill-issue-install-tools.sh&quot;" language="bash" />
 
-Après l'installation, relancer le contrôle de disponibilité ci-dessus. Le script ne met pas à jour les outils déjà installés et signale les échecs au lieu de les masquer.
+[Consulter le script d'installation](https://github.com/avhiram/skill-issue/blob/main/docs/public/bug-bounty/install-tools.sh).
+
+Les paquets système manquants nécessitent root ou sudo. Une connexion Internet est nécessaire pour les téléchargements et les compilations.
+
+**À savoir :** installer `chaos` ne fournit pas sa clé API. Certaines sources de `subfinder` nécessitent également leurs propres clés.
 
 ## Avant de poursuivre
 
