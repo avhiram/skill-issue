@@ -702,6 +702,20 @@ La fiche Lostsec fournie contient 22 exemples portant sur la reconnaissance, les
 
 La fiche comporte aussi des chaînes de tests automatisés en masse et des variantes de contournement de filtres. Elles ne sont pas reproduites dans cette synthèse. Les exemples de reconnaissance déjà présents dans la cheatsheet ne sont pas dupliqués.
 
+### SQLmap et Ghauri
+
+Les deux outils automatisent des vérifications d'injection SQL. SQLmap couvre plusieurs moteurs et techniques ; Ghauri met notamment l'accent sur les injections aveugles booléennes et temporelles. Le document présente les requêtes GET, POST, JSON et les requêtes HTTP enregistrées depuis Burp Suite.
+
+```bash
+sqlmap -hh
+```
+
+Affiche l'aide détaillée de la version installée de SQLmap, sans contacter une cible.
+
+Pour une validation en laboratoire, examiner les paramètres transmis, utiliser des comptes de test, conserver les échanges HTTP et respecter les limites de requêtes. Les techniques de contournement de WAF, d'extraction de données et de prise de contrôle du serveur détaillées par l'article ne sont pas reproduites.
+
+[SQLmap et Ghauri - article de référence](https://infosecwriteups.com/mastering-sqlmap-and-ghauri-a-practical-guide-to-waf-bypass-techniques-1aaa9eee9d32) (15 janvier 2026).
+
 ### Ressources de pratique
 
 - [PortSwigger - SQL injection](https://portswigger.net/web-security/sql-injection) : cours et laboratoires dédiés aux injections SQL.
@@ -790,6 +804,79 @@ L'article [My 5-Minute Workflow to Find Bugs on Any Website](https://infosecwrit
 - **Analyse JavaScript** : inventorier les références et endpoints des scripts autorisés. Si une donnée sensible apparaît, la protéger et la signaler sans tenter de réutiliser un identifiant ou un secret.
 
 Les nouvelles commandes de collecte et de crawling sont classées dans [Collecte des URL](#collecte-des-url), sans répéter les commandes existantes. Les scripts de collecte de secrets et les chaînes de scan offensif en masse n'ont pas été ajoutés. Le délai de cinq minutes est une affirmation de l'auteur, pas une garantie de découverte.
+
+## React2Shell - CVE-2025-55182
+
+### Comprendre la vulnérabilité
+
+L'article décrit une désérialisation non sécurisée des données du protocole Flight de React Server Components (RSC), susceptible de permettre une exécution de code à distance sans authentification. Le risque concerne les applications utilisant les composants serveur affectés, notamment certaines configurations Next.js avec App Router. Une détection de React ou Next.js ne démontre pas que l'application est vulnérable.
+
+### Inventaire et validation
+
+- Identifier les applications et dépendances RSC de son périmètre.
+- Comparer les versions installées à l'avis de sécurité officiel ; la liste précise des versions n'est pas lisible dans l'export de l'article.
+- Valider la correction dans un environnement de test et conserver les preuves.
+- En cas d'exposition confirmée, rechercher les traces d'activité anormale et appliquer les mesures de remédiation appropriées.
+
+### Ressources
+
+- [Avis de sécurité React](https://github.com/facebook/react/security/advisories/GHSA-fv66-9v8q-g76r).
+- [TryHackMe - React2Shell](https://tryhackme.com/room/react2shellcve202555182) : laboratoire présenté dans l'article ; conditions d'accès non vérifiées.
+
+Les procédures de recherche de cibles à grande échelle, d'exécution de commandes, d'exfiltration et de contournement de protections ne sont pas reprises.
+
+## Microsoft IIS et ASP.NET
+
+### Identification via HTTP
+
+```bash
+curl -I https://example.com
+```
+
+Affiche les en-têtes HTTP. Rechercher notamment Server et X-Powered-By ; ces en-têtes peuvent être absents ou modifiés et ne prouvent pas à eux seuls la version réellement installée.
+
+### Points de contrôle
+
+- **IIS 6 et 7.x** : fonctionnalités héritées, WebDAV, TLS, paramètres ASP.NET et noms courts NTFS (8.3).
+- **IIS 8.x** : configuration des handlers, validation des fichiers, anciens composants et messages d'erreur.
+- **IIS 10.x** : configuration applicative, contrôle d'accès, diagnostic et dépendances .NET.
+
+Ces points reprennent les axes proposés dans l'article. Ils ne signifient pas que toutes les installations d'une version sont vulnérables.
+
+### Analyse des composants .NET
+
+[dotPeek](https://www.jetbrains.com/decompiler/) permet d'examiner les assemblies .NET obtenus légitimement, notamment leurs classes et méthodes.
+
+### ViewState et configuration
+
+Contrôler la protection d'intégrité du ViewState, la gestion des clés, les paramètres de diagnostic, les autorisations WebDAV et les règles de filtrage dans les configurations dont on dispose. L'encodage Base64 ne constitue pas un chiffrement. Vérifier également que les décisions d'accès sont appliquées côté serveur.
+
+[Inventaire des CVE IIS - OpenCVE](https://app.opencve.io/cve/?vendor=microsoft&product=internet_information_services)
+
+Les procédures de contournement d'authentification, de WAF et de génération de charges de désérialisation ne sont pas reproduites.
+
+## Workflow de scanning et fuzzing
+
+L'article organise le travail en six étapes. Les commandes déjà documentées dans la cheatsheet ne sont pas répétées.
+
+1. **Chaos** : collecte des sous-domaines.
+2. **HTTPX** : validation HTTP et inventaire, déduplication des résultats.
+3. **Naabu** : inventaire des ports expressément autorisés.
+4. **Nmap** : identification des services et production de résultats XML.
+5. **Nuclei** : contrôle des configurations et vulnérabilités connues dans le périmètre de test.
+6. **FFUF** : découverte de contenu dans un laboratoire autorisé.
+
+Ne pas assimiler une adresse IP partagée, un CDN ou un service tiers à un actif autorisé. Vérifier le scope avant tout scan. Comparer les codes HTTP, la taille des réponses et le nombre de mots pour distinguer les réponses génériques des résultats pertinents ; un 403 doit être respecté.
+
+### Nmap - conversion XML en HTML
+
+```bash
+./nmap-parse-output nmap_out.xml html > scan.html
+```
+
+Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de nouvelle requête. Adapter le chemin au fichier local. La syntaxe est reprise de l'article avec un chemin générique.
+
+[Script nmap-parse-output](https://github.com/ernw/nmap-parse-output)
 
 ## Méthodologies complémentaires
 
