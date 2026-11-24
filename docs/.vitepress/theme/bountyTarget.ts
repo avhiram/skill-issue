@@ -4,6 +4,9 @@ const STORAGE_KEY = 'skill-issue:bug-bounty:target:v1'
 const value = ref('')
 const PROGRAM_KEY = 'skill-issue:bug-bounty:program:v1'
 const program = ref('')
+const HISTORY_KEY = 'skill-issue:bug-bounty:programs:v1'
+type SavedProgram = { workspace: string; target: string; name: string }
+const history = ref<SavedProgram[]>([])
 let loaded = false
 
 export function useBountyTarget() {
@@ -13,6 +16,8 @@ export function useBountyTarget() {
     try {
       value.value = localStorage.getItem(STORAGE_KEY) || ''
       program.value = localStorage.getItem(PROGRAM_KEY) || ''
+      const saved: unknown = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+      if (Array.isArray(saved)) history.value = saved.filter((entry): entry is SavedProgram => !!entry && typeof entry.workspace === 'string' && typeof entry.target === 'string' && typeof entry.name === 'string').slice(0, 100)
     } catch {}
   })
 
@@ -36,7 +41,8 @@ export function useBountyTarget() {
     const name = program.value.trim().toLowerCase()
     if (name && !/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) return null
     const host = target.value.domain + (target.value.port ? '_port_' + target.value.port : '')
-    return host + (name ? '__' + name : '')
+    const folder = host + (name ? '__' + name : '')
+    return folder.length <= 255 ? folder : null
   })
 
   function setProgram(next: string) {
@@ -49,5 +55,19 @@ export function useBountyTarget() {
     try { localStorage.setItem(STORAGE_KEY, next) } catch {}
   }
 
-  return { value, target, setTarget, program, setProgram, workspace }
+  function saveProgram() {
+    if (!workspace.value || !target.value) return false
+    const entry = { workspace: workspace.value, target: target.value.origin, name: program.value.trim() }
+    history.value = [entry, ...history.value.filter(item => item.workspace !== entry.workspace)].slice(0, 100)
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history.value)); return true } catch { return false }
+  }
+
+  function selectProgram(folder: string) {
+    const entry = history.value.find(item => item.workspace === folder)
+    if (!entry) return
+    setTarget(entry.target)
+    setProgram(entry.name)
+  }
+
+  return { value, target, setTarget, program, setProgram, workspace, history, saveProgram, selectProgram }
 }
