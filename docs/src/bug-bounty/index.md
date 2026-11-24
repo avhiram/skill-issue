@@ -14,7 +14,7 @@ Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.
 
 ## Parcours
 
-### <a href="https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?v=workspace-v3" target="_self">Programme et préparation</a>
+### <a :href="'https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?v=' + $frontmatter.buildRevision" target="_self">Programme et préparation</a>
 
 Choisir un programme, définir le scope et préparer son espace de travail.
 
@@ -55,7 +55,7 @@ Suivre le triage, le retest et la récompense.
 - [SSRF](./vulnerabilites.md#server-side-request-forgery-ssrf)
 - [LFI](./vulnerabilites.md#local-file-inclusion-lfi)
 - [CORS](./vulnerabilites.md#cross-origin-resource-sharing-cors)
-- [Microsoft IIS](./vulnerabilites.md#microsoft-iis-et-aspnet)
+- [Microsoft IIS](./vulnerabilites.md#microsoft-iis-et-asp-net)
 
 ## Espaces complémentaires
 
