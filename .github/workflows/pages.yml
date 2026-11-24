@@ -66,6 +66,10 @@ jobs:
           test -s docs/public/bug-bounty/install-tools.sh
           bash -n docs/public/bug-bounty/install-tools.sh
           test -s docs/.vitepress/dist/bug-bounty/install-tools.sh
+          bash -n docs/.vitepress/dist/bug-bounty/install-tools.sh
+          for tool in urlfinder gospider unfurl urldedupe; do
+            grep -q "$tool" docs/.vitepress/dist/bug-bounty/install-tools.sh
+          done
           grep -q 'Nom du programme' docs/.vitepress/dist/bug-bounty/index.html
           for page in preparation reconnaissance scan-reseau cartographie-web vulnerabilites validation rapport suivi; do
             grep -q 'class="bounty-checklist"' "docs/.vitepress/dist/bug-bounty/$page.html"
@@ -206,7 +210,7 @@ jobs:
         run: |
           for attempt in $(seq 1 30); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/preparation-live.html; then
-              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/preparation-live.html && grep -q 'Nom du programme' /tmp/preparation-live.html && grep -q 'CHOISIR_UN_PROGRAMME' /tmp/preparation-live.html && grep -Fq 'mkdir -p &quot;./CHOISIR_UN_PROGRAMME&quot;/' /tmp/preparation-live.html && grep -Fq 'cd &quot;./CHOISIR_UN_PROGRAMME&quot;' /tmp/preparation-live.html && ! grep -Eq '\$HOME|~/bug-bounty|/home/' /tmp/preparation-live.html; then
+              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/preparation-live.html && grep -q 'Nom du programme' /tmp/preparation-live.html && grep -q 'install-tools.sh' /tmp/preparation-live.html && grep -q 'CHOISIR_UN_PROGRAMME' /tmp/preparation-live.html && grep -Fq 'mkdir -p &quot;./CHOISIR_UN_PROGRAMME&quot;/' /tmp/preparation-live.html && grep -Fq 'cd &quot;./CHOISIR_UN_PROGRAMME&quot;' /tmp/preparation-live.html && ! grep -Eq '\$HOME|~/bug-bounty|/home/' /tmp/preparation-live.html; then
                 echo 'Préparation dynamique confirmée.'
                 exit 0
               fi
@@ -214,4 +218,18 @@ jobs:
             sleep 10
           done
           echo '::error::Ancienne préparation ou révision publique non confirmée.'
+          exit 1
+
+      - name: Verify public Bug Bounty installer
+        run: |
+          for attempt in $(seq 1 30); do
+            if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/install-tools.sh?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/install-tools.sh; then
+              if bash -n /tmp/install-tools.sh && grep -q 'urlfinder' /tmp/install-tools.sh && grep -q 'gospider' /tmp/install-tools.sh && grep -q 'unfurl' /tmp/install-tools.sh && grep -q 'urldedupe' /tmp/install-tools.sh; then
+                echo 'Installateur Bug Bounty public confirmé.'
+                exit 0
+              fi
+            fi
+            sleep 10
+          done
+          echo '::error::L’installateur Bug Bounty public est absent ou invalide.'
           exit 1
