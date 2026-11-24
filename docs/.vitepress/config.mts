@@ -35,18 +35,29 @@ export default defineConfig({
     sidebar: {
       '/academy/': [],
       '/bug-bounty/': [
-        { text: 'Parcours Bug Bounty', link: '/bug-bounty/', items: [
-          { text: 'Programme et préparation', link: '/bug-bounty/#programme-et-preparation' },
-          { text: 'Reconnaissance passive', link: '/bug-bounty/#reconnaissance-passive' },
-          { text: 'Cartographie et scan réseau', link: '/bug-bounty/#cartographie-et-scan-reseau' },
-          { text: 'Cartographie Web et API', link: '/bug-bounty/#cartographie-web-et-api' },
-          { text: 'Tests de vulnérabilités', link: '/bug-bounty/#tests-de-vulnerabilites' },
-          { text: 'Validation et preuves', link: '/bug-bounty/#validation-et-preuves' },
-          { text: 'IA & Bug Bounty', link: '/bug-bounty/#ia-et-bug-bounty' },
-          { text: 'Rapport et signalement', link: '/bug-bounty/#rapport-et-signalement' },
-          { text: 'Suivi et prime', link: '/bug-bounty/#suivi-et-prime' }
+        { text: 'Bug Bounty', link: '/bug-bounty/', items: [
+          { text: 'Programme et préparation', link: '/bug-bounty/preparation' },
+          { text: 'Reconnaissance passive', link: '/bug-bounty/reconnaissance' },
+          { text: 'Cartographie et scan réseau', link: '/bug-bounty/scan-reseau' },
+          { text: 'Cartographie Web et API', link: '/bug-bounty/cartographie-web' },
+          { text: 'Tests de vulnérabilités', link: '/bug-bounty/vulnerabilites', collapsed: true, items: [
+            { text: 'Subdomain Takeover', link: '/bug-bounty/vulnerabilites#subdomain-takeover' },
+            { text: 'Exposition de données', link: '/bug-bounty/vulnerabilites#exposition-de-donnees' },
+            { text: 'XSS', link: '/bug-bounty/vulnerabilites#cross-site-scripting-xss' },
+            { text: 'SQL Injection', link: '/bug-bounty/vulnerabilites#sql-injection-sqli' },
+            { text: 'LFI', link: '/bug-bounty/vulnerabilites#local-file-inclusion-lfi' },
+            { text: 'SSRF', link: '/bug-bounty/vulnerabilites#server-side-request-forgery-ssrf' },
+            { text: 'CORS', link: '/bug-bounty/vulnerabilites#cross-origin-resource-sharing-cors' },
+            { text: 'WordPress', link: '/bug-bounty/vulnerabilites#wordpress' },
+            { text: 'Microsoft IIS', link: '/bug-bounty/vulnerabilites#microsoft-iis-et-asp-net' },
+            { text: 'React2Shell', link: '/bug-bounty/vulnerabilites#react2shell-cve-2025-55182' }
+          ] },
+          { text: 'Validation et preuves', link: '/bug-bounty/validation' },
+          { text: 'Rapport et signalement', link: '/bug-bounty/rapport' },
+          { text: 'Suivi et prime', link: '/bug-bounty/suivi' }
         ] },
-        { text: 'Ressources', items: [
+        { text: 'Espaces complémentaires', items: [
+          { text: 'IA & Bug Bounty', link: '/bug-bounty/ia' },
           { text: 'Security Tools', link: '/bug-bounty/ressources#security-tools' },
           { text: 'Browser Extensions', link: '/bug-bounty/ressources#browser-extensions' }
         ] }
