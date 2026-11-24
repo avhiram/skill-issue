@@ -18,17 +18,17 @@ Objectif : inventorier les URL, routes, formulaires, paramètres, scripts et int
 ### Collecte passive avec Katana
 
 ```bash
-katana -u subexample.coms_alive.txt -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -kf -jc -fx -ef woff,css,png,svg,jpg,woff2,jpeg,gif,svg -o allurls.txt
+katana -u subexample.coms_alive.txt -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -kf -jc -fx -ef woff,css,png,svg,jpg,woff2,jpeg,gif,svg -o katana_archive_urls.txt
 ```
 
-Collecte des URL depuis des archives et d'autres sources, en excluant certaines extensions.
+Variante historique. Entrée : `subexample.coms_alive.txt` (filtrage HTTP du chapitre précédent). Sortie : `katana_archive_urls.txt`.
 
 ### Collecte avancée avec Katana
 
 ```bash
-echo example.com | katana -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -f qurl | urldedupe > output.txt
-katana -u https://example.com -d 5 | grep '=' | urldedupe | anew output.txt
-cat output.txt | sed 's/=.*/=/' > final.txt
+echo example.com | katana -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -f qurl | urldedupe > katana_parameters_raw.txt
+katana -u https://example.com -d 5 | grep '=' | urldedupe | anew katana_parameters_raw.txt
+cat katana_parameters_raw.txt | sed 's/=.*/=/' > katana_parameters_normalized.txt
 ```
 
 Bloc de collecte et de déduplication des URL paramétrées.
@@ -39,8 +39,8 @@ Bloc de collecte et de déduplication des URL paramétrées.
 
 ```bash
 echo example.com | gau --mc 200 | urldedupe > urls.txt
-grep -E '\.php|\.asp|\.aspx|\.jspx|\.jsp' urls.txt | grep '=' | sort -u > output.txt
-cat output.txt | sed 's/=.*/=/' > final.txt
+grep -E '\.php|\.asp|\.aspx|\.jspx|\.jsp' urls.txt | grep '=' | sort -u > gau_parameters_raw.txt
+cat gau_parameters_raw.txt | sed 's/=.*/=/' > gau_parameters_normalized.txt
 ```
 
 Bloc de collecte et de filtrage des URL par extension et paramètres.
@@ -150,10 +150,10 @@ Isole les URL contenant un signe égal, puis vérifier manuellement qu'il s'agit
 ### Repérage des pages de connexion
 
 ```bash
-grep -Ei 'login|admin|signin|dashboard' live_websites.txt | tee login_endpoints.txt
+grep -Ei 'login|admin|signin|dashboard' all_archived_urls.txt | tee login_endpoints.txt
 ```
 
-Repère les services ou titres contenant ces termes ; cela ne constitue pas une preuve de vulnérabilité.
+Repère les chemins archivés contenant ces termes ; vérifier leur pertinence et leur périmètre manuellement.
 
 ## Crawling complémentaire et nettoyage
 
@@ -171,7 +171,11 @@ Explore un site de laboratoire déjà démarré sur le port 8000. L'option -u es
 gau < scope/domains.txt | sort -u > gau_urls.txt
 ```
 
-Collecte les URL historiques des domaines listés dans le fichier préparé au préalable.
+Collecte les URL historiques des domaines listés dans `scope/domains.txt`, fichier à préparer à partir du périmètre du programme.
+
+### Préparer l'inventaire Web
+
+Examiner les résultats des collectes précédentes. Enregistrer les URL pertinentes et autorisées, une par ligne, dans `allurls.txt`. Ne pas mélanger les résultats normalisés sans valeurs, les métadonnées HTTP ou les URL du laboratoire local avec cet inventaire.
 
 ### URL avec paramètres
 
@@ -219,7 +223,7 @@ Classe les URL déjà collectées selon un pattern GF installé. Aucun test rés
 ### Recherche passive avec Arjun
 
 ```bash
-arjun -u https://example.com/endpoint.php -oT arjun_output.txt -t 10 --rate-limit 10 --passive -m GET,POST --headers "User-Agent: Mozilla/5.0"
+arjun -u https://example.com/endpoint.php -oT arjun_passive.txt -t 10 --rate-limit 10 --passive -m GET,POST --headers "User-Agent: Mozilla/5.0"
 ```
 
 Recherche des paramètres HTTP avec le mode passif d'Arjun.
@@ -227,7 +231,7 @@ Recherche des paramètres HTTP avec le mode passif d'Arjun.
 ### Recherche avec une wordlist Arjun
 
 ```bash
-arjun -u https://example.com/endpoint.php -oT arjun_output.txt -m GET,POST -w /usr/share/wordlists/seclists/Discovery/Web-Content/burp-parameter-names.txt -t 10 --rate-limit 10 --headers "User-Agent: Mozilla/5.0"
+arjun -u https://example.com/endpoint.php -oT arjun_wordlist.txt -m GET,POST -w /usr/share/wordlists/seclists/Discovery/Web-Content/burp-parameter-names.txt -t 10 --rate-limit 10 --headers "User-Agent: Mozilla/5.0"
 ```
 
 Teste des noms de paramètres provenant d'une liste de mots.
@@ -374,6 +378,10 @@ jq 'keys' response.json
 Prérequis : enregistrer une réponse API de test dans response.json. Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service. Exemple local ajouté pour faciliter l'analyse des réponses API.
 
 ## Fichiers du chapitre
+
+- `katana_parameters_raw.txt` et `gau_parameters_raw.txt` : résultats distincts des variantes historiques.
+- `katana_parameters_normalized.txt` et `gau_parameters_normalized.txt` : paramètres normalisés ; les valeurs originales restent dans les fichiers bruts.
+- `arjun_passive.txt`, `arjun_wordlist.txt` et `params.json` : sorties indépendantes.
 
 - `live_websites.txt` : inventaire HTTP à préparer lors de la reconnaissance active.
 - `all_archived_urls.txt` : fusion des archives.
