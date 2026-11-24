@@ -46,8 +46,7 @@ Correction et contrôles de vérification.
 
 ## Avant de poursuivre
 
-- Rapport relu et transmis via le canal du programme.
-- Référence du signalement conservée.
+<BountyChecklist storage-key="checkpoint-rapport" :items='["Rapport relu et transmis via le canal du programme.","Référence du signalement conservée."]' />
 
 ---
 
