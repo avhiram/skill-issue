@@ -34,8 +34,7 @@ Calcule les empreintes des fichiers de preuve, y compris dans les sous-dossiers 
 
 ## Avant de poursuivre
 
-- Impact démontré et étapes de reproduction documentées.
-- Preuves expurgées et enregistrées.
+<BountyChecklist storage-key="checkpoint-validation" :items='["Impact démontré et étapes de reproduction documentées.","Preuves expurgées et enregistrées."]' />
 
 ---
 
