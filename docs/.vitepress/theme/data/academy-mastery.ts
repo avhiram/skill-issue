@@ -2,14 +2,6 @@
 // Le parcours pédagogique et ses textes sont rédigés pour SKILL-ISSUE.
 export const masteryResources = [
   {
-    "id": "hm-001",
-    "title": "CS50: Introduction to Computer Science",
-    "url": "https://www.edx.org/course/introduction-computer-science-harvardx-cs50x",
-    "category": "systemes",
-    "stage": "Foundation Phase",
-    "level": 0
-  },
-  {
     "id": "hm-002",
     "title": "Operating Systems: Three Easy Pieces",
     "url": "http://pages.cs.wisc.edu/~remzi/OSTEP/",
@@ -141,14 +133,6 @@ export const masteryResources = [
     "id": "hm-019",
     "title": "freeCodeCamp JavaScript Algorithms and Data Structures",
     "url": "https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/",
-    "category": "programmation",
-    "stage": "Foundation Phase",
-    "level": 0
-  },
-  {
-    "id": "hm-020",
-    "title": "Harvard CS50's Web Programming with Python and JavaScript",
-    "url": "https://cs50.harvard.edu/web/",
     "category": "programmation",
     "stage": "Foundation Phase",
     "level": 0
