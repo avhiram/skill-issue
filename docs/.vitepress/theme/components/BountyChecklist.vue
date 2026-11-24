@@ -45,7 +45,8 @@ function reset() {
   <div class="bounty-checklist">
     <div class="checklist-meta">
       <span aria-live="polite">{{ count }} / {{ items.length }}</span>
-      <span v-if="!workspace">Choisir un programme</span>
+      <span v-if="workspace" class="checklist-workspace">{{ workspace }}</span>
+      <a v-else href="/skill-issue/bug-bounty/preparation.html">Choisir un programme</a>
       <button type="button" :disabled="!workspace || count === 0" @click="reset">Réinitialiser</button>
     </div>
     <ul>
@@ -62,6 +63,8 @@ function reset() {
 <style scoped>
 .bounty-checklist { margin: 16px 0 24px; }
 .checklist-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--vp-c-text-2); font-size: 13px; }
+.checklist-workspace { min-width: 0; overflow-wrap: anywhere; }
+.checklist-meta a { color: var(--vp-c-brand-1); }
 .checklist-meta button { color: var(--vp-c-brand-1); padding: 8px 0 8px 12px; font-size: 13px; }
 .checklist-meta button:disabled { opacity: .45; cursor: default; }
 .bounty-checklist ul { list-style: none; padding: 0; margin: 6px 0; }
