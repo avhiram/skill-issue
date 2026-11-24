@@ -43,6 +43,9 @@ Enregistre le serveur MCP SSE local dans Claude Code. Commande de l'article ; n√
     login.txt
     profile.txt
     api.txt
+    headers.txt
+    response.json
+    openapi.json
   javascript/
     app.js
   preuves/
