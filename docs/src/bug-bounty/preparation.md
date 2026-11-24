@@ -11,12 +11,6 @@ next: false
 
 Objectif : choisir un programme, comprendre les règles et préparer son environnement avant toute requête.
 
-## Préparation
-
-- Lire le scope, les exclusions, les limites de débit et les règles de divulgation du programme.
-- Distinguer les domaines autorisés des noms simplement découverts. Un certificat, un ASN ou une archive ne prouve pas qu'un service est dans le scope.
-- Préparer un dossier de travail et conserver les résultats intermédiaires.
-
 ## Choisir un programme
 
 - Identifier un programme ouvert aux signalements et vérifier s'il prévoit une prime.
@@ -31,7 +25,7 @@ mkdir -p bug-bounty/{scope,recon,requests,preuves,rapports}
 cd bug-bounty
 ```
 
-Prépare les dossiers locaux pour conserver le périmètre, les inventaires, les requêtes, les preuves et les rapports. Adaptation pratique du classement proposé dans l'article Claude Code.
+Crée les dossiers du programme pour classer le scope, les résultats, les requêtes, les preuves et les rapports.
 
 ## Préparer les outils
 
@@ -43,7 +37,13 @@ Consulter [Security Tools et Browser Extensions](./ressources.md). Vérifier les
 command -v subfinder httpx katana gau nmap nuclei ffuf
 ```
 
-Vérifie quels exécutables sont présents dans le PATH. Attention : httpx désigne ici l'outil ProjectDiscovery, pas le client Python. Ajout de préparation local.
+Vérifie quels exécutables sont présents dans le PATH. Attention : httpx désigne ici l'outil ProjectDiscovery, pas le client Python.
+
+## Avant de poursuivre
+
+- Scope et exclusions enregistrés.
+- Règles du programme vérifiées.
+- Dossier de travail et comptes de test prêts.
 
 ---
 
