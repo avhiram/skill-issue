@@ -32,6 +32,11 @@ sha256sum preuves/* > preuves.sha256
 
 Calcule les empreintes des fichiers de preuve locaux pour documenter leur intégrité. Ne conserver que des preuves expurgées ; ajout de documentation locale.
 
+## Avant de poursuivre
+
+- Impact démontré et étapes de reproduction documentées.
+- Preuves expurgées et enregistrées.
+
 ---
 
 [Précédent : Tests de vulnérabilités](./vulnerabilites.md) · [Parcours](./index.md) · [Suivant : Rapport et signalement](./rapport.md)
