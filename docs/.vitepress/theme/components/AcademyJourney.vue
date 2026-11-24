@@ -793,7 +793,8 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "linux-basics": [
     "https://overthewire.org/wargames/bandit/",
-    "https://linuxjourney.com/"
+    "https://linuxjourney.com/",
+    "https://www.youtube.com/watch?v=U1w4T03B30I"
   ],
   "linux-admin": [
     "https://ubuntu.com/server/docs/",
@@ -806,7 +807,8 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://learn.microsoft.com/en-us/powershell/"
   ],
   "python-basics": [
-    "https://www.freecodecamp.org/learn/scientific-computing-with-python/"
+    "https://www.freecodecamp.org/learn/scientific-computing-with-python/",
+    "https://www.youtube.com/watch?v=7utwZYKweho"
   ],
   "scripting": [
     "https://skills.github.com/",
@@ -835,7 +837,8 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://github.com/jivoi/awesome-osint"
   ],
   "osint-practice": [
-    "https://bellingcat.gitbook.io/toolkit"
+    "https://bellingcat.gitbook.io/toolkit",
+    "https://www.youtube.com/watch?v=qwA6MmbeGNo"
   ],
   "scanning": [
     "https://nmap.org/docs.html"
@@ -843,7 +846,9 @@ const freeSelections: Record<string, readonly string[]> = {
   "web-security": [
     "https://portswigger.net/web-security/",
     "https://portswigger.net/web-security/learning-paths",
-    "https://owasp.org/www-project-top-ten/"
+    "https://owasp.org/www-project-top-ten/",
+    "https://www.youtube.com/playlist?list=PL1H1sBF1VAKX9Mz0UVU2eR7EdGmtb5XJK",
+    "https://www.youtube.com/watch?v=24fHLWXGS-M"
   ],
   "web-labs": [
     "https://portswigger.net/web-security/all-labs",
@@ -863,7 +868,11 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://www.yeswehack.com/fr/researchers/start-hunting",
     "https://www.intigriti.com/researchers/bug-bounty-programs",
     "https://kb.intigriti.com/en/articles/3471127-useful-resources-about-web-hacking-bug-bounty",
-    "https://yogosha.com/fr/hackers/rejoindre-yogosha-strike-force/"
+    "https://yogosha.com/fr/hackers/rejoindre-yogosha-strike-force/",
+    "https://www.youtube.com/watch?v=wS2z5lt34Cc",
+    "https://www.youtube.com/@lostsec_ftw",
+    "https://www.youtube.com/watch?v=p4JgIu1mceI",
+    "https://www.youtube.com/watch?v=cRKToFkZMvk"
   ],
   "ctf-beginner": [
     "https://picoctf.org/",
@@ -872,16 +881,23 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "ctf-intermediate": [
     "https://help.offsec.com/hc/en-us/articles/360048318472-Getting-Started-with-PG-Play-and-Practice",
-    "https://tryhackme.com/free-rooms"
+    "https://tryhackme.com/free-rooms",
+    "https://www.youtube.com/@_JohnHammond/playlists"
   ],
   "pentest-system": [
-    "https://github.com/peass-ng/PEASS-ng"
+    "https://github.com/peass-ng/PEASS-ng",
+    "https://www.youtube.com/watch?v=fNzpcB7ODxQ",
+    "https://www.youtube.com/watch?v=uTcrbNBcoxQ",
+    "https://www.youtube.com/watch?v=ZTnwg3qCdVM",
+    "https://www.youtube.com/watch?v=3FNYvj2U0HM",
+    "https://www.youtube.com/watch?v=sH4JCwjybGs"
   ],
   "bonus-windows-labs": [
     "https://learn.microsoft.com/en-us/windows/security/"
   ],
   "ad-intro": [
-    "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview"
+    "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
+    "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVoU6Q2u7BBGPsnkn-rajlp"
   ],
   "ad-minilab": [
     "https://orange-cyberdefense.github.io/GOAD/labs/MINILAB/"
@@ -901,7 +917,8 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://github.com/redcanaryco/atomic-red-team"
   ],
   "blue-logs": [
-    "https://docs.suricata.io/en/latest/quickstart.html"
+    "https://docs.suricata.io/en/latest/quickstart.html",
+    "https://www.youtube.com/watch?v=56NDgBOSpUg"
   ],
   "blue-siem": [
     "https://documentation.wazuh.com/current/getting-started/index.html",
@@ -915,7 +932,9 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "dfir-host": [
     "https://github.com/volatilityfoundation/volatility3",
-    "https://cloud.google.com/learn/security/mandiant-academy-courses/free-cyber-defense-training"
+    "https://cloud.google.com/learn/security/mandiant-academy-courses/free-cyber-defense-training",
+    "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVPNh6Q8k1fpU97vhJc_c45",
+    "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVmjZZr162aUNCt2Uy5ozAG"
   ],
   "reverse": [
     "https://reverse.zip/categories/introduction-au-reverse/",
@@ -923,11 +942,15 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://reverse.zip/categories/introduction-au-pwn/",
     "https://reverse.zip/categories/exploitation-de-la-heap/",
     "https://opensecuritytraining.info/",
-    "https://github.com/NationalSecurityAgency/ghidra"
+    "https://github.com/NationalSecurityAgency/ghidra",
+    "https://www.youtube.com/watch?v=ncBblM920jw",
+    "https://www.youtube.com/watch?v=HgEGAaYdABA"
   ],
   "malware": [
     "https://docs.remnux.org/",
-    "https://www.malware-traffic-analysis.net/"
+    "https://www.malware-traffic-analysis.net/",
+    "https://www.youtube.com/watch?v=sBuxwMAfGnI",
+    "https://www.youtube.com/watch?v=3Q9-X_NRlJc"
   ],
   "cloud-foundations": [
     "https://learn.microsoft.com/en-us/training/azure/"
@@ -944,7 +967,8 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "iot": [
     "https://github.com/OWASP/IoTGoat",
-    "https://github.com/V33RU/awesome-connected-things-sec"
+    "https://github.com/V33RU/awesome-connected-things-sec",
+    "https://www.youtube.com/watch?v=j8SqZLr64NA"
   ],
   "radio-satellite": [
     "https://hackers-arise.com/satellite-hacking-part-1-getting-started/"
