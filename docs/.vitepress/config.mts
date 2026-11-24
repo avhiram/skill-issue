@@ -36,7 +36,7 @@ export default defineConfig({
       '/academy/': [],
       '/bug-bounty/': [
         { text: 'Bug Bounty', link: '/bug-bounty/index.html', items: [
-          { text: 'Programme et préparation', link: '/bug-bounty/preparation' },
+          { text: 'Programme et préparation', link: `https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
           { text: 'Reconnaissance passive', link: '/bug-bounty/reconnaissance' },
           { text: 'Reconnaissance active', link: '/bug-bounty/scan-reseau' },
           { text: 'Cartographie Web et API', link: '/bug-bounty/cartographie-web' },
