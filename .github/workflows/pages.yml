@@ -78,20 +78,10 @@ jobs:
             echo 'Ancre IIS incorrecte.'
             exit 1
           fi
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          phrases = ('Cheatsheet technique classée', 'Lostsec - archive originale', '35 blocs extraits')
-          source = Path('docs/src/bug-bounty/index.md').read_text(encoding='utf-8')
-          page = Path('docs/.vitepress/dist/bug-bounty/index.html').read_text(encoding='utf-8')
-          visible = re.sub(r'<script\b[^>]*>.*?</script>', '', page, flags=re.I | re.S)
-          visible = re.sub(r'<style\b[^>]*>.*?</style>', '', visible, flags=re.I | re.S)
-          visible = re.sub(r'<!--.*?-->', '', visible, flags=re.S)
-          for phrase in phrases:
-              if phrase in source or phrase in visible:
-                  print(f'Ancien contenu Bug Bounty détecté : {phrase}')
-                  raise SystemExit(1)
-          PY
+          if grep -Eqi 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' docs/src/bug-bounty/index.md; then
+            echo 'Ancienne introduction Bug Bounty détectée dans la source.'
+            exit 1
+          fi
       - name: Audit all rendered HTML for visible Markdown fences
         run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
       - name: Stamp compiled pages with source revision
