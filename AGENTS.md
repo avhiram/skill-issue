@@ -31,3 +31,11 @@
 - Utiliser un dossier distinct sous ~/bug-bounty pour chaque cible et nom de programme. Le champ dynamique détermine le dossier de préparation ; ne jamais écraser les fichiers de scope existants lors de sa création.
 - Les commandes existantes utilisent des chemins relatifs depuis ce dossier. Préserver les enchaînements et avertir de changer de répertoire lors d'un changement de programme. Les inventaires restent à la racine tant que tous leurs producteurs et consommateurs n'ont pas été adaptés ensemble.
 - Conserver les checklists locales séparées par programme.
+
+## Suivi de l'audit Bug Bounty
+
+- Avancement de référence : 7 étapes sur 10 traitées. Les étapes 8 (revue individuelle), 9 (options et dépendances) et 10 (contrôle final/publication) restent ouvertes.
+- Décompte de la revue individuelle : 16 blocs sur 114 (blocs de code, commandes dynamiques et exemples textuels), lot Programme et préparation (4), Validation et preuves (1), Rapport (1), Suivi (0), IA (10). Ne pas confondre lecture documentaire et exécution.
+- Tests locaux réellement exécutés avec des fichiers fictifs : création de deux espaces, reprise et conservation du scope, archives distinctes, contrôle des outils présents/absents, empreintes SHA-256 (fichiers avec espaces, sous-dossiers, rejet du manifeste vide, détection de modification). Syntaxe MCP vérifiée dans la documentation officielle Claude Code, connexion Burp non testée.
+- Reprendre par Reconnaissance passive (15 blocs), puis Reconnaissance active (13), Cartographie Web (37), Tests de vulnérabilités (33). Vérifier les prérequis, commenter les limites des exemples historiques et ne pas annoncer d'exécution réseau non réalisée.
+- À chaque lot, donner les étapes terminées, le nombre de blocs revus et les vérifications réellement effectuées. Ne pas prolonger l'audit après le bilan final sauf nouvelle demande.
