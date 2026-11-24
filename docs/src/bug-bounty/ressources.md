@@ -53,26 +53,57 @@ Catalogue issu de la [capture Lostsec du 28 août 2025](https://web.archive.org/
 
 ## Browser Extensions
 
-- **[Greb](https://github.com/1hehaq/greb.git)** - Inspection de paramètres et formulaires.
-- **[TruffleHog](https://addons.mozilla.org/en-US/firefox/addon/trufflehog/)** - Détection de secrets potentiellement exposés.
-- **[FoxyProxy](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/)** - Gestion des proxys.
-- **[Wappalyzer](https://addons.mozilla.org/en-US/firefox/addon/wappalyzer/)** - Identification des technologies Web.
-- **[Temp Mail](https://addons.mozilla.org/en-US/firefox/addon/temp-mail/)** - Adresses e-mail temporaires.
-- **[Hunter.io](https://addons.mozilla.org/en-US/firefox/addon/hunterio/)** - Recherche d'adresses e-mail professionnelles.
-- **[HackTools](https://addons.mozilla.org/en-US/firefox/addon/hacktools/)** - Aide-mémoire de tests Web.
-- **[Cookie Editor](https://addons.mozilla.org/en-US/firefox/addon/edit-cookie/)** - Inspection et gestion des cookies.
-- **[WebRTC Disable](https://addons.mozilla.org/en-US/firefox/addon/happy-bonobo-disable-webrtc/)** - Gestion de WebRTC.
-- **[Link Gopher](https://addons.mozilla.org/en-US/firefox/addon/link-gopher/)** - Extraction des liens.
-- **[FindSomething](https://addons.mozilla.org/en-US/firefox/addon/findsomething/)** - Inspection des références et paramètres.
-- **[DotGit](https://addons.mozilla.org/en-US/firefox/addon/dotgit/)** - Détection de dépôts Git exposés.
-- **[Open Multiple URLs](https://addons.mozilla.org/en-US/firefox/addon/open-multiple-urls/)** - Ouverture de plusieurs URL.
-- **[uBlock Origin](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/)** - Blocage des publicités et traceurs.
-- **[Dark Reader](https://addons.mozilla.org/en-US/firefox/addon/darkreader/)** - Thème sombre.
-- **[User-Agent Switcher](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/)** - Modification du User-Agent pour tests de compatibilité.
-- **[Retire.js](https://addons.mozilla.org/en-US/firefox/addon/retire-js/)** - Détection de bibliothèques JavaScript vulnérables.
-- **[Page Translator](https://addons.mozilla.org/en-US/firefox/addon/traduzir-paginas-web/)** - Traduction de pages.
-- **[WaybackURLs](https://addons.mozilla.org/en-US/firefox/addon/waybackurl/)** - Consultation des URL archivées.
-- **[Shodan](https://addons.mozilla.org/en-US/firefox/addon/shodan-addon/)** - Informations publiques sur les services Internet.
+Extensions classées par usage. Les liens Chrome proviennent du document [Best Browser Extensions for Bug Hunting and Cybersecurity](https://infosecwriteups.com/best-browser-extensions-for-bug-hunting-and-cybersecurity-77faf6bd8188), mis à jour le 23 avril 2026. Les liens Firefox et GitHub sont conservés. La disponibilité, la compatibilité et l'identité des éditeurs n'ont pas été vérifiées individuellement. Examiner les permissions et utiliser un profil de navigateur dédié aux tests ; éviter d'accorder l'accès à des sessions ou à des données sensibles. Les extensions similaires mais distinctes restent séparées.
+
+### Reconnaissance et OSINT
+
+- **Wappalyzer** - Identification des technologies Web. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/wappalyzer/) · [Chrome](https://chromewebstore.google.com/detail/wappalyzer-technology-pro/gppongmhjkpfnbhagpmjfkannfbllamg)
+- **Hunter.io** - Recherche d'adresses e-mail professionnelles. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/hunterio/) · [Chrome](https://chromewebstore.google.com/detail/hunter-email-finder-exten/hgmhmanijnjhaffoampdlllchpolkdnj)
+- **Link Gopher** - Extraction des liens. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/link-gopher/) · [Chrome](https://chromewebstore.google.com/detail/link-gopher/bpjdkodgnbfalgghnbeggfbfjpcfamkf)
+- **WaybackURLs** - Consultation des URL archivées. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/waybackurl/)
+- **Shodan** - Informations publiques sur les services Internet. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/shodan-addon/) · [Chrome](https://chromewebstore.google.com/detail/shodan/jjalcfnidlmpjhdfepjhjbhnhkbgleap)
+- **EXIF Viewer Pro** - Lecture des métadonnées EXIF des images. [Chrome](https://chromewebstore.google.com/detail/exif-viewer-pro/mmbhfeiddhndihdjeganjggkmjapkffm)
+- **Wayback Machine** - Extension de l'Internet Archive pour consulter les versions archivées. [Chrome](https://chromewebstore.google.com/detail/wayback-machine/fpnmgdkabkmnadcjpehmlllkndpkmiak)
+- **YesWeHack VDP Finder** - Identifie les programmes de divulgation de vulnérabilités associés aux sites visités. [Chrome](https://chromewebstore.google.com/detail/yeswehack-vdp-finder/jnknjejacdkpnaacfgolbmdohkhpphjb)
+- **Mitaka** - Recherche d'indicateurs IP, domaines, URL et hashes dans des services de renseignement. [Chrome](https://chromewebstore.google.com/detail/mitaka/bfjbejmeoibbdpfdbmbacmefcbannnbg)
+- **Vortimo** - Organisation des observations OSINT et captures de pages. [Chrome](https://chromewebstore.google.com/detail/vortimo-osint-tool/mnakbpdnkedaegeiaoakkjafhoidklnf)
+- **IP Address and Domain Information** - Consultation des informations IP, ASN, WHOIS et hébergement. [Chrome](https://chromewebstore.google.com/detail/ip-address-and-domain-inf/lhgkegeccnckoiliokondpaaalbhafoa)
+
+### Analyse Web
+
+- **TruffleHog** - Détection de secrets potentiellement exposés. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/trufflehog/) · [Chrome](https://chromewebstore.google.com/detail/trufflehog/bafhdnhjnlcdbjcdcnafhdcphhnfnhjc)
+- **FindSomething** - Inspection des références et paramètres. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/findsomething/) · [Chrome](https://chromewebstore.google.com/detail/findsomething/kfhniponecokdefffkpagipffdefeldb)
+- **DotGit** - Détection de dépôts Git exposés. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/dotgit/) · [Chrome](https://chromewebstore.google.com/detail/dotgit/pampamgoihgcedonnphgehgondkhikel)
+- **Retire.js** - Détection de bibliothèques JavaScript vulnérables. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/retire-js/)
+- **EndPointer** - Extraction et organisation des endpoints. [Chrome](https://chromewebstore.google.com/detail/endpointer/ppliilneafplhagjhhphcjmjdmbjagcp)
+- **S3BucketList** - Repère les références à des buckets Amazon S3 dans les requêtes du navigateur. [Chrome](https://chromewebstore.google.com/detail/s3bucketlist/anngjobjhcbancaaogmlcffohpmcniki)
+- **JSON Formatter** - Mise en forme des réponses JSON. [Chrome](https://chromewebstore.google.com/detail/json-formatter/bcjindcccaagfpajjjmafapmmgkkhgoa)
+- **Code Formatter** - Mise en forme de JSON, CSS et JavaScript. [Chrome](https://chromewebstore.google.com/detail/code-formatter-json-css-j/bhimnoepicmcjfkbmhckamllnibadfal)
+
+### Tests manuels et HTTP
+
+- **Greb** - Inspection de paramètres et formulaires. [GitHub](https://github.com/1hehaq/greb.git)
+- **FoxyProxy** - Gestion des proxys. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/foxyproxy-standard/) · [Chrome](https://chromewebstore.google.com/detail/foxyproxy/gcknhkkoolaabfmlnjonogaaifnjlfnp)
+- **HackTools** - Aide-mémoire de tests Web. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/hacktools/) · [Chrome](https://chromewebstore.google.com/detail/hack-tools/cmbndhnoonmghfofefkcccljbkdpamhi)
+- **Cookie Editor** - Inspection et gestion des cookies. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/edit-cookie/)
+- **User-Agent Switcher** - Modification du User-Agent pour tests de compatibilité. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/uaswitcher/) · [Chrome](https://chromewebstore.google.com/detail/user-agent-switcher-and-m/bhchdcejhohfmigjafbampogmaanbfkg)
+- **EditThisCookie** - Inspection et gestion des cookies ; vérifier la provenance et les permissions avant installation. [Chrome](https://chromewebstore.google.com/detail/editthiscookie-v3/ojfebgpkimhlhcblbalbfjblapadhbol)
+- **d3coder** - Encodage, décodage et conversions de formats. [Chrome](https://chromewebstore.google.com/detail/d3coder/gncnbkghencmkfgeepfaonmegemakcol)
+- **Toggle JavaScript** - Active ou désactive JavaScript pour comparer le comportement d'une page. [Chrome](https://chromewebstore.google.com/detail/toggle-javascript/cidlcjdalomndpeagkjpnefhljffbnlo)
+- **HackBar** - Manipulation manuelle des paramètres et encodage dans un laboratoire. [Chrome](https://chromewebstore.google.com/detail/hackbar/ginpbkfigcoaokgflihfhhmglmbchinc)
+- **Fake Filler** - Remplit des formulaires de test avec des données fictives. [Chrome](https://chromewebstore.google.com/detail/fake-filler/bnjjngeaknajbdcgpfkgnonkmififhfo)
+
+### Confort et productivité
+
+- **Temp Mail** - Adresses e-mail temporaires. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/temp-mail/) · [Chrome](https://chromewebstore.google.com/detail/temp-mail-disposable-temp/inojafojbhdpnehkhhfjalgjjobnhomj)
+- **WebRTC Disable** - Gestion de WebRTC. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/happy-bonobo-disable-webrtc/)
+- **Open Multiple URLs** - Ouverture de plusieurs URL. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/open-multiple-urls/) · [Chrome](https://chromewebstore.google.com/detail/open-multiple-urls/oifijhaokejakekmnjmphonojcfkpbbh)
+- **uBlock Origin** - Blocage des publicités et traceurs. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/) · [Chrome](https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm)
+- **Dark Reader** - Thème sombre. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/darkreader/) · [Chrome](https://chromewebstore.google.com/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)
+- **Page Translator** - Traduction de pages. [Firefox](https://addons.mozilla.org/en-US/firefox/addon/traduzir-paginas-web/)
+- **WebRTC Protect** - Configuration du routage WebRTC pour limiter certaines fuites d'adresse IP. [Chrome](https://chromewebstore.google.com/detail/webrtc-protect-protect-ip/bkmmlbllpjdpgcgdohbaghfaecnddhni)
+- **Google Translate** - Traduction de pages Web. [Chrome](https://chromewebstore.google.com/detail/google-translate/aapbdbdomjkkjkaonfhkkikfgjllcleb)
+- **SponsorBlock** - Ignore les segments sponsorisés dans les vidéos de formation. [Chrome](https://chromewebstore.google.com/detail/sponsorblock-for-youtube/mnjggcdmjocbbbhaepdhchncahnbgone)
 
 ## Writeups
 
