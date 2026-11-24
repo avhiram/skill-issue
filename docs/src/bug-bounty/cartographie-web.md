@@ -378,4 +378,4 @@ Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service.
 
 ---
 
-[Précédent : Cartographie et scan réseau](./scan-reseau.md) · [Parcours](./index.md) · [Suivant : Tests de vulnérabilités](./vulnerabilites.md)
+[Précédent : Reconnaissance active](./scan-reseau.md) · [Parcours](./index.md) · [Suivant : Tests de vulnérabilités](./vulnerabilites.md)
