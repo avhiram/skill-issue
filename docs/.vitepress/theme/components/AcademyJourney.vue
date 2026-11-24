@@ -656,6 +656,17 @@ for (const room of tryHackMeRooms) {
   existing.add(normalizeUrl(room.url))
   freeSets.set(room.routeLevel, existing)
 }
+// Le nouveau README indique explicitement que ces salles ne sont plus gratuites.
+// Elles restent consultables dans le parcours complet si elles figurent déjà au catalogue.
+const roomsNotFree = [
+  'probe', 'cauldron', 'bppenguin', 'greprtp', 'snappedphishingline',
+  'lookback', 'confidential', 'linuxfundamentalspart2',
+  'linuxfundamentalspart3', 'introtolan'
+]
+for (const slug of roomsNotFree) {
+  const url = normalizeUrl('https://tryhackme.com/room/' + slug)
+  for (const selected of freeSets.values()) selected.delete(url)
+}
 
 function freeLinks(id: string): AssignedResource[] {
   const selected = freeSets.get(id)
