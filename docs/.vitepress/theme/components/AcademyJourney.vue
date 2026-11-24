@@ -850,7 +850,11 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "bug-bounty": [
     "https://www.hackerone.com/hackers/how-to-start-hacking",
-    "https://docs.bugcrowd.com/researchers/participating-in-program/finding-program/"
+    "https://docs.bugcrowd.com/researchers/participating-in-program/finding-program/",
+    "https://yeswehack.com/programs",
+    "https://www.yeswehack.com/fr/researchers/start-hunting",
+    "https://www.intigriti.com/researchers/bug-bounty-programs",
+    "https://kb.intigriti.com/en/articles/3471127-useful-resources-about-web-hacking-bug-bounty"
   ],
   "ctf-beginner": [
     "https://picoctf.org/",
