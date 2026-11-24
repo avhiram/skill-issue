@@ -24,7 +24,7 @@ Objectif : choisir un programme, comprendre les règles et préparer son environ
 
 <BountyCommand :source="&quot;mkdir -p \&quot;./__BOUNTY_WORKSPACE__\&quot;/{scope,recon,requests,preuves,rapports,javascript} &amp;&amp;\ncd \&quot;./__BOUNTY_WORKSPACE__\&quot; &amp;&amp;\ntouch scope/domains.txt&quot;" language="bash" />
 
-Crée le dossier du programme directement dans le répertoire courant, puis s'y place. Se placer d'abord dans le dossier parent souhaité (Desktop, espace de travail, etc.). Relancer depuis ce même parent pour reprendre un programme existant. Les fichiers existants sont conservés.
+Avant de copier la commande, place-toi dans le dossier où tu veux ranger le programme et vérifie l'emplacement avec `pwd`. La commande crée `./<nom-du-programme>` directement à cet endroit : depuis Desktop, le dossier sera donc créé sur Desktop. Elle ne choisit aucun dossier parent à ta place. Pour reprendre un programme, relance la commande depuis le même dossier parent ; les fichiers existants sont conservés.
 
 Renseigner `scope/domains.txt` avec les domaines réellement autorisés, un par ligne. Les inventaires TXT restent à la racine du programme pour préserver les enchaînements. Utiliser `requests/` pour les exports HTTP et JSON, `javascript/` pour les scripts locaux, `preuves/` pour les preuves et `rapports/` pour les signalements. Les anciennes variantes qui utilisent des chemins différents indiquent leurs prérequis propres.
 
