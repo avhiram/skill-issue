@@ -20,10 +20,10 @@ Analyse, organisation et rédaction avec l'IA. Exemples adaptés de The Best Cla
 ### Ajouter le serveur MCP Burp
 
 ```bash
-claude mcp add burp --transport sse http://127.0.0.1:9876
+claude mcp add --transport sse burp http://127.0.0.1:9876
 ```
 
-Enregistre le serveur MCP SSE local dans Claude Code. Commande de l'article ; nécessite Claude Code installé et un serveur MCP Burp déjà démarré sur ce port. Syntaxe et connexion non testées.
+Enregistre le serveur MCP local dans Claude Code. Syntaxe conforme à la [documentation Claude Code](https://code.claude.com/docs/en/mcp) et adresse SSE indiquée par [PortSwigger](https://github.com/PortSwigger/mcp-server/blob/main/BappDescription.html). SSE est déprécié côté Claude Code mais reste pris en charge pour les serveurs compatibles. Vérifier le port configuré dans Burp. Connexion réelle non testée.
 
 ### Organisation des fichiers du projet
 
