@@ -34,7 +34,7 @@
 
 ## Installation des outils Bug Bounty
 
-- Le script d'installation conditionnelle est `docs/public/bug-bounty/install-tools.sh`, publié à `/bug-bounty/install-tools.sh`.
+- Le script d'installation conditionnelle est `docs/public/install-bugbounty-tools.sh`, publié à `/install-bugbounty-tools.sh`.
 - Cible : Exegol et Kali Linux avec APT. Ne pas le présenter comme un installateur universel.
 - Conserver les outils déjà présents ; installer uniquement les commandes absentes. Ne pas mettre à jour les outils présents ni installer toute la suite ProjectDiscovery.
 - Vérifier que `httpx` est bien le binaire ProjectDiscovery, pas le client Python.
