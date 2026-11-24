@@ -408,6 +408,93 @@ echo "https://example.com/" | gau | gf lfi | uro | sed 's/=.*/=/' | qsreplace "F
 
 Bloc historique de test LFI avec une liste de charges de test et FFUF.
 
+## Server-Side Request Forgery (SSRF)
+
+Une SSRF survient lorsqu'une application effectue une requête côté serveur vers une destination contrôlée par un utilisateur sans appliquer les restrictions nécessaires. Elle peut exposer des ressources normalement inaccessibles depuis Internet.
+
+### Types de SSRF
+
+| Type | Observation |
+| --- | --- |
+| In-band | Le contenu de la réponse distante est renvoyé par l'application. |
+| Blind | La requête est effectuée sans restitution directe de son contenu. |
+| Semi-blind | Des différences de latence, de statut ou d'erreur fournissent des indices indirects. |
+
+Une interaction DNS isolée ou une variation de temps ne démontre pas à elle seule un accès à une ressource interne.
+
+### Points d'entrée
+
+- Prévisualisation de liens, import de fichiers distants et webhooks.
+- Conversion PDF, traitement d'images SVG et de vidéos.
+- Parseurs XML et flux RSS/Atom.
+- Mutations GraphQL acceptant des URL et proxys WebSocket.
+- En-têtes HTTP interprétés par les composants backend.
+
+Examiner les fonctionnalités qui récupèrent une ressource distante. Les paramètres dont le nom évoque une URL ne constituent pas, à eux seuls, une preuve de SSRF.
+
+### Serveur HTTP de démonstration locale
+
+```bash
+mkdir -p ssrf-lab
+printf 'SSRF-LAB-TEST\n' > ssrf-lab/test.txt
+python3 -m http.server 8080 --bind 127.0.0.1 --directory ssrf-lab
+```
+
+Démarre un serveur de test accessible uniquement depuis la machine locale, avec un fichier témoin fictif. Ne pas exposer un dossier contenant des données personnelles ou des secrets.
+
+### Validation in-band dans un laboratoire local
+
+```bash
+curl -s -i --get 'http://127.0.0.1:8000/api/preview' \
+  --data-urlencode 'url=http://127.0.0.1:8080/test.txt'
+```
+
+Adaptation de l'exemple de l'article pour un laboratoire local : suppose qu'une application de test déjà disponible sur le port 8000 possède cette route et accepte le paramètre url. Observer si le marqueur SSRF-LAB-TEST apparaît dans la réponse et comparer avec le comportement attendu. Le test ne nécessite pas de consulter des données réelles.
+
+### Blind SSRF et interactions OOB
+
+L'article présente les outils suivants pour observer les interactions DNS ou HTTP dans un environnement explicitement autorisé :
+
+- [Interactsh](https://github.com/projectdiscovery/interactsh)
+- [Burp Collaborator](https://portswigger.net/burp/documentation/collaborator)
+- [Webhook.site](https://webhook.site/)
+- [RequestRepo](https://requestrepo.com/requests)
+
+Distinguer les interactions provenant du navigateur, du serveur de test et d'intermédiaires. Ne pas transférer de données sensibles vers des services de callback externes.
+
+### Validation des URL et risques de contournement
+
+L'article décrit les différences de représentation des adresses IP, les divergences entre parseurs d'URL, les protocoles alternatifs, le DNS rebinding et les redirections HTTP. Ces situations justifient des contrôles de destination robustes et cohérents au moment de la connexion, plutôt qu'un simple filtre textuel.
+
+### Impact potentiel
+
+- Accès involontaire aux services et interfaces internes.
+- Exposition de fichiers ou de métadonnées cloud.
+- Accès à des identifiants selon la configuration des services concernés.
+- Exécution de code à distance dans certaines chaînes de vulnérabilités.
+
+La gravité dépend des capacités réellement démontrées. Ne pas extraire de secrets, cartographier les réseaux privés ou modifier les services d'un tiers pour augmenter artificiellement l'impact du rapport.
+
+### Remédiation
+
+- Autoriser uniquement les protocoles et destinations nécessaires à la fonctionnalité.
+- Normaliser les URL et vérifier les adresses IPv4 et IPv6 obtenues après résolution DNS.
+- Bloquer les destinations privées, loopback et link-local lorsqu'elles ne sont pas nécessaires.
+- Désactiver les redirections automatiques ou vérifier chaque nouvelle destination.
+- Restreindre le trafic sortant du serveur et isoler les composants de conversion.
+- Appliquer le principe du moindre privilège aux identités cloud.
+
+### Rapport Bug Bounty
+
+Documenter la fonctionnalité concernée, le comportement attendu, la requête de test, les observations et les limites de la preuve. Distinguer l'impact confirmé des scénarios possibles. Les montants de primes ne peuvent pas être déduits du type de SSRF seul.
+
+### Références
+
+- [The Ultimate Guide to SSRF](https://lostsec.medium.com/the-ultimate-guide-to-ssrf-hunting-bypassing-and-exploiting-in-modern-bug-bounty-a43fa34ba324), publié le 24 octobre 2026.
+- [PortSwigger - SSRF](https://portswigger.net/web-security/ssrf).
+
+Synthèse de l'article fourni avec adaptation locale des exemples de validation. Les charges de contournement, de collecte d'identifiants cloud, de lecture de fichiers sensibles et de prise de contrôle de services ne sont pas reproduites. Les exemples de laboratoire n'ont pas été exécutés.
+
 ## Cross-Origin Resource Sharing (CORS)
 
 ### Vérification des en-têtes CORS
