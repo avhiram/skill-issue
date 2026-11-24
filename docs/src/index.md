@@ -10,7 +10,7 @@ aside: false
   <h1>Morad H.</h1>
   <p class="profile-subtitle">Adversary Simulation · Cyberdéfense</p>
   <div class="profile-links">
-    <a href="/skill-issue/academy/">Academy</a>
+    <a href="/skill-issue/academy/index.html">Academy</a>
     <a href="/skill-issue/osint/">OSINT</a>
     <a href="/skill-issue/oscp/">Notes OSCP</a>
     <a href="/skill-issue/crto/">Notes CRTO</a>
