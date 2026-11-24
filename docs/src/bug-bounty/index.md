@@ -189,6 +189,56 @@ gospider -S live_websites.txt -d 2 -o gospider_output/
 
 Explore les sites de la liste à une profondeur de deux niveaux.
 
+### AlienVault OTX - collecte historique
+
+```bash
+./alienvault.sh example.com
+```
+
+Interroge les données publiques d'AlienVault OTX pour recenser les URL associées au domaine autorisé. Le script doit être récupéré et examiné avant exécution ; vérifier son comportement et ses dépendances.
+
+[Script alienvault.sh](https://github.com/coffinxp/scripts/blob/main/alienvault.sh)
+
+### URLScan.io - collecte passive
+
+```bash
+python urlscan.py -d example.com --mode urls
+python urlscan.py -d example.com --mode subdomains
+```
+
+Les deux modes présentés dans l'article récupèrent respectivement les URL et les sous-domaines connus de URLScan.io. Les résultats historiques ne prouvent ni que les ressources sont encore disponibles, ni qu'elles font partie du scope.
+
+[Script urlscan.py](https://github.com/coffinxp/scripts/blob/main/urlscan.py)
+
+### Wayback - filtrage des archives
+
+```bash
+./wayback.sh example.com -sc 200,302,403
+./wayback.sh example.com -scx 404,500
+```
+
+Le premier exemple sélectionne les codes indiqués ; le second les exclut. Les options proviennent de l'article et n'ont pas été testées. Un code HTTP archivé ne garantit pas le statut actuel de la page.
+
+[Script wayback.sh](https://github.com/coffinxp/scripts/blob/main/wayback.sh)
+
+### Gospider - sitemap
+
+```bash
+gospider -s https://example.com --sitemap -d 2
+```
+
+Explore les URL du sitemap et les liens à une profondeur de deux niveaux. Limiter les requêtes au périmètre autorisé.
+
+### Gospider - proxy HTTP local
+
+```bash
+gospider -s https://example.com -p http://127.0.0.1:8080
+```
+
+Fait transiter les requêtes par un proxy HTTP local, par exemple Burp Suite, pour observer le trafic du laboratoire. Le proxy doit être démarré et configuré.
+
+[Gospider - dépôt GitHub](https://github.com/jaeles-project/gospider)
+
 ### Fusion des URL archivées
 
 ```bash
@@ -729,6 +779,17 @@ L'article présente également les skills Claude Code pour structurer les tâche
 - [The Best Claude Code Setup for Bug Bounty Hunting](https://lostsec.medium.com/the-best-claude-code-setup-for-bug-bounty-hunting-a16a0a50e811) (27 août 2026).
 
 Synthèse des deux articles fournis : les méthodes déjà documentées ne sont pas répétées. Les prompts d'automatisation des tests offensifs et d'amplification d'impact ne sont pas repris ; les deux prompts ci-dessus sont des adaptations pour l'analyse et la documentation.
+
+## Workflow de reconnaissance rapide
+
+L'article [My 5-Minute Workflow to Find Bugs on Any Website](https://infosecwriteups.com/my-5-minute-workflow-to-find-bugs-on-any-website-c20075320c96) (27 septembre 2025, mis à jour le 26 novembre 2025) décrit trois axes : inventaire des expositions CVE, inspection du DOM et collecte automatisée des URL.
+
+- **Shodan et Nuclei** : comparer les informations sur les produits et versions avec l'inventaire des actifs autorisés et les avis de sécurité. L'article présente aussi des scans massifs ; ces procédures ne sont pas reproduites ici.
+- **Inspection du DOM** : relever les champs désactivés, en lecture seule ou masqués et les références présentes dans le HTML. Les restrictions côté navigateur ne remplacent pas les contrôles d'autorisation côté serveur. Les bookmarklets modifiant ces restrictions ne sont pas reproduits.
+- **Collecte d'URL** : compléter les sources passives avec AlienVault OTX, URLScan.io et les archives Web, puis dédupliquer les résultats et vérifier le scope.
+- **Analyse JavaScript** : inventorier les références et endpoints des scripts autorisés. Si une donnée sensible apparaît, la protéger et la signaler sans tenter de réutiliser un identifiant ou un secret.
+
+Les nouvelles commandes de collecte et de crawling sont classées dans [Collecte des URL](#collecte-des-url), sans répéter les commandes existantes. Les scripts de collecte de secrets et les chaînes de scan offensif en masse n'ont pas été ajoutés. Le délai de cinq minutes est une affirmation de l'auteur, pas une garantie de découverte.
 
 ## Méthodologies complémentaires
 
