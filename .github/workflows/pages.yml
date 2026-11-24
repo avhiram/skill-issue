@@ -48,6 +48,10 @@ jobs:
           grep -q 'academy-syllabus' docs/.vitepress/dist/academy/index.html
           grep -q 'Parcours gratuit' docs/.vitepress/dist/academy/index.html
           grep -q 'Parcours complet' docs/.vitepress/dist/academy/index.html
+          if grep -Eqi 'harvard|cs50' docs/.vitepress/dist/academy/index.html; then
+            echo 'Ressources Harvard/CS50 interdites dans Academy.'
+            exit 1
+          fi
           if grep -q 'Marquer comme terminée' docs/.vitepress/dist/academy/index.html; then
             echo 'Ancienne présentation Academy interdite.'
             exit 1
@@ -99,8 +103,8 @@ jobs:
         run: |
           for attempt in $(seq 1 12); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/academy/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/academy-live.html; then
-              if grep -q 'academy-syllabus' /tmp/academy-live.html && grep -q 'Parcours gratuit' /tmp/academy-live.html && grep -q 'Parcours complet' /tmp/academy-live.html && ! grep -q 'Marquer comme terminée' /tmp/academy-live.html; then
-                echo 'Présentation Academy actuelle confirmée sur le site public.'
+              if grep -q 'academy-syllabus' /tmp/academy-live.html && grep -q 'Parcours gratuit' /tmp/academy-live.html && grep -q 'Parcours complet' /tmp/academy-live.html && ! grep -q 'Marquer comme terminée' /tmp/academy-live.html && ! grep -Eqi 'harvard|cs50' /tmp/academy-live.html; then
+                echo 'Présentation Academy actuelle et absence de Harvard/CS50 confirmées sur le site public.'
                 exit 0
               fi
             fi
