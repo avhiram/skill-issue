@@ -20,9 +20,9 @@ Choisir un programme, définir le scope et préparer son espace de travail.
 
 Recenser les domaines et les actifs connus à partir des sources publiques.
 
-### [Cartographie et scan réseau](./scan-reseau.md)
+### [Reconnaissance active](./scan-reseau.md)
 
-Valider le périmètre, les services et les technologies.
+Validation DNS et HTTP, scan réseau et identification des services.
 
 ### [Cartographie Web et API](./cartographie-web.md)
 
