@@ -447,7 +447,6 @@ const academyNoiseIds = new Set([
   'added-038',
   'added-058',
   'added-065',
-  'added-066',
   'added-068',
   'added-072',
   'added-079',
@@ -854,7 +853,8 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://yeswehack.com/programs",
     "https://www.yeswehack.com/fr/researchers/start-hunting",
     "https://www.intigriti.com/researchers/bug-bounty-programs",
-    "https://kb.intigriti.com/en/articles/3471127-useful-resources-about-web-hacking-bug-bounty"
+    "https://kb.intigriti.com/en/articles/3471127-useful-resources-about-web-hacking-bug-bounty",
+    "https://yogosha.com/fr/hackers/rejoindre-yogosha-strike-force/"
   ],
   "ctf-beginner": [
     "https://picoctf.org/",
