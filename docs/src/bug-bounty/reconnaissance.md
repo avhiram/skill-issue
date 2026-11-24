@@ -19,7 +19,7 @@ Les collectes sont complémentaires : utiliser les sources disponibles, puis fus
 
 ### Découverte des sous-domaines
 
-<BountyCommand :source="&quot;subfinder -d __BOUNTY_DOMAIN__ -all -recursive &gt; subexample.com.txt&quot;" language="bash" />
+<BountyCommand :source="&quot;subfinder -d __BOUNTY_DOMAIN__ -all -recursive &gt; subfinder_subs.txt&quot;" language="bash" />
 
 Effectue une recherche récursive avec Subfinder et enregistre les résultats.
 
@@ -123,12 +123,14 @@ Extrait les noms de domaine des URL historiques. Commande issue de l'article IIS
 ## Fusion des résultats passifs
 
 ```bash
-for f in subexample.com.txt amass_passive_subs.txt assetfinder_subs.txt findomain_subs.txt chaos_subs.txt crtsh_subs.txt hackertarget_subs.txt urlscan_subs.txt commoncrawl_subs.txt wayback_domains.txt; do
+for f in subfinder_subs.txt amass_passive_subs.txt assetfinder_subs.txt findomain_subs.txt chaos_subs.txt crtsh_subs.txt hackertarget_subs.txt urlscan_subs.txt commoncrawl_subs.txt wayback_domains.txt; do
   if [ -f "$f" ]; then cat "$f"; fi
 done | sort -u > inventory_subs.txt
 ```
 
 Fusion volontaire : Subfinder, Amass, Assetfinder et les autres sources alimentent le même inventaire `inventory_subs.txt`. Les doublons sont supprimés et les sources non utilisées sont ignorées.
+
+Si un ancien programme contient encore `subexample.com.txt`, vérifier son contenu avant de le renommer en `subfinder_subs.txt`.
 
 Avant la reconnaissance active, vérifier les résultats au regard du scope et enregistrer uniquement les noms explicitement autorisés dans `all_subs.txt`.
 
