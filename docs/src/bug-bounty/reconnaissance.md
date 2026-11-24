@@ -165,6 +165,11 @@ waybackurls example.com | unfurl -u domains > wayback_domains.txt
 
 Extrait les noms de domaine des URL historiques. Commande issue de l'article IIS ; Unfurl doit être installé. Les domaines découverts ne sont pas automatiquement autorisés.
 
+## Avant de poursuivre
+
+- Inventaire des actifs recensés.
+- Actifs autorisés distingués des pistes à vérifier.
+
 ---
 
 [Précédent : Programme et préparation](./preparation.md) · [Parcours](./index.md) · [Suivant : Cartographie et scan réseau](./scan-reseau.md)
