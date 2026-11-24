@@ -61,7 +61,6 @@ Suivre le triage, le retest et la récompense.
 - [Security Tools](./ressources.md#security-tools)
 - [Browser Extensions](./ressources.md#browser-extensions)
 
-Utiliser les commandes dans le périmètre autorisé. Exemples historiques non intégralement vérifiés.
 
 ### Références pédagogiques
 
