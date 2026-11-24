@@ -61,6 +61,15 @@ jobs:
           done
           grep -q 'Nom du programme' docs/.vitepress/dist/bug-bounty/preparation.html
           grep -q 'CHOISIR_UN_PROGRAMME' docs/.vitepress/dist/bug-bounty/preparation.html
+          grep -q 'Nom du programme' docs/.vitepress/dist/bug-bounty/index.html
+          for page in preparation reconnaissance scan-reseau cartographie-web vulnerabilites validation rapport suivi; do
+            grep -q 'class="bounty-checklist"' "docs/.vitepress/dist/bug-bounty/$page.html"
+          done
+          grep -q 'id="microsoft-iis-et-asp-net"' docs/.vitepress/dist/bug-bounty/vulnerabilites.html
+          if grep -Fq 'microsoft-iis-et-aspnet' docs/.vitepress/dist/bug-bounty/index.html; then
+            echo 'Ancre IIS incorrecte.'
+            exit 1
+          fi
           if grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' docs/.vitepress/dist/bug-bounty/index.html; then
             echo 'Ancienne introduction Bug Bounty détectée.'
             exit 1
