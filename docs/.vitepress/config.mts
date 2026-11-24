@@ -28,14 +28,14 @@ export default defineConfig({
     nav: [
       { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
       { text: 'OSINT', link: '/osint/' },
-      { text: 'Bug Bounty', link: '/bug-bounty/' },
+      { text: 'Bug Bounty', link: 'https://avhiram.github.io/skill-issue/bug-bounty/index.html', target: '_self' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' }
     ],
     sidebar: {
       '/academy/': [],
       '/bug-bounty/': [
-        { text: 'Bug Bounty', link: '/bug-bounty/', items: [
+        { text: 'Bug Bounty', link: '/bug-bounty/index.html', items: [
           { text: 'Programme et préparation', link: '/bug-bounty/preparation' },
           { text: 'Reconnaissance passive', link: '/bug-bounty/reconnaissance' },
           { text: 'Cartographie et scan réseau', link: '/bug-bounty/scan-reseau' },
