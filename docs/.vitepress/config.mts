@@ -50,7 +50,12 @@ export default defineConfig({
             { text: 'CORS', link: '/bug-bounty/vulnerabilites#cross-origin-resource-sharing-cors' },
             { text: 'WordPress', link: '/bug-bounty/vulnerabilites#wordpress' },
             { text: 'Microsoft IIS', link: '/bug-bounty/vulnerabilites#microsoft-iis-et-aspnet' },
-            { text: 'React2Shell', link: '/bug-bounty/vulnerabilites#react2shell-cve-2025-55182' }
+            { text: 'React2Shell', link: '/bug-bounty/vulnerabilites#react2shell-cve-2025-55182' },
+            { text: 'Authentification et Access Control', link: '/bug-bounty/vulnerabilites#authentification-et-controle-d-acces' },
+            { text: 'Contrôles côté serveur', link: '/bug-bounty/vulnerabilites#controles-cote-serveur' },
+            { text: 'Contrôles côté client', link: '/bug-bounty/vulnerabilites#controles-cote-client' },
+            { text: 'HTTP, cache et IA', link: '/bug-bounty/vulnerabilites#http-cache-et-ia' },
+            { text: 'Pratique PortSwigger', link: '/bug-bounty/vulnerabilites#pratique-portswigger' }
           ] },
           { text: 'Validation et preuves', link: '/bug-bounty/validation' },
           { text: 'Rapport et signalement', link: '/bug-bounty/rapport' },
