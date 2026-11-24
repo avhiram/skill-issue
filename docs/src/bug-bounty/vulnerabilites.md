@@ -630,8 +630,7 @@ Identifier les entrées de confiance, les outils accessibles au modèle, les don
 
 ## Avant de poursuivre
 
-- Observations pertinentes classées par type de vulnérabilité.
-- Résultats à confirmer manuellement identifiés.
+<BountyChecklist storage-key="checkpoint-vulnerabilites" :items='["Observations pertinentes classées par type de vulnérabilité.","Résultats à confirmer manuellement identifiés."]' />
 
 ---
 
