@@ -25,7 +25,7 @@ mkdir -p bug-bounty/{scope,recon,requests,preuves,rapports}
 cd bug-bounty
 ```
 
-Crée les dossiers du programme pour classer le scope, les résultats, les requêtes, les preuves et les rapports.
+Crée les dossiers du programme pour classer le scope, les résultats, les requêtes, les preuves et les rapports. Conserver le même répertoire de travail entre les chapitres : les exemples utilisent des chemins relatifs. Les fichiers de scope, requêtes et wordlists doivent être préparés séparément.
 
 ## Préparer les outils
 
