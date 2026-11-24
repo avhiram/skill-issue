@@ -778,7 +778,6 @@ function titleFor(id: string, fallback: string) { return levelTitles[id] || fall
 // Les offres freemium ou les certifications payantes restent dans la vue complète.
 const freeSelections: Record<string, readonly string[]> = {
   "environment": [
-    "https://cs50.harvard.edu/x/",
     "https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/create-vm.html"
   ],
   "network-basics": [
@@ -807,7 +806,6 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://learn.microsoft.com/en-us/powershell/"
   ],
   "python-basics": [
-    "https://cs50.harvard.edu/python/",
     "https://www.freecodecamp.org/learn/scientific-computing-with-python/"
   ],
   "scripting": [
