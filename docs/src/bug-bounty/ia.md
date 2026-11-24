@@ -28,7 +28,7 @@ Enregistre le serveur MCP local dans Claude Code. Syntaxe conforme à la [docume
 ### Organisation des fichiers du projet
 
 ```text
-~/bug-bounty/example.com/
+./example.com/
   scope/
     domains.txt
   inventory_subs.txt
@@ -52,7 +52,7 @@ Enregistre le serveur MCP local dans Claude Code. Syntaxe conforme à la [docume
   rapports/
 ```
 
-Même structure que le chapitre [Programme et préparation](./preparation.md). Les inventaires sont créés au fil du parcours ; les fichiers HTTP et JavaScript illustrés sont à préparer séparément. Ne fournir à l'IA que des copies autorisées et expurgées.
+Le dossier est créé dans le répertoire courant choisi. Même structure que le chapitre [Programme et préparation](./preparation.md). Les inventaires sont créés au fil du parcours ; les fichiers HTTP et JavaScript illustrés sont à préparer séparément. Ne fournir à l'IA que des copies autorisées et expurgées.
 
 ## Prompts d'analyse
 
