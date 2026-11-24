@@ -9,7 +9,7 @@ next: false
 
 [Retour au parcours](./index.md)
 
-L'IA intervient dans l'organisation des résultats, la revue des captures et du code, la préparation de validations manuelles et la rédaction. Les exemples ci-dessous sont adaptés de The Best Claude Code Setup for Bug Bounty Hunting. Conserver une validation humaine des actions réseau.
+Analyse, organisation et rédaction avec l'IA. Exemples adaptés de The Best Claude Code Setup for Bug Bounty Hunting. Validation humaine des actions réseau.
 
 ## Configuration Claude Code et Burp Suite MCP
 
