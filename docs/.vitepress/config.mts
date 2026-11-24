@@ -28,7 +28,7 @@ export default defineConfig({
     nav: [
       { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
       { text: 'OSINT', link: '/osint/' },
-      { text: 'Bug Bounty', link: 'https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=20261124-1633', target: '_self' },
+      { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' }
     ],
