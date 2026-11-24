@@ -35,8 +35,8 @@ export function useBountyTarget() {
     if (!target.value) return null
     const name = program.value.trim().toLowerCase()
     if (name && !/^[a-z0-9][a-z0-9_-]{0,63}$/.test(name)) return null
-    const host = target.value.domain + (target.value.port ? '-' + target.value.port : '')
-    return host + (name ? '/' + name : '')
+    const host = target.value.domain + (target.value.port ? '_port_' + target.value.port : '')
+    return host + (name ? '__' + name : '')
   })
 
   function setProgram(next: string) {
