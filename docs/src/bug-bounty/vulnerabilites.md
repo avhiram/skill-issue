@@ -19,10 +19,10 @@ Les inventaires du chapitre précédent ne sont pas des résultats de vulnérabi
 |---|---|
 | `allurls.txt` | Inventaire Web validé au chapitre précédent |
 | `js_inventory.txt` | Liste d'URL JavaScript, pas de scripts locaux |
-| `headers.txt` | En-têtes d'une réponse HTTP de test, enregistrés manuellement |
-| `reponse-compte-a.txt`, `reponse-compte-b.txt` | Réponses de deux comptes de test, exportées séparément |
-| `jwt-test.txt` | Jeton de test enregistré localement |
-| `openapi.json` | Spécification OpenAPI JSON obtenue légitimement |
+| `requests/headers.txt` | En-têtes d'une réponse HTTP de test, enregistrés manuellement |
+| `requests/reponse-compte-a.txt`, `requests/reponse-compte-b.txt` | Réponses de deux comptes de test, exportées séparément |
+| `requests/jwt-test.txt` | Jeton de test enregistré localement |
+| `requests/openapi.json` | Spécification OpenAPI JSON obtenue légitimement |
 
 ## Subdomain Takeover
 
@@ -353,7 +353,7 @@ Recherche des configurations CORS potentiellement incorrectes.
 cat example.coms.txt | httpx -silent | nuclei -t nuclei-templates/vulnerabilities/cors/ -o cors_results.txt
 ```
 
-Exemple historique indépendant : `example.coms.txt` n'est pas produit par le parcours. Les modèles et la chaîne n'ont pas été validés.
+Exemple historique indépendant : `example.coms.txt` n'est pas produit par le parcours. Les modèles et la chaîne n'ont pas été validés. Cet exemple ne fait pas partie du parcours principal.
 
 ### Vérification de la réflexion d'Origin
 
@@ -435,7 +435,7 @@ Les procédures de recherche de cibles à grande échelle, d'exécution de comma
 ffuf -request lfi -request-proto https -w /root/wordlists/offensive\ payloads/LFI\ payload.txt -c -mr "root:"
 ```
 
-Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
 
 ### Test XSS à partir d'une requête
 
@@ -443,7 +443,7 @@ Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` et
 ffuf -request xss -request-proto https -w /root/wordlists/xss-payloads.txt -c -mr "<script>alert('XSS')</script>"
 ```
 
-Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
 
 ## Techniques avancées
 
@@ -466,7 +466,7 @@ Vérifier les permissions horizontales (entre comptes de même rôle), verticale
 Comparer deux réponses HTTP de test enregistrées localement :
 
 ```bash
-diff -u reponse-compte-a.txt reponse-compte-b.txt
+diff -u requests/reponse-compte-a.txt requests/reponse-compte-b.txt
 ```
 
 Distinguer les différences normales liées aux comptes d'un accès réellement non autorisé.
@@ -484,7 +484,7 @@ python3 - <<'PY'
 import base64, json
 from pathlib import Path
 
-parts = Path("jwt-test.txt").read_text().strip().split(".")
+parts = Path("requests/jwt-test.txt").read_text().strip().split(".")
 if len(parts) != 3:
     raise SystemExit("Un JWS compact à trois segments est attendu")
 for label, part in zip(("Header", "Payload"), parts[:2]):
@@ -493,7 +493,7 @@ for label, part in zip(("Header", "Payload"), parts[:2]):
 PY
 ```
 
-Décode localement un jeton de test enregistré dans `jwt-test.txt`, sans le transmettre à un service externe.
+Décode localement un jeton de test enregistré dans `requests/jwt-test.txt`, sans le transmettre à un service externe.
 
 ### OAuth / OpenID Connect
 
@@ -514,7 +514,7 @@ Identifier les opérations qui modifient un état partagé, consomment un crédi
 Recenser les méthodes HTTP, les paramètres requis et facultatifs, les types de contenu, les autorisations et la documentation API. Voir aussi [Cartographie Web et API](./cartographie-web.md#inventaire-api).
 
 ```bash
-jq -r '.paths | keys[]' openapi.json
+jq -r '.paths | keys[]' requests/openapi.json
 ```
 
 Liste les chemins décrits dans une spécification OpenAPI JSON déjà récupérée légalement.
@@ -577,7 +577,7 @@ Identifier les opérations qui changent un état. Examiner les tokens anti-CSRF,
 Examiner les protections contre l'intégration d'une page dans une iframe : X-Frame-Options et Content-Security-Policy frame-ancestors.
 
 ```bash
-grep -Ei '^(x-frame-options|content-security-policy):' headers.txt
+grep -Ei '^(x-frame-options|content-security-policy):' requests/headers.txt
 ```
 
 Recherche les protections dans des en-têtes HTTP déjà enregistrés localement.
@@ -613,7 +613,7 @@ Identifier les caches et leur politique de clé. Examiner les variations de rép
 Vérifier que les réponses privées ne sont pas stockées dans un cache partagé. Distinguer une fuite de données mises en cache d'une modification du contenu servi par le cache.
 
 ```bash
-grep -Ei '^(cache-control|vary|age|x-cache|expires|set-cookie):' headers.txt
+grep -Ei '^(cache-control|vary|age|x-cache|expires|set-cookie):' requests/headers.txt
 ```
 
 Extrait les indicateurs de cache et de session d'une capture HTTP locale. Un en-tête seul ne prouve pas une vulnérabilité.
