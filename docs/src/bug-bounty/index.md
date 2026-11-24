@@ -608,14 +608,60 @@ Affiche les trois en-têtes CORS pertinents. Le domaine tiers figurant dans la f
 
 Dirsearch et FFUF permettent de cartographier les chemins dans un laboratoire ou un périmètre explicitement autorisé. La fiche contient des variantes récursives ; adapter les limites de débit, les extensions et la wordlist aux règles du programme. Les en-têtes de contournement figurant dans la variante FFUF ne sont pas nécessaires à un inventaire ordinaire.
 
+## Advanced Google Dorks Methodology
+
+La fiche archivée ne contient pas de commandes supplémentaires.
+
+### Bonnes pratiques
+
+- Remplacer example.com par le domaine autorisé.
+- Utiliser la notation [.] lors de la documentation pour éviter la création automatique de liens.
+- Combiner les opérateurs de recherche et utiliser les guillemets pour les expressions exactes.
+- Exclure les résultats non pertinents avec `-site:` et utiliser les filtres de date.
+- Surveiller les nouvelles expositions dans le périmètre autorisé.
+- Documenter et vérifier chaque observation avant le signalement.
+
+Voir également [Exposition de données](#exposition-de-donnees) pour les requêtes déjà présentes.
+
+## XSS WAF Bypass Methodology
+
+La fiche archivée ne contient aucun bloc de commandes.
+
+### Bonnes pratiques
+
+La fiche traite des différences de comportement des filtres WAF selon leur version, les encodages, les attributs HTML et le contexte JavaScript. Pour une évaluation en laboratoire, relever la version et la configuration du filtre, documenter les résultats et vérifier le comportement réel du navigateur. Une réflexion de chaîne ne démontre pas à elle seule une exécution JavaScript. Corriger la cause de la XSS plutôt que de compter uniquement sur le WAF.
+
+## SQL Injection Methodology
+
+La fiche Lostsec fournie contient 22 exemples portant sur la reconnaissance, les tests automatisés, les en-têtes HTTP et les différences entre moteurs SQL. Les exemples historiques ne sont pas tous syntaxiquement valides et n'ont pas été exécutés.
+
+### Reconnaissance
+
+- Identifier les technologies des services Web autorisés.
+- Recenser les URL paramétrées avec les méthodes GAU et Katana déjà présentes dans [Collecte des URL](#collecte-des-url).
+- Une extension PHP, ASP ou JSP ne démontre pas une injection SQL.
+- Inventorier les paramètres, cookies et en-têtes traités par l'application.
+
+### Validation en laboratoire
+
+- Distinguer les comportements MySQL, PostgreSQL, Oracle et Microsoft SQL Server.
+- La fiche présente notamment les injections aveugles temporelles : une variation de latence doit être comparée à des mesures de référence pour écarter les faux positifs.
+- Limiter les tests à des données fictives et ne pas extraire de bases de données réelles.
+- Consigner la configuration, les mesures, les observations et les limites du test.
+- Recommander les requêtes paramétrées et la réduction des privilèges du compte de base de données.
+
+La fiche comporte aussi des chaînes de tests automatisés en masse et des variantes de contournement de filtres. Elles ne sont pas reproduites dans cette synthèse. Les exemples de reconnaissance déjà présents dans la cheatsheet ne sont pas dupliqués.
+
+### Ressources de pratique
+
+- [PortSwigger - SQL injection](https://portswigger.net/web-security/sql-injection) : cours et laboratoires dédiés aux injections SQL.
+- [PortSwigger - Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting) : cours et laboratoires dédiés aux XSS.
+
 ## Méthodologies complémentaires
 
-Sept fiches restent identifiables par leur titre seulement. La fin de la fiche Advanced Recon est également tronquée dans le texte fourni. Aucun contenu manquant n'a été inventé.
+Quatre fiches restent identifiables par leur titre seulement. La fin de la fiche Advanced Recon est également tronquée dans le texte fourni.
 
 - Gather assets through API
 - SSTI Payloads
 - CRLF Injection
-- SQL Injection Methodology
-- XSS WAF Bypass Methodology
 - SQL Injection XOR WAF Bypass
-- Advanced Google Dorks
