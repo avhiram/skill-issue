@@ -63,6 +63,10 @@ jobs:
           test -s docs/.vitepress/dist/bug-bounty/index.html
           grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' docs/.vitepress/dist/bug-bounty/index.html
           grep -q 'Reconnaissance active' docs/.vitepress/dist/bug-bounty/index.html
+          for page in index reconnaissance scan-reseau cartographie-web; do
+            grep -q 'Cible du programme' "docs/.vitepress/dist/bug-bounty/$page.html"
+            grep -q 'placeholder="example.com ou https://example.com"' "docs/.vitepress/dist/bug-bounty/$page.html"
+          done
           if grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' docs/.vitepress/dist/bug-bounty/index.html; then
             echo 'Ancienne introduction Bug Bounty détectée.'
             exit 1
@@ -157,7 +161,7 @@ jobs:
         run: |
           for attempt in $(seq 1 12); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/bug-bounty-live.html; then
-              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/bug-bounty-live.html && grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' /tmp/bug-bounty-live.html && grep -q 'Reconnaissance active' /tmp/bug-bounty-live.html && ! grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' /tmp/bug-bounty-live.html; then
+              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/bug-bounty-live.html && grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' /tmp/bug-bounty-live.html && grep -q 'Reconnaissance active' /tmp/bug-bounty-live.html && grep -q 'Cible du programme' /tmp/bug-bounty-live.html && ! grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' /tmp/bug-bounty-live.html; then
                 echo 'Nouvelle page Bug Bounty confirmée.'
                 exit 0
               fi
