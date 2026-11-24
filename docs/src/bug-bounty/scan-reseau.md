@@ -56,10 +56,10 @@ Identifie les services HTTP répondants et collecte titres, codes et adresses IP
 ### Filtrage des sous-domaines actifs
 
 ```bash
-cat subexample.com.txt | httpx-toolkit -ports 80,443,8080,8000,8888 -threads 200 > subexample.coms_alive.txt
+cat resolved_subs.txt | httpx-toolkit -ports 80,443,8080,8000,8888 -threads 200 > subexample.coms_alive.txt
 ```
 
-Vérifie les réponses HTTP sur plusieurs ports et enregistre les hôtes répondants.
+Variante HTTPX Toolkit : reprend les domaines résolus par DNSX. Sortie : `subexample.coms_alive.txt`, réutilisée dans la variante Katana du chapitre Web.
 
 > La commande emploie une concurrence élevée. Respecter les limites du programme.
 
@@ -69,11 +69,11 @@ Vérifie les réponses HTTP sur plusieurs ports et enregistre les hôtes répond
 cat resolved_subs.txt | httprobe > httprobe_urls.txt
 ```
 
-Alternative de détection des services HTTP et HTTPS. Sortie indépendante : `httprobe_urls.txt`.
+Alternative à HTTPX Toolkit pour détecter les services HTTP et HTTPS. Sortie : `httprobe_urls.txt`. Les deux outils peuvent aussi être utilisés de façon complémentaire.
 
 ### Préparer la liste HTTP du chapitre suivant
 
-À partir des résultats HTTPX ou Httprobe, conserver manuellement les URL autorisées, une par ligne, dans `live_websites.txt`. Ne pas y inclure les titres, codes HTTP ou adresses IP ajoutés en métadonnées.
+HTTPX et Httprobe peuvent produire des résultats complémentaires. Regrouper les URL pertinentes, supprimer les doublons, puis conserver uniquement les URL autorisées, une par ligne, dans `live_websites.txt`. Extraire les URL seules des résultats contenant des métadonnées. Ce fichier commun alimente le chapitre Web.
 
 ## Scan réseau
 
@@ -159,6 +159,7 @@ Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de
 - `all_subs.txt` : noms validés manuellement au chapitre précédent.
 - `resolved_subs.txt` : noms DNS résolus.
 - `http_metadata.txt` : métadonnées HTTPX.
+- `subexample.coms_alive.txt` : résultat HTTPX Toolkit, repris par Katana.
 - `httprobe_urls.txt` : résultat de la variante Httprobe.
 - `live_websites.txt` : liste d'URL validées manuellement pour le chapitre Web.
 - `ip.txt`, `hosts.txt` : listes spécifiques à préparer selon le scope.
