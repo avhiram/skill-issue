@@ -28,8 +28,8 @@
 
 ## Espaces de travail Bug Bounty
 
-- Utiliser un dossier distinct sous ~/bug-bounty pour chaque cible et nom de programme. Le champ dynamique détermine le dossier de préparation ; ne jamais écraser les fichiers de scope existants lors de sa création.
-- Les commandes existantes utilisent des chemins relatifs depuis ce dossier. Préserver les enchaînements et avertir de changer de répertoire lors d'un changement de programme. Les inventaires restent à la racine tant que tous leurs producteurs et consommateurs n'ont pas été adaptés ensemble.
+- Utiliser un dossier distinct directement dans le répertoire courant choisi par l'utilisateur pour chaque cible et nom de programme. Ne pas imposer $HOME ni un dossier parent bug-bounty. Le champ dynamique détermine le dossier de préparation ; ne jamais écraser les fichiers de scope existants lors de sa création.
+- Les commandes existantes utilisent des chemins relatifs depuis ce dossier. Préserver les enchaînements et rappeler de revenir au dossier parent avant de changer ou reprendre un programme. Les inventaires restent à la racine tant que tous leurs producteurs et consommateurs n'ont pas été adaptés ensemble.
 - Conserver les checklists locales séparées par programme.
 
 ## Suivi de l'audit Bug Bounty
