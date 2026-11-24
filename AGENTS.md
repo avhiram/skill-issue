@@ -16,3 +16,12 @@
 - Si la publication est bloquée, consulter GitHub Actions et Settings > Pages avant de modifier les contenus. Ne pas réintroduire d'ancienne version pour tenter de résoudre un problème de cache.
 - Préférer une seule source de publication (GitHub Actions). Ne retirer la compatibilité avec la publication depuis main qu'après confirmation du réglage Pages. Ne jamais changer le design ou supprimer des sources pour corriger un déploiement.
 - Bug Bounty : conserver l'introduction « Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty. », le parcours chronologique avec Reconnaissance passive et Reconnaissance active, et les termes techniques en anglais avec explications en français.
+
+## Cohérence des commandes Bug Bounty
+
+- Distinguer les collectes complémentaires des variantes alternatives et des écrasements accidentels.
+- Préserver les pipelines et les fusions volontaires, notamment les ajouts avec anew ou >> et les listes communes dédupliquées.
+- Avant de renommer un fichier, vérifier toutes ses références dans les autres chapitres, les commandes et les commentaires.
+- Identifier le producteur, le format, les prérequis et le consommateur de chaque fichier. Ne pas confondre domaines, IP, URL, métadonnées et fichiers locaux.
+- Conserver les contrôles de scope entre la collecte et les requêtes actives. Ne pas modifier une commande fonctionnelle sans raison.
+- Distinguer la vérification documentaire des tests réels ; ne pas affirmer avoir exécuté ou validé les commandes si ce n'est pas le cas.
