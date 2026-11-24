@@ -14,6 +14,8 @@ Cheatsheet et méthodologie classées par sujet, à partir du toolkit Lostsec (2
 
 Les commandes reproduisent les exemples historiques de la capture ; leur fonctionnement et leur compatibilité avec les versions actuelles des outils n'ont pas été validés. Les blocs manifestement incomplets sont signalés. Utilisation uniquement dans un laboratoire ou dans le périmètre explicitement autorisé d'un programme Bug Bounty. Vérifier les limites de débit, les permissions et les fichiers nécessaires avant tout test.
 
+**[Outils, extensions et writeups](./ressources.md)**
+
 ## Cheatsheet
 
 ## Énumération des sous-domaines
@@ -582,11 +584,34 @@ Correction et contrôles de vérification.
 - Bug Bounty Methodologies : notes de reconnaissance et de tests Web.
 - Bug Bounty Hunting Process, HTB Academy : présentation du module et importance du respect du processus de signalement.
 
+## Advanced Recon Methodology
+
+La fiche Lostsec fournie en complément reprend une grande partie des commandes de la cheatsheet. Pour éviter les doublons, suivre les rubriques existantes dans l'ordre suivant :
+
+1. [Énumération des sous-domaines](#enumeration-des-sous-domaines) : Subfinder et filtrage HTTP.
+2. [Collecte des URL](#collecte-des-url) : Katana, GAU et normalisation des résultats.
+3. [Exposition de données](#exposition-de-donnees) : inspection des références et documents indexés.
+4. [Découverte de paramètres](#decouverte-de-parametres) : Arjun.
+5. [Cross-Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors) : lecture des en-têtes.
+6. [WordPress](#wordpress) et [analyse JavaScript](#analyse-javascript) : vérification des configurations et ressources.
+7. Vérifier les résultats dans le périmètre autorisé et documenter les observations.
+
+### Lecture ciblée des en-têtes CORS
+
+```bash
+curl -H 'Origin: http://example.com' -I https://example.com/wp-json/ | grep -i -e 'access-control-allow-origin' -e 'access-control-allow-methods' -e 'access-control-allow-credentials'
+```
+
+Affiche les trois en-têtes CORS pertinents. Le domaine tiers figurant dans la fiche a été remplacé par un domaine d'exemple. Un en-tête seul ne suffit pas à établir l'impact.
+
+### Découverte de contenu
+
+Dirsearch et FFUF permettent de cartographier les chemins dans un laboratoire ou un périmètre explicitement autorisé. La fiche contient des variantes récursives ; adapter les limites de débit, les extensions et la wordlist aux règles du programme. Les en-têtes de contournement figurant dans la variante FFUF ne sont pas nécessaires à un inventaire ordinaire.
+
 ## Méthodologies complémentaires
 
-Les huit fiches suivantes sont identifiables dans le fichier MHT, mais leur contenu interactif n'a pas été enregistré. Aucun bloc de commandes n'a été inventé pour les compléter.
+Sept fiches restent identifiables par leur titre seulement. La fin de la fiche Advanced Recon est également tronquée dans le texte fourni. Aucun contenu manquant n'a été inventé.
 
-- Advanced Recon Methodology
 - Gather assets through API
 - SSTI Payloads
 - CRLF Injection
