@@ -6,10 +6,11 @@ aside: false
 
 # Mindmaps
 
-27 cartes interactives classées par thème. Choisis une carte, zoome et déplace-toi librement.
+27 Canvas interactifs et une mind map SVG officielle, classés par thème. Choisis une carte, zoome et déplace-toi librement.
 
 ## Active Directory
 
+- [**Orange Cyberdefense - AD 2025.03**](mindmap-ocd-2025.md) · SVG officiel
 - [**AD - OSCP**](mindmap-ad-oscp.md) · 235 éléments
 - [**Mindmap AD**](mindmap-ad.md) · 872 éléments
 - [**PowerView Enumeration**](mindmap-powerview.md) · 104 éléments
