@@ -27,10 +27,13 @@ Objectif : confirmer manuellement les observations, documenter le résultat et d
 ## Empreinte des fichiers de preuve
 
 ```bash
-find preuves -type f -print0 | sort -z | xargs -0 -r sha256sum > preuves.sha256
+(
+  set -o pipefail
+  find preuves -type f -print0 | sort -z | xargs -0 -r sha256sum > preuves.sha256
+) && test -s preuves.sha256 && sha256sum -c preuves.sha256
 ```
 
-Calcule les empreintes des fichiers de preuve, y compris dans les sous-dossiers (GNU/Linux). Enregistrer les preuves expurgées dans `preuves/` avant de lancer la commande. Conserver `preuves.sha256` à côté de ce dossier.
+Calcule puis vérifie les empreintes SHA-256 des preuves, y compris dans les sous-dossiers (Bash et GNU/Linux). Le contrôle échoue si le manifeste est vide. Exécuter depuis la racine du programme, après avoir enregistré les preuves expurgées dans `preuves/`.
 
 ## Avant de poursuivre
 
