@@ -143,7 +143,7 @@ for entry in "${GO_INSTALLS[@]}"; do
     ok "$name : déjà présent, conservé."
   else
     info "Installation de $name..."
-    go install -v "$module"
+    GOTOOLCHAIN=auto go install -v "$module"
     hash -r
     has "$name" || { error "$name reste introuvable après installation."; exit 1; }
     ok "$name : installé et vérifié."
