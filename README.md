@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/hero.gif" alt="Une scène nocturne sous un ciel violet" width="500" />
+<img src="assets/skill-issue-banner.jpg" alt="Une scène nocturne sous un ciel violet" width="500" />
 
 <br />
 
