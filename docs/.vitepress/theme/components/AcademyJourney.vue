@@ -380,6 +380,26 @@ function describe(item: AssignedResource) {
   return 'Ressource sur ' + (topicLabels[item.category || ''] || 'la cybersécurité') + '.'
 }
 function levelLinks(id: string): AssignedResource[] { return linksByLevel.get(id) || [] }
+
+// Distinguer les cours/labs (parcours) des logiciels et documentations (références).
+const toolNames = /(?:^|[\s:–-])(virtualbox|qemu|wireshark|tcpdump|nmap|rustscan|masscan|burp suite|metasploit|hydra|john the ripper|hashcat|ghidra|radare2|autopsy|volatility|cyberchef|sherlock|maigret|holehe|theharvester|subfinder|amass|recon-ng|photon|ffuf|gobuster|nikto|sqlmap|dirsearch|shodan|censys|openvas|nessus|zap|sysmon|sysinternals|splunk|wazuh|suricata|zeek|snort|yara|velociraptor|osquery|docker|kubernetes|terraform|ansible|git|vscode|visual studio code|pycharm|jupyter|postman|insomnia|gns3|bloodhound|impacket|responder|netcat|mitmproxy|bettercap|aircrack|binwalk|exiftool|foremost)(?:$|[\s:–-])/i
+const toolDomains = /(?:virtualbox\.org|qemu\.org|wireshark\.org|nmap\.org|tcpdump\.org|ghidra-sre\.org|portswigger\.net\/burp|gchq\.github\.io\/CyberChef|osintframework\.com|shodan\.io|censys\.io|docker\.com|kubernetes\.io|github\.com\/(?:sherlock-project|soxoj\/maigret|megadose\/holehe|laramies\/theHarvester))/i
+function isToolOrReference(item: AssignedResource): boolean {
+  if (item.id.startsWith('thm-')) return false
+  const type = (item.type || '').toLowerCase()
+  if (/cours|exercice|lab|ctf|challenge|formation/.test(type)) return false
+  if (/référence|reference|outil|documentation/.test(type)) return true
+  if (/cours|formation|tutoriel|tutorial|introduction|guide pratique|exercices|lab|challenges|academy|training|bootcamp|learn|fondamentaux|basics/i.test(item.title)) return false
+  return toolNames.test(' ' + item.title + ' ') || toolDomains.test(item.url)
+}
+const selectedCourses = (id: string) => freeLinks(id).filter(item => !isToolOrReference(item))
+const otherCourses = (id: string) => otherLinks(id).filter(item => !isToolOrReference(item))
+function sectionTools(section: typeof sections[number]): AssignedResource[] {
+  const levels = new Set<string>(section.levels)
+  const items = catalog.filter(item => levels.has(item.routeLevel) && isToolOrReference(item))
+  return freeOnly.value ? items.filter(item => freeSets.get(item.routeLevel)?.has(normalizeUrl(item.url))) : items
+}
+
 function levelsIn(section: typeof sections[number]) {
   return section.levels.map(id => byId.get(id)!).filter(Boolean)
 }
@@ -678,7 +698,7 @@ async function selectPath(showFreeOnly: boolean) {
 
     <p class="academy-legend" aria-live="polite">
       <strong>{{ freeOnly ? 'Parcours gratuit' : 'Parcours complet' }}</strong>
-      - {{ freeOnly ? 'Les ressources sélectionnées sans achat.' : 'Toutes les ressources, gratuites et payantes.' }}
+      - {{ freeOnly ? 'Cours et labs sélectionnés sans achat.' : 'Cours et labs, gratuits et payants.' }}
     </p>
     <p v-if="freeOnly" class="academy-free-picks">
       <strong>Labs pour commencer :</strong>
@@ -687,6 +707,8 @@ async function selectPath(showFreeOnly: boolean) {
       <a href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">PortSwigger Academy</a>
     </p>
 
+    <p class="academy-learning-note">Suis les cours et les labs dans l’ordre. Les logiciels et références sont regroupés dans la <a href="#academy-tools">boîte à outils</a>, à la fin.</p>
+
     <main class="academy-chapters">
       <section v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
         <h2>{{ section.title }}</h2>
@@ -694,12 +716,12 @@ async function selectPath(showFreeOnly: boolean) {
           <h3>Level {{ numberFor(level.id) }} - {{ titleFor(level.id, level.title) }}</h3>
 
           <ul class="academy-links">
-            <li v-for="item in freeLinks(level.id)" :key="item.id + item.url">
+            <li v-for="item in selectedCourses(level.id)" :key="item.id + item.url">
               <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
               <small v-if="!freeOnly" class="academy-free" title="Sélection sans achat">Gratuit</small>
             </li>
-            <li v-for="item in freeOnly ? [] : otherLinks(level.id)" :key="item.id + item.url">
+            <li v-for="item in freeOnly ? [] : otherCourses(level.id)" :key="item.id + item.url">
               <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
               <span class="academy-explanation"> - {{ describe(item) }}</span>
             </li>
@@ -707,6 +729,22 @@ async function selectPath(showFreeOnly: boolean) {
         </div>
       </section>
     </main>
+
+    <section id="academy-tools" class="academy-chapter academy-toolbox" aria-label="Boîte à outils">
+      <h2>Outils et références</h2>
+      <p class="academy-learning-note">Ces liens servent pendant les exercices. Ils ne constituent pas des étapes à apprendre dans l’ordre.</p>
+      <template v-for="section in sections" :key="'tools-' + section.id">
+        <div v-if="sectionTools(section).length" class="academy-level">
+          <h3>{{ section.title }}</h3>
+          <ul class="academy-links">
+            <li v-for="item in sectionTools(section)" :key="'tool-' + item.id + item.url">
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
+              <span class="academy-explanation"> - {{ describe(item) }}</span>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </section>
 
     <footer class="academy-footer">
       <a href="#academy-top">Retour au début</a>
@@ -778,6 +816,9 @@ async function selectPath(showFreeOnly: boolean) {
 .academy-start:hover { background: #3e2b50; color: #fff !important; }
 .academy-start { font-family: inherit; cursor: pointer; }
 .academy-start:focus-visible { outline: 2px solid #bd92dd; outline-offset: 3px; }
+.academy-learning-note { margin: 16px 0 24px !important; color: #bdb3c5 !important; font-size: .88rem; line-height: 1.7; }
+.academy-learning-note a { color: #c7a8e4 !important; }
+.academy-toolbox { margin-top: 38px; padding-top: 26px; border-top: 1px solid #30273a; }
 .academy-contents {
   padding: 22px 0 23px;
   border-top: 1px solid #30273a;
