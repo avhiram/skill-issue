@@ -31,7 +31,7 @@ katana -u https://example.com -d 5 | grep '=' | urldedupe | anew katana_paramete
 cat katana_parameters_raw.txt | sed 's/=.*/=/' > katana_parameters_normalized.txt
 ```
 
-Bloc de collecte et de déduplication des URL paramétrées.
+Enchaînement volontaire : les deux collectes Katana alimentent `katana_parameters_raw.txt`. `anew` ajoute les nouvelles URL sans répéter celles déjà enregistrées. La normalisation produit un fichier distinct.
 
 > Séparation des lignes rétablie grâce aux notes complémentaires ; options et compatibilité à vérifier. La normalisation supprime tout ce qui suit le premier signe égal.
 
@@ -43,7 +43,7 @@ grep -E '\.php|\.asp|\.aspx|\.jspx|\.jsp' urls.txt | grep '=' | sort -u > gau_pa
 cat gau_parameters_raw.txt | sed 's/=.*/=/' > gau_parameters_normalized.txt
 ```
 
-Bloc de collecte et de filtrage des URL par extension et paramètres.
+Enchaînement : GAU produit `urls.txt`, le filtre sélectionne les URL paramétrées dans `gau_parameters_raw.txt`, puis la normalisation crée `gau_parameters_normalized.txt`.
 
 > Séparation des lignes rétablie grâce aux notes complémentaires ; options et compatibilité à vérifier. La normalisation supprime tout ce qui suit le premier signe égal.
 
@@ -134,10 +134,12 @@ Collecte et déduplique les URL connues. Variante issue de Recon to Master avec 
 ### Fusion des URL archivées
 
 ```bash
-cat archived_urls.txt wayback_urls.txt | sort -u > all_archived_urls.txt
+for f in archived_urls.txt wayback_urls.txt urlfinder_urls.txt wayback_cdx.txt; do
+  if [ -f "$f" ]; then cat "$f"; fi
+done | sort -u > all_archived_urls.txt
 ```
 
-Regroupe les fichiers produits par GAU et Waybackurls ci-dessus. Si une source n'a pas été utilisée, retirer son fichier de la commande.
+Fusion volontaire des URL collectées par GAU, Waybackurls, URLfinder et Wayback CDX (chapitre Reconnaissance passive). Les fichiers absents sont ignorés ; vérifier le scope des URL obtenues.
 
 ### Extraction des URL avec paramètres
 
@@ -175,7 +177,7 @@ Collecte les URL historiques des domaines listés dans `scope/domains.txt`, fich
 
 ### Préparer l'inventaire Web
 
-Examiner les résultats des collectes précédentes. Enregistrer les URL pertinentes et autorisées, une par ligne, dans `allurls.txt`. Ne pas mélanger les résultats normalisés sans valeurs, les métadonnées HTTP ou les URL du laboratoire local avec cet inventaire.
+Réunir les résultats bruts pertinents des collectes passives et actives (`all_archived_urls.txt`, `katana_urls.txt`, `katana_archive_urls.txt`, `gau_urls.txt`, etc.). Dédupliquer puis enregistrer uniquement les URL autorisées dans `allurls.txt`, une par ligne. Ne pas mélanger les URL normalisées sans valeurs, les métadonnées HTTP ou les URL du laboratoire local.
 
 ### URL avec paramètres
 
@@ -286,7 +288,7 @@ Recense les références JavaScript dans les applications autorisées.
 cat js_passive.txt js_active.txt | sort -u > js_all.txt
 ```
 
-Crée une liste unique de scripts à examiner.
+Fusion volontaire des collectes JavaScript passive et active : les deux listes alimentent `js_all.txt`, utilisé à l'étape suivante.
 
 ### Validation HTTP des fichiers JavaScript
 
@@ -390,7 +392,7 @@ Prérequis : enregistrer une réponse API de test dans response.json. Affiche le
 - `js_inventory.txt`, `js_all.txt` : inventaires JavaScript ; ne pas confondre les URL et les fichiers téléchargés.
 - `js_live.txt` : résultat de la vérification HTTP des scripts.
 
-Les fichiers de requêtes, scripts externes et wordlists sont des prérequis à préparer séparément. Les variantes qui utilisent les mêmes noms de sortie ne doivent pas être lancées successivement sans conserver les résultats.
+Les fichiers de requêtes, scripts externes et wordlists sont des prérequis à préparer séparément. Conserver les ajouts volontaires au même fichier (`anew`, `>>`) et les fusions prévues. Séparer seulement les résultats incompatibles ou les variantes qui risquent de s'écraser.
 
 ## Avant de poursuivre
 
