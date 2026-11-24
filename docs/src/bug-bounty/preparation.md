@@ -9,6 +9,8 @@ next: false
 
 [Retour au parcours](./index.md)
 
+<BountyTarget />
+
 Objectif : choisir un programme, comprendre les règles et préparer son environnement avant toute requête.
 
 ## Choisir un programme
@@ -20,12 +22,11 @@ Objectif : choisir un programme, comprendre les règles et préparer son environ
 
 ## Dossier de travail
 
-```bash
-mkdir -p bug-bounty/{scope,recon,requests,preuves,rapports,javascript}
-cd bug-bounty
-```
+<BountyCommand :source="&quot;mkdir -p \&quot;$HOME/bug-bounty/__BOUNTY_WORKSPACE__\&quot;/{scope,recon,requests,preuves,rapports,javascript} &amp;&amp;\ncd \&quot;$HOME/bug-bounty/__BOUNTY_WORKSPACE__\&quot; &amp;&amp;\ntouch scope/domains.txt&quot;" language="bash" />
 
-Crée les dossiers du programme pour classer le scope, les résultats, les requêtes, les preuves et les rapports. Conserver le même répertoire de travail entre les chapitres : les exemples utilisent des chemins relatifs. Les fichiers de scope, requêtes et wordlists doivent être préparés séparément. Enregistrer les domaines autorisés dans `scope/domains.txt`, à raison d'un nom par ligne. Les inventaires TXT des exemples sont stockés à la racine du dossier du programme ; `javascript/` accueille les scripts obtenus dans le cadre autorisé.
+Crée un dossier distinct pour la cible et le nom du programme renseignés, puis s'y place. Relancer cette commande lors d'un changement de programme ou de terminal. Les fichiers existants sont conservés.
+
+Renseigner `scope/domains.txt` avec les domaines réellement autorisés, un par ligne. Les inventaires TXT restent à la racine du programme pour préserver les enchaînements. Utiliser `requests/`, `javascript/`, `preuves/` et `rapports/` pour les fichiers correspondants.
 
 ## Préparer les outils
 
