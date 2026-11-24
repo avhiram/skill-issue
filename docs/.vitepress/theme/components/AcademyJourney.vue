@@ -897,7 +897,8 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "ad-intro": [
     "https://learn.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview",
-    "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVoU6Q2u7BBGPsnkn-rajlp"
+    "https://www.youtube.com/playlist?list=PL1H1sBF1VAKVoU6Q2u7BBGPsnkn-rajlp",
+    "https://www.youtube.com/playlist?list=PLMoaZm9nyKaM7k6W6_aWJr4QogRLn_j-s"
   ],
   "ad-minilab": [
     "https://orange-cyberdefense.github.io/GOAD/labs/MINILAB/"
