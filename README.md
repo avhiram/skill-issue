@@ -17,6 +17,6 @@
 
 <br />
 
-<a href="https://avhiram.github.io/skill-issue/"><strong>EXPLORE THE KNOWLEDGE BASE ↗</strong></a>
+<a href="https://avhiram.github.io/skill-issue/">voir le site ↗</a>
 
 </div>
