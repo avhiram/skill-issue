@@ -435,7 +435,7 @@ Les procédures de recherche de cibles à grande échelle, d'exécution de comma
 ffuf -request lfi -request-proto https -w /root/wordlists/offensive\ payloads/LFI\ payload.txt -c -mr "root:"
 ```
 
-Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents ; les chemins absolus et le format de la requête doivent être vérifiés dans le laboratoire. Une correspondance de réponse n'est pas une preuve suffisante. Ces fichiers ne sont pas générés par les chapitres précédents. Vérifier les chemins absolus et le format de la requête dans le laboratoire. Une correspondance de réponse n'est pas une preuve suffisante.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par le parcours. Vérifier les chemins et le format de la requête dans le laboratoire ; une correspondance de réponse ne suffit pas.
 
 ### Test XSS à partir d'une requête
 
@@ -443,7 +443,7 @@ Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (�
 ffuf -request xss -request-proto https -w /root/wordlists/xss-payloads.txt -c -mr "<script>alert('XSS')</script>"
 ```
 
-Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents ; les chemins absolus et le format de la requête doivent être vérifiés dans le laboratoire. Une correspondance de réponse n'est pas une preuve suffisante. Ces fichiers ne sont pas générés par les chapitres précédents. Vérifier les chemins absolus et le format de la requête dans le laboratoire. Une correspondance de réponse n'est pas une preuve suffisante.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par le parcours. Vérifier les chemins et le format de la requête dans le laboratoire ; une correspondance de réponse ne suffit pas.
 
 ## Techniques avancées
 
