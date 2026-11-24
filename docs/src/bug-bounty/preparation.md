@@ -28,6 +28,24 @@ Crée un dossier distinct pour la cible et le nom du programme renseignés, puis
 
 Renseigner `scope/domains.txt` avec les domaines réellement autorisés, un par ligne. Les inventaires TXT restent à la racine du programme pour préserver les enchaînements. Utiliser `requests/`, `javascript/`, `preuves/` et `rapports/` pour les fichiers correspondants.
 
+### Reprendre un programme existant
+
+<BountyCommand :source="&quot;cd \&quot;$HOME/bug-bounty/__BOUNTY_WORKSPACE__\&quot; &amp;&amp; pwd&quot;" language="bash" />
+
+Ouvre le dossier sélectionné et affiche le chemin courant. Si le dossier n'existe pas encore, utiliser la commande de création ci-dessus.
+
+### Archiver les inventaires
+
+```bash
+archive=$(mktemp -d recon/inventaires-XXXXXX)
+for f in inventory_subs.txt all_subs.txt resolved_subs.txt http_metadata.txt live_websites.txt all_archived_urls.txt allurls.txt js_inventory.txt; do
+  if [ -f "$f" ]; then cp -p -- "$f" "$archive/"; fi
+done
+printf '%s\n' "$archive"
+```
+
+Copie les inventaires existants dans un nouveau sous-dossier de `recon/`. Les fichiers de travail restent à leur emplacement pour ne pas casser les pipelines. À lancer depuis la racine du programme après avoir produit les inventaires.
+
 ## Préparer les outils
 
 Consulter [Security Tools et Browser Extensions](./ressources.md). Vérifier les versions installées, les dépendances et les permissions des extensions avant utilisation.
