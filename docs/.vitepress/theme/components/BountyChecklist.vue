@@ -11,6 +11,7 @@ const count = computed(() => checked.value.filter(Boolean).length)
 
 function load() {
   checked.value = props.items.map(() => false)
+  if (!workspace.value) { ready.value = true; return }
   try {
     const saved = JSON.parse(localStorage.getItem(key.value) || 'null')
     if (Array.isArray(saved)) {
@@ -26,7 +27,7 @@ onMounted(load)
 watch(key, () => { if (ready.value) load() })
 
 function save() {
-  if (!ready.value) return
+  if (!ready.value || !workspace.value) return
   try {
     localStorage.setItem(key.value, JSON.stringify(props.items.filter((_, i) => checked.value[i])))
   } catch {
@@ -44,12 +45,13 @@ function reset() {
   <div class="bounty-checklist">
     <div class="checklist-meta">
       <span aria-live="polite">{{ count }} / {{ items.length }}</span>
-      <button type="button" :disabled="count === 0" @click="reset">Réinitialiser</button>
+      <span v-if="!workspace">Choisir un programme</span>
+      <button type="button" :disabled="!workspace || count === 0" @click="reset">Réinitialiser</button>
     </div>
     <ul>
       <li v-for="(item, i) in items" :key="item">
         <label>
-          <input v-model="checked[i]" type="checkbox" @change="save">
+          <input v-model="checked[i]" type="checkbox" :disabled="!workspace" @change="save">
           <span :class="{ completed: checked[i] }">{{ item }}</span>
         </label>
       </li>
