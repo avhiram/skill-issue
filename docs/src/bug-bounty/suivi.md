@@ -25,8 +25,7 @@ Lorsqu'une prime est attribuée, suivre les instructions de la plateforme concer
 
 ## Bilan
 
-- Statut du rapport et réponses du programme suivis.
-- Clôture, correction et éventuelle prime enregistrées.
+<BountyChecklist storage-key="checkpoint-suivi" :items='["Statut du rapport et réponses du programme suivis.","Clôture, correction et éventuelle prime enregistrées."]' />
 
 ---
 
