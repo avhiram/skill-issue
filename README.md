@@ -17,6 +17,6 @@
 
 <br />
 
-<a href="https://avhiram.github.io/skill-issue/">2b1ask1</a>
+<a href="https://avhiram.github.io/skill-issue/"><img src="assets/readme-link.svg" alt="2b1ask1" width="64" height="20" /></a>
 
 </div>
