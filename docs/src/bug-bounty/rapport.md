@@ -37,6 +37,8 @@ Captures, requêtes et réponses expurgées.
 Correction et contrôles de vérification.
 ```
 
+Enregistrer le rapport dans `rapports/` et conserver ses pièces justificatives dans `preuves/` du programme sélectionné.
+
 ## Avant envoi
 
 - Vérifier l'éligibilité du constat et le périmètre de l'actif.
