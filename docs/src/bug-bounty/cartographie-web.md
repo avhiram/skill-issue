@@ -15,15 +15,15 @@ Objectif : inventorier les URL, routes, formulaires, paramètres, scripts et int
 
 ## Collecte des URL
 
-### Collecte passive avec Katana
+### Katana - ancien mode passif (historique)
 
 ```bash
 katana -u subexample.coms_alive.txt -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -kf -jc -fx -ef woff,css,png,svg,jpg,woff2,jpeg,gif,svg -o katana_archive_urls.txt
 ```
 
-Variante historique. Entrée : `subexample.coms_alive.txt` (filtrage HTTP du chapitre précédent). Sortie : `katana_archive_urls.txt`.
+Exemple obsolète : ProjectDiscovery a retiré le mode passif de Katana à partir de la version 1.1.1. Ne pas exécuter ce bloc avec une version actuelle. Utiliser les sections GAU, Waybackurls ou URLfinder déjà présentes pour les archives. Sortie historique : `katana_archive_urls.txt`.
 
-### Collecte avancée avec Katana
+### Katana - ancien workflow de paramètres (historique)
 
 ```bash
 echo example.com | katana -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -f qurl | urldedupe > katana_parameters_raw.txt
@@ -31,9 +31,9 @@ katana -u https://example.com -d 5 | grep '=' | urldedupe | anew katana_paramete
 cat katana_parameters_raw.txt | sed 's/=.*/=/' > katana_parameters_normalized.txt
 ```
 
-Enchaînement volontaire : les deux collectes Katana alimentent `katana_parameters_raw.txt`. `anew` ajoute les nouvelles URL sans répéter celles déjà enregistrées. La normalisation produit un fichier distinct.
+Enchaînement historique : les deux collectes alimentent `katana_parameters_raw.txt` ; `anew` ajoute les nouvelles lignes. La première commande utilise le mode passif retiré de Katana. Ce bloc n'est pas une procédure exécutable avec les versions actuelles.
 
-> Séparation des lignes rétablie grâce aux notes complémentaires ; options et compatibilité à vérifier. La normalisation supprime tout ce qui suit le premier signe égal.
+> La normalisation est destructive pour la structure des paramètres : elle supprime tout après le premier `=`. Conserver les URL brutes pour l'analyse.
 
 ### Collecte avec GAU
 
@@ -43,15 +43,15 @@ grep -E '\.php|\.asp|\.aspx|\.jspx|\.jsp' urls.txt | grep '=' | sort -u > gau_pa
 cat gau_parameters_raw.txt | sed 's/=.*/=/' > gau_parameters_normalized.txt
 ```
 
-Enchaînement : GAU produit `urls.txt`, le filtre sélectionne les URL paramétrées dans `gau_parameters_raw.txt`, puis la normalisation crée `gau_parameters_normalized.txt`.
+GAU produit `urls.txt` à partir des archives (`--mc` filtre les codes enregistrés, pas les réponses actuelles). Le pipeline nécessite `urldedupe`. Les fichiers bruts et normalisés restent distincts.
 
-> Séparation des lignes rétablie grâce aux notes complémentaires ; options et compatibilité à vérifier. La normalisation supprime tout ce qui suit le premier signe égal.
+> Les filtres recherchent des chaînes dans l'URL entière ; ils ne prouvent ni le type de page ni la présence d'un paramètre exploitable. La normalisation supprime aussi les paramètres suivants.
 
 ### Waybackurls - archives Web
 
 <BountyCommand :source="&quot;waybackurls __BOUNTY_DOMAIN__ &gt; wayback_urls.txt&quot;" language="bash" />
 
-Collecte les URL connues dans les archives.
+Collecte les URL historiques dans `wayback_urls.txt`. Leur disponibilité actuelle et leur autorisation ne sont pas établies.
 
 ### Katana - crawling des services Web
 
@@ -59,7 +59,7 @@ Collecte les URL connues dans les archives.
 katana -list live_websites.txt -jc -o katana_urls.txt
 ```
 
-Explore les services Web autorisés et les références JavaScript. Vérifier le format d'entrée.
+Crawling actif. `live_websites.txt` doit contenir une URL autorisée par ligne, sans métadonnées. `-jc` active l'analyse des références JavaScript.
 
 ### Gospider - exploration Web
 
@@ -67,7 +67,7 @@ Explore les services Web autorisés et les références JavaScript. Vérifier le
 gospider -S live_websites.txt -d 2 -o gospider_output/
 ```
 
-Explore les sites de la liste à une profondeur de deux niveaux.
+Crawling actif à profondeur maximale de deux niveaux. Gospider écrit ses résultats dans `gospider_output/` ; ne pas assimiler ses lignes annotées à une liste d'URL.
 
 ### AlienVault OTX - collecte historique
 
@@ -75,7 +75,7 @@ Explore les sites de la liste à une profondeur de deux niveaux.
 ./alienvault.sh example.com
 ```
 
-Interroge les données publiques d'AlienVault OTX pour recenser les URL associées au domaine autorisé. Le script doit être récupéré et examiné avant exécution ; vérifier son comportement et ses dépendances.
+Exemple de script tiers à examiner avant toute exécution. Sa version, ses dépendances et son format de sortie n'ont pas été confirmés ; il ne fait pas partie de la chaîne principale.
 
 [Script alienvault.sh](https://github.com/coffinxp/scripts/blob/main/alienvault.sh)
 
@@ -86,7 +86,7 @@ python urlscan.py -d example.com --mode urls
 python urlscan.py -d example.com --mode subdomains
 ```
 
-Les deux modes présentés dans l'article récupèrent respectivement les URL et les sous-domaines connus de URLScan.io. Les résultats historiques ne prouvent ni que les ressources sont encore disponibles, ni qu'elles font partie du scope.
+Les deux modes sont issus de l'article. Vérifier la version du script, son interpréteur Python et ses dépendances ; les options et sorties n'ont pas été confirmées ici.
 
 [Script urlscan.py](https://github.com/coffinxp/scripts/blob/main/urlscan.py)
 
@@ -107,7 +107,7 @@ Le premier exemple sélectionne les codes indiqués ; le second les exclut. Les 
 gospider -s https://example.com --sitemap -d 2
 ```
 
-Explore les URL du sitemap et les liens à une profondeur de deux niveaux. Limiter les requêtes au périmètre autorisé.
+Active le traitement du sitemap et limite la profondeur de crawling. Les liens découverts ne deviennent pas automatiquement autorisés.
 
 ### Gospider - proxy HTTP local
 
@@ -115,7 +115,7 @@ Explore les URL du sitemap et les liens à une profondeur de deux niveaux. Limit
 gospider -s https://example.com -p http://127.0.0.1:8080
 ```
 
-Fait transiter les requêtes par un proxy HTTP local, par exemple Burp Suite, pour observer le trafic du laboratoire. Le proxy doit être démarré et configuré.
+Configure un proxy HTTP local. Burp doit écouter sur le port indiqué ; vérifier le comportement du proxy et la configuration TLS en laboratoire.
 
 [Gospider - dépôt GitHub](https://github.com/jaeles-project/gospider)
 
@@ -123,13 +123,13 @@ Fait transiter les requêtes par un proxy HTTP local, par exemple Burp Suite, po
 
 <BountyCommand :source="&quot;gau --subs __BOUNTY_DOMAIN__ &gt; archived_urls.txt&quot;" language="bash" />
 
-Alimente le fichier archived_urls.txt utilisé par la fusion des archives. Exemple du document Full Bug Bounty Reconnaissance ; vérifier que les sous-domaines sont dans le scope.
+Alimente `archived_urls.txt` pour la fusion des archives. `--subs` inclut les sous-domaines dans la recherche ; les URL obtenues doivent être validées avant tout test actif.
 
 ### URLfinder - collecte passive
 
 <BountyCommand :source="&quot;urlfinder -d __BOUNTY_DOMAIN__ | sort -u &gt; urlfinder_urls.txt&quot;" language="bash" />
 
-Collecte et déduplique les URL connues. Variante issue de Recon to Master avec un domaine générique.
+Collecte les URL passives dans `urlfinder_urls.txt`. URLfinder remplace l'ancien mode passif de Katana.
 
 ### Fusion des URL archivées
 
@@ -147,7 +147,7 @@ Fusion volontaire des URL collectées par GAU, Waybackurls, URLfinder et Wayback
 grep '=' all_archived_urls.txt > parameters.txt
 ```
 
-Isole les URL contenant un signe égal, puis vérifier manuellement qu'il s'agit de paramètres.
+Isole les lignes contenant `=`. Ce caractère peut aussi se trouver dans un chemin ou un fragment ; ce filtre ne parse pas les paramètres.
 
 ### Repérage des pages de connexion
 
@@ -155,7 +155,7 @@ Isole les URL contenant un signe égal, puis vérifier manuellement qu'il s'agit
 grep -Ei 'login|admin|signin|dashboard' all_archived_urls.txt | tee login_endpoints.txt
 ```
 
-Repère les chemins archivés contenant ces termes ; vérifier leur pertinence et leur périmètre manuellement.
+Repère les URL contenant ces termes, y compris dans le domaine ou la query string. Les résultats ne démontrent pas la présence d'une page de connexion.
 
 ## Crawling complémentaire et nettoyage
 
@@ -165,7 +165,7 @@ Repère les chemins archivés contenant ces termes ; vérifier leur pertinence e
 printf '%s\n' 'http://127.0.0.1:8000/' | hakrawler -u > hakrawler_urls.txt
 ```
 
-Explore un site de laboratoire déjà démarré sur le port 8000. L'option -u est reprise du document ; vérifier sa prise en charge dans la version installée.
+Explore un site de laboratoire démarré sur le port 8000. `-u` demande des URL uniques selon la documentation Hakrawler.
 
 ### GAU - liste de domaines
 
@@ -185,7 +185,7 @@ Réunir les résultats bruts pertinents des collectes passives et actives (`all_
 grep -E '\?[^=]+=.+$' allurls.txt | sort -u > urls_with_params.txt
 ```
 
-Filtre les URL contenant un paramètre avec une valeur non vide, sans envoyer de requête.
+Heuristique locale : conserve les lignes contenant `?` puis `=` et au moins un caractère. Ne garantit pas que chaque paramètre possède une valeur non vide.
 
 ### Inventaire des scripts JavaScript
 
@@ -201,7 +201,7 @@ Filtre une liste locale d'URL déjà obtenues. L'expression tient aussi compte d
 grep -nE 'document\.(location|URL|cookie|domain|referrer)|innerHTML|outerHTML|eval\(|\.write\(' javascript/*.js
 ```
 
-Repère des sources et sinks JavaScript dans les fichiers locaux autorisés. Un résultat ne constitue pas une preuve de XSS. Adaptation en lecture locale de la commande DOM de l'article.
+Repère des références textuelles à des sources et sinks dans les fichiers `.js` directement sous `javascript/`. Ne suit pas les flux de données et ne constitue pas une preuve de XSS.
 
 ### Open Redirect - classement des URL
 
@@ -209,7 +209,7 @@ Repère des sources et sinks JavaScript dans les fichiers locaux autorisés. Un 
 gf redirect < allurls.txt | sort -u > redirect_candidates.txt
 ```
 
-Classe les URL locales selon le pattern GF installé. Une correspondance reste un indice à vérifier manuellement.
+Classe les URL locales selon un pattern `redirect` à installer et vérifier séparément dans la configuration GF. Une correspondance reste un indice.
 
 ### Classement SQL Injection avec GF
 
@@ -217,18 +217,18 @@ Classe les URL locales selon le pattern GF installé. Une correspondance reste u
 gf sqli < allurls.txt > sqli_candidates.txt
 ```
 
-Classe les URL déjà collectées selon un pattern GF installé. Aucun test réseau ni exploitation n'est effectué ; les correspondances sont des hypothèses.
+Classe les URL locales selon un pattern `sqli` à installer et vérifier séparément. Aucun test réseau ; une correspondance n'établit pas une injection.
 
 
 ## Découverte de paramètres
 
-### Recherche passive avec Arjun
+### Arjun - sources passives et validation active (historique)
 
 ```bash
 arjun -u https://example.com/endpoint.php -oT arjun_passive.txt -t 10 --rate-limit 10 --passive -m GET,POST --headers "User-Agent: Mozilla/5.0"
 ```
 
-Recherche des paramètres HTTP avec le mode passif d'Arjun.
+Exemple historique non validé. `--passive` enrichit les noms de paramètres à partir de sources publiques, mais Arjun effectue ensuite des requêtes actives. `-m GET,POST` ne correspond pas à une méthode documentée. Ne pas exécuter tel quel.
 
 ### Recherche avec une wordlist Arjun
 
@@ -236,7 +236,7 @@ Recherche des paramètres HTTP avec le mode passif d'Arjun.
 arjun -u https://example.com/endpoint.php -oT arjun_wordlist.txt -m GET,POST -w /usr/share/wordlists/seclists/Discovery/Web-Content/burp-parameter-names.txt -t 10 --rate-limit 10 --headers "User-Agent: Mozilla/5.0"
 ```
 
-Teste des noms de paramètres provenant d'une liste de mots.
+Exemple historique non validé : le chemin de la wordlist doit être vérifié et `-m GET,POST` n'est pas une méthode documentée. Réserver l'étude de ce bloc au laboratoire.
 
 ### Arjun - export JSON
 
@@ -244,7 +244,7 @@ Teste des noms de paramètres provenant d'une liste de mots.
 arjun -u https://example.com -m GET,POST --stable -oJ params.json
 ```
 
-Recherche des paramètres dans un environnement autorisé et exporte les résultats en JSON. L'option de sortie a été adaptée au format JSON ; vérifier la version installée.
+Exemple historique non validé : `-oJ` désigne l'export JSON et `--stable` privilégie la stabilité. `-m GET,POST` n'est pas une méthode documentée. Ne pas exécuter tel quel.
 
 ## JS Recon - méthode manuelle
 
@@ -258,7 +258,7 @@ Dans le navigateur, ouvrir les outils de développement (F12), puis les onglets 
 echo example.com | katana -d 5 | grep -E "\.js$" | nuclei -t /path/to/nuclei-templates/http/exposures/ -c 30
 ```
 
-Collecte des URL JavaScript et applique des modèles d'exposition Nuclei.
+Variante historique de tests actifs, indépendante du parcours. Le chemin des modèles est un exemple ; les modèles et options n'ont pas été validés.
 
 ### Analyse d'une liste de fichiers JS
 
@@ -272,7 +272,7 @@ Prérequis : préparer manuellement `alljs.txt` avec les URL autorisées à test
 
 <BountyCommand :source="&quot;gau --subs __BOUNTY_DOMAIN__ | grep '\\.js$' &gt; js_passive.txt&quot;" language="bash" />
 
-Sélectionne les URL archivées se terminant par .js.
+Sélectionne uniquement les URL archivées se terminant exactement par `.js`. Les URL avec query string ou fragment sont exclues par ce filtre historique.
 
 ### Collecte active des scripts
 
@@ -280,7 +280,7 @@ Sélectionne les URL archivées se terminant par .js.
 katana -list live_websites.txt -jc -silent | grep '\.js$' > js_active.txt
 ```
 
-Recense les références JavaScript dans les applications autorisées.
+Collecte active de références JavaScript ; le filtre historique exclut les URL avec query string ou fragment.
 
 ### Fusion des URL JavaScript
 
@@ -296,7 +296,7 @@ Fusion volontaire des collectes JavaScript passive et active : les deux listes a
 httpx -l js_all.txt -mc 200 -o js_live.txt
 ```
 
-Vérifie les URL de fichiers JavaScript autorisées qui répondent avec un statut HTTP 200. Le fichier `js_all.txt` est issu de la fusion des listes passive et active. Adaptation de l'article JS-Recon ; utiliser HTTPX de ProjectDiscovery.
+Vérifie les réponses HTTP 200 des URL de scripts autorisées. Ce statut ne garantit pas que la réponse contient du JavaScript. Le fichier `js_all.txt` est issu de la fusion des listes passive et active. Adaptation de l'article JS-Recon ; utiliser HTTPX de ProjectDiscovery.
 
 ### Revue de JavaScript local - fichiers à examiner
 
@@ -348,7 +348,7 @@ La fiche Lostsec fournie en complément reprend une grande partie des commandes 
 curl -H 'Origin: http://example.com' -I https://example.com/wp-json/ | grep -i -e 'access-control-allow-origin' -e 'access-control-allow-methods' -e 'access-control-allow-credentials'
 ```
 
-Affiche les trois en-têtes CORS pertinents. Le domaine tiers figurant dans la fiche a été remplacé par un domaine d'exemple. Un en-tête seul ne suffit pas à établir l'impact.
+Exemple HTTP HEAD historique. Affiche certains en-têtes CORS ; la requête n'est pas un preflight OPTIONS et ne démontre pas une vulnérabilité.
 
 ### Découverte de contenu
 
@@ -375,7 +375,7 @@ Relever les routes et méthodes HTTP dans la documentation, les requêtes du nav
 jq 'keys' requests/response.json
 ```
 
-Prérequis : enregistrer une réponse API de test dans `requests/response.json`. Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service. Exemple local ajouté pour faciliter l'analyse des réponses API.
+Prérequis : enregistrer une réponse API de test dans `requests/response.json`. Affiche les clés d'un objet JSON déjà enregistré, ou les indices d'un tableau. Requiert un JSON valide ; aucun service n'est contacté. Exemple local ajouté pour faciliter l'analyse des réponses API.
 
 ## Fichiers du chapitre
 
@@ -391,6 +391,11 @@ Prérequis : enregistrer une réponse API de test dans `requests/response.json`.
 - `js_live.txt` : résultat de la vérification HTTP des scripts.
 
 Les fichiers de requêtes, scripts externes et wordlists sont des prérequis à préparer séparément. Conserver les ajouts volontaires au même fichier (`anew`, `>>`) et les fusions prévues. Séparer seulement les résultats incompatibles ou les variantes qui risquent de s'écraser.
+
+## Documentation des outils
+
+- [Katana](https://github.com/projectdiscovery/katana) · [Retrait du mode passif](https://github.com/projectdiscovery/katana/discussions/1114) · [GAU](https://github.com/lc/gau)
+- [Gospider](https://github.com/jaeles-project/gospider) · [Hakrawler](https://github.com/hakluke/hakrawler) · [Arjun](https://github.com/s0md3v/Arjun/wiki/Usage) · [GF](https://github.com/tomnomnom/gf)
 
 ## Avant de poursuivre
 
