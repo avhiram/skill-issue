@@ -17,4 +17,4 @@ import OCDSvgViewer from '../../.vitepress/theme/components/OCDSvgViewer.vue'
   <template #fallback>Chargement du lecteur SVG…</template>
 </ClientOnly>
 
-SVG original publié par [Orange Cyberdefense](https://orange-cyberdefense.github.io/ocd-mindmaps/), projet [ocd-mindmaps](https://github.com/Orange-Cyberdefense/ocd-mindmaps) sous GPL-3.0. Le fichier est affiché depuis le site officiel, sans modification. Il s'agit d'une image vectorielle, pas d'un Canvas Obsidian : les cartes ne sont pas individuellement sélectionnables.
+SVG original publié par [Orange Cyberdefense](https://orange-cyberdefense.github.io/ocd-mindmaps/), projet [ocd-mindmaps](https://github.com/Orange-Cyberdefense/ocd-mindmaps) sous GPL-3.0. Le fichier est affiché depuis le site officiel, sans modification. Le mode de sélection permet de lire et copier le texte si le SVG original contient des éléments textuels accessibles au navigateur. Les cartes ne sont pas des objets Canvas Obsidian.
