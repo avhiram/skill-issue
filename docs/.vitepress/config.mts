@@ -49,7 +49,7 @@ export default defineConfig({
             { text: 'SSRF', link: '/bug-bounty/vulnerabilites#server-side-request-forgery-ssrf' },
             { text: 'CORS', link: '/bug-bounty/vulnerabilites#cross-origin-resource-sharing-cors' },
             { text: 'WordPress', link: '/bug-bounty/vulnerabilites#wordpress' },
-            { text: 'Microsoft IIS', link: '/bug-bounty/vulnerabilites#microsoft-iis-et-asp-net' },
+            { text: 'Microsoft IIS', link: '/bug-bounty/vulnerabilites#microsoft-iis-et-aspnet' },
             { text: 'React2Shell', link: '/bug-bounty/vulnerabilites#react2shell-cve-2025-55182' }
           ] },
           { text: 'Validation et preuves', link: '/bug-bounty/validation' },
