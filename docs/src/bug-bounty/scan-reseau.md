@@ -1,15 +1,15 @@
 ---
-title: Cartographie et scan réseau
+title: Reconnaissance active
 aside: true
 prev: false
 next: false
 ---
 
-# Cartographie et scan réseau
+# Reconnaissance active
 
 [Retour au parcours](./index.md)
 
-Objectif : identifier les services réellement présents, les ports autorisés et les technologies, sans confondre un CDN ou un hébergement partagé avec le périmètre.
+Identifier les services, ports et technologies des actifs autorisés par le programme.
 
 ## Validation DNS et HTTP
 
