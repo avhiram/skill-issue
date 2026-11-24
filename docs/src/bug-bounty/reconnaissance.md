@@ -15,6 +15,8 @@ Objectif : recenser les actifs connus, vérifier leur appartenance au programme 
 
 ## Énumération des sous-domaines
 
+Les collectes sont complémentaires : utiliser les sources disponibles, puis fusionner leurs résultats en fin de chapitre. Il n'est pas nécessaire d'exécuter chaque outil.
+
 ### Découverte des sous-domaines
 
 <BountyCommand :source="&quot;subfinder -d __BOUNTY_DOMAIN__ -all -recursive &gt; subexample.com.txt&quot;" language="bash" />
@@ -126,7 +128,7 @@ for f in subexample.com.txt amass_passive_subs.txt assetfinder_subs.txt findomai
 done | sort -u > inventory_subs.txt
 ```
 
-Fusionne uniquement les fichiers effectivement produits. Les fichiers absents sont ignorés et le fichier de sortie ne peut pas se réinjecter dans la fusion. L'inventaire contient des pistes, pas une autorisation de test.
+Fusion volontaire : Subfinder, Amass, Assetfinder et les autres sources alimentent le même inventaire `inventory_subs.txt`. Les doublons sont supprimés et les sources non utilisées sont ignorées.
 
 Avant la reconnaissance active, vérifier les résultats au regard du scope et enregistrer uniquement les noms explicitement autorisés dans `all_subs.txt`.
 
