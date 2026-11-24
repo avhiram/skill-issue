@@ -371,6 +371,11 @@ jq 'keys' response.json
 
 Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service. Exemple local ajouté pour faciliter l'analyse des réponses API.
 
+## Avant de poursuivre
+
+- Inventaire des fonctionnalités, URL, paramètres et API.
+- Résultats enregistrés et observations à vérifier identifiées.
+
 ---
 
 [Précédent : Cartographie et scan réseau](./scan-reseau.md) · [Parcours](./index.md) · [Suivant : Tests de vulnérabilités](./vulnerabilites.md)
