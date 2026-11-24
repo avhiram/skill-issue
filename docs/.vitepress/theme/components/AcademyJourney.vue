@@ -918,6 +918,10 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://cloud.google.com/learn/security/mandiant-academy-courses/free-cyber-defense-training"
   ],
   "reverse": [
+    "https://reverse.zip/categories/introduction-au-reverse/",
+    "https://reverse.zip/categories/introduction-%C3%A0-l-ex%C3%A9cution-symbolique-avec-angr/",
+    "https://reverse.zip/categories/introduction-au-pwn/",
+    "https://reverse.zip/categories/exploitation-de-la-heap/",
     "https://opensecuritytraining.info/",
     "https://github.com/NationalSecurityAgency/ghidra"
   ],
