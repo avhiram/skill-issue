@@ -209,7 +209,7 @@ jobs:
         run: |
           for attempt in $(seq 1 30); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/preparation-live.html; then
-              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/preparation-live.html && grep -q 'Nom du programme' /tmp/preparation-live.html && grep -q 'install-tools.sh' /tmp/preparation-live.html && grep -q 'CHOISIR_UN_PROGRAMME' /tmp/preparation-live.html && grep -Fq 'mkdir -p &quot;./CHOISIR_UN_PROGRAMME&quot;/' /tmp/preparation-live.html && grep -Fq 'cd &quot;./CHOISIR_UN_PROGRAMME&quot;' /tmp/preparation-live.html && ! grep -Eq '\$HOME|~/bug-bounty|/home/' /tmp/preparation-live.html; then
+              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/preparation-live.html && grep -q 'Nom du programme' /tmp/preparation-live.html && grep -q 'install-bugbounty-tools.sh' /tmp/preparation-live.html && grep -q 'CHOISIR_UN_PROGRAMME' /tmp/preparation-live.html && grep -Fq 'mkdir -p &quot;./CHOISIR_UN_PROGRAMME&quot;/' /tmp/preparation-live.html && grep -Fq 'cd &quot;./CHOISIR_UN_PROGRAMME&quot;' /tmp/preparation-live.html && ! grep -Eq '\$HOME|~/bug-bounty|/home/' /tmp/preparation-live.html; then
                 echo 'Préparation dynamique confirmée.'
                 exit 0
               fi
