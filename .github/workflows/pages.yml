@@ -56,6 +56,15 @@ jobs:
             echo 'Ancienne présentation Academy interdite.'
             exit 1
           fi
+      - name: Verify Bug Bounty homepage and active reconnaissance
+        run: |
+          test -s docs/.vitepress/dist/bug-bounty/index.html
+          grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' docs/.vitepress/dist/bug-bounty/index.html
+          grep -q 'Reconnaissance active' docs/.vitepress/dist/bug-bounty/index.html
+          if grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' docs/.vitepress/dist/bug-bounty/index.html; then
+            echo 'Ancienne introduction Bug Bounty détectée.'
+            exit 1
+          fi
       - name: Audit all rendered HTML for visible Markdown fences
         run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
       - name: Upload compiled website for GitHub Pages
@@ -111,4 +120,18 @@ jobs:
             sleep 10
           done
           echo '::error::La page publique ne correspond pas à la présentation Academy compilée.'
+          exit 1
+
+      - name: Verify public Bug Bounty page after deployment
+        run: |
+          for attempt in $(seq 1 12); do
+            if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/bug-bounty-live.html; then
+              if grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' /tmp/bug-bounty-live.html && grep -q 'Reconnaissance active' /tmp/bug-bounty-live.html && ! grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' /tmp/bug-bounty-live.html; then
+                echo 'Nouvelle page Bug Bounty confirmée.'
+                exit 0
+              fi
+            fi
+            sleep 10
+          done
+          echo '::error::La page publique Bug Bounty ne correspond pas à la nouvelle version.'
           exit 1
