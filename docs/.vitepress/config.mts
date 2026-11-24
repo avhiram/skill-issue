@@ -36,7 +36,11 @@ export default defineConfig({
       '/academy/': [],
       '/bug-bounty/': [
         { text: 'Bug Bounty', link: '/bug-bounty/', items: [
-          { text: 'Cheatsheet', link: '/bug-bounty/#cheatsheet' }
+          { text: 'Cheatsheet', link: '/bug-bounty/#cheatsheet' },
+          { text: 'Methodology', link: '/bug-bounty/#methodologie-de-bug-bounty' },
+          { text: 'Security Tools', link: '/bug-bounty/ressources#security-tools' },
+          { text: 'Browser Extensions', link: '/bug-bounty/ressources#browser-extensions' },
+          { text: 'Writeups', link: '/bug-bounty/ressources#writeups' }
         ] }
       ],
       '/osint/': [
