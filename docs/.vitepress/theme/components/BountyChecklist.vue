@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useBountyTarget } from '../bountyTarget'
+const { workspace } = useBountyTarget()
 
 const props = defineProps<{ storageKey: string; items: string[] }>()
 const checked = ref<boolean[]>(props.items.map(() => false))
 const ready = ref(false)
-const key = computed(() => 'skill-issue:bug-bounty:checklist:v1:' + props.storageKey)
+const key = computed(() => 'skill-issue:bug-bounty:checklist:v2:' + (workspace.value || 'unselected') + ':' + props.storageKey)
 const count = computed(() => checked.value.filter(Boolean).length)
 
-onMounted(() => {
+function load() {
+  checked.value = props.items.map(() => false)
   try {
     const saved = JSON.parse(localStorage.getItem(key.value) || 'null')
     if (Array.isArray(saved)) {
@@ -18,7 +21,9 @@ onMounted(() => {
     // The checklist still works if local storage is unavailable.
   }
   ready.value = true
-})
+}
+onMounted(load)
+watch(key, () => { if (ready.value) load() })
 
 function save() {
   if (!ready.value) return
