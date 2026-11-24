@@ -554,7 +554,11 @@ export const academyLevels = [
     "exercise": "Analyser un petit binaire pédagogique et en documenter les fonctions.",
     "ready": "Tu identifies les grands blocs d'un programme.",
     "featured": [
-      "https://ghidra-sre.org/"
+      "https://reverse.zip/categories/introduction-au-reverse/",
+      "https://reverse.zip/categories/introduction-%C3%A0-l-ex%C3%A9cution-symbolique-avec-angr/",
+      "https://reverse.zip/categories/introduction-au-pwn/",
+      "https://reverse.zip/categories/exploitation-de-la-heap/",
+      "https://github.com/NationalSecurityAgency/ghidra"
     ]
   },
   {
@@ -1770,6 +1774,46 @@ export const academyExtraResources = [
     "routeLevel": "web-security",
     "access": "Gratuit",
     "description": "Parcours structurés et labs gratuits pour progresser en sécurité Web."
+  },
+  {
+    "id": "added-reversezip-intro",
+    "title": "Reverse.zip - Introduction au reverse",
+    "url": "https://reverse.zip/categories/introduction-au-reverse/",
+    "description": "25 chapitres en français pour comprendre les programmes, l’assembleur, l’analyse statique et dynamique.",
+    "category": "reverse",
+    "routeLevel": "reverse",
+    "type": "Cours",
+    "access": "Gratuit"
+  },
+  {
+    "id": "added-reversezip-angr",
+    "title": "Reverse.zip - Introduction à l’exécution symbolique avec angr",
+    "url": "https://reverse.zip/categories/introduction-%C3%A0-l-ex%C3%A9cution-symbolique-avec-angr/",
+    "description": "5 chapitres en français pour découvrir l’exécution symbolique avec angr, avec exercices et solutions.",
+    "category": "reverse",
+    "routeLevel": "reverse",
+    "type": "Cours",
+    "access": "Gratuit"
+  },
+  {
+    "id": "added-reversezip-pwn",
+    "title": "Reverse.zip - Introduction au Pwn",
+    "url": "https://reverse.zip/categories/introduction-au-pwn/",
+    "description": "30 chapitres en français consacrés aux bases du Pwn, à la sécurité mémoire et aux exercices sur binaires pédagogiques.",
+    "category": "reverse",
+    "routeLevel": "reverse",
+    "type": "Cours",
+    "access": "Gratuit"
+  },
+  {
+    "id": "added-reversezip-heap",
+    "title": "Reverse.zip - Exploitation de la heap",
+    "url": "https://reverse.zip/categories/exploitation-de-la-heap/",
+    "description": "24 chapitres en français pour approfondir le fonctionnement du tas, ses vulnérabilités et ses mécanismes de protection.",
+    "category": "reverse",
+    "routeLevel": "reverse",
+    "type": "Cours",
+    "access": "Gratuit"
   }
 ] as const
 
