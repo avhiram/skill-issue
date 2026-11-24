@@ -101,15 +101,69 @@ nslookup -type=SRV _ldap._tcp.dc._msdcs.example.test
 nmap -p 88 --open 192.0.2.0/28
 ```
 
-### Interroger les métadonnées LDAP
+### Vérification DNS
 
-Lecture de la RootDSE sans modification de l’annuaire. Adapter le nom du serveur au laboratoire.
+#### Contrôler les transferts de zone DNS
+
+<p class="oscp-command-note">Vérifier sur le serveur DNS du laboratoire si un transfert AXFR est autorisé. Un refus peut être normal ; un transfert réussi doit être comparé à la politique d’autorisation des serveurs secondaires.</p>
 
 ```bash
-ldapsearch -x -H ldap://dc.example.test -s base
+dig @192.0.2.10 example.test AXFR
 ```
 
-À connaître dans la mind map : découverte des services, DNS et transferts de zone, accès SMB invité ou anonyme, LDAP anonyme, visibilité des comptes, PXE, TimeRoasting, poisoning et coercition. Ces derniers sujets sont des risques à étudier dans leur contexte.
+### Accès SMB anonymes et invités
+
+#### Vérifier une session SMB anonyme
+
+<p class="oscp-command-note">Tester une connexion sans nom d’utilisateur ni mot de passe. Une session acceptée ne signifie pas que tous les partages sont accessibles.</p>
+
+```bash
+nxc smb 192.0.2.10 -u '' -p ''
+```
+
+#### Vérifier le mappage vers le compte Guest
+
+<p class="oscp-command-note">La mind map utilise un nom arbitraire et un mot de passe vide pour vérifier le mappage invité. Choisir un nom de test inexistant dans le laboratoire. Selon la version de NetExec, activer check_guest_account dans ~/.nxc/nxc.conf pour identifier explicitement Guest.</p>
+
+```bash
+nxc smb 192.0.2.10 -u 'a' -p ''
+```
+
+#### Lister les partages visibles avec Samba
+
+<p class="oscp-command-note">Demander la liste des partages avec une identité vide. La notation % sépare le nom du mot de passe ; aucun des deux n’est renseigné. La liste ne prouve pas les droits de lecture ou d’écriture.</p>
+
+```bash
+smbclient -U '%' -L //192.0.2.10
+```
+
+#### Vérifier les informations SMB accessibles sans compte
+
+<p class="oscp-command-note">La mind map utilise -a ; dans enum4linux-ng, l’option documentée est -A. Elle regroupe plusieurs contrôles d’énumération. Les informations disponibles dépendent des permissions et de la configuration du serveur.</p>
+
+```bash
+enum4linux-ng -A -u '' -p '' 192.0.2.10
+```
+
+### Informations LDAP accessibles
+
+#### Interroger les métadonnées LDAP
+
+<p class="oscp-command-note">Lire la RootDSE pour identifier les contextes de nommage, notamment defaultNamingContext. La portée base limite la recherche à l’objet racine ; -x utilise l’authentification simple, ici sans identifiants.</p>
+
+```bash
+ldapsearch -x -H ldap://dc.example.test -s base -b ''
+```
+
+#### Vérifier la RootDSE avec Nmap
+
+<p class="oscp-command-note">Alternative à ldapsearch. La mind map utilise un ensemble générique de scripts LDAP ; ici le script ldap-rootdse est sélectionné explicitement pour lire les métadonnées, sans lancer les autres scripts.</p>
+
+```bash
+nmap -n -sV -p 389 --script ldap-rootdse 192.0.2.10
+```
+
+La suite de la mind map distingue l’énumération des utilisateurs, les risques liés à PXE et TimeRoasting, ainsi que les mécanismes de poisoning et de coercition. Ces branches restent à examiner séparément.
 
 [Énumération Active Directory](ad-enumeration.md)
 
