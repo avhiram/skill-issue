@@ -40,18 +40,18 @@ Identifie les noms qui répondent aux requêtes DNS.
 ### DNSX - résolution inverse
 
 ```bash
-dnsx -ptr -l resolved_subs.txt -resp-only -o reverse_dns.txt
+dnsx -ptr -l ip.txt -resp-only -o reverse_dns.txt
 ```
 
-Interroge les enregistrements PTR. Prérequis : préparer une liste d'adresses IP autorisées ; resolved_subs.txt contient des noms DNS et ne convient donc pas à cette variante en l'état.
+Interroge les enregistrements PTR. Préparer `ip.txt` avec les IP autorisées ; ne pas utiliser la liste de noms DNS `resolved_subs.txt`.
 
 ### HTTPX - métadonnées des services
 
 ```bash
-httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o live_websites.txt
+httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o http_metadata.txt
 ```
 
-Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery. Ce résultat contient des métadonnées : conserver séparément une liste d'URL seules validées pour les commandes qui attendent une URL par ligne.
+Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery. Sortie : `http_metadata.txt` (URL, titres, codes et IP). Ce fichier est distinct de la liste d'URL seules.
 
 ### Filtrage des sous-domaines actifs
 
@@ -66,10 +66,14 @@ Vérifie les réponses HTTP sur plusieurs ports et enregistre les hôtes répond
 ### Httprobe - services Web
 
 ```bash
-cat resolved_subs.txt | httprobe > live_websites.txt
+cat resolved_subs.txt | httprobe > httprobe_urls.txt
 ```
 
-Alternative de détection des services HTTP et HTTPS. Ne pas écraser un inventaire HTTP existant : choisir un autre nom de sortie ou sauvegarder le résultat précédent.
+Alternative de détection des services HTTP et HTTPS. Sortie indépendante : `httprobe_urls.txt`.
+
+### Préparer la liste HTTP du chapitre suivant
+
+À partir des résultats HTTPX ou Httprobe, conserver manuellement les URL autorisées, une par ligne, dans `live_websites.txt`. Ne pas y inclure les titres, codes HTTP ou adresses IP ajoutés en métadonnées.
 
 ## Scan réseau
 
@@ -154,7 +158,9 @@ Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de
 
 - `all_subs.txt` : noms validés manuellement au chapitre précédent.
 - `resolved_subs.txt` : noms DNS résolus.
-- `live_websites.txt` : préparer une liste validée contenant une URL seule par ligne pour le chapitre Web ; ne pas y mélanger les métadonnées HTTPX.
+- `http_metadata.txt` : métadonnées HTTPX.
+- `httprobe_urls.txt` : résultat de la variante Httprobe.
+- `live_websites.txt` : liste d'URL validées manuellement pour le chapitre Web.
 - `ip.txt`, `hosts.txt` : listes spécifiques à préparer selon le scope.
 - `nmap_out.xml` : résultat du scan du laboratoire utilisé par le convertisseur HTML.
 
