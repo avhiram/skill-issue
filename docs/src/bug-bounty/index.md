@@ -12,7 +12,7 @@ Méthodologie de travail et cheatsheet, de la sélection d'un programme au suivi
 
 Les exemples utilisent des domaines génériques ou des laboratoires. Les commandes historiques et leurs options ne sont pas toutes vérifiées. Ne tester que les ressources expressément autorisées par le programme ; certaines techniques, même sur un domaine du scope, peuvent être interdites.
 
-[Outils, extensions et writeups](./ressources.md) · [Archive Lostsec](https://web.archive.org/web/20250828093634/https://lostsec.xyz/)
+[Outils et extensions](./ressources.md) · [Archive Lostsec](https://web.archive.org/web/20250828093634/https://lostsec.xyz/)
 
 ## Cheatsheet
 
