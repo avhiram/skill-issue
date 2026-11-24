@@ -9,11 +9,25 @@ next: false
 
 [Retour au parcours](./index.md)
 
+<BountyTarget />
+
 Identifier les services, ports et technologies des actifs autorisés par le programme.
 
 ## Validation DNS et HTTP
 
 Vérifier l'appartenance des noms collectés au scope avant les requêtes actives. Les exemples de fichiers historiques utilisent plusieurs noms ; sélectionner explicitement les fichiers de la méthode choisie.
+
+### DNS - résolution d'un domaine
+
+<BountyCommand :source="&quot;dig +short __BOUNTY_DOMAIN__ A&quot;" language="bash" />
+
+Affiche les adresses IPv4 retournées par le DNS.
+
+### HTTP - en-têtes de réponse
+
+<BountyCommand :source="&quot;curl -I '__BOUNTY_ORIGIN__'&quot;" language="bash" />
+
+Affiche les en-têtes HTTP de la cible sans télécharger le corps de la réponse.
 
 ### DNSX - validation DNS
 
