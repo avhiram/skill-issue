@@ -15,7 +15,7 @@ Identifier les services, ports et technologies des actifs autorisés par le prog
 
 ## Validation DNS et HTTP
 
-Vérifier l'appartenance des noms collectés au scope avant les requêtes actives. Les exemples de fichiers historiques utilisent plusieurs noms ; sélectionner explicitement les fichiers de la méthode choisie.
+Vérifier l'appartenance des noms collectés au scope avant les requêtes actives. Le fichier all_subs.txt doit contenir uniquement les noms validés au chapitre précédent.
 
 ### DNS - résolution d'un domaine
 
@@ -43,7 +43,7 @@ Identifie les noms qui répondent aux requêtes DNS.
 dnsx -ptr -l resolved_subs.txt -resp-only -o reverse_dns.txt
 ```
 
-Interroge les enregistrements PTR ; utiliser une liste d'adresses IP pour une résolution inverse pertinente, plutôt qu'une liste de noms.
+Interroge les enregistrements PTR. Prérequis : préparer une liste d'adresses IP autorisées ; resolved_subs.txt contient des noms DNS et ne convient donc pas à cette variante en l'état.
 
 ### HTTPX - métadonnées des services
 
@@ -51,7 +51,7 @@ Interroge les enregistrements PTR ; utiliser une liste d'adresses IP pour une r�
 httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o live_websites.txt
 ```
 
-Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery.
+Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery. Ce résultat contient des métadonnées : conserver séparément une liste d'URL seules validées pour les commandes qui attendent une URL par ligne.
 
 ### Filtrage des sous-domaines actifs
 
@@ -69,7 +69,7 @@ Vérifie les réponses HTTP sur plusieurs ports et enregistre les hôtes répond
 cat resolved_subs.txt | httprobe > live_websites.txt
 ```
 
-Alternative de détection des services HTTP et HTTPS. Le fichier de sortie est écrasé.
+Alternative de détection des services HTTP et HTTPS. Ne pas écraser un inventaire HTTP existant : choisir un autre nom de sortie ou sauvegarder le résultat précédent.
 
 ## Scan réseau
 
@@ -79,7 +79,7 @@ Alternative de détection des services HTTP et HTTPS. Le fichier de sortie est �
 naabu -list ip.txt -c 50 -nmap-cli 'nmap -sV -SC' -o naabu-full.txt
 ```
 
-Associe Naabu et Nmap pour identifier des ports et services.
+Associe Naabu et Nmap pour identifier des ports et services. Prérequis : préparer ip.txt avec les adresses explicitement autorisées au scan ; ne pas utiliser directement les IP observées dans des archives.
 
 ### Scan complet avec Nmap
 
@@ -109,7 +109,7 @@ Exemple historique de scan de ports à débit très élevé.
 cat hosts.txt | aquatone
 ```
 
-Génère des captures et un rapport visuel à partir d'une liste de services Web autorisés. Préparer `hosts.txt` avec les hôtes validés et vérifier les dépendances du logiciel. Aquatone est un outil historique ; sa compatibilité actuelle n'a pas été testée.
+Génère des captures et un rapport visuel à partir d'une liste de services Web autorisés. Prérequis : préparer `hosts.txt` avec les hôtes validés et vérifier les dépendances du logiciel. Aquatone est un outil historique ; sa compatibilité actuelle n'a pas été testée.
 
 ### Cartographie ASN et IP
 
@@ -149,6 +149,14 @@ Ne pas assimiler une adresse IP partagée, un CDN ou un service tiers à un acti
 Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de nouvelle requête. Adapter le chemin au fichier local. La syntaxe est reprise de l'article avec un chemin générique.
 
 [Script nmap-parse-output](https://github.com/ernw/nmap-parse-output)
+
+## Fichiers du chapitre
+
+- `all_subs.txt` : noms validés manuellement au chapitre précédent.
+- `resolved_subs.txt` : noms DNS résolus.
+- `live_websites.txt` : préparer une liste validée contenant une URL seule par ligne pour le chapitre Web ; ne pas y mélanger les métadonnées HTTPX.
+- `ip.txt`, `hosts.txt` : listes spécifiques à préparer selon le scope.
+- `nmap_out.xml` : résultat du scan du laboratoire utilisé par le convertisseur HTML.
 
 ## Avant de poursuivre
 
