@@ -37,15 +37,17 @@ Ouvre le dossier sélectionné et affiche le chemin courant. Si le dossier n'exi
 ### Archiver les inventaires
 
 ```bash
-if archive=$(mktemp -d recon/inventaires-XXXXXX); then
+(
+  set -e
+  archive=$(mktemp -d recon/inventaires-XXXXXX)
   for f in inventory_subs.txt all_subs.txt resolved_subs.txt http_metadata.txt live_websites.txt all_archived_urls.txt allurls.txt js_inventory.txt; do
     if [ -f "$f" ]; then cp -p -- "$f" "$archive/"; fi
   done
   printf 'Dossier : %s\n' "$archive"
-fi
+)
 ```
 
-Copie les inventaires existants dans un nouveau sous-dossier de `recon/`. Les fichiers de travail restent à leur emplacement pour ne pas casser les pipelines. À lancer depuis la racine du programme après avoir produit les inventaires.
+Copie les inventaires existants dans un nouveau sous-dossier de `recon/`. En cas d'erreur de copie, la commande s'arrête et le dossier partiel reste disponible pour inspection. Les fichiers de travail restent à leur emplacement pour ne pas casser les pipelines. À lancer avec Bash depuis la racine du programme après avoir produit les inventaires.
 
 ## Préparer les outils
 
