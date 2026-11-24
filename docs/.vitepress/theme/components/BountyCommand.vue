@@ -4,6 +4,8 @@ import { useBountyTarget } from '../bountyTarget'
 const props = withDefaults(defineProps<{ source: string; language?: string }>(), { language: 'bash' })
 const { target, workspace } = useBountyTarget()
 const needsWorkspace = computed(() => props.source.includes('__BOUNTY_WORKSPACE__'))
+const needsTarget = computed(() => /__BOUNTY_(DOMAIN|ORIGIN)__/.test(props.source))
+const canCopy = computed(() => (!needsWorkspace.value || !!workspace.value) && (!needsTarget.value || !!target.value))
 const command = computed(() => props.source
   .split('__BOUNTY_DOMAIN__').join(target.value?.domain || 'example.com')
   .split('__BOUNTY_ORIGIN__').join(target.value?.origin || 'https://example.com')
@@ -12,7 +14,7 @@ const copied = ref(false)
 const error = ref(false)
 watch(command, () => { copied.value = false; error.value = false })
 async function copyCommand() {
-  if (needsWorkspace.value && !workspace.value) return
+  if (!canCopy.value) return
   try {
     await navigator.clipboard.writeText(command.value)
     copied.value = true
@@ -28,10 +30,11 @@ async function copyCommand() {
   <div class="bounty-command">
     <div class="command-bar">
       <span>{{ language }}</span>
-      <button type="button" :disabled="needsWorkspace && !workspace" @click="copyCommand">{{ copied ? 'Copié' : 'Copier' }}</button>
+      <button type="button" :disabled="!canCopy" @click="copyCommand">{{ copied ? 'Copié' : 'Copier' }}</button>
     </div>
     <pre><code>{{ command }}</code></pre>
     <span v-if="needsWorkspace && !workspace" class="copy-error">Renseigner la cible du programme pour générer le dossier.</span>
+    <span v-else-if="needsTarget && !target" class="copy-error">Renseigner une cible valide avant de copier.</span>
     <span v-if="error" class="copy-error" role="status">Copie indisponible : sélectionner le texte manuellement.</span>
   </div>
 </template>
