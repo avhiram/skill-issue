@@ -301,10 +301,235 @@ const academyNoiseIds = new Set([
   'added-110',
   'added-111',
   'added-112',
-  'added-113'
+  'added-113',
+  // Pages vitrines, doublons thématiques et catalogues sans support direct.
+  'hm-013',
+  'hm-014',
+  'hm-015',
+  'hm-021',
+  'hm-022',
+  'hm-023',
+  'hm-024',
+  'hm-031',
+  'hm-042',
+  'hm-053',
+  'hm-055',
+  'hm-056',
+  'hm-058',
+  'hm-064',
+  'hm-065',
+  'hm-068',
+  'hm-070',
+  'hm-071',
+  'hm-072',
+  'hm-077',
+  'hm-078',
+  'hm-079',
+  'hm-080',
+  'hm-084',
+  'hm-086',
+  'hm-091',
+  'hm-092',
+  'hm-093',
+  'hm-094',
+  'hm-095',
+  'hm-097',
+  'hm-098',
+  'hm-103',
+  'hm-104',
+  'hm-105',
+  'hm-107',
+  'hm-108',
+  'hm-117',
+  'hm-119',
+  'hm-120',
+  'hm-121',
+  'hm-125',
+  'hm-127',
+  'hm-135',
+  'hm-136',
+  'hm-137',
+  'hm-140',
+  'hm-142',
+  'hm-144',
+  'hm-147',
+  'hm-148',
+  'hm-149',
+  'hm-153',
+  'hm-154',
+  'hm-155',
+  'hm-161',
+  'hm-162',
+  'hm-163',
+  'hm-164',
+  'hm-165',
+  'hm-167',
+  'hm-168',
+  'hm-170',
+  'hm-171',
+  'hm-172',
+  'hm-178',
+  'hm-179',
+  'hm-180',
+  'hm-187',
+  'hm-188',
+  'hm-189',
+  'hm-192',
+  'hm-193',
+  'hm-194',
+  'hm-198',
+  'hm-199',
+  'hm-200',
+  'hm-201',
+  'hm-209',
+  'hm-212',
+  'hm-220',
+  'hm-237',
+  'hm-240',
+  'hm-250',
+  'hm-252',
+  'hm-255',
+  'hm-256',
+  'hm-258',
+  'hm-262',
+  'hm-281',
+  'hm-286',
+  'hm-287',
+  'hm-292',
+  'hm-299',
+  'hm-303',
+  'hm-305',
+  'hm-306',
+  'hm-308',
+  'hm-312',
+  'hm-321',
+  'hm-324',
+  'hm-333',
+  'hm-339',
+  'hm-340',
+  'hm-344',
+  'hm-348',
+  'hm-350',
+  'hm-351',
+  'hm-352',
+  'hm-353',
+  'hm-354',
+  'hm-355',
+  'hm-356',
+  'hm-357',
+  'hm-359',
+  'hm-360',
+  'hm-361',
+  'hm-362',
+  'hm-363',
+  'hm-364',
+  'hm-365',
+  'hm-374',
+  'hm-375',
+  'hm-376',
+  'hm-377',
+  'hm-378',
+  'hm-379',
+  'hm-386',
+  'hm-387',
+  'hm-388',
+  'hm-390',
+  'hm-391',
+  'hm-393',
+  'hm-394',
+  'hm-412',
+  'hm-414',
+  'hm-426',
+  'hm-428',
+  'hm-430',
+  'hm-261',
+  'added-011',
+  'added-038',
+  'added-058',
+  'added-065',
+  'added-066',
+  'added-068',
+  'added-072',
+  'added-079',
+  'added-082',
+  'added-091',
+  'added-101',
+  'off-025',
+  'off-022',
+  'off-023',
+  'hm-358'
 ])
+// Favoriser les pages contenant directement un cours ou une documentation exploitable.
+const academyResourceEdits: Record<string, Partial<Resource>> = {
+  "hm-006": {
+    "title": "QEMU - documentation",
+    "url": "https://www.qemu.org/docs/master/",
+    "type": "Documentation",
+    "description": "Comprendre l’émulation et la configuration des machines virtuelles."
+  },
+  "hm-007": {
+    "title": "VirtualBox - créer une machine virtuelle",
+    "url": "https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/create-vm.html",
+    "type": "Tutoriel",
+    "description": "Créer une VM, choisir son système et configurer ses ressources."
+  },
+  "hm-032": {
+    "title": "Kali Linux - documentation",
+    "url": "https://www.kali.org/docs/",
+    "type": "Documentation",
+    "description": "Installer Kali Linux et configurer son environnement de travail."
+  },
+  "off-005": {
+    "title": "Wireshark - guide utilisateur",
+    "url": "https://www.wireshark.org/docs/wsug_html_chunked/",
+    "type": "Documentation",
+    "description": "Apprendre à capturer, filtrer et analyser le trafic réseau."
+  },
+  "hm-054": {
+    "title": "Nmap - documentation officielle",
+    "url": "https://nmap.org/docs.html",
+    "type": "Documentation",
+    "description": "Comprendre les options de scan et consulter des exemples d’utilisation."
+  },
+  "hm-073": {
+    "title": "OpenVPN - guide de configuration",
+    "url": "https://openvpn.net/community-docs/how-to/",
+    "type": "Cours",
+    "description": "Installer et configurer un VPN client-serveur, puis tester la connexion."
+  },
+  "hm-074": {
+    "title": "WireGuard - tutoriel de configuration",
+    "type": "Cours",
+    "description": "Configurer un tunnel VPN et comprendre les clés et les interfaces."
+  },
+  "hm-076": {
+    "title": "SSL/TLS - comprendre le protocole",
+    "url": "https://www.cloudflare.com/fr-fr/learning/ssl/transport-layer-security-tls/",
+    "type": "Cours",
+    "description": "Comprendre le chiffrement TLS, les certificats et la protection des échanges HTTPS."
+  },
+  "added-022": {
+    "title": "Wazuh - prise en main",
+    "url": "https://documentation.wazuh.com/current/getting-started/index.html",
+    "type": "Documentation",
+    "description": "Comprendre les composants du SIEM, la collecte de logs et les cas de détection."
+  },
+  "added-026": {
+    "title": "REMnux - documentation",
+    "url": "https://docs.remnux.org/",
+    "type": "Documentation",
+    "description": "Installer et utiliser un environnement d’analyse de malware."
+  },
+  "added-042": {
+    "title": "Ghidra - dépôt et documentation",
+    "url": "https://github.com/NationalSecurityAgency/ghidra",
+    "type": "Documentation",
+    "description": "Accéder au projet officiel, à ses instructions et à sa documentation."
+  }
+}
 const sourceItems: Resource[] = ([...tryHackMeRooms, ...resources, ...masteryResources, ...academyExtraResources] as Resource[])
   .filter(item => !academyNoiseIds.has(item.id))
+  .map(item => ({ ...item, ...academyResourceEdits[item.id] }))
 const resourceMap = new Map<string, AssignedResource>()
 for (const item of sourceItems) {
   // Retirer les ressources Cisco, NetAcad et Packet Tracer, pas les cours réseau neutres.
@@ -462,11 +687,13 @@ const toolNames = /(?:^|[\s:–-])(virtualbox|qemu|wireshark|tcpdump|nmap|rustsc
 const toolDomains = /(?:virtualbox\.org|qemu\.org|wireshark\.org|nmap\.org|tcpdump\.org|ghidra-sre\.org|portswigger\.net\/burp|gchq\.github\.io\/CyberChef|osintframework\.com|shodan\.io|censys\.io|docker\.com|kubernetes\.io|github\.com\/(?:sherlock-project|soxoj\/maigret|megadose\/holehe|laramies\/theHarvester))/i
 function isToolOrReference(item: AssignedResource): boolean {
   if (item.id.startsWith('thm-')) return false
+  const masteryToolId = /^hm-(\d+)$/.exec(item.id)
+  if (masteryToolId && Number(masteryToolId[1]) >= 279 && Number(masteryToolId[1]) <= 326 && item.id !== 'hm-314') return true
   const type = (item.type || '').toLowerCase()
   if (/cours|exercice|lab|ctf|challenge|formation/.test(type)) return false
   if (/référence|reference|outil|documentation/.test(type)) return true
   if (/cours|formation|tutoriel|tutorial|introduction|guide pratique|exercices|lab|challenges|academy|training|bootcamp|learn|fondamentaux|basics/i.test(item.title)) return false
-  return toolNames.test(' ' + item.title + ' ') || toolDomains.test(item.url)
+  return item.category === 'outils' || toolNames.test(' ' + item.title + ' ') || toolDomains.test(item.url)
 }
 const selectedCourses = (id: string) => freeLinks(id).filter(item => !isToolOrReference(item))
 const otherCourses = (id: string) => otherLinks(id).filter(item => !isToolOrReference(item))
@@ -542,7 +769,7 @@ function titleFor(id: string, fallback: string) { return levelTitles[id] || fall
 const freeSelections: Record<string, readonly string[]> = {
   "environment": [
     "https://cs50.harvard.edu/x/",
-    "https://www.virtualbox.org/"
+    "https://docs.oracle.com/en/virtualization/virtualbox/7.2/user/create-vm.html"
   ],
   "network-basics": [
     "https://www.cloudflare.com/learning/network-layer/what-is-a-computer-network/",
@@ -550,7 +777,10 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "network-practice": [
     "https://wiki.wireshark.org/SampleCaptures",
-    "https://www.wireshark.org/"
+    "https://www.wireshark.org/docs/wsug_html_chunked/",
+    "https://openvpn.net/community-docs/how-to/",
+    "https://www.wireguard.com/quickstart/",
+    "https://www.cloudflare.com/fr-fr/learning/ssl/transport-layer-security-tls/"
   ],
   "linux-basics": [
     "https://overthewire.org/wargames/bandit/",
@@ -600,7 +830,7 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://bellingcat.gitbook.io/toolkit"
   ],
   "scanning": [
-    "https://nmap.org/"
+    "https://nmap.org/docs.html"
   ],
   "web-security": [
     "https://portswigger.net/web-security/",
@@ -661,7 +891,7 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://docs.suricata.io/en/latest/quickstart.html"
   ],
   "blue-siem": [
-    "https://wazuh.com/",
+    "https://documentation.wazuh.com/current/getting-started/index.html",
     "https://github.com/SigmaHQ/sigma"
   ],
   "blue-threat": [
@@ -676,10 +906,10 @@ const freeSelections: Record<string, readonly string[]> = {
   ],
   "reverse": [
     "https://opensecuritytraining.info/",
-    "https://ghidra-sre.org/"
+    "https://github.com/NationalSecurityAgency/ghidra"
   ],
   "malware": [
-    "https://remnux.org/",
+    "https://docs.remnux.org/",
     "https://www.malware-traffic-analysis.net/"
   ],
   "cloud-foundations": [
