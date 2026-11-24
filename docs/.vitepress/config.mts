@@ -28,7 +28,7 @@ export default defineConfig({
     nav: [
       { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
       { text: 'OSINT', link: '/osint/' },
-      { text: 'Bug Bounty', link: 'https://avhiram.github.io/skill-issue/bug-bounty/index.html', target: '_self' },
+      { text: 'Bug Bounty', link: 'https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=20261124-1633', target: '_self' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' }
     ],
@@ -38,7 +38,7 @@ export default defineConfig({
         { text: 'Bug Bounty', link: '/bug-bounty/index.html', items: [
           { text: 'Programme et préparation', link: '/bug-bounty/preparation' },
           { text: 'Reconnaissance passive', link: '/bug-bounty/reconnaissance' },
-          { text: 'Cartographie et scan réseau', link: '/bug-bounty/scan-reseau' },
+          { text: 'Reconnaissance active', link: '/bug-bounty/scan-reseau' },
           { text: 'Cartographie Web et API', link: '/bug-bounty/cartographie-web' },
           { text: 'Tests de vulnérabilités', link: '/bug-bounty/vulnerabilites', collapsed: true, items: [
             { text: 'Subdomain Takeover', link: '/bug-bounty/vulnerabilites#subdomain-takeover' },
