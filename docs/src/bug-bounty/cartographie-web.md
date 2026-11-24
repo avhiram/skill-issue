@@ -312,25 +312,23 @@ Les outils cités dans l'article comprennent JSLeak et LazyEgg, ainsi que Nuclei
 
 ## Filtrage des types de contenu
 
-### Filtrage du contenu HTML
+### Pages HTML - extensions
 
 ```bash
-echo example.com | gau | grep -Eo '(\/[^\/]+)\.(php|asp|aspx|jsp|jsf|cfm|pl|perl|cgi|htm|html)$' | httpx -status-code -mc 200 -content-type | grep -E 'text/html|application/xhtml+xml'
+grep -Ei '\.(php|asp|aspx|jsp|jsf|cfm|pl|perl|cgi|htm|html)([?#].*)?$' allurls.txt | sort -u > html_candidates.txt
 ```
 
-Bloc historique de recherche d'extensions de pages et de filtrage du type MIME.
+Conserve les URL complètes de l'inventaire local. L'extension ne garantit pas le type MIME.
 
-> Le filtrage extrait des chemins au lieu d'URL complètes ; le fonctionnement n'est pas garanti.
-
-### Filtrage du contenu JavaScript
+### Vérification du type MIME
 
 ```bash
-echo example.com | gau | grep '\.js-php-jsp-other extens$' | httpx -status-code -mc 200 -content-type | grep 'application/javascript'
+grep -i '^content-type:' headers.txt
 ```
 
-Bloc historique de filtrage du type MIME JavaScript.
+Lit le type MIME dans les en-têtes HTTP enregistrés localement. `text/html` et `application/xhtml+xml` indiquent du HTML ; `text/javascript` et `application/javascript` indiquent du JavaScript.
 
-> Expression de filtrage manifestement incomplète dans la source ; non exécutable comme méthode fiable.
+Pour les URL JavaScript, réutiliser [Inventaire des scripts JavaScript](#inventaire-des-scripts-javascript), sans refaire une collecte.
 
 ## Vérifications complémentaires
 
