@@ -71,15 +71,11 @@ Affiche les commandes absentes du PATH. Pour `httpx`, le contrôle vérifie auss
 
 ## Installer les outils manquants
 
-L'installateur couvre toute la liste ci-dessus. Il conserve les outils déjà présents, installe uniquement les commandes manquantes, puis relance un contrôle complet. Il gère les dépendances APT, les outils Go, Arjun avec pipx, le binaire officiel de Findomain et la compilation de urldedupe depuis ses sources.
+L'installateur vérifie toute la liste ci-dessus et ne touche pas aux outils déjà disponibles. Il installe uniquement ce qui manque : paquets système avec APT, outils Go, Findomain depuis ses binaires officiels, Arjun dans un environnement Python isolé avec pipx et urldedupe compilé depuis ses sources. Il vérifie ensuite chaque commande et affiche le bilan. Prévu pour Exegol, Kali et les distributions Linux utilisant APT.
 
-<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/bug-bounty/install-tools.sh -o /tmp/skill-issue-install-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-tools.sh &amp;&amp; bash /tmp/skill-issue-install-tools.sh&quot;" language="bash" />
+<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/install-bugbounty-tools.sh -o /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; less /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash /tmp/skill-issue-install-bugbounty-tools.sh&quot;" language="bash" />
 
-[Consulter le script d'installation](https://github.com/avhiram/skill-issue/blob/main/docs/public/bug-bounty/install-tools.sh).
-
-Les paquets système manquants nécessitent root ou sudo. Une connexion Internet est nécessaire pour les téléchargements et les compilations.
-
-**À savoir :** installer `chaos` ne fournit pas sa clé API. Certaines sources de `subfinder` nécessitent également leurs propres clés.
+Le script conserve les outils déjà installés. Les clés API de Chaos et de certaines sources Subfinder restent à configurer séparément. Après l'installation, relancer le contrôle de disponibilité ci-dessus.
 
 ## Avant de poursuivre
 
