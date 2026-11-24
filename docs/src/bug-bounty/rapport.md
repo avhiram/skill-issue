@@ -44,6 +44,11 @@ Correction et contrôles de vérification.
 - Joindre les éléments nécessaires en masquant les données personnelles et secrets.
 - Respecter les règles de confidentialité et ne pas publier le rapport sans autorisation.
 
+## Avant de poursuivre
+
+- Rapport relu et transmis via le canal du programme.
+- Référence du signalement conservée.
+
 ---
 
 [Précédent : Validation et preuves](./validation.md) · [Parcours](./index.md) · [Suivant : Suivi et prime](./suivi.md)
