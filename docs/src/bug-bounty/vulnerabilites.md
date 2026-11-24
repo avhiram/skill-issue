@@ -32,7 +32,7 @@ Les inventaires du chapitre précédent ne sont pas des résultats de vulnérabi
 subzy run --targets subexample.coms.txt --concurrency 100 --hide_fails --verify_ssl
 ```
 
-Recherche des configurations potentiellement vulnérables avec Subzy.
+Exemple historique de détection de configurations potentiellement vulnérables. Une empreinte de service ou une erreur DNS ne démontre pas qu'une ressource peut être revendiquée ; concurrence élevée dans cet exemple.
 
 > Exemple historique indépendant : `subexample.coms.txt` doit être préparé manuellement pour ce test. Il n'est pas créé par les étapes précédentes.
 
@@ -45,7 +45,7 @@ Recherche des configurations potentiellement vulnérables avec Subzy.
 cat allurls.txt | grep -E "\.xls|\.xml|\.xlsx|\.json|\.pdf|\.sql|\.doc|\.docx|\.pptx|\.txt|\.zip|\.tar\.gz|\.tgz|\.bak|\.7z|\.rar|\.log|\.cache|\.secret|\.db|\.backup|\.yml|\.gz|\.config|\.csv|\.yaml|\.md|\.md5"
 ```
 
-Filtre une liste d'URL selon des extensions pouvant indiquer des fichiers exposés.
+Filtre l'inventaire local `allurls.txt` selon des chaînes d'extensions. Le filtre n'est pas limité à la fin du chemin et peut produire des faux positifs ; une extension ne démontre ni l'accès ni la sensibilité du contenu.
 
 ### Recherche de documents indexés
 
@@ -53,7 +53,7 @@ Filtre une liste d'URL selon des extensions pouvant indiquer des fichiers expos�
 site:*.example.com (ext:doc OR ext:docx OR ext:odt OR ext:pdf OR ext:rtf OR ext:ppt OR ext:pptx OR ext:csv OR ext:xls OR ext:xlsx OR ext:txt OR ext:xml OR ext:json OR ext:zip OR ext:rar OR ext:md OR ext:log OR ext:bak OR ext:conf OR ext:sql)
 ```
 
-Requête de moteur de recherche filtrant les extensions de documents dans le périmètre autorisé.
+Exemple à saisir dans un moteur de recherche, pas dans Bash. Les opérateurs et la couverture de l'index dépendent du moteur.
 
 ### Détection de dépôts Git exposés
 
@@ -61,7 +61,7 @@ Requête de moteur de recherche filtrant les extensions de documents dans le pé
 cat example.coms.txt | grep "SUCCESS" | gf urls | httpx-toolkit -sc -server -cl -path "/.git/" -mc 200 -location -ms "Index of" -probe
 ```
 
-Exemple historique indépendant : `example.coms.txt` et son format avec le marqueur SUCCESS ne sont pas produits par le parcours. La chaîne n'a pas été validée.
+Exemple historique indépendant : `example.coms.txt` et son format avec le marqueur SUCCESS ne sont pas produits par le parcours. La chaîne n'a pas été validée ; elle dépend aussi du pattern GF `urls` et d'HTTPX Toolkit. Un statut 200 ou un titre générique ne prouve pas l'exposition d'un dépôt.
 
 ### Filtrage étendu des extensions sensibles
 
@@ -69,7 +69,7 @@ Exemple historique indépendant : `example.coms.txt` et son format avec le marqu
 echo https://example.com | gau | grep -E "\.(xls|xml|xlsx|json|pdf|sql|doc|docx|pptx|txt|zip|tar\.gz|tgz|bak|7z|rar|log|cache|secret|db|backup|yml|gz|config|csv|yaml|md|md5|tar|xz|7zip|p12|pem|key|crt|csr|sh|pl|py|java|class|jar|war|ear|sqlitedb|sqlite3|dbf|db3|accdb|mdb|sqlcipher|gitignore|env|ini|conf|properties|plist|cfg)$"
 ```
 
-Recherche des extensions de fichiers potentiellement sensibles dans les URL collectées.
+Variante historique GAU : recherche des suffixes littéraux dans les URL archivées. Les URL comportant une query string après l'extension peuvent être ignorées. Le résultat ne prouve pas l'exposition.
 
 ### Recherche de buckets AWS S3
 
@@ -77,7 +77,7 @@ Recherche des extensions de fichiers potentiellement sensibles dans les URL coll
 s3scanner scan -d example.com
 ```
 
-Recherche des buckets associés au domaine indiqué.
+Exemple obsolète ou destiné à une autre version : cette syntaxe `scan -d` n'est pas documentée dans la version actuelle de [S3Scanner](https://github.com/sa7mon/S3Scanner). Ne pas exécuter tel quel. Un nom de bucket ressemblant au domaine ne prouve pas son appartenance au programme.
 
 ### Recherche de secrets dans des fichiers JavaScript
 
@@ -85,7 +85,7 @@ Recherche des buckets associés au domaine indiqué.
 cat allurls.txt | grep -E "\.js$" | httpx-toolkit -mc 200 -content-type | grep -E "application/javascript|text/javascript" | cut -d' ' -f1 | xargs -I% curl -s % | grep -E "(API_KEY|api_key|apikey|secret|token|password)"
 ```
 
-Bloc historique recherchant des marqueurs de secrets dans les fichiers JavaScript. Traiter les résultats comme des indices, sans utiliser les secrets trouvés.
+Exemple historique de collecte active qui peut afficher des secrets en clair. Ne pas utiliser tel quel. Préférer la revue locale des fichiers autorisés décrite dans [Analyse JavaScript](./cartographie-web.md#analyse-javascript), qui ne liste que les noms de fichiers.
 
 ### Google API Keys et Gemini
 
@@ -140,7 +140,7 @@ Synthèse de l'article fourni, publié le 23 mai 2026. Les procédures de collec
 echo https://example.com/ | gau | gf xss | uro | Gxss | kxss | tee xss_output.txt
 ```
 
-Chaîne d'outils pour repérer des paramètres candidats à une vérification XSS.
+Exemple historique non validé : dépend des outils et du pattern GF `xss`. La sortie de chaque outil doit correspondre au format attendu par le suivant. Une réflexion n'est pas une preuve d'exécution JavaScript.
 
 ### Analyse XSS avec Dalfox
 
@@ -150,9 +150,9 @@ cat xss_params.txt | dalfox pipe --blind https://your-collaborator-url --waf-byp
 
 Exemple historique indépendant de la collecte précédente : `xss_params.txt` n'est pas créé par le parcours. Ne pas confondre ce fichier avec `xss_output.txt` ou `xss_candidates.txt`.
 
-> Les options et l'autorisation de tester doivent être vérifiées ; l'archive ne démontre pas la validité de la commande.
+> Exemple historique non validé ; ne pas exécuter tel quel. Les options, le service de callback et le format d'entrée dépendent de la version installée.
 
-### Recherche de candidats XSS persistants
+### Recherche de candidats XSS - variante historique
 
 ```bash
 cat urls.txt | grep -E "(login|signup|register|forgot|password|reset)" | httpx -silent | nuclei -t nuclei-templates/vulnerabilities/xss/ -severity critical,high
@@ -162,7 +162,7 @@ Variante historique indépendante : le fichier `urls.txt` correspond à la varia
 
 > Ce filtrage ne démontre pas qu'une XSS est persistante.
 
-### Recherche de candidats DOM XSS
+### Réflexion et XSS - variante historique
 
 ```bash
 cat js_files.txt | Gxss -c 100 | sort -u | dalfox pipe -o dom_xss_results.txt
@@ -170,7 +170,7 @@ cat js_files.txt | Gxss -c 100 | sort -u | dalfox pipe -o dom_xss_results.txt
 
 Exemple historique indépendant : `js_files.txt` n'est pas produit par le parcours et le format attendu n'a pas été confirmé. Ne pas confondre des URL de scripts avec des fichiers JavaScript locaux.
 
-> Le résultat n'établit pas à lui seul une DOM XSS.
+> Cette chaîne n'analyse pas les flux de données dans le DOM et ne démontre pas une DOM XSS.
 
 ### XSS - extraction des URL depuis un résultat local
 
@@ -178,7 +178,7 @@ Exemple historique indépendant : `js_files.txt` n'est pas produit par le parcou
 grep -oP '^URL: \K\S+' xss_output.txt | sort -u > xss_candidates.txt
 ```
 
-Extrait et déduplique les URL d'un résultat déjà enregistré au format URL: ... ; vérifier le format réel de la sortie. Contrairement à l'exemple source, conserve les valeurs des paramètres pour éviter de perdre les paramètres suivants. Une réflexion ne constitue pas une preuve de XSS.
+Extrait et déduplique les URL d'un résultat local dont les lignes commencent par `URL: `. Requiert GNU grep avec prise en charge PCRE (`-P`). Le format réel de `xss_output.txt` reste à vérifier. Contrairement à l'exemple source, conserve les valeurs des paramètres pour éviter de perdre les paramètres suivants. Une réflexion ne constitue pas une preuve de XSS.
 
 ### Méthode de validation
 
@@ -221,7 +221,7 @@ Les deux outils automatisent des vérifications d'injection SQL. SQLmap couvre p
 sqlmap -hh
 ```
 
-Affiche l'aide détaillée de la version installée de SQLmap, sans contacter une cible.
+Affiche l'aide détaillée de SQLmap, sans contacter de cible. SQLmap doit être installé ; cette commande n'effectue aucun test d'injection.
 
 Pour une validation en laboratoire, examiner les paramètres transmis, utiliser des comptes de test, conserver les échanges HTTP et respecter les limites de requêtes. Les techniques de contournement de WAF, d'extraction de données et de prise de contrôle du serveur détaillées par l'article ne sont pas reproduites.
 
@@ -240,7 +240,7 @@ Pour une validation en laboratoire, examiner les paramètres transmis, utiliser 
 echo "https://example.com/" | gau | gf lfi | uro | sed 's/=.*/=/' | qsreplace "FUZZ" | sort -u | xargs -I{} ffuf -u {} -w payloads/lfi.txt -c -mr "root:(x|\*|\$[^\:]*):0:0:" -v
 ```
 
-Bloc historique de test LFI avec une liste de charges de test et FFUF.
+Exemple historique non validé, réservé à l'étude en laboratoire. Dépend de GAU, GF et de son pattern `lfi`, URO, qsreplace, FFUF et de la wordlist locale `payloads/lfi.txt`. La normalisation perd des paramètres et la correspondance textuelle ne démontre pas à elle seule une LFI.
 
 ## Server-Side Request Forgery (SSRF)
 
@@ -274,7 +274,7 @@ printf 'SSRF-LAB-TEST\n' > ssrf-lab/test.txt
 python3 -m http.server 8080 --bind 127.0.0.1 --directory ssrf-lab
 ```
 
-Démarre un serveur de test accessible uniquement depuis la machine locale, avec un fichier témoin fictif. Ne pas exposer un dossier contenant des données personnelles ou des secrets.
+Démarre un serveur de fichiers sur l'interface loopback IPv4, avec un fichier témoin fictif. Requiert Python 3 et un port 8080 libre ; le serveur occupe le terminal jusqu'à son arrêt. Ne pas exposer un dossier contenant des données personnelles ou des secrets.
 
 ### Validation in-band dans un laboratoire local
 
@@ -337,7 +337,7 @@ Synthèse de l'article fourni avec adaptation locale des exemples de validation.
 curl -H "Origin: http://example.com" -I https://example.com/wp-json/
 ```
 
-Observe les en-têtes renvoyés pour une requête contenant Origin.
+Effectue une requête HEAD avec un en-tête Origin. Ce n'est pas un preflight OPTIONS et les en-têtes obtenus ne démontrent pas le comportement du navigateur.
 
 ### Analyse avec CORScanner
 
@@ -345,7 +345,7 @@ Observe les en-têtes renvoyés pour une requête contenant Origin.
 python3 CORScanner.py -u https://example.com -d -t 10
 ```
 
-Recherche des configurations CORS potentiellement incorrectes.
+Exemple historique nécessitant une copie examinée de CORScanner.py et ses dépendances Python. Les options et la compatibilité de cette version ne sont pas confirmées.
 
 ### Détection CORS avec Nuclei
 
@@ -361,7 +361,7 @@ Exemple historique indépendant : `example.coms.txt` n'est pas produit par le pa
 curl -H "Origin: https://evil.com" -I https://example.com/api/data | grep -i "access-control-allow-origin: https://evil.com"
 ```
 
-Vérifie si un en-tête de réponse reflète l'origine envoyée.
+Recherche une valeur textuelle dans les en-têtes de la réponse HEAD ; vérifier le contexte et les en-têtes complets avant toute conclusion.
 
 > La réflexion seule ne suffit pas à démontrer une vulnérabilité exploitable.
 
@@ -373,7 +373,7 @@ Vérifie si un en-tête de réponse reflète l'origine envoyée.
 wpscan --url https://example.com --disable-tls-checks --api-token YOUR_TOKEN -e at -e ap -e u --enumerate ap --plugins-detection aggressive --force
 ```
 
-Commande historique d'énumération WordPress et de recherche de vulnérabilités.
+Exemple historique d'énumération WordPress. La répétition des options d'énumération rend l'intention ambiguë ; leur interprétation dépend de la version. La base de vulnérabilités WPScan nécessite un jeton API valide.
 
 > Mode agressif et vérification TLS désactivée dans l'original. Ne pas utiliser tel quel hors d'un lab adapté.
 
@@ -435,7 +435,7 @@ Les procédures de recherche de cibles à grande échelle, d'exécution de comma
 ffuf -request lfi -request-proto https -w /root/wordlists/offensive\ payloads/LFI\ payload.txt -c -mr "root:"
 ```
 
-Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents ; les chemins absolus et le format de la requête doivent être vérifiés dans le laboratoire. Une correspondance de réponse n'est pas une preuve suffisante.
 
 ### Test XSS à partir d'une requête
 
@@ -443,7 +443,7 @@ Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` (�
 ffuf -request xss -request-proto https -w /root/wordlists/xss-payloads.txt -c -mr "<script>alert('XSS')</script>"
 ```
 
-Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` (à la racine du dossier, pour cette variante historique) et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents ; les chemins absolus et le format de la requête doivent être vérifiés dans le laboratoire. Une correspondance de réponse n'est pas une preuve suffisante.
 
 ## Techniques avancées
 
@@ -455,7 +455,7 @@ cat example.coms.txt | assetfinder --subs-only| httprobe | while read url; do xs
 
 Bloc historique combinant des requêtes et des vérifications d'en-têtes. Réservé aux environnements de test contrôlés.
 
-> Bloc non vérifié, avec un nom Collaborator mal orthographié et des hypothèses non démontrées.
+> Bloc historique non validé, à ne pas exécuter tel quel. Les fichiers et formats d'entrée ne sont pas définis et les résultats ne démontrent ni XSS ni SSRF.
 
 ## Authentification et contrôle d'accès
 
@@ -469,7 +469,7 @@ Comparer deux réponses HTTP de test enregistrées localement :
 diff -u requests/reponse-compte-a.txt requests/reponse-compte-b.txt
 ```
 
-Distinguer les différences normales liées aux comptes d'un accès réellement non autorisé.
+Compare deux fichiers de réponse locaux. `diff` renvoie 0 s'ils sont identiques, 1 s'ils diffèrent et une valeur supérieure en cas d'erreur. Une différence peut être normale ; elle ne prouve pas un défaut de contrôle d'accès.
 
 ### Authentication
 
@@ -493,7 +493,7 @@ for label, part in zip(("Header", "Payload"), parts[:2]):
 PY
 ```
 
-Décode localement un jeton de test enregistré dans `requests/jwt-test.txt`, sans le transmettre à un service externe.
+Décode localement les deux segments JSON d'un JWS compact de test. Requiert Python 3 ; une entrée invalide peut provoquer une erreur de décodage. Le script ne vérifie ni la signature, ni la validité des claims.
 
 ### OAuth / OpenID Connect
 
@@ -517,7 +517,7 @@ Recenser les méthodes HTTP, les paramètres requis et facultatifs, les types de
 jq -r '.paths | keys[]' requests/openapi.json
 ```
 
-Liste les chemins décrits dans une spécification OpenAPI JSON déjà récupérée légalement.
+Liste les clés de l'objet `paths` d'une spécification OpenAPI JSON locale. Requiert jq et un objet `paths` valide ; ne vérifie pas la disponibilité des routes.
 
 ### GraphQL
 
@@ -532,7 +532,7 @@ query myGetProductQuery {
 }
 ```
 
-Exemple de lecture d'un produit fictif repris du cours GraphQL. Le schéma et l'identifiant doivent correspondre au lab.
+Exemple de requête GraphQL pour un produit fictif, à saisir dans le client du laboratoire. Le schéma doit définir le champ `product`, son argument et les champs demandés.
 
 ### NoSQL Injection
 
@@ -552,7 +552,7 @@ file --mime-type upload-test.txt
 sha256sum upload-test.txt
 ```
 
-Crée un fichier texte local et identifie son type réel et son empreinte.
+Crée un fichier texte fictif (écrase un fichier du même nom), affiche son type MIME estimé avec `file` puis son empreinte SHA-256. Ne transfère aucun fichier.
 
 ### XXE
 
@@ -580,7 +580,7 @@ Examiner les protections contre l'intégration d'une page dans une iframe : X-Fr
 grep -Ei '^(x-frame-options|content-security-policy):' requests/headers.txt
 ```
 
-Recherche les protections dans des en-têtes HTTP déjà enregistrés localement.
+Extrait les en-têtes X-Frame-Options et Content-Security-Policy d'une capture locale. Vérifier notamment la directive `frame-ancestors` : la simple présence d'une CSP ne suffit pas.
 
 ### DOM-based vulnerabilities
 
@@ -616,7 +616,7 @@ Vérifier que les réponses privées ne sont pas stockées dans un cache partag�
 grep -Ei '^(cache-control|vary|age|x-cache|expires|set-cookie):' requests/headers.txt
 ```
 
-Extrait les indicateurs de cache et de session d'une capture HTTP locale. Un en-tête seul ne prouve pas une vulnérabilité.
+Extrait des indicateurs de cache et de session d'une capture HTTP locale. La sortie peut contenir des cookies : masquer leur valeur avant partage. Aucun en-tête seul ne prouve une vulnérabilité.
 
 ### Web LLM Attacks
 
