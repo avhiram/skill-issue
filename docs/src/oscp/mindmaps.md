@@ -6,7 +6,6 @@ aside: false
 
 # Mindmaps
 
-27 Canvas interactifs et une mind map SVG officielle, classés par thème. Choisis une carte, zoome et déplace-toi librement.
 
 ## Active Directory
 
@@ -66,6 +65,4 @@ aside: false
 
 - [**WiFi Mindmap**](mindmap-wifi.md) · 263 éléments
 
-## Licence et provenance
-
-Collection [eMVee-NL/MindMap](https://github.com/eMVee-NL/MindMap), sous [GPL-3.0](https://avhiram.github.io/skill-issue/mindmaps/LICENSE.txt). Les cartes originales sont conservées sans correction technique ; elles ne constituent pas des commandes testées ou validées. La carte AD existante est conservée. La [version FreeMind de la carte Web](https://avhiram.github.io/skill-issue/mindmaps/web-freemind.mm) est également disponible.
+<small>Crédits : [eMVee-NL/MindMap](https://github.com/eMVee-NL/MindMap) ([GPL-3.0](https://avhiram.github.io/skill-issue/mindmaps/LICENSE.txt)) · [Orange Cyberdefense / ocd-mindmaps](https://github.com/Orange-Cyberdefense/ocd-mindmaps) (GPL-3.0) · [FreeMind Web](https://avhiram.github.io/skill-issue/mindmaps/web-freemind.mm).</small>

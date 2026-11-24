@@ -16,5 +16,3 @@ import ADMindmap from '../../.vitepress/theme/components/ADMindmap.vue'
   <ADMindmap src="/mindmaps/ad-oscp.canvas.json" title="AD - OSCP" />
   <template #fallback>Chargement de la mindmap…</template>
 </ClientOnly>
-
-<small>Canvas original non audité, destiné à la formation en laboratoire autorisé. Collection [eMVee-NL/MindMap](https://github.com/eMVee-NL/MindMap), GPL-3.0.</small>
