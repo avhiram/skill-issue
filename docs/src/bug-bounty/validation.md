@@ -27,10 +27,10 @@ Objectif : confirmer manuellement les observations, documenter le résultat et d
 ## Empreinte des fichiers de preuve
 
 ```bash
-sha256sum preuves/* > preuves.sha256
+find preuves -type f -print0 | sort -z | xargs -0 -r sha256sum > preuves.sha256
 ```
 
-Calcule les empreintes des fichiers de preuve locaux pour documenter leur intégrité. Ne conserver que des preuves expurgées ; ajout de documentation locale.
+Calcule les empreintes des fichiers de preuve, y compris dans les sous-dossiers (GNU/Linux). Enregistrer les preuves expurgées dans `preuves/` avant de lancer la commande. Conserver `preuves.sha256` à côté de ce dossier.
 
 ## Avant de poursuivre
 
