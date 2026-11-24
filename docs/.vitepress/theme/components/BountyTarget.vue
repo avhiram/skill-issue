@@ -37,7 +37,7 @@ function updateProgram(event: Event) {
     <div class="target-meta">
       <span v-if="value && !target" role="status">Saisir un domaine ou une URL HTTP(S) sans chemin.</span>
       <span v-else-if="target && !workspace" role="status">Nom invalide ou dossier trop long (64 caractères pour le nom, 255 pour le dossier).</span>
-      <span v-else-if="workspace" role="status">Dossier : ~/bug-bounty/{{ workspace }}</span>
+      <span v-else-if="workspace" role="status">Dossier : ./{{ workspace }}</span>
       <span v-else>Adapte les commandes compatibles. Scope autorisé uniquement.</span>
       <div class="target-actions">
         <button type="button" :disabled="!workspace" @click="saveCurrent">Enregistrer</button>
@@ -45,7 +45,7 @@ function updateProgram(event: Event) {
       </div>
     </div>
     <p v-if="feedback" class="workspace-note" role="status">{{ feedback }}</p>
-    <p v-if="workspace" class="workspace-note">Terminal : exécuter la préparation après chaque changement de programme.</p>
+    <p v-if="workspace" class="workspace-note">Terminal : lancer la préparation depuis le dossier parent souhaité.</p>
   </div>
 </template>
 
