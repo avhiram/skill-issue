@@ -84,8 +84,8 @@ jobs:
           phrases = ('Cheatsheet technique classée', 'Lostsec - archive originale', '35 blocs extraits')
           source = Path('docs/src/bug-bounty/index.md').read_text(encoding='utf-8')
           page = Path('docs/.vitepress/dist/bug-bounty/index.html').read_text(encoding='utf-8')
-          visible = re.sub(r'<script\\b[^>]*>.*?</script>', '', page, flags=re.I | re.S)
-          visible = re.sub(r'<style\\b[^>]*>.*?</style>', '', visible, flags=re.I | re.S)
+          visible = re.sub(r'<script\b[^>]*>.*?</script>', '', page, flags=re.I | re.S)
+          visible = re.sub(r'<style\b[^>]*>.*?</style>', '', visible, flags=re.I | re.S)
           visible = re.sub(r'<!--.*?-->', '', visible, flags=re.S)
           for phrase in phrases:
               if phrase in source or phrase in visible:
