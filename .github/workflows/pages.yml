@@ -62,14 +62,11 @@ jobs:
           grep -q 'Nom du programme' docs/.vitepress/dist/bug-bounty/preparation.html
           grep -q 'CHOISIR_UN_PROGRAMME' docs/.vitepress/dist/bug-bounty/preparation.html
           grep -q 'Installer les outils manquants' docs/.vitepress/dist/bug-bounty/preparation.html
-          grep -q 'install-tools.sh' docs/.vitepress/dist/bug-bounty/preparation.html
-          test -s docs/public/bug-bounty/install-tools.sh
-          bash -n docs/public/bug-bounty/install-tools.sh
-          test -s docs/.vitepress/dist/bug-bounty/install-tools.sh
-          bash -n docs/.vitepress/dist/bug-bounty/install-tools.sh
-          for tool in urlfinder gospider unfurl urldedupe; do
-            grep -q "$tool" docs/.vitepress/dist/bug-bounty/install-tools.sh
-          done
+          grep -q 'install-bugbounty-tools.sh' docs/.vitepress/dist/bug-bounty/preparation.html
+          test -s docs/public/install-bugbounty-tools.sh
+          bash -n docs/public/install-bugbounty-tools.sh
+          grep -q 'GOTOOLCHAIN=auto' docs/public/install-bugbounty-tools.sh
+          test -s docs/.vitepress/dist/install-bugbounty-tools.sh
           grep -q 'Nom du programme' docs/.vitepress/dist/bug-bounty/index.html
           for page in preparation reconnaissance scan-reseau cartographie-web vulnerabilites validation rapport suivi; do
             grep -q 'class="bounty-checklist"' "docs/.vitepress/dist/bug-bounty/$page.html"
