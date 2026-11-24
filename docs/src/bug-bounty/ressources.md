@@ -7,7 +7,7 @@ next: false
 
 # Outils et ressources
 
-Catalogue issu de la [capture Lostsec du 28 août 2025](https://web.archive.org/web/20250828093634/https://lostsec.xyz/). Les liens proviennent de l'archive ; leur disponibilité actuelle et la maintenance des projets ne sont pas garanties. Les extensions doivent être évaluées avant installation, notamment leurs permissions.
+Outils et extensions pour le Bug Bounty. [Catalogue Lostsec](https://web.archive.org/web/20250828093634/https://lostsec.xyz/) : liens non revérifiés. Vérifier les permissions des extensions.
 
 ## Security Tools
 
