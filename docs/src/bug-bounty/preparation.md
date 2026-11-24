@@ -26,7 +26,7 @@ Objectif : choisir un programme, comprendre les règles et préparer son environ
 
 Crée un dossier distinct pour la cible et le nom du programme renseignés, puis s'y place. Relancer cette commande lors d'un changement de programme ou de terminal. Les fichiers existants sont conservés.
 
-Renseigner `scope/domains.txt` avec les domaines réellement autorisés, un par ligne. Les inventaires TXT restent à la racine du programme pour préserver les enchaînements. Utiliser `requests/`, `javascript/`, `preuves/` et `rapports/` pour les fichiers correspondants.
+Renseigner `scope/domains.txt` avec les domaines réellement autorisés, un par ligne. Les inventaires TXT restent à la racine du programme pour préserver les enchaînements. Utiliser `requests/` pour les exports HTTP et JSON, `javascript/` pour les scripts locaux, `preuves/` pour les preuves et `rapports/` pour les signalements. Les anciennes variantes qui utilisent des chemins différents indiquent leurs prérequis propres.
 
 ### Reprendre un programme existant
 
@@ -54,7 +54,7 @@ Consulter [Security Tools et Browser Extensions](./ressources.md). Vérifier les
 ## Vérifier la disponibilité des outils
 
 ```bash
-for tool in subfinder amass assetfinder findomain chaos dnsx httpx httprobe katana gau waybackurls urlfinder gospider arjun nmap nuclei ffuf curl jq sort grep; do
+for tool in subfinder amass assetfinder findomain chaos dnsx httpx httprobe katana gau waybackurls urlfinder gospider arjun nmap nuclei ffuf curl jq sort grep anew unfurl urldedupe gf dig mktemp cp sha256sum; do
   command -v "$tool" >/dev/null 2>&1 || printf 'Manquant : %s\n' "$tool"
 done
 ```
