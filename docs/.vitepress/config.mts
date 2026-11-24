@@ -47,8 +47,7 @@ export default defineConfig({
         ] },
         { text: 'Ressources', items: [
           { text: 'Security Tools', link: '/bug-bounty/ressources#security-tools' },
-          { text: 'Browser Extensions', link: '/bug-bounty/ressources#browser-extensions' },
-          { text: 'Writeups', link: '/bug-bounty/ressources#writeups' }
+          { text: 'Browser Extensions', link: '/bug-bounty/ressources#browser-extensions' }
         ] }
       ],
       '/osint/': [
