@@ -142,6 +142,11 @@ Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de
 
 [Script nmap-parse-output](https://github.com/ernw/nmap-parse-output)
 
+## Avant de poursuivre
+
+- Inventaire des services et technologies observés.
+- Périmètre confirmé avant de poursuivre.
+
 ---
 
 [Précédent : Reconnaissance passive](./reconnaissance.md) · [Parcours](./index.md) · [Suivant : Cartographie Web et API](./cartographie-web.md)
