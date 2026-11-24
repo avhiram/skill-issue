@@ -28,24 +28,28 @@ Enregistre le serveur MCP SSE local dans Claude Code. Commande de l'article ; n�
 ### Organisation des fichiers du projet
 
 ```text
-project/
+~/bug-bounty/example.com/
+  scope/
+    domains.txt
+  inventory_subs.txt
+  all_subs.txt
+  resolved_subs.txt
+  live_websites.txt
+  allurls.txt
+  js_inventory.txt
   recon/
-    subdomains.txt
-    alive.txt
-    urls.txt
+    inventaires-XXXXXX/
   requests/
     login.txt
     profile.txt
     api.txt
   javascript/
     app.js
-    dashboard.js
-    auth.js
-  source/
-  notes/
+  preuves/
+  rapports/
 ```
 
-Structure de travail adaptée des deux arborescences de l'article. Stocker uniquement des copies autorisées et expurgées.
+Même structure que le chapitre [Programme et préparation](./preparation.md). Les inventaires sont créés au fil du parcours ; les fichiers HTTP et JavaScript illustrés sont à préparer séparément. Ne fournir à l'IA que des copies autorisées et expurgées.
 
 ## Prompts d'analyse
 
