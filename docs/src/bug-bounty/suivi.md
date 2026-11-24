@@ -23,6 +23,8 @@ Si le programme demande un retest, vérifier la correction avec les mêmes condi
 
 Lorsqu'une prime est attribuée, suivre les instructions de la plateforme concernant les coordonnées de paiement, les éventuelles vérifications d'identité et les délais. Le montant et le versement dépendent du programme et de ses règles. Tenir un suivi des rapports soumis, des réponses et des paiements, sans y enregistrer de secrets.
 
+Conserver la référence du signalement, son statut et les dates de suivi dans `rapports/`, indépendamment des autres programmes.
+
 ## Bilan
 
 <BountyChecklist storage-key="checkpoint-suivi" :items='["Statut du rapport et réponses du programme suivis.","Clôture, correction et éventuelle prime enregistrées."]' />
