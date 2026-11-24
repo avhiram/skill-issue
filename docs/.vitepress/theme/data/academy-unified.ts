@@ -14,7 +14,6 @@ export const academyLevels = [
     "exercise": "Créer un dossier de travail, installer VirtualBox et documenter une première VM.",
     "ready": "Tu sais organiser tes fichiers, accéder au terminal et expliquer une VM.",
     "featured": [
-      "https://cs50.harvard.edu/x/",
       "https://www.virtualbox.org/"
     ]
   },
@@ -123,7 +122,6 @@ export const academyLevels = [
     "exercise": "Écrire un script qui extrait les adresses IP d'un fichier de test.",
     "ready": "Tu sais modifier, exécuter et corriger ton script.",
     "featured": [
-      "https://cs50.harvard.edu/python/",
       "https://automatetheboringstuff.com/"
     ]
   },
@@ -1875,15 +1873,12 @@ export const academyAssignments: Record<string,string> = {
   "lab-owasp-wrongsecrets": "cloud-security",
   "lab-kubernetes-goat": "containers",
   "lab-cloudgoat": "cloud-security",
-  "off-002": "environment",
   "off-004": "network-basics",
   "off-005": "network-practice",
   "off-007": "windows-basics",
   "off-008": "linux-basics",
-  "off-009": "python-basics",
   "off-010": "python-basics",
   "off-011": "scripting",
-  "off-012": "environment",
   "off-014": "security-basics",
   "off-016": "ctf-beginner",
   "off-018": "ctf-beginner",
@@ -2043,7 +2038,6 @@ export const academyAssignments: Record<string,string> = {
   "cu-138": "ctf-advanced",
   "cu-139": "ctf-advanced",
   "cu-140": "ctf-advanced",
-  "hm-001": "environment",
   "hm-002": "environment",
   "hm-003": "environment",
   "hm-004": "environment",
@@ -2061,7 +2055,6 @@ export const academyAssignments: Record<string,string> = {
   "hm-017": "python-basics",
   "hm-018": "python-basics",
   "hm-019": "scripting",
-  "hm-020": "scripting",
   "hm-021": "scripting",
   "hm-022": "python-basics",
   "hm-023": "scripting",
