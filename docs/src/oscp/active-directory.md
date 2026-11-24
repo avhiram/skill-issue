@@ -163,7 +163,31 @@ ldapsearch -x -H ldap://dc.example.test -s base -b ''
 nmap -n -sV -p 389 --script ldap-rootdse 192.0.2.10
 ```
 
-La suite de la mind map distingue l’énumération des utilisateurs, les risques liés à PXE et TimeRoasting, ainsi que les mécanismes de poisoning et de coercition. Ces branches restent à examiner séparément.
+### Énumération des utilisateurs du domaine
+
+Avec un compte de test autorisé, comparer les utilisateurs visibles aux informations de l’annuaire. Les exemples utilisent le domaine de laboratoire `EXAMPLE`, le contrôleur `dc.example.test` et le compte `audit`.
+
+#### Net RPC - lister les membres du groupe Domain Users
+
+<p class="oscp-command-note">Afficher les membres du groupe Domain Users avec Samba. L’option -W indique le domaine, -S le serveur et -U le compte de test. Le mot de passe est demandé interactivement. Le nom du groupe peut être localisé selon la langue du domaine.</p>
+
+```bash
+net rpc group members 'Domain Users' -W EXAMPLE -S dc.example.test -U audit
+```
+
+#### NetExec - lister les utilisateurs du domaine
+
+<p class="oscp-command-note">Afficher les utilisateurs accessibles au compte de test via SMB. Remplacer la valeur illustrative du mot de passe par celle du laboratoire ; ne pas conserver de secrets réels dans les notes. Le résultat dépend des droits et de la configuration du contrôleur.</p>
+
+```bash
+nxc smb 192.0.2.10 -d example.test -u audit -p 'MOT_DE_PASSE_LAB' --users
+```
+
+#### Risques de divulgation des noms de comptes
+
+La mind map distingue trois autres méthodes : recherche de comptes par identifiant relatif (RID), énumération Kerberos avec le script NSE krb5-enum-users et Kerbrute userenum. Ces méthodes peuvent révéler l’existence de comptes et générer un volume important de requêtes. Pour la revue de configuration, privilégier un inventaire authentifié et vérifier les restrictions de visibilité et la journalisation. Les trois méthodes sont recensées ici au niveau conceptuel, sans procédures de brute force.
+
+Les branches PXE, TimeRoasting, poisoning et coercition restent à examiner séparément.
 
 [Énumération Active Directory](ad-enumeration.md)
 
