@@ -21,13 +21,13 @@ Vérifier l'appartenance des noms collectés au scope avant les requêtes active
 
 <BountyCommand :source="&quot;dig +short __BOUNTY_DOMAIN__ A&quot;" language="bash" />
 
-Affiche les adresses IPv4 retournées par le DNS.
+Interroge les enregistrements A avec `dig`. Le résultat peut également contenir un alias CNAME ; une réponse vide ne prouve pas l'absence du domaine.
 
 ### HTTP - en-têtes de réponse
 
 <BountyCommand :source="&quot;curl -I '__BOUNTY_ORIGIN__'&quot;" language="bash" />
 
-Affiche les en-têtes HTTP de la cible sans télécharger le corps de la réponse.
+Effectue une requête HTTP HEAD et affiche les en-têtes de réponse. Certains serveurs ne traitent pas HEAD comme GET.
 
 ### DNSX - validation DNS
 
@@ -35,7 +35,7 @@ Affiche les en-têtes HTTP de la cible sans télécharger le corps de la répons
 dnsx -l all_subs.txt -silent -o resolved_subs.txt
 ```
 
-Identifie les noms qui répondent aux requêtes DNS.
+Interroge les enregistrements A par défaut. `resolved_subs.txt` contient les noms résolus, pas une liste d'IP. Une absence de réponse ne démontre pas que l'hôte est inexistant.
 
 ### DNSX - résolution inverse
 
@@ -43,7 +43,7 @@ Identifie les noms qui répondent aux requêtes DNS.
 dnsx -ptr -l ip.txt -resp-only -o reverse_dns.txt
 ```
 
-Interroge les enregistrements PTR. Préparer `ip.txt` avec les IP autorisées ; ne pas utiliser la liste de noms DNS `resolved_subs.txt`.
+Interroge les enregistrements PTR des IP autorisées dans `ip.txt`. `-resp-only` conserve les réponses DNS seules ; `reverse_dns.txt` ne constitue pas une liste d'actifs autorisés.
 
 ### HTTPX - métadonnées des services
 
@@ -51,7 +51,7 @@ Interroge les enregistrements PTR. Préparer `ip.txt` avec les IP autorisées ; 
 httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o http_metadata.txt
 ```
 
-Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery. Sortie : `http_metadata.txt` (URL, titres, codes et IP). Ce fichier est distinct de la liste d'URL seules.
+Produit `http_metadata.txt` avec URL, titres, codes HTTP et IP. Ce fichier contient des métadonnées, pas uniquement des URL. Le binaire ProjectDiscovery se nomme `httpx-toolkit` dans le paquet Kali, et `httpx` dans l'installation amont ; vérifier le binaire avant utilisation pour éviter la confusion avec Python HTTPX.
 
 ### Filtrage des sous-domaines actifs
 
@@ -59,9 +59,9 @@ Identifie les services HTTP répondants et collecte titres, codes et adresses IP
 cat resolved_subs.txt | httpx-toolkit -ports 80,443,8080,8000,8888 -threads 200 > subexample.coms_alive.txt
 ```
 
-Variante HTTPX Toolkit : reprend les domaines résolus par DNSX. Sortie : `subexample.coms_alive.txt`, réutilisée dans la variante Katana du chapitre Web.
+Variante du même outil ProjectDiscovery, distribuée sous le nom `httpx-toolkit` par Kali. Sortie historique : `subexample.coms_alive.txt`, reprise par la variante Katana. Les ports sélectionnés diffèrent du bloc précédent ; ce n'est pas un deuxième moteur indépendant.
 
-> La commande emploie une concurrence élevée. Respecter les limites du programme.
+> Exemple historique : concurrence élevée et absence de mode silencieux explicite. Ne pas utiliser tel quel ; vérifier les limites du programme et le contenu du fichier avant toute réutilisation.
 
 ### Httprobe - services Web
 
@@ -69,7 +69,7 @@ Variante HTTPX Toolkit : reprend les domaines résolus par DNSX. Sortie : `subex
 cat resolved_subs.txt | httprobe > httprobe_urls.txt
 ```
 
-Alternative à HTTPX Toolkit pour détecter les services HTTP et HTTPS. Sortie : `httprobe_urls.txt`. Les deux outils peuvent aussi être utilisés de façon complémentaire.
+Alternative ou complément à HTTPX pour vérifier les services HTTP et HTTPS. Par défaut, Httprobe examine les ports 80 et 443. Sortie : `httprobe_urls.txt`, une URL par ligne.
 
 ### Préparer la liste HTTP du chapitre suivant
 
@@ -83,7 +83,7 @@ HTTPX et Httprobe peuvent produire des résultats complémentaires. Regrouper le
 naabu -list ip.txt -c 50 -nmap-cli 'nmap -sV -SC' -o naabu-full.txt
 ```
 
-Associe Naabu et Nmap pour identifier des ports et services. Prérequis : préparer ip.txt avec les adresses explicitement autorisées au scan ; ne pas utiliser directement les IP observées dans des archives.
+Exemple historique, non validé : `-SC` ne correspond pas à une option Nmap documentée. `-c` règle les workers de Naabu et non le débit réseau. Le fichier `naabu-full.txt` correspond à la sortie Naabu, pas à un rapport Nmap complet. Ne pas exécuter ce bloc tel quel ; Nmap doit être installé et `ip.txt` préparé à partir du périmètre explicitement autorisé.
 
 ### Scan complet avec Nmap
 
@@ -91,9 +91,9 @@ Associe Naabu et Nmap pour identifier des ports et services. Prérequis : prépa
 nmap -p- --min-rate 1000 -T4 -A example.com -oA fullscan
 ```
 
-Analyse l'ensemble des ports TCP et collecte des informations sur les services.
+Exemple historique de scan TCP étendu. `-A` active plusieurs familles de détection et `-oA` produit trois fichiers (`fullscan.nmap`, `fullscan.xml`, `fullscan.gnmap`). Les sorties existantes peuvent être écrasées.
 
-> Débit et options intrusives à vérifier selon les règles du programme.
+> Exemple historique réservé à l'étude en laboratoire. `--min-rate` est un minimum demandé, pas une limite maximale de débit.
 
 ### Scan avec Masscan
 
@@ -101,7 +101,7 @@ Analyse l'ensemble des ports TCP et collecte des informations sur les services.
 masscan -p0-65535 example.com --rate 100000 -oG masscan-results.txt
 ```
 
-Exemple historique de scan de ports à débit très élevé.
+Exemple historique non exécutable tel quel : Masscan attend une adresse IP ou une plage, pas un nom DNS. `-oG` désigne un rapport au format greppable.
 
 > Débit extrêmement élevé dans l'original ; ne pas exécuter sur des systèmes tiers.
 
@@ -113,7 +113,7 @@ Exemple historique de scan de ports à débit très élevé.
 cat hosts.txt | aquatone
 ```
 
-Génère des captures et un rapport visuel à partir d'une liste de services Web autorisés. Prérequis : préparer `hosts.txt` avec les hôtes validés et vérifier les dépendances du logiciel. Aquatone est un outil historique ; sa compatibilité actuelle n'a pas été testée.
+Génère des captures et un rapport visuel. Prérequis : `hosts.txt` préparé séparément à partir des services autorisés et navigateur compatible installé. Aquatone est historique ; la compatibilité actuelle n'a pas été testée.
 
 ### Cartographie ASN et IP
 
@@ -129,7 +129,7 @@ Identifier les réseaux et les systèmes autonomes associés à une organisation
 nmap -sV -p 8000,8080 -oX nmap_out.xml 127.0.0.1
 ```
 
-Produit un inventaire XML des deux ports du laboratoire local. Adaptation pour alimenter le parseur Nmap présenté dans le workflow de scanning.
+Produit `nmap_out.xml` avec les observations sur les deux ports du laboratoire local. Les services de test doivent être démarrés pour obtenir des résultats pertinents.
 
 ## Workflow de scanning et fuzzing
 
@@ -150,7 +150,7 @@ Ne pas assimiler une adresse IP partagée, un CDN ou un service tiers à un acti
 ./nmap-parse-output nmap_out.xml html > scan.html
 ```
 
-Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de nouvelle requête. Adapter le chemin au fichier local. La syntaxe est reprise de l'article avec un chemin générique.
+Convertit `nmap_out.xml` en `scan.html` sans nouvelle requête. Le script `nmap-parse-output` doit être disponible et exécutable, avec ses dépendances (dont `xsltproc`). La syntaxe de conversion est documentée par son auteur ; le script n'a pas été exécuté ici.
 
 [Script nmap-parse-output](https://github.com/ernw/nmap-parse-output)
 
@@ -164,6 +164,12 @@ Convertit un rapport Nmap XML déjà produit en document HTML, sans effectuer de
 - `live_websites.txt` : liste d'URL validées manuellement pour le chapitre Web.
 - `ip.txt`, `hosts.txt` : listes spécifiques à préparer selon le scope.
 - `nmap_out.xml` : résultat du scan du laboratoire utilisé par le convertisseur HTML.
+
+## Documentation des outils
+
+- [DNSX](https://docs.projectdiscovery.io/opensource/dnsx/usage) · [HTTPX](https://docs.projectdiscovery.io/opensource/httpx/usage) · [HTTPX Toolkit sous Kali](https://www.kali.org/tools/httpx-toolkit/)
+- [Httprobe](https://github.com/tomnomnom/httprobe) · [Naabu](https://docs.projectdiscovery.io/opensource/naabu/usage) · [Nmap](https://nmap.org/book/man.html)
+- [Masscan](https://github.com/robertdavidgraham/masscan) · [Aquatone](https://github.com/michenriksen/aquatone)
 
 ## Avant de poursuivre
 
