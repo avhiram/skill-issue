@@ -654,6 +654,21 @@ export const academyLevels = [
     ]
   },
   {
+    "id": "radio-satellite",
+    "title": "Radio & Satellite Security",
+    "phase": "Domaines avancés",
+    "intro": "Comprendre les communications radio et satellitaires et les bases de la SDR.",
+    "learn": [
+      "Fréquences, propagation, antennes et principes de réception.",
+      "Software Defined Radio et sécurité des communications."
+    ],
+    "exercise": "Étudier un spectre radio de démonstration ou des captures de signaux pédagogiques.",
+    "ready": "Tu sais expliquer le rôle d’une antenne, d’un récepteur SDR et des bandes de fréquences.",
+    "featured": [
+      "https://hackers-arise.com/satellite-hacking-part-1-getting-started/"
+    ]
+  },
+  {
     "id": "ot",
     "title": "OT / ICS : comprendre les réseaux industriels",
     "phase": "Domaines avancés",
@@ -1814,6 +1829,26 @@ export const academyExtraResources = [
     "routeLevel": "reverse",
     "type": "Cours",
     "access": "Gratuit"
+  },
+  {
+    "id": "added-satellite-intro",
+    "title": "Hackers Arise - Introduction au Satellite Hacking",
+    "url": "https://hackers-arise.com/satellite-hacking-part-1-getting-started/",
+    "category": "radio",
+    "routeLevel": "radio-satellite",
+    "type": "Cours",
+    "access": "Gratuit",
+    "description": "Introduction aux communications satellitaires, aux fréquences radio, à la SDR et au matériel de réception. Matériel nécessaire pour la pratique."
+  },
+  {
+    "id": "added-connected-things-sec",
+    "title": "Awesome Connected Things Security",
+    "url": "https://github.com/V33RU/awesome-connected-things-sec",
+    "category": "iot",
+    "routeLevel": "iot",
+    "type": "Ressources",
+    "access": "Catalogue librement accessible",
+    "description": "Catalogue de plus de 900 ressources annoncées par le projet : IoT, hardware, firmware, radio, Bluetooth, systèmes embarqués, OT/ICS, automobile, robotique, labs et CTF. Certaines formations ou matériels peuvent être payants."
   }
 ] as const
 
