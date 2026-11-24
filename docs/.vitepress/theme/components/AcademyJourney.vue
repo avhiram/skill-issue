@@ -661,6 +661,15 @@ const minimalDescriptions: Record<string, string> = {
   "offsec - acces aux labs gratuits": "Présentation des labs Proving Grounds Play et du cours PEN-103."
 }
 function describe(item: AssignedResource) {
+  const platformUrl = normalizeUrl(item.url)
+  // Les totaux désignent le catalogue de la plateforme, jamais une seule room.
+  // PortSwigger : 278 labs répartis en 32 thèmes au 24/11/2026 (all-topics).
+  if (platformUrl === normalizeUrl('https://portswigger.net/web-security')) return 'Plateforme gratuite de sécurité Web : plus de 270 labs interactifs, avec des cours du niveau débutant au niveau expert.'
+  if (platformUrl === normalizeUrl('https://portswigger.net/web-security/all-labs')) return 'Catalogue de plus de 270 labs gratuits répartis par vulnérabilité et niveau.'
+  if (platformUrl === normalizeUrl('https://portswigger.net/web-security/learning-paths')) return 'Parcours guidés pour progresser parmi les plus de 270 labs gratuits de la plateforme.'
+  if (platformUrl === normalizeUrl('https://www.root-me.org/')) return 'Plateforme gratuite proposant plus de 600 challenges : Web, réseau, cryptographie, forensic, reverse engineering et autres domaines.'
+  if (platformUrl === normalizeUrl('https://www.root-me.org/fr/Challenges/Web-Serveur/')) return 'Série de challenges Web côté serveur, parmi les plus de 600 challenges de la plateforme Root-Me.'
+  if (platformUrl === normalizeUrl('https://www.root-me.org/fr/Challenges/Web-Client/')) return 'Série de challenges Web côté navigateur, parmi les plus de 600 challenges de la plateforme Root-Me.'
   const concise = minimalDescriptions[simplify(item.title.trim())]
   if (concise) return concise
   const known = manualDescriptions[simplify(item.title.trim())]
