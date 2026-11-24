@@ -35,9 +35,17 @@ export default defineConfig({
     sidebar: {
       '/academy/': [],
       '/bug-bounty/': [
-        { text: 'Bug Bounty', link: '/bug-bounty/', items: [
-          { text: 'Cheatsheet', link: '/bug-bounty/#cheatsheet' },
-          { text: 'Methodology', link: '/bug-bounty/#methodologie-de-bug-bounty' },
+        { text: 'Parcours Bug Bounty', link: '/bug-bounty/', items: [
+          { text: 'Programme et préparation', link: '/bug-bounty/#programme-et-preparation' },
+          { text: 'Reconnaissance passive', link: '/bug-bounty/#reconnaissance-passive' },
+          { text: 'Cartographie et scan réseau', link: '/bug-bounty/#cartographie-et-scan-reseau' },
+          { text: 'Cartographie Web et API', link: '/bug-bounty/#cartographie-web-et-api' },
+          { text: 'Tests de vulnérabilités', link: '/bug-bounty/#tests-de-vulnerabilites' },
+          { text: 'Validation et preuves', link: '/bug-bounty/#validation-et-preuves' },
+          { text: 'Rapport et signalement', link: '/bug-bounty/#rapport-et-signalement' },
+          { text: 'Suivi et prime', link: '/bug-bounty/#suivi-et-prime' }
+        ] },
+        { text: 'Ressources', items: [
           { text: 'Security Tools', link: '/bug-bounty/ressources#security-tools' },
           { text: 'Browser Extensions', link: '/bug-bounty/ressources#browser-extensions' },
           { text: 'Writeups', link: '/bug-bounty/ressources#writeups' }
