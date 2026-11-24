@@ -9,58 +9,45 @@ next: false
 
 [Retour au parcours](./index.md)
 
+<BountyTarget />
+
 Objectif : recenser les actifs connus, vérifier leur appartenance au programme et préparer un inventaire exploitable.
 
 ## Énumération des sous-domaines
 
 ### Découverte des sous-domaines
 
-```bash
-subfinder -d example.com -all -recursive > subexample.com.txt
-```
+<BountyCommand :source="&quot;subfinder -d __BOUNTY_DOMAIN__ -all -recursive &gt; subexample.com.txt&quot;" language="bash" />
 
 Effectue une recherche récursive avec Subfinder et enregistre les résultats.
 
 ### Amass - découverte passive
 
-```bash
-amass enum -passive -d example.com -o amass_passive_subs.txt
-```
+<BountyCommand :source="&quot;amass enum -passive -d __BOUNTY_DOMAIN__ -o amass_passive_subs.txt&quot;" language="bash" />
 
 Collecte les sous-domaines depuis des sources publiques.
 
 ### Assetfinder - sous-domaines
 
-```bash
-assetfinder --subs-only example.com > assetfinder_subs.txt
-```
+<BountyCommand :source="&quot;assetfinder --subs-only __BOUNTY_DOMAIN__ &gt; assetfinder_subs.txt&quot;" language="bash" />
 
 Collecte les noms de sous-domaines connus.
 
 ### Findomain - sous-domaines
 
-```bash
-findomain -t example.com -q > findomain_subs.txt
-```
+<BountyCommand :source="&quot;findomain -t __BOUNTY_DOMAIN__ -q &gt; findomain_subs.txt&quot;" language="bash" />
 
 Collecte les sous-domaines et écrit les résultats dans un fichier.
 
 ### Chaos - données publiques
 
-```bash
-chaos -d example.com -silent > chaos_subs.txt
-```
+<BountyCommand :source="&quot;chaos -d __BOUNTY_DOMAIN__ -silent &gt; chaos_subs.txt&quot;" language="bash" />
 
 Interroge le catalogue Chaos de ProjectDiscovery ; vérifier les prérequis d'accès.
 
 ### CRT.sh - certificats publics
 
-```bash
-curl -s "https://crt.sh/?q=%25.example.com&output=json" |
-jq -r '.[].name_value' |
-sed 's/\*\.//g' |
-anew crtsh_subs.txt
-```
+<BountyCommand :source="&quot;curl -s \&quot;https://crt.sh/?q=%25.__BOUNTY_DOMAIN__&amp;output=json\&quot; |\njq -r '.[].name_value' |\nsed 's/\\*\\.//g' |\nanew crtsh_subs.txt&quot;" language="bash" />
 
 Extrait les noms des certificats publics avec jq et retire le préfixe wildcard.
 
@@ -76,49 +63,37 @@ Fusionne les fichiers de résultats en supprimant les doublons. Exécuter dans l
 
 ### HackerTarget - DNS passif
 
-```bash
-curl -fsS 'https://api.hackertarget.com/hostsearch/?q=example.com' | cut -d ',' -f1 | sort -u > hackertarget_subs.txt
-```
+<BountyCommand :source="&quot;curl -fsS 'https://api.hackertarget.com/hostsearch/?q=__BOUNTY_DOMAIN__' | cut -d ',' -f1 | sort -u &gt; hackertarget_subs.txt&quot;" language="bash" />
 
 Récupère les noms connus dans la base HackerTarget. Variante corrigée du pipeline de l'article, qui se terminait par un pipe vide.
 
 ### URLScan - domaines observés
 
-```bash
-curl -fsS 'https://urlscan.io/api/v1/search/?q=domain:example.com' | jq -r '.results[]?.page?.domain // empty' | sort -u > urlscan_subs.txt
-```
+<BountyCommand :source="&quot;curl -fsS 'https://urlscan.io/api/v1/search/?q=domain:__BOUNTY_DOMAIN__' | jq -r '.results[]?.page?.domain // empty' | sort -u &gt; urlscan_subs.txt&quot;" language="bash" />
 
 Extrait les domaines observés dans les résultats historiques de URLScan.
 
 ### Common Crawl - index historique
 
-```bash
-curl -fsS 'https://index.commoncrawl.org/CC-MAIN-2023-50-index?url=*.example.com&output=json' | jq -r '.url' | sed -E 's#^https?://##; s#/.*##' | sort -u > commoncrawl_subs.txt
-```
+<BountyCommand :source="&quot;curl -fsS 'https://index.commoncrawl.org/CC-MAIN-2023-50-index?url=*.__BOUNTY_DOMAIN__&amp;output=json' | jq -r '.url' | sed -E 's#^https?://##; s#/.*##' | sort -u &gt; commoncrawl_subs.txt&quot;" language="bash" />
 
 Extrait les hôtes de l'index 2023-50 indiqué dans l'article. Il s'agit d'un index historique, pas d'un inventaire actuel.
 
 ### Wayback CDX - URL historiques
 
-```bash
-curl -fsS 'https://web.archive.org/cdx/search/cdx?url=*.example.com/*&output=text&fl=original&collapse=urlkey' | sort -u > wayback_cdx.txt
-```
+<BountyCommand :source="&quot;curl -fsS 'https://web.archive.org/cdx/search/cdx?url=*.__BOUNTY_DOMAIN__/*&amp;output=text&amp;fl=original&amp;collapse=urlkey' | sort -u &gt; wayback_cdx.txt&quot;" language="bash" />
 
 Récupère les URL indexées. Le double suffixe .com du document a été corrigé.
 
 ### URLScan - adresses IP observées
 
-```bash
-curl -fsS 'https://urlscan.io/api/v1/search/?q=domain:example.com' | jq -r '.results[]?.page?.ip // empty' | sort -u > observed_ips.txt
-```
+<BountyCommand :source="&quot;curl -fsS 'https://urlscan.io/api/v1/search/?q=domain:__BOUNTY_DOMAIN__' | jq -r '.results[]?.page?.ip // empty' | sort -u &gt; observed_ips.txt&quot;" language="bash" />
 
 Récupère les IP historiques présentes dans les résultats. Une IP observée n'est pas une preuve d'appartenance au scope.
 
 ### AlienVault OTX - adresses IP observées
 
-```bash
-curl -fsS 'https://otx.alienvault.com/api/v1/indicators/hostname/example.com/url_list?limit=500&page=1' | jq -r '.url_list[]?.result?.urlworker?.ip // empty' | sort -u > otx_ips.txt
-```
+<BountyCommand :source="&quot;curl -fsS 'https://otx.alienvault.com/api/v1/indicators/hostname/__BOUNTY_DOMAIN__/url_list?limit=500&amp;page=1' | jq -r '.url_list[]?.result?.urlworker?.ip // empty' | sort -u &gt; otx_ips.txt&quot;" language="bash" />
 
 Extrait les IP observées dans les données publiques OTX. Cette requête ne traite que la première page.
 
@@ -136,9 +111,7 @@ Les exemples de sources publiques sont adaptés du document Recon to Master. Les
 
 ### Recherche par certificat TLS
 
-```text
-Ssl.cert.subject.CN:"example.com" 200
-```
+<BountyCommand :source="&quot;Ssl.cert.subject.CN:\&quot;__BOUNTY_DOMAIN__\&quot; 200&quot;" language="text" />
 
 Requête Shodan historique fondée sur le nom commun d'un certificat.
 
@@ -159,9 +132,7 @@ Voir également [Exposition de données](./vulnerabilites.md#exposition-de-donne
 
 ## Waybackurls - noms de domaine
 
-```bash
-waybackurls example.com | unfurl -u domains > wayback_domains.txt
-```
+<BountyCommand :source="&quot;waybackurls __BOUNTY_DOMAIN__ | unfurl -u domains &gt; wayback_domains.txt&quot;" language="bash" />
 
 Extrait les noms de domaine des URL historiques. Commande issue de l'article IIS ; Unfurl doit être installé. Les domaines découverts ne sont pas automatiquement autorisés.
 
