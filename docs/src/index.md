@@ -53,7 +53,7 @@ aside: false
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nato.int/" target="_blank" rel="noopener noreferrer" title="OTAN">
-    <span class="profile-logo-frame"><img src="/skill-issue/profile-logos/nato-otan.webp" alt="Logo de l’OTAN" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/NATO_OTAN_portrait_logo.svg" alt="Logo de l’OTAN" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
     <span class="profile-logo-label">OTAN</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" title="Locked Shields 2025">
@@ -70,7 +70,7 @@ aside: false
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" title="École 2600">
-    <span class="profile-logo-frame"><img src="/skill-issue/profile-logos/ecole-2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><span class="profile-school-logo" aria-hidden="true"></span></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
@@ -104,7 +104,7 @@ aside: false
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nato.int/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OTAN">
-    <span class="profile-logo-frame"><img src="/skill-issue/profile-logos/nato-otan.webp" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/NATO_OTAN_portrait_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
     <span class="profile-logo-label">OTAN</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Locked Shields 2025">
@@ -121,7 +121,7 @@ aside: false
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="École 2600">
-    <span class="profile-logo-frame"><img src="/skill-issue/profile-logos/ecole-2600.webp" alt="" loading="lazy" decoding="async"></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><span class="profile-school-logo" aria-hidden="true"></span></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
