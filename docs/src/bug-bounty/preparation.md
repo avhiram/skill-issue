@@ -22,17 +22,17 @@ Objectif : choisir un programme, comprendre les règles et préparer son environ
 
 ## Dossier de travail
 
-<BountyCommand :source="&quot;mkdir -p \&quot;$HOME/bug-bounty/__BOUNTY_WORKSPACE__\&quot;/{scope,recon,requests,preuves,rapports,javascript} &amp;&amp;\ncd \&quot;$HOME/bug-bounty/__BOUNTY_WORKSPACE__\&quot; &amp;&amp;\ntouch scope/domains.txt&quot;" language="bash" />
+<BountyCommand :source="&quot;mkdir -p \&quot;./__BOUNTY_WORKSPACE__\&quot;/{scope,recon,requests,preuves,rapports,javascript} &amp;&amp;\ncd \&quot;./__BOUNTY_WORKSPACE__\&quot; &amp;&amp;\ntouch scope/domains.txt&quot;" language="bash" />
 
-Crée un dossier distinct pour la cible et le nom du programme renseignés, puis s'y place. Relancer cette commande lors d'un changement de programme ou de terminal. Les fichiers existants sont conservés.
+Crée le dossier du programme directement dans le répertoire courant, puis s'y place. Se placer d'abord dans le dossier parent souhaité (Desktop, espace de travail, etc.). Relancer depuis ce même parent pour reprendre un programme existant. Les fichiers existants sont conservés.
 
 Renseigner `scope/domains.txt` avec les domaines réellement autorisés, un par ligne. Les inventaires TXT restent à la racine du programme pour préserver les enchaînements. Utiliser `requests/` pour les exports HTTP et JSON, `javascript/` pour les scripts locaux, `preuves/` pour les preuves et `rapports/` pour les signalements. Les anciennes variantes qui utilisent des chemins différents indiquent leurs prérequis propres.
 
 ### Reprendre un programme existant
 
-<BountyCommand :source="&quot;cd \&quot;$HOME/bug-bounty/__BOUNTY_WORKSPACE__\&quot; &amp;&amp; pwd&quot;" language="bash" />
+<BountyCommand :source="&quot;cd \&quot;./__BOUNTY_WORKSPACE__\&quot; &amp;&amp; pwd&quot;" language="bash" />
 
-Ouvre le dossier sélectionné et affiche le chemin courant. Si le dossier n'existe pas encore, utiliser la commande de création ci-dessus.
+Depuis le dossier parent utilisé lors de la création, ouvre le dossier sélectionné et affiche son chemin absolu. Si le dossier n'existe pas, vérifier le répertoire courant avec `pwd` avant de le créer.
 
 ### Archiver les inventaires
 
