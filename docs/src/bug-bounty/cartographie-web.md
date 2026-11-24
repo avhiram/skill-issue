@@ -396,8 +396,7 @@ Les fichiers de requêtes, scripts externes et wordlists sont des prérequis à 
 
 ## Avant de poursuivre
 
-- Inventaire des fonctionnalités, URL, paramètres et API.
-- Résultats enregistrés et observations à vérifier identifiées.
+<BountyChecklist storage-key="checkpoint-cartographie-web" :items='["Inventaire des fonctionnalités, URL, paramètres et API.","Résultats enregistrés et observations à vérifier identifiées."]' />
 
 ---
 
