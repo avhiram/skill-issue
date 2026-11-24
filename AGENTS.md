@@ -25,3 +25,9 @@
 - Identifier le producteur, le format, les prérequis et le consommateur de chaque fichier. Ne pas confondre domaines, IP, URL, métadonnées et fichiers locaux.
 - Conserver les contrôles de scope entre la collecte et les requêtes actives. Ne pas modifier une commande fonctionnelle sans raison.
 - Distinguer la vérification documentaire des tests réels ; ne pas affirmer avoir exécuté ou validé les commandes si ce n'est pas le cas.
+
+## Espaces de travail Bug Bounty
+
+- Utiliser un dossier distinct sous ~/bug-bounty pour chaque cible et nom de programme. Le champ dynamique détermine le dossier de préparation ; ne jamais écraser les fichiers de scope existants lors de sa création.
+- Les commandes existantes utilisent des chemins relatifs depuis ce dossier. Préserver les enchaînements et avertir de changer de répertoire lors d'un changement de programme. Les inventaires restent à la racine tant que tous leurs producteurs et consommateurs n'ont pas été adaptés ensemble.
+- Conserver les checklists locales séparées par programme.
