@@ -3,14 +3,6 @@ name: Build SKILL-ISSUE website
 on:
   push:
     branches: [main]
-    paths:
-      - 'docs/**'
-      - '.github/scripts/prepare_crto_for_vitepress.py'
-      - '.github/workflows/pages.yml'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'scripts/audit_rendered_markdown.py'
-      - '.github/scripts/normalize_site_dashes.py'
   workflow_dispatch:
 
 permissions:
@@ -127,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://avhiram.github.io/skill-issue/
     permissions:
       contents: read
       pages: write
@@ -140,12 +132,35 @@ jobs:
         run: |
           actual=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')
           test "$actual" = "$EXPECTED_HEAD" || { echo '::error::Une version plus récente existe ; déploiement obsolète bloqué.'; exit 1; }
+      - name: Identify configured Pages publishing source
+        id: pages_source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mode=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.build_type')
+          case "$mode" in
+            workflow) ;;
+            legacy)
+              source=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.source.branch + ":" + .source.path')
+              test "$source" = 'main:/' || { echo '::error::Source Pages inattendue : sélectionner GitHub Actions ou main / (root).'; exit 1; }
+              ;;
+            *) echo "::error::Mode Pages inconnu : $mode"; exit 1 ;;
+          esac
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
       - name: Deploy verified website to GitHub Pages
+        if: steps.pages_source.outputs.mode == 'workflow'
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Request Pages build from the freshly compiled main branch
+        if: steps.pages_source.outputs.mode == 'legacy'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --jq '.status'
+
       - name: Verify actual public Academy page after deployment
         run: |
-          for attempt in $(seq 1 12); do
+          for attempt in $(seq 1 30); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/academy/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/academy-live.html; then
               if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/academy-live.html && grep -q 'academy-syllabus' /tmp/academy-live.html && grep -q 'Parcours gratuit' /tmp/academy-live.html && grep -q 'Parcours complet' /tmp/academy-live.html && ! grep -q 'Marquer comme terminée' /tmp/academy-live.html && ! grep -Eqi 'harvard|cs50' /tmp/academy-live.html; then
                 echo 'Présentation Academy actuelle et absence de Harvard/CS50 confirmées sur le site public.'
@@ -159,7 +174,7 @@ jobs:
 
       - name: Verify public Bug Bounty page after deployment
         run: |
-          for attempt in $(seq 1 12); do
+          for attempt in $(seq 1 30); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/bug-bounty-live.html; then
               if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/bug-bounty-live.html && grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' /tmp/bug-bounty-live.html && grep -q 'Reconnaissance active' /tmp/bug-bounty-live.html && grep -q 'Cible du programme' /tmp/bug-bounty-live.html && ! grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' /tmp/bug-bounty-live.html; then
                 echo 'Nouvelle page Bug Bounty confirmée.'
