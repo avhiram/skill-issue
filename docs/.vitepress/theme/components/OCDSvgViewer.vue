@@ -5,7 +5,7 @@ const root = ref(null), stage = ref(null), image = ref(null)
 const frame = ref(null), textMode = ref(false), loadingText = ref(false), frameDoc = ref(''), selectedText = ref(''), textMessage = ref(''), copied = ref(false)
 let frameCleanup = () => {}
 const copyField = ref(null)
-function selectText(){if(copyField.value){copyField.value.focus();copyField.value.select();copyField.value.setSelectionRange(0,copyField.value.value.length)}}
+function selectText(){if(copyField.value){copyField.value.focus({preventScroll:true});copyField.value.select();copyField.value.setSelectionRange(0,copyField.value.value.length)}}
 const size = ref({ w: 0, h: 0 }), zoom = ref(1), expanded = ref(false), error = ref(false), dragging = ref(false)
 let drag = null
 const ready = computed(() => size.value.w > 0 && !error.value)
@@ -70,17 +70,46 @@ function bindTextFrame() {
     if(spans.length>1 && spans.slice(1).some(t=>t.hasAttribute('y')||t.hasAttribute('dy'))) return spans.map(t=>t.textContent||'').join('\n')
     return el.textContent||''
   }
-  const pick = el => {
-    if(!el)return
+  const hitGroups=new Map()
+  const textGroups=new Map()
+  const svgRoot=doc.querySelector('svg')
+  // Use the original SVG's text groups as the selection unit.
+  for(const el of svgRoot?.querySelectorAll('text') || []) {
     const group=el.parentElement
-    const siblings=group?.localName==='g'?[...group.children]:[]
-    const lines=siblings.length>1&&siblings.every(n=>n.localName==='text')?siblings:[el]
+    const owner=group?.localName==='g'?group:el
+    if(!textGroups.has(owner))textGroups.set(owner,[])
+    textGroups.get(owner).push(el)
+  }
+  for(const [owner,lines] of textGroups) {
+    if(owner.localName!=='g')continue
+    try {
+      const bounds=lines.map(el=>el.getBBox())
+      const left=Math.min(...bounds.map(b=>b.x)),top=Math.min(...bounds.map(b=>b.y))
+      const right=Math.max(...bounds.map(b=>b.x+b.width)),bottom=Math.max(...bounds.map(b=>b.y+b.height))
+      if(![left,top,right,bottom].every(Number.isFinite)||right<=left||bottom<=top)continue
+      const hit=doc.createElementNS('http://www.w3.org/2000/svg','rect')
+      const pad=3
+      hit.setAttribute('x',String(left-pad));hit.setAttribute('y',String(top-pad))
+      hit.setAttribute('width',String(right-left+2*pad));hit.setAttribute('height',String(bottom-top+2*pad))
+      hit.setAttribute('fill','transparent');hit.setAttribute('pointer-events','all');hit.setAttribute('style','cursor:pointer')
+      owner.insertBefore(hit,owner.firstChild)
+      hitGroups.set(hit,owner)
+    }catch{}
+  }
+  const pick = async target => {
+    if(!target)return
+    const el=target.closest?.('text')
+    const owner=hitGroups.get(target)||(el?.parentElement?.localName==='g'?el.parentElement:el)
+    const lines=textGroups.get(owner)
+    if(!lines?.length)return
     selectedText.value=lines.map(textOf).join('\n')
     copied.value=false
+    await nextTick()
+    selectText()
   }
   const down=e=>{
     if(e.button!==0&&e.pointerType==='mouse')return
-    gesture={id:e.pointerId,x:e.clientX,y:e.clientY,screenX:e.screenX,screenY:e.screenY,left:stage.value.scrollLeft,top:stage.value.scrollTop,target:e.target.closest?.('text'),moved:false}
+    gesture={id:e.pointerId,x:e.clientX,y:e.clientY,screenX:e.screenX,screenY:e.screenY,left:stage.value.scrollLeft,top:stage.value.scrollTop,target:e.target,moved:false}
     e.target.setPointerCapture?.(e.pointerId)
   }
   const move=e=>{
@@ -101,7 +130,7 @@ function bindTextFrame() {
   }
   const listeners=[['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['wheel',wheel]]
   for(const [name,fn] of listeners)doc.addEventListener(name,fn,{passive:false})
-  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn)}
+  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);for(const hit of hitGroups.keys())hit.remove()}
 }
 async function copyText() {
   if(!selectedText.value)return
@@ -140,7 +169,7 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
     </div>
     <div v-if="textMode && selectedText" class="ocd-copy">
       <div class="ocd-copy-header"><button type="button" @click="selectText">Tout sélectionner</button><button type="button" class="ocd-copy-main" @click="copyText">{{ copied ? '✓ Copié' : 'Copier' }}</button><button type="button" aria-label="Fermer" @click="selectedText='';copied=false">×</button></div>
-      <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné"></textarea>
+      <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné" @click="selectText" @focus="selectText"></textarea>
     </div>
     <div v-if="textMessage" class="ocd-status" role="status">{{ textMessage }}</div>
     <div class="ocd-hint">{{ textMode ? 'Touche un texte pour le copier.' : 'Glisser pour naviguer · Boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>

@@ -10,7 +10,18 @@ const root = ref(null)
 const expanded = ref(false)
 const selected = ref(null)
 const copyState = ref('')
-watch(selected, () => { copyState.value = '' })
+function selectBlock(field) {
+  if(!field)return
+  field.focus({preventScroll:true})
+  field.setSelectionRange(0,field.value.length)
+}
+watch(selected, async () => {
+  copyState.value = ''
+  if(!selected.value)return
+  await nextTick()
+  const fields=root.value?.querySelectorAll('.inspector-code .inspector-selectable')
+  if(fields?.length===1)selectBlock(fields[0])
+})
 function splitCard(raw) {
   const parts = []
   let lines = [], language = '', inCode = false
@@ -236,9 +247,9 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
                 <span>{{ part.language || 'Code' }}</span>
                 <button type="button" @click="copyCard(part.value, 'part-'+i)">{{ copyState === 'part-'+i ? '✓ Copié' : 'Copier' }}</button>
               </div>
-              <textarea class="inspector-selectable" :value="part.value" readonly spellcheck="false" :rows="Math.min(14,Math.max(3,part.value.split('\n').length+1))" aria-label="Code sélectionnable"></textarea>
+              <textarea class="inspector-selectable" :value="part.value" readonly spellcheck="false" :rows="Math.min(14,Math.max(3,part.value.split('\n').length+1))" aria-label="Code sélectionnable" @click="selectBlock($event.currentTarget)" @focus="selectBlock($event.currentTarget)"></textarea>
             </div>
-            <textarea v-else class="inspector-selectable inspector-prose" :value="part.value" readonly spellcheck="false" :rows="Math.min(12,Math.max(2,part.value.split('\n').length+1))" aria-label="Texte sélectionnable"></textarea>
+            <textarea v-else class="inspector-selectable inspector-prose" :value="part.value" readonly spellcheck="false" :rows="Math.min(12,Math.max(2,part.value.split('\n').length+1))" aria-label="Texte sélectionnable" @click="selectBlock($event.currentTarget)"></textarea>
           </template>
           <p v-if="copyState === 'failed'" class="copy-feedback" role="status">Copie indisponible. Maintiens le texte pour le sélectionner.</p>
           <span v-else-if="copyState" class="copy-feedback" role="status">Copié dans le presse-papiers.</span>
@@ -275,7 +286,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .ad-mindmap .copy-primary{background:#62409a;border-color:#a78bfa;font-weight:600;min-height:38px;padding:8px 14px}
 .ad-mindmap .copy-primary:hover{background:#7550b6}
 .inspector-content{padding:10px;user-select:text;-webkit-user-select:text;touch-action:pan-y}
-.inspector-code{border:1px solid #4d3967;border-radius:7px;overflow:hidden;background:#100d17;margin:0 0 8px}
+.inspector-code{cursor:pointer;border:1px solid #4d3967;border-radius:7px;overflow:hidden;background:#100d17;margin:0 0 8px}
 .inspector-code-bar{display:flex;justify-content:space-between;align-items:center;min-height:26px;padding:4px 9px;color:#bca8d9;font-size:11px;background:#231a30}
 .inspector-code-bar button{padding:8px 12px;min-height:38px;background:#62409a;border-color:#a78bfa}
 .inspector-prose{font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 4px 10px}
