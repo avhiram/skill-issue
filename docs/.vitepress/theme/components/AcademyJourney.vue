@@ -137,6 +137,7 @@ const sections = [
       "containers",
       "mobile",
       "iot",
+      "radio-satellite",
       "ot",
       "grc"
     ]
@@ -760,6 +761,7 @@ const levelTitles: Record<string, string> = {
   "containers": "Sécurité des conteneurs",
   "mobile": "Sécurité mobile",
   "iot": "Sécurité IoT",
+  "radio-satellite": "Radio & Satellite Security",
   "ot": "Sécurité OT / ICS",
   "grc": "Politiques et conformité",
   "ctf-advanced": "CTF avancés",
@@ -943,7 +945,11 @@ const freeSelections: Record<string, readonly string[]> = {
     "https://mas.owasp.org/"
   ],
   "iot": [
-    "https://github.com/OWASP/IoTGoat"
+    "https://github.com/OWASP/IoTGoat",
+    "https://github.com/V33RU/awesome-connected-things-sec"
+  ],
+  "radio-satellite": [
+    "https://hackers-arise.com/satellite-hacking-part-1-getting-started/"
   ],
   "ot": [
     "https://csrc.nist.gov/pubs/sp/800/82/r3/final"
