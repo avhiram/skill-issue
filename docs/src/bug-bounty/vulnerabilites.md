@@ -444,6 +444,11 @@ Bloc historique combinant des requêtes et des vérifications d'en-têtes. Rése
 
 > Bloc non vérifié, avec un nom Collaborator mal orthographié et des hypothèses non démontrées.
 
+## Avant de poursuivre
+
+- Observations pertinentes classées par type de vulnérabilité.
+- Résultats à confirmer manuellement identifiés.
+
 ---
 
 [Précédent : Cartographie Web et API](./cartographie-web.md) · [Parcours](./index.md) · [Suivant : Validation et preuves](./validation.md)
