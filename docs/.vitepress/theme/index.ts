@@ -4,6 +4,7 @@ import DefaultTheme from 'vitepress/theme'
 import CustomSidebarItem from './components/CustomSidebarItem.vue'
 import TransferSelector from './components/TransferSelector.vue'
 import AcademyJourney from './components/AcademyJourney.vue'
+import BountyChecklist from './components/BountyChecklist.vue'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import mediumZoom from 'medium-zoom'
 import { useRoute } from 'vitepress'
@@ -15,6 +16,7 @@ export default {
     app.component('VPSidebarItem', CustomSidebarItem)
     app.component('TransferSelector', TransferSelector)
     app.component('AcademyJourney', AcademyJourney)
+    app.component('BountyChecklist', BountyChecklist)
     enhanceAppWithTabs(app)
   },
   setup() {
