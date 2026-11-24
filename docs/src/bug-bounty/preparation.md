@@ -71,7 +71,7 @@ Affiche les commandes absentes du PATH. Pour `httpx`, le contrôle vérifie auss
 
 ## Installer les outils manquants
 
-L'installateur vérifie toute la liste ci-dessus et ne touche pas aux outils déjà disponibles. Il installe uniquement ce qui manque : paquets système avec APT, outils Go, Findomain depuis ses binaires officiels, Arjun dans un environnement Python isolé avec pipx et urldedupe compilé depuis ses sources. Il vérifie ensuite chaque commande et affiche le bilan. Prévu pour Exegol, Kali et les distributions Linux utilisant APT.
+L'installateur vérifie toute la liste ci-dessus et ne touche pas aux outils déjà disponibles. Il installe uniquement ce qui manque : paquets système avec APT, outils Go, Findomain depuis ses binaires officiels, Arjun dans un environnement Python isolé avec pipx et urldedupe compilé depuis ses sources. Il vérifie ensuite chaque commande et affiche le bilan. Conçu pour Exegol et Kali Linux.
 
 <BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/install-bugbounty-tools.sh -o /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash /tmp/skill-issue-install-bugbounty-tools.sh&quot;" language="bash" />
 
