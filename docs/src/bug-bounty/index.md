@@ -14,7 +14,7 @@ Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.
 
 ## Parcours
 
-### [Programme et préparation](./preparation.md)
+### <a href="https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?v=workspace-v3" target="_self">Programme et préparation</a>
 
 Choisir un programme, définir le scope et préparer son espace de travail.
 
