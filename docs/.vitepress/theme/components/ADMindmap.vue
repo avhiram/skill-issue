@@ -71,6 +71,7 @@ const dragging = ref(false)
 const pointers = new Map()
 let clickCandidate = null
 let moved = false
+let pressOrigin = null
 let observer
 const palette = { '1': '#fb7185', '2': '#f59e0b', '3': '#facc15', '4': '#4ade80', '5': '#22d3ee', '6': '#a78bfa' }
 const color = (c, fallback = '#76658c') => palette[c] || (/^#[0-9a-f]{6}$/i.test(c || '') ? c : fallback)
@@ -122,7 +123,7 @@ function position(e) { const r=svg.value.getBoundingClientRect(); return { x:e.c
 function wheel(e) { const p=position(e); zoomAt(Math.exp(-e.deltaY*0.0015),p.x,p.y) }
 function down(e) {
   if(e.pointerType==='mouse' && e.button!==0) return
-  if(!pointers.size) { moved=false; clickCandidate=e.target.closest?.('[data-node]')?.getAttribute('data-node') || null }
+  if(!pointers.size) { moved=false; pressOrigin=position(e); clickCandidate=e.target.closest?.('[data-node]')?.getAttribute('data-node') || null }
   else { moved=true; clickCandidate=null }
   pointers.set(e.pointerId,position(e))
   svg.value.setPointerCapture?.(e.pointerId)
@@ -133,13 +134,13 @@ function move(e) {
   const prev=[...pointers.values()], p=position(e), old=pointers.get(e.pointerId)
   pointers.set(e.pointerId,p)
   const curr=[...pointers.values()]
-  if(Math.hypot(p.x-old.x,p.y-old.y)>1) moved=true
+  if(pressOrigin && Math.hypot(p.x-pressOrigin.x,p.y-pressOrigin.y)>7) moved=true
   if(curr.length===2) {
     const a=prev[0],b=prev[1],c=curr[0],d=curr[1], dist=Math.hypot(a.x-b.x,a.y-b.y), next=Math.hypot(c.x-d.x,c.y-d.y)
     const cx=(a.x+b.x)/2,cy=(a.y+b.y)/2
     if(dist>0) zoomAt(next/dist,cx,cy)
     view.value={...view.value,x:view.value.x+(c.x+d.x)/2-cx,y:view.value.y+(c.y+d.y)/2-cy}
-  } else if(curr.length===1) view.value={...view.value,x:view.value.x+p.x-old.x,y:view.value.y+p.y-old.y}
+  } else if(curr.length===1 && moved) view.value={...view.value,x:view.value.x+p.x-old.x,y:view.value.y+p.y-old.y}
 }
 function up(e) {
   if(!pointers.has(e.pointerId)) return
@@ -233,11 +234,11 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
             <div v-if="part.type === 'code'" class="inspector-code">
               <div class="inspector-code-bar">
                 <span>{{ part.language || 'Code' }}</span>
-                <button v-if="cardParts.length > 1" type="button" @click="copyCard(part.value, 'part-'+i)">{{ copyState === 'part-'+i ? '✓ Copié' : 'Copier' }}</button>
+                <button type="button" @click="copyCard(part.value, 'part-'+i)">{{ copyState === 'part-'+i ? '✓ Copié' : 'Copier' }}</button>
               </div>
-              <pre v-text="part.value"></pre>
+              <textarea class="inspector-selectable" :value="part.value" readonly spellcheck="false" :rows="Math.min(14,Math.max(3,part.value.split('\n').length+1))" aria-label="Code sélectionnable"></textarea>
             </div>
-            <div v-else class="inspector-prose" v-text="part.value"></div>
+            <textarea v-else class="inspector-selectable inspector-prose" :value="part.value" readonly spellcheck="false" :rows="Math.min(12,Math.max(2,part.value.split('\n').length+1))" aria-label="Texte sélectionnable"></textarea>
           </template>
           <p v-if="copyState === 'failed'" class="copy-feedback" role="status">Copie indisponible. Maintiens le texte pour le sélectionner.</p>
           <span v-else-if="copyState" class="copy-feedback" role="status">Copié dans le presse-papiers.</span>
@@ -276,10 +277,10 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .inspector-content{padding:10px;user-select:text;-webkit-user-select:text;touch-action:pan-y}
 .inspector-code{border:1px solid #4d3967;border-radius:7px;overflow:hidden;background:#100d17;margin:0 0 8px}
 .inspector-code-bar{display:flex;justify-content:space-between;align-items:center;min-height:26px;padding:4px 9px;color:#bca8d9;font-size:11px;background:#231a30}
-.inspector-code-bar button{padding:4px 8px}
+.inspector-code-bar button{padding:8px 12px;min-height:38px;background:#62409a;border-color:#a78bfa}
 .inspector-prose{font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 4px 10px}
 .copy-feedback{display:block;color:#c4b5fd;font-size:11px;margin:4px 0}
-.map-inspector pre{font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;color:#eee5f9;background:transparent;user-select:text;-webkit-user-select:text;cursor:text}
+.map-inspector .inspector-selectable{display:block;width:100%;box-sizing:border-box;resize:vertical;border:0;outline:none;min-height:54px;max-height:45vh;font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;color:#eee5f9;background:transparent;user-select:text;-webkit-user-select:text;cursor:text}
 .map-file-link{display:block;padding:0 14px 14px;color:#c4a6f5}.map-message{padding:30px;color:#c7b5dd;font-size:13px}
-@media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:60%;top:auto;bottom:12px}}
+@media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:85%;top:auto;bottom:8px}}
 </style>

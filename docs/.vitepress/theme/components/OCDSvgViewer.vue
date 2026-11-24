@@ -4,6 +4,8 @@ const src = 'https://orange-cyberdefense.github.io/ocd-mindmaps/img/mindmap_ad_d
 const root = ref(null), stage = ref(null), image = ref(null)
 const frame = ref(null), textMode = ref(false), loadingText = ref(false), frameDoc = ref(''), selectedText = ref(''), textMessage = ref(''), copied = ref(false)
 let frameCleanup = () => {}
+const copyField = ref(null)
+function selectText(){if(copyField.value){copyField.value.focus();copyField.value.select();copyField.value.setSelectionRange(0,copyField.value.value.length)}}
 const size = ref({ w: 0, h: 0 }), zoom = ref(1), expanded = ref(false), error = ref(false), dragging = ref(false)
 let drag = null
 const ready = computed(() => size.value.w > 0 && !error.value)
@@ -17,6 +19,7 @@ function loaded() {
   if (!image.value?.naturalWidth || !image.value?.naturalHeight) { error.value = true; return }
   size.value = { w: image.value.naturalWidth, h: image.value.naturalHeight }
   fit()
+  if (!textMode.value && !loadingText.value) toggleTextMode()
 }
 function scale(factor, event) {
   if (!ready.value || !stage.value) return
@@ -43,7 +46,7 @@ async function toggleTextMode() {
       const doc=new DOMParser().parseFromString(xml,'image/svg+xml')
       const svg=doc.documentElement
       if(svg.localName!=='svg'||doc.querySelector('parsererror')) throw Error('Le fichier SVG est invalide.')
-      if(!svg.querySelector('text')) throw Error('Le SVG ne contient pas de texte sélectionnable.')
+      if(!svg.querySelector('text')) throw Error('Aucun texte sélectionnable dans ce SVG.')
       svg.querySelectorAll('script,foreignObject,iframe,object,embed,animate,animateTransform,set').forEach(el=>el.remove())
       for(const el of [svg,...svg.querySelectorAll('*')]) for(const a of [...el.attributes]) {
         if(/^on/i.test(a.name)||(/^(?:xlink:)?href$/i.test(a.name)&&!a.value.startsWith('#')&&!/^data:image\/(?:png|jpeg|webp);base64,/i.test(a.value))) el.removeAttribute(a.name)
@@ -51,7 +54,7 @@ async function toggleTextMode() {
       svg.removeAttribute('width'); svg.removeAttribute('height')
       svg.setAttribute('width','100%'); svg.setAttribute('height','100%')
       const markup=new XMLSerializer().serializeToString(svg)
-      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg text,svg tspan{user-select:text!important;-webkit-user-select:text!important;cursor:text!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
+      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
     }
     textMode.value=true
   } catch(e) {textMessage.value=e.message+' Le lecteur original reste disponible.'}
@@ -61,20 +64,49 @@ function bindTextFrame() {
   frameCleanup()
   const doc=frame.value?.contentDocument
   if(!doc) {textMessage.value='Sélection indisponible dans ce navigateur.';textMode.value=false;return}
-  const selection=()=>{const value=doc.getSelection()?.toString();if(value?.trim()){selectedText.value=value;copied.value=false}}
-  const click=e=>{
-    const value=doc.getSelection()?.toString()
-    if(value?.trim()){selection();return}
-    const text=e.target.closest?.('text')
-    if(text){selectedText.value=text.textContent||'';copied.value=false}
+  let gesture=null
+  const textOf = el => {
+    const spans=[...el.querySelectorAll(':scope > tspan')]
+    if(spans.length>1 && spans.slice(1).some(t=>t.hasAttribute('y')||t.hasAttribute('dy'))) return spans.map(t=>t.textContent||'').join('\n')
+    return el.textContent||''
   }
-  doc.addEventListener('selectionchange',selection);doc.addEventListener('click',click)
-  frameCleanup=()=>{doc.removeEventListener('selectionchange',selection);doc.removeEventListener('click',click)}
+  const pick = el => {
+    if(!el)return
+    const group=el.parentElement
+    const siblings=group?.localName==='g'?[...group.children]:[]
+    const lines=siblings.length>1&&siblings.every(n=>n.localName==='text')?siblings:[el]
+    selectedText.value=lines.map(textOf).join('\n')
+    copied.value=false
+  }
+  const down=e=>{
+    if(e.button!==0&&e.pointerType==='mouse')return
+    gesture={id:e.pointerId,x:e.clientX,y:e.clientY,screenX:e.screenX,screenY:e.screenY,left:stage.value.scrollLeft,top:stage.value.scrollTop,target:e.target.closest?.('text'),moved:false}
+    e.target.setPointerCapture?.(e.pointerId)
+  }
+  const move=e=>{
+    if(!gesture||gesture.id!==e.pointerId)return
+    const dx=e.screenX-gesture.screenX,dy=e.screenY-gesture.screenY
+    if(Math.hypot(dx,dy)>7)gesture.moved=true
+    if(gesture.moved){stage.value.scrollLeft=gesture.left-dx;stage.value.scrollTop=gesture.top-dy}
+  }
+  const up=e=>{
+    if(!gesture||gesture.id!==e.pointerId)return
+    if(!gesture.moved&&e.type==='pointerup')pick(gesture.target)
+    gesture=null
+  }
+  const wheel=e=>{
+    e.preventDefault()
+    if(e.ctrlKey||e.metaKey)scale(Math.exp(-e.deltaY*.003))
+    else {stage.value.scrollLeft+=e.deltaX;stage.value.scrollTop+=e.deltaY}
+  }
+  const listeners=[['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['wheel',wheel]]
+  for(const [name,fn] of listeners)doc.addEventListener(name,fn,{passive:false})
+  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn)}
 }
 async function copyText() {
   if(!selectedText.value)return
   try { await navigator.clipboard.writeText(selectedText.value);copied.value=true; textMessage.value='' }
-  catch { textMessage.value='Copie automatique indisponible : sélectionne le texte dans le champ ci-dessous.' }
+  catch { selectText();try{copied.value=document.execCommand('copy')}catch{} if(!copied.value)textMessage.value='Utilise Copier dans le menu de sélection.' }
 }
 function wheel(e){if(e.ctrlKey || e.metaKey){e.preventDefault();scale(Math.exp(-e.deltaY*.003),e)}}
 function down(e){if(textMode.value||e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,left:stage.value.scrollLeft,top:stage.value.scrollTop};dragging.value=true;stage.value.setPointerCapture?.(e.pointerId)}
@@ -96,7 +128,7 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
         <button type="button" :disabled="!ready" aria-label="Zoomer" @click="scale(1.5)">+</button>
         <button type="button" :disabled="!ready" @click="fit">Vue globale</button>
         <button type="button" @click="toggle">{{ expanded?'Quitter plein écran':'Plein écran' }}</button>
-        <button type="button" :disabled="!ready||loadingText" @click="toggleTextMode">{{ loadingText ? 'Chargement…' : textMode ? 'Mode navigation' : 'Sélectionner le texte' }}</button>
+        <button type="button" :disabled="!ready||loadingText" @click="toggleTextMode">{{ loadingText ? 'Chargement…' : textMode ? 'Vue SVG' : 'Texte interactif' }}</button>
         <a :href="src" target="_blank" rel="noopener noreferrer">SVG original</a>
       </div>
     </div>
@@ -106,12 +138,12 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
       <iframe v-if="textMode" ref="frame" :srcdoc="frameDoc" :style="scaled" sandbox="allow-same-origin" class="ocd-text-frame" title="SVG avec texte sélectionnable" @load="bindTextFrame"></iframe>
       <img v-show="!textMode" ref="image" :src="src" alt="Mind map Active Directory Orange Cyberdefense, mars 2025" :style="ready ? scaled : {width:'1px',height:'1px',opacity:0}" draggable="false" @load="loaded" @error="error=true">
     </div>
-    <div v-if="textMode" class="ocd-copy">
-      <div class="ocd-copy-header"><strong>Texte sélectionné</strong><button type="button" :disabled="!selectedText" @click="copyText">{{ copied ? '✓ Copié' : 'Copier' }}</button></div>
-      <textarea v-model="selectedText" readonly placeholder="Touche un texte ou sélectionne plusieurs lignes dans le SVG." aria-label="Texte sélectionné"></textarea>
+    <div v-if="textMode && selectedText" class="ocd-copy">
+      <div class="ocd-copy-header"><button type="button" @click="selectText">Tout sélectionner</button><button type="button" class="ocd-copy-main" @click="copyText">{{ copied ? '✓ Copié' : 'Copier' }}</button><button type="button" aria-label="Fermer" @click="selectedText='';copied=false">×</button></div>
+      <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné"></textarea>
     </div>
     <div v-if="textMessage" class="ocd-status" role="status">{{ textMessage }}</div>
-    <div class="ocd-hint">{{ textMode ? 'Touche ou sélectionne le texte dans le SVG, puis appuie sur Copier.' : 'Glisser pour naviguer · Boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
+    <div class="ocd-hint">{{ textMode ? 'Touche un texte pour le copier.' : 'Glisser pour naviguer · Boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
   </section>
 </template>
 
@@ -129,11 +161,11 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
 .ocd-stage.dragging{cursor:grabbing}
 .ocd-stage img{display:block;max-width:none!important;max-height:none!important;margin:0!important;user-select:none;pointer-events:none}
 .ocd-text-frame{display:block;border:0;max-width:none!important;background:#100d17}
-.ocd-copy{padding:10px 12px;border-top:1px solid #503b6b;background:#1b1426}
+.ocd-copy{flex-shrink:0;padding:10px 12px;border-top:1px solid #503b6b;background:#1b1426}
 .ocd-copy-header{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
 .ocd-copy-header button{background:#62409a;border:1px solid #a78bfa;color:#fff;border-radius:6px;padding:8px 14px;cursor:pointer}
-.ocd-copy-header button:disabled{opacity:.4;cursor:default}
-.ocd-copy textarea{display:block;width:100%;resize:vertical;min-height:65px;max-height:20vh;margin-top:8px;padding:8px;border:1px solid #503b6b;border-radius:6px;background:#100d17;color:#eee5f9;font:13px/1.5 ui-monospace,monospace;user-select:text}
+.ocd-copy-header .ocd-copy-main{flex:1;min-height:44px;font-weight:600}.ocd-copy-header button:disabled{opacity:.4;cursor:default}
+.ocd-copy textarea{display:block;width:100%;resize:vertical;min-height:65px;max-height:30vh;margin-top:8px;padding:8px;border:1px solid #503b6b;border-radius:6px;background:#100d17;color:#eee5f9;font:13px/1.5 ui-monospace,monospace;user-select:text}
 .ocd-status,.ocd-hint{padding:10px 12px;color:#c4b5d9;font-size:12px}
 @media(max-width:640px){.ocd-stage{height:65vh;min-height:350px}.ocd-toolbar{padding:8px}}
 </style>
