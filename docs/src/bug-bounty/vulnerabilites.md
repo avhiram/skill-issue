@@ -444,6 +444,177 @@ Bloc historique combinant des requêtes et des vérifications d'en-têtes. Rése
 
 > Bloc non vérifié, avec un nom Collaborator mal orthographié et des hypothèses non démontrées.
 
+## Authentification et contrôle d'accès
+
+### Access Control (IDOR / BOLA)
+
+Vérifier les permissions horizontales (entre comptes de même rôle), verticales (entre rôles) et liées à l'état d'une opération. Utiliser uniquement des comptes et objets de test.
+
+Comparer deux réponses HTTP de test enregistrées localement :
+
+```bash
+diff -u reponse-compte-a.txt reponse-compte-b.txt
+```
+
+Distinguer les différences normales liées aux comptes d'un accès réellement non autorisé.
+
+### Authentication
+
+Examiner la connexion, la réinitialisation du mot de passe, la MFA, la durée des sessions et la déconnexion. Vérifier la cohérence des messages d'erreur et des protections entre les différents parcours.
+
+### JWT
+
+Examiner le header, les claims, l'expiration et la validation de signature. Le décodage d'un JWS ne vérifie pas sa signature.
+
+```bash
+python3 - <<'PY'
+import base64, json
+from pathlib import Path
+
+parts = Path("jwt-test.txt").read_text().strip().split(".")
+if len(parts) != 3:
+    raise SystemExit("Un JWS compact à trois segments est attendu")
+for label, part in zip(("Header", "Payload"), parts[:2]):
+    raw = base64.urlsafe_b64decode(part + "=" * (-len(part) % 4))
+    print(label, json.dumps(json.loads(raw), indent=2))
+PY
+```
+
+Décode localement un jeton de test enregistré dans `jwt-test.txt`, sans le transmettre à un service externe.
+
+### OAuth / OpenID Connect
+
+Identifier le fournisseur d'identité, le client, les redirections, les paramètres state et nonce, ainsi que les permissions accordées. Examiner la correspondance entre l'identité authentifiée et la session obtenue.
+
+### Business Logic
+
+Cartographier les étapes d'une opération et ses règles métier : états autorisés, contrôles serveur, limites et invariants. Utiliser des transactions fictives dans un environnement prévu pour les tests.
+
+### Race Conditions
+
+Identifier les opérations qui modifient un état partagé, consomment un crédit ou appliquent une limite. Examiner les garanties d'atomicité et les résultats de tests contrôlés sur des objets de test.
+
+## Contrôles côté serveur
+
+### API Testing
+
+Recenser les méthodes HTTP, les paramètres requis et facultatifs, les types de contenu, les autorisations et la documentation API. Voir aussi [Cartographie Web et API](./cartographie-web.md#inventaire-api).
+
+```bash
+jq -r '.paths | keys[]' openapi.json
+```
+
+Liste les chemins décrits dans une spécification OpenAPI JSON déjà récupérée légalement.
+
+### GraphQL
+
+Distinguer queries, mutations et subscriptions. Examiner les champs exposés et les contrôles d'accès appliqués à chaque objet.
+
+```graphql
+query myGetProductQuery {
+  product(id: "123") {
+    name
+    description
+  }
+}
+```
+
+Exemple de lecture d'un produit fictif repris du cours GraphQL. Le schéma et l'identifiant doivent correspondre au lab.
+
+### NoSQL Injection
+
+Identifier les entrées transmises aux requêtes NoSQL et les différences de types entre chaînes, nombres et objets. Examiner la validation et les messages d'erreur sur des données fictives.
+
+### OS Command Injection
+
+Repérer les fonctionnalités qui appellent des programmes système. Vérifier dans un laboratoire comment les entrées sont transmises aux processus et si elles sont séparées des arguments de commande.
+
+### File Upload
+
+Examiner les formats autorisés, la taille maximale, le stockage, les droits d'accès et le traitement des fichiers. Préparer un fichier de test inoffensif.
+
+```bash
+printf 'bug-bounty-test\n' > upload-test.txt
+file --mime-type upload-test.txt
+sha256sum upload-test.txt
+```
+
+Crée un fichier texte local et identifie son type réel et son empreinte.
+
+### XXE
+
+Identifier les fonctionnalités qui analysent du XML, notamment les imports et les API. Vérifier en laboratoire la configuration du parseur et la désactivation des entités externes.
+
+### SSTI
+
+Repérer les champs intégrés dans un template serveur. Distinguer les données affichées littéralement des expressions interprétées par un moteur de templates dans un lab.
+
+### Insecure Deserialization
+
+Identifier les formats sérialisés présents dans les cookies et les données applicatives. Examiner les types d'objets autorisés et les contrôles d'intégrité, sans désérialiser un objet inconnu dans un environnement sensible.
+
+## Contrôles côté client
+
+### CSRF
+
+Identifier les opérations qui changent un état. Examiner les tokens anti-CSRF, les cookies SameSite et les contrôles d'origine.
+
+### Clickjacking
+
+Examiner les protections contre l'intégration d'une page dans une iframe : X-Frame-Options et Content-Security-Policy frame-ancestors.
+
+```bash
+grep -Ei '^(x-frame-options|content-security-policy):' headers.txt
+```
+
+Recherche les protections dans des en-têtes HTTP déjà enregistrés localement.
+
+### DOM-based vulnerabilities
+
+Relever les sources de données contrôlables et les sinks JavaScript. Examiner le traitement des URL, fragments, messages et attributs DOM. Voir aussi [Analyse JavaScript](./cartographie-web.md#analyse-javascript).
+
+### WebSockets
+
+Recenser les connexions WebSocket dans Burp Suite. Examiner le handshake, l'origine, l'authentification et les permissions associées aux messages de test.
+
+### Prototype Pollution
+
+Examiner la fusion d'objets JavaScript, les propriétés héritées et la validation des clés. Étudier séparément les cas client et serveur dans les labs.
+
+## HTTP, cache et IA
+
+### HTTP Host Header
+
+Examiner la validation du nom d'hôte, la construction des URL absolues et les dépendances aux en-têtes de proxy. Utiliser les labs dédiés pour les scénarios de réinitialisation de mot de passe.
+
+### HTTP Request Smuggling
+
+Comprendre les différences d'interprétation des limites de requête entre proxies et serveurs. Réserver les tests susceptibles de perturber des connexions partagées aux environnements isolés prévus à cet effet.
+
+### Web Cache Poisoning
+
+Identifier les caches et leur politique de clé. Examiner les variations de réponse et les en-têtes de cache sur des ressources de test isolées.
+
+### Web Cache Deception
+
+Vérifier que les réponses privées ne sont pas stockées dans un cache partagé. Distinguer une fuite de données mises en cache d'une modification du contenu servi par le cache.
+
+```bash
+grep -Ei '^(cache-control|vary|age|x-cache|expires|set-cookie):' headers.txt
+```
+
+Extrait les indicateurs de cache et de session d'une capture HTTP locale. Un en-tête seul ne prouve pas une vulnérabilité.
+
+### Web LLM Attacks
+
+Identifier les entrées de confiance, les outils accessibles au modèle, les données connectées et les autorisations des actions. Examiner les risques d'injection de prompt et d'agence excessive avec des données fictives.
+
+## Pratique PortSwigger
+
+- [Web Security Academy](https://portswigger.net/web-security) - cours et labs par niveau.
+- Essential Skills : analyser les structures de données non standard et sélectionner les fonctionnalités à examiner.
+- Les contrôles ci-dessus sont des synthèses des thèmes du dossier PortSwigger Full Lab Writeups. Les exemples shell d'analyse locale sont des compléments, non des commandes extraites des solutions.
+
 ## Avant de poursuivre
 
 - Observations pertinentes classées par type de vulnérabilité.
