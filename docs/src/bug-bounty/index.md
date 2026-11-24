@@ -313,6 +313,51 @@ cat allurls.txt | grep -E "\.js$" | httpx-toolkit -mc 200 -content-type | grep -
 
 Bloc historique recherchant des marqueurs de secrets dans les fichiers JavaScript. Traiter les résultats comme des indices, sans utiliser les secrets trouvés.
 
+### Google API Keys et Gemini
+
+L'exposition d'une clé Google API n'implique pas systématiquement une vulnérabilité. Le risque dépend des API activées, des restrictions de la clé, des quotas et des permissions associées au projet.
+
+#### Inspection du code source local
+
+```bash
+git grep -l 'GEMINI_API_KEY'
+```
+
+Liste les fichiers suivis par Git contenant le nom de la variable, sans afficher sa valeur. À utiliser dans un dépôt dont on est propriétaire ou dont l'audit est autorisé. Un résultat peut correspondre à une simple référence à une variable d'environnement et ne confirme pas une fuite.
+
+#### Points de contrôle
+
+- Examiner les fichiers de configuration, les bundles JavaScript et les commits autorisés pour déterminer si une clé a été intégrée au code.
+- Distinguer les clés destinées à un usage client des identifiants donnant accès à des services sensibles ou facturables.
+- Vérifier les restrictions et les API activées depuis la console du projet, avec l'accord de son propriétaire.
+- Ne pas assimiler un code HTTP 400 ou 403 à une preuve de révocation : plusieurs causes sont possibles.
+
+#### Impact potentiel
+
+| Risque | Conséquence possible |
+| --- | --- |
+| Quotas | Indisponibilité du service légitime |
+| Facturation | Consommation non autorisée de ressources payantes |
+| File API et Corpora | Exposition ou modification de données, selon les permissions |
+| Autres services Google | Accès non prévu à des API activées sur le projet |
+
+L'article cite également Maps, Firebase, Vision, Translate et YouTube Data. L'accès à un service ne prouve pas que les autres sont accessibles.
+
+#### Rapport Bug Bounty
+
+- Indiquer le fichier, l'URL ou le commit d'origine et le contexte de découverte.
+- Masquer la valeur de la clé dans le rapport et les captures.
+- Distinguer les capacités confirmées avec une autorisation explicite des hypothèses.
+- Estimer le risque financier à partir des tarifs officiels, sans générer de dépenses sur un compte tiers.
+- Recommander la révocation ou la rotation de la clé exposée, des restrictions adaptées aux API et applications, ainsi que la surveillance des quotas et de la facturation.
+
+#### Documentation
+
+- [Tarifs Gemini API](https://ai.google.dev/gemini-api/docs/pricing).
+- [Google API Keys et Gemini - Truffle Security](https://trufflesecurity.com/blog/google-api-keys-werent-secrets-but-then-gemini-changed-the-rules).
+
+Synthèse de l'article fourni, publié le 23 mai 2026. Les procédures de collecte massive, de réutilisation de clés tierces, de contournement des restrictions et de consommation de ressources ne sont pas reproduites. Une clé littérale présente dans le document d'origine n'a pas été publiée.
+
 ## Cross-Site Scripting (XSS)
 
 ### Collecte de candidats XSS
