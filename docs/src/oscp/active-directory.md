@@ -187,7 +187,55 @@ nxc smb 192.0.2.10 -d example.test -u audit -p 'MOT_DE_PASSE_LAB' --users
 
 La mind map distingue trois autres méthodes : recherche de comptes par identifiant relatif (RID), énumération Kerberos avec le script NSE krb5-enum-users et Kerbrute userenum. Ces méthodes peuvent révéler l’existence de comptes et générer un volume important de requêtes. Pour la revue de configuration, privilégier un inventaire authentifié et vérifier les restrictions de visibilité et la journalisation. Les trois méthodes sont recensées ici au niveau conceptuel, sans procédures de brute force.
 
-Les branches PXE, TimeRoasting, poisoning et coercition restent à examiner séparément.
+### Poisoning réseau
+
+Le poisoning consiste à fausser les réponses réseau utilisées par une machine. Cette branche est étudiée au niveau conceptuel ; les commandes ci-dessous sont des vérifications locales en lecture seule, complémentaires aux exemples de la mind map. Utiliser PowerShell sur un poste Windows autorisé.
+
+#### LLMNR, NBT-NS et mDNS
+
+Ces mécanismes de résolution de noms peuvent accepter des réponses non fiables selon le réseau et la configuration. Vérifier les politiques de résolution de noms et distinguer LLMNR, NetBIOS Name Service et mDNS : désactiver l’un ne désactive pas nécessairement les autres.
+
+#### PowerShell - vérifier la politique LLMNR
+
+<p class="oscp-command-note">Lire la valeur EnableMulticast de la politique DNS Client. Une valeur de 0 correspond à la désactivation de LLMNR par cette politique. Une valeur absente ne permet pas de conclure à sa désactivation.</p>
+
+```powershell
+Get-ItemProperty -Path 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient' -Name EnableMulticast
+```
+
+#### PowerShell - vérifier NetBIOS sur TCP/IP
+
+<p class="oscp-command-note">Afficher le réglage NetBIOS des interfaces IP actives. Les valeurs 0, 1 et 2 correspondent respectivement au réglage DHCP, à l’activation et à la désactivation.</p>
+
+```powershell
+Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration -Filter 'IPEnabled = TRUE' | Select-Object Description, TcpipNetbiosOptions
+```
+
+#### DHCPv6
+
+Un serveur DHCPv6 non autorisé peut modifier les paramètres réseau reçus par un client. La préférence IPv6 dépend de la politique de sélection des adresses et du contexte réseau. Contrôler la provenance des paramètres DNS et IPv6 ; ne pas désactiver IPv6 systématiquement.
+
+#### PowerShell - lire la configuration IP et DNS
+
+<p class="oscp-command-note">Afficher les adresses IPv4 et IPv6, les passerelles et les serveurs DNS des interfaces. Comparer les valeurs aux paramètres attendus du laboratoire.</p>
+
+```powershell
+Get-NetIPConfiguration
+```
+
+#### ARP poisoning
+
+Une association IP/MAC falsifiée peut détourner des échanges sur un segment IPv4. La mind map mentionne aussi le risque d’exposition de données d’authentification Kerberos AS-REQ lors d’une interception. Une observation du cache ARP ne suffit pas à démontrer une attaque.
+
+#### PowerShell - consulter le cache ARP
+
+<p class="oscp-command-note">Afficher les entrées IPv4 du cache de voisinage et comparer les adresses MAC à un inventaire de référence. Ce contrôle est passif et ne modifie pas les associations.</p>
+
+```powershell
+Get-NetNeighbor -AddressFamily IPv4
+```
+
+Les branches coercition, PXE et TimeRoasting restent à examiner séparément.
 
 [Énumération Active Directory](ad-enumeration.md)
 
