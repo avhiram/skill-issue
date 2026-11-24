@@ -32,6 +32,16 @@
 - Les commandes existantes utilisent des chemins relatifs depuis ce dossier. Préserver les enchaînements et rappeler de revenir au dossier parent avant de changer ou reprendre un programme. Les inventaires restent à la racine tant que tous leurs producteurs et consommateurs n'ont pas été adaptés ensemble.
 - Conserver les checklists locales séparées par programme.
 
+## Installation des outils Bug Bounty
+
+- Le script d'installation conditionnelle est `docs/public/bug-bounty/install-tools.sh`, publié à `/bug-bounty/install-tools.sh`.
+- Cible : Exegol et Kali Linux avec APT. Ne pas le présenter comme un installateur universel.
+- Conserver les outils déjà présents ; installer uniquement les commandes absentes. Ne pas mettre à jour les outils présents ni installer toute la suite ProjectDiscovery.
+- Vérifier que `httpx` est bien le binaire ProjectDiscovery, pas le client Python.
+- Installer les outils Go absents individuellement ; utiliser APT pour nmap/amass et les utilitaires système, pipx pour Arjun, le binaire officiel Findomain et compiler urldedupe depuis ses sources.
+- Le script doit terminer par un contrôle de toute la liste de préparation. Les clés API de chaos et de certaines sources subfinder restent une configuration séparée.
+- Le workflow doit vérifier le script compilé et sa disponibilité publique après le déploiement.
+
 ## Suivi de l'audit Bug Bounty
 
 - Avancement de référence : 9 étapes sur 10 traitées. Revue documentaire et contrôle transversal terminés ; la vérification finale du HTML et des assets est réussie, mais l'accès public et les interactions réelles restent non confirmés.
