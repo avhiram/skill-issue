@@ -3,6 +3,7 @@ import { ref, nextTick } from 'vue'
 import { resources } from '../data/academy-organized'
 import { masteryResources } from '../data/academy-mastery'
 import { academyLevels, academyExtraResources, academyAssignments } from '../data/academy-unified'
+import { tryHackMeRooms } from '../data/academy-tryhackme'
 
 type Resource = {
   id: string
@@ -227,7 +228,7 @@ const osintToolUrls = new Set([
   'https://github.com/megadose/holehe',
   'https://github.com/jivoi/awesome-osint'
 ].map(normalizeUrl))
-const sourceItems: Resource[] = [...resources, ...masteryResources, ...academyExtraResources] as Resource[]
+const sourceItems: Resource[] = [...tryHackMeRooms, ...resources, ...masteryResources, ...academyExtraResources] as Resource[]
 const resourceMap = new Map<string, AssignedResource>()
 for (const item of sourceItems) {
   // Retirer les ressources Cisco, NetAcad et Packet Tracer, pas les cours réseau neutres.
@@ -236,13 +237,15 @@ for (const item of sourceItems) {
   if (resourceMap.has(key)) continue
   const title = simplify(item.title.trim())
   let routeLevel = item.routeLevel || academyAssignments[item.id] || 'research'
-  if (osintToolUrls.has(key)) routeLevel = 'osint-recon'
-  if (localLabUrls.has(key)) routeLevel = 'local-labs'
-  else if (key === normalizeUrl('https://tryhackme.com/free-rooms')) routeLevel = 'ctf-intermediate'
-  else if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
-  else if (hardRooms.has(title)) routeLevel = 'extremely-hard-rooms'
-  else if (bonusLabs.has(title)) routeLevel = 'ctf-intermediate'
-  else if (routeAdjustments[title]) routeLevel = routeAdjustments[title]
+  if (!item.id.startsWith('thm-')) {
+    if (osintToolUrls.has(key)) routeLevel = 'osint-recon'
+    if (localLabUrls.has(key)) routeLevel = 'local-labs'
+    else if (key === normalizeUrl('https://tryhackme.com/free-rooms')) routeLevel = 'ctf-intermediate'
+    else if (windowsRooms.has(title)) routeLevel = 'bonus-windows-labs'
+    else if (hardRooms.has(title)) routeLevel = 'extremely-hard-rooms'
+    else if (bonusLabs.has(title)) routeLevel = 'ctf-intermediate'
+    else if (routeAdjustments[title]) routeLevel = routeAdjustments[title]
+  }
   if (!byId.has(routeLevel)) routeLevel = 'research'
   resourceMap.set(key, { ...item, routeLevel })
 }
@@ -627,6 +630,12 @@ const freeSelections: Record<string, readonly string[]> = {
 const freeSets = new Map(Object.entries(freeSelections).map(([id, urls]) => [
   id, new Set(urls.map(normalizeUrl))
 ]))
+// Importer aussi les salles du README dans le parcours gratuit, sans doublon.
+for (const room of tryHackMeRooms) {
+  const existing = freeSets.get(room.routeLevel) || new Set<string>()
+  existing.add(normalizeUrl(room.url))
+  freeSets.set(room.routeLevel, existing)
+}
 
 function freeLinks(id: string): AssignedResource[] {
   const selected = freeSets.get(id)
