@@ -42,9 +42,7 @@ Vérifie quels exécutables sont présents dans le PATH. Attention : httpx dési
 
 ## Avant de poursuivre
 
-- Scope et exclusions enregistrés.
-- Règles du programme vérifiées.
-- Dossier de travail et comptes de test prêts.
+<BountyChecklist storage-key="checkpoint-preparation" :items='["Scope et exclusions enregistrés.","Règles du programme vérifiées.","Dossier de travail et comptes de test prêts."]' />
 
 ---
 
