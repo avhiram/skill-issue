@@ -51,14 +51,6 @@ Interroge le catalogue Chaos de ProjectDiscovery ; vérifier les prérequis d'ac
 
 Extrait les noms des certificats publics avec jq et retire le préfixe wildcard.
 
-### Fusion des résultats passifs
-
-```bash
-cat *_subs.txt | sort -u > all_subs.txt
-```
-
-Fusionne les fichiers de résultats en supprimant les doublons. Exécuter dans le dossier contenant uniquement les fichiers concernés.
-
 ## Sources publiques complémentaires
 
 ### HackerTarget - DNS passif
@@ -97,16 +89,6 @@ Récupère les IP historiques présentes dans les résultats. Une IP observée n
 
 Extrait les IP observées dans les données publiques OTX. Cette requête ne traite que la première page.
 
-### Fusion des résultats de collecte
-
-```bash
-sort -u amass_passive_subs.txt assetfinder_subs.txt findomain_subs.txt chaos_subs.txt crtsh_subs.txt hackertarget_subs.txt urlscan_subs.txt commoncrawl_subs.txt > inventory_subs.txt
-```
-
-Fusionne explicitement les fichiers produits par les différentes sources, lorsqu'ils existent. Évite de mélanger tous les fichiers TXT du dossier.
-
-Les exemples de sources publiques sont adaptés du document Recon to Master. Les réponses d'API, quotas, disponibilité et options n'ont pas été testés.
-
 ## Shodan
 
 ### Recherche par certificat TLS
@@ -135,6 +117,18 @@ Voir également [Exposition de données](./vulnerabilites.md#exposition-de-donne
 <BountyCommand :source="&quot;waybackurls __BOUNTY_DOMAIN__ | unfurl -u domains &gt; wayback_domains.txt&quot;" language="bash" />
 
 Extrait les noms de domaine des URL historiques. Commande issue de l'article IIS ; Unfurl doit être installé. Les domaines découverts ne sont pas automatiquement autorisés.
+
+## Fusion des résultats passifs
+
+```bash
+for f in subexample.com.txt amass_passive_subs.txt assetfinder_subs.txt findomain_subs.txt chaos_subs.txt crtsh_subs.txt hackertarget_subs.txt urlscan_subs.txt commoncrawl_subs.txt wayback_domains.txt; do
+  if [ -f "$f" ]; then cat "$f"; fi
+done | sort -u > inventory_subs.txt
+```
+
+Fusionne uniquement les fichiers effectivement produits. Les fichiers absents sont ignorés et le fichier de sortie ne peut pas se réinjecter dans la fusion. L'inventaire contient des pistes, pas une autorisation de test.
+
+Avant la reconnaissance active, vérifier les résultats au regard du scope et enregistrer uniquement les noms explicitement autorisés dans `all_subs.txt`.
 
 ## Avant de poursuivre
 
