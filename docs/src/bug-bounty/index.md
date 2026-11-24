@@ -70,26 +70,6 @@ subfinder -d example.com -all -recursive > subexample.com.txt
 
 Effectue une recherche récursive avec Subfinder et enregistre les résultats.
 
-#### Filtrage des sous-domaines actifs
-
-```bash
-cat subexample.com.txt | httpx-toolkit -ports 80,443,8080,8000,8888 -threads 200 > subexample.coms_alive.txt
-```
-
-Vérifie les réponses HTTP sur plusieurs ports et enregistre les hôtes répondants.
-
-> La commande emploie une concurrence élevée. Respecter les limites du programme.
-
-#### Vérification du risque de Subdomain Takeover
-
-```bash
-subzy run --targets subexample.coms.txt --concurrency 100 --hide_fails --verify_ssl
-```
-
-Recherche des configurations potentiellement vulnérables avec Subzy.
-
-> Le fichier d'entrée ne porte pas le même nom que celui créé par Subfinder dans le bloc précédent.
-
 #### Amass - découverte passive
 
 ```bash
@@ -141,38 +121,6 @@ cat *_subs.txt | sort -u > all_subs.txt
 
 Fusionne les fichiers de résultats en supprimant les doublons. Exécuter dans le dossier contenant uniquement les fichiers concernés.
 
-#### DNSX - validation DNS
-
-```bash
-dnsx -l all_subs.txt -silent -o resolved_subs.txt
-```
-
-Identifie les noms qui répondent aux requêtes DNS.
-
-#### DNSX - résolution inverse
-
-```bash
-dnsx -ptr -l resolved_subs.txt -resp-only -o reverse_dns.txt
-```
-
-Interroge les enregistrements PTR ; utiliser une liste d'adresses IP pour une résolution inverse pertinente, plutôt qu'une liste de noms.
-
-#### HTTPX - métadonnées des services
-
-```bash
-httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o live_websites.txt
-```
-
-Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery.
-
-#### Httprobe - services Web
-
-```bash
-cat resolved_subs.txt | httprobe > live_websites.txt
-```
-
-Alternative de détection des services HTTP et HTTPS. Le fichier de sortie est écrasé.
-
 ### Shodan
 
 #### Recherche par certificat TLS
@@ -209,6 +157,52 @@ Extrait les noms de domaine des URL historiques. Commande issue de l'article IIS
 ## Cartographie et scan réseau
 
 Objectif : identifier les services réellement présents, les ports autorisés et les technologies, sans confondre un CDN ou un hébergement partagé avec le périmètre.
+
+### Validation DNS et HTTP
+
+Vérifier l'appartenance des noms collectés au scope avant les requêtes actives. Les exemples de fichiers historiques utilisent plusieurs noms ; sélectionner explicitement les fichiers de la méthode choisie.
+
+#### DNSX - validation DNS
+
+```bash
+dnsx -l all_subs.txt -silent -o resolved_subs.txt
+```
+
+Identifie les noms qui répondent aux requêtes DNS.
+
+#### DNSX - résolution inverse
+
+```bash
+dnsx -ptr -l resolved_subs.txt -resp-only -o reverse_dns.txt
+```
+
+Interroge les enregistrements PTR ; utiliser une liste d'adresses IP pour une résolution inverse pertinente, plutôt qu'une liste de noms.
+
+#### HTTPX - métadonnées des services
+
+```bash
+httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o live_websites.txt
+```
+
+Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery.
+
+#### Filtrage des sous-domaines actifs
+
+```bash
+cat subexample.com.txt | httpx-toolkit -ports 80,443,8080,8000,8888 -threads 200 > subexample.coms_alive.txt
+```
+
+Vérifie les réponses HTTP sur plusieurs ports et enregistre les hôtes répondants.
+
+> La commande emploie une concurrence élevée. Respecter les limites du programme.
+
+#### Httprobe - services Web
+
+```bash
+cat resolved_subs.txt | httprobe > live_websites.txt
+```
+
+Alternative de détection des services HTTP et HTTPS. Le fichier de sortie est écrasé.
 
 ### Scan réseau
 
@@ -587,6 +581,19 @@ Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service.
 ## Tests de vulnérabilités
 
 Objectif : choisir les contrôles adaptés aux fonctionnalités identifiées et distinguer les indices des vulnérabilités confirmées.
+
+### Subdomain Takeover
+
+#### Vérification du risque de Subdomain Takeover
+
+```bash
+subzy run --targets subexample.coms.txt --concurrency 100 --hide_fails --verify_ssl
+```
+
+Recherche des configurations potentiellement vulnérables avec Subzy.
+
+> Le fichier d'entrée est une liste de sous-domaines autorisés à préparer ; son nom diffère des sorties Subfinder précédentes.
+
 
 ### Exposition de données
 
