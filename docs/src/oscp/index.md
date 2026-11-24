@@ -24,6 +24,7 @@ description: Aide-mémoire OSCP en français
 - [**Redirections SSH, Socat et netsh**](redirection-ports.md) : Comprendre où ouvrir les ports et comment tester chaque relais.
 - [**Ligolo-ng, Chisel et pivot**](tunneling.md) : Reproduire un tunnel simple, un double pivot et des listeners.
 - [**Active Directory**](active-directory.md) : Parcours de révision, notions, commandes de vérification et mind map complète.
+- [**Mindmap AD**](mindmap-ad.md) : Explorer le Canvas Active Directory interactif.
 - [**Théorie Active Directory**](ad-theorie.md) : Comprendre les objets, tickets et droits Active Directory.
 - [**Énumération Active Directory**](ad-enumeration.md) : Examiner les comptes, groupes et services du domaine.
 - [**Attaques Active Directory**](ad-techniques.md) : Retrouver les techniques de sécurité offensive Active Directory.

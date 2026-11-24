@@ -95,6 +95,7 @@ export default defineConfig({
           { text: 'Redirections SSH, Socat et netsh', link: '/oscp/redirection-ports' },
           { text: 'Ligolo-ng, Chisel et pivot', link: '/oscp/tunneling' },
           { text: 'Active Directory', link: '/oscp/active-directory' },
+          { text: 'Mindmap AD', link: '/oscp/mindmap-ad' },
           { text: 'Théorie Active Directory', link: '/oscp/ad-theorie' },
           { text: 'Énumération Active Directory', link: '/oscp/ad-enumeration' },
           { text: 'Attaques Active Directory', link: '/oscp/ad-techniques' },
