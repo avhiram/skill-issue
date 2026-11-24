@@ -54,7 +54,7 @@ async function toggleTextMode() {
       svg.removeAttribute('width'); svg.removeAttribute('height')
       svg.setAttribute('width','100%'); svg.setAttribute('height','100%')
       const markup=new XMLSerializer().serializeToString(svg)
-      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
+      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
     }
     textMode.value=true
   } catch(e) {textMessage.value=e.message+' Le lecteur original reste disponible.'}
@@ -70,47 +70,71 @@ function bindTextFrame() {
     if(spans.length>1 && spans.slice(1).some(t=>t.hasAttribute('y')||t.hasAttribute('dy'))) return spans.map(t=>t.textContent||'').join('\n')
     return el.textContent||''
   }
-  const hitGroups=new Map()
   const textGroups=new Map()
   const svgRoot=doc.querySelector('svg')
-  // Use the original SVG's text groups as the selection unit.
-  for(const el of svgRoot?.querySelectorAll('text') || []) {
-    const group=el.parentElement
-    const owner=group?.localName==='g'?group:el
+  let activeHighlight=null
+  // Work in SVG coordinates so hit areas remain correct at every zoom level.
+  const inverse=svgRoot.getScreenCTM()?.inverse()
+  if(!inverse)return
+  const boundsOf=el=>{
+    try {
+      const b=el.getBBox(), m=inverse.multiply(el.getScreenCTM())
+      const pts=[[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]].map(([x,y])=>new DOMPoint(x,y).matrixTransform(m))
+      const x=Math.min(...pts.map(p=>p.x)),y=Math.min(...pts.map(p=>p.y))
+      return {x,y,w:Math.max(...pts.map(p=>p.x))-x,h:Math.max(...pts.map(p=>p.y))-y}
+    }catch{return null}
+  }
+  const contains=(outer,inner,pad=2)=>inner.x>=outer.x-pad&&inner.y>=outer.y-pad&&inner.x+inner.w<=outer.x+outer.w+pad&&inner.y+inner.h<=outer.y+outer.h+pad
+  const area=b=>b.w*b.h
+  for(const el of svgRoot.querySelectorAll('text')) {
+    const owner=el.parentElement?.localName==='g'?el.parentElement:el
     if(!textGroups.has(owner))textGroups.set(owner,[])
     textGroups.get(owner).push(el)
   }
+  const groups=[]
   for(const [owner,lines] of textGroups) {
-    if(owner.localName!=='g')continue
-    try {
-      const bounds=lines.map(el=>el.getBBox())
-      const left=Math.min(...bounds.map(b=>b.x)),top=Math.min(...bounds.map(b=>b.y))
-      const right=Math.max(...bounds.map(b=>b.x+b.width)),bottom=Math.max(...bounds.map(b=>b.y+b.height))
-      if(![left,top,right,bottom].every(Number.isFinite)||right<=left||bottom<=top)continue
-      const hit=doc.createElementNS('http://www.w3.org/2000/svg','rect')
-      const pad=3
-      hit.setAttribute('x',String(left-pad));hit.setAttribute('y',String(top-pad))
-      hit.setAttribute('width',String(right-left+2*pad));hit.setAttribute('height',String(bottom-top+2*pad))
-      hit.setAttribute('fill','transparent');hit.setAttribute('pointer-events','all');hit.setAttribute('style','cursor:pointer')
-      owner.insertBefore(hit,owner.firstChild)
-      hitGroups.set(hit,owner)
-    }catch{}
+    const boxes=lines.map(boundsOf).filter(Boolean)
+    if(!boxes.length)continue
+    const x=Math.min(...boxes.map(b=>b.x)),y=Math.min(...boxes.map(b=>b.y))
+    const box={x,y,w:Math.max(...boxes.map(b=>b.x+b.w))-x,h:Math.max(...boxes.map(b=>b.y+b.h))-y}
+    if(box.w>0&&box.h>0)groups.push({owner,lines,box})
   }
-  const pick = async target => {
-    if(!target)return
-    const el=target.closest?.('text')
-    const owner=hitGroups.get(target)||(el?.parentElement?.localName==='g'?el.parentElement:el)
-    const lines=textGroups.get(owner)
-    if(!lines?.length)return
-    selectedText.value=lines.map(textOf).join('\n')
+  // Excalidraw draws borders separately from the text. Match compact
+  // containing shapes rather than relying on a touch hitting a letter.
+  const shapes=[...svgRoot.querySelectorAll('rect,path,polygon')].map(boundsOf).filter(b=>b&&b.w>8&&b.h>8)
+  const blocks=new Map()
+  for(const group of groups) {
+    const b=group.box
+    const shape=shapes.filter(r=>contains(r,b)&&r.w<=b.w+160&&r.h<=b.h+100&&area(r)<=area(b)*12).sort((a,b)=>area(a)-area(b))[0]
+    const key=shape||group
+    if(!blocks.has(key))blocks.set(key,{box:shape||b,groups:[]})
+    blocks.get(key).groups.push(group)
+  }
+  const entries=[...blocks.values()]
+  const byText=new Map()
+  for(const block of entries)for(const group of block.groups)for(const line of group.lines)byText.set(line,block)
+  const pick=async (target,clientX,clientY)=>{
+    const matrix=svgRoot.getScreenCTM()
+    if(!matrix)return
+    const pt=new DOMPoint(clientX,clientY).matrixTransform(matrix.inverse())
+    let block=byText.get(target.closest?.('text'))
+    if(!block)block=entries.filter(({box:b})=>pt.x>=b.x-3&&pt.x<=b.x+b.w+3&&pt.y>=b.y-3&&pt.y<=b.y+b.h+3).sort((a,b)=>area(a.box)-area(b.box))[0]
+    if(!block)return
+    selectedText.value=block.groups.flatMap(g=>g.lines).map(textOf).join('\n')
     copied.value=false
+    activeHighlight?.remove()
+    const b=block.box
+    activeHighlight=doc.createElementNS('http://www.w3.org/2000/svg','rect')
+    for(const [k,v] of Object.entries({x:b.x-2,y:b.y-2,width:b.w+4,height:b.h+4,rx:2,fill:'none',stroke:'#c4a7ff','stroke-width':2,'vector-effect':'non-scaling-stroke','pointer-events':'none'}))activeHighlight.setAttribute(k,String(v))
+    svgRoot.appendChild(activeHighlight)
     await nextTick()
-    selectText()
   }
   const down=e=>{
     if(e.button!==0&&e.pointerType==='mouse')return
+    if(gesture){gesture.moved=true;return}
+    e.preventDefault()
     gesture={id:e.pointerId,x:e.clientX,y:e.clientY,screenX:e.screenX,screenY:e.screenY,left:stage.value.scrollLeft,top:stage.value.scrollTop,target:e.target,moved:false}
-    e.target.setPointerCapture?.(e.pointerId)
+    try{e.target.setPointerCapture?.(e.pointerId)}catch{}
   }
   const move=e=>{
     if(!gesture||gesture.id!==e.pointerId)return
@@ -120,7 +144,7 @@ function bindTextFrame() {
   }
   const up=e=>{
     if(!gesture||gesture.id!==e.pointerId)return
-    if(!gesture.moved&&e.type==='pointerup')pick(gesture.target)
+    if(!gesture.moved&&e.type==='pointerup')pick(gesture.target,e.clientX,e.clientY)
     gesture=null
   }
   const wheel=e=>{
@@ -128,9 +152,10 @@ function bindTextFrame() {
     if(e.ctrlKey||e.metaKey)scale(Math.exp(-e.deltaY*.003))
     else {stage.value.scrollLeft+=e.deltaX;stage.value.scrollTop+=e.deltaY}
   }
-  const listeners=[['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['wheel',wheel]]
+  const context=e=>e.preventDefault()
+  const listeners=[['contextmenu',context],['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['wheel',wheel]]
   for(const [name,fn] of listeners)doc.addEventListener(name,fn,{passive:false})
-  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);for(const hit of hitGroups.keys())hit.remove()}
+  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);activeHighlight?.remove()}
 }
 async function copyText() {
   if(!selectedText.value)return
@@ -169,10 +194,10 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
     </div>
     <div v-if="textMode && selectedText" class="ocd-copy">
       <div class="ocd-copy-header"><button type="button" @click="selectText">Tout sélectionner</button><button type="button" class="ocd-copy-main" @click="copyText">{{ copied ? '✓ Copié' : 'Copier' }}</button><button type="button" aria-label="Fermer" @click="selectedText='';copied=false">×</button></div>
-      <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné" @click="selectText" @focus="selectText"></textarea>
+      <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné" @click="selectText"></textarea>
     </div>
     <div v-if="textMessage" class="ocd-status" role="status">{{ textMessage }}</div>
-    <div class="ocd-hint">{{ textMode ? 'Touche un texte pour le copier.' : 'Glisser pour naviguer · Boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
+    <div class="ocd-hint">{{ textMode ? 'Touche un bloc pour sélectionner son texte.' : 'Glisser pour naviguer · Boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
   </section>
 </template>
 
@@ -190,7 +215,7 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
 .ocd-stage.dragging{cursor:grabbing}
 .ocd-stage img{display:block;max-width:none!important;max-height:none!important;margin:0!important;user-select:none;pointer-events:none}
 .ocd-text-frame{display:block;border:0;max-width:none!important;background:#100d17}
-.ocd-copy{flex-shrink:0;padding:10px 12px;border-top:1px solid #503b6b;background:#1b1426}
+.ocd-copy{position:sticky;bottom:0;z-index:3;flex-shrink:0;padding:10px 12px;border-top:1px solid #503b6b;background:#1b1426}
 .ocd-copy-header{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
 .ocd-copy-header button{background:#62409a;border:1px solid #a78bfa;color:#fff;border-radius:6px;padding:8px 14px;cursor:pointer}
 .ocd-copy-header .ocd-copy-main{flex:1;min-height:44px;font-weight:600}.ocd-copy-header button:disabled{opacity:.4;cursor:default}
