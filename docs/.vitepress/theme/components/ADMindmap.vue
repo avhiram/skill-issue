@@ -15,13 +15,7 @@ function selectBlock(field) {
   field.focus({preventScroll:true})
   field.setSelectionRange(0,field.value.length)
 }
-watch(selected, async () => {
-  copyState.value = ''
-  if(!selected.value)return
-  await nextTick()
-  const fields=root.value?.querySelectorAll('.inspector-code .inspector-selectable')
-  if(fields?.length===1)selectBlock(fields[0])
-})
+watch(selected, () => { copyState.value = '' })
 function splitCard(raw) {
   const parts = []
   let lines = [], language = '', inCode = false
@@ -132,12 +126,21 @@ function zoomAt(f, px, py) {
 function zoom(f) { const { w,h }=viewport(); zoomAt(f,w/2,h/2) }
 function position(e) { const r=svg.value.getBoundingClientRect(); return { x:e.clientX-r.left,y:e.clientY-r.top } }
 function wheel(e) { const p=position(e); zoomAt(Math.exp(-e.deltaY*0.0015),p.x,p.y) }
+function nodeAt(e) {
+  const p=position(e), v=view.value
+  const x=(p.x-v.x)/v.k, y=(p.y-v.y)/v.k
+  // The complete rectangle is a touch target, including its blank margins.
+  const target=e.target.closest?.('[data-node]')?.getAttribute('data-node')
+  if(target)return target
+  return [...nodes.value].reverse().find(n=>x>=n.x&&x<=n.x+n.width&&y>=n.y&&y<=n.y+n.height)?.id || null
+}
 function down(e) {
   if(e.pointerType==='mouse' && e.button!==0) return
-  if(!pointers.size) { moved=false; pressOrigin=position(e); clickCandidate=e.target.closest?.('[data-node]')?.getAttribute('data-node') || null }
+  e.preventDefault()
+  if(!pointers.size) { moved=false; pressOrigin=position(e); clickCandidate=nodeAt(e) }
   else { moved=true; clickCandidate=null }
   pointers.set(e.pointerId,position(e))
-  svg.value.setPointerCapture?.(e.pointerId)
+  try { svg.value.setPointerCapture?.(e.pointerId) } catch {}
   dragging.value=true
 }
 function move(e) {
@@ -160,7 +163,7 @@ function up(e) {
     dragging.value=false
     if(!moved && clickCandidate && e.type==='pointerup') {
       const n=byId.value.get(clickCandidate)
-      if(n && n.type!=='group') selected.value=n
+      if(n && n.type!=='group') { selected.value=n; copyState.value='' }
       else if(n) focus(n)
     }
     clickCandidate=null
@@ -211,7 +214,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
     <div v-if="error" class="map-message" role="alert">{{ error }}</div>
     <div v-else-if="!data" class="map-message">Chargement du Canvas…</div>
     <div v-else class="map-stage">
-      <svg ref="svg" class="map-svg" :class="{ dragging }" aria-label="Canvas Active Directory interactif" @wheel.prevent="wheel" @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @lostpointercapture="up">
+      <svg ref="svg" class="map-svg" :class="{ dragging }" aria-label="Canvas Active Directory interactif" @wheel.prevent="wheel" @contextmenu.prevent @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @lostpointercapture="up">
         <defs><marker id="ad-map-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 8 4 L 0 8 z" fill="#9a84b8"/></marker><marker id="ad-map-arrow-start" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 8 0 L 0 4 L 8 8 z" fill="#9a84b8"/></marker></defs>
         <g :transform="transform">
           <g v-for="g in groups" :key="g.id">
@@ -225,7 +228,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
             <text v-if="e.label" :x="e.mx" :y="e.my-8" class="map-edge-label" text-anchor="middle">{{ e.label }}</text>
           </g>
           <g v-for="n in nodes" :key="n.id" :data-node="n.id">
-            <rect :x="n.x" :y="n.y" :width="n.width" :height="n.height" rx="9" fill="#181320" :stroke="matchIds.has(n.id) ? '#e6caff' : color(n.color,'#4d3c63')" :stroke-width="selected?.id===n.id || matchIds.has(n.id) ? 5 : 2.5"/>
+            <rect :x="n.x" :y="n.y" :width="n.width" :height="n.height" rx="9" pointer-events="all" fill="#181320" :stroke="selected?.id===n.id ? '#c4a7ff' : matchIds.has(n.id) ? '#e6caff' : color(n.color,'#4d3c63')" :stroke-width="selected?.id===n.id || matchIds.has(n.id) ? 5 : 2.5"/>
             <foreignObject :x="n.x+5" :y="n.y+3" :width="Math.max(1,n.width-10)" :height="Math.max(1,n.height-6)">
               <div xmlns="http://www.w3.org/1999/xhtml" class="map-node-text" :class="{ 'map-code': isCode(n) }" :style="{ color: n.color ? color(n.color,'#f1eafc') : '#e8def4' }" v-text="cardText(n)"></div>
             </foreignObject>
@@ -242,20 +245,20 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
         </div>
         <div class="inspector-content">
           <template v-for="(part, i) in cardParts" :key="i">
-            <div v-if="part.type === 'code'" class="inspector-code">
+            <div v-if="part.type === 'code'" class="inspector-code" @click="selectBlock($event.currentTarget.querySelector('textarea'))">
               <div class="inspector-code-bar">
                 <span>{{ part.language || 'Code' }}</span>
-                <button type="button" @click="copyCard(part.value, 'part-'+i)">{{ copyState === 'part-'+i ? '✓ Copié' : 'Copier' }}</button>
+                <button type="button" @click.stop="copyCard(part.value, 'part-'+i)">{{ copyState === 'part-'+i ? '✓ Copié' : 'Copier' }}</button>
               </div>
-              <textarea class="inspector-selectable" :value="part.value" readonly spellcheck="false" :rows="Math.min(14,Math.max(3,part.value.split('\n').length+1))" aria-label="Code sélectionnable" @click="selectBlock($event.currentTarget)" @focus="selectBlock($event.currentTarget)"></textarea>
+              <textarea class="inspector-selectable" :value="part.value" readonly spellcheck="false" :rows="Math.min(14,Math.max(3,part.value.split('\n').length+1))" aria-label="Code sélectionnable" @click.stop="selectBlock($event.currentTarget)" @contextmenu.stop></textarea>
             </div>
             <textarea v-else class="inspector-selectable inspector-prose" :value="part.value" readonly spellcheck="false" :rows="Math.min(12,Math.max(2,part.value.split('\n').length+1))" aria-label="Texte sélectionnable" @click="selectBlock($event.currentTarget)"></textarea>
           </template>
-          <p v-if="copyState === 'failed'" class="copy-feedback" role="status">Copie indisponible. Maintiens le texte pour le sélectionner.</p>
+          <p v-if="copyState === 'failed'" class="copy-feedback" role="status">Copie indisponible. Touche le bloc de texte pour le sélectionner entièrement.</p>
           <span v-else-if="copyState" class="copy-feedback" role="status">Copié dans le presse-papiers.</span>
         </div><a v-if="selected.type === 'file' && selected.file?.endsWith('PowerView Enumeration.canvas')" class="map-file-link" :href="withBase('/oscp/mindmap-powerview.html')">Ouvrir PowerView Enumeration</a>
       </div>
-      <span v-if="!selected" class="map-hint">Glisser pour naviguer · Molette / pincement pour zoomer · Toucher une carte pour la lire</span>
+      <span v-if="!selected" class="map-hint">Glisser pour naviguer · Molette / pincement pour zoomer · Toucher un bloc pour sélectionner son texte</span>
     </div>
   </section>
 </template>
@@ -273,8 +276,10 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .ad-mindmap button{cursor:pointer}.ad-mindmap button:hover{border-color:#a78bfa;background:#352348}.ad-mindmap button:disabled{opacity:.4;cursor:default}
 .ad-mindmap input{width:min(240px,100%)}.ad-mindmap select{max-width:100%}
 .map-stage{position:relative;height:clamp(460px,70vh,900px);min-height:0;overflow:hidden;flex:1}
-.expanded .map-stage{height:auto;flex:1}.map-svg{display:block;width:100%;height:100%;touch-action:none;cursor:grab;background-color:#100d17;background-image:radial-gradient(#2b2238 1px,transparent 1px);background-size:20px 20px;user-select:none}
+.expanded .map-stage{height:auto;flex:1}.map-svg{display:block;width:100%;height:100%;touch-action:none;cursor:grab;background-color:#100d17;background-image:radial-gradient(#2b2238 1px,transparent 1px);background-size:20px 20px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .map-svg.dragging{cursor:grabbing}
+.map-svg [data-node],.map-svg [data-node] *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.map-svg .map-node-text{pointer-events:none}
 .map-group-label{font:600 28px/1.2 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto}
 .map-node-text{width:100%;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:4px;white-space:pre-wrap;overflow-wrap:anywhere;overflow:hidden;text-align:center;font:500 18px/1.18 system-ui,sans-serif}
 .map-node-text.map-code{display:block;text-align:left;font:400 15px/1.15 ui-monospace,SFMono-Regular,Consolas,monospace;padding:5px}
@@ -283,15 +288,15 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .map-inspector{position:absolute;right:12px;top:12px;width:min(400px,calc(100% - 24px));max-height:calc(100% - 55px);overflow:auto;border:1px solid #594077;border-radius:10px;background:#1b1426;box-shadow:0 8px 32px #0008;color:#eee5f9}
 .inspector-header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #3e2c56;font-size:12px;background:#1b1426}
 .inspector-actions{display:flex;align-items:center;gap:6px}
-.ad-mindmap .copy-primary{background:#62409a;border-color:#a78bfa;font-weight:600;min-height:38px;padding:8px 14px}
+.ad-mindmap .copy-primary{background:#62409a;border-color:#a78bfa;font-weight:600;min-height:44px;padding:8px 14px}
 .ad-mindmap .copy-primary:hover{background:#7550b6}
 .inspector-content{padding:10px;user-select:text;-webkit-user-select:text;touch-action:pan-y}
 .inspector-code{cursor:pointer;border:1px solid #4d3967;border-radius:7px;overflow:hidden;background:#100d17;margin:0 0 8px}
 .inspector-code-bar{display:flex;justify-content:space-between;align-items:center;min-height:26px;padding:4px 9px;color:#bca8d9;font-size:11px;background:#231a30}
-.inspector-code-bar button{padding:8px 12px;min-height:38px;background:#62409a;border-color:#a78bfa}
+.inspector-code-bar button{padding:8px 12px;min-height:44px;background:#62409a;border-color:#a78bfa}
 .inspector-prose{font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 4px 10px}
 .copy-feedback{display:block;color:#c4b5fd;font-size:11px;margin:4px 0}
 .map-inspector .inspector-selectable{display:block;width:100%;box-sizing:border-box;resize:vertical;border:0;outline:none;min-height:54px;max-height:45vh;font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;color:#eee5f9;background:transparent;user-select:text;-webkit-user-select:text;cursor:text}
 .map-file-link{display:block;padding:0 14px 14px;color:#c4a6f5}.map-message{padding:30px;color:#c7b5dd;font-size:13px}
-@media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:85%;top:auto;bottom:8px}}
+@media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:85%;top:auto;bottom:8px;max-height:48%}}
 </style>
