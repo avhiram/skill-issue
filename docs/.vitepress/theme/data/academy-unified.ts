@@ -2087,6 +2087,16 @@ export const academyExtraResources = [
     "routeLevel": "ctf-intermediate",
     "type": "Cours",
     "access": "Gratuit (vidéo en ligne)"
+  },
+  {
+    "id": "added-video-ad-hacking-playlist",
+    "title": "Active Directory Hacking - playlist",
+    "url": "https://www.youtube.com/playlist?list=PLMoaZm9nyKaM7k6W6_aWJr4QogRLn_j-s",
+    "description": "Série de vidéos consacrée à la sécurité Active Directory.",
+    "category": "additional",
+    "routeLevel": "ad-intro",
+    "type": "Cours",
+    "access": "Vidéo en ligne"
   }
 ] as const
 
