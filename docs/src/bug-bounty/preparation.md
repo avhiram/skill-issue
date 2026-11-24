@@ -63,7 +63,7 @@ for tool in subfinder amass assetfinder findomain chaos dnsx httpx httprobe kata
   elif command -v "$tool" >/dev/null 2>&1; then
     continue
   fi
-  printf 'Manquant : %s\\n' "$tool"
+  printf 'Manquant : %s\n' "$tool"
 done
 ```
 
@@ -75,10 +75,12 @@ L'installateur vérifie toute la liste ci-dessus et ne touche pas aux outils dé
 
 <BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/install-bugbounty-tools.sh -o /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash /tmp/skill-issue-install-bugbounty-tools.sh&quot;" language="bash" />
 
-Le script conserve les outils déjà installés. Les clés API de Chaos et de certaines sources Subfinder restent à configurer séparément. Après l'installation, relancer le contrôle de disponibilité ci-dessus.
+Le script conserve les outils déjà installés. Les paquets système manquants nécessitent root ou sudo. Une connexion Internet est nécessaire pour les téléchargements et les compilations.
 
+Les clés API de Chaos et de certaines sources Subfinder restent à configurer séparément. Après l'installation, relancer le contrôle de disponibilité ci-dessus.
 
-Les paquets système manquants nécessitent root ou sudo. Une connexion Internet est nécessaire pour les téléchargements et les compilations.
+[Consulter le script complet](https://github.com/avhiram/skill-issue/blob/main/docs/public/install-bugbounty-tools.sh).
+
 ## Avant de poursuivre
 
 <BountyChecklist storage-key="checkpoint-preparation" :items='["Scope et exclusions enregistrés.","Règles du programme vérifiées.","Dossier de travail et comptes de test prêts."]' />
