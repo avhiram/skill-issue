@@ -15,20 +15,90 @@ Avant de lire les résultats, identifier le domaine, les contrôleurs de domaine
 
 ## Découverte du domaine
 
-### Identifier le contrôleur de domaine par DNS
+### Reconnaissance réseau
 
-Depuis un poste qui utilise le DNS du laboratoire, remplacer `example.test` par le domaine étudié. Les enregistrements SRV indiquent les serveurs qui publient le service LDAP des contrôleurs de domaine.
+Les exemples utilisent les adresses réservées à la documentation `192.0.2.0/24` et le domaine `example.test`. Remplacer ces valeurs uniquement par celles du laboratoire autorisé.
+
+#### Découvrir les hôtes actifs
+
+<p class="oscp-command-note">Repérer les machines joignables sur le réseau du laboratoire sans scanner leurs ports. La notation `-sP -p` de la mind map est remplacée par `-sn`, qui correspond à la découverte d’hôtes.</p>
+
+```bash
+nmap -sn 192.0.2.0/28
+```
+
+#### Identifier les ports TCP les plus courants
+
+<p class="oscp-command-note">Effectuer un premier inventaire des 50 ports les plus fréquents et des versions des services ouverts.</p>
+
+```bash
+nmap -Pn -sV --top-ports 50 --open 192.0.2.10
+```
+
+#### Examiner les ports TCP courants
+
+<p class="oscp-command-note">Identifier les services sur les ports TCP par défaut et enregistrer les résultats dans les trois formats Nmap. Les scripts par défaut ne sont à utiliser que dans le périmètre autorisé.</p>
+
+```bash
+nmap -Pn -sC -sV -oA ad-tcp 192.0.2.10
+```
+
+#### Examiner tous les ports TCP
+
+<p class="oscp-command-note">Étendre l’inventaire aux 65 535 ports TCP lorsque le premier contrôle ne suffit pas.</p>
+
+```bash
+nmap -Pn -sC -sV -p- -oA ad-tcp-complet 192.0.2.10
+```
+
+#### Examiner les services UDP
+
+<p class="oscp-command-note">Compléter le relevé TCP par un inventaire UDP. Ce contrôle peut être plus lent et nécessiter des privilèges élevés.</p>
+
+```bash
+nmap -sU -sC -sV -oA ad-udp 192.0.2.10
+```
+
+#### Identifier les services SMB
+
+<p class="oscp-command-note">Recenser les machines qui répondent sur SMB avec NetExec, sans fournir d’identifiants.</p>
+
+```bash
+nxc smb 192.0.2.0/28
+```
+
+#### Vérifier les versions du protocole SMB
+
+<p class="oscp-command-note">La mind map propose des scripts de vulnérabilité SMB génériques. Pour ce premier contrôle, utiliser un script ciblé de lecture des protocoles pris en charge ; SMBv1 est notamment une configuration à examiner.</p>
+
+```bash
+nmap -p 139,445 --script smb-protocols 192.0.2.10
+```
+
+### Identification du contrôleur de domaine
+
+#### Afficher la configuration réseau Linux
+
+<p class="oscp-command-note">Vérifier l’adresse IP, la passerelle et les serveurs DNS de l’interface. Remplacer eth0 par l’interface réelle. NetworkManager doit être présent.</p>
+
+```bash
+nmcli dev show eth0
+```
+
+#### Localiser les contrôleurs de domaine par DNS
+
+<p class="oscp-command-note">Interroger les enregistrements SRV LDAP du domaine. Utiliser le serveur DNS du laboratoire et remplacer example.test par le domaine étudié.</p>
 
 ```bash
 nslookup -type=SRV _ldap._tcp.dc._msdcs.example.test
 ```
 
-### Afficher les paramètres réseau sous Linux
+#### Identifier les serveurs Kerberos
 
-Remplacer `eth0` par l’interface du laboratoire. Vérifier notamment l’adresse et le DNS configuré. La commande nécessite NetworkManager.
+<p class="oscp-command-note">Rechercher les hôtes du laboratoire qui exposent le port TCP 88. Un port 88 ouvert est un indice, pas une preuve qu’un hôte est un contrôleur de domaine.</p>
 
 ```bash
-nmcli dev show eth0
+nmap -p 88 --open 192.0.2.0/28
 ```
 
 ### Interroger les métadonnées LDAP
