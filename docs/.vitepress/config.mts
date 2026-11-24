@@ -28,11 +28,17 @@ export default defineConfig({
     nav: [
       { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
       { text: 'OSINT', link: '/osint/' },
+      { text: 'Bug Bounty', link: '/bug-bounty/' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' }
     ],
     sidebar: {
       '/academy/': [],
+      '/bug-bounty/': [
+        { text: 'Bug Bounty', link: '/bug-bounty/', items: [
+          { text: 'Cheatsheet', link: '/bug-bounty/#cheatsheet' }
+        ] }
+      ],
       '/osint/': [
         { text: 'OSINT', link: '/osint/', items: [
           { text: 'Ressources', link: '/osint/' },
