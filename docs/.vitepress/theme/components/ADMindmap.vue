@@ -2,6 +2,7 @@
 import { computed, ref, shallowRef, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { withBase } from 'vitepress'
 
+const props = defineProps({ src: { type: String, default: '/mindmap-ad.canvas.json' }, title: { type: String, default: 'Active Directory' } })
 const data = shallowRef(null)
 const error = ref('')
 const svg = ref(null)
@@ -19,7 +20,7 @@ let observer
 const palette = { '1': '#fb7185', '2': '#f59e0b', '3': '#facc15', '4': '#4ade80', '5': '#22d3ee', '6': '#a78bfa' }
 const color = (c, fallback = '#76658c') => palette[c] || (/^#[0-9a-f]{6}$/i.test(c || '') ? c : fallback)
 const groups = computed(() => data.value?.nodes.filter(n => n.type === 'group') || [])
-const nodes = computed(() => data.value?.nodes.filter(n => n.type === 'text') || [])
+const nodes = computed(() => data.value?.nodes.filter(n => n.type !== 'group') || [])
 const byId = computed(() => new Map((data.value?.nodes || []).map(n => [n.id, n])))
 const bounds = computed(() => {
   const a = data.value?.nodes || []
@@ -27,7 +28,7 @@ const bounds = computed(() => {
 })
 const matches = computed(() => {
   const q = query.value.trim().toLowerCase()
-  return q ? [...groups.value, ...nodes.value].filter(n => (n.label || n.text || '').toLowerCase().includes(q)) : []
+  return q ? [...groups.value, ...nodes.value].filter(n => (n.label || n.text || n.file || '').toLowerCase().includes(q)) : []
 })
 const matchIds = computed(() => new Set(matches.value.map(n => n.id)))
 const transform = computed(() => 'translate(' + view.value.x + ' ' + view.value.y + ') scale(' + view.value.k + ')')
@@ -53,7 +54,7 @@ function frame(box) {
   view.value = { k, x: w/2-(box.x+box.width/2)*k, y: h/2-(box.y+box.height/2)*k }
 }
 function fit() { const b=bounds.value; frame({ x:b.x,y:b.y,width:b.right-b.x,height:b.bottom-b.y }) }
-function focus(n) { if (!n) return; selected.value = n.type === 'text' ? n : null; frame({ x:n.x-50,y:n.y-50,width:n.width+100,height:n.height+100 }) }
+function focus(n) { if (!n) return; selected.value = n.type !== 'group' ? n : null; frame({ x:n.x-50,y:n.y-50,width:n.width+100,height:n.height+100 }) }
 function jumpGroup(event) { const n=byId.value.get(event.target.value); if(n) focus(n); event.target.value='' }
 function searchStep(step = 0) { if(!matches.value.length) return; matchIndex.value=(matchIndex.value+step+matches.value.length)%matches.value.length; focus(matches.value[matchIndex.value]) }
 function searchChanged() { matchIndex.value=0 }
@@ -92,7 +93,7 @@ function up(e) {
     dragging.value=false
     if(!moved && clickCandidate && e.type==='pointerup') {
       const n=byId.value.get(clickCandidate)
-      if(n?.type==='text') selected.value=n
+      if(n && n.type!=='group') selected.value=n
       else if(n) focus(n)
     }
     clickCandidate=null
@@ -101,11 +102,11 @@ function up(e) {
 function toggleExpanded() { expanded.value=!expanded.value; nextTick(fit) }
 function onKey(e) { if(e.key==='Escape'){ if(expanded.value) toggleExpanded(); else selected.value=null } }
 const isCode = n => (n.text || '').includes('```')
-function cardText(n) { return (n.text || '').replace(/^\s*```[^\n]*$/gm, '').trim() }
+function cardText(n) { return (n.text || n.file || '').replace(/^\s*```[^\n]*$/gm, '').trim() }
 onMounted(async () => {
   window.addEventListener('keydown',onKey)
   try {
-    const response=await fetch(withBase('/mindmap-ad.canvas.json'))
+    const response=await fetch(withBase(props.src))
     if(!response.ok) throw Error('HTTP '+response.status)
     const canvas=await response.json()
     if(!Array.isArray(canvas.nodes)||!Array.isArray(canvas.edges)) throw Error('Format Canvas invalide')
@@ -121,7 +122,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 <template>
   <section ref="root" class="ad-mindmap" :class="{ expanded }">
     <div class="map-bar">
-      <div class="map-heading"><span class="map-dot"></span><strong>Active Directory</strong><small v-if="data">{{ data.nodes.length }} éléments · {{ data.edges.length }} liens</small></div>
+      <div class="map-heading"><span class="map-dot"></span><strong>{{ props.title }}</strong><small v-if="data">{{ data.nodes.length }} éléments · {{ data.edges.length }} liens</small></div>
       <div class="map-controls">
         <button type="button" @click="zoom(1/1.25)" title="Dézoomer" aria-label="Dézoomer">−</button>
         <span class="zoom-readout">{{ percent }} %</span>
@@ -138,13 +139,13 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
         <button type="button" @click="searchStep(1)" :disabled="!matches.length" aria-label="Résultat suivant">›</button>
         <small v-if="query.trim()">{{ matches.length ? (matchIndex+1)+' / '+matches.length : 'Aucun résultat' }}</small>
       </div>
-      <select aria-label="Aller à une branche" @change="jumpGroup"><option value="">Aller à une branche</option><option v-for="g in groups" :key="g.id" :value="g.id">{{ g.label }}</option></select>
+      <select v-if="groups.length" aria-label="Aller à une branche" @change="jumpGroup"><option value="">Aller à une branche</option><option v-for="g in groups" :key="g.id" :value="g.id">{{ g.label }}</option></select>
     </div>
     <div v-if="error" class="map-message" role="alert">{{ error }}</div>
     <div v-else-if="!data" class="map-message">Chargement du Canvas…</div>
     <div v-else class="map-stage">
       <svg ref="svg" class="map-svg" :class="{ dragging }" aria-label="Canvas Active Directory interactif" @wheel.prevent="wheel" @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @lostpointercapture="up">
-        <defs><marker id="ad-map-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 8 4 L 0 8 z" fill="#9a84b8"/></marker></defs>
+        <defs><marker id="ad-map-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 8 4 L 0 8 z" fill="#9a84b8"/></marker><marker id="ad-map-arrow-start" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 8 0 L 0 4 L 8 8 z" fill="#9a84b8"/></marker></defs>
         <g :transform="transform">
           <g v-for="g in groups" :key="g.id">
             <rect :x="g.x" :y="g.y" :width="g.width" :height="g.height" rx="20" :fill="color(g.color)" fill-opacity=".075" :stroke="color(g.color)" stroke-opacity=".8" stroke-width="5" pointer-events="none"/>
@@ -153,7 +154,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
             </foreignObject>
           </g>
           <g v-for="e in edges" :key="e.id" pointer-events="none">
-            <path :d="e.path" fill="none" :stroke="color(e.color,'#86769b')" stroke-width="3" stroke-opacity=".72" marker-end="url(#ad-map-arrow)"/>
+            <path :d="e.path" fill="none" :stroke="color(e.color,'#86769b')" stroke-width="3" stroke-opacity=".72" :marker-end="e.toEnd === 'none' ? undefined : 'url(#ad-map-arrow)'" :marker-start="e.fromEnd === 'arrow' ? 'url(#ad-map-arrow-start)' : undefined"/>
             <text v-if="e.label" :x="e.mx" :y="e.my-8" class="map-edge-label" text-anchor="middle">{{ e.label }}</text>
           </g>
           <g v-for="n in nodes" :key="n.id" :data-node="n.id">
@@ -166,7 +167,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
       </svg>
       <div v-if="selected" class="map-inspector" @pointerdown.stop>
         <div class="inspector-header"><strong>Carte sélectionnée</strong><button type="button" @click="selected=null" aria-label="Fermer la carte">×</button></div>
-        <pre v-text="selected.text"></pre>
+        <pre v-text="selected.text || selected.file"></pre><a v-if="selected.type === 'file' && selected.file?.endsWith('PowerView Enumeration.canvas')" class="map-file-link" :href="withBase('/oscp/mindmap-powerview.html')">Ouvrir PowerView Enumeration</a>
       </div>
       <span class="map-hint">Glisser pour naviguer · Molette / pincement pour zoomer · Toucher une carte pour la lire</span>
     </div>
@@ -196,6 +197,6 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .map-inspector{position:absolute;right:12px;top:12px;width:min(400px,calc(100% - 24px));max-height:calc(100% - 55px);overflow:auto;border:1px solid #594077;border-radius:10px;background:#1b1426;box-shadow:0 8px 32px #0008;color:#eee5f9}
 .inspector-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #3e2c56;font-size:12px}
 .map-inspector pre{font:12px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:14px;color:#eee5f9;background:transparent}
-.map-message{padding:30px;color:#c7b5dd;font-size:13px}
+.map-file-link{display:block;padding:0 14px 14px;color:#c4a6f5}.map-message{padding:30px;color:#c7b5dd;font-size:13px}
 @media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:45%;top:auto;bottom:28px}}
 </style>
