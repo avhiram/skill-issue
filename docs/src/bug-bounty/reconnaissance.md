@@ -134,8 +134,7 @@ Avant la reconnaissance active, vérifier les résultats au regard du scope et e
 
 ## Avant de poursuivre
 
-- Inventaire des actifs recensés.
-- Actifs autorisés distingués des pistes à vérifier.
+<BountyChecklist storage-key="checkpoint-reconnaissance" :items='["Inventaire des actifs recensés.","Actifs autorisés distingués des pistes à vérifier."]' />
 
 ---
 
