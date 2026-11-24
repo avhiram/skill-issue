@@ -257,7 +257,37 @@ Get-SmbClientConfiguration | Select-Object RequireSecuritySignature
 Get-SmbServerConfiguration | Select-Object RequireSecuritySignature
 ```
 
-Les branches PXE et TimeRoasting restent à examiner séparément.
+### PXE - déploiement réseau
+
+PXE (Preboot Execution Environment) permet de démarrer un poste depuis le réseau afin de déployer un système d’exploitation. Distinguer Windows Deployment Services (WDS) du PXE responder de Configuration Manager (SCCM), qui peut fonctionner sans WDS.
+
+#### PXE sans mot de passe
+
+La mind map signale le risque d’exposition du Network Access Account (NAA) dans certaines configurations de déploiement. Le NAA sert à accéder au contenu lorsque le compte ordinateur ne peut pas le faire. Il ne constitue pas le compte d’exécution de la Task Sequence. Vérifier le besoin réel du NAA et limiter ses permissions.
+
+#### PXE protégé par mot de passe
+
+La protection par mot de passe ajoute une barrière d’accès au démarrage PXE, mais ne garantit pas à elle seule la sécurité des secrets associés au déploiement. La mind map mentionne également le risque portant sur les données de vérification du mot de passe PXE. Contrôler les restrictions de déploiement, la segmentation réseau et les comptes utilisés dans les Task Sequences.
+
+Les quatre commandes de la branche PXE sont traitées au niveau conceptuel. Les contrôles administratifs suivants sont complémentaires et en lecture seule.
+
+#### PowerShell - vérifier le rôle WDS
+
+<p class="oscp-command-note">Afficher l’état d’installation du rôle Windows Deployment Services sur le serveur local. Exécuter depuis Windows Server avec le module ServerManager. L’absence de WDS n’exclut pas un PXE responder SCCM autonome.</p>
+
+```powershell
+Get-WindowsFeature -Name WDS
+```
+
+#### WDSUtil - consulter la configuration WDS
+
+<p class="oscp-command-note">Afficher la configuration du serveur WDS local sans la modifier. Utiliser une console CMD avec les outils WDS et les droits administratifs nécessaires. Ce contrôle ne remplace pas la revue des paramètres PXE dans Configuration Manager.</p>
+
+```cmd
+wdsutil /Get-Server /Show:Config
+```
+
+La branche TimeRoasting reste à examiner séparément.
 
 [Énumération Active Directory](ad-enumeration.md)
 
