@@ -9,6 +9,8 @@ next: false
 
 [Retour au parcours](./index.md)
 
+<BountyTarget />
+
 Objectif : inventorier les URL, routes, formulaires, paramètres, scripts et interfaces API dans le périmètre.
 
 ## Collecte des URL
@@ -47,9 +49,7 @@ Bloc de collecte et de filtrage des URL par extension et paramètres.
 
 ### Waybackurls - archives Web
 
-```bash
-waybackurls example.com > wayback_urls.txt
-```
+<BountyCommand :source="&quot;waybackurls __BOUNTY_DOMAIN__ &gt; wayback_urls.txt&quot;" language="bash" />
 
 Collecte les URL connues dans les archives.
 
@@ -145,17 +145,13 @@ Repère les services ou titres contenant ces termes ; cela ne constitue pas une 
 
 ## GAU - collecte des archives
 
-```bash
-gau --subs example.com > archived_urls.txt
-```
+<BountyCommand :source="&quot;gau --subs __BOUNTY_DOMAIN__ &gt; archived_urls.txt&quot;" language="bash" />
 
 Alimente le fichier archived_urls.txt utilisé par la fusion des archives. Exemple du document Full Bug Bounty Reconnaissance ; vérifier que les sous-domaines sont dans le scope.
 
 ## URLfinder - collecte passive
 
-```bash
-urlfinder -d example.com | sort -u > urlfinder_urls.txt
-```
+<BountyCommand :source="&quot;urlfinder -d __BOUNTY_DOMAIN__ | sort -u &gt; urlfinder_urls.txt&quot;" language="bash" />
 
 Collecte et déduplique les URL connues. Variante issue de Recon to Master avec un domaine générique.
 
@@ -260,9 +256,7 @@ Applique des modèles Nuclei à une liste de fichiers JavaScript collectés.
 
 ### Collecte passive des scripts
 
-```bash
-gau --subs example.com | grep '\.js$' > js_passive.txt
-```
+<BountyCommand :source="&quot;gau --subs __BOUNTY_DOMAIN__ | grep '\\.js$' &gt; js_passive.txt&quot;" language="bash" />
 
 Sélectionne les URL archivées se terminant par .js.
 
