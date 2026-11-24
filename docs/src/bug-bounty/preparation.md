@@ -73,10 +73,12 @@ Affiche les commandes absentes du PATH. Pour `httpx`, le contrôle vérifie auss
 
 L'installateur vérifie toute la liste ci-dessus et ne touche pas aux outils déjà disponibles. Il installe uniquement ce qui manque : paquets système avec APT, outils Go, Findomain depuis ses binaires officiels, Arjun dans un environnement Python isolé avec pipx et urldedupe compilé depuis ses sources. Il vérifie ensuite chaque commande et affiche le bilan. Prévu pour Exegol, Kali et les distributions Linux utilisant APT.
 
-<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/install-bugbounty-tools.sh -o /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; less /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash /tmp/skill-issue-install-bugbounty-tools.sh&quot;" language="bash" />
+<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/install-bugbounty-tools.sh -o /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-bugbounty-tools.sh &amp;&amp; bash /tmp/skill-issue-install-bugbounty-tools.sh&quot;" language="bash" />
 
 Le script conserve les outils déjà installés. Les clés API de Chaos et de certaines sources Subfinder restent à configurer séparément. Après l'installation, relancer le contrôle de disponibilité ci-dessus.
 
+
+Les paquets système manquants nécessitent root ou sudo. Une connexion Internet est nécessaire pour les téléchargements et les compilations.
 ## Avant de poursuivre
 
 <BountyChecklist storage-key="checkpoint-preparation" :items='["Scope et exclusions enregistrés.","Règles du programme vérifiées.","Dossier de travail et comptes de test prêts."]' />
