@@ -1264,11 +1264,11 @@ export const tryHackMeRooms = [
     "id": "thm-127",
     "title": "TryHackMe - Mobile Malware Analysis",
     "url": "https://tryhackme.com/room/mma",
-    "routeLevel": "malware",
+    "routeLevel": "mobile",
     "category": "ctf",
     "type": "Lab",
     "access": "Liste gratuite, accès à confirmer",
-    "description": "Salle TryHackMe - Analyse de malware."
+    "description": "Salle TryHackMe - Analyse de malwares mobiles."
   },
   {
     "id": "thm-128",
@@ -3564,6 +3564,1316 @@ export const tryHackMeRooms = [
     "id": "thm-357",
     "title": "TryHackMe - Learn and win prizes #2",
     "url": "https://tryhackme.com/room/tickets2",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-358",
+    "title": "TryHackMe - Pyrat",
+    "url": "https://tryhackme.com/room/pyrat",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-359",
+    "title": "TryHackMe - Cheese CTF",
+    "url": "https://tryhackme.com/room/cheesectfv10",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-360",
+    "title": "TryHackMe - U.A. High School",
+    "url": "https://tryhackme.com/room/yueiua",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-361",
+    "title": "TryHackMe - Joomify",
+    "url": "https://tryhackme.com/room/joomify",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-362",
+    "title": "TryHackMe - Critical",
+    "url": "https://tryhackme.com/room/critical",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-363",
+    "title": "TryHackMe - Publisher",
+    "url": "https://tryhackme.com/room/publisher",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-364",
+    "title": "TryHackMe - Become a Hacker",
+    "url": "https://tryhackme.com/room/becomeahackeroa",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-365",
+    "title": "TryHackMe - W1seGuy",
+    "url": "https://tryhackme.com/room/w1seguy",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-366",
+    "title": "TryHackMe - mKingdom",
+    "url": "https://tryhackme.com/room/mkingdom",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-367",
+    "title": "TryHackMe - How Websites Work",
+    "url": "https://tryhackme.com/room/howwebsiteswork",
+    "routeLevel": "web-basics",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Web et HTTP."
+  },
+  {
+    "id": "thm-368",
+    "title": "TryHackMe - Linux Process Analysis",
+    "url": "https://tryhackme.com/room/linuxprocessanalysis",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-369",
+    "title": "TryHackMe - CyberLens",
+    "url": "https://tryhackme.com/room/cyberlensp6",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-370",
+    "title": "TryHackMe - Security Principles",
+    "url": "https://tryhackme.com/room/securityprinciples",
+    "routeLevel": "security-basics",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Fondamentaux de la sécurité."
+  },
+  {
+    "id": "thm-371",
+    "title": "TryHackMe - TryHack3M: Bricks Heist",
+    "url": "https://tryhackme.com/room/tryhack3mbricksheist",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-372",
+    "title": "TryHackMe - Creative",
+    "url": "https://tryhackme.com/room/creative",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-373",
+    "title": "TryHackMe - Putting it all together",
+    "url": "https://tryhackme.com/room/puttingitalltogether",
+    "routeLevel": "environment",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Découverte de la cybersécurité."
+  },
+  {
+    "id": "thm-374",
+    "title": "TryHackMe - Dreaming",
+    "url": "https://tryhackme.com/room/dreaming",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-375",
+    "title": "TryHackMe - Pyramid Of Pain",
+    "url": "https://tryhackme.com/room/pyramidofpainax",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-376",
+    "title": "TryHackMe - Hijack",
+    "url": "https://tryhackme.com/room/hijack",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-377",
+    "title": "TryHackMe - Compiled",
+    "url": "https://tryhackme.com/room/compiled",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-378",
+    "title": "TryHackMe - Lesson Learned?",
+    "url": "https://tryhackme.com/room/lessonlearned",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-379",
+    "title": "TryHackMe - Red",
+    "url": "https://tryhackme.com/room/redisl33t",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-380",
+    "title": "TryHackMe - Cat Pictures 2",
+    "url": "https://tryhackme.com/room/catpictures2",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-381",
+    "title": "TryHackMe - Flip",
+    "url": "https://tryhackme.com/room/flip",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-382",
+    "title": "TryHackMe - Valley!",
+    "url": "https://tryhackme.com/room/valleype",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-383",
+    "title": "TryHackMe - Capture!",
+    "url": "https://tryhackme.com/room/capture",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-384",
+    "title": "TryHackMe - Opacity",
+    "url": "https://tryhackme.com/room/opacity",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-385",
+    "title": "TryHackMe - Bugged",
+    "url": "https://tryhackme.com/room/bugged",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-386",
+    "title": "TryHackMe - Offensive Security Intro",
+    "url": "https://tryhackme.com/room/offensivesecurityintro",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-387",
+    "title": "TryHackMe - Defensive Security Intro",
+    "url": "https://tryhackme.com/room/defensivesecurityintro",
+    "routeLevel": "ctf-beginner",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF débutant."
+  },
+  {
+    "id": "thm-388",
+    "title": "TryHackMe - Backtrack",
+    "url": "https://tryhackme.com/room/backtrack",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-389",
+    "title": "TryHackMe - Extracted",
+    "url": "https://tryhackme.com/room/extractedroom",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-390",
+    "title": "TryHackMe - The London Bridge",
+    "url": "https://tryhackme.com/room/thelondonbridge",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-391",
+    "title": "TryHackMe - Breakme",
+    "url": "https://tryhackme.com/room/breakmenu",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-392",
+    "title": "TryHackMe - Block",
+    "url": "https://tryhackme.com/room/blockroom",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-393",
+    "title": "TryHackMe - APIWizards Breach",
+    "url": "https://tryhackme.com/room/apiwizardsbreach",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-394",
+    "title": "TryHackMe - New York Flankees",
+    "url": "https://tryhackme.com/room/thenewyorkflankees",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-395",
+    "title": "TryHackMe - Airplane",
+    "url": "https://tryhackme.com/room/airplane",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-396",
+    "title": "TryHackMe - Super Secret TIp",
+    "url": "https://tryhackme.com/room/supersecrettip",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-397",
+    "title": "TryHackMe - Profiles",
+    "url": "https://tryhackme.com/room/profilesroom",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-398",
+    "title": "TryHackMe - Clocky",
+    "url": "https://tryhackme.com/room/clocky",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-399",
+    "title": "TryHackMe - Hack Smarter Security",
+    "url": "https://tryhackme.com/room/hacksmartersecurity",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-400",
+    "title": "TryHackMe - Kitty",
+    "url": "https://tryhackme.com/room/kitty",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-401",
+    "title": "TryHackMe - Umbrella",
+    "url": "https://tryhackme.com/room/umbrella",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-402",
+    "title": "TryHackMe - AVenger",
+    "url": "https://tryhackme.com/room/avenger",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-403",
+    "title": "TryHackMe - WhyHackMe",
+    "url": "https://tryhackme.com/room/whyhackme",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-404",
+    "title": "TryHackMe - Stealth",
+    "url": "https://tryhackme.com/room/stealth",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-405",
+    "title": "TryHackMe - Hunt Me I: Payment Collectors",
+    "url": "https://tryhackme.com/room/paymentcollectors",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-406",
+    "title": "TryHackMe - Hunt Me II: Typo Squatters",
+    "url": "https://tryhackme.com/room/typosquatters",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-407",
+    "title": "TryHackMe - Athena",
+    "url": "https://tryhackme.com/room/4th3n4",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-408",
+    "title": "TryHackMe - Crylo",
+    "url": "https://tryhackme.com/room/crylo4a",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-409",
+    "title": "TryHackMe - Forgotten Implant",
+    "url": "https://tryhackme.com/room/forgottenimplant",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-410",
+    "title": "TryHackMe - Race Conditions",
+    "url": "https://tryhackme.com/room/raceconditions",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-411",
+    "title": "TryHackMe - Weasel",
+    "url": "https://tryhackme.com/room/weasel",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-412",
+    "title": "TryHackMe - Prioritise",
+    "url": "https://tryhackme.com/room/prioritise",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-413",
+    "title": "TryHackMe - Boogeyman 1",
+    "url": "https://tryhackme.com/room/boogeyman1",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-414",
+    "title": "TryHackMe - Unattended",
+    "url": "https://tryhackme.com/room/unattended",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-415",
+    "title": "TryHackMe - Red Team OPSEC",
+    "url": "https://tryhackme.com/room/opsec",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-416",
+    "title": "TryHackMe - CERTain Doom",
+    "url": "https://tryhackme.com/room/certaindoom",
+    "routeLevel": "ctf-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF avancé."
+  },
+  {
+    "id": "thm-417",
+    "title": "TryHackMe - Capture Returns",
+    "url": "https://tryhackme.com/room/capturereturns",
+    "routeLevel": "ctf-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF avancé."
+  },
+  {
+    "id": "thm-418",
+    "title": "TryHackMe - Chrome",
+    "url": "https://tryhackme.com/room/chrome",
+    "routeLevel": "ctf-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF avancé."
+  },
+  {
+    "id": "thm-419",
+    "title": "TryHackMe - Reset",
+    "url": "https://tryhackme.com/room/resetui",
+    "routeLevel": "ctf-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF avancé."
+  },
+  {
+    "id": "thm-420",
+    "title": "TryHackMe - Frosteau Busy with Vim",
+    "url": "https://tryhackme.com/room/busyvimfrosteau",
+    "routeLevel": "ctf-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF avancé."
+  },
+  {
+    "id": "thm-421",
+    "title": "TryHackMe - Hosted Hypervisors",
+    "url": "https://tryhackme.com/room/hostedhypervisors",
+    "routeLevel": "environment",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Découverte de la cybersécurité."
+  },
+  {
+    "id": "thm-422",
+    "title": "TryHackMe - Enumeration & Brute Force",
+    "url": "https://tryhackme.com/room/enumerationbruteforce",
+    "routeLevel": "pentest-system",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Pentest système."
+  },
+  {
+    "id": "thm-423",
+    "title": "TryHackMe - Introduction to CryptOps",
+    "url": "https://tryhackme.com/room/introductiontocryptops",
+    "routeLevel": "crypto",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Cryptographie."
+  },
+  {
+    "id": "thm-424",
+    "title": "TryHackMe - Linux File System Analysis",
+    "url": "https://tryhackme.com/room/linuxfilesystemanalysis",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-425",
+    "title": "TryHackMe - Threat Hunting: Foothold",
+    "url": "https://tryhackme.com/room/threathuntingfoothold",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-426",
+    "title": "TryHackMe - Threat Hunting: Introduction",
+    "url": "https://tryhackme.com/room/introductiontothreathunting",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-427",
+    "title": "TryHackMe - Preparation",
+    "url": "https://tryhackme.com/room/preparation",
+    "routeLevel": "security-basics",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Fondamentaux de la sécurité."
+  },
+  {
+    "id": "thm-428",
+    "title": "TryHackMe - Intro to Logs",
+    "url": "https://tryhackme.com/room/introtologs",
+    "routeLevel": "blue-logs",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Analyse de logs."
+  },
+  {
+    "id": "thm-429",
+    "title": "TryHackMe - Intro to Threat Emulation",
+    "url": "https://tryhackme.com/room/threatemulationintro",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-430",
+    "title": "TryHackMe - Security Engineer Intro",
+    "url": "https://tryhackme.com/room/securityengineerintro",
+    "routeLevel": "security-basics",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Fondamentaux de la sécurité."
+  },
+  {
+    "id": "thm-431",
+    "title": "TryHackMe - Intro to Docker",
+    "url": "https://tryhackme.com/room/introtodockerk8pdqk",
+    "routeLevel": "containers",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Conteneurs et Kubernetes."
+  },
+  {
+    "id": "thm-432",
+    "title": "TryHackMe - SDLC",
+    "url": "https://tryhackme.com/room/sdlc",
+    "routeLevel": "scripting",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Scripting."
+  },
+  {
+    "id": "thm-433",
+    "title": "TryHackMe - Careers in Cyber",
+    "url": "https://tryhackme.com/room/careersincyber",
+    "routeLevel": "security-basics",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Fondamentaux de la sécurité."
+  },
+  {
+    "id": "thm-434",
+    "title": "TryHackMe - Junior Security Analyst Intro",
+    "url": "https://tryhackme.com/room/jrsecanalystintrouxo",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-435",
+    "title": "TryHackMe - Hypervisor Internals",
+    "url": "https://tryhackme.com/room/hypervisorinternals",
+    "routeLevel": "environment",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Découverte de la cybersécurité."
+  },
+  {
+    "id": "thm-436",
+    "title": "TryHackMe - Splunk: Exploring SPL",
+    "url": "https://tryhackme.com/room/splunkexploringspl",
+    "routeLevel": "blue-siem",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - SIEM."
+  },
+  {
+    "id": "thm-437",
+    "title": "TryHackMe - ParrotPost: Phishing Analysis",
+    "url": "https://tryhackme.com/room/parrotpost",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-438",
+    "title": "TryHackMe - x86 Architecture Overview",
+    "url": "https://tryhackme.com/room/x8664arch",
+    "routeLevel": "reverse",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Entraînement pratique."
+  },
+  {
+    "id": "thm-439",
+    "title": "TryHackMe - Threat Intelligence for SOC",
+    "url": "https://tryhackme.com/room/threatintelligenceforsoc",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-440",
+    "title": "TryHackMe - Snyk Open Source",
+    "url": "https://tryhackme.com/room/snykopensource",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-441",
+    "title": "TryHackMe - Snyk Code",
+    "url": "https://tryhackme.com/room/snykcode",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-442",
+    "title": "TryHackMe - Intro to IaC",
+    "url": "https://tryhackme.com/room/introtoiac",
+    "routeLevel": "cloud-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Cloud et conteneurs."
+  },
+  {
+    "id": "thm-443",
+    "title": "TryHackMe - K8s Runtime Security",
+    "url": "https://tryhackme.com/room/k8sruntimesecurity",
+    "routeLevel": "containers",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Conteneurs et Kubernetes."
+  },
+  {
+    "id": "thm-444",
+    "title": "TryHackMe - K8s Best Security Practices",
+    "url": "https://tryhackme.com/room/k8sbestsecuritypractices",
+    "routeLevel": "containers",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Conteneurs et Kubernetes."
+  },
+  {
+    "id": "thm-445",
+    "title": "TryHackMe - Cluster Hardening",
+    "url": "https://tryhackme.com/room/clusterhardening",
+    "routeLevel": "containers",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Conteneurs et Kubernetes."
+  },
+  {
+    "id": "thm-446",
+    "title": "TryHackMe - Breaking RSA",
+    "url": "https://tryhackme.com/room/breakrsa",
+    "routeLevel": "crypto",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Cryptographie."
+  },
+  {
+    "id": "thm-447",
+    "title": "TryHackMe - Introduction to Cryptography",
+    "url": "https://tryhackme.com/room/cryptographyintro",
+    "routeLevel": "crypto",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Cryptographie."
+  },
+  {
+    "id": "thm-448",
+    "title": "TryHackMe - Microservices Architectures",
+    "url": "https://tryhackme.com/room/microservicearchitectures",
+    "routeLevel": "web-api",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Entraînement pratique."
+  },
+  {
+    "id": "thm-449",
+    "title": "TryHackMe - NoSQL Injection",
+    "url": "https://tryhackme.com/room/nosqlinjectiontutorial",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-450",
+    "title": "TryHackMe - Advanced SQL Injection",
+    "url": "https://tryhackme.com/room/advancedsqlinjection",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-451",
+    "title": "TryHackMe - XSS",
+    "url": "https://tryhackme.com/room/axss",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-452",
+    "title": "TryHackMe - CSRF",
+    "url": "https://tryhackme.com/room/csrfv2",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-453",
+    "title": "TryHackMe - File Inclusion, Path Traversal",
+    "url": "https://tryhackme.com/room/filepathtraversal",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-454",
+    "title": "TryHackMe - HTTP Request Smuggling",
+    "url": "https://tryhackme.com/room/httprequestsmuggling",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-455",
+    "title": "TryHackMe - HTTP/2 Request Smuggling",
+    "url": "https://tryhackme.com/room/http2requestsmuggling",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-456",
+    "title": "TryHackMe - SSRF",
+    "url": "https://tryhackme.com/room/ssrfhr",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-457",
+    "title": "TryHackMe - OWASP Broken Access Control",
+    "url": "https://tryhackme.com/room/owaspbrokenaccesscontrol",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-458",
+    "title": "TryHackMe - OWASP Top 10 - 2021",
+    "url": "https://tryhackme.com/room/owasptop102021",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-459",
+    "title": "TryHackMe - Web Application Security",
+    "url": "https://tryhackme.com/room/introwebapplicationsecurity",
+    "routeLevel": "web-security",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Sécurité Web."
+  },
+  {
+    "id": "thm-460",
+    "title": "TryHackMe - Linux Incident Surface",
+    "url": "https://tryhackme.com/room/linuxincidentsurface",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-461",
+    "title": "TryHackMe - IR Playbooks",
+    "url": "https://tryhackme.com/room/irplaybooks",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-462",
+    "title": "TryHackMe - Intro to Cold System Forensics",
+    "url": "https://tryhackme.com/room/introtocoldsystemforensics",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-463",
+    "title": "TryHackMe - Unified Kill Chain",
+    "url": "https://tryhackme.com/room/unifiedkillchain",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-464",
+    "title": "TryHackMe - Forensic Imaging",
+    "url": "https://tryhackme.com/room/forensicimaging",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-465",
+    "title": "TryHackMe - IR Philosophy and Ethics",
+    "url": "https://tryhackme.com/room/irphilosophyethics",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-466",
+    "title": "TryHackMe - Windows Applications Forensics",
+    "url": "https://tryhackme.com/room/windowsapplications",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-467",
+    "title": "TryHackMe - Legal Considerations in DFIR",
+    "url": "https://tryhackme.com/room/dfirprocesslegalconsiderations",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-468",
+    "title": "TryHackMe - Servidae: Log Analysis in ELK",
+    "url": "https://tryhackme.com/room/servidae",
+    "routeLevel": "blue-siem",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - SIEM."
+  },
+  {
+    "id": "thm-469",
+    "title": "TryHackMe - Cyber Kill Chain",
+    "url": "https://tryhackme.com/room/cyberkillchainzmt",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-470",
+    "title": "TryHackMe - Identification & Scoping",
+    "url": "https://tryhackme.com/room/identificationandscoping",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-471",
+    "title": "TryHackMe - Digital Forensics Case B4DM755",
+    "url": "https://tryhackme.com/room/caseb4dm755",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-472",
+    "title": "TryHackMe - Intro to Detection Engineering",
+    "url": "https://tryhackme.com/room/introtodetectionengineering",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-473",
+    "title": "TryHackMe - Windows Incident Surface",
+    "url": "https://tryhackme.com/room/winincidentsurface",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-474",
+    "title": "TryHackMe - Registry Persistence Detection",
+    "url": "https://tryhackme.com/room/registrypersistencedetection",
+    "routeLevel": "dfir-host",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Forensics et investigation numérique."
+  },
+  {
+    "id": "thm-475",
+    "title": "TryHackMe - Active Directory Hardening",
+    "url": "https://tryhackme.com/room/activedirectoryening",
+    "routeLevel": "ad-intro",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Active Directory."
+  },
+  {
+    "id": "thm-476",
+    "title": "TryHackMe - [🕵️ TryHackMe | Active Directory Basics",
+    "url": "https://tryhackme.com/room/winadbasics",
+    "routeLevel": "ad-intro",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Active Directory."
+  },
+  {
+    "id": "thm-477",
+    "title": "TryHackMe - [🕵️ TryHackMe | Breaching Active Directory",
+    "url": "https://tryhackme.com/room/breachingad",
+    "routeLevel": "ad-intro",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Active Directory."
+  },
+  {
+    "id": "thm-478",
+    "title": "TryHackMe - PaperCut: CVE-2023-27350",
+    "url": "https://tryhackme.com/room/papercut",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-479",
+    "title": "TryHackMe - Moniker Link (CVE-2024-21413)",
+    "url": "https://tryhackme.com/room/monikerlink",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-480",
+    "title": "TryHackMe - Confluence CVE-2023-22515",
+    "url": "https://tryhackme.com/room/confluence202322515",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-481",
+    "title": "TryHackMe - GitLab CVE-2023-7028",
+    "url": "https://tryhackme.com/room/gitlabcve20237028",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-482",
+    "title": "TryHackMe - Cactus",
+    "url": "https://tryhackme.com/room/cactus",
+    "routeLevel": "research",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Recherche et études techniques."
+  },
+  {
+    "id": "thm-483",
+    "title": "TryHackMe - Looney Tunables",
+    "url": "https://tryhackme.com/room/looneytunes",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-484",
+    "title": "TryHackMe - Threat Intel & Containment",
+    "url": "https://tryhackme.com/room/intelcreationandcontainment",
+    "routeLevel": "blue-threat",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Threat hunting."
+  },
+  {
+    "id": "thm-485",
+    "title": "TryHackMe - CVE-2023-38408",
+    "url": "https://tryhackme.com/room/cve202338408",
+    "routeLevel": "red-advanced",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - Techniques offensives avancées."
+  },
+  {
+    "id": "thm-486",
+    "title": "TryHackMe - Advent of Cyber 2023",
+    "url": "https://tryhackme.com/room/adventofcyber2023",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-487",
+    "title": "TryHackMe - Advent of Cyber 2024",
+    "url": "https://tryhackme.com/room/adventofcyber2024",
+    "routeLevel": "ctf-intermediate",
+    "category": "ctf",
+    "type": "Lab",
+    "access": "Liste gratuite, accès à confirmer",
+    "description": "Salle TryHackMe - CTF intermédiaire."
+  },
+  {
+    "id": "thm-488",
+    "title": "TryHackMe - Advent of Cyber '23 Side Quest",
+    "url": "https://tryhackme.com/room/adventofcyber23sidequest",
     "routeLevel": "ctf-intermediate",
     "category": "ctf",
     "type": "Lab",
