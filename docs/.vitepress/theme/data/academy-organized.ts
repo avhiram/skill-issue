@@ -488,21 +488,6 @@ export const resources = [
     "setup": "Compte AWS, IAM, Terraform et maîtrise des coûts"
   },
   {
-    "id": "off-002",
-    "url": "https://cs50.harvard.edu/x/",
-    "title": "CS50x - Introduction à l'informatique",
-    "category": "fondamentaux",
-    "level": 0,
-    "provider": "Harvard CS50",
-    "type": "Cours",
-    "access": "Gratuit",
-    "description": "Formation universitaire pour découvrir l'informatique et la programmation.",
-    "handsOn": true,
-    "featured": true,
-    "source": "selection",
-    "warning": ""
-  },
-  {
     "id": "off-004",
     "url": "https://www.cloudflare.com/learning/network-layer/what-is-a-computer-network/",
     "title": "Cloudflare Learning Center - Réseaux",
@@ -563,21 +548,6 @@ export const resources = [
     "warning": ""
   },
   {
-    "id": "off-009",
-    "url": "https://cs50.harvard.edu/python/",
-    "title": "CS50P - Python",
-    "category": "programmation",
-    "level": 0,
-    "provider": "Harvard CS50",
-    "type": "Cours",
-    "access": "Gratuit",
-    "description": "Apprendre Python par des exercices, sans prérequis en développement.",
-    "handsOn": true,
-    "featured": true,
-    "source": "selection",
-    "warning": ""
-  },
-  {
     "id": "off-010",
     "url": "https://www.freecodecamp.org/learn/",
     "title": "freeCodeCamp - Cours gratuits",
@@ -604,21 +574,6 @@ export const resources = [
     "description": "Comprendre HTML, CSS et JavaScript avant de pratiquer la sécurité Web.",
     "handsOn": false,
     "featured": false,
-    "source": "selection",
-    "warning": ""
-  },
-  {
-    "id": "off-012",
-    "url": "https://cs50.harvard.edu/cybersecurity/",
-    "title": "CS50 - Introduction to Cybersecurity",
-    "category": "fondamentaux",
-    "level": 0,
-    "provider": "Harvard CS50",
-    "type": "Cours",
-    "access": "Gratuit",
-    "description": "Introduction aux concepts de sécurité par Harvard OpenCourseWare.",
-    "handsOn": true,
-    "featured": true,
     "source": "selection",
     "warning": ""
   },
