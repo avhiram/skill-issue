@@ -639,8 +639,8 @@ function otherLinks(id: string): AssignedResource[] {
 
 // La vue complète reste identique. La vue gratuite affiche uniquement la sélection sans achat.
 const freeOnly = ref(false)
-async function toggleFreePath() {
-  freeOnly.value = !freeOnly.value
+async function selectPath(showFreeOnly: boolean) {
+  freeOnly.value = showFreeOnly
   await nextTick()
   document.getElementById('premiers-pas')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
@@ -652,7 +652,10 @@ async function toggleFreePath() {
       <p class="academy-kicker">SKILL-ISSUE / ACADEMY</p>
       <h1>Cyber University</h1>
       <p class="academy-description">Apprendre la cybersécurité de zéro, étape par étape. Une roadmap complète avec des cours, des exercices et des labs, y compris sans budget.</p>
-      <button class="academy-start" type="button" :aria-pressed="freeOnly" @click="toggleFreePath">{{ freeOnly ? 'Voir toutes les ressources' : 'Commencer gratuitement' }}</button>
+      <div class="academy-actions" role="group" aria-label="Choisir le parcours">
+        <button class="academy-start" :class="{ 'academy-start-active': freeOnly }" type="button" :aria-pressed="freeOnly" @click="selectPath(true)">Parcours gratuit</button>
+        <button class="academy-start" :class="{ 'academy-start-active': !freeOnly }" type="button" :aria-pressed="!freeOnly" @click="selectPath(false)">Parcours complet</button>
+      </div>
     </header>
 
     <nav class="academy-contents" aria-label="Chapitres de la roadmap">
@@ -749,6 +752,7 @@ async function toggleFreePath() {
   font-size: .95rem;
   line-height: 1.65;
 }
+.academy-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .academy-start {
   display: inline-block;
   padding: 9px 16px;
@@ -760,6 +764,8 @@ async function toggleFreePath() {
   font-weight: 590;
   text-decoration: none !important;
 }
+.academy-start-active { background: #31233e !important; border-color: #735884 !important; color: #ead8f7 !important; }
+.academy-start:not(.academy-start-active) { background: transparent; border-color: #4a3c55; color: #c9bfd0 !important; }
 .academy-start:hover { background: #3e2b50; color: #fff !important; }
 .academy-start { font-family: inherit; cursor: pointer; }
 .academy-start:focus-visible { outline: 2px solid #bd92dd; outline-offset: 3px; }
