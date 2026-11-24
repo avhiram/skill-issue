@@ -14,6 +14,7 @@ aside: false
     <a href="/skill-issue/osint/">OSINT</a>
     <a href="/skill-issue/oscp/">Notes OSCP</a>
     <a href="/skill-issue/crto/">Notes CRTO</a>
+    <a href="/skill-issue/oscp/mindmaps.html">Mindmap</a>
     <a href="https://www.linkedin.com/in/l14m" target="_blank" rel="noopener noreferrer">LinkedIn</a>
   </div>
 </div>
