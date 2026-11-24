@@ -657,6 +657,79 @@ La fiche comporte aussi des chaînes de tests automatisés en masse et des varia
 - [PortSwigger - SQL injection](https://portswigger.net/web-security/sql-injection) : cours et laboratoires dédiés aux injections SQL.
 - [PortSwigger - Cross-site scripting](https://portswigger.net/web-security/cross-site-scripting) : cours et laboratoires dédiés aux XSS.
 
+## Reconnaissance visuelle
+
+### Aquatone - captures des services Web
+
+```bash
+cat hosts.txt | aquatone
+```
+
+Génère des captures et un rapport visuel à partir d'une liste de services Web autorisés. Préparer `hosts.txt` avec les hôtes validés et vérifier les dépendances du logiciel. Aquatone est un outil historique ; sa compatibilité actuelle n'a pas été testée.
+
+### Cartographie ASN et IP
+
+Identifier les réseaux et les systèmes autonomes associés à une organisation, puis comparer les résultats avec le périmètre explicitement autorisé. Une association ASN, DNS ou IP ne suffit pas à établir qu'un actif peut être testé. Cette étape complète l'énumération des sous-domaines sans répéter les commandes existantes.
+
+### Checklist de reconnaissance
+
+- [ ] Collecte passive et déduplication des sous-domaines.
+- [ ] Validation DNS et contrôle du scope.
+- [ ] Inventaire HTTP et identification des technologies.
+- [ ] Cartographie ASN/IP et reconnaissance visuelle.
+- [ ] Collecte des URL, paramètres et références JavaScript.
+- [ ] Inventaire des interfaces API et des fonctionnalités.
+- [ ] Vérification manuelle des observations et préparation du rapport.
+
+## Claude Code et Burp Suite MCP
+
+MCP (Model Context Protocol) permet de relier un assistant à des outils externes. L'article présente une intégration entre Claude Code et Burp Suite.
+
+### Préparation
+
+- [Serveur MCP officiel de Burp Suite](https://github.com/PortSwigger/mcp-server).
+- Installer l'extension MCP depuis le BApp Store et vérifier sa provenance.
+- Vérifier les paramètres de connexion locaux fournis par l'extension et les permissions accordées au client.
+- Conserver la validation humaine des actions. Ne pas activer l'approbation globale des requêtes HTTP.
+- Configurer le scope dans Burp Suite et limiter l'analyse aux captures du laboratoire ou du périmètre autorisé.
+
+### Collecte et analyse du trafic
+
+Filtrer l'historique HTTP sur les éléments du scope, parcourir les fonctionnalités avec des comptes de test et inventorier les méthodes HTTP, chemins, paramètres et codes de réponse. Retirer les secrets, cookies et données personnelles avant de transmettre les captures à un assistant.
+
+### Prompt - cartographie du trafic en lecture seule
+
+```text
+Analyse uniquement les captures HTTP fournies et expurgées.
+Ne lance aucune requête réseau et ne modifie aucun fichier.
+Dresse un inventaire des méthodes, routes, paramètres et codes HTTP.
+Regroupe les fonctionnalités et relève les observations de sécurité.
+Distingue les faits observés des hypothèses.
+Signale les informations manquantes sans les inventer.
+```
+
+### Prompt - rapport de sécurité
+
+```text
+À partir des constats déjà validés et des preuves expurgées,
+rédige un rapport de sécurité en français.
+Pour chaque constat, indique le composant, la sévérité justifiée,
+les preuves disponibles, l'impact démontré et les recommandations.
+Sépare les hypothèses des vulnérabilités confirmées.
+N'invente ni preuve ni résultat.
+```
+
+### Skills personnalisées
+
+L'article présente également les skills Claude Code pour structurer les tâches répétitives. Pour un usage de documentation, privilégier des skills de classement des captures, de déduplication, de rédaction et de contrôle de qualité. Examiner les instructions et les permissions des skills tierces avant installation.
+
+### Articles de référence
+
+- Recon to Master: The Complete Bug Bounty Checklist (16 juillet 2025).
+- [The Best Claude Code Setup for Bug Bounty Hunting](https://lostsec.medium.com/the-best-claude-code-setup-for-bug-bounty-hunting-a16a0a50e811) (27 août 2026).
+
+Synthèse des deux articles fournis : les méthodes déjà documentées ne sont pas répétées. Les prompts d'automatisation des tests offensifs et d'amplification d'impact ne sont pas repris ; les deux prompts ci-dessus sont des adaptations pour l'analyse et la documentation.
+
 ## Méthodologies complémentaires
 
 Quatre fiches restent identifiables par leur titre seulement. La fin de la fiche Advanced Recon est également tronquée dans le texte fourni.
