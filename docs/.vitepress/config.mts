@@ -12,6 +12,11 @@ export default defineConfig({
   srcDir: 'src',
   cleanUrls: true,
   lastUpdated: false,
+  transformPageData(pageData) {
+    if (pageData.relativePath.startsWith('bug-bounty/')) {
+      pageData.frontmatter.buildRevision = process.env.GITHUB_SHA?.slice(0, 12) || 'local'
+    }
+  },
   appearance: 'force-dark',
   srcExclude: [
     'ad/**', 'web/**', 'infra/**', 'evasion/**', 'physical/**',
@@ -49,7 +54,7 @@ export default defineConfig({
             { text: 'SSRF', link: '/bug-bounty/vulnerabilites#server-side-request-forgery-ssrf' },
             { text: 'CORS', link: '/bug-bounty/vulnerabilites#cross-origin-resource-sharing-cors' },
             { text: 'WordPress', link: '/bug-bounty/vulnerabilites#wordpress' },
-            { text: 'Microsoft IIS', link: '/bug-bounty/vulnerabilites#microsoft-iis-et-aspnet' },
+            { text: 'Microsoft IIS', link: '/bug-bounty/vulnerabilites#microsoft-iis-et-asp-net' },
             { text: 'React2Shell', link: '/bug-bounty/vulnerabilites#react2shell-cve-2025-55182' },
             { text: 'Authentification et Access Control', link: '/bug-bounty/vulnerabilites#authentification-et-controle-d-acces' },
             { text: 'Contrôles côté serveur', link: '/bug-bounty/vulnerabilites#controles-cote-serveur' },
