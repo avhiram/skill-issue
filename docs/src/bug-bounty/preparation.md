@@ -61,7 +61,15 @@ for tool in subfinder amass assetfinder findomain chaos dnsx httpx httprobe kata
 done
 ```
 
-Liste les outils absents du PATH. Installer seulement ceux utilisés dans la méthode choisie. `httpx` désigne ProjectDiscovery, pas le client Python.
+Affiche uniquement les outils absents du PATH. `httpx` désigne le binaire ProjectDiscovery, pas le client Python.
+
+## Installer les outils manquants
+
+L'installateur ci-dessous traite les quatre outils manquants relevés lors du contrôle : `urlfinder`, `gospider`, `unfurl` et `urldedupe`. Il vérifie chacun avant d'agir, ignore ceux déjà présents, installe les trois outils Go et compile `urldedupe` depuis son dépôt source. Go est nécessaire ; si `git`, `cmake` ou `g++` manque, le script les installe avec APT sur Debian, Ubuntu ou Kali.
+
+<BountyCommand :source="&quot;curl -fsSL https://avhiram.github.io/skill-issue/bug-bounty/install-tools.sh -o /tmp/skill-issue-install-tools.sh &amp;&amp; bash -n /tmp/skill-issue-install-tools.sh &amp;&amp; less /tmp/skill-issue-install-tools.sh &amp;&amp; bash /tmp/skill-issue-install-tools.sh&quot;" language="bash" />
+
+Après l'installation, relancer le contrôle de disponibilité ci-dessus. Le script ne met pas à jour les outils déjà installés et signale les échecs au lieu de les masquer.
 
 ## Avant de poursuivre
 
