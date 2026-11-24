@@ -26,6 +26,8 @@ jobs:
   build:
     if: github.event.head_commit.message != 'Publish compiled VitePress site'
     runs-on: ubuntu-latest
+    outputs:
+      published_head: ${{ steps.publish.outputs.head_sha }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -67,6 +69,18 @@ jobs:
           fi
       - name: Audit all rendered HTML for visible Markdown fences
         run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
+      - name: Stamp compiled pages with source revision
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          revision = os.environ['GITHUB_SHA']
+          for path in Path('docs/.vitepress/dist').rglob('*.html'):
+              html = path.read_text(encoding='utf-8')
+              if '</head>' in html:
+                  html = html.replace('</head>', f'<meta name="skill-issue-build" content="{revision}"></head>', 1)
+                  path.write_text(html, encoding='utf-8')
+          PY
       - name: Upload compiled website for GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
@@ -74,6 +88,7 @@ jobs:
       - name: Restore CRTO sources before publishing
         run: git restore --worktree -- docs/src/crto/liham
       - name: Publish compiled website at GitHub Pages root
+        id: publish
         run: |
           rsync -a docs/.vitepress/dist/ ./
           touch .nojekyll
@@ -94,17 +109,33 @@ jobs:
               exit 0
             fi
           fi
+          # Skip deployment if a newer source revision arrived during this build.
+          git fetch origin main
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+            echo 'Publication obsolète ignorée.'
+            exit 0
+          fi
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   deploy:
     needs: build
+    if: needs.build.outputs.published_head != ''
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     permissions:
+      contents: read
       pages: write
       id-token: write
     steps:
+      - name: Refuse stale deployments
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EXPECTED_HEAD: ${{ needs.build.outputs.published_head }}
+        run: |
+          actual=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')
+          test "$actual" = "$EXPECTED_HEAD" || { echo '::error::Une version plus récente existe ; déploiement obsolète bloqué.'; exit 1; }
       - name: Deploy verified website to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
@@ -112,7 +143,7 @@ jobs:
         run: |
           for attempt in $(seq 1 12); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/academy/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/academy-live.html; then
-              if grep -q 'academy-syllabus' /tmp/academy-live.html && grep -q 'Parcours gratuit' /tmp/academy-live.html && grep -q 'Parcours complet' /tmp/academy-live.html && ! grep -q 'Marquer comme terminée' /tmp/academy-live.html && ! grep -Eqi 'harvard|cs50' /tmp/academy-live.html; then
+              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/academy-live.html && grep -q 'academy-syllabus' /tmp/academy-live.html && grep -q 'Parcours gratuit' /tmp/academy-live.html && grep -q 'Parcours complet' /tmp/academy-live.html && ! grep -q 'Marquer comme terminée' /tmp/academy-live.html && ! grep -Eqi 'harvard|cs50' /tmp/academy-live.html; then
                 echo 'Présentation Academy actuelle et absence de Harvard/CS50 confirmées sur le site public.'
                 exit 0
               fi
@@ -126,7 +157,7 @@ jobs:
         run: |
           for attempt in $(seq 1 12); do
             if curl -fsSL --max-time 20 -H 'Cache-Control: no-cache' "https://avhiram.github.io/skill-issue/bug-bounty/index.html?deployment=${GITHUB_RUN_ID}-${attempt}" -o /tmp/bug-bounty-live.html; then
-              if grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' /tmp/bug-bounty-live.html && grep -q 'Reconnaissance active' /tmp/bug-bounty-live.html && ! grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' /tmp/bug-bounty-live.html; then
+              if grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/bug-bounty-live.html && grep -q 'Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.' /tmp/bug-bounty-live.html && grep -q 'Reconnaissance active' /tmp/bug-bounty-live.html && ! grep -Eq 'Cheatsheet technique classée|Lostsec - archive originale|35 blocs extraits' /tmp/bug-bounty-live.html; then
                 echo 'Nouvelle page Bug Bounty confirmée.'
                 exit 0
               fi
