@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, shallowRef, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { computed, ref, shallowRef, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { withBase } from 'vitepress'
 
 const props = defineProps({ src: { type: String, default: '/mindmap-ad.canvas.json' }, title: { type: String, default: 'Active Directory' } })
@@ -9,6 +9,61 @@ const svg = ref(null)
 const root = ref(null)
 const expanded = ref(false)
 const selected = ref(null)
+const copyState = ref('')
+watch(selected, () => { copyState.value = '' })
+function splitCard(raw) {
+  const parts = []
+  let lines = [], language = '', inCode = false
+  function flush() {
+    const value = lines.join('\n')
+    if (value.trim()) parts.push({ type: inCode ? 'code' : 'text', language, value: inCode ? value : value.trim() })
+    lines = []
+  }
+  for (const line of String(raw || '').replace(/\r\n/g, '\n').split('\n')) {
+    const fence = line.match(/^\s*`{3,}\s*([^\s`]*)\s*$/)
+    if (fence && (!inCode || !fence[1])) {
+      flush()
+      inCode = !inCode
+      language = inCode ? fence[1] : ''
+    } else lines.push(line)
+  }
+  flush()
+  return parts
+}
+const cardParts = computed(() => splitCard(selected.value?.text || selected.value?.file || ''))
+const allCopyText = computed(() => {
+  const codes = cardParts.value.filter(p => p.type === 'code')
+  return (codes.length ? codes : cardParts.value).map(p => p.value).join('\n\n')
+})
+async function copyCard(value, key) {
+  if (!value) return
+  const original = selected.value?.id
+  let ok = false
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value)
+      ok = true
+    }
+  } catch {}
+  if (!ok) {
+    const previousFocus = document.activeElement
+    const field = document.createElement('textarea')
+    field.value = value
+    field.readOnly = true
+    field.style.cssText = 'position:fixed;left:0;top:0;opacity:0;pointer-events:none;font-size:16px'
+    document.body.appendChild(field)
+    try {
+      field.focus()
+      field.select()
+      field.setSelectionRange(0, field.value.length)
+      ok = document.execCommand('copy')
+    } catch {} finally {
+      field.remove()
+      previousFocus?.focus?.({ preventScroll: true })
+    }
+  }
+  if (selected.value?.id === original) copyState.value = ok ? key : 'failed'
+}
 const query = ref('')
 const matchIndex = ref(0)
 const view = ref({ x: 0, y: 0, k: 1 })
@@ -166,10 +221,29 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
         </g>
       </svg>
       <div v-if="selected" class="map-inspector" @pointerdown.stop>
-        <div class="inspector-header"><strong>Carte sélectionnée</strong><button type="button" @click="selected=null" aria-label="Fermer la carte">×</button></div>
-        <pre v-text="selected.text || selected.file"></pre><a v-if="selected.type === 'file' && selected.file?.endsWith('PowerView Enumeration.canvas')" class="map-file-link" :href="withBase('/oscp/mindmap-powerview.html')">Ouvrir PowerView Enumeration</a>
+        <div class="inspector-header">
+          <strong>Carte sélectionnée</strong>
+          <div class="inspector-actions">
+            <button type="button" class="copy-primary" :disabled="!allCopyText" @click="copyCard(allCopyText, 'all')">{{ copyState === 'all' ? '✓ Copié' : 'Copier' }}</button>
+            <button type="button" @click="selected=null" aria-label="Fermer la carte">×</button>
+          </div>
+        </div>
+        <div class="inspector-content">
+          <template v-for="(part, i) in cardParts" :key="i">
+            <div v-if="part.type === 'code'" class="inspector-code">
+              <div class="inspector-code-bar">
+                <span>{{ part.language || 'Code' }}</span>
+                <button v-if="cardParts.length > 1" type="button" @click="copyCard(part.value, 'part-'+i)">{{ copyState === 'part-'+i ? '✓ Copié' : 'Copier' }}</button>
+              </div>
+              <pre v-text="part.value"></pre>
+            </div>
+            <div v-else class="inspector-prose" v-text="part.value"></div>
+          </template>
+          <p v-if="copyState === 'failed'" class="copy-feedback" role="status">Copie indisponible. Maintiens le texte pour le sélectionner.</p>
+          <span v-else-if="copyState" class="copy-feedback" role="status">Copié dans le presse-papiers.</span>
+        </div><a v-if="selected.type === 'file' && selected.file?.endsWith('PowerView Enumeration.canvas')" class="map-file-link" :href="withBase('/oscp/mindmap-powerview.html')">Ouvrir PowerView Enumeration</a>
       </div>
-      <span class="map-hint">Glisser pour naviguer · Molette / pincement pour zoomer · Toucher une carte pour la lire</span>
+      <span v-if="!selected" class="map-hint">Glisser pour naviguer · Molette / pincement pour zoomer · Toucher une carte pour la lire</span>
     </div>
   </section>
 </template>
@@ -195,8 +269,17 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .map-edge-label{font:500 16px system-ui,sans-serif;fill:#c4b4d7}
 .map-hint{position:absolute;bottom:10px;left:10px;right:10px;font-size:10px;color:#b8a7cf;pointer-events:none;text-shadow:0 1px 3px #000}
 .map-inspector{position:absolute;right:12px;top:12px;width:min(400px,calc(100% - 24px));max-height:calc(100% - 55px);overflow:auto;border:1px solid #594077;border-radius:10px;background:#1b1426;box-shadow:0 8px 32px #0008;color:#eee5f9}
-.inspector-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid #3e2c56;font-size:12px}
-.map-inspector pre{font:12px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:14px;color:#eee5f9;background:transparent}
+.inspector-header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border-bottom:1px solid #3e2c56;font-size:12px;background:#1b1426}
+.inspector-actions{display:flex;align-items:center;gap:6px}
+.ad-mindmap .copy-primary{background:#62409a;border-color:#a78bfa;font-weight:600;min-height:38px;padding:8px 14px}
+.ad-mindmap .copy-primary:hover{background:#7550b6}
+.inspector-content{padding:10px;user-select:text;-webkit-user-select:text;touch-action:pan-y}
+.inspector-code{border:1px solid #4d3967;border-radius:7px;overflow:hidden;background:#100d17;margin:0 0 8px}
+.inspector-code-bar{display:flex;justify-content:space-between;align-items:center;min-height:26px;padding:4px 9px;color:#bca8d9;font-size:11px;background:#231a30}
+.inspector-code-bar button{padding:4px 8px}
+.inspector-prose{font-size:13px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;padding:5px 4px 10px}
+.copy-feedback{display:block;color:#c4b5fd;font-size:11px;margin:4px 0}
+.map-inspector pre{font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;color:#eee5f9;background:transparent;user-select:text;-webkit-user-select:text;cursor:text}
 .map-file-link{display:block;padding:0 14px 14px;color:#c4a6f5}.map-message{padding:30px;color:#c7b5dd;font-size:13px}
-@media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:45%;top:auto;bottom:28px}}
+@media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:60%;top:auto;bottom:12px}}
 </style>
