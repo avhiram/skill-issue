@@ -11,6 +11,19 @@ next: false
 
 Objectif : choisir les contrôles adaptés aux fonctionnalités identifiées et distinguer les indices des vulnérabilités confirmées.
 
+## Préparer les fichiers
+
+Les inventaires du chapitre précédent ne sont pas des résultats de vulnérabilité. Les exemples historiques ci-dessous qui nécessitent leurs propres listes, captures ou wordlists sont indépendants : ne pas les exécuter comme une suite automatique.
+
+| Fichier | Origine |
+|---|---|
+| `allurls.txt` | Inventaire Web validé au chapitre précédent |
+| `js_inventory.txt` | Liste d'URL JavaScript, pas de scripts locaux |
+| `headers.txt` | En-têtes d'une réponse HTTP de test, enregistrés manuellement |
+| `reponse-compte-a.txt`, `reponse-compte-b.txt` | Réponses de deux comptes de test, exportées séparément |
+| `jwt-test.txt` | Jeton de test enregistré localement |
+| `openapi.json` | Spécification OpenAPI JSON obtenue légitimement |
+
 ## Subdomain Takeover
 
 ### Vérification du risque de Subdomain Takeover
@@ -21,7 +34,7 @@ subzy run --targets subexample.coms.txt --concurrency 100 --hide_fails --verify_
 
 Recherche des configurations potentiellement vulnérables avec Subzy.
 
-> Le fichier d'entrée est une liste de sous-domaines autorisés à préparer ; son nom diffère des sorties Subfinder précédentes.
+> Exemple historique indépendant : `subexample.coms.txt` doit être préparé manuellement pour ce test. Il n'est pas créé par les étapes précédentes.
 
 
 ## Exposition de données
@@ -48,7 +61,7 @@ Requête de moteur de recherche filtrant les extensions de documents dans le pé
 cat example.coms.txt | grep "SUCCESS" | gf urls | httpx-toolkit -sc -server -cl -path "/.git/" -mc 200 -location -ms "Index of" -probe
 ```
 
-Vérifie des réponses HTTP pouvant révéler un répertoire Git.
+Exemple historique indépendant : `example.coms.txt` et son format avec le marqueur SUCCESS ne sont pas produits par le parcours. La chaîne n'a pas été validée.
 
 ### Filtrage étendu des extensions sensibles
 
@@ -135,7 +148,7 @@ Chaîne d'outils pour repérer des paramètres candidats à une vérification XS
 cat xss_params.txt | dalfox pipe --blind https://your-collaborator-url --waf-bypass --silence
 ```
 
-Commande Dalfox historique pour tester des paramètres dans un lab.
+Exemple historique indépendant de la collecte précédente : `xss_params.txt` n'est pas créé par le parcours. Ne pas confondre ce fichier avec `xss_output.txt` ou `xss_candidates.txt`.
 
 > Les options et l'autorisation de tester doivent être vérifiées ; l'archive ne démontre pas la validité de la commande.
 
@@ -145,7 +158,7 @@ Commande Dalfox historique pour tester des paramètres dans un lab.
 cat urls.txt | grep -E "(login|signup|register|forgot|password|reset)" | httpx -silent | nuclei -t nuclei-templates/vulnerabilities/xss/ -severity critical,high
 ```
 
-Filtre des URL de formulaires et lance des modèles de détection XSS.
+Variante historique indépendante : le fichier `urls.txt` correspond à la variante GAU du chapitre Web, pas à l'inventaire principal validé.
 
 > Ce filtrage ne démontre pas qu'une XSS est persistante.
 
@@ -155,7 +168,7 @@ Filtre des URL de formulaires et lance des modèles de détection XSS.
 cat js_files.txt | Gxss -c 100 | sort -u | dalfox pipe -o dom_xss_results.txt
 ```
 
-Combine Gxss et Dalfox sur une liste de fichiers JavaScript.
+Exemple historique indépendant : `js_files.txt` n'est pas produit par le parcours et le format attendu n'a pas été confirmé. Ne pas confondre des URL de scripts avec des fichiers JavaScript locaux.
 
 > Le résultat n'établit pas à lui seul une DOM XSS.
 
@@ -340,7 +353,7 @@ Recherche des configurations CORS potentiellement incorrectes.
 cat example.coms.txt | httpx -silent | nuclei -t nuclei-templates/vulnerabilities/cors/ -o cors_results.txt
 ```
 
-Applique des modèles de détection CORS à des hôtes répondants.
+Exemple historique indépendant : `example.coms.txt` n'est pas produit par le parcours. Les modèles et la chaîne n'ont pas été validés.
 
 ### Vérification de la réflexion d'Origin
 
@@ -422,7 +435,7 @@ Les procédures de recherche de cibles à grande échelle, d'exécution de comma
 ffuf -request lfi -request-proto https -w /root/wordlists/offensive\ payloads/LFI\ payload.txt -c -mr "root:"
 ```
 
-Charge une requête HTTP enregistrée et applique une liste de tests LFI.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `lfi` et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
 
 ### Test XSS à partir d'une requête
 
@@ -430,7 +443,7 @@ Charge une requête HTTP enregistrée et applique une liste de tests LFI.
 ffuf -request xss -request-proto https -w /root/wordlists/xss-payloads.txt -c -mr "<script>alert('XSS')</script>"
 ```
 
-Charge une requête HTTP enregistrée et applique une liste de tests XSS.
+Prérequis indépendant : une requête de laboratoire enregistrée dans `xss` et la wordlist indiquée. Ces fichiers ne sont pas générés par les chapitres précédents.
 
 ## Techniques avancées
 
