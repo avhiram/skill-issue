@@ -172,4 +172,4 @@ Extrait les noms de domaine des URL historiques. Commande issue de l'article IIS
 
 ---
 
-[Précédent : Programme et préparation](./preparation.md) · [Parcours](./index.md) · [Suivant : Cartographie et scan réseau](./scan-reseau.md)
+[Précédent : Programme et préparation](./preparation.md) · [Parcours](./index.md) · [Suivant : Reconnaissance active](./scan-reseau.md)
