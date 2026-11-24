@@ -8,7 +8,7 @@ next: false
 
 # Bug Bounty
 
-Cheatsheet technique classée par sujet : 35 blocs extraits du fichier Advanced Bug Hunting Toolkit, capture du 28 août 2025.
+Cheatsheet et méthodologie classées par sujet, à partir du toolkit Lostsec (28 août 2025) et de quatre documents complémentaires.
 
 [Lostsec - archive originale](https://web.archive.org/web/20250828093634/https://lostsec.xyz/)
 
@@ -46,6 +46,89 @@ Recherche des configurations potentiellement vulnérables avec Subzy.
 
 > Le fichier d'entrée ne porte pas le même nom que celui créé par Subfinder dans le bloc précédent.
 
+### Amass - découverte passive
+
+```bash
+amass enum -passive -d example.com -o amass_passive_subs.txt
+```
+
+Collecte les sous-domaines depuis des sources publiques.
+
+### Assetfinder - sous-domaines
+
+```bash
+assetfinder --subs-only example.com > assetfinder_subs.txt
+```
+
+Collecte les noms de sous-domaines connus.
+
+### Findomain - sous-domaines
+
+```bash
+findomain -t example.com -q > findomain_subs.txt
+```
+
+Collecte les sous-domaines et écrit les résultats dans un fichier.
+
+### Chaos - données publiques
+
+```bash
+chaos -d example.com -silent > chaos_subs.txt
+```
+
+Interroge le catalogue Chaos de ProjectDiscovery ; vérifier les prérequis d'accès.
+
+### CRT.sh - certificats publics
+
+```bash
+curl -s "https://crt.sh/?q=%25.example.com&output=json" |
+jq -r '.[].name_value' |
+sed 's/\*\.//g' |
+anew crtsh_subs.txt
+```
+
+Extrait les noms des certificats publics avec jq et retire le préfixe wildcard.
+
+### Fusion des résultats passifs
+
+```bash
+cat *_subs.txt | sort -u > all_subs.txt
+```
+
+Fusionne les fichiers de résultats en supprimant les doublons. Exécuter dans le dossier contenant uniquement les fichiers concernés.
+
+### DNSX - validation DNS
+
+```bash
+dnsx -l all_subs.txt -silent -o resolved_subs.txt
+```
+
+Identifie les noms qui répondent aux requêtes DNS.
+
+### DNSX - résolution inverse
+
+```bash
+dnsx -ptr -l resolved_subs.txt -resp-only -o reverse_dns.txt
+```
+
+Interroge les enregistrements PTR ; utiliser une liste d'adresses IP pour une résolution inverse pertinente, plutôt qu'une liste de noms.
+
+### HTTPX - métadonnées des services
+
+```bash
+httpx -l resolved_subs.txt -p 80,443,8080,8443 -silent -title -sc -ip -o live_websites.txt
+```
+
+Identifie les services HTTP répondants et collecte titres, codes et adresses IP. Utiliser HTTPX de ProjectDiscovery.
+
+### Httprobe - services Web
+
+```bash
+cat resolved_subs.txt | httprobe > live_websites.txt
+```
+
+Alternative de détection des services HTTP et HTTPS. Le fichier de sortie est écrasé.
+
 ## Collecte des URL
 
 ### Collecte passive avec Katana
@@ -59,22 +142,74 @@ Collecte des URL depuis des archives et d'autres sources, en excluant certaines 
 ### Collecte avancée avec Katana
 
 ```bash
-echo example.com | katana -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -f qurl | urldedupe >output.txtkatana -u https://example.com -d 5 | grep '=' | urldedupe | anew output.txtcat output.txt | sed 's/=.*/=/' >final.txt
+echo example.com | katana -d 5 -ps -pss waybackarchive,commoncrawl,alienvault -f qurl | urldedupe > output.txt
+katana -u https://example.com -d 5 | grep '=' | urldedupe | anew output.txt
+cat output.txt | sed 's/=.*/=/' > final.txt
 ```
 
 Bloc de collecte et de déduplication des URL paramétrées.
 
-> Le fichier MHT concatène plusieurs commandes sans séparateurs. Bloc conservé comme archive, non exécutable en l'état.
+> Séparation des lignes rétablie grâce aux notes complémentaires ; options et compatibilité à vérifier. La normalisation supprime tout ce qui suit le premier signe égal.
 
 ### Collecte avec GAU
 
 ```bash
-echo example.com | gau --mc 200 | urldedupe >urls.txtcat urls.txt | grep -E ".php|.asp|.aspx|.jspx|.jsp" | grep '=' | sort > output.txtcat output.txt | sed 's/=.*/=/' >final.txt
+echo example.com | gau --mc 200 | urldedupe > urls.txt
+grep -E '\.php|\.asp|\.aspx|\.jspx|\.jsp' urls.txt | grep '=' | sort -u > output.txt
+cat output.txt | sed 's/=.*/=/' > final.txt
 ```
 
 Bloc de collecte et de filtrage des URL par extension et paramètres.
 
-> Le fichier MHT concatène plusieurs commandes sans séparateurs. Bloc conservé comme archive, non exécutable en l'état.
+> Séparation des lignes rétablie grâce aux notes complémentaires ; options et compatibilité à vérifier. La normalisation supprime tout ce qui suit le premier signe égal.
+
+### Waybackurls - archives Web
+
+```bash
+waybackurls example.com > wayback_urls.txt
+```
+
+Collecte les URL connues dans les archives.
+
+### Katana - crawling des services Web
+
+```bash
+katana -list live_websites.txt -jc -o katana_urls.txt
+```
+
+Explore les services Web autorisés et les références JavaScript. Vérifier le format d'entrée.
+
+### Gospider - exploration Web
+
+```bash
+gospider -S live_websites.txt -d 2 -o gospider_output/
+```
+
+Explore les sites de la liste à une profondeur de deux niveaux.
+
+### Fusion des URL archivées
+
+```bash
+cat archived_urls.txt wayback_urls.txt | sort -u > all_archived_urls.txt
+```
+
+Regroupe les résultats de GAU et Waybackurls ; les deux fichiers doivent exister.
+
+### Extraction des URL avec paramètres
+
+```bash
+grep '=' all_archived_urls.txt > parameters.txt
+```
+
+Isole les URL contenant un signe égal, puis vérifier manuellement qu'il s'agit de paramètres.
+
+### Repérage des pages de connexion
+
+```bash
+grep -Ei 'login|admin|signin|dashboard' live_websites.txt | tee login_endpoints.txt
+```
+
+Repère les services ou titres contenant ces termes ; cela ne constitue pas une preuve de vulnérabilité.
 
 ## Exposition de données
 
@@ -272,6 +407,14 @@ arjun -u https://example.com/endpoint.php -oT arjun_output.txt -m GET,POST -w /u
 
 Teste des noms de paramètres provenant d'une liste de mots.
 
+### Arjun - export JSON
+
+```bash
+arjun -u https://example.com -m GET,POST --stable -oJ params.json
+```
+
+Recherche des paramètres dans un environnement autorisé et exporte les résultats en JSON. L'option de sortie a été adaptée au format JSON ; vérifier la version installée.
+
 ## Analyse JavaScript
 
 ### Collecte et analyse des fichiers JS
@@ -289,6 +432,30 @@ cat alljs.txt | nuclei -t /path/to/nuclei-templates/http/exposures/
 ```
 
 Applique des modèles Nuclei à une liste de fichiers JavaScript collectés.
+
+### Collecte passive des scripts
+
+```bash
+gau --subs example.com | grep '\.js$' > js_passive.txt
+```
+
+Sélectionne les URL archivées se terminant par .js.
+
+### Collecte active des scripts
+
+```bash
+katana -list live_websites.txt -jc -silent | grep '\.js$' > js_active.txt
+```
+
+Recense les références JavaScript dans les applications autorisées.
+
+### Fusion des URL JavaScript
+
+```bash
+cat js_passive.txt js_active.txt | sort -u > js_all.txt
+```
+
+Crée une liste unique de scripts à examiner.
 
 ## Filtrage des types de contenu
 
@@ -351,6 +518,69 @@ cat example.coms.txt | assetfinder --subs-only| httprobe | while read url; do xs
 Bloc historique combinant des requêtes et des vérifications d'en-têtes. Réservé aux environnements de test contrôlés.
 
 > Bloc non vérifié, avec un nom Collaborator mal orthographié et des hypothèses non démontrées.
+
+
+## Méthodologie de Bug Bounty
+
+### Préparation
+
+- Lire le scope, les exclusions, les limites de débit et les règles de divulgation du programme.
+- Distinguer les domaines autorisés des noms simplement découverts. Un certificat, un ASN ou une archive ne prouve pas qu'un service est dans le scope.
+- Préparer un dossier de travail et conserver les résultats intermédiaires.
+
+### Reconnaissance et cartographie
+
+- Commencer par la collecte passive, puis dédupliquer les sous-domaines.
+- Résoudre les noms autorisés, identifier les services Web et inventorier les technologies.
+- Regrouper les URL archivées, les URL découvertes par crawling, les paramètres et les références JavaScript.
+- Identifier les API, les interfaces d'administration et les ressources cloud pertinentes. Vérifier l'autorisation avant toute requête active.
+- Privilégier la qualité des résultats à la multiplication des outils.
+
+### Analyse et validation
+
+- Examiner les comportements communs, puis les différences entre applications et fonctionnalités.
+- Contrôler manuellement les résultats automatisés ; une réponse HTTP 200 ou une chaîne réfléchie ne suffit pas à démontrer une vulnérabilité.
+- Utiliser des comptes de test et des données fictives ; ne pas réutiliser de secrets découverts.
+- Démontrer uniquement l'impact nécessaire, sans accéder à des données réelles non nécessaires.
+
+### Proof of Concept (PoC)
+
+- Documenter le contexte, les prérequis et les étapes reproductibles.
+- Joindre les requêtes et réponses pertinentes, captures ou vidéo de démonstration.
+- Masquer les secrets et données personnelles.
+
+### Rapport de vulnérabilité
+
+```markdown
+# Titre de la vulnérabilité
+
+## Résumé
+Périmètre, fonctionnalité concernée et description.
+
+## Sévérité
+Niveau de risque et justification.
+
+## Étapes de reproduction
+1. Prérequis et environnement.
+2. Étapes et comportement observé.
+3. Résultat attendu.
+
+## Impact
+Conséquences techniques et métier démontrées.
+
+## Preuves
+Captures, requêtes et réponses expurgées.
+
+## Recommandations
+Correction et contrôles de vérification.
+```
+
+## Références pédagogiques
+
+- Full Bug Bounty Reconnaissance Methodology, Alham Rizvi : reconnaissance, validation DNS, collecte Web et inventaire des API.
+- Bug Bounty Hunting Methodology 2025, AmrSec : méthodologie et rapports ; document portant la mention All Rights Reserved. Synthèse originale, pas de republication intégrale.
+- Bug Bounty Methodologies : notes de reconnaissance et de tests Web.
+- Bug Bounty Hunting Process, HTB Academy : présentation du module et importance du respect du processus de signalement.
 
 ## Méthodologies complémentaires
 
