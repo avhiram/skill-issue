@@ -211,7 +211,7 @@ gf redirect < allurls.txt | sort -u > redirect_candidates.txt
 
 Classe les URL locales selon le pattern GF installé. Une correspondance reste un indice à vérifier manuellement.
 
-### Inventaire des paramètres avec GF
+### Classement SQL Injection avec GF
 
 ```bash
 gf sqli < allurls.txt > sqli_candidates.txt
@@ -266,7 +266,7 @@ Collecte des URL JavaScript et applique des modèles d'exposition Nuclei.
 cat alljs.txt | nuclei -t /path/to/nuclei-templates/http/exposures/
 ```
 
-Prérequis : préparer manuellement alljs.txt avec les URL autorisées à tester et vérifier les modèles. Cette variante historique est indépendante du parcours principal.
+Prérequis : préparer manuellement `alljs.txt` avec les URL autorisées à tester et vérifier les modèles. Cette variante historique est indépendante du parcours principal.
 
 ### Collecte passive des scripts
 
@@ -288,7 +288,7 @@ Recense les références JavaScript dans les applications autorisées.
 cat js_passive.txt js_active.txt | sort -u > js_all.txt
 ```
 
-Fusion volontaire des collectes JavaScript passive et active : les deux listes alimentent `js_all.txt`, utilisé à l'étape suivante.
+Fusion volontaire des collectes JavaScript passive et active : les deux listes alimentent `js_all.txt`. Si une seule collecte a été effectuée, ne fusionner que le fichier disponible. Les URL restent à vérifier par rapport au scope.
 
 ### Validation HTTP des fichiers JavaScript
 
@@ -296,7 +296,7 @@ Fusion volontaire des collectes JavaScript passive et active : les deux listes a
 httpx -l js_all.txt -mc 200 -o js_live.txt
 ```
 
-Vérifie les URL de fichiers JavaScript autorisées qui répondent avec un statut HTTP 200. Le fichier js_all.txt est issu de la fusion des listes passive et active. Adaptation de l'article JS-Recon ; utiliser HTTPX de ProjectDiscovery.
+Vérifie les URL de fichiers JavaScript autorisées qui répondent avec un statut HTTP 200. Le fichier `js_all.txt` est issu de la fusion des listes passive et active. Adaptation de l'article JS-Recon ; utiliser HTTPX de ProjectDiscovery.
 
 ### Revue de JavaScript local - fichiers à examiner
 
@@ -323,10 +323,10 @@ Conserve les URL complètes de l'inventaire local. L'extension ne garantit pas l
 ### Vérification du type MIME
 
 ```bash
-grep -i '^content-type:' headers.txt
+grep -i '^content-type:' requests/headers.txt
 ```
 
-Lit le type MIME dans les en-têtes HTTP enregistrés localement. `text/html` et `application/xhtml+xml` indiquent du HTML ; `text/javascript` et `application/javascript` indiquent du JavaScript.
+Lit le type MIME dans les en-têtes HTTP enregistrés dans `requests/headers.txt`. `text/html` et `application/xhtml+xml` indiquent du HTML ; `text/javascript` et `application/javascript` indiquent du JavaScript.
 
 Pour les URL JavaScript, réutiliser [Inventaire des scripts JavaScript](#inventaire-des-scripts-javascript), sans refaire une collecte.
 
@@ -372,10 +372,10 @@ Relever les routes et méthodes HTTP dans la documentation, les requêtes du nav
 ## Inventaire des champs JSON locaux
 
 ```bash
-jq 'keys' response.json
+jq 'keys' requests/response.json
 ```
 
-Prérequis : enregistrer une réponse API de test dans response.json. Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service. Exemple local ajouté pour faciliter l'analyse des réponses API.
+Prérequis : enregistrer une réponse API de test dans `requests/response.json`. Affiche les clés d'un objet JSON déjà enregistré, sans contacter un service. Exemple local ajouté pour faciliter l'analyse des réponses API.
 
 ## Fichiers du chapitre
 
