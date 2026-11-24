@@ -35,10 +35,12 @@ Consulter [Security Tools et Browser Extensions](./ressources.md). Vérifier les
 ## Vérifier la disponibilité des outils
 
 ```bash
-command -v subfinder httpx katana gau nmap nuclei ffuf
+for tool in subfinder amass assetfinder findomain chaos dnsx httpx httprobe katana gau waybackurls urlfinder gospider arjun nmap nuclei ffuf curl jq sort grep; do
+  command -v "$tool" >/dev/null 2>&1 || printf 'Manquant : %s\n' "$tool"
+done
 ```
 
-Vérifie quels exécutables sont présents dans le PATH. Attention : httpx désigne ici l'outil ProjectDiscovery, pas le client Python.
+Liste les outils absents du PATH. Installer seulement ceux utilisés dans la méthode choisie. `httpx` désigne ProjectDiscovery, pas le client Python.
 
 ## Avant de poursuivre
 
