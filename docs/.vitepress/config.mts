@@ -42,6 +42,7 @@ export default defineConfig({
           { text: 'Cartographie Web et API', link: '/bug-bounty/#cartographie-web-et-api' },
           { text: 'Tests de vulnérabilités', link: '/bug-bounty/#tests-de-vulnerabilites' },
           { text: 'Validation et preuves', link: '/bug-bounty/#validation-et-preuves' },
+          { text: 'IA & Bug Bounty', link: '/bug-bounty/#ia-et-bug-bounty' },
           { text: 'Rapport et signalement', link: '/bug-bounty/#rapport-et-signalement' },
           { text: 'Suivi et prime', link: '/bug-bounty/#suivi-et-prime' }
         ] },
