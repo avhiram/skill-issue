@@ -10,6 +10,8 @@ next: false
 
 Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.
 
+<BountyTarget />
+
 ## Parcours
 
 ### [Programme et préparation](./preparation.md)
