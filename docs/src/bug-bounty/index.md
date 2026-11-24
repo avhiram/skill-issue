@@ -8,7 +8,7 @@ next: false
 
 # Bug Bounty
 
-Un parcours chronologique et une cheatsheet en français. Chaque étape contient ses méthodes, commandes et explications. Commencer par le programme et suivre les chapitres dans l'ordre.
+Cheatsheet, méthodologie, outils et ressources pour le Bug Bounty.
 
 ## Parcours
 
@@ -61,9 +61,7 @@ Suivre le triage, le retest et la récompense.
 - [Security Tools](./ressources.md#security-tools)
 - [Browser Extensions](./ressources.md#browser-extensions)
 
-Les exemples historiques et leurs options ne sont pas tous vérifiés. Les fichiers de sortie des différentes variantes peuvent différer : vérifier les prérequis et sélectionner les commandes adaptées au périmètre autorisé. Les articles transmis alimentent les fiches ; l'intégration de leurs commandes reste partielle.
-
-Les ressources sont séparées du parcours pour éviter de confondre un catalogue d'outils avec une étape de travail.
+Utiliser les commandes dans le périmètre autorisé. Exemples historiques non intégralement vérifiés.
 
 ### Références pédagogiques
 
@@ -72,11 +70,3 @@ Les ressources sont séparées du parcours pour éviter de confondre un catalogu
 - Bug Bounty Methodologies : notes de reconnaissance et de tests Web.
 - Bug Bounty Hunting Process, HTB Academy : présentation du module et importance du respect du processus de signalement.
 
-### Méthodologies complémentaires
-
-Quatre fiches restent identifiables par leur titre seulement. La fin de la fiche Advanced Recon est également tronquée dans le texte fourni.
-
-- Gather assets through API
-- SSTI Payloads
-- CRLF Injection
-- SQL Injection XOR WAF Bypass
