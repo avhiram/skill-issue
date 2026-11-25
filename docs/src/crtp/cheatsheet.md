@@ -3,407 +3,267 @@ title: Cheatsheet AD
 aside: false
 ---
 
-# Cheatsheet AD
+# Cheat Sheet
 
-Ouvre PowerShell sur un poste du domaine équipé du module **ActiveDirectory**. Saisis le nom demandé quand tu exécutes un exemple.
+::: details Enumeration
 
-[Périmètre](#perimetre) · [Comptes et groupes](#comptes) · [Postes et stratégies](#postes) · [Droits et approbations](#droits) · [Session Windows](#poste-windows)
-
-## Dans quel domaine suis-je ? {#perimetre}
-
+**AD Module**:
+Import:
 ```powershell
-Import-Module ActiveDirectory
-(Get-ADDomain).DNSRoot
+Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
+Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 ```
 
-Le résultat est le nom DNS du domaine interrogé, par exemple `formation.example`.
-
-::: details Afficher les domaines de la forêt
-Une forêt peut regrouper plusieurs domaines. Affiche leurs noms DNS.
-
 ```powershell
+Get-ADUser -Filter * | Select -ExpandProperty samaccountname
+Get-ADComputer –Filter * | select –expand name
+Get-ADGroup -Identity 'Domain Admins' -Properties *
+Get-ADGroup -Identity machineadmins -Properties Description
+Get-ADGroupMember -Identity 'Domain Admins'
+Get-ADGroupMember -Identity 'Enterprise Admins'
+Get-ADGroupMember -Identity 'Enterprise Admins' -Server domain.local
+Get-ADOrganizationalUnit -Identity 'OU=StudentsMachines,DC=us,DC=domain,DC=local' | %{Get-ADComputer -SearchBase $_ -Filter *} | select name
+Get-ACL 'AD:\CN=Domain Admins,CN=Users,DC=us,DC=domain,DC=local' | select -ExpandProperty Access
 (Get-ADForest).Domains
+Get-ADTrust -Filter *
+Get-ADTrust -Filter 'intraForest -ne $True' -Server (Get-ADForest).Name
+(Get-ADForest).Domains | %{Get-ADTrust -Filter '(intraForest -ne $True) -and (ForestTransitive -ne $True)' -Server $_}
+Get-ADTrust -Filter * -Server domain.local
 ```
-:::
 
-::: details Lire les propriétés d’une zone DNS
-Avec le module DnsServer, indique le serveur qui héberge la zone et son nom DNS. ZoneType précise son type et IsDsIntegrated indique si elle est intégrée à Active Directory.
-
+**Powerview**:
+Import
 ```powershell
-$serveur = Read-Host "Serveur DNS"
-$zone = Read-Host "Nom de la zone"
-Get-DnsServerZone -ComputerName $serveur -Name $zone |
-    Select-Object ZoneName, ZoneType, IsDsIntegrated, IsReverseLookupZone
+. C:\AD\Tools\PowerView.ps1
 ```
-
-Pour le détail complet, réutilise les valeurs de `$serveur` et `$zone` définies ci-dessus. Cette variante affiche toutes les propriétés renvoyées pour la zone.
-
-```powershell
-Get-DnsServerZone -ComputerName $serveur -Name $zone | Format-List *
-```
-:::
-
-## Qui fait partie d’un groupe ? {#comptes}
-
-::: details Lire les membres directs
-Saisis le nom du groupe. La colonne ObjectClass distingue les utilisateurs, les ordinateurs et les groupes imbriqués.
-
-```powershell
-$groupe = Read-Host "Nom du groupe"
-Get-ADGroupMember -Identity $groupe | Select-Object Name, ObjectClass
-```
-:::
-
-::: details Consulter un compte utilisateur
-Saisis son identifiant de connexion. Enabled indique si le compte est activé.
-
-```powershell
-$compte = Read-Host "Identifiant du compte"
-Get-ADUser -Identity $compte | Select-Object Name, SamAccountName, Enabled
-```
-:::
-
-::: details Lire la description d’un groupe
-La description peut préciser le rôle prévu pour ce groupe.
-
-```powershell
-$groupe = Read-Host "Nom du groupe"
-Get-ADGroup -Identity $groupe -Properties Description | Select-Object Name, Description
-```
-:::
-
-::: details Identifier un compte de service géré
-La classe msDS-GroupManagedServiceAccount identifie un gMSA.
-
-```powershell
-$service = Read-Host "Nom du compte de service"
-Get-ADServiceAccount -Identity $service | Select-Object Name, ObjectClass, Enabled
-```
-
-Pour vérifier les autorisations d’un gMSA précis, lis la liste des comptes et groupes autorisés à récupérer son mot de passe géré. La commande affiche les identités déclarées.
-
-```powershell
-$gmsa = Read-Host "Nom du gMSA à vérifier"
-Get-ADServiceAccount -Identity $gmsa -Properties PrincipalsAllowedToRetrieveManagedPassword |
-    Select-Object -ExpandProperty PrincipalsAllowedToRetrieveManagedPassword
-```
-:::
-
-::: details Inventorier les comptes et les ordinateurs
-Afficher les identifiants des utilisateurs du domaine.
-
-```powershell
-Get-ADUser -Filter * | Select-Object -ExpandProperty SamAccountName
-```
-
-Afficher les noms des ordinateurs enregistrés.
-
-```powershell
-Get-ADComputer -Filter * | Select-Object -ExpandProperty Name
-```
-
-Lister les comptes de service gérés.
-
-```powershell
-Get-ADServiceAccount -Filter * | Select-Object Name, ObjectClass
-```
-
-Rechercher les anciens comptes de connecteur dont le nom commence par MSOL_.
-
-```powershell
-Get-ADUser -Filter "SamAccountName -like 'MSOL_*'" -Properties Description | Select-Object SamAccountName, Description
-```
-:::
-
-::: details Vérifier les groupes d’administration
-Lire les propriétés du groupe Administrateurs du domaine. Son SID se termine par 512, quelle que soit la langue du domaine.
-
-```powershell
-$sid = (Get-ADDomain).DomainSID.Value + '-512'
-Get-ADGroup -Identity $sid -Properties *
-```
-
-Lister ses membres directs.
-
-```powershell
-Get-ADGroupMember -Identity ((Get-ADDomain).DomainSID.Value + '-512')
-```
-
-Afficher les membres du groupe Administrateurs de l’entreprise dans le domaine racine de la forêt.
-
-```powershell
-$racine = (Get-ADForest).RootDomain
-$sid = (Get-ADDomain -Server $racine).DomainSID.Value + '-519'
-Get-ADGroupMember -Identity $sid -Server $racine
-```
-:::
-
-::: details Lire un groupe avec PowerView
-Avec PowerView chargé, indique le nom du groupe. Chaque ligne correspond à un membre direct.
-
-```powershell
-Get-DomainGroupMember -Identity (Read-Host "Nom du groupe") |
-    Select-Object GroupName, MemberName, MemberObjectClass
-```
-:::
-
-## Quels postes et stratégies trouve-t-on dans une OU ? {#postes}
-
-Une unité d’organisation (OU) regroupe des objets du domaine. Commence par retrouver son chemin, puis copie-le dans la commande qui t’intéresse.
-
-::: details Retrouver le chemin d’une OU
-Copie la valeur DistinguishedName de l’OU recherchée.
-
-```powershell
-Get-ADOrganizationalUnit -Filter * | Select-Object Name, DistinguishedName
-```
-:::
-
-::: details Lister les postes placés directement dans l’OU
-OneLevel limite la recherche aux objets placés juste sous cette OU.
-
-```powershell
-$ou = Read-Host "Chemin de l’OU"
-Get-ADComputer -Filter * -SearchBase $ou -SearchScope OneLevel | Select-Object Name
-```
-:::
-
-::: details Voir les stratégies liées directement à l’OU
-Cette commande utilise le module GroupPolicy. GpoLinks affiche les liens directs. Le champ Enabled indique si le lien est actif.
-
-```powershell
-$ou = Read-Host "Chemin de l’OU"
-(Get-GPInheritance -Target $ou).GpoLinks | Select-Object DisplayName, Enabled, Enforced
-```
-:::
-
-::: details Consulter les OU et les stratégies avec PowerView
-Dans une session où PowerView est chargé, afficher les unités d’organisation.
-
-```powershell
-Get-DomainOU | Select-Object Name, DistinguishedName
-```
-
-Afficher les GPO du domaine.
-
-```powershell
-Get-DomainGPO | Select-Object DisplayName, Name
-```
-
-Lire les liens GPO d’une OU.
-
-```powershell
-(Get-DomainOU -Identity (Read-Host 'Nom de l’OU')).gplink
-```
-
-Retrouver une GPO à partir de son GUID.
-
-```powershell
-Get-DomainGPO -Identity (Read-Host 'GUID de la GPO')
-```
-
-Consulter les paramètres de groupes locaux définis par les GPO.
-
-```powershell
-Get-DomainGPOLocalGroup
-```
-
-Lire la stratégie Kerberos renvoyée par PowerView.
 
 ```powershell
 (Get-DomainPolicy).KerberosPolicy
+Get-DomainGPOLocalGroup
+Get-DomainGroupMember -Identity <group>
+Get-DomainOU
+(Get-DomainOU -Identity <OU>).distinguishedname | %{Get-DomainComputer -SearchBase $_} | select name
+Get-DomainGPO
+(Get-DomainOU -Identity <OU>).gplink
+Get-DomainGPO -Identity '{<result of .gplink>}'
+Get-DomainObjectAcl -Identity "Domain Admins" -ResolveGUIDs -Verbose
+Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "<user>"}
+Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "<group>"}
+Get-ForestDomain -Verbose | Get-DomainTrust | ?{$_.TrustAttributes -eq 'FILTER_SIDS'}
+Get-ForestTrust -Forest <forest>
 ```
+
 :::
 
-::: details Lister les postes d’une OU et de ses sous-OU
-Copie le chemin de l’OU. Subtree inclut les unités imbriquées dans la recherche.
+::: details Local Privesc
 
+**Recursively look for group membership**:
 ```powershell
-$ou = Read-Host "Chemin de l’OU"
-Get-ADComputer -Filter * -SearchBase $ou -SearchScope Subtree | Select-Object Name
-```
-:::
-
-::: details Lire les ordinateurs d’une OU avec PowerView
-Utilise le chemin complet de l’OU pour distinguer deux unités portant le même nom.
-
-```powershell
-$ou = Read-Host "Chemin de l’OU"
-Get-DomainComputer -SearchBase $ou | Select-Object Name, DistinguishedName
-```
-:::
-
-## Quels droits et relations vérifier ? {#droits}
-
-::: details Lire les permissions sur un groupe
-Chaque ligne indique à qui s’applique la règle, les droits concernés et son éventuel héritage.
-
-```powershell
-$groupe = Get-ADGroup -Identity (Read-Host "Nom du groupe")
-(Get-Acl -Path ("AD:\" + $groupe.DistinguishedName)).Access |
-    Select-Object IdentityReference, ActiveDirectoryRights, AccessControlType, IsInherited
-```
-:::
-
-::: details Lire les relations d’approbation du domaine
-Lis ensemble Source, Target et Direction pour interpréter le sens de chaque relation.
-
-```powershell
-Get-ADTrust -Filter * | Select-Object Source, Target, Direction, IntraForest
-```
-:::
-
-::: details Examiner les relations d’un domaine précis
-Interroger le domaine DNS indiqué.
-
-```powershell
-Get-ADTrust -Filter * -Server (Read-Host 'Domaine DNS')
-```
-
-Afficher les relations du domaine racine avec des domaines extérieurs à la forêt.
-
-```powershell
-Get-ADTrust -Filter 'IntraForest -eq $False' -Server (Get-ADForest).RootDomain
-```
-
-Lister les objets qui représentent des identités externes dans le domaine choisi.
-
-```powershell
-Get-ADObject -LDAPFilter '(objectClass=foreignSecurityPrincipal)' -Server (Read-Host 'Domaine DNS') | Select-Object Name, DistinguishedName
-```
-
-Avec PowerView chargé, lire les relations de la forêt indiquée.
-
-```powershell
-Get-ForestTrust -Forest (Read-Host 'Nom DNS de la forêt')
-```
-
-Pour la revue de toute la forêt, interroge chaque domaine et affiche les relations externes qui ne sont pas des approbations de forêt.
-
-```powershell
-foreach ($domaine in (Get-ADForest).Domains) {
-    Get-ADTrust -Server $domaine -Filter 'IntraForest -eq $False -and ForestTransitive -eq $False' |
-        Select-Object Source, Target, Direction, TrustType
+function Get-ADPrincipalGroupMembershipRecursive ($SamAccountName) {
+  $groups = @(Get-ADPrincipalGroupMembership -Identity $SamAccountName | select -ExpandProperty distinguishedname) 
+  $groups
+  if ($groups.count -gt 0) {
+    foreach ($group in $groups) {
+      Get-ADPrincipalGroupMembershipRecursive $group
+    }
+  }
 }
 ```
+
+> ACL entries
+
+**Check if any of the groups has interesting ACL entries**:
+```powershell
+Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match 'managers'}
+Get-DomainObjectAcl -Identity machineadmins -ResolveGUIDs | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -match 'managers'}
+```
+
 :::
 
-::: details Lire les approbations et les permissions avec PowerView
-Afficher les relations d’approbation de la forêt courante.
+::: details LAPS
 
 ```powershell
-Get-ForestTrust
+Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
+Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
+Import-Module C:\AD\Tools\AdmPwd.PS\AdmPwd.PS.psd1 -Verbose
+C:\AD\Tools\Get-LapsPermissions.ps1
 ```
 
-Lire les entrées de contrôle d’accès du groupe indiqué. ResolveGUIDs traduit les identifiants de types d’objets lorsque PowerView peut les résoudre.
-
+With Powerview:
 ```powershell
-Get-DomainObjectAcl -Identity (Read-Host "Nom du groupe") -ResolveGUIDs |
-    Select-Object SecurityIdentifier, ActiveDirectoryRights, ObjectAceType, IsInherited
+Get-DomainOU | Get-DomainObjectAcl -ResolveGUIDs | Where-Object {($_.ObjectAceType -like 'ms-Mcs-AdmPwd') -and ($_.ActiveDirectoryRights -match 'ReadProperty')} | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier); $_}
 ```
+
 :::
 
-::: details Identifier un compte externe par son SID
-Si le SID désigne un utilisateur et que son domaine d’origine est connu, interroge ce domaine pour retrouver le compte correspondant.
+::: details Application Whitelisting
 
-```powershell
-$domaine = Read-Host "Domaine DNS d’origine"
-$sid = Read-Host "SID du compte"
-Get-ADUser -Identity $sid -Server $domaine | Select-Object Name, SamAccountName, SID
-```
+> CLM, AppLocker, WDAC
 
-Avec PowerView chargé, tu peux aussi interroger le domaine d’origine en donnant directement le SID à Get-DomainUser.
-
-```powershell
-$domaine = Read-Host "Domaine DNS d’origine"
-$sid = Read-Host "SID de l’utilisateur"
-Get-DomainUser -Domain $domaine -Identity $sid |
-    Select-Object SamAccountName, DistinguishedName
-```
-
-Dans le domaine qui accueille l’identité externe, retrouve ses groupes directs. Utilise le chemin complet du Foreign Security Principal, affiché dans le volet « Examiner les relations d’un domaine précis ».
-
-```powershell
-$domaine = Read-Host "Domaine DNS qui contient le groupe"
-$membre = Read-Host "DistinguishedName du Foreign Security Principal"
-Get-ADGroup -Server $domaine -Filter { member -eq $membre } |
-    Select-Object Name, DistinguishedName
-```
-:::
-
-::: details PAM · lire les shadow principals
-Dans une forêt de gestion PAM, cette requête affiche les objets du conteneur Shadow Principal Configuration, leurs membres et le SID représenté. Elle suppose que le conteneur existe dans la forêt interrogée.
-
-```powershell
-$configuration = (Get-ADRootDSE).configurationNamingContext
-$base = "CN=Shadow Principal Configuration,CN=Services,$configuration"
-Get-ADObject -SearchBase $base -SearchScope OneLevel -LDAPFilter '(objectClass=msDS-ShadowPrincipal)' -Properties member, msDS-ShadowPrincipalSid |
-    Select-Object Name, member, msDS-ShadowPrincipalSid
-```
-:::
-
-## Que vérifier sur le poste Windows ? {#poste-windows}
-
-::: details Lire la session et les tickets Kerberos
-Afficher les groupes présents dans le jeton de la session Windows.
-
-```powershell
-whoami /groups
-```
-
-Consulter les tickets Kerberos en cache pour la session courante.
-
-```powershell
-klist
-```
-
-Afficher le mode de langage de la session PowerShell.
-
+**Verify if PowerShell is running in Constrained Language Mode**:
 ```powershell
 $ExecutionContext.SessionState.LanguageMode
 ```
 
-Lire la version de Windows du poste courant avec CIM.
-
-```powershell
-Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber
-```
-
-Pour vérifier la version de Windows d’un poste distant que tu administres, indique son nom DNS. L’accès CIM distant doit être autorisé.
-
-```powershell
-$poste = Read-Host "Nom DNS du poste"
-Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $poste |
-    Select-Object CSName, Caption, Version, BuildNumber
-```
-:::
-
-::: details Vérifier AppLocker et Device Guard
-Dans Windows PowerShell avec le module AppLocker, afficher les collections de règles de la stratégie effective.
-
-```powershell
-(Get-AppLockerPolicy -Effective).RuleCollections
-```
-
-Lire la clé locale de stratégie AppLocker, si elle existe.
-
+**Check for AppLocker** (if there is an error, the AppLocker is not in use):
 ```powershell
 reg query HKLM\Software\Policies\Microsoft\Windows\SRPV2
+Get-AppLockerPolicy –Effective
 ```
 
-Afficher les états déclarés par Device Guard.
-
+**Verify WDAC**:
 ```powershell
-Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard | Select-Object VirtualizationBasedSecurityStatus, SecurityServicesConfigured, SecurityServicesRunning
+Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard
+CodeIntegrityPolicyEnforcementStatus : 2
+UsermodeCodeIntegrityPolicyEnforcementStatus : 2
 ```
+
 :::
 
-::: details SQL Server · lire les serveurs liés à une instance
-Avec PowerUpSQL chargé, saisis le nom de l’instance que tu administres. La commande lit la liste des serveurs liés visible avec ton compte.
+::: details Unconstrained delegation
 
 ```powershell
-Get-SQLServerLink -Instance (Read-Host "Instance SQL Server")
+Get-ADComputer -Filter {TrustedForDelegation -eq $True}
 ```
+
 :::
 
-[Accueil CRTP](./index) · [Module ActiveDirectory](https://learn.microsoft.com/fr-fr/powershell/module/activedirectory/) · [Get-GPInheritance](https://learn.microsoft.com/fr-fr/powershell/module/grouppolicy/get-gpinheritance)
+::: details Constrained delegation
+
+```powershell
+Get-ADObject -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo
+```
+
+**To execute on another Forest just add the flag -Server**:
+```powershell
+Get-ADObject -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo -Server domain.local
+```
+
+:::
+
+::: details ACLs Write Permissions
+
+**If you get any user, run the full enumeration on that user**:
+```powershell
+C:\AD\Tools\PowerView.ps1
+Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match 'mgmtadmin'}
+```
+
+:::
+
+::: details DCSync
+
+**Check if the user has Replication Rights**:
+```powershell
+Get-DomainObjectAcl -SearchBase "dc=us,dc=domain,dc=local" -SearchScope Base -ResolveGUIDs | ?{($_.ObjectAceType -match 'replication-get') -or ($_.ActiveDirectoryRights -match 'GenericAll')} | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -match "studentuserx"}
+```
+
+:::
+
+::: details AD CS
+
+```powershell
+C:\AD\Tools\Certify.exe cas
+C:\AD\Tools\Certify.exe find
+```
+
+:::
+
+::: details Domain Privesc (TrustKey & KRBTGT)
+
+``` powershell
+klist
+```
+
+``` powershell
+dir \\domain-dc.domain.local\c$
+```
+
+:::
+
+::: details Abuse Trust Relationship (Forest)
+
+**With the CIFS service we can access the share**:
+```powershell
+dir \\dc.domain.local\eushare
+```
+
+**Check if there are any groups with SID>1000**:
+```powershell
+Get-ADGroup -Filter 'SID -ge "S-1-5-21-4066061358-3942393892-617142613-1000"' -Server domain.local
+```
+
+:::
+
+::: details Foreign Security Principals (FSPs)
+
+**Search for**:
+
+- TrustType: Forest 
+- TrustDirection: Bidirectional
+
+```powershell
+Find-InterestingDomainAcl -ResolveGUIDs -Domain dbvendor.local
+```
+
+> See if any *IdentityReferenceName* has *ActiveDirectoryRights* (GenericAll) to any *ObjectDN*
+
+**Enumerate FSPs**:
+```powershell
+Find-ForeignGroup –Verbose
+```
+
+**Get-DomainUser**:
+```powershell
+Get-DomainUser -Domain dbvendor.local | ?{$_.ObjectSid -eq 'S-1-5-21-569087967-1859921580-1949641513-4101'}
+```
+
+:::
+
+::: details PAM Trust
+
+**Enumerate Foreign Security Principals**:
+```powershell
+Get-ADObject -Filter {objectClass -eq "foreignSecurityPrincipal"} -Server domain.local
+```
+
+**Find out which group DA it is a member of**:
+```powershell
+Get-ADGroup -Filter * -Properties Member -Server domain.local | ?{$_.Member -match 'S-1-5-21-2781415573-3701854478-2406986946-500'}
+```
+
+> In this case the DA is a member of the built-in administrators group on the target forest
+
+**Check if PAM trust is enabled**:
+```powershell
+Get-ADTrust -Filter {(ForestTransitive -eq $True) -and (SIDFilteringQuarantined -eq $False)}
+```
+
+**Search for**:
+
+- ForestTransitive : True
+- SIDFilteringForestAware : False
+- the DistinguishedName
+
+**Enumerate other Forests**:
+```powershell
+Get-ADTrust -Filter {(ForestTransitive -eq $True) -and (SIDFilteringQuarantined -eq $False)} -Server production.local
+```
+
+**Search for**:
+
+- ForestTransitive : True
+- SIDFilteringForestAware : True
+
+
+**Check the membership of Shadow Security Principals**:
+```powershell
+Get-ADObject -SearchBase ("CN=Shadow Principal Configuration,CN=Services," + (Get-ADRootDSE).configurationNamingContext) -Filter * -Properties * | select Name, member, msDS-ShadowPrincipalSid | fl
+```
+
+**Obtain the IP of Forest**:
+```powershell
+Get-DnsServerZone -ZoneName production.local |fl *
+```
+
+:::
