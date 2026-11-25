@@ -205,8 +205,8 @@ function bindTextFrame() {
   const {down,move,up}=gestures
   const wheel=e=>{
     e.preventDefault()
-    if(e.ctrlKey||e.metaKey){const f=frame.value.getBoundingClientRect();scale(Math.exp(-e.deltaY*.003),{clientX:f.left+e.clientX,clientY:f.top+e.clientY})}
-    else {const p=scrollPosition();queueScroll(p.left+e.deltaX,p.top+e.deltaY)}
+    if(e.deltaY){const f=frame.value.getBoundingClientRect();scale(Math.exp(-e.deltaY*.0015),{clientX:f.left+e.clientX,clientY:f.top+e.clientY})}
+    else if(e.deltaX){const p=scrollPosition();queueScroll(p.left+e.deltaX,p.top)}
   }
   const context=e=>e.preventDefault()
   const listeners=[['contextmenu',context],['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['lostpointercapture',up],['wheel',wheel]]
@@ -218,7 +218,7 @@ async function copyText() {
   try { await navigator.clipboard.writeText(selectedText.value);copied.value=true; textMessage.value='' }
   catch { selectText();try{copied.value=document.execCommand('copy')}catch{} if(!copied.value)textMessage.value='Utilise Copier dans le menu de sélection.' }
 }
-function wheel(e){if(e.ctrlKey || e.metaKey){e.preventDefault();scale(Math.exp(-e.deltaY*.003),e)}}
+function wheel(e){e.preventDefault();if(e.deltaY)scale(Math.exp(-e.deltaY*.0015),e);else if(e.deltaX){const p=scrollPosition();queueScroll(p.left+e.deltaX,p.top)}}
 function down(e){if(!textMode.value)stageGestures.down(e)}
 function move(e){if(!textMode.value)stageGestures.move(e)}
 function up(e){stageGestures.up(e)}
@@ -253,7 +253,7 @@ onBeforeUnmount(()=>{frameCleanup();stageGestures.clear();window.removeEventList
       <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné" @click="selectText"></textarea>
     </div>
     <div v-if="textMessage" class="ocd-status" role="status">{{ textMessage }}</div>
-    <div class="ocd-hint">{{ textMode ? 'Touche un bloc pour sélectionner son texte · Pincement pour zoomer' : 'Glisser pour naviguer · Pincement ou boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
+    <div class="ocd-hint">{{ textMode ? 'Touche un bloc pour sélectionner son texte · Molette ou pincement pour zoomer' : 'Glisser pour naviguer · Molette ou boutons + et − pour zoomer · Pincement sur écran tactile' }}</div>
   </section>
 </template>
 
