@@ -434,113 +434,120 @@ La visibilité au-delà d'une relation d'approbation dépend des droits et de la
 
 ## User Hunting
 
-> More intrusive
 
-**Find all machines on the current domain where the current user has local admin access**
+
+### Droits administrateur locaux
+Identifier les machines sur lesquelles le compte courant dispose de droits administrateur locaux.
 ```powershell
 Find-LocalAdminAccess -Verbose
 ```
 
-**This function queries the DC of the current or provided domain for a list of computers** 
+### Fonctionnement
+La fonction interroge le contrôleur de domaine pour obtenir la liste des ordinateurs, puis vérifie les droits locaux.
 ```powershell
 (Get-NetComputer) and then use multi-threaded Invoke-CheckLocalAdminAccess on each machine.
 ```
 
-> This can also be done with the help of remote administration tools like WMI and PowerShell remoting. 
-
-> Pretty useful in cases ports (RPC and SMB) used by Find-LocalAdminAccess are blocked.
-
-See *Find-WMILocalAdminAccess.ps1* and *Find-PSRemotingLocalAdminAccess.ps1*
+WMI et PowerShell Remoting constituent également des outils d'administration distante.
 
 
-**Find computers where a domain admin (or specified user/group) has sessions**:
+
+Scripts associés : `Find-WMILocalAdminAccess.ps1` et `Find-PSRemotingLocalAdminAccess.ps1`.
+
+
+### Sessions utilisateurs
+Lister les sessions associées à un utilisateur ou à un groupe.
 ```powershell
 Find-DomainUserLocation -Verbose
 Find-DomainUserLocation -UserGroupIdentity "RDPUsers"
 ```
 
-This function queries the DC of the current or provided domain for members of the given group (Domain Admins by default) using **Get-DomainGroupMember**, gets a list of computers (Get-DomainComputer) and list sessions and logged on users:
+La fonction interroge les membres du groupe, les ordinateurs et leurs sessions.
 ```powershell
 (Get-NetSession/Get-NetLoggedon) from each machine.
 ```
 
-> Note that for Server 2019 and onwards, local administrator privileges are required to list sessions.
+À partir de Windows Server 2019, des droits administrateur locaux peuvent être nécessaires pour lister les sessions.
 
-**Find computers where a domain admin session is available and current user has admin access (uses Test-AdminAccess)**.
+### Vérification des droits sur les sessions
+Examiner les droits d'accès associés aux résultats de la recherche de sessions.
 ```powershell
 Find-DomainUserLocation -CheckAccess
 ```
 
-**Find computers (File Servers and Distributed File servers) where a domainadmin session is available**.
+### Variante de recherche
+Variante de la fonction de recherche de sessions.
 ```powershell
 Find-DomainUserLocation -Stealth
 ```
 
 ## BloodHound
 
-> can create a lot of noise
 
-> So if you can't get caught, don't run it. **Just enumerate manually**
 
-- Provides GUI for AD entities and relationships for the data collected by its ingestors.
-- Uses Graph Theory for providing the capability of mapping shortest path for interesting things like Domain Admins.
 
-[BloodHound on GitHub](https://github.com/BloodHoundAD/BloodHound)
 
-- There are built-in queries for frequently used actions.
-- Also supports custom Cypher queries.
+BloodHound représente les objets Active Directory et leurs relations sous forme de graphe.
 
-**[blue team / pentester]**
 
-Supply data to BloodHound (Remember to bypass .NET AMSI):
+[BloodHound](https://github.com/BloodHoundAD/BloodHound)
+
+L'application propose des requêtes prédéfinies et des requêtes Cypher personnalisées.
+
+
+### Collecte des données
+
+Collecteurs SharpHound.
 ```powershell
 . C:\AD\Tools\BloodHound-master\Collectors\SharpHound.ps1
 Invoke-BloodHound -CollectionMethod All
 ```
-or
+Ou :
 ```powershell
 SharpHound.exe
 ```
 
-> The generated archive can be uploaded to the BloodHound application.
+Importer l'archive générée dans BloodHound.
 
 
-**[red team]**
+### Options de collecte
 
-To make BloodHound collection stealthy, use **Stealth** option. This removes noisy collection methods like RDP, DCOM, PSRemote and LocalAdmin:
+Variantes de collecte présentes dans les notes.
 ```powershell
 Invoke-BloodHound –Stealth
 ```
-or
+Ou :
 ```powershell
 SharpHound.exe –-Stealth
 ```
 
-To avoid detections like MDI:
+### Périmètre de collecte
 ```powershell
 Invoke-BloodHound -ExcludeDCs
 ```
 
-Learning Objective 6
+### Exercice BloodHound
 
-> Setup BloodHound and identify shortest path to Domain Admins in the dollarcorp domain.
+Cartographier les relations AD du domaine de laboratoire.
 
 
-**Windows outside of the domain**:
+### Collecte sous Windows
+Collecteur SharpHound.
 ```powershell
 runas /netonly /user:domain\user cmd.exe
 sharphound-v2.0.0\SharpHound.exe -c All --domaincontroller <DC IP> --domain <domain> --ldapusername <user> --ldappassword “passwd” --distinguishedname "OU=BR"
 ```
 
-[SharpHound on GitHub](https://github.com/BloodHoundAD/SharpHound)
+[SharpHound](https://github.com/BloodHoundAD/SharpHound)
 
 
-Linux:
+### Collecte sous Linux
+Collecteur BloodHound.py.
 ```bash
 bloodhound-python -u <user> -p 'passwd' -ns <DC IP> -dc <FQDN> -d <domain> -c all --zip -gc <specify DC if necessary> --dns-tcp
 ```
 
-[BloodHound.py on GitHub](https://github.com/dirkjanm/BloodHound.py)
+[BloodHound.py](https://github.com/dirkjanm/BloodHound.py)
 
 
 ## My Mind Map
