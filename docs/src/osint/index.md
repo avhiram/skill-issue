@@ -122,6 +122,7 @@ Outils OSINT classés par usage.
 - **[Google Earth](https://earth.google.com/web/)** - Comparer des vues de terrain et des repères géographiques.
 - **[OpenStreetMap](https://www.openstreetmap.org/)** - Comparer rues, bâtiments et points d'intérêt.
 - **[WiGLE](https://wigle.net/)** - Consulter les observations géolocalisées de réseaux Wi-Fi et Bluetooth.
+- **[GeoGuessr](https://www.geoguessr.com/)** - S'entraîner à reconnaître des lieux à partir d'images de terrain.
 
 ## Entreprises et registres
 
