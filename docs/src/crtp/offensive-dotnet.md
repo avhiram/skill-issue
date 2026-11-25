@@ -6,9 +6,9 @@ title: "4 - Offensive .NET"
 
 **Dépôt regroupant des outils populaires développés en C# pour le Red Team :**
 
-[SharpCollection on GitHub](https://github.com/Flangvik/SharpCollection)
+[SharpCollection sur GitHub](https://github.com/Flangvik/SharpCollection)
 
-[Mimikatz on GitHub](https://github.com/gentilkiwi/mimikatz)
+[Mimikatz sur GitHub](https://github.com/gentilkiwi/mimikatz)
 
 
 ## Techniques - Contournement de l'antivirus (AV Bypass)
@@ -19,7 +19,7 @@ Pour cela, différentes techniques peuvent être utilisées, notamment l'obfusca
 
 Nous pouvons utiliser DefenderCheck :
 
-[DefenderCheck on GitHub](https://github.com/matterpreter/DefenderCheck)
+[DefenderCheck sur GitHub](https://github.com/matterpreter/DefenderCheck)
 
 > Cet outil permet d'identifier les portions de code et les chaînes d'un binaire susceptibles d'être signalées par Windows Defender.
 
@@ -51,7 +51,7 @@ Exécuter le script PowerShell Out-CompressedDll.ps1 sur le binaire Mimikatz et 
 Out-CompressedDll <Path to mimikatz.exe> > 	outputfilename.txt
 ```	
 
-[Out-CompressedDll.ps1 in PowerSploit](https://github.com/PowerShellMafia/PowerSploit/blob/master/ScriptModification/Out-CompressedDll.ps1)
+[Out-CompressedDll.ps1 dans PowerSploit](https://github.com/PowerShellMafia/PowerSploit/blob/master/ScriptModification/Out-CompressedDll.ps1)
 
 
 - Copier la valeur de la variable **$EncodedCompressedFile** depuis le fichier de sortie et remplacer la valeur de la variable **compressedMimikatzString** dans le fichier **Constants.cs** de SafetyKatz.
@@ -85,7 +85,7 @@ Modifier le fichier **Program.cs**.
 
 Pour Rubeus.exe, **ConfuserEx** a été utilisé afin d'obfusquer le binaire.
 
-[ConfuserEx on GitHub](https://github.com/mkaring/ConfuserEx)
+[ConfuserEx sur GitHub](https://github.com/mkaring/ConfuserEx)
 
 
 Lancer ConfuserEx :
@@ -113,7 +113,7 @@ Lancer ConfuserEx :
 
 NetLoader peut être utilisé pour charger des payloads binaires.
 
-[NetLoader on GitHub](https://github.com/Flangvik/NetLoader)
+[NetLoader sur GitHub](https://github.com/Flangvik/NetLoader)
 
 
 Il peut charger un binaire depuis un chemin local ou une URL et modifier AMSI et ETW pendant son exécution :
