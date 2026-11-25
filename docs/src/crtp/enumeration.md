@@ -550,161 +550,106 @@ bloodhound-python -u <user> -p 'passwd' -ns <DC IP> -dc <FQDN> -d <domain> -c al
 [BloodHound.py](https://github.com/dirkjanm/BloodHound.py)
 
 
-## My Mind Map
+## Mindmap
 
-> Just keep in mind that Enumeration is the MOST important part of a pentest/red team assessment
+### Préparation
 
-### Prep Tools
-```powershell
-inviShell
-powerview
-ad-module
-```
+Outils : InviShell, PowerView, ADModule.
 
-### Enum
---- 1 ---
-```powershell
-Users
-Computers
-Domains Admins
-Enterprise Admins
-```
+### Énumération
 
---- 2 ---
-```powershell
-OUs
-Computers in the OUs
-GPOs
-GPO applied to our machine
-```
+#### Utilisateurs et ordinateurs
 
---- 3 ---
-```powershell
-ACLs
-All modify rights/permissions
-```
+- Utilisateurs et ordinateurs.
+- Domain Admins et Enterprise Admins.
 
---- 4 ---
-```powershell
-All domains
-Map trusts domains
-Map external trusts forest
-Identify external trusts. Can u enumerate?
-```
+#### OU et GPO
 
-### Privesc
+- Unités organisationnelles et ordinateurs associés.
+- GPO du domaine et GPO appliquées à la machine.
 
---- 5 ---
-```powershell
-Try Local Privesc
-Identify if u have local admin in other machines
-```
+#### ACL
 
-### Think of Estrategies 
+- ACL et droits de modification.
 
---- 6 ---
-```powershell
-Setup BloodHound & identify the shortest path to DA
-```
+#### Trusts
 
-### Getting DA
+- Domaines de la forêt.
+- Relations d'approbation entre domaines et forêts.
+- Visibilité des relations externes.
 
---- 7 ---
-```powershell
-Identify a machine in the target domain where DA session is available
-Compromise the machine and escalate to DA
-```
+### Privilege Escalation
 
---- 8 ---
-```powershell
-Extract secrets from DC
-Create a golden ticket with the krbtgt account secrets
-Get DA with golden ticket
-```
+#### Privilèges locaux
 
---- 9 ---
-```powershell
-Try to get command execution on the DC by creating a Silver Ticket
-```
+Examiner les possibilités d'élévation locale et les droits administrateur sur les autres machines.
 
---- 10 ---
-```powershell
-Use DA privileges to execute Diamond Ticket
-```
+#### BloodHound
 
---- 11 ---
-```powershell
-Use DA privileges to abuse DSRM credential for persistence
-```
+Cartographier les chemins vers les Domain Admins.
 
---- 12 ---
-```powershell
-Check if the user has Replication (DCSync) Rights
-  if yes : execute DCSync to pull hashes of the krbtgt user
-  if no : add replication rights and execute DCSync
-```
+### Sécurité du domaine
 
---- 13 ---
-```powershell
-Modify Security descriptors on dc to get access using Powershell Remoting and WMI without requiring administrator access
-Retrieve machine account hash from dc without using administrator access and use that to execute a Silver Ticket attack to get code execution with WMI
-```
+#### Sessions privilégiées
 
---- 14 ---
-```powershell
-Using Kerberoasting Attack, crack password of a SQL server service account
-```
+Examiner l'exposition des sessions Domain Admin et les risques de compromission associés.
 
---- 15 ---
-```powershell
-Find a server in the DC where Unconstrained Delegation is enabled
-Compromise the server and escalate to DA
-Escalate to EA by abusing Printer Bug
-```
+#### Golden Ticket
 
---- 16 ---
-```powershell
-Enumerate users in the domain for whom Contrained Delegation is enabled:
-  Request a TGT from the DC and obtain TGS for the service to which delegation is configured
-  Pass the ticket and access the service
-Enumerate computer accounts for which Contrained Delegation is enabled:
-  For such a user, request a TGT from the DC
-  Obtain an alternate TGS for LDAP service on the target machine
-  Use the TGS for executing DCSync attack
-```
+Étudier les risques associés aux secrets du compte krbtgt et aux tickets Kerberos.
 
---- 17 ---
-```powershell
-Find a computer object in the domain where we have Write Permissions
-Abuse the Write permissions to access that computer as DA
-```
+#### Silver Ticket
 
---- 18 ---
-```powershell
-Using DA access to dollarcorp, escalate privileges to EA or DA to parent domain, moneycorp using the domain trust key
-```
+Étudier les risques de tickets de service falsifiés sur les contrôleurs de domaine.
 
---- 19 --- 
-```powershell
-Using DA access to dollarcorp, escalate privileges to EA or DA to  parent domain, moneycorp using dollarcorp krbtgt hash
-```
+#### Diamond Ticket
 
---- 20 ---
-```powershell
-With DA privileges on dollarcorp, get access to SharedWithDCorp share on the DC of eurocorp forest
-```
+Étudier la manipulation des tickets Kerberos et ses implications.
 
---- 21 ---
-```powershell
-Check if DA CS is used by the target forest and find any vulnerable/abusable templates
-Abuse any such templates to escalate to DA and EA
-  Esc1
-  Esc3
-  Esc6
-```
+#### DSRM
 
---- 22 ---
-```powershell
-Get a reverse shell on a SQL Server in eurocorp forest by abusing database links from dcorp-mssql
-```
+Examiner les risques de persistance associés aux identifiants DSRM.
 
+#### DCSync
+
+Examiner les droits de réplication, notamment ceux qui permettent l'accès aux secrets du domaine.
+
+#### Security Descriptors
+
+Examiner les permissions des contrôleurs de domaine et les risques associés à WMI, PowerShell Remoting et aux comptes ordinateurs.
+
+#### Kerberoasting
+
+Examiner l'exposition des comptes de service SQL à Kerberoasting.
+
+#### Unconstrained Delegation
+
+Examiner les serveurs concernés, les risques d'élévation de privilèges et le Printer Bug.
+
+#### Constrained Delegation
+
+Examiner la délégation des comptes utilisateurs et ordinateurs, les tickets TGT et TGS et les risques associés aux services LDAP.
+
+#### RBCD
+
+Examiner les permissions d'écriture sur les objets ordinateurs et les risques liés à la délégation.
+
+#### Domain Trust Key
+
+Examiner les risques d'élévation inter-domaines associés aux clés de Trust.
+
+#### Compte krbtgt
+
+Examiner les risques d'élévation vers le domaine parent associés aux secrets krbtgt.
+
+#### Forest Trust
+
+Examiner les autorisations d'accès aux partages du domaine distant.
+
+#### AD CS
+
+Examiner les modèles de certificats et les risques ESC1, ESC3 et ESC6.
+
+#### SQL Server
+
+Examiner les risques associés aux liens entre serveurs SQL.
