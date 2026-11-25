@@ -1,2 +1,0 @@
-Original CRTP notes by Johnermac. Source: https://github.com/Johnermac/Johnermac.github.io/tree/d630c8db45acd1f3793b83c0352a23bd9a6e34c7/_posts/notes/crtp
-English notes preserved; only site metadata, image paths and Jekyll alignment markup adapted.
