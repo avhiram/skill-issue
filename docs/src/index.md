@@ -54,11 +54,11 @@ aside: false
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nato.int/" target="_blank" rel="noopener noreferrer" title="OTAN">
-    <span class="profile-logo-frame"><img src="/institutions/otan.png" alt="Logo de l’OTAN" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/otan.png" alt="Logo de l’OTAN" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
     <span class="profile-logo-label">OTAN</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/" target="_blank" rel="noopener noreferrer" title="NATO CCDCOE">
-    <span class="profile-logo-frame"><img src="/institutions/ccdcoe.png" alt="Logo du NATO CCDCOE" loading="lazy" decoding="async" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/ccdcoe.png" alt="Logo du NATO CCDCOE" loading="lazy" decoding="async" draggable="false"></span>
     <span class="profile-logo-label">NATO CCDCOE</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" title="Locked Shields 2025">
@@ -75,7 +75,7 @@ aside: false
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" title="École 2600">
-    <span class="profile-logo-frame profile-logo-frame-school"><img src="/institutions/ecole2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async" draggable="false"></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><img src="https://avhiram.github.io/skill-issue/institutions/ecole2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async" draggable="false"></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
@@ -109,11 +109,11 @@ aside: false
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nato.int/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OTAN">
-    <span class="profile-logo-frame"><img src="/institutions/otan.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/otan.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
     <span class="profile-logo-label">OTAN</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="NATO CCDCOE">
-    <span class="profile-logo-frame"><img src="/institutions/ccdcoe.png" alt="" loading="lazy" decoding="async" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/ccdcoe.png" alt="" loading="lazy" decoding="async" draggable="false"></span>
     <span class="profile-logo-label">NATO CCDCOE</span>
   </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Locked Shields 2025">
@@ -130,7 +130,7 @@ aside: false
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="École 2600">
-    <span class="profile-logo-frame profile-logo-frame-school"><img src="/institutions/ecole2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async" draggable="false"></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><img src="https://avhiram.github.io/skill-issue/institutions/ecole2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async" draggable="false"></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
