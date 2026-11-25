@@ -26,6 +26,17 @@ Une forêt peut regrouper plusieurs domaines. Affiche leurs noms DNS.
 ```
 :::
 
+::: details Lire les propriétés d’une zone DNS
+Avec le module DnsServer, indique le serveur qui héberge la zone et son nom DNS. ZoneType précise son type et IsDsIntegrated indique si elle est intégrée à Active Directory.
+
+```powershell
+$serveur = Read-Host "Serveur DNS"
+$zone = Read-Host "Nom de la zone"
+Get-DnsServerZone -ComputerName $serveur -Name $zone |
+    Select-Object ZoneName, ZoneType, IsDsIntegrated, IsReverseLookupZone
+```
+:::
+
 ## Qui fait partie d’un groupe ? {#comptes}
 
 ::: details Lire les membres directs
@@ -113,6 +124,15 @@ Get-ADGroupMember -Identity $sid -Server $racine
 ```
 :::
 
+::: details Lire un groupe avec PowerView
+Avec PowerView chargé, indique le nom du groupe. Chaque ligne correspond à un membre direct.
+
+```powershell
+Get-DomainGroupMember -Identity (Read-Host "Nom du groupe") |
+    Select-Object GroupName, MemberName, MemberObjectClass
+```
+:::
+
 ## Quels postes et stratégies trouve-t-on dans une OU ? {#postes}
 
 Une unité d’organisation (OU) regroupe des objets du domaine. Commence par retrouver son chemin, puis copie-le dans la commande qui t’intéresse.
@@ -190,6 +210,15 @@ Get-ADComputer -Filter * -SearchBase $ou -SearchScope Subtree | Select-Object Na
 ```
 :::
 
+::: details Lire les ordinateurs d’une OU avec PowerView
+Utilise le chemin complet de l’OU pour distinguer deux unités portant le même nom.
+
+```powershell
+$ou = Read-Host "Chemin de l’OU"
+Get-DomainComputer -SearchBase $ou | Select-Object Name, DistinguishedName
+```
+:::
+
 ## Quels droits et relations vérifier ? {#droits}
 
 ::: details Lire les permissions sur un groupe
@@ -233,6 +262,42 @@ Avec PowerView chargé, lire les relations de la forêt indiquée.
 
 ```powershell
 Get-ForestTrust -Forest (Read-Host 'Nom DNS de la forêt')
+```
+:::
+
+::: details Lire les approbations et les permissions avec PowerView
+Afficher les relations d’approbation de la forêt courante.
+
+```powershell
+Get-ForestTrust
+```
+
+Lire les entrées de contrôle d’accès du groupe indiqué. ResolveGUIDs traduit les identifiants de types d’objets lorsque PowerView peut les résoudre.
+
+```powershell
+Get-DomainObjectAcl -Identity (Read-Host "Nom du groupe") -ResolveGUIDs |
+    Select-Object SecurityIdentifier, ActiveDirectoryRights, ObjectAceType, IsInherited
+```
+:::
+
+::: details Identifier un compte externe par son SID
+Si le SID désigne un utilisateur et que son domaine d’origine est connu, interroge ce domaine pour retrouver le compte correspondant.
+
+```powershell
+$domaine = Read-Host "Domaine DNS d’origine"
+$sid = Read-Host "SID du compte"
+Get-ADUser -Identity $sid -Server $domaine | Select-Object Name, SamAccountName, SID
+```
+:::
+
+::: details PAM · lire les shadow principals
+Dans une forêt de gestion PAM, cette requête affiche les objets du conteneur Shadow Principal Configuration, leurs membres et le SID représenté. Elle suppose que le conteneur existe dans la forêt interrogée.
+
+```powershell
+$configuration = (Get-ADRootDSE).configurationNamingContext
+$base = "CN=Shadow Principal Configuration,CN=Services,$configuration"
+Get-ADObject -SearchBase $base -SearchScope OneLevel -LDAPFilter '(objectClass=msDS-ShadowPrincipal)' -Properties member, msDS-ShadowPrincipalSid |
+    Select-Object Name, member, msDS-ShadowPrincipalSid
 ```
 :::
 
@@ -281,6 +346,14 @@ Afficher les états déclarés par Device Guard.
 
 ```powershell
 Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard | Select-Object VirtualizationBasedSecurityStatus, SecurityServicesConfigured, SecurityServicesRunning
+```
+:::
+
+::: details SQL Server · lire les serveurs liés à une instance
+Avec PowerUpSQL chargé, saisis le nom de l’instance que tu administres. La commande lit la liste des serveurs liés visible avec ton compte.
+
+```powershell
+Get-SQLServerLink -Instance (Read-Host "Instance SQL Server")
 ```
 :::
 
