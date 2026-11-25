@@ -911,3 +911,12 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .vp-doc .profile-proof span { font-size: .78rem; line-height: 1.48; }
 .vp-doc .profile-proof .profile-proof-featured { border-color: #645079; background: #1b1425; }
 @media (max-width: 640px) { .vp-doc .profile-proof { gap: .65rem; } }
+
+
+/* Certification badges: show fallback text only if image fails. */
+.vp-doc .profile-credential-image img:not([hidden]):not([style*="display"]) + .profile-credential-fallback {
+  display: none;
+}
+.vp-doc .profile-credential-image img[hidden] {
+  display: none !important;
+}
