@@ -231,108 +231,122 @@ Inventorier les objets suivants dans le domaine de laboratoire :
 
 ## GPO
 
-**Get list of GPO in current domain**:
+### GPO du domaine
+Lister les stratégies de groupe du domaine ou d'un ordinateur.
 ```powershell
 Get-DomainGPO
 Get-DomainGPO -ComputerIdentity domain-computer
 ```
 	
-**Get GPO(s) which use Restricted Groups or groups.xml for interesting users**:
+### Restricted Groups
+Identifier les GPO qui configurent les groupes locaux.
 ```powershell
 Get-DomainGPOLocalGroup
 ```
 
-**Get users which are in a local group of a machine using GPO**:
+### Groupes locaux d'un ordinateur
+Examiner les appartenances définies par les GPO.
 ```powershell
 Get-DomainGPOComputerLocalGroupMapping -ComputerIdentity domain-computer
 ```
 	
-**Get machines where the given user is member of a specific group**:
+### Appartenance aux groupes par utilisateur
+Identifier les machines concernées par les appartenances définies par GPO.
 ```powershell
 Get-DomainGPOUserLocalGroupMapping -Identity user -Verbose
 ```
 
-**Get OUs in a domain**:
+### Unités organisationnelles
+Lister les OU du domaine.
 ```powershell
 Get-DomainOU
 Get-ADOrganizationalUnit -Filter * -Properties *
 ```
 	
-**Get GPO applied on an OU. Read GPOname from gplink attribute from**:
+### GPO appliquées à une OU
+Identifier les GPO liées à une OU via l'attribut `gPLink`.
 ```powershell
 Get-NetOU
 Get-DomainGPO -Identity "{0D1CC23D-1F20-4EEE-AF64-D99597AE2A6E}"
 ```
 
-**Get users which are in a local group of a machine in any OU using GPO**:
+### Groupes locaux des ordinateurs par OU
+Examiner les groupes locaux définis par GPO pour les ordinateurs des OU.
 ```powershell
 (Get-DomainOU).distinguishedname | %{Get-DomainComputer -SearchBase $_} | Get-DomainGPOComputerLocalGroupMapping
 ```
 
-**Get users which are in a local group of a machine in a particular OU using GPO**:
+### Groupes locaux dans une OU spécifique
+Limiter la recherche à une OU.
 ```powershell
 (Get-DomainOU -Identity 'OU=Mgmt,DC=us,DC=techcorp,DC=local').distinguishedname | %{Get-DomainComputer -SearchBase $_} | Get-DomainGPOComputerLocalGroupMapping
 ```
 
-There is a bug in PowerView, otherwise the below command would work:
+### Variante PowerView
+Cette syntaxe est signalée comme défectueuse dans les notes d'origine.
 ```powershell
 Get-DomainGPOComputerLocalGroupMapping -OUIdentity 'OU=Mgmt,DC=us,DC=techcorp,DC=local'
 ```
 
 
 
-Learning Objective 2
+### Exercice GPO
 
-Enumerate following for the dollarcorp domain:
+Inventorier les OU et les GPO du domaine de laboratoire.
 
-– List all the OUs
-– List all the computers in the StudentMachines OU
+- Lister les OU.
+- Lister les ordinateurs de l'OU StudentMachines.
 
 ```powershell
 (Get-DomainOU -Identity StudentMachines).distinguishedname | %{Get-DomainComputer -SearchBase $_} | select name
 ```
 
-– List the GPOs
-– Enumerate GPO applied on the StudentMachines OU.
+- Lister les GPO.
+- Identifier les GPO liées à StudentMachines.
 
 ## ACL
 
-![Alt text](./assets/1.png)
+![Structure des ACL](./assets/1.png)
 
 
 
-**Get the ACLs associated with the specified object**:
+### ACL d'un objet
+Afficher les permissions associées à un objet AD.
 ```powershell
 Get-DomainObjectAcl -SamAccountName student1 -ResolveGUIDs
 ```
 
-**Get the ACLs associated with the specified prefix to be used for search**:
+### ACL par base LDAP
+Limiter la recherche des ACL à une base LDAP.
 ```powershell
 Get-DomainObjectAcl -SearchBase "LDAP://CN=DomainAdmins,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local" -ResolveGUIDs -Verbose
 ```
 
-**We can also enumerate ACLs using ActiveDirectory module but without resolving GUIDs**:
+### ACL avec le module ActiveDirectory
+Consulter les droits d'accès sans résolution des GUID.
 ```powershell
 (Get-Acl 'AD:\CN=Administrator,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local').Access
 ```
 
-**Search for interesting ACEs**:
+### ACE à examiner
+Identifier les entrées de contrôle d'accès à examiner.
 ```powershell
 Find-InterestingDomainAcl -ResolveGUIDs
 ```
 
-**Get the ACLs associated with the specified path**:
+### ACL d'un chemin
+Consulter les permissions associées à un chemin réseau.
 ```powershell
 Get-PathAcl -Path "\\dcorp-dc.dollarcorp.moneycorp.local\sysvol"
 ```
 
 
-Learning Objective 3
+### Exercice ACL
 
-Enumerate following for the dollarcorp domain:
+Examiner les permissions dans le domaine de laboratoire.
 
-– ACL for the Domain Admins group
-– All modify rights/permissions for the studentx
+- ACL du groupe Domain Admins.
+- Droits de modification associés au compte studentx.
 
 ```powershell
 Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match “studentx”}
@@ -345,18 +359,18 @@ reading ACL = in <ObjectDN>, (all users in) the group <IdentityReferenceName> ha
 # example    > in Control2User, (all users in) the group RDPUsers have GenericAll (full controll) permissions
 ```
 
-![Alt text](./assets/2.png)
+![Exemple de permissions AD](./assets/2.png)
 
 
 ## Trusts
 
-- In an AD environment, trust is a relationship between two domains or forests which allows users of one domain or forest to access resources in the other domain or forest.
-- Trust can be automatic (parent-child, same forest etc.) or established (forest, external).
-- Trusted Domain Objects (TDOs) represent the trust relationships in a domain.
+Une relation d'approbation (Trust) permet l'accès à des ressources entre domaines ou forêts, selon les autorisations accordées.
+Elle peut être automatique (parent-enfant) ou configurée explicitement.
+Les Trusted Domain Objects (TDO) représentent ces relations.
 
-### Domain Trust mapping
+### Relations d'approbation du domaine
 
-**Get a list of all domain trusts for the current domain**:
+Lister les Trusts du domaine courant ou d'un domaine indiqué.
 ```powershell
 Get-DomainTrust
 Get-DomainTrust -Domain domain.local
@@ -364,9 +378,10 @@ Get-ADTrust
 Get-ADTrust -Identity domain.local
 ```
 
-### Forest mapping
+### Cartographie de la forêt
 
-**Get details about the current forest**:
+#### Forêt actuelle
+Afficher les informations de la forêt AD.
 ```powershell
 Get-Forest
 Get-Forest -Forest domain.local
@@ -374,44 +389,47 @@ Get-ADForest
 Get-ADForest -Identity domain.local
 ```
 
-**Get all domains in the current forest**:
+#### Domaines de la forêt
+Lister les domaines appartenant à la forêt.
 ```powershell
 Get-ForestDomain
 Get-ForestDomain -Forest domain.local
 (Get-ADForest).Domains
 ```
 
-**Get all global catalogs for the current forest**:
+#### Global Catalogs
+Lister les serveurs de catalogue global.
 ```powershell
 Get-ForestGlobalCatalog
 Get-ForestGlobalCatalog -Forest domain.local
 Get-ADForest | select -ExpandProperty GlobalCatalogs
 ```
 
-**Map trusts of a forest** (no Forest trusts in the lab):
+#### Trusts de la forêt
+Examiner les relations d'approbation de la forêt.
 ```powershell
 Get-ForestTrust
 Get-ForestTrust -Forest domain.local
 Get-ADTrust -Filter 'msDS-TrustForestTrustInfo -ne "$null"'
 ```
 
-Learning Objective 4
+### Exercice Trusts
 
-- Enumerate all domains in the moneycorp.local forest.
-- Map the trusts of the dollarcorp.moneycorp.local domain.
-- Map External trusts in moneycorp.local forest.
+- Lister les domaines de la forêt moneycorp.local.
+- Cartographier les Trusts de dollarcorp.moneycorp.local.
+- Identifier les Trusts externes de moneycorp.local.
 
 ```powershell
  Get-ForestDomain | %{Get=DomainTrust -Domain $_.Name} | ?{$_.TrustAttributes -eq “FILTER_SIDS”}
 ```
 
-- Identify external trusts of dollarcorp domain. Can you enumerate trusts for a trusting forest?
+- Examiner les Trusts externes du domaine de laboratoire.
 
 ```powershell
 Get-ForestDomain -Forest eurocorp.local | %{Get=DomainTrust -Domain $_.Name}
 ```
 
-> no, we cant enumerate beyong trusts relationships
+La visibilité au-delà d'une relation d'approbation dépend des droits et de la configuration.
 
 
 ## User Hunting
