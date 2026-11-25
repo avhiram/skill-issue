@@ -209,9 +209,13 @@ function bindTextFrame() {
     else if(e.deltaX){const p=scrollPosition();queueScroll(p.left+e.deltaX,p.top)}
   }
   const context=e=>e.preventDefault()
-  const listeners=[['contextmenu',context],['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['lostpointercapture',up],['wheel',wheel]]
+  const win=doc.defaultView
+  const listeners=[['contextmenu',context],['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['lostpointercapture',up]]
   for(const [name,fn] of listeners)doc.addEventListener(name,fn,{passive:false})
-  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);gestures.clear();activeHighlight?.remove()}
+  // Wheel events inside an iframe do not bubble to the parent page. Capture them
+  // on the iframe window so mouse-wheel zoom works over every SVG element.
+  win?.addEventListener('wheel',wheel,{capture:true,passive:false})
+  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);win?.removeEventListener('wheel',wheel,true);gestures.clear();activeHighlight?.remove()}
 }
 async function copyText() {
   if(!selectedText.value)return
