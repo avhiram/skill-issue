@@ -4,7 +4,7 @@ title: CRTP
 
 # CRTP
 
-Certified Red Team Professional - Notes techniques sur Active Directory et la sécurité des environnements Windows.
+**Certified Red Team Professional**
 
 ## Chapitres
 
