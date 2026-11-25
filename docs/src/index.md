@@ -154,7 +154,7 @@ aside: false
   </a>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
     <strong>Capital</strong>
-    <span>« À l’école des hackers éthiques »</span>
+    <span>Mon parcours dans la cybersécurité</span>
   </a>
 </div>
 
