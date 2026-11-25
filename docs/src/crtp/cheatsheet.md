@@ -35,6 +35,12 @@ $zone = Read-Host "Nom de la zone"
 Get-DnsServerZone -ComputerName $serveur -Name $zone |
     Select-Object ZoneName, ZoneType, IsDsIntegrated, IsReverseLookupZone
 ```
+
+Pour le détail complet, réutilise les valeurs de `$serveur` et `$zone` définies ci-dessus. Cette variante affiche toutes les propriétés renvoyées pour la zone.
+
+```powershell
+Get-DnsServerZone -ComputerName $serveur -Name $zone | Format-List *
+```
 :::
 
 ## Qui fait partie d’un groupe ? {#comptes}
@@ -72,6 +78,14 @@ La classe msDS-GroupManagedServiceAccount identifie un gMSA.
 ```powershell
 $service = Read-Host "Nom du compte de service"
 Get-ADServiceAccount -Identity $service | Select-Object Name, ObjectClass, Enabled
+```
+
+Pour vérifier les autorisations d’un gMSA précis, lis la liste des comptes et groupes autorisés à récupérer son mot de passe géré. La commande affiche les identités déclarées.
+
+```powershell
+$gmsa = Read-Host "Nom du gMSA à vérifier"
+Get-ADServiceAccount -Identity $gmsa -Properties PrincipalsAllowedToRetrieveManagedPassword |
+    Select-Object -ExpandProperty PrincipalsAllowedToRetrieveManagedPassword
 ```
 :::
 
@@ -263,6 +277,15 @@ Avec PowerView chargé, lire les relations de la forêt indiquée.
 ```powershell
 Get-ForestTrust -Forest (Read-Host 'Nom DNS de la forêt')
 ```
+
+Pour la revue de toute la forêt, interroge chaque domaine et affiche les relations externes qui ne sont pas des approbations de forêt.
+
+```powershell
+foreach ($domaine in (Get-ADForest).Domains) {
+    Get-ADTrust -Server $domaine -Filter 'IntraForest -eq $False -and ForestTransitive -eq $False' |
+        Select-Object Source, Target, Direction, TrustType
+}
+```
 :::
 
 ::: details Lire les approbations et les permissions avec PowerView
@@ -287,6 +310,24 @@ Si le SID désigne un utilisateur et que son domaine d’origine est connu, inte
 $domaine = Read-Host "Domaine DNS d’origine"
 $sid = Read-Host "SID du compte"
 Get-ADUser -Identity $sid -Server $domaine | Select-Object Name, SamAccountName, SID
+```
+
+Avec PowerView chargé, tu peux aussi interroger le domaine d’origine en donnant directement le SID à Get-DomainUser.
+
+```powershell
+$domaine = Read-Host "Domaine DNS d’origine"
+$sid = Read-Host "SID de l’utilisateur"
+Get-DomainUser -Domain $domaine -Identity $sid |
+    Select-Object SamAccountName, DistinguishedName
+```
+
+Dans le domaine qui accueille l’identité externe, retrouve ses groupes directs. Utilise le chemin complet du Foreign Security Principal, affiché dans le volet « Examiner les relations d’un domaine précis ».
+
+```powershell
+$domaine = Read-Host "Domaine DNS qui contient le groupe"
+$membre = Read-Host "DistinguishedName du Foreign Security Principal"
+Get-ADGroup -Server $domaine -Filter { member -eq $membre } |
+    Select-Object Name, DistinguishedName
 ```
 :::
 
@@ -326,6 +367,14 @@ Lire la version de Windows du poste courant avec CIM.
 
 ```powershell
 Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber
+```
+
+Pour vérifier la version de Windows d’un poste distant que tu administres, indique son nom DNS. L’accès CIM distant doit être autorisé.
+
+```powershell
+$poste = Read-Host "Nom DNS du poste"
+Get-CimInstance -ClassName Win32_OperatingSystem -ComputerName $poste |
+    Select-Object CSName, Caption, Version, BuildNumber
 ```
 :::
 
