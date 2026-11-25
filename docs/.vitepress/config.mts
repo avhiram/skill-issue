@@ -35,9 +35,21 @@ export default defineConfig({
       { text: 'OSINT', link: '/osint/' },
       { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
       { text: 'OSCP', link: '/oscp/' },
-      { text: 'CRTO', link: '/crto/' }
+      { text: 'CRTO', link: '/crto/' },
+      { text: 'CRTP', link: '/crtp/' }
     ],
     sidebar: {
+      '/crtp/': [
+        { text: 'CRTP', link: '/crtp/', items: [
+          { text: 'AD Enumeration', link: '/crtp/enumeration' },
+          { text: 'Windows PrivEsc', link: '/crtp/windows-privesc' },
+          { text: 'Lateral Movement', link: '/crtp/lateral-movement' },
+          { text: 'Offensive .NET', link: '/crtp/offensive-dotnet' },
+          { text: 'AD Persistence', link: '/crtp/ad-persistence' },
+          { text: 'AD PrivEsc', link: '/crtp/ad-privesc' },
+          { text: 'AD Defense', link: '/crtp/defense' }
+        ] }
+      ],
       '/academy/': [],
       '/bug-bounty/': [
         { text: 'Bug Bounty', link: '/bug-bounty/index.html', items: [
