@@ -7,7 +7,7 @@ aside: false
 
 Ouvre PowerShell sur un poste du domaine équipé du module **ActiveDirectory**. Saisis le nom demandé quand tu exécutes un exemple.
 
-[Périmètre](#perimetre) · [Comptes et groupes](#comptes) · [Postes et stratégies](#postes) · [Droits et approbations](#droits)
+[Périmètre](#perimetre) · [Comptes et groupes](#comptes) · [Postes et stratégies](#postes) · [Droits et approbations](#droits) · [Session Windows](#poste-windows)
 
 ## Dans quel domaine suis-je ? {#perimetre}
 
@@ -64,6 +64,55 @@ Get-ADServiceAccount -Identity $service | Select-Object Name, ObjectClass, Enabl
 ```
 :::
 
+::: details Inventorier les comptes et les ordinateurs
+Afficher les identifiants des utilisateurs du domaine.
+
+```powershell
+Get-ADUser -Filter * | Select-Object -ExpandProperty SamAccountName
+```
+
+Afficher les noms des ordinateurs enregistrés.
+
+```powershell
+Get-ADComputer -Filter * | Select-Object -ExpandProperty Name
+```
+
+Lister les comptes de service gérés.
+
+```powershell
+Get-ADServiceAccount -Filter * | Select-Object Name, ObjectClass
+```
+
+Rechercher les anciens comptes de connecteur dont le nom commence par MSOL_.
+
+```powershell
+Get-ADUser -Filter "SamAccountName -like 'MSOL_*'" -Properties Description | Select-Object SamAccountName, Description
+```
+:::
+
+::: details Vérifier les groupes d’administration
+Lire les propriétés du groupe Administrateurs du domaine. Son SID se termine par 512, quelle que soit la langue du domaine.
+
+```powershell
+$sid = (Get-ADDomain).DomainSID.Value + '-512'
+Get-ADGroup -Identity $sid -Properties *
+```
+
+Lister ses membres directs.
+
+```powershell
+Get-ADGroupMember -Identity ((Get-ADDomain).DomainSID.Value + '-512')
+```
+
+Afficher les membres du groupe Administrateurs de l’entreprise dans le domaine racine de la forêt.
+
+```powershell
+$racine = (Get-ADForest).RootDomain
+$sid = (Get-ADDomain -Server $racine).DomainSID.Value + '-519'
+Get-ADGroupMember -Identity $sid -Server $racine
+```
+:::
+
 ## Quels postes et stratégies trouve-t-on dans une OU ? {#postes}
 
 Une unité d’organisation (OU) regroupe des objets du domaine. Commence par retrouver son chemin, puis copie-le dans la commande qui t’intéresse.
@@ -94,6 +143,53 @@ $ou = Read-Host "Chemin de l’OU"
 ```
 :::
 
+::: details Consulter les OU et les stratégies avec PowerView
+Dans une session où PowerView est chargé, afficher les unités d’organisation.
+
+```powershell
+Get-DomainOU | Select-Object Name, DistinguishedName
+```
+
+Afficher les GPO du domaine.
+
+```powershell
+Get-DomainGPO | Select-Object DisplayName, Name
+```
+
+Lire les liens GPO d’une OU.
+
+```powershell
+(Get-DomainOU -Identity (Read-Host 'Nom de l’OU')).gplink
+```
+
+Retrouver une GPO à partir de son GUID.
+
+```powershell
+Get-DomainGPO -Identity (Read-Host 'GUID de la GPO')
+```
+
+Consulter les paramètres de groupes locaux définis par les GPO.
+
+```powershell
+Get-DomainGPOLocalGroup
+```
+
+Lire la stratégie Kerberos renvoyée par PowerView.
+
+```powershell
+(Get-DomainPolicy).KerberosPolicy
+```
+:::
+
+::: details Lister les postes d’une OU et de ses sous-OU
+Copie le chemin de l’OU. Subtree inclut les unités imbriquées dans la recherche.
+
+```powershell
+$ou = Read-Host "Chemin de l’OU"
+Get-ADComputer -Filter * -SearchBase $ou -SearchScope Subtree | Select-Object Name
+```
+:::
+
 ## Quels droits et relations vérifier ? {#droits}
 
 ::: details Lire les permissions sur un groupe
@@ -111,6 +207,80 @@ Lis ensemble Source, Target et Direction pour interpréter le sens de chaque rel
 
 ```powershell
 Get-ADTrust -Filter * | Select-Object Source, Target, Direction, IntraForest
+```
+:::
+
+::: details Examiner les relations d’un domaine précis
+Interroger le domaine DNS indiqué.
+
+```powershell
+Get-ADTrust -Filter * -Server (Read-Host 'Domaine DNS')
+```
+
+Afficher les relations du domaine racine avec des domaines extérieurs à la forêt.
+
+```powershell
+Get-ADTrust -Filter 'IntraForest -eq $False' -Server (Get-ADForest).RootDomain
+```
+
+Lister les objets qui représentent des identités externes dans le domaine choisi.
+
+```powershell
+Get-ADObject -LDAPFilter '(objectClass=foreignSecurityPrincipal)' -Server (Read-Host 'Domaine DNS') | Select-Object Name, DistinguishedName
+```
+
+Avec PowerView chargé, lire les relations de la forêt indiquée.
+
+```powershell
+Get-ForestTrust -Forest (Read-Host 'Nom DNS de la forêt')
+```
+:::
+
+## Que vérifier sur le poste Windows ? {#poste-windows}
+
+::: details Lire la session et les tickets Kerberos
+Afficher les groupes présents dans le jeton de la session Windows.
+
+```powershell
+whoami /groups
+```
+
+Consulter les tickets Kerberos en cache pour la session courante.
+
+```powershell
+klist
+```
+
+Afficher le mode de langage de la session PowerShell.
+
+```powershell
+$ExecutionContext.SessionState.LanguageMode
+```
+
+Lire la version de Windows du poste courant avec CIM.
+
+```powershell
+Get-CimInstance -ClassName Win32_OperatingSystem | Select-Object Caption, Version, BuildNumber
+```
+:::
+
+::: details Vérifier AppLocker et Device Guard
+Dans Windows PowerShell avec le module AppLocker, afficher les collections de règles de la stratégie effective.
+
+```powershell
+(Get-AppLockerPolicy -Effective).RuleCollections
+```
+
+Lire la clé locale de stratégie AppLocker, si elle existe.
+
+```powershell
+reg query HKLM\Software\Policies\Microsoft\Windows\SRPV2
+```
+
+Afficher les états déclarés par Device Guard.
+
+```powershell
+Get-CimInstance -Namespace root\Microsoft\Windows\DeviceGuard -ClassName Win32_DeviceGuard | Select-Object VirtualizationBasedSecurityStatus, SecurityServicesConfigured, SecurityServicesRunning
 ```
 :::
 
