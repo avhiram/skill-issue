@@ -59,6 +59,11 @@ Outils OSINT classés par usage.
 - **[EmailRep](https://emailrep.io/)** - Consulter des indicateurs de réputation d'une adresse.
 - **[Hunter](https://hunter.io/)** - Rechercher des adresses et formats d'e-mails professionnels publics.
 
+## Téléphonie et annuaires
+
+- **[Truecaller](https://www.truecaller.com/)** - Consulter les informations disponibles sur un numéro et les signalements associés.
+- **[Infobel](https://www.infobel.com/)** - Rechercher des coordonnées dans des annuaires téléphoniques et professionnels.
+
 ## Domaines, DNS et sous-domaines
 
 - **[theHarvester](https://github.com/laramies/theHarvester)** - Collecter sous-domaines, e-mails, URL et indices publics.
@@ -86,6 +91,12 @@ Outils OSINT classés par usage.
 - **[URLhaus](https://urlhaus.abuse.ch/)** - Rechercher des URL associées à la diffusion de malware.
 - **[ThreatFox](https://threatfox.abuse.ch/)** - Examiner les indicateurs publics de menace.
 
+## Technologies Web
+
+- **[BuiltWith](https://builtwith.com/)** - Identifier les technologies, CMS et services détectés sur un site.
+- **[Wappalyzer](https://www.wappalyzer.com/)** - Repérer les technologies utilisées par un site depuis le navigateur.
+- **[WhatWeb](https://github.com/urbanadventurer/WhatWeb)** - Identifier les technologies et composants exposés par un site depuis le terminal.
+
 ## Archives et publications
 
 - **[Wayback Machine](https://web.archive.org/)** - Voir les versions conservées d'une page Web.
@@ -110,6 +121,7 @@ Outils OSINT classés par usage.
 - **[Bellingcat Toolkit](https://bellingcat.gitbook.io/toolkit)** - Recouper lieux, médias et informations publiques.
 - **[Google Earth](https://earth.google.com/web/)** - Comparer des vues de terrain et des repères géographiques.
 - **[OpenStreetMap](https://www.openstreetmap.org/)** - Comparer rues, bâtiments et points d'intérêt.
+- **[WiGLE](https://wigle.net/)** - Consulter les observations géolocalisées de réseaux Wi-Fi et Bluetooth.
 
 ## Entreprises et registres
 
@@ -122,5 +134,7 @@ Outils OSINT classés par usage.
 - **[Awesome OSINT](https://github.com/jivoi/awesome-osint)** - Trouver une ressource complémentaire par domaine d'investigation.
 - **[OSINT Cheat Sheet](https://github.com/Jieyab89/OSINT-Cheat-sheet)** - Répertoire étendu de méthodes et d'outils.
 - **[OSINT Framework](https://osintframework.com/)** - Choisir un outil selon le type de renseignement.
+- **[Maltego](https://www.maltego.com/)** - Représenter graphiquement les relations entre entités.
+- **[SpiderFoot](https://github.com/smicallef/spiderfoot)** - Automatiser la collecte d'informations à partir de sources ouvertes.
 - **[CyberChef](https://gchq.github.io/CyberChef/)** - Convertir et décoder des données.
 - **[MITRE ATT&CK](https://attack.mitre.org/)** - Relier des indices cyber aux techniques documentées.
