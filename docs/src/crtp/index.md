@@ -6,6 +6,8 @@ title: CRTP
 
 **Certified Red Team Professional**
 
+**[Cheatsheet AD](./cheatsheet)**
+
 ## Chapitres
 
 - [Énumération Active Directory](./enumeration)
