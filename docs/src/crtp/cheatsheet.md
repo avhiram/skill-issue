@@ -57,6 +57,13 @@ Get-ForestTrust -Forest <forest>
 
 ::: details Local Privesc
 
+**Look for local administrative access w/ Powerview**:
+```powershell
+Find-LocalAdminAccess -Verbose
+Find-WMILocalAdminAccess.ps1
+Find-PSRemotingLocalAdminAccess.ps1
+```
+
 **Recursively look for group membership**:
 ```powershell
 function Get-ADPrincipalGroupMembershipRecursive ($SamAccountName) {
