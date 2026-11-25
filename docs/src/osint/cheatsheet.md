@@ -23,6 +23,14 @@ Remplace directement `pseudo_exemple`, `exemple@example.com`, `Camille Exemple` 
 
 [Outils et ressources OSINT](./index.md)
 
+## Méthode - cycle du renseignement
+
+1. **Cadrage et orientation** - définir la question et le périmètre de recherche.
+2. **Collecte** - recueillir les informations accessibles dans les sources retenues.
+3. **Traitement et exploitation** - classer les éléments et extraire les données utiles.
+4. **Analyse et production** - recouper les informations et distinguer les faits des hypothèses.
+5. **Diffusion et intégration** - présenter les résultats de façon claire et traçable.
+
 ## Installer les outils
 
 Sur Kali Linux. À exécuter une fois selon les outils que tu souhaites utiliser. Les moteurs de recherche et sites Web n'ont rien à installer.
@@ -146,6 +154,14 @@ Installe l'outil de reconnaissance DNS.
 
 ```bash
 sudo apt install -y fierce
+```
+
+### WhatWeb
+
+Installer l'outil de fingerprinting des technologies Web.
+
+```bash
+sudo apt install -y whatweb
 ```
 
 ### Amass - Kali
@@ -306,6 +322,22 @@ Lister les pages publiques d'un domaine.
 
 ```text
 site:example.com
+```
+
+### Termes présents dans le contenu
+
+Rechercher un mot ou une expression dans le texte des pages.
+
+```text
+intext:"rapport annuel"
+```
+
+### Termes présents dans le titre
+
+Rechercher les pages dont le titre contient une expression.
+
+```text
+intitle:"rapport annuel"
 ```
 
 ### PDF du domaine
@@ -984,6 +1016,13 @@ Cherche les profils publics associés à une adresse.
 "$HOME/.venvs/blackbird/bin/python" "$HOME/outils/blackbird/blackbird.py" --email exemple@example.com
 ```
 
+## Téléphonie - annuaires publics
+
+Consulte les informations publiques disponibles sur un numéro. Les résultats d'un annuaire sont des indices à recouper, pas une preuve d'identité.
+
+- [Truecaller](https://www.truecaller.com/) - informations et signalements associés à un numéro.
+- [Infobel](https://www.infobel.com/) - annuaires téléphoniques et professionnels.
+
 ## Domaine - commencer par le DNS
 
 Quand tu obtiens un domaine, vérifie ses enregistrements publics avant d'aller plus loin.
@@ -1218,6 +1257,14 @@ Filtrer un fichier sauvegardé par mots-clés.
 
 ```bash
 grep -inF contact page.html
+```
+
+### WhatWeb - identifier les technologies d'un site
+
+Repérer les technologies visibles d'un site Web. Limiter l'usage aux domaines du périmètre autorisé.
+
+```bash
+whatweb https://example.com
 ```
 
 ### Shodan - rechercher un domaine
@@ -1471,6 +1518,10 @@ Créer un inventaire des empreintes sans modifier les fichiers.
 ```bash
 find "/chemin/du/dossier/" -type f -print0 | sort -z | xargs -0 -r sha256sum > rapport-sha256.txt
 ```
+
+## Réseaux sans fil - observations publiques
+
+[WiGLE](https://wigle.net/) permet de consulter des observations géolocalisées de réseaux Wi-Fi et Bluetooth. Une observation peut être ancienne et ne prouve pas qu'un réseau se trouve toujours au même endroit.
 
 ## Exporter les résultats
 
