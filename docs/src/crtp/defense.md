@@ -84,18 +84,18 @@ Le modèle administratif Active Directory comporte trois niveaux, réservés aux
 
 - **Tier 0** : comptes, groupes et ordinateurs disposant de privilèges à l’échelle de l’entreprise, comme les contrôleurs de domaine, les Domain Admins et les Enterprise Admins.
 - **Tier 1** : comptes, groupes et ordinateurs ayant accès à des ressources présentant une valeur métier importante. Les administrateurs de serveurs en sont un exemple : ils gèrent les systèmes d’exploitation et peuvent affecter les services de l’entreprise.
-- **Tier 2** : comptes administrateur qui contrôlent les postes de travail et les équipements des utilisateurs. Les équipes Help Desk et support informatique en sont des exemples, car elles peuvent accéder aux données de nombreux utilisateurs.
+- **Tier 2** : comptes administrateur qui disposent d’un contrôle sur des ressources métier importantes hébergées sur les postes de travail et les équipements des utilisateurs. Les équipes Help Desk et support informatique en sont des exemples, car elles peuvent affecter l’intégrité des données de presque tous les utilisateurs.
 
 > **Control Restrictions** : ce que les administrateurs peuvent contrôler.
 > **Logon Restrictions** : les machines sur lesquelles les administrateurs peuvent se connecter.
 
 ### Modèle de niveaux : restrictions de contrôle
 
-![Alt text](./assets/28.png)
+![Modèle de niveaux - restrictions de contrôle](./assets/28.png)
 
 ### Modèle de niveaux : restrictions de connexion
 
-![Alt text](./assets/29.png)
+![Modèle de niveaux - restrictions de connexion](./assets/29.png)
 
 ## ESAE
 
@@ -109,7 +109,7 @@ Le modèle administratif Active Directory comporte trois niveaux, réservés aux
 
 > Microsoft a retiré ESAE en 2021 et l’a remplacé par la stratégie **Privileged Access**. Le modèle reste néanmoins présenté dans ces notes.
 
-![Alt text](./assets/30.png)
+![Architecture ESAE - Red Forest](./assets/30.png)
 
 ## Credential Guard
 
@@ -300,15 +300,15 @@ L’événement 4769 est très fréquent sur un contrôleur de domaine. Pour aff
 
 **SID Filtering**
 
-- Avoid attacks which abuse SID history attribute (child to root domain privilege escalation, that is, DA from a Child to EA on forest root).
-- Enabled by default on all inter-forest trusts. Intra-forest trusts are assumed secured by default (MS considers forest and not the domain to be a security boundary).
-- But, since SID filtering has potential to break applications and user access, it is often disabled.
+- Éviter les attaques qui abusent de l’attribut SIDHistory, notamment l’élévation de privilèges du domaine enfant vers le domaine racine de la forêt (de Domain Admin dans le domaine enfant vers Enterprise Admin dans la racine).
+- Le filtrage SID est activé par défaut sur toutes les relations d’approbation inter-forêts. Les relations intra-forêt sont considérées comme sécurisées par défaut, Microsoft considérant la forêt - et non le domaine - comme frontière de sécurité.
+- Le filtrage SID peut toutefois perturber certaines applications et l’accès des utilisateurs. Il est donc parfois désactivé.
 
 **Selective Authentication**
 
 > Dans une relation d’approbation inter-forêts, l’authentification sélective empêche l’authentification automatique des utilisateurs entre les forêts. Les accès aux domaines et aux serveurs de la forêt qui accorde l’approbation doivent être autorisés individuellement.
 
-![Alt text](./assets/31.png)
+![Filtrage SID et authentification sélective](./assets/31.png)
 
 ## Déception et leurres (Deception)
 
