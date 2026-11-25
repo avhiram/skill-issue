@@ -16,6 +16,8 @@ Outils OSINT classés par usage.
 
 - **[Google](https://www.google.com/)** - Requêtes avancées avec `site:`, `filetype:` et expressions exactes.
 - **[Bing](https://www.bing.com/)** - Autre index pour comparer les résultats.
+- **[DuckDuckGo](https://duckduckgo.com/)** - Rechercher une expression dans un domaine ou un format de document.
+- **[Yandex](https://yandex.com/)** - Comparer les pages et les images retrouvées à partir du même indice.
 - **[Brave Search](https://search.brave.com/)** - Moteur complémentaire pour élargir la recherche.
 - **[Qwant](https://www.qwant.com/)** - Moteur de recherche alternatif.
 - **[Google Hacking Database](https://www.exploit-db.com/google-hacking-database)** - Exemples d'opérateurs pour une reconnaissance autorisée.
@@ -66,6 +68,10 @@ Outils OSINT classés par usage.
 
 ## Domaines, DNS et sous-domaines
 
+- **[DNSlytics](https://dnslytics.com/)** - Retrouver les adresses IP observées pour un domaine au fil du temps.
+- **[ViewDNS](https://viewdns.info/)** - Comparer un historique IP et une liste de domaines associés à une même adresse.
+- **[SpyOnWeb](https://spyonweb.net/)** - Repérer des domaines associés à un même identifiant Analytics ou AdSense.
+
 - **[theHarvester](https://github.com/laramies/theHarvester)** - Collecter sous-domaines, e-mails, URL et indices publics.
 - **[crt.sh](https://crt.sh/)** - Explorer les noms figurant dans les certificats publics.
 - **[Subfinder](https://github.com/projectdiscovery/subfinder)** - Rassembler des sous-domaines à partir de sources passives.
@@ -92,6 +98,9 @@ Outils OSINT classés par usage.
 - **[ThreatFox](https://threatfox.abuse.ch/)** - Examiner les indicateurs publics de menace.
 
 ## Technologies Web
+
+- **[httpx](https://docs.projectdiscovery.io/opensource/httpx/usage)** - Relever le statut HTTP et le titre d’une page.
+- **[GoWitness](https://github.com/sensepost/gowitness)** - Capturer une page avec Chrome et consulter le résultat dans un rapport local.
 
 - **[BuiltWith](https://builtwith.com/)** - Identifier les technologies, CMS et services détectés sur un site.
 - **[Wappalyzer](https://www.wappalyzer.com/)** - Repérer les technologies utilisées par un site depuis le navigateur.
@@ -139,3 +148,4 @@ Outils OSINT classés par usage.
 - **[SpiderFoot](https://github.com/smicallef/spiderfoot)** - Automatiser la collecte d'informations à partir de sources ouvertes.
 - **[CyberChef](https://gchq.github.io/CyberChef/)** - Convertir et décoder des données.
 - **[MITRE ATT&CK](https://attack.mitre.org/)** - Relier des indices cyber aux techniques documentées.
+- **[Trace Labs OSINT VM](https://docs.tracelabs.org/vm/vm-introduction)** - Préparer un environnement virtuel pour les exercices OSINT.

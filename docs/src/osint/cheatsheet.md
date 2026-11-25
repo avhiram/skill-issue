@@ -388,6 +388,24 @@ Filtrer les publications selon une date de début à adapter.
 "Organisation Exemple" after:2026-01-01
 ```
 
+### DuckDuckGo et Yandex
+
+Dans DuckDuckGo, limite la recherche aux PDF d’un organisme. Ouvre le document et vérifie son éditeur et sa date sur la première page.
+
+```text
+site:esa.int filetype:pdf "Earth observation"
+```
+
+Dans Yandex, reprends un titre entre guillemets pour retrouver d’autres publications. Deux pages qui reproduisent le même communiqué comptent comme une seule source.
+
+### Google - rechercher sur une période
+
+Encadre la recherche entre deux dates. Vérifie la date de publication sur la page retrouvée.
+
+```text
+"observation de la Terre" after:2023-12-31 before:2025-01-01
+```
+
 ## Réseaux sociaux - rechercher les profils
 
 Recherches Google sur les **profils et publications publics**. Pour les résultats non indexés, consulte aussi la recherche interne de chaque réseau.
@@ -471,6 +489,16 @@ Requête pour la recherche interne X (à coller sur X).
 ```text
 from:pseudo_exemple
 ```
+
+### X - réponses et période
+
+Dans X, cherche les réponses d’un compte à un autre pendant le mois d’avril. La date de fin est exclue.
+
+```text
+from:ESA to:NASA since:2024-04-01 until:2024-05-01
+```
+
+Pour une recherche géographique, utilise le filtre de lieu de la recherche avancée lorsqu’il est disponible. Une ville mentionnée dans le texte et un lieu associé à la publication sont deux indices différents.
 
 ### LinkedIn - nom
 
@@ -1115,6 +1143,13 @@ Affiche les informations de gestion de zone publiées.
 dig example.com SOA +short
 ```
 
+### Comparer un domaine dans le temps
+
+1. Dans DNSlytics, relève l’ancienne adresse et la période d’observation du domaine.
+2. Dans ViewDNS, compare l’historique IP aux dates relevées. La recherche *Reverse IP* indique quels autres domaines le service associe à cette adresse.
+3. Dans SpyOnWeb, vérifie s’il existe un second indice, par exemple un identifiant Analytics commun. Un hébergement mutualisé peut réunir des éditeurs différents.
+4. Dans le rapport, conserve le domaine, l’indice, sa source et sa date. Laisse l’attribution ouverte si le seul point commun est l’hébergeur.
+
 ## Domaine - trouver les sous-domaines
 
 Croise les certificats, les sources passives et les domaines ressemblants. Certaines sources nécessitent une clé API.
@@ -1290,6 +1325,14 @@ Explore un niveau de pages publiques sur un site dont l'exploration est autoris�
 ```bash
 "$HOME/.venvs/photon/bin/python" "$HOME/outils/Photon/photon.py" -u https://example.com/ -l 1
 ```
+
+## Vérifier une image et son lieu de prise de vue
+
+1. **Garder l’original.** Note l’URL de publication, sa légende et la date de consultation. Travaille sur une copie pour les recadrages.
+2. **Retrouver les occurrences.** Pour une image publique, essaie Google Lens sur la vue entière, puis sur un détail distinctif. Compare avec TinEye ou Yandex Images. Pour chaque occurrence, relève la date affichée, le cadrage et la légende. La plus ancienne retrouvée donne un repère chronologique, même si l’auteur reste inconnu.
+3. **Lire les métadonnées.** Utilise les commandes ExifTool ci-dessous sur le fichier d’origine. Note le fuseau s’il est indiqué. Si les coordonnées GPS manquent, poursuis avec les éléments visibles.
+4. **Tester le lieu.** Par exemple, si un pont et un clocher sont visibles, repère le pont sur OpenStreetMap puis vérifie sur la vue satellite de Google Earth que le clocher se trouve du bon côté de la rivière. Compare l’angle depuis la berge avec une vue au sol datée.
+5. **Consigner le verdict.** Note les deux repères, la position envisagée et tout détail contradictoire. Si seul le pont correspond, garde le lieu comme hypothèse.
 
 ## Images et documents - exploiter les fichiers
 
@@ -1522,6 +1565,40 @@ find "/chemin/du/dossier/" -type f -print0 | sort -z | xargs -0 -r sha256sum > r
 ## Réseaux sans fil - observations publiques
 
 [WiGLE](https://wigle.net/) permet de consulter des observations géolocalisées de réseaux Wi-Fi et Bluetooth. Une observation peut être ancienne et ne prouve pas qu'un réseau se trouve toujours au même endroit.
+
+## Documenter une page Web autorisée
+
+Après la recherche passive avec Subfinder, sélectionne une URL dont tu as vérifié le périmètre. Pour essayer les commandes sur ta machine, lance un serveur dans un dossier vide avec `python3 -m http.server 8000 --bind 127.0.0.1`, puis ouvre un second terminal.
+
+### Statut HTTP et titre
+
+Avec le binaire httpx de ProjectDiscovery, conserve le statut, le titre et l’URL dans un fichier JSONL.
+
+```bash
+mkdir -p dossier_osint/rapports
+httpx -u http://127.0.0.1:8000 -status-code -title -json -o dossier_osint/rapports/page.jsonl
+```
+
+### Capture et rapport local
+
+Avec GoWitness v3 et Chrome ou Chromium installé, capture cette même page. Depuis le dossier de capture, ouvre ensuite l’adresse locale affichée par le serveur de rapport.
+
+```bash
+mkdir -p dossier_osint/captures
+(cd dossier_osint/captures && gowitness scan single --url http://127.0.0.1:8000 --write-db && gowitness report server)
+```
+
+### Classer le relevé HTTP
+
+Crée un tableau de trois colonnes (URL, statut, titre) à partir du relevé enregistré.
+
+```bash
+jq -r '[.url, .status_code, .title] | @tsv' dossier_osint/rapports/page.jsonl > dossier_osint/rapports/pages.tsv
+```
+
+## S’entraîner avec Trace Labs OSINT VM
+
+Suis le guide Trace Labs du catalogue pour importer la VM dans ton hyperviseur. Pour un premier exercice, choisis une photo publique de monument dont la légende indique la ville. Masque la légende, retrouve le lieu à partir de deux repères et conserve les liens utilisés. Compare ensuite ta conclusion à la légende.
 
 ## Exporter les résultats
 
