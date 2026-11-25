@@ -275,8 +275,8 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .ad-mindmap button,.ad-mindmap input,.ad-mindmap select{font:inherit;font-size:12px;line-height:1.3;color:#eee5f9;background:#211831;border:1px solid #503b6b;border-radius:6px;padding:7px 10px}
 .ad-mindmap button{cursor:pointer}.ad-mindmap button:hover{border-color:#a78bfa;background:#352348}.ad-mindmap button:disabled{opacity:.4;cursor:default}
 .ad-mindmap input{width:min(240px,100%)}.ad-mindmap select{max-width:100%}
-.map-stage{position:relative;height:clamp(460px,70vh,900px);min-height:0;overflow:hidden;flex:1}
-.expanded .map-stage{height:auto;flex:1}.map-svg{display:block;width:100%;height:100%;touch-action:none;cursor:grab;background-color:#100d17;background-image:radial-gradient(#2b2238 1px,transparent 1px);background-size:20px 20px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.map-stage{position:relative;height:clamp(460px,70vh,900px);min-height:460px;overflow:hidden;flex:0 0 auto}
+.expanded .map-stage{height:auto;min-height:0;flex:1 1 0}.map-svg{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;cursor:grab;background-color:#100d17;background-image:radial-gradient(#2b2238 1px,transparent 1px);background-size:20px 20px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .map-svg.dragging{cursor:grabbing}
 .map-svg [data-node],.map-svg [data-node] *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .map-svg .map-node-text{pointer-events:none}
@@ -299,4 +299,12 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .map-inspector .inspector-selectable{display:block;width:100%;box-sizing:border-box;resize:vertical;border:0;outline:none;min-height:54px;max-height:45vh;font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;color:#eee5f9;background:transparent;user-select:text;-webkit-user-select:text;cursor:text}
 .map-file-link{display:block;padding:0 14px 14px;color:#c4a6f5}.map-message{padding:30px;color:#c7b5dd;font-size:13px}
 @media(max-width:640px){.map-controls{gap:4px}.map-bar,.map-filters{padding:8px}.map-search{gap:5px}.ad-mindmap input{width:160px}.map-stage{height:65vh;min-height:350px}.map-inspector{width:calc(100% - 24px);max-height:85%;top:auto;bottom:8px;max-height:48%}}
+/* Keep the desktop viewport independent of SVG intrinsic sizing. */
+@media(min-width:641px){
+  .map-bar,.map-filters{flex:0 0 auto}
+  .map-search{flex:1 1 auto;min-width:0}
+  .map-filters select{flex:0 1 260px;min-width:0}
+  .map-inspector{max-height:calc(100% - 24px);box-sizing:border-box;overscroll-behavior:contain}
+}
+@media(max-width:640px){.ad-mindmap:not(.expanded) .map-stage{min-height:350px}.ad-mindmap.expanded .map-stage{min-height:0;height:auto;flex:1 1 0}}
 </style>
