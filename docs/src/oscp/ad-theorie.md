@@ -50,6 +50,68 @@ timedatectl show -p NTPSynchronized -p TimeUSec
 
 [Manuel de timedatectl](https://www.freedesktop.org/software/systemd/man/latest/timedatectl.html) · [Propriétés de timedate1](https://www.freedesktop.org/software/systemd/man/latest/org.freedesktop.timedate1.html).
 
+## Time Synchronization & Clock Skew
+
+Kerberos vérifie la cohérence des horodatages. La tolérance habituelle est de 5 minutes, selon la politique du domaine. Un décalage excessif peut provoquer l’erreur `KRB_AP_ERR_SKEW` (Clock skew too great).
+
+### Afficher l’heure UTC
+
+```bash
+date -u
+```
+
+Affiche l’heure UTC du poste pour comparer les horloges sans confusion liée au fuseau horaire.
+
+### Vérifier le décalage NTP
+
+```bash
+ntpdate -q ntp.example.org
+```
+
+Interroge un serveur NTP autorisé et affiche le décalage sans modifier l’horloge locale. Remplace le nom d’exemple par celui de ton serveur de temps.
+
+### Activer la synchronisation de l’heure
+
+```bash
+sudo timedatectl set-ntp true
+```
+
+Active la synchronisation automatique sur un poste Linux compatible systemd disposant d’un service NTP configuré.
+
+### Installer faketime
+
+```bash
+sudo apt install faketime
+```
+
+Installe faketime sur Debian et les distributions compatibles.
+
+### Simuler une date et une heure
+
+```bash
+faketime '2026-11-25 09:30:00' date
+```
+
+Simule une date pour la commande `date`, sans modifier l’horloge du système. Utile pour les tests de comportement temporel dans un environnement de laboratoire.
+
+### Simuler un décalage horaire
+
+```bash
+faketime '+2h' date
+```
+
+Simule un décalage de deux heures pour ce processus uniquement.
+
+### Vérifier que l’heure réelle est inchangée
+
+```bash
+date
+```
+
+Affiche de nouveau l’heure réelle du système après le test. Faketime ne remplace pas la synchronisation NTP et ne fonctionne pas avec tous les programmes.
+
+[Politique Kerberos Microsoft](https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/maximum-tolerance-for-computer-clock-synchronization) · [Manuel faketime](https://manpages.debian.org/trixie/faketime/faketime.1.en.html) · [Manuel ntpdate](https://manpages.debian.org/trixie/ntpsec-ntpdate/ntpdate.8.en.html).
+
 ## Fiches associées
 
 - [Énumération Active Directory](ad-enumeration.md)
