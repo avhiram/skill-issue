@@ -74,10 +74,14 @@ function initInstitutionMarquee(): () => void {
     if (!pointerDown) return
     pointerDown = false
     viewport.classList.remove('is-dragging')
-    if (wasDragged) suppressClick = true
+    if (wasDragged) {
+      suppressClick = true
+      window.setTimeout(() => { suppressClick = false }, 160)
+    }
     if (viewport.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId)
     pausedUntil = performance.now() + 2500
   }
+  const onDragStart = (event: DragEvent) => event.preventDefault()
   const onClick = (event: MouseEvent) => {
     if (!suppressClick) return
     event.preventDefault()
@@ -94,6 +98,7 @@ function initInstitutionMarquee(): () => void {
   viewport.addEventListener('pointerup', onPointerUp)
   viewport.addEventListener('pointercancel', onPointerUp)
   viewport.addEventListener('click', onClick, true)
+  viewport.addEventListener('dragstart', onDragStart)
   viewport.addEventListener('pointerenter', onPointerEnter)
   viewport.addEventListener('pointerleave', onPointerLeave)
   viewport.addEventListener('touchstart', onTouchStart, { passive: true })
@@ -106,6 +111,7 @@ function initInstitutionMarquee(): () => void {
     viewport.removeEventListener('pointerup', onPointerUp)
     viewport.removeEventListener('pointercancel', onPointerUp)
     viewport.removeEventListener('click', onClick, true)
+    viewport.removeEventListener('dragstart', onDragStart)
     viewport.removeEventListener('pointerenter', onPointerEnter)
     viewport.removeEventListener('pointerleave', onPointerLeave)
     viewport.removeEventListener('touchstart', onTouchStart)
