@@ -22,107 +22,115 @@ aside: false
 
 ## Parcours
 
-<div class="profile-marquee-wrap" role="region" aria-label="Institutions, exercices et publications liés à mon parcours">
+<div class="profile-marquee-wrap" role="region" aria-label="Institutions et organismes liés à mon parcours">
   <div class="profile-marquee-track">
 <div class="profile-marquee-group">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Intérieur">
-    <span class="profile-logo-frame"><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="Logo du ministère de l’Intérieur" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="Logo du ministère de l’Intérieur" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Intérieur</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Police nationale">
-    <span class="profile-logo-frame"><img src="https://www.haut-rhin.gouv.fr/index.php/var/ide_site/storage/images/services-de-l-etat/securite/direction-interdepartementale-de-la-police-nationale-du-haut-rhin/121434-7-fre-FR/Direction-interdepartementale-de-la-Police-Nationale-du-Haut-Rhin.jpg" alt="Logo de la Police nationale" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.haut-rhin.gouv.fr/index.php/var/ide_site/storage/images/services-de-l-etat/securite/direction-interdepartementale-de-la-police-nationale-du-haut-rhin/121434-7-fre-FR/Direction-interdepartementale-de-la-Police-Nationale-du-Haut-Rhin.jpg" alt="Logo de la Police nationale" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Police nationale</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/terre" target="_blank" rel="noopener noreferrer" title="Armée de Terre">
-    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="Logo de l’Armée de Terre" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="Logo de l’Armée de Terre" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Armée de Terre</span>
   </a>
   <a class="profile-marquee-item" href="https://www.sengager.fr/tous-nos-regiments/regiment-de-cyberdefense" target="_blank" rel="noopener noreferrer" title="Régiment de cyberdéfense">
-    <span class="profile-logo-frame"><img src="https://www.sengager.fr/assets/insigne_cyber_f018566073.png" alt="Insigne du Régiment de cyberdéfense" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+    <span class="profile-logo-frame"><img src="https://www.sengager.fr/assets/insigne_cyber_f018566073.png" alt="Insigne du Régiment de cyberdéfense" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
     <span class="profile-logo-label">Régiment de cyberdéfense</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/comcyber" target="_blank" rel="noopener noreferrer" title="COMCYBER">
-    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="Insigne du Commandement de la cyberdéfense" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="Insigne du Commandement de la cyberdéfense" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">COMCYBER</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nasa.gov/" target="_blank" rel="noopener noreferrer" title="NASA">
-    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="Logo de la NASA" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="Logo de la NASA" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nato.int/" target="_blank" rel="noopener noreferrer" title="OTAN">
-    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/NATO_OTAN_portrait_logo.svg" alt="Logo de l’OTAN" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+    <span class="profile-logo-frame"><img src="/skill-issue/institutions/otan.png" alt="Logo de l’OTAN" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
     <span class="profile-logo-label">OTAN</span>
   </a>
+  <a class="profile-marquee-item" href="https://ccdcoe.org/" target="_blank" rel="noopener noreferrer" title="NATO CCDCOE">
+    <span class="profile-logo-frame"><img src="/skill-issue/institutions/ccdcoe.png" alt="Logo du NATO CCDCOE" loading="lazy" decoding="async" draggable="false"></span>
+    <span class="profile-logo-label">NATO CCDCOE</span>
+  </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" title="Locked Shields 2025">
-    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="Emblème Locked Shields 2025" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="Emblème Locked Shields 2025" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Locked Shields</span>
   </a>
 
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/nous-decouvrir/notre-organisation/organisation/direction-nationale-de-police-judiciaire-dnpj" target="_blank" rel="noopener noreferrer" title="DNPJ">
-    <span class="profile-logo-frame profile-logo-dnpj-frame"><span class="profile-logo-dnpj-fallback">DNPJ</span><img src="https://domraza.fr/wp-content/uploads/2023/07/DNPJ.jpg" alt="Logo de la DNPJ" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame profile-logo-dnpj-frame"><span class="profile-logo-dnpj-fallback">DNPJ</span><img src="https://domraza.fr/wp-content/uploads/2023/07/DNPJ.jpg" alt="Logo de la DNPJ" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Police judiciaire · DNPJ</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" title="OFMIN">
-    <span class="profile-logo-frame"><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="Logo OFMIN" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="Logo OFMIN" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" title="École 2600">
-    <span class="profile-logo-frame profile-logo-frame-school"><span class="profile-school-logo" aria-hidden="true"></span></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><img src="/skill-issue/institutions/ecole2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async" draggable="false"></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>
 <div class="profile-marquee-group" aria-hidden="true">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Intérieur">
-    <span class="profile-logo-frame"><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://france-visas.gouv.fr/documents/d/france-visas/logo_du_ministere_de_l-interieur-png?download=true" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Intérieur</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Police nationale">
-    <span class="profile-logo-frame"><img src="https://www.haut-rhin.gouv.fr/index.php/var/ide_site/storage/images/services-de-l-etat/securite/direction-interdepartementale-de-la-police-nationale-du-haut-rhin/121434-7-fre-FR/Direction-interdepartementale-de-la-Police-Nationale-du-Haut-Rhin.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.haut-rhin.gouv.fr/index.php/var/ide_site/storage/images/services-de-l-etat/securite/direction-interdepartementale-de-la-police-nationale-du-haut-rhin/121434-7-fre-FR/Direction-interdepartementale-de-la-Police-Nationale-du-Haut-Rhin.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Police nationale</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/terre" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Armée de Terre">
-    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/terre/armee-de-terre.png?h=d1cb525d&amp;itok=BVoqJguJ" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Armée de Terre</span>
   </a>
   <a class="profile-marquee-item" href="https://www.sengager.fr/tous-nos-regiments/regiment-de-cyberdefense" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Régiment de cyberdéfense">
-    <span class="profile-logo-frame"><img src="https://www.sengager.fr/assets/insigne_cyber_f018566073.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+    <span class="profile-logo-frame"><img src="https://www.sengager.fr/assets/insigne_cyber_f018566073.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
     <span class="profile-logo-label">Régiment de cyberdéfense</span>
   </a>
   <a class="profile-marquee-item" href="https://www.defense.gouv.fr/comcyber" target="_blank" rel="noopener noreferrer" tabindex="-1" title="COMCYBER">
-    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">COMCYBER</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nasa.gov/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="NASA">
-    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">NASA</span>
   </a>
   <a class="profile-marquee-item" href="https://www.nato.int/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OTAN">
-    <span class="profile-logo-frame"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c5/NATO_OTAN_portrait_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+    <span class="profile-logo-frame"><img src="/skill-issue/institutions/otan.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true" draggable="false"></span>
     <span class="profile-logo-label">OTAN</span>
   </a>
+  <a class="profile-marquee-item" href="https://ccdcoe.org/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="NATO CCDCOE">
+    <span class="profile-logo-frame"><img src="/skill-issue/institutions/ccdcoe.png" alt="" loading="lazy" decoding="async" draggable="false"></span>
+    <span class="profile-logo-label">NATO CCDCOE</span>
+  </a>
   <a class="profile-marquee-item" href="https://ccdcoe.org/exercises/locked-shields/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Locked Shields 2025">
-    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://www.defense.gouv.fr/sites/default/files/styles/16_9_md/public/comcyber/15e%20%C3%A9dition%20de%20LS.jpg?itok=9Oc6EcRY" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Locked Shields</span>
   </a>
 
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/nous-decouvrir/notre-organisation/organisation/direction-nationale-de-police-judiciaire-dnpj" target="_blank" rel="noopener noreferrer" tabindex="-1" title="DNPJ">
-    <span class="profile-logo-frame profile-logo-dnpj-frame"><span class="profile-logo-dnpj-fallback">DNPJ</span><img src="https://domraza.fr/wp-content/uploads/2023/07/DNPJ.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame profile-logo-dnpj-frame"><span class="profile-logo-dnpj-fallback">DNPJ</span><img src="https://domraza.fr/wp-content/uploads/2023/07/DNPJ.jpg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Police judiciaire · DNPJ</span>
   </a>
   <a class="profile-marquee-item" href="https://www.police-nationale.interieur.gouv.fr/actualite/lofmin-office-expert-pour-lutter-contre-violences-faites-aux-mineurs" target="_blank" rel="noopener noreferrer" tabindex="-1" title="OFMIN">
-    <span class="profile-logo-frame"><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'"></span>
+    <span class="profile-logo-frame"><img src="https://cdn.prod.website-files.com/63c5e34f002f8ffa520d208a/665dac2e2253bd4a41a0abfc_F_YI_VmW0AA4cYy.jpg-large.jpeg" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Office mineurs · OFMIN</span>
   </a>
   <a class="profile-marquee-item" href="https://www.2600.eu/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="École 2600">
-    <span class="profile-logo-frame profile-logo-frame-school"><span class="profile-school-logo" aria-hidden="true"></span></span>
+    <span class="profile-logo-frame profile-logo-frame-school"><img src="/skill-issue/institutions/ecole2600.webp" alt="Logo de l’École 2600" loading="lazy" decoding="async" draggable="false"></span>
     <span class="profile-logo-label">École 2600</span>
   </a>
 </div>

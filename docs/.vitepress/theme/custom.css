@@ -487,113 +487,83 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   background: #241b34;
   color: #fff;
 }
+/* Institutions : bandeau epure, defilement automatique et manuel. */
 .vp-doc .profile-marquee-wrap {
   position: relative;
-  overflow: hidden;
   width: 100%;
   margin: .8rem 0 .7rem;
-  border-radius: 12px;
-  border: 1px solid #352743;
-  background: #110e18;
+  padding: .2rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  cursor: grab;
 }
-.vp-doc .profile-marquee-wrap::before,
-.vp-doc .profile-marquee-wrap::after {
-  pointer-events: none;
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  z-index: 1;
-  width: 48px;
-}
-.vp-doc .profile-marquee-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, #110e18, transparent);
-}
-.vp-doc .profile-marquee-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, #110e18, transparent);
-}
-.vp-doc .profile-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: profile-logos-move 48s linear infinite;
-}
-.vp-doc .profile-marquee-wrap:hover .profile-marquee-track,
-.vp-doc .profile-marquee-wrap:focus-within .profile-marquee-track {
-  animation-play-state: paused;
-}
+.vp-doc .profile-marquee-wrap::-webkit-scrollbar { display: none; }
+.vp-doc .profile-marquee-wrap.is-dragging { cursor: grabbing; user-select: none; }
+.vp-doc .profile-marquee-track { display: flex; width: max-content; animation: none !important; }
 .vp-doc .profile-marquee-group {
   display: flex;
+  flex: 0 0 auto;
   align-items: stretch;
   gap: .7rem;
-  padding: .75rem .7rem .75rem 0;
+  padding: .35rem .7rem .45rem 0;
 }
 .vp-doc .profile-marquee-item {
   box-sizing: border-box;
-  flex: 0 0 170px;
-  width: 170px;
-  height: 112px;
-  border: 1px solid #33283f;
-  border-radius: 9px;
-  background: #191321;
+  flex: 0 0 164px;
+  width: 164px;
+  height: 106px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
   text-decoration: none;
   color: #d9d0e6;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: .35rem;
-  padding: .55rem;
-  transition: border-color .15s;
+  gap: .3rem;
+  padding: .45rem .25rem;
+  transition: background .16s, color .16s;
 }
-.vp-doc .profile-marquee-item:hover {
-  border-color: #9875d1;
-  color: #fff;
-}
+.vp-doc .profile-marquee-item:hover { background: rgba(167, 125, 216, .075); color: #fff; }
 .vp-doc .profile-logo-frame {
-  background: #f8f7f9;
-  border-radius: 6px;
-  width: 145px;
-  height: 64px;
-  padding: 6px;
+  width: 150px;
+  height: 68px;
   box-sizing: border-box;
+  padding: 3px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .vp-doc .profile-logo-frame img {
   display: block;
-  max-height: 52px;
-  max-width: 135px;
+  max-width: 100%;
+  max-height: 62px;
   width: auto;
   height: auto;
   object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
-.vp-doc .profile-logo-wordmark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 145px;
-  height: 64px;
-  border-radius: 6px;
-  font-size: 1.02rem;
-  font-weight: 800;
-  letter-spacing: .07em;
-  color: #c9b1ef;
-  text-align: center;
-  line-height: 1.15;
-}
+.vp-doc .profile-logo-frame-school { background: transparent; }
 .vp-doc .profile-logo-label {
-  font-size: .72rem;
+  font-size: .71rem;
   font-weight: 570;
   color: #c9bdd7;
   line-height: 1.2;
   text-align: center;
-}
-@keyframes profile-logos-move {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
 }
 .vp-doc .profile-proof {
   display: grid;
@@ -902,9 +872,6 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .vp-doc .profile-marquee-wrap .profile-logo-placeholder,
 .vp-doc .profile-marquee-wrap .profile-logo-dnpj-fallback { display: none !important; }
 
-/* École 2600 : logo fourni, conservé sans hébergement tiers */
-.vp-doc .profile-logo-frame-school { background: #020302; }
-.vp-doc .profile-school-logo { display: block; width: 51px; height: 51px; flex: 0 0 51px; background: url("data:image/webp;base64,UklGRkgGAABXRUJQVlA4IDwGAABQJgCdASqAAIAAPnkylUckoqIhKRDvyJAPCWc3AAP1F1uF7/vv4xeG/+R5db2Y5rjJv8p7Buy/aZ/u32kcUryj+p8T+mYmreVfNi/3H2sIXzLOAh+8HCj63+KIzMn4xXJZ+a+HhO3epZ9zoP0x8e3csCSAIn5vunbxcxuVg9cimM2pKy00edWCDA/otEPa1W5iEJoQaHEjq3JjjFCfmtKrZ7O/VZYy+I47toTu/o4j+9foptWYw9oaGsxwF2e5HrN82bPRw70UCuCCpmDMLbZBp3v58+Hu9wJwLT8imhBAme0BBwexzZcN4sncAhYHeXQUNeB5jQliQskvAF+fwdJrYCpKENBcK44blbpvsrK6XrFrYQ3h1eRDrajF665TblEKmjN0Gavk1zqu3RlP20gI+RZ6ufmoAaxHIwAA/rOj16mdy63dJ3Q2jMzUtNF/ACQLOpNNmX8Jhy+aCh6+vBmqs5CIt5DsC/w1Y9BOwF8qug2yqfHbGDN3i35/DtN1ic42lTLUIDHcLbElx7xxFesewjeVO/pynTdvcHmxp3bFr10OMBYprJ39Xv+JHOC6fGZ/VfuZV9bhkFjIRK+HwRkai0mLOLQam+l5jzZR+Vg30EX3fvI5o3THYOMv4VZqp3/nJ4wwdeodvcLN8wNKaZF3wrRzbeNX3pgBVFO3fESR4sqNxNI8SifS4Fkahg4c5NPWLZ+rLJ3Ppy6sIsYhEzWduiq2ZAHE3kz8ik+RX8c4uyua+C9Cy0U4trkXkd5Ni8aQZU01iR9tZf31hXkEb8x6ZsWE6PrsGtgtXnl7g0F5TQgcaqCVqOc9As3SANpQxBTle0kXuN1gtoRCI5jMXENq4md+Kx6UxVcIs8l4upYLtoCMc5uMU4pf4kSa+pL8gGIyvS13Lpn29zNF8V61AHffomI/H8pzPJR1IaTIQK0PHAYeG8CsowKEzp6A2jQXMYz5YP2EZ0HJJ3pomAFOXAD+Lijmmru1O0yu3Vw+eK2z6iLx3bewfctxxOPpHIb9tlGY7OyblsREX6FawMB41hOyL63z9XL/quSNtqxH55gbvzX7pTZfmHLCATwzJT7avFH8OHWiwmzHYxN7KwRM4krGFXq2MD5m05rcA8fjehhNhzuS8j4EUySCxJtoI3cDl2p+vOPjYqpCI9HjJAUb/LvIJQT8qTofDHwg/wfxU0YCPs4De2eo2Vwj3BjoR+C7F2h22DsD7UUNokk2ly1z0PMP/CRcbV7bJWGuQauN2HjxAtAj5bk4SoYVHLgcp/wjRhlAlbYe10vQisbDMiXj2qJN9Ey+vTbCZvf/vnKnB5gSQWAEWsmJjiEfMiSYNQPcwU8CC2Axjy+1KMaeJEVXWl8j/tMSwTKnczZrdu40Qm56a2nXKTSHYfwfMkC+zPegIeHZgoVwyjt8C5eTe3g8tShx95EoLTmSR3BgD69WQfsdrkHbn+cPioJ9kr3BZQ1WCslMmqY4yNFam8typTSvWscklnLzNlDYm4d3hAlAdt8mtJ7DKSzSA9f5LPXHgPX/HK1yysQlDmUgTgzGgEdMlTKs+5VzbzYYcQ/6dwYXte1oBRb4L+VwgmhOMJPlIiB7rLCF0boj36lK6KnQgcNrRNqW8XyuCh7xURemomYqPUyOfayWDySB1yTbZWZrRY4MKSzzjQTDAFGXeEALMqpCA9ZrXuJfJt/Wkzb+N92ajZ66/xg1qGsIL7muoWq6+nmDLNPJ1+/QCcSV4V7MxvUTxrMi4+hfao67nlCmLuTd7/wm9wrhJ/g1/u3p6sSBofchKn85P74oxHIlPOaSnnHaxoACslHHU7e2ZR7UQFW0YKcBr1qa/wy3FfaEKwxqswddSL3C/V/oSya4Mrv05Ce/VhbD0W5SOYvfaPRHqlADJ7QNtpd2b82wab25E8KUz+E4AdxuYko0p1gdakxiHoDnRUixzQ/3JO/a/mB+gjLsiTbrnRoEN2b8MnkP2H/ZH82KgDAtnp8iRsdv4IOgw970Hs1Y7ZgUovWR/m7xWNG/IxIpmr1fw9o3xRL6/wUoVhnL/EDJnkyEheBXOVPOWLu8htK6XoQXKxPSzkrKYu3E2yffbJ71Jz7sX6Uupe+tmxvcWZNbmoLzB4QN+NUuAAA=") center / contain no-repeat; }
 
 /* Distinctions : typographie nette, une mise en valeur discrète */
 .vp-doc .profile-proof strong { font-size: .99rem; font-weight: 700; letter-spacing: -.01em; margin-bottom: .22rem; }
@@ -920,3 +887,12 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .vp-doc .profile-credential-image img[hidden] {
   display: none !important;
 }
+
+/* Bandeau institutionnel : pas de cadres sombres autour des logos. */
+.vp-doc .profile-marquee-wrap .profile-marquee-item,
+.vp-doc .profile-marquee-wrap .profile-logo-frame,
+.vp-doc .profile-marquee-wrap .profile-logo-frame-school {
+  border: 0;
+  background: transparent;
+}
+.vp-doc .profile-marquee-wrap .profile-logo-frame > img { background: transparent; }
