@@ -6,6 +6,23 @@ Inventaire du domaine, des objets, des stratégies de groupe et des relations d'
 
 Les notes distinguent le module ActiveDirectory, PowerView, SharpView et BloodHound. Le module ActiveDirectory est fourni par Microsoft ; PowerView constitue une alternative pour interroger les objets du domaine.
 
+### Charger le module ActiveDirectory
+
+```powershell
+Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
+Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
+```
+
+Charge les composants du module depuis les chemins du laboratoire. Adapter les chemins à l'installation.
+
+### Charger PowerView
+
+```powershell
+. C:\AD\Tools\PowerView.ps1
+```
+
+Charge les fonctions du script dans la session PowerShell. Utiliser une copie de confiance dans le laboratoire.
+
 ### Domaine actuel
 
 ```powershell
@@ -13,6 +30,22 @@ Get-ADDomain
 ```
 
 Affiche les propriétés du domaine courant.
+
+### Domaine avec PowerView
+
+```powershell
+Get-Domain
+```
+
+Affiche les propriétés du domaine courant avec PowerView.
+
+### Domaine désigné
+
+```powershell
+Get-ADDomain -Identity domain.local
+```
+
+Consulte les propriétés du domaine indiqué, accessible depuis la session.
 
 ### SID du domaine
 
@@ -22,6 +55,23 @@ Affiche les propriétés du domaine courant.
 
 Affiche l'identifiant de sécurité du domaine.
 
+### SID avec PowerView
+
+```powershell
+Get-DomainSID
+```
+
+Affiche le SID du domaine courant.
+
+### Politique du domaine
+
+```powershell
+Get-DomainPolicyData
+(Get-DomainPolicyData).systemaccess
+```
+
+Consulte les données de stratégie de domaine et leurs paramètres System Access.
+
 ### Contrôleurs de domaine
 
 ```powershell
@@ -29,6 +79,22 @@ Get-ADDomainController
 ```
 
 Identifie un contrôleur de domaine.
+
+### Contrôleurs avec PowerView
+
+```powershell
+Get-DomainController
+```
+
+Affiche les contrôleurs du domaine avec PowerView.
+
+### Contrôleur d'un domaine désigné
+
+```powershell
+Get-ADDomainController -DomainName domain.local -Discover
+```
+
+Recherche un contrôleur disponible pour le domaine indiqué.
 
 ## Utilisateurs et ordinateurs
 
@@ -40,6 +106,38 @@ Get-ADUser -Filter *
 
 Liste les utilisateurs AD.
 
+### Utilisateur désigné
+
+```powershell
+Get-ADUser -Identity student1 -Properties *
+```
+
+Affiche les propriétés accessibles du compte de laboratoire student1.
+
+### Noms des propriétés utilisateur
+
+```powershell
+Get-ADUser -Filter * -Properties * | Select-Object -First 1 | Get-Member -MemberType *Property | Select-Object Name
+```
+
+Présente les propriétés exposées par les objets utilisateur du module.
+
+### Utilisateurs avec PowerView
+
+```powershell
+Get-DomainUser
+```
+
+Affiche les objets utilisateur du domaine.
+
+### Attribut pwdlastset
+
+```powershell
+Get-DomainUser -Properties pwdlastset
+```
+
+Affiche l'attribut relatif à la dernière modification du mot de passe.
+
 ### Ordinateurs
 
 ```powershell
@@ -47,6 +145,30 @@ Get-ADComputer -Filter * | Select-Object Name
 ```
 
 Liste les objets ordinateurs.
+
+### Propriétés des ordinateurs
+
+```powershell
+Get-ADComputer -Filter * -Properties *
+```
+
+Consulte les propriétés accessibles des objets ordinateurs.
+
+### Ordinateurs Windows Server 2022
+
+```powershell
+Get-ADComputer -Filter 'OperatingSystem -like "*Server 2022*"' -Properties OperatingSystem | Select-Object Name,OperatingSystem
+```
+
+Filtre les objets ordinateurs selon le système d'exploitation déclaré.
+
+### Inventaire avec PowerView
+
+```powershell
+Get-DomainComputer | Select-Object Name,logonCount
+```
+
+Affiche les noms et compteurs d'ouvertures de session disponibles.
 
 ### Groupes
 
@@ -56,6 +178,22 @@ Get-ADGroup -Filter * | Select-Object Name
 
 Affiche les groupes du domaine.
 
+### Propriétés des groupes
+
+```powershell
+Get-ADGroup -Filter * -Properties *
+```
+
+Consulte les propriétés accessibles des groupes AD.
+
+### Groupes avec PowerView
+
+```powershell
+Get-DomainGroup | Select-Object Name
+```
+
+Affiche les noms des groupes du domaine.
+
 ### Appartenances d'un utilisateur
 
 ```powershell
@@ -63,6 +201,14 @@ Get-ADPrincipalGroupMembership -Identity student1
 ```
 
 Affiche les groupes associés au compte de laboratoire student1.
+
+### Appartenances avec PowerView
+
+```powershell
+Get-DomainGroup -UserName "student1"
+```
+
+Affiche les groupes associés au compte de laboratoire.
 
 ## GPO et OU
 
@@ -75,6 +221,30 @@ Get-ADOrganizationalUnit -Filter * -Properties *
 Inventorie les OU et leurs propriétés.
 
 Les notes abordent les GPO liées aux ordinateurs et aux OU, ainsi que les appartenances aux groupes locaux définies par les stratégies.
+
+### Stratégies de groupe
+
+```powershell
+Get-DomainGPO
+```
+
+Inventorie les GPO avec PowerView.
+
+### GPO associées à un ordinateur
+
+```powershell
+Get-DomainGPO -ComputerIdentity domain-computer
+```
+
+Consulte les GPO applicables à l'ordinateur désigné.
+
+### Unités organisationnelles avec PowerView
+
+```powershell
+Get-DomainOU
+```
+
+Liste les unités organisationnelles du domaine.
 
 ## ACL
 
@@ -109,6 +279,54 @@ Get-ADForest | Select-Object -ExpandProperty GlobalCatalogs
 ```
 
 Liste les catalogues globaux.
+
+### Forêt désignée
+
+```powershell
+Get-ADForest -Identity domain.local
+```
+
+Consulte les propriétés de la forêt indiquée.
+
+### Domaines de la forêt
+
+```powershell
+(Get-ADForest).Domains
+```
+
+Liste les domaines appartenant à la forêt courante.
+
+### Forêt avec PowerView
+
+```powershell
+Get-Forest
+```
+
+Affiche les propriétés de la forêt avec PowerView.
+
+### Domaines avec PowerView
+
+```powershell
+Get-ForestDomain
+```
+
+Liste les domaines de la forêt courante.
+
+### Catalogues globaux avec PowerView
+
+```powershell
+Get-ForestGlobalCatalog
+```
+
+Liste les catalogues globaux de la forêt.
+
+### Relation d'approbation désignée
+
+```powershell
+Get-ADTrust -Identity domain.local
+```
+
+Consulte les propriétés de la relation d'approbation indiquée.
 
 ## User Hunting et BloodHound
 
