@@ -51,6 +51,30 @@ Affiche les membres du groupe Administrators sur une installation anglophone.
 
 Le document présente PowerUp, Privesc et winPEAS comme outils complémentaires. Examiner leurs résultats et confirmer manuellement les configurations avant toute conclusion.
 
+### Audit avec PowerUp
+
+```powershell
+Invoke-AllChecks
+```
+
+Exécute les vérifications de configuration de PowerUp. Charger le module au préalable et examiner les résultats dans le périmètre autorisé.
+
+### Audit avec Privesc
+
+```powershell
+Invoke-PrivEsc
+```
+
+Lance les vérifications du script Privesc après son chargement. Examiner le script et sa version avant utilisation.
+
+### Audit avec winPEAS
+
+```cmd
+winPEASx64.exe
+```
+
+Exécute le binaire d'audit Windows x64 depuis un emplacement accessible. Utiliser une version de confiance et protéger les résultats, qui peuvent contenir des données sensibles.
+
 ## Jenkins
 
 Les notes illustrent le risque des droits d'administration ou de modification de tâches de build : les consoles et étapes de compilation peuvent exécuter du code dans le contexte du service. Vérifier les permissions et l'isolation des agents.

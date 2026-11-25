@@ -202,6 +202,14 @@ Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | Selec
 
 Filtre les objets utilisateur dont la description contient le texte indiqué.
 
+### Recherche LDAP dans les descriptions
+
+```powershell
+Get-DomainUser -LDAPFilter "Description=*built*" | Select-Object Name,Description
+```
+
+Filtre les descriptions des objets utilisateurs à partir d'une expression LDAP.
+
 ### Ordinateurs
 
 ```powershell
@@ -282,6 +290,14 @@ Get-ADGroup -Filter 'Name -like "*admin*"' | Select-Object Name
 
 Filtre les groupes dont le nom contient admin.
 
+### Recherche de groupes avec PowerView
+
+```powershell
+Get-DomainGroup *admin*
+```
+
+Filtre les groupes dont le nom contient admin.
+
 ### Appartenances d'un utilisateur
 
 ```powershell
@@ -313,6 +329,22 @@ Get-NetLocalGroup -ComputerName domain-dc
 ```
 
 Consulte les groupes locaux exposés par la machine désignée. Des permissions administratives peuvent être nécessaires.
+
+### Membres d'un groupe avec PowerView
+
+```powershell
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse
+```
+
+Consulte les membres directs et imbriqués du groupe désigné.
+
+### Membres du groupe Administrators
+
+```powershell
+Get-NetLocalGroupMember -ComputerName domain-dc -GroupName Administrators
+```
+
+Vérifie la composition du groupe sur le système de laboratoire désigné. Les permissions nécessaires et le nom du groupe varient selon la machine.
 
 ## GPO et OU
 
@@ -374,6 +406,22 @@ Get-NetOU
 
 Inventorie les unités organisationnelles avec l'alias PowerView, selon la version utilisée.
 
+### Groupes locaux associés aux GPO
+
+```powershell
+Get-DomainGPOComputerLocalGroupMapping -ComputerIdentity domain-computer
+```
+
+Consulte les associations de groupes locaux définies par GPO pour l'ordinateur indiqué.
+
+### Ordinateurs d'une OU
+
+```powershell
+(Get-DomainOU -Identity StudentMachines).distinguishedname | ForEach-Object { Get-DomainComputer -SearchBase $_ } | Select-Object Name
+```
+
+Liste les ordinateurs situés dans l'OU de laboratoire StudentMachines.
+
 ## ACL
 
 ![Structure d'un jeton d'accès et d'une ACL](./images/1.png)
@@ -397,6 +445,14 @@ Consulte les entrées de contrôle d'accès de l'objet désigné et résout les 
 ```
 
 Affiche les ACE de l'objet désigné. Nécessite le lecteur AD: et un DN adapté au laboratoire.
+
+### ACL du partage SYSVOL
+
+```powershell
+Get-PathAcl -Path "\\dcorp-dc.dollarcorp.moneycorp.local\sysvol"
+```
+
+Consulte les permissions du chemin SYSVOL désigné. Adapter le nom du contrôleur au laboratoire.
 
 ## Trusts et forêts
 
@@ -519,6 +575,14 @@ Get-ForestTrust -Forest domain.local
 ```
 
 Consulte les relations d'approbation de la forêt désignée.
+
+### Trusts de la forêt courante
+
+```powershell
+Get-ForestTrust
+```
+
+Consulte les relations d'approbation de la forêt courante avec PowerView.
 
 ## User Hunting et BloodHound
 
