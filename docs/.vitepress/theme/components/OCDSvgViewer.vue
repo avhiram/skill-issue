@@ -7,13 +7,14 @@ let frameCleanup = () => {}
 const copyField = ref(null)
 function selectText(){if(copyField.value){copyField.value.focus({preventScroll:true});copyField.value.select();copyField.value.setSelectionRange(0,copyField.value.value.length)}}
 const size = ref({ w: 0, h: 0 }), zoom = ref(1), expanded = ref(false), error = ref(false), dragging = ref(false)
-let drag = null
+let pendingScroll = null
+let scrollRevision = 0
 const ready = computed(() => size.value.w > 0 && !error.value)
 const scaled = computed(() => ({ width: Math.max(1, Math.round(size.value.w * zoom.value)) + 'px', height: Math.max(1, Math.round(size.value.h * zoom.value)) + 'px' }))
 function fit() {
   if (!stage.value || !size.value.w) return
   zoom.value = Math.min(1, Math.max(.001, Math.min((stage.value.clientWidth-16)/size.value.w, (stage.value.clientHeight-16)/size.value.h)))
-  nextTick(() => { if(stage.value) {stage.value.scrollLeft=0;stage.value.scrollTop=0} })
+  queueScroll(0,0)
 }
 function loaded() {
   if (!image.value?.naturalWidth || !image.value?.naturalHeight) { error.value = true; return }
@@ -21,17 +22,85 @@ function loaded() {
   fit()
   if (!textMode.value && !loadingText.value) toggleTextMode()
 }
-function scale(factor, event) {
-  if (!ready.value || !stage.value) return
-  const el=stage.value, rect=el.getBoundingClientRect()
-  const px=event ? event.clientX-rect.left : el.clientWidth/2, py=event ? event.clientY-rect.top : el.clientHeight/2
-  const x=(el.scrollLeft+px)/zoom.value, y=(el.scrollTop+py)/zoom.value
-  zoom.value=Math.max(.001,Math.min(4,zoom.value*factor))
-  nextTick(()=>{if(stage.value){el.scrollLeft=x*zoom.value-px;el.scrollTop=y*zoom.value-py}})
+// Keep the same map point under the centre of a pinch, even inside the iframe.
+function scrollPosition() {
+  return pendingScroll || {left:stage.value?.scrollLeft||0,top:stage.value?.scrollTop||0}
 }
+function queueScroll(left,top) {
+  const el=stage.value
+  if(!el)return
+  const revision=++scrollRevision
+  pendingScroll={left:Math.max(0,Math.min(left,Math.max(0,Math.round(size.value.w*zoom.value)-el.clientWidth))),top:Math.max(0,Math.min(top,Math.max(0,Math.round(size.value.h*zoom.value)-el.clientHeight)))}
+  nextTick(()=>{
+    if(revision!==scrollRevision||stage.value!==el)return
+    el.scrollLeft=pendingScroll.left;el.scrollTop=pendingScroll.top
+    pendingScroll=null
+  })
+}
+function scale(factor,event) {
+  if(!ready.value||!stage.value)return
+  const el=stage.value,rect=el.getBoundingClientRect(),pos=scrollPosition()
+  const px=event?event.clientX-rect.left:el.clientWidth/2,py=event?event.clientY-rect.top:el.clientHeight/2
+  const x=(pos.left+px)/zoom.value,y=(pos.top+py)/zoom.value
+  zoom.value=Math.max(.001,Math.min(4,zoom.value*factor))
+  queueScroll(x*zoom.value-px,y*zoom.value-py)
+}
+function makeGestures(getPoint,onTap,captureElement) {
+  const pointers=new Map()
+  let origin=null,pinch=null,candidate=null,moved=false
+  const reset=()=>{
+    const p=[...pointers.values()]
+    const pos=scrollPosition()
+    if(p.length>=2){
+      const [a,b]=p,mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2}
+      pinch={distance:Math.max(1,Math.hypot(a.x-b.x,a.y-b.y)),zoom:zoom.value,x:(pos.left+mid.x)/zoom.value,y:(pos.top+mid.y)/zoom.value}
+      origin=null
+    }else{
+      pinch=null
+      origin=p.length?{...p[0],...pos}:null
+    }
+  }
+  const down=e=>{
+    if(!ready.value||!stage.value||(e.pointerType==='mouse'&&e.button!==0))return
+    e.preventDefault()
+    if(!pointers.size){moved=false;candidate=e.target}
+    else{moved=true;candidate=null}
+    pointers.set(e.pointerId,getPoint(e))
+    reset()
+    dragging.value=true
+    try{captureElement()?.setPointerCapture?.(e.pointerId)}catch{}
+  }
+  const move=e=>{
+    if(!pointers.has(e.pointerId))return
+    e.preventDefault()
+    const p=getPoint(e)
+    pointers.set(e.pointerId,p)
+    if(pointers.size>=2&&pinch){
+      const [a,b]=[...pointers.values()],mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2}
+      moved=true
+      zoom.value=Math.max(.001,Math.min(4,pinch.zoom*Math.max(1,Math.hypot(a.x-b.x,a.y-b.y))/pinch.distance))
+      queueScroll(pinch.x*zoom.value-mid.x,pinch.y*zoom.value-mid.y)
+    }else if(origin){
+      const dx=p.x-origin.x,dy=p.y-origin.y
+      if(Math.hypot(dx,dy)>7)moved=true
+      if(moved)queueScroll(origin.left-dx,origin.top-dy)
+    }
+  }
+  const up=e=>{
+    if(!pointers.has(e.pointerId))return
+    pointers.delete(e.pointerId)
+    if(pointers.size){moved=true;candidate=null;reset();return}
+    if(!moved&&candidate&&e.type==='pointerup')onTap?.(candidate,e)
+    origin=null;pinch=null;candidate=null;dragging.value=false
+  }
+  const clear=()=>{pointers.clear();origin=null;pinch=null;candidate=null;dragging.value=false}
+  return {down,move,up,clear}
+}
+const stagePoint=e=>{const r=stage.value.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
+const stageGestures=makeGestures(stagePoint,null,()=>stage.value)
 async function toggleTextMode() {
   if (textMode.value) {
-    frameCleanup(); textMode.value=false; selectedText.value=''; copied.value=false
+    frameCleanup(); stageGestures.clear(); textMode.value=false; selectedText.value=''; copied.value=false
     return
   }
   if (loadingText.value) return
@@ -56,7 +125,7 @@ async function toggleTextMode() {
       const markup=new XMLSerializer().serializeToString(svg)
       frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
     }
-    textMode.value=true
+    stageGestures.clear(); textMode.value=true
   } catch(e) {textMessage.value=e.message+' Le lecteur original reste disponible.'}
   finally {loadingText.value=false}
 }
@@ -64,7 +133,6 @@ function bindTextFrame() {
   frameCleanup()
   const doc=frame.value?.contentDocument
   if(!doc) {textMessage.value='Sélection indisponible dans ce navigateur.';textMode.value=false;return}
-  let gesture=null
   const textOf = el => {
     const spans=[...el.querySelectorAll(':scope > tspan')]
     if(spans.length>1 && spans.slice(1).some(t=>t.hasAttribute('y')||t.hasAttribute('dy'))) return spans.map(t=>t.textContent||'').join('\n')
@@ -129,33 +197,21 @@ function bindTextFrame() {
     svgRoot.appendChild(activeHighlight)
     await nextTick()
   }
-  const down=e=>{
-    if(e.button!==0&&e.pointerType==='mouse')return
-    if(gesture){gesture.moved=true;return}
-    e.preventDefault()
-    gesture={id:e.pointerId,x:e.clientX,y:e.clientY,screenX:e.screenX,screenY:e.screenY,left:stage.value.scrollLeft,top:stage.value.scrollTop,target:e.target,moved:false}
-    try{e.target.setPointerCapture?.(e.pointerId)}catch{}
+  const framePoint=e=>{
+    const f=frame.value.getBoundingClientRect(),r=stage.value.getBoundingClientRect()
+    return {x:f.left+e.clientX-r.left,y:f.top+e.clientY-r.top}
   }
-  const move=e=>{
-    if(!gesture||gesture.id!==e.pointerId)return
-    const dx=e.screenX-gesture.screenX,dy=e.screenY-gesture.screenY
-    if(Math.hypot(dx,dy)>7)gesture.moved=true
-    if(gesture.moved){stage.value.scrollLeft=gesture.left-dx;stage.value.scrollTop=gesture.top-dy}
-  }
-  const up=e=>{
-    if(!gesture||gesture.id!==e.pointerId)return
-    if(!gesture.moved&&e.type==='pointerup')pick(gesture.target,e.clientX,e.clientY)
-    gesture=null
-  }
+  const gestures=makeGestures(framePoint,(target,e)=>pick(target,e.clientX,e.clientY),()=>svgRoot)
+  const {down,move,up}=gestures
   const wheel=e=>{
     e.preventDefault()
-    if(e.ctrlKey||e.metaKey)scale(Math.exp(-e.deltaY*.003))
-    else {stage.value.scrollLeft+=e.deltaX;stage.value.scrollTop+=e.deltaY}
+    if(e.ctrlKey||e.metaKey){const f=frame.value.getBoundingClientRect();scale(Math.exp(-e.deltaY*.003),{clientX:f.left+e.clientX,clientY:f.top+e.clientY})}
+    else {const p=scrollPosition();queueScroll(p.left+e.deltaX,p.top+e.deltaY)}
   }
   const context=e=>e.preventDefault()
-  const listeners=[['contextmenu',context],['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['wheel',wheel]]
+  const listeners=[['contextmenu',context],['pointerdown',down],['pointermove',move],['pointerup',up],['pointercancel',up],['lostpointercapture',up],['wheel',wheel]]
   for(const [name,fn] of listeners)doc.addEventListener(name,fn,{passive:false})
-  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);activeHighlight?.remove()}
+  frameCleanup=()=>{for(const [name,fn] of listeners)doc.removeEventListener(name,fn);gestures.clear();activeHighlight?.remove()}
 }
 async function copyText() {
   if(!selectedText.value)return
@@ -163,13 +219,13 @@ async function copyText() {
   catch { selectText();try{copied.value=document.execCommand('copy')}catch{} if(!copied.value)textMessage.value='Utilise Copier dans le menu de sélection.' }
 }
 function wheel(e){if(e.ctrlKey || e.metaKey){e.preventDefault();scale(Math.exp(-e.deltaY*.003),e)}}
-function down(e){if(textMode.value||e.pointerType!=='mouse'||e.button!==0)return;drag={x:e.clientX,y:e.clientY,left:stage.value.scrollLeft,top:stage.value.scrollTop};dragging.value=true;stage.value.setPointerCapture?.(e.pointerId)}
-function move(e){if(!drag)return;stage.value.scrollLeft=drag.left-(e.clientX-drag.x);stage.value.scrollTop=drag.top-(e.clientY-drag.y)}
-function up(){drag=null;dragging.value=false}
+function down(e){if(!textMode.value)stageGestures.down(e)}
+function move(e){if(!textMode.value)stageGestures.move(e)}
+function up(e){stageGestures.up(e)}
 function toggle(){expanded.value=!expanded.value;nextTick(fit)}
 function key(e){if(e.key==='Escape'&&expanded.value)toggle()}
 onMounted(()=>window.addEventListener('keydown',key))
-onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
+onBeforeUnmount(()=>{frameCleanup();stageGestures.clear();window.removeEventListener('keydown',key)})
 </script>
 
 <template>
@@ -197,7 +253,7 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
       <textarea ref="copyField" :value="selectedText" readonly spellcheck="false" :rows="Math.min(8,Math.max(3,selectedText.split('\n').length+1))" aria-label="Texte sélectionné" @click="selectText"></textarea>
     </div>
     <div v-if="textMessage" class="ocd-status" role="status">{{ textMessage }}</div>
-    <div class="ocd-hint">{{ textMode ? 'Touche un bloc pour sélectionner son texte.' : 'Glisser pour naviguer · Boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
+    <div class="ocd-hint">{{ textMode ? 'Touche un bloc pour sélectionner son texte · Pincement pour zoomer' : 'Glisser pour naviguer · Pincement ou boutons + et − pour zoomer · Ctrl + molette sur ordinateur' }}</div>
   </section>
 </template>
 
@@ -210,11 +266,11 @@ onBeforeUnmount(()=>{frameCleanup();window.removeEventListener('keydown',key)})
 .ocd-controls button,.ocd-controls a{border:1px solid #503b6b;border-radius:6px;padding:8px 10px;background:#211831;color:#eee5f9;font:inherit;cursor:pointer;text-decoration:none}
 .ocd-controls button:disabled{opacity:.45;cursor:default}
 .ocd-controls button:hover,.ocd-controls a:hover{border-color:#a78bfa}
-.ocd-stage{height:clamp(420px,70vh,900px);overflow:auto;overscroll-behavior:contain;cursor:grab;touch-action:pan-x pan-y;min-height:0}
+.ocd-stage{height:clamp(420px,70vh,900px);overflow:auto;overscroll-behavior:contain;cursor:grab;touch-action:none;min-height:0}
 .expanded .ocd-stage{flex:1;height:auto}
 .ocd-stage.dragging{cursor:grabbing}
 .ocd-stage img{display:block;max-width:none!important;max-height:none!important;margin:0!important;user-select:none;pointer-events:none}
-.ocd-text-frame{display:block;border:0;max-width:none!important;background:#100d17}
+.ocd-text-frame{display:block;border:0;max-width:none!important;background:#100d17;touch-action:none}
 .ocd-copy{position:sticky;bottom:0;z-index:3;flex-shrink:0;padding:10px 12px;border-top:1px solid #503b6b;background:#1b1426}
 .ocd-copy-header{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px}
 .ocd-copy-header button{background:#62409a;border:1px solid #a78bfa;color:#fff;border-radius:6px;padding:8px 14px;cursor:pointer}
