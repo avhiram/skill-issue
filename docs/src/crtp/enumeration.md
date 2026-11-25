@@ -47,6 +47,14 @@ Get-ADDomain -Identity domain.local
 
 Consulte les propriétés du domaine indiqué, accessible depuis la session.
 
+### Domaine distant avec PowerView
+
+```powershell
+Get-Domain -Domain domain.local
+```
+
+Consulte les propriétés du domaine désigné.
+
 ### SID du domaine
 
 ```powershell
@@ -72,6 +80,14 @@ Get-DomainPolicyData
 
 Consulte les données de stratégie de domaine et leurs paramètres System Access.
 
+### Politique d'un autre domaine
+
+```powershell
+(Get-DomainPolicyData -Domain domain.local).systemaccess
+```
+
+Affiche les paramètres System Access du domaine désigné.
+
 ### Contrôleurs de domaine
 
 ```powershell
@@ -95,6 +111,14 @@ Get-ADDomainController -DomainName domain.local -Discover
 ```
 
 Recherche un contrôleur disponible pour le domaine indiqué.
+
+### Contrôleurs d'un autre domaine avec PowerView
+
+```powershell
+Get-DomainController -Domain domain.local
+```
+
+Consulte les contrôleurs du domaine indiqué.
 
 ## Utilisateurs et ordinateurs
 
@@ -138,6 +162,46 @@ Get-DomainUser -Properties pwdlastset
 
 Affiche l'attribut relatif à la dernière modification du mot de passe.
 
+### Propriétés de tous les utilisateurs
+
+```powershell
+Get-ADUser -Filter * -Properties *
+```
+
+Affiche les propriétés accessibles de chaque utilisateur.
+
+### Utilisateur précis avec PowerView
+
+```powershell
+Get-DomainUser -Identity student1 -Properties *
+```
+
+Consulte les propriétés du compte de laboratoire.
+
+### Nom de compte et nombre de connexions
+
+```powershell
+Get-DomainUser -Properties samaccountname,logonCount
+```
+
+Affiche les noms de compte et l'attribut logonCount.
+
+### Date de modification du mot de passe
+
+```powershell
+Get-ADUser -Filter * -Properties pwdlastset,logoncount | Select-Object Name,logoncount,@{Name='PasswordLastSet';Expression={[datetime]::FromFileTime($_.pwdlastset)}}
+```
+
+Convertit l'attribut pwdLastSet au format date Windows. Une valeur nulle ou égale à zéro nécessite une interprétation particulière.
+
+### Recherche dans les descriptions
+
+```powershell
+Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | Select-Object Name,Description
+```
+
+Filtre les objets utilisateur dont la description contient le texte indiqué.
+
 ### Ordinateurs
 
 ```powershell
@@ -170,6 +234,14 @@ Get-DomainComputer | Select-Object Name,logonCount
 
 Affiche les noms et compteurs d'ouvertures de session disponibles.
 
+### Système d'exploitation avec PowerView
+
+```powershell
+Get-DomainComputer -OperatingSystem "*Server 2022*"
+```
+
+Filtre les ordinateurs selon la valeur déclarée dans Active Directory.
+
 ### Groupes
 
 ```powershell
@@ -194,6 +266,22 @@ Get-DomainGroup | Select-Object Name
 
 Affiche les noms des groupes du domaine.
 
+### Groupes d'un autre domaine
+
+```powershell
+Get-DomainGroup -Domain domain.local
+```
+
+Inventorie les groupes du domaine indiqué.
+
+### Recherche de groupes par nom
+
+```powershell
+Get-ADGroup -Filter 'Name -like "*admin*"' | Select-Object Name
+```
+
+Filtre les groupes dont le nom contient admin.
+
 ### Appartenances d'un utilisateur
 
 ```powershell
@@ -209,6 +297,22 @@ Get-DomainGroup -UserName "student1"
 ```
 
 Affiche les groupes associés au compte de laboratoire.
+
+### Membres du groupe Domain Admins
+
+```powershell
+Get-ADGroupMember -Identity "Domain Admins" -Recursive
+```
+
+Vérifie les appartenances directes et imbriquées du groupe sur un domaine anglophone.
+
+### Groupes locaux d'une machine
+
+```powershell
+Get-NetLocalGroup -ComputerName domain-dc
+```
+
+Consulte les groupes locaux exposés par la machine désignée. Des permissions administratives peuvent être nécessaires.
 
 ## GPO et OU
 
@@ -246,6 +350,30 @@ Get-DomainOU
 
 Liste les unités organisationnelles du domaine.
 
+### GPO par identifiant
+
+```powershell
+Get-DomainGPO -Identity "{0D1CC23D-1F20-4EEE-AF64-D99597AE2A6E}"
+```
+
+Consulte une GPO identifiée par son GUID. Remplacer le GUID par celui de la stratégie auditée.
+
+### Groupes locaux définis par GPO
+
+```powershell
+Get-DomainGPOLocalGroup
+```
+
+Consulte les paramètres de groupes locaux gérés par les stratégies.
+
+### OU avec Get-NetOU
+
+```powershell
+Get-NetOU
+```
+
+Inventorie les unités organisationnelles avec l'alias PowerView, selon la version utilisée.
+
 ## ACL
 
 ![Structure d'un jeton d'accès et d'une ACL](./images/1.png)
@@ -253,6 +381,22 @@ Liste les unités organisationnelles du domaine.
 ![Exemple d'affichage d'une ACE dans un environnement de formation](./images/2.png)
 
 Les ACL définissent les droits d'accès aux objets. Les droits GenericAll, GenericWrite, WriteDacl et WriteOwner méritent une revue dans le cadre d'un audit de délégation.
+
+### ACL d'un objet de laboratoire
+
+```powershell
+Get-DomainObjectAcl -SamAccountName student1 -ResolveGUIDs
+```
+
+Consulte les entrées de contrôle d'accès de l'objet désigné et résout les GUID.
+
+### ACL avec le fournisseur ActiveDirectory
+
+```powershell
+(Get-Acl 'AD:\CN=Administrator,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local').Access
+```
+
+Affiche les ACE de l'objet désigné. Nécessite le lecteur AD: et un DN adapté au laboratoire.
 
 ## Trusts et forêts
 
@@ -327,6 +471,54 @@ Get-ADTrust -Identity domain.local
 ```
 
 Consulte les propriétés de la relation d'approbation indiquée.
+
+### Trusts avec PowerView
+
+```powershell
+Get-DomainTrust
+```
+
+Inventorie les relations d'approbation du domaine courant.
+
+### Trusts d'un domaine désigné
+
+```powershell
+Get-DomainTrust -Domain domain.local
+```
+
+Consulte les relations d'approbation du domaine indiqué.
+
+### Forêt désignée avec PowerView
+
+```powershell
+Get-Forest -Forest domain.local
+```
+
+Affiche les propriétés de la forêt indiquée.
+
+### Domaines d'une forêt désignée
+
+```powershell
+Get-ForestDomain -Forest domain.local
+```
+
+Liste les domaines de la forêt spécifiée.
+
+### Catalogues globaux d'une forêt désignée
+
+```powershell
+Get-ForestGlobalCatalog -Forest domain.local
+```
+
+Liste les catalogues globaux de la forêt spécifiée.
+
+### Approbations de forêt
+
+```powershell
+Get-ForestTrust -Forest domain.local
+```
+
+Consulte les relations d'approbation de la forêt désignée.
 
 ## User Hunting et BloodHound
 
