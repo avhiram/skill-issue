@@ -554,102 +554,100 @@ bloodhound-python -u <user> -p 'passwd' -ns <DC IP> -dc <FQDN> -d <domain> -c al
 
 ### Préparation
 
-Outils : InviShell, PowerView, ADModule.
+- **InviShell** : environnement PowerShell utilisé dans le laboratoire.
+- **PowerView** : interrogation des objets, permissions et relations Active Directory.
+- **ADModule** : module PowerShell Microsoft pour administrer et interroger Active Directory.
 
 ### Énumération
 
 #### Utilisateurs et ordinateurs
 
-- Utilisateurs et ordinateurs.
-- Domain Admins et Enterprise Admins.
+Identifier les comptes utilisateurs, les machines et les groupes privilégiés. Un Domain Admin dispose de droits élevés sur son domaine, tandis qu'un Enterprise Admin possède des privilèges à l'échelle de la forêt.
 
 #### OU et GPO
 
-- Unités organisationnelles et ordinateurs associés.
-- GPO du domaine et GPO appliquées à la machine.
+Une Organizational Unit (OU) regroupe des objets Active Directory. Une Group Policy Object (GPO) définit des paramètres appliqués aux utilisateurs et aux ordinateurs, comme la configuration de sécurité ou les groupes locaux.
 
 #### ACL
 
-- ACL et droits de modification.
+Une Access Control List (ACL) définit qui peut effectuer quelles actions sur un objet. Par exemple, GenericAll correspond à un contrôle complet de l'objet, tandis que WriteProperty autorise la modification de propriétés selon la portée de l'autorisation.
 
 #### Trusts
 
-- Domaines de la forêt.
-- Relations d'approbation entre domaines et forêts.
-- Visibilité des relations externes.
+Un Trust permet à un domaine d'accepter l'authentification provenant d'un autre domaine. Il ne donne pas automatiquement accès à toutes ses ressources : les permissions restent déterminantes. La direction et la portée du Trust permettent de comprendre les relations entre domaines et forêts.
 
 ### Privilege Escalation
 
 #### Privilèges locaux
 
-Examiner les possibilités d'élévation locale et les droits administrateur sur les autres machines.
+Être administrateur d'un poste ne signifie pas être administrateur du domaine. Les droits locaux concernent une machine, tandis que les droits Domain Admin concernent le domaine.
 
 #### BloodHound
 
-Cartographier les chemins vers les Domain Admins.
+BloodHound représente les utilisateurs, ordinateurs, groupes et permissions sous forme de graphe. Les liens entre ces objets permettent de visualiser les relations indirectes et les chemins de privilèges.
 
 ### Sécurité du domaine
 
 #### Sessions privilégiées
 
-Examiner l'exposition des sessions Domain Admin et les risques de compromission associés.
+Lorsqu'un administrateur du domaine ouvre une session sur une machine, des éléments d'authentification peuvent y être présents. La compromission de cette machine peut donc affecter la sécurité d'un compte beaucoup plus privilégié.
 
 #### Golden Ticket
 
-Étudier les risques associés aux secrets du compte krbtgt et aux tickets Kerberos.
+Un Golden Ticket est un TGT Kerberos falsifié. Il repose sur les secrets du compte krbtgt, qui joue un rôle central dans la validation des TGT du domaine. Leur compromission menace la confiance accordée aux tickets Kerberos.
 
 #### Silver Ticket
 
-Étudier les risques de tickets de service falsifiés sur les contrôleurs de domaine.
+Un Silver Ticket est un ticket de service (TGS) falsifié. Contrairement au Golden Ticket, il concerne un service précis et repose sur les secrets du compte associé à ce service.
 
 #### Diamond Ticket
 
-Étudier la manipulation des tickets Kerberos et ses implications.
+Un Diamond Ticket repose sur la modification d'un TGT initialement délivré par le contrôleur de domaine. Il se distingue du Golden Ticket, qui repose sur la création d'un TGT falsifié.
 
 #### DSRM
 
-Examiner les risques de persistance associés aux identifiants DSRM.
+Directory Services Restore Mode est un mode de maintenance et de restauration d'Active Directory. Le compte administrateur DSRM possède un mot de passe propre au contrôleur de domaine. Sa compromission représente un risque pour la sécurité et la récupération du DC.
 
 #### DCSync
 
-Examiner les droits de réplication, notamment ceux qui permettent l'accès aux secrets du domaine.
+DCSync détourne le mécanisme de réplication Active Directory pour demander des données d'authentification. Le risque concerne les comptes disposant de droits de réplication sensibles, même lorsqu'ils ne sont pas membres du groupe Domain Admins.
 
 #### Security Descriptors
 
-Examiner les permissions des contrôleurs de domaine et les risques associés à WMI, PowerShell Remoting et aux comptes ordinateurs.
+Un Security Descriptor définit notamment le propriétaire et les permissions d'un objet ou d'une ressource. Des permissions trop larges sur un contrôleur de domaine peuvent exposer des fonctions d'administration distante, comme WMI ou PowerShell Remoting.
 
 #### Kerberoasting
 
-Examiner l'exposition des comptes de service SQL à Kerberoasting.
+Les tickets de service Kerberos sont protégés avec une clé liée au compte du service. Kerberoasting désigne une attaque hors ligne contre cette protection. Un compte de service SQL utilisant un mot de passe faible peut être particulièrement exposé.
 
 #### Unconstrained Delegation
 
-Examiner les serveurs concernés, les risques d'élévation de privilèges et le Printer Bug.
+La délégation non contrainte permet à un service d'agir au nom d'un utilisateur auprès d'autres services. Elle peut exposer des TGT sur le serveur concerné. Le Printer Bug est lié à la possibilité de provoquer une authentification distante via le service d'impression Windows.
 
 #### Constrained Delegation
 
-Examiner la délégation des comptes utilisateurs et ordinateurs, les tickets TGT et TGS et les risques associés aux services LDAP.
+La délégation contrainte limite les services auprès desquels un compte peut agir au nom d'un utilisateur. Le risque dépend notamment des comptes autorisés à déléguer et des services concernés, comme LDAP.
 
 #### RBCD
 
-Examiner les permissions d'écriture sur les objets ordinateurs et les risques liés à la délégation.
+Resource-Based Constrained Delegation permet à une ressource de définir quels comptes peuvent déléguer vers elle. Des permissions d'écriture excessives sur un objet ordinateur peuvent permettre de modifier cette configuration.
 
 #### Domain Trust Key
 
-Examiner les risques d'élévation inter-domaines associés aux clés de Trust.
+Les clés de Trust participent à l'authentification Kerberos entre domaines. Leur compromission peut affecter la sécurité de la relation d'approbation entre un domaine enfant et son domaine parent.
 
 #### Compte krbtgt
 
-Examiner les risques d'élévation vers le domaine parent associés aux secrets krbtgt.
+Chaque domaine possède son propre compte krbtgt. La compromission de ses secrets remet en cause la confiance accordée aux TGT de ce domaine et peut avoir des conséquences sur les relations avec les autres domaines de la forêt.
 
 #### Forest Trust
 
-Examiner les autorisations d'accès aux partages du domaine distant.
+Un Forest Trust relie deux forêts Active Directory. Il permet l'authentification entre elles selon sa configuration. L'accès à un partage réseau dans la forêt distante dépend également des permissions du partage et de la ressource.
 
 #### AD CS
 
-Examiner les modèles de certificats et les risques ESC1, ESC3 et ESC6.
+Active Directory Certificate Services délivre des certificats pouvant servir à l'authentification. Les modèles et paramètres de délivrance définissent qui peut demander un certificat et pour quel usage. ESC1, ESC3 et ESC6 désignent différentes configurations à risque.
 
 #### SQL Server
 
-Examiner les risques associés aux liens entre serveurs SQL.
+Un Linked Server permet à une instance SQL Server d'accéder à une autre instance. Les autorisations et la configuration de l'authentification déterminent les ressources accessibles à travers ce lien. Une configuration excessive peut étendre les conséquences d'une compromission.
