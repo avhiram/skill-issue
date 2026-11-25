@@ -1211,21 +1211,21 @@ Schémas récapitulatifs pour Active Directory, les ACL et les outils associés.
 
 ### AD Mindmap
 
-![AD Mindmap](/assets/images/posts/crte/6.png)
+![AD Mindmap](./assets/6.png)
 
 ### AD Recommendations
 
-![AD Recommendations](/assets/images/posts/crte/7.png)
+![AD Recommendations](./assets/7.png)
 
 ### DACL
 
-![DACL](/assets/images/posts/crte/8.png)
+![DACL](./assets/8.png)
 
 ### Bypass AV
 
-![Bypass AV](/assets/images/posts/crte/9.png)
+![Bypass AV](./assets/9.png)
 
 ### BloodHound Collector
 
-![BloodHound Collector](/assets/images/posts/crte/10.png)
+![BloodHound Collector](./assets/10.png)
 
