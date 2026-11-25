@@ -6,6 +6,10 @@ prev: false
 next: false
 ---
 
+<script setup>
+import ADMindmap from '../../.vitepress/theme/components/ADMindmap.vue'
+</script>
+
 # Mindmap Bug Bounty
 
 [Retour au parcours Bug Bounty](./)
