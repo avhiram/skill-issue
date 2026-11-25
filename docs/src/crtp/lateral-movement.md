@@ -18,6 +18,40 @@ Get-PSHostProcessInfo
 
 Inventorie les processus hébergeant PowerShell.
 
+### Session interactive
+
+```powershell
+Enter-PSSession -ComputerName Server1
+```
+
+Ouvre une session PowerShell interactive sur le serveur de laboratoire Server1, avec les droits de l'identité authentifiée.
+
+### Créer une session persistante
+
+```powershell
+$machine = New-PSSession -ComputerName Server1
+```
+
+Crée une session distante réutilisable et conserve son objet dans la variable $machine.
+
+### Inventaire des processus sur plusieurs serveurs
+
+```powershell
+Invoke-Command -ScriptBlock { Get-Process } -ComputerName (Get-Content C:\scripts\servers.txt)
+```
+
+Interroge les processus des serveurs administrés dont les noms figurent dans le fichier servers.txt. Le chemin remplace le placeholder du document original.
+
+### Conserver un état entre deux appels
+
+```powershell
+$Sess = New-PSSession -ComputerName Server1
+Invoke-Command -Session $Sess -ScriptBlock { $Proc = Get-Process }
+Invoke-Command -Session $Sess -ScriptBlock { $Proc.Name }
+```
+
+Crée une session distante, y conserve les objets processus et affiche leurs noms lors d'un second appel.
+
 ## Administration distante
 
 Le document cite également WinRS et les interfaces WSMan. Contrôler l'autorisation des connexions, les identités utilisées et la journalisation des sessions.
