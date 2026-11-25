@@ -78,6 +78,10 @@ Les notes abordent les GPO liées aux ordinateurs et aux OU, ainsi que les appar
 
 ## ACL
 
+![Structure d'un jeton d'accès et d'une ACL](./images/1.png)
+
+![Exemple d'affichage d'une ACE dans un environnement de formation](./images/2.png)
+
 Les ACL définissent les droits d'accès aux objets. Les droits GenericAll, GenericWrite, WriteDacl et WriteOwner méritent une revue dans le cadre d'un audit de délégation.
 
 ## Trusts et forêts

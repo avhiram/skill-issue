@@ -25,6 +25,12 @@ La solution LAPS permet de gérer et renouveler les mots de passe administrateur
 
 ## Tier Model et ESAE
 
+![Restrictions de contrôle du modèle Tier](./images/28.png)
+
+![Restrictions de connexion du modèle Tier](./images/29.png)
+
+![Architecture historique ESAE](./images/30.png)
+
 Les notes distinguent Tier 0 (identité et infrastructure critique), Tier 1 (serveurs) et Tier 2 (postes de travail). ESAE est présenté comme un modèle historique de forêt administrative.
 
 ## Credential Guard et WDAC
@@ -67,6 +73,8 @@ Get-WinEvent -FilterHashtable @{LogName='System';ID=7045}
 Consulte les événements d'installation de services.
 
 ## Détection des techniques AD
+
+![Authentification sélective entre forêts](./images/31.png)
 
 Les notes associent les tickets falsifiés, Skeleton Key, DSRM, SSP, Kerberoasting, délégation, ACL et Trust Tickets à différents signaux d'audit. La disponibilité des événements dépend de la configuration de journalisation.
 

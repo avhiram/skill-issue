@@ -4,6 +4,8 @@
 
 ## Kerberoasting
 
+![Schéma du risque Kerberoasting](./images/15.png)
+
 Le risque concerne les comptes de service associés à des SPN dont les mots de passe ne présentent pas une robustesse suffisante.
 
 ### Inventaire des comptes de service
@@ -32,6 +34,12 @@ Les notes mettent en relation les droits de modification d'objets AD avec les at
 
 ## Kerberos Delegation
 
+![Architecture de délégation Kerberos](./images/16.png)
+
+![Propriétés de délégation d'un compte](./images/17.png)
+
+![Architecture de délégation contrainte](./images/19.png)
+
 La délégation permet à un service d'accéder à une autre ressource au nom d'un utilisateur, notamment dans un scénario multi-tiers.
 
 - Unconstrained Delegation : délégation non limitée à des services désignés.
@@ -58,9 +66,15 @@ Le chapitre traite aussi du service Spooler et du risque d'authentification forc
 
 ## Forest & Domain Trusts
 
+![Relation d'approbation parent-enfant](./images/20.png)
+
+![Relation d'approbation entre forêts](./images/23.png)
+
 Les notes distinguent les relations parent-enfant et les approbations entre forêts. Les relations d'approbation et le filtrage des SID font partie de la revue des frontières de sécurité.
 
 ## Active Directory Certificate Services
+
+![Architecture AD CS](./images/25.png)
 
 Le document couvre les configurations à risque ESC1, ESC3 et ESC6. Examiner les droits d'inscription, les modèles de certificats, la configuration des autorités et la validation des identités.
 

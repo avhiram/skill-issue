@@ -4,9 +4,13 @@
 
 ## Golden Ticket
 
+![Schéma conceptuel du Golden Ticket](./images/7.png)
+
 Un Golden Ticket est un TGT falsifié à l'aide du secret du compte krbtgt. Les notes soulignent le rôle de ce compte dans la confiance Kerberos et l'importance d'une procédure de rotation contrôlée.
 
 ## Silver Ticket
+
+![Schéma conceptuel du Silver Ticket](./images/10.png)
 
 Un Silver Ticket est un ticket de service falsifié. Son périmètre dépend du service et du secret associé, contrairement au TGT.
 
@@ -35,6 +39,8 @@ Directory Services Restore Mode est destiné à la restauration d'AD. Protéger 
 Les Security Support Providers participent à l'authentification Windows. Une modification non autorisée peut exposer des secrets ou affecter la confiance dans le système.
 
 ## ACL et AdminSDHolder
+
+![Groupes protégés dans Active Directory](./images/13.png)
 
 Les notes présentent AdminSDHolder, les droits de réplication et les descripteurs de sécurité comme surfaces de persistance. La revue des permissions des objets protégés est essentielle.
 
