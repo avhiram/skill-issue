@@ -1,22 +1,23 @@
 ---
-title: "1 - AD Enumeration"
+title: "1 - Énumération Active Directory"
 ---
 
-# Enumeration
+# Énumération Active Directory
 
-- Domain 
+- Domaine
 - GPO 
 - ACL 
 - Trusts 
 - User Hunting
 - BloodHound
 
-## Domain Enumeration:
-For enumeration we can use the following tools
+## Énumération du domaine
 
-− The ActiveDirectory PowerShell module (MS signed and works even in PowerShell CLM)
 
-[Active Directory Administration with PowerShell](https://docs.microsoft.com/en-us/powershell/module/addsadministration/?view=win10-ps)
+### Module ActiveDirectory
+Module PowerShell signé par Microsoft.
+
+[Documentation Microsoft](https://docs.microsoft.com/en-us/powershell/module/addsadministration/)
 
 [ADModule on GitHub](https://github.com/samratashok/ADModule)
 
@@ -25,14 +26,16 @@ Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.d
 Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 ```
 
-> BTW, we can use **ipmo** as an Alias for Import-Module
+`ipmo` est un alias de `Import-Module`.
 
-**BloodHound (C# and PowerShell Collectors)**:
+### BloodHound
+Collecteurs C# et PowerShell pour cartographier les relations AD.
 
 [BloodHound on GitHub](https://github.com/BloodHoundAD/BloodHound)
 
 
-**PowerView (PowerShell)**:
+### PowerView
+Module PowerShell pour interroger Active Directory.
 
 [PowerView.ps1 in PowerSploit](https://github.com/ZeroDayLab/PowerSploit/blob/master/Recon/PowerView.ps1)
 
@@ -40,60 +43,69 @@ Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 . C:\AD\Tools\PowerView.ps1
 ```
 
-**SharpView (C#)** - Doesn't support filtering using Pipeline:
+### SharpView
+Implémentation C# de PowerView, sans filtrage via le pipeline.
 
 [SharpView on GitHub](https://github.com/tevora-threat/SharpView/)
 
 
-Resources:
+### Documentation technique
 
-[Deploy PowerShell ActiveDirectory Module Without Installing the Remote Server Tools](https://janikvonrotz.ch/2015/09/09/deploy-powershell-activedirectory-module-without-installing-the-remote-server-tools/)
-
-
-[Domain Enumeration from PowerShell (CLM)](https://www.labofapenetrationtester.com/2018/10/domain-enumeration-from-PowerShell-CLM.html)
+[Installer le module ActiveDirectory sans RSAT](https://janikvonrotz.ch/2015/09/09/deploy-powershell-activedirectory-module-without-installing-the-remote-server-tools/)
 
 
-**Get current domain**:
+[Énumération en PowerShell CLM](https://www.labofapenetrationtester.com/2018/10/domain-enumeration-from-PowerShell-CLM.html)
+
+
+### Domaine actuel
+Afficher les informations du domaine courant.
 ```powershell
 Get-Domain (PowerView)
 Get-ADDomain (ActiveDirectory Module)
 ```
 
-**Get object of another domain**:
+### Autre domaine
+Interroger un domaine spécifié.
 ```powershell
 Get-Domain -Domain domain.local
 Get-ADDomain -Identity domain.local
 ```
 	
-**Get domain SID for the current domain**:
+### SID du domaine
+Afficher le Security Identifier du domaine courant.
 ```powershell
 Get-DomainSID
 (Get-ADDomain).DomainSID
 ```
 
-**Get domain policy for the current domain**:
+### Politique du domaine
+Consulter la politique du domaine courant.
 ```powershell
 Get-DomainPolicyData
 (Get-DomainPolicyData).systemaccess
 ```
 	
-**Get domain policy for another domain**:
+### Politique d'un autre domaine
+Consulter la configuration de sécurité du domaine indiqué.
 ```powershell
 (Get-DomainPolicyData -domain domain.local).systemaccess
 ```
 
-**Get domain controllers for the current domain**:
+### Contrôleurs de domaine
+Lister les Domain Controllers du domaine courant.
 ```powershell
 Get-DomainController
 Get-ADDomainController
 ```
 	
-**Get domain controllers for another domain**:
+### Contrôleurs d'un autre domaine
+Lister les Domain Controllers du domaine indiqué.
 ```powershell
 Get-DomainController -Domain domain.local
 Get-ADDomainController -DomainName domain.local -Discover
 ```
-**Get a list of users in the current domain**:
+### Utilisateurs
+Lister les comptes utilisateurs du domaine courant.
 ```powershell
 Get-DomainUser
 Get-DomainUser -Identity student1
@@ -101,7 +113,8 @@ Get-ADUser -Filter * -Properties *
 Get-ADUser -Identity student1 -Properties *
 ```
 
-**Get list of all properties for users in the current domain**:
+### Attributs des utilisateurs
+Consulter les propriétés des comptes utilisateurs.
 ```powershell
 Get-DomainUser -Identity student1 -Properties *
 Get-DomainUser -Properties samaccountname,logonCount
@@ -110,13 +123,15 @@ Get-ADUser -Filter * -Properties * | select -First 1 | Get-Member -MemberType *P
 Get-ADUser -Filter * -Properties * | select	name,logoncount,@{expression={[datetime]::fromFileTime($_.pwdlastset )}}
 ```
 
-**Search for a particular string in a user's attributes**:
+### Recherche dans les attributs
+Filtrer les comptes selon une chaîne présente dans leurs attributs.
 ```powershell
 Get-DomainUser -LDAPFilter "Description=*built*" | Select name,Description
 Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | select name,Description
 ```
 
-**Get a list of computers in the current domain**:
+### Ordinateurs
+Lister les objets ordinateurs du domaine.
 ```powershell
 Get-DomainComputer | select Name,logonCount
 Get-DomainComputer -OperatingSystem "*Server 2022*"
@@ -127,7 +142,8 @@ Get-ADComputer -Filter 'OperatingSystem -like "*Server 2022*"' -Properties Opera
 Get-ADComputer -Filter * -Properties DNSHostName | %{Test-Connection -Count 1 -ComputerName $_.DNSHostName}
 ```
 
-**Get all the groups in the current domain**:
+### Groupes
+Lister les groupes du domaine courant.
 ```powershell
 Get-DomainGroup | select Name
 Get-DomainGroup -Domain <targetdomain>
@@ -135,72 +151,83 @@ Get-ADGroup -Filter * | select Name
 Get-ADGroup -Filter * -Properties *
 ```
 
-**Get all groups containing the word "admin" in group name**:
+### Groupes administratifs
+Rechercher les groupes dont le nom contient `admin`.
 ```powershell
 Get-DomainGroup *admin*
 Get-ADGroup -Filter 'Name -like "*admin*"' | select Name
 ```
 
-**Get all the members of the Domain Admins group**:
+### Domain Admins
+Lister les membres du groupe Domain Admins.
 ```powershell
 Get-DomainGroupMember -Identity "Domain Admins" -Recurse
 Get-ADGroupMember -Identity "Domain Admins" -Recursive
 ```
 
-**Get the group membership for a user**:
+### Appartenance aux groupes
+Afficher les groupes associés à un utilisateur.
 ```powershell
 Get-DomainGroup -UserName "student1"
 Get-ADPrincipalGroupMembership -Identity student1
 ```
 
-**List all the local groups on a machine** (needs administrator privs on non-dc machines) :
+### Groupes locaux
+Lister les groupes locaux d'une machine. Des droits administrateur sont nécessaires sur les machines qui ne sont pas des DC.
 ```powershell
 Get-NetLocalGroup -ComputerName domain-dc
 ```
 
-**Get members of the local group "Administrators" on a machine** (needs administrator privs on non-dc machines) :
+### Administrateurs locaux
+Afficher les membres du groupe local Administrators.
 ```powershell
 Get-NetLocalGroupMember -ComputerName domain-dc -GroupName Administrators
 ```
 
-**Get actively logged users on a computer** (needs local admin rights on the target):
+### Utilisateurs connectés
+Lister les utilisateurs connectés à une machine. Nécessite les droits administrateur locaux.
 ```powershell
 Get-NetLoggedon -ComputerName domain-admin
 ```
 
-**Get locally logged users on a computer** (needs remote registry on the target - started by-default on server OS):
+### Sessions locales
+Lister les utilisateurs connectés localement. Nécessite le service Remote Registry.
 ```powershell
 Get-LoggedonLocal -ComputerName domain-admin
 ```
 
-**Get the last logged user on a computer** (needs administrative rights and remote registry on the target):
+### Dernière connexion
+Identifier le dernier utilisateur connecté. Nécessite les droits administrateur et Remote Registry.
 ```powershell
 Get-LastLoggedOn -ComputerName domain-admin
 ```
 
-**Find shares on hosts in current domain**:
+### Partages réseau
+Lister les partages réseau du domaine.
 ```powershell
 Invoke-ShareFinder -Verbose
 ```
 
-**Find sensitive files on computers in the domain**:
+### Fichiers sensibles
+Identifier les fichiers sensibles lors d'un audit autorisé.
 ```powershell
 Invoke-FileFinder -Verbose
 ```
 
-**Get all fileservers of the domain**:
+### Serveurs de fichiers
+Lister les serveurs de fichiers du domaine.
 ```powershell
 Get-NetFileServer
 ```
 
-Learning Objective 1
+### Exercice d’énumération
 
-Enumerate following for the dollarcorp domain:
+Inventorier les objets suivants dans le domaine de laboratoire :
 
-- Users
-- Computers
-- Domain Administrators
-- Enterprise Administrators
+- Utilisateurs
+- Ordinateurs
+- Domain Admins
+- Enterprise Admins
 
 ## GPO
 
