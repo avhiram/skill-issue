@@ -1,0 +1,1 @@
+import{_ as r,o as a,c as t,an as i}from"./chunks/framework.Ctf_xftG.js";const u=JSON.parse('{"title":"CRTP","description":"","frontmatter":{},"headers":[],"relativePath":"crtp/index.md","filePath":"crtp/index.md"}'),s={name:"crtp/index.md"};function n(o,e,l,c,d,f){return a(),t("div",null,e[0]||(e[0]=[i("",6)]))}const h=r(s,[["render",n]]);export{u as __pageData,h as default};
