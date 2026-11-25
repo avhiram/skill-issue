@@ -1,17 +1,29 @@
-# CRTP
+---
+title: "CRTP Review"
+---
 
-Certified Red Team Professional · Altered Security
+*Original review by Johnermac.*
 
-Notes de révision en français consacrées à Active Directory, à l'administration Windows et à la sécurité des identités. Les sept chapitres suivent l'ordre des documents fournis de décembre 2023.
+![Alt text](./assets/CRTP.png)
 
-## Parcours
+# My Review
 
-- [AD Enumeration](./enumeration.md)
-- [Windows PrivEsc](./windows-privesc.md)
-- [Lateral Movement](./lateral-movement.md)
-- [Offensive .NET](./offensive-dotnet.md)
-- [AD Persistence](./ad-persistence.md)
-- [AD PrivEsc](./ad-privesc.md)
-- [AD Defense](./defense.md)
+|Difficulty: ★★☆☆☆|
+|Price: ★★★★☆| $249 |
+|Material: ★★★★☆|
+|Real-World Scenario: ★★★☆☆|
+|Worth it?: Yes, if u want to specialize in AD|
+|Official Site: [CRTP by Altered Security](https://www.alteredsecurity.com/adlab)|
 
-[Certification CRTP - Altered Security](https://www.alteredsecurity.com/adlab)
+> This cert is a **MUST** if u enjoy Active Directory. It teaches the fundamentals and then build around that.
+
+I've enjoy the materials, the support and the exam. I have nothing to complain about the content
+
+However, even tho the teachers are amazing, they have a strong Indian accent that can make it difficult to understand some subjects. Especially for someone who already speaks English as a second language.
+
+> [ **Point for improvement** ] They can add subtitles to the videos
+
+Another critique that I have, but this time not regarding the certification itself, pertains to the company *Altered Security*. There isn't enough content about AD exploitation to justify having three certifications (**CRTP**, **CRTE**, **CRTM**). They could improve by better segregating the content or offering discounts to those who have already obtained the previous certifications.
+
+Apart from that, I highly recommend it.
+

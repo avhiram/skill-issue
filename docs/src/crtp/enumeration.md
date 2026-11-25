@@ -1,595 +1,658 @@
-# AD Enumeration
+---
+title: "1 - AD Enumeration"
+---
 
-Inventaire du domaine, des objets, des stratégies de groupe et des relations d'approbation. Les exemples supposent un environnement AD de laboratoire ou administré avec autorisation.
+# Enumeration
 
-## Modules PowerShell
+- Domain 
+- GPO 
+- ACL 
+- Trusts 
+- User Hunting
+- BloodHound
 
-Les notes distinguent le module ActiveDirectory, PowerView, SharpView et BloodHound. Le module ActiveDirectory est fourni par Microsoft ; PowerView constitue une alternative pour interroger les objets du domaine.
+## Domain Enumeration:
+For enumeration we can use the following tools
 
-### Charger le module ActiveDirectory
+− The ActiveDirectory PowerShell module (MS signed and works even in PowerShell CLM)
+
+[Active Directory Administration with PowerShell](https://docs.microsoft.com/en-us/powershell/module/addsadministration/?view=win10-ps)
+
+[ADModule on GitHub](https://github.com/samratashok/ADModule)
 
 ```powershell
 Import-Module C:\AD\Tools\ADModule-master\Microsoft.ActiveDirectory.Management.dll
 Import-Module C:\AD\Tools\ADModule-master\ActiveDirectory\ActiveDirectory.psd1
 ```
 
-Charge les composants du module depuis les chemins du laboratoire. Adapter les chemins à l'installation.
+> BTW, we can use **ipmo** as an Alias for Import-Module
 
-### Charger PowerView
+**BloodHound (C# and PowerShell Collectors)**:
+
+[BloodHound on GitHub](https://github.com/BloodHoundAD/BloodHound)
+
+
+**PowerView (PowerShell)**:
+
+[PowerView.ps1 in PowerSploit](https://github.com/ZeroDayLab/PowerSploit/blob/master/Recon/PowerView.ps1)
 
 ```powershell
 . C:\AD\Tools\PowerView.ps1
 ```
 
-Charge les fonctions du script dans la session PowerShell. Utiliser une copie de confiance dans le laboratoire.
+**SharpView (C#)** - Doesn't support filtering using Pipeline:
 
-### Domaine actuel
+[SharpView on GitHub](https://github.com/tevora-threat/SharpView/)
 
+
+Resources:
+
+[Deploy PowerShell ActiveDirectory Module Without Installing the Remote Server Tools](https://janikvonrotz.ch/2015/09/09/deploy-powershell-activedirectory-module-without-installing-the-remote-server-tools/)
+
+
+[Domain Enumeration from PowerShell (CLM)](https://www.labofapenetrationtester.com/2018/10/domain-enumeration-from-PowerShell-CLM.html)
+
+
+**Get current domain**:
 ```powershell
-Get-ADDomain
+Get-Domain (PowerView)
+Get-ADDomain (ActiveDirectory Module)
 ```
 
-Affiche les propriétés du domaine courant.
-
-### Domaine avec PowerView
-
-```powershell
-Get-Domain
-```
-
-Affiche les propriétés du domaine courant avec PowerView.
-
-### Domaine désigné
-
-```powershell
-Get-ADDomain -Identity domain.local
-```
-
-Consulte les propriétés du domaine indiqué, accessible depuis la session.
-
-### Domaine distant avec PowerView
-
+**Get object of another domain**:
 ```powershell
 Get-Domain -Domain domain.local
+Get-ADDomain -Identity domain.local
 ```
-
-Consulte les propriétés du domaine désigné.
-
-### SID du domaine
-
+	
+**Get domain SID for the current domain**:
 ```powershell
+Get-DomainSID
 (Get-ADDomain).DomainSID
 ```
 
-Affiche l'identifiant de sécurité du domaine.
-
-### SID avec PowerView
-
-```powershell
-Get-DomainSID
-```
-
-Affiche le SID du domaine courant.
-
-### Politique du domaine
-
+**Get domain policy for the current domain**:
 ```powershell
 Get-DomainPolicyData
 (Get-DomainPolicyData).systemaccess
 ```
-
-Consulte les données de stratégie de domaine et leurs paramètres System Access.
-
-### Politique d'un autre domaine
-
+	
+**Get domain policy for another domain**:
 ```powershell
-(Get-DomainPolicyData -Domain domain.local).systemaccess
+(Get-DomainPolicyData -domain domain.local).systemaccess
 ```
 
-Affiche les paramètres System Access du domaine désigné.
-
-### Contrôleurs de domaine
-
-```powershell
-Get-ADDomainController
-```
-
-Identifie un contrôleur de domaine.
-
-### Contrôleurs avec PowerView
-
+**Get domain controllers for the current domain**:
 ```powershell
 Get-DomainController
+Get-ADDomainController
 ```
-
-Affiche les contrôleurs du domaine avec PowerView.
-
-### Contrôleur d'un domaine désigné
-
-```powershell
-Get-ADDomainController -DomainName domain.local -Discover
-```
-
-Recherche un contrôleur disponible pour le domaine indiqué.
-
-### Contrôleurs d'un autre domaine avec PowerView
-
+	
+**Get domain controllers for another domain**:
 ```powershell
 Get-DomainController -Domain domain.local
+Get-ADDomainController -DomainName domain.local -Discover
 ```
-
-Consulte les contrôleurs du domaine indiqué.
-
-## Utilisateurs et ordinateurs
-
-### Utilisateurs
-
+**Get a list of users in the current domain**:
 ```powershell
-Get-ADUser -Filter *
-```
-
-Liste les utilisateurs AD.
-
-### Utilisateur désigné
-
-```powershell
+Get-DomainUser
+Get-DomainUser -Identity student1
+Get-ADUser -Filter * -Properties *
 Get-ADUser -Identity student1 -Properties *
 ```
 
-Affiche les propriétés accessibles du compte de laboratoire student1.
-
-### Noms des propriétés utilisateur
-
-```powershell
-Get-ADUser -Filter * -Properties * | Select-Object -First 1 | Get-Member -MemberType *Property | Select-Object Name
-```
-
-Présente les propriétés exposées par les objets utilisateur du module.
-
-### Utilisateurs avec PowerView
-
-```powershell
-Get-DomainUser
-```
-
-Affiche les objets utilisateur du domaine.
-
-### Attribut pwdlastset
-
-```powershell
-Get-DomainUser -Properties pwdlastset
-```
-
-Affiche l'attribut relatif à la dernière modification du mot de passe.
-
-### Propriétés de tous les utilisateurs
-
-```powershell
-Get-ADUser -Filter * -Properties *
-```
-
-Affiche les propriétés accessibles de chaque utilisateur.
-
-### Utilisateur précis avec PowerView
-
+**Get list of all properties for users in the current domain**:
 ```powershell
 Get-DomainUser -Identity student1 -Properties *
-```
-
-Consulte les propriétés du compte de laboratoire.
-
-### Nom de compte et nombre de connexions
-
-```powershell
 Get-DomainUser -Properties samaccountname,logonCount
+Get-DomainUser -Properties pwdlastset
+Get-ADUser -Filter * -Properties * | select -First 1 | Get-Member -MemberType *Property | select Name
+Get-ADUser -Filter * -Properties * | select	name,logoncount,@{expression={[datetime]::fromFileTime($_.pwdlastset )}}
 ```
 
-Affiche les noms de compte et l'attribut logonCount.
-
-### Date de modification du mot de passe
-
+**Search for a particular string in a user's attributes**:
 ```powershell
-Get-ADUser -Filter * -Properties pwdlastset,logoncount | Select-Object Name,logoncount,@{Name='PasswordLastSet';Expression={[datetime]::FromFileTime($_.pwdlastset)}}
+Get-DomainUser -LDAPFilter "Description=*built*" | Select name,Description
+Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | select name,Description
 ```
 
-Convertit l'attribut pwdLastSet au format date Windows. Une valeur nulle ou égale à zéro nécessite une interprétation particulière.
-
-### Recherche dans les descriptions
-
+**Get a list of computers in the current domain**:
 ```powershell
-Get-ADUser -Filter 'Description -like "*built*"' -Properties Description | Select-Object Name,Description
-```
-
-Filtre les objets utilisateur dont la description contient le texte indiqué.
-
-### Recherche LDAP dans les descriptions
-
-```powershell
-Get-DomainUser -LDAPFilter "Description=*built*" | Select-Object Name,Description
-```
-
-Filtre les descriptions des objets utilisateurs à partir d'une expression LDAP.
-
-### Ordinateurs
-
-```powershell
-Get-ADComputer -Filter * | Select-Object Name
-```
-
-Liste les objets ordinateurs.
-
-### Propriétés des ordinateurs
-
-```powershell
-Get-ADComputer -Filter * -Properties *
-```
-
-Consulte les propriétés accessibles des objets ordinateurs.
-
-### Ordinateurs Windows Server 2022
-
-```powershell
-Get-ADComputer -Filter 'OperatingSystem -like "*Server 2022*"' -Properties OperatingSystem | Select-Object Name,OperatingSystem
-```
-
-Filtre les objets ordinateurs selon le système d'exploitation déclaré.
-
-### Inventaire avec PowerView
-
-```powershell
-Get-DomainComputer | Select-Object Name,logonCount
-```
-
-Affiche les noms et compteurs d'ouvertures de session disponibles.
-
-### Système d'exploitation avec PowerView
-
-```powershell
+Get-DomainComputer | select Name,logonCount
 Get-DomainComputer -OperatingSystem "*Server 2022*"
+Get-DomainComputer -Ping
+Get-ADComputer -Filter * | select Name
+Get-ADComputer -Filter * -Properties *
+Get-ADComputer -Filter 'OperatingSystem -like "*Server 2022*"' -Properties OperatingSystem | select Name,OperatingSystem
+Get-ADComputer -Filter * -Properties DNSHostName | %{Test-Connection -Count 1 -ComputerName $_.DNSHostName}
 ```
 
-Filtre les ordinateurs selon la valeur déclarée dans Active Directory.
-
-### Groupes
-
+**Get all the groups in the current domain**:
 ```powershell
-Get-ADGroup -Filter * | Select-Object Name
-```
-
-Affiche les groupes du domaine.
-
-### Propriétés des groupes
-
-```powershell
+Get-DomainGroup | select Name
+Get-DomainGroup -Domain <targetdomain>
+Get-ADGroup -Filter * | select Name
 Get-ADGroup -Filter * -Properties *
 ```
 
-Consulte les propriétés accessibles des groupes AD.
-
-### Groupes avec PowerView
-
-```powershell
-Get-DomainGroup | Select-Object Name
-```
-
-Affiche les noms des groupes du domaine.
-
-### Groupes d'un autre domaine
-
-```powershell
-Get-DomainGroup -Domain domain.local
-```
-
-Inventorie les groupes du domaine indiqué.
-
-### Recherche de groupes par nom
-
-```powershell
-Get-ADGroup -Filter 'Name -like "*admin*"' | Select-Object Name
-```
-
-Filtre les groupes dont le nom contient admin.
-
-### Recherche de groupes avec PowerView
-
+**Get all groups containing the word "admin" in group name**:
 ```powershell
 Get-DomainGroup *admin*
+Get-ADGroup -Filter 'Name -like "*admin*"' | select Name
 ```
 
-Filtre les groupes dont le nom contient admin.
-
-### Appartenances d'un utilisateur
-
+**Get all the members of the Domain Admins group**:
 ```powershell
-Get-ADPrincipalGroupMembership -Identity student1
-```
-
-Affiche les groupes associés au compte de laboratoire student1.
-
-### Appartenances avec PowerView
-
-```powershell
-Get-DomainGroup -UserName "student1"
-```
-
-Affiche les groupes associés au compte de laboratoire.
-
-### Membres du groupe Domain Admins
-
-```powershell
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse
 Get-ADGroupMember -Identity "Domain Admins" -Recursive
 ```
 
-Vérifie les appartenances directes et imbriquées du groupe sur un domaine anglophone.
+**Get the group membership for a user**:
+```powershell
+Get-DomainGroup -UserName "student1"
+Get-ADPrincipalGroupMembership -Identity student1
+```
 
-### Groupes locaux d'une machine
-
+**List all the local groups on a machine** (needs administrator privs on non-dc machines) :
 ```powershell
 Get-NetLocalGroup -ComputerName domain-dc
 ```
 
-Consulte les groupes locaux exposés par la machine désignée. Des permissions administratives peuvent être nécessaires.
-
-### Membres d'un groupe avec PowerView
-
-```powershell
-Get-DomainGroupMember -Identity "Domain Admins" -Recurse
-```
-
-Consulte les membres directs et imbriqués du groupe désigné.
-
-### Membres du groupe Administrators
-
+**Get members of the local group "Administrators" on a machine** (needs administrator privs on non-dc machines) :
 ```powershell
 Get-NetLocalGroupMember -ComputerName domain-dc -GroupName Administrators
 ```
 
-Vérifie la composition du groupe sur le système de laboratoire désigné. Les permissions nécessaires et le nom du groupe varient selon la machine.
-
-## GPO et OU
-
-### Unités organisationnelles
-
+**Get actively logged users on a computer** (needs local admin rights on the target):
 ```powershell
-Get-ADOrganizationalUnit -Filter * -Properties *
+Get-NetLoggedon -ComputerName domain-admin
 ```
 
-Inventorie les OU et leurs propriétés.
+**Get locally logged users on a computer** (needs remote registry on the target - started by-default on server OS):
+```powershell
+Get-LoggedonLocal -ComputerName domain-admin
+```
 
-Les notes abordent les GPO liées aux ordinateurs et aux OU, ainsi que les appartenances aux groupes locaux définies par les stratégies.
+**Get the last logged user on a computer** (needs administrative rights and remote registry on the target):
+```powershell
+Get-LastLoggedOn -ComputerName domain-admin
+```
 
-### Stratégies de groupe
+**Find shares on hosts in current domain**:
+```powershell
+Invoke-ShareFinder -Verbose
+```
 
+**Find sensitive files on computers in the domain**:
+```powershell
+Invoke-FileFinder -Verbose
+```
+
+**Get all fileservers of the domain**:
+```powershell
+Get-NetFileServer
+```
+
+Learning Objective 1
+
+Enumerate following for the dollarcorp domain:
+
+- Users
+- Computers
+- Domain Administrators
+- Enterprise Administrators
+
+## GPO
+
+**Get list of GPO in current domain**:
 ```powershell
 Get-DomainGPO
-```
-
-Inventorie les GPO avec PowerView.
-
-### GPO associées à un ordinateur
-
-```powershell
 Get-DomainGPO -ComputerIdentity domain-computer
 ```
-
-Consulte les GPO applicables à l'ordinateur désigné.
-
-### Unités organisationnelles avec PowerView
-
-```powershell
-Get-DomainOU
-```
-
-Liste les unités organisationnelles du domaine.
-
-### GPO par identifiant
-
-```powershell
-Get-DomainGPO -Identity "{0D1CC23D-1F20-4EEE-AF64-D99597AE2A6E}"
-```
-
-Consulte une GPO identifiée par son GUID. Remplacer le GUID par celui de la stratégie auditée.
-
-### Groupes locaux définis par GPO
-
+	
+**Get GPO(s) which use Restricted Groups or groups.xml for interesting users**:
 ```powershell
 Get-DomainGPOLocalGroup
 ```
 
-Consulte les paramètres de groupes locaux gérés par les stratégies.
-
-### OU avec Get-NetOU
-
-```powershell
-Get-NetOU
-```
-
-Inventorie les unités organisationnelles avec l'alias PowerView, selon la version utilisée.
-
-### Groupes locaux associés aux GPO
-
+**Get users which are in a local group of a machine using GPO**:
 ```powershell
 Get-DomainGPOComputerLocalGroupMapping -ComputerIdentity domain-computer
 ```
-
-Consulte les associations de groupes locaux définies par GPO pour l'ordinateur indiqué.
-
-### Ordinateurs d'une OU
-
+	
+**Get machines where the given user is member of a specific group**:
 ```powershell
-(Get-DomainOU -Identity StudentMachines).distinguishedname | ForEach-Object { Get-DomainComputer -SearchBase $_ } | Select-Object Name
+Get-DomainGPOUserLocalGroupMapping -Identity user -Verbose
 ```
 
-Liste les ordinateurs situés dans l'OU de laboratoire StudentMachines.
+**Get OUs in a domain**:
+```powershell
+Get-DomainOU
+Get-ADOrganizationalUnit -Filter * -Properties *
+```
+	
+**Get GPO applied on an OU. Read GPOname from gplink attribute from**:
+```powershell
+Get-NetOU
+Get-DomainGPO -Identity "{0D1CC23D-1F20-4EEE-AF64-D99597AE2A6E}"
+```
+
+**Get users which are in a local group of a machine in any OU using GPO**:
+```powershell
+(Get-DomainOU).distinguishedname | %{Get-DomainComputer -SearchBase $_} | Get-DomainGPOComputerLocalGroupMapping
+```
+
+**Get users which are in a local group of a machine in a particular OU using GPO**:
+```powershell
+(Get-DomainOU -Identity 'OU=Mgmt,DC=us,DC=techcorp,DC=local').distinguishedname | %{Get-DomainComputer -SearchBase $_} | Get-DomainGPOComputerLocalGroupMapping
+```
+
+There is a bug in PowerView, otherwise the below command would work:
+```powershell
+Get-DomainGPOComputerLocalGroupMapping -OUIdentity 'OU=Mgmt,DC=us,DC=techcorp,DC=local'
+```
+
+
+
+Learning Objective 2
+
+Enumerate following for the dollarcorp domain:
+
+– List all the OUs
+– List all the computers in the StudentMachines OU
+
+```powershell
+(Get-DomainOU -Identity StudentMachines).distinguishedname | %{Get-DomainComputer -SearchBase $_} | select name
+```
+
+– List the GPOs
+– Enumerate GPO applied on the StudentMachines OU.
 
 ## ACL
 
-![Structure d'un jeton d'accès et d'une ACL](./images/1.png)
+![Alt text](./assets/1.png)
 
-![Exemple d'affichage d'une ACE dans un environnement de formation](./images/2.png)
 
-Les ACL définissent les droits d'accès aux objets. Les droits GenericAll, GenericWrite, WriteDacl et WriteOwner méritent une revue dans le cadre d'un audit de délégation.
 
-### ACL d'un objet de laboratoire
-
+**Get the ACLs associated with the specified object**:
 ```powershell
 Get-DomainObjectAcl -SamAccountName student1 -ResolveGUIDs
 ```
 
-Consulte les entrées de contrôle d'accès de l'objet désigné et résout les GUID.
+**Get the ACLs associated with the specified prefix to be used for search**:
+```powershell
+Get-DomainObjectAcl -SearchBase "LDAP://CN=DomainAdmins,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local" -ResolveGUIDs -Verbose
+```
 
-### ACL avec le fournisseur ActiveDirectory
-
+**We can also enumerate ACLs using ActiveDirectory module but without resolving GUIDs**:
 ```powershell
 (Get-Acl 'AD:\CN=Administrator,CN=Users,DC=dollarcorp,DC=moneycorp,DC=local').Access
 ```
 
-Affiche les ACE de l'objet désigné. Nécessite le lecteur AD: et un DN adapté au laboratoire.
+**Search for interesting ACEs**:
+```powershell
+Find-InterestingDomainAcl -ResolveGUIDs
+```
 
-### ACL du partage SYSVOL
-
+**Get the ACLs associated with the specified path**:
 ```powershell
 Get-PathAcl -Path "\\dcorp-dc.dollarcorp.moneycorp.local\sysvol"
 ```
 
-Consulte les permissions du chemin SYSVOL désigné. Adapter le nom du contrôleur au laboratoire.
 
-## Trusts et forêts
+Learning Objective 3
 
-### Forêt courante
+Enumerate following for the dollarcorp domain:
+
+– ACL for the Domain Admins group
+– All modify rights/permissions for the studentx
 
 ```powershell
-Get-ADForest
+Find-InterestingDomainAcl -ResolveGUIDs | ?{$_.IdentityReferenceName -match “studentx”}
 ```
 
-Affiche les propriétés de la forêt.
+```bash
+GenericAll = FullControl
+reading ACL = in <ObjectDN>, (all users in) the group <IdentityReferenceName> have <ActiveDirectoryRights>
 
-### Relations d'approbation
-
-```powershell
-Get-ADTrust -Filter *
+# example    > in Control2User, (all users in) the group RDPUsers have GenericAll (full controll) permissions
 ```
 
-Inventorie les relations d'approbation visibles.
+![Alt text](./assets/2.png)
 
-### Catalogues globaux
 
+## Trusts
+
+- In an AD environment, trust is a relationship between two domains or forests which allows users of one domain or forest to access resources in the other domain or forest.
+- Trust can be automatic (parent-child, same forest etc.) or established (forest, external).
+- Trusted Domain Objects (TDOs) represent the trust relationships in a domain.
+
+### Domain Trust mapping
+
+**Get a list of all domain trusts for the current domain**:
 ```powershell
-Get-ADForest | Select-Object -ExpandProperty GlobalCatalogs
-```
-
-Liste les catalogues globaux.
-
-### Forêt désignée
-
-```powershell
-Get-ADForest -Identity domain.local
-```
-
-Consulte les propriétés de la forêt indiquée.
-
-### Domaines de la forêt
-
-```powershell
-(Get-ADForest).Domains
-```
-
-Liste les domaines appartenant à la forêt courante.
-
-### Forêt avec PowerView
-
-```powershell
-Get-Forest
-```
-
-Affiche les propriétés de la forêt avec PowerView.
-
-### Domaines avec PowerView
-
-```powershell
-Get-ForestDomain
-```
-
-Liste les domaines de la forêt courante.
-
-### Catalogues globaux avec PowerView
-
-```powershell
-Get-ForestGlobalCatalog
-```
-
-Liste les catalogues globaux de la forêt.
-
-### Relation d'approbation désignée
-
-```powershell
+Get-DomainTrust
+Get-DomainTrust -Domain domain.local
+Get-ADTrust
 Get-ADTrust -Identity domain.local
 ```
 
-Consulte les propriétés de la relation d'approbation indiquée.
+### Forest mapping
 
-### Trusts avec PowerView
-
+**Get details about the current forest**:
 ```powershell
-Get-DomainTrust
-```
-
-Inventorie les relations d'approbation du domaine courant.
-
-### Trusts d'un domaine désigné
-
-```powershell
-Get-DomainTrust -Domain domain.local
-```
-
-Consulte les relations d'approbation du domaine indiqué.
-
-### Forêt désignée avec PowerView
-
-```powershell
+Get-Forest
 Get-Forest -Forest domain.local
+Get-ADForest
+Get-ADForest -Identity domain.local
 ```
 
-Affiche les propriétés de la forêt indiquée.
-
-### Domaines d'une forêt désignée
-
+**Get all domains in the current forest**:
 ```powershell
+Get-ForestDomain
 Get-ForestDomain -Forest domain.local
+(Get-ADForest).Domains
 ```
 
-Liste les domaines de la forêt spécifiée.
-
-### Catalogues globaux d'une forêt désignée
-
+**Get all global catalogs for the current forest**:
 ```powershell
+Get-ForestGlobalCatalog
 Get-ForestGlobalCatalog -Forest domain.local
+Get-ADForest | select -ExpandProperty GlobalCatalogs
 ```
 
-Liste les catalogues globaux de la forêt spécifiée.
-
-### Approbations de forêt
-
-```powershell
-Get-ForestTrust -Forest domain.local
-```
-
-Consulte les relations d'approbation de la forêt désignée.
-
-### Trusts de la forêt courante
-
+**Map trusts of a forest** (no Forest trusts in the lab):
 ```powershell
 Get-ForestTrust
+Get-ForestTrust -Forest domain.local
+Get-ADTrust -Filter 'msDS-TrustForestTrustInfo -ne "$null"'
 ```
 
-Consulte les relations d'approbation de la forêt courante avec PowerView.
+Learning Objective 4
 
-## User Hunting et BloodHound
+- Enumerate all domains in the moneycorp.local forest.
+- Map the trusts of the dollarcorp.moneycorp.local domain.
+- Map External trusts in moneycorp.local forest.
 
-Le chapitre source traite des sessions utilisateurs, des partages, des relations de groupes et des chemins d'administration. BloodHound représente les relations sous forme de graphe ; les données collectées doivent rester limitées au périmètre autorisé.
+```powershell
+ Get-ForestDomain | %{Get=DomainTrust -Domain $_.Name} | ?{$_.TrustAttributes -eq “FILTER_SIDS”}
+```
 
-## Ressources
+- Identify external trusts of dollarcorp domain. Can you enumerate trusts for a trusting forest?
 
-- [ADModule](https://github.com/samratashok/ADModule)
-- [BloodHound](https://github.com/BloodHoundAD/BloodHound)
-- [SharpView](https://github.com/tevora-threat/SharpView/)
+```powershell
+Get-ForestDomain -Forest eurocorp.local | %{Get=DomainTrust -Domain $_.Name}
+```
+
+> no, we cant enumerate beyong trusts relationships
+
+
+## User Hunting
+
+> More intrusive
+
+**Find all machines on the current domain where the current user has local admin access**
+```powershell
+Find-LocalAdminAccess -Verbose
+```
+
+**This function queries the DC of the current or provided domain for a list of computers** 
+```powershell
+(Get-NetComputer) and then use multi-threaded Invoke-CheckLocalAdminAccess on each machine.
+```
+
+> This can also be done with the help of remote administration tools like WMI and PowerShell remoting. 
+
+> Pretty useful in cases ports (RPC and SMB) used by Find-LocalAdminAccess are blocked.
+
+See *Find-WMILocalAdminAccess.ps1* and *Find-PSRemotingLocalAdminAccess.ps1*
+
+
+**Find computers where a domain admin (or specified user/group) has sessions**:
+```powershell
+Find-DomainUserLocation -Verbose
+Find-DomainUserLocation -UserGroupIdentity "RDPUsers"
+```
+
+This function queries the DC of the current or provided domain for members of the given group (Domain Admins by default) using **Get-DomainGroupMember**, gets a list of computers (Get-DomainComputer) and list sessions and logged on users:
+```powershell
+(Get-NetSession/Get-NetLoggedon) from each machine.
+```
+
+> Note that for Server 2019 and onwards, local administrator privileges are required to list sessions.
+
+**Find computers where a domain admin session is available and current user has admin access (uses Test-AdminAccess)**.
+```powershell
+Find-DomainUserLocation -CheckAccess
+```
+
+**Find computers (File Servers and Distributed File servers) where a domainadmin session is available**.
+```powershell
+Find-DomainUserLocation -Stealth
+```
+
+## BloodHound
+
+> can create a lot of noise
+
+> So if you can't get caught, don't run it. **Just enumerate manually**
+
+- Provides GUI for AD entities and relationships for the data collected by its ingestors.
+- Uses Graph Theory for providing the capability of mapping shortest path for interesting things like Domain Admins.
+
+[BloodHound on GitHub](https://github.com/BloodHoundAD/BloodHound)
+
+- There are built-in queries for frequently used actions.
+- Also supports custom Cypher queries.
+
+**[blue team / pentester]**
+
+Supply data to BloodHound (Remember to bypass .NET AMSI):
+```powershell
+. C:\AD\Tools\BloodHound-master\Collectors\SharpHound.ps1
+Invoke-BloodHound -CollectionMethod All
+```
+or
+```powershell
+SharpHound.exe
+```
+
+> The generated archive can be uploaded to the BloodHound application.
+
+
+**[red team]**
+
+To make BloodHound collection stealthy, use **Stealth** option. This removes noisy collection methods like RDP, DCOM, PSRemote and LocalAdmin:
+```powershell
+Invoke-BloodHound –Stealth
+```
+or
+```powershell
+SharpHound.exe –-Stealth
+```
+
+To avoid detections like MDI:
+```powershell
+Invoke-BloodHound -ExcludeDCs
+```
+
+Learning Objective 6
+
+> Setup BloodHound and identify shortest path to Domain Admins in the dollarcorp domain.
+
+
+**Windows outside of the domain**:
+```powershell
+runas /netonly /user:domain\user cmd.exe
+sharphound-v2.0.0\SharpHound.exe -c All --domaincontroller <DC IP> --domain <domain> --ldapusername <user> --ldappassword “passwd” --distinguishedname "OU=BR"
+```
+
+[SharpHound on GitHub](https://github.com/BloodHoundAD/SharpHound)
+
+
+Linux:
+```bash
+bloodhound-python -u <user> -p 'passwd' -ns <DC IP> -dc <FQDN> -d <domain> -c all --zip -gc <specify DC if necessary> --dns-tcp
+```
+
+[BloodHound.py on GitHub](https://github.com/dirkjanm/BloodHound.py)
+
+
+## My Mind Map
+
+> Just keep in mind that Enumeration is the MOST important part of a pentest/red team assessment
+
+### Prep Tools
+```powershell
+inviShell
+powerview
+ad-module
+```
+
+### Enum
+--- 1 ---
+```powershell
+Users
+Computers
+Domains Admins
+Enterprise Admins
+```
+
+--- 2 ---
+```powershell
+OUs
+Computers in the OUs
+GPOs
+GPO applied to our machine
+```
+
+--- 3 ---
+```powershell
+ACLs
+All modify rights/permissions
+```
+
+--- 4 ---
+```powershell
+All domains
+Map trusts domains
+Map external trusts forest
+Identify external trusts. Can u enumerate?
+```
+
+### Privesc
+
+--- 5 ---
+```powershell
+Try Local Privesc
+Identify if u have local admin in other machines
+```
+
+### Think of Estrategies 
+
+--- 6 ---
+```powershell
+Setup BloodHound & identify the shortest path to DA
+```
+
+### Getting DA
+
+--- 7 ---
+```powershell
+Identify a machine in the target domain where DA session is available
+Compromise the machine and escalate to DA
+```
+
+--- 8 ---
+```powershell
+Extract secrets from DC
+Create a golden ticket with the krbtgt account secrets
+Get DA with golden ticket
+```
+
+--- 9 ---
+```powershell
+Try to get command execution on the DC by creating a Silver Ticket
+```
+
+--- 10 ---
+```powershell
+Use DA privileges to execute Diamond Ticket
+```
+
+--- 11 ---
+```powershell
+Use DA privileges to abuse DSRM credential for persistence
+```
+
+--- 12 ---
+```powershell
+Check if the user has Replication (DCSync) Rights
+  if yes : execute DCSync to pull hashes of the krbtgt user
+  if no : add replication rights and execute DCSync
+```
+
+--- 13 ---
+```powershell
+Modify Security descriptors on dc to get access using Powershell Remoting and WMI without requiring administrator access
+Retrieve machine account hash from dc without using administrator access and use that to execute a Silver Ticket attack to get code execution with WMI
+```
+
+--- 14 ---
+```powershell
+Using Kerberoasting Attack, crack password of a SQL server service account
+```
+
+--- 15 ---
+```powershell
+Find a server in the DC where Unconstrained Delegation is enabled
+Compromise the server and escalate to DA
+Escalate to EA by abusing Printer Bug
+```
+
+--- 16 ---
+```powershell
+Enumerate users in the domain for whom Contrained Delegation is enabled:
+  Request a TGT from the DC and obtain TGS for the service to which delegation is configured
+  Pass the ticket and access the service
+Enumerate computer accounts for which Contrained Delegation is enabled:
+  For such a user, request a TGT from the DC
+  Obtain an alternate TGS for LDAP service on the target machine
+  Use the TGS for executing DCSync attack
+```
+
+--- 17 ---
+```powershell
+Find a computer object in the domain where we have Write Permissions
+Abuse the Write permissions to access that computer as DA
+```
+
+--- 18 ---
+```powershell
+Using DA access to dollarcorp, escalate privileges to EA or DA to parent domain, moneycorp using the domain trust key
+```
+
+--- 19 --- 
+```powershell
+Using DA access to dollarcorp, escalate privileges to EA or DA to  parent domain, moneycorp using dollarcorp krbtgt hash
+```
+
+--- 20 ---
+```powershell
+With DA privileges on dollarcorp, get access to SharedWithDCorp share on the DC of eurocorp forest
+```
+
+--- 21 ---
+```powershell
+Check if DA CS is used by the target forest and find any vulnerable/abusable templates
+Abuse any such templates to escalate to DA and EA
+  Esc1
+  Esc3
+  Esc6
+```
+
+--- 22 ---
+```powershell
+Get a reverse shell on a SQL Server in eurocorp forest by abusing database links from dcorp-mssql
+```
+

