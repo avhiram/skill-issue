@@ -57,6 +57,7 @@ export default defineConfig({
           { text: 'Reconnaissance passive', link: '/bug-bounty/reconnaissance' },
           { text: 'Reconnaissance active', link: '/bug-bounty/scan-reseau' },
           { text: 'Cartographie Web et API', link: '/bug-bounty/cartographie-web' },
+          { text: 'Mindmap Bug Bounty', link: '/bug-bounty/mindmap-web' },
           { text: 'Tests de vulnérabilités', link: '/bug-bounty/vulnerabilites', collapsed: true, items: [
             { text: 'Subdomain Takeover', link: '/bug-bounty/vulnerabilites#subdomain-takeover' },
             { text: 'Exposition de données', link: '/bug-bounty/vulnerabilites#exposition-de-donnees' },

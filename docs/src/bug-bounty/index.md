@@ -30,6 +30,10 @@ Validation DNS et HTTP, scan réseau et identification des services.
 
 Collecter les URL, paramètres, fichiers JavaScript et routes API.
 
+### [Mindmap Bug Bounty](./mindmap-web.md)
+
+Explorer les catégories, techniques et ressources dans une carte interactive.
+
 ### [Tests de vulnérabilités](./vulnerabilites.md)
 
 Retrouver les techniques par famille de vulnérabilités.

@@ -35,7 +35,7 @@ function splitCard(raw) {
   flush()
   return parts
 }
-const cardParts = computed(() => splitCard(selected.value?.text || selected.value?.file || ''))
+const cardParts = computed(() => splitCard([selected.value?.text || selected.value?.file || '', selected.value?.description || ''].filter(Boolean).join('\n\n')))
 const allCopyText = computed(() => {
   const codes = cardParts.value.filter(p => p.type === 'code')
   return (codes.length ? codes : cardParts.value).map(p => p.value).join('\n\n')
@@ -178,7 +178,14 @@ onMounted(async () => {
   try {
     const response=await fetch(withBase(props.src))
     if(!response.ok) throw Error('HTTP '+response.status)
-    const canvas=await response.json()
+    let canvas
+    if (props.src.endsWith('.gz')) {
+      if (typeof DecompressionStream === 'undefined' || !response.body) throw Error('Ce navigateur ne prend pas en charge le chargement compressé.')
+      const stream = response.body.pipeThrough(new DecompressionStream('gzip'))
+      canvas = await new Response(stream).json()
+    } else {
+      canvas = await response.json()
+    }
     if(!Array.isArray(canvas.nodes)||!Array.isArray(canvas.edges)) throw Error('Format Canvas invalide')
     data.value=canvas
     await nextTick(); fit()
@@ -214,13 +221,16 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
     <div v-if="error" class="map-message" role="alert">{{ error }}</div>
     <div v-else-if="!data" class="map-message">Chargement du Canvas…</div>
     <div v-else class="map-stage">
-      <svg ref="svg" class="map-svg" :class="{ dragging }" aria-label="Canvas Active Directory interactif" @wheel.prevent="wheel" @contextmenu.prevent @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @lostpointercapture="up">
+      <svg ref="svg" class="map-svg" :class="{ dragging }" aria-label="Mindmap interactive" @wheel.prevent="wheel" @contextmenu.prevent @pointerdown="down" @pointermove="move" @pointerup="up" @pointercancel="up" @lostpointercapture="up">
         <defs><marker id="ad-map-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 8 4 L 0 8 z" fill="#9a84b8"/></marker><marker id="ad-map-arrow-start" markerWidth="8" markerHeight="8" refX="1" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 8 0 L 0 4 L 8 8 z" fill="#9a84b8"/></marker></defs>
         <g :transform="transform">
           <g v-for="g in groups" :key="g.id">
             <rect :x="g.x" :y="g.y" :width="g.width" :height="g.height" rx="20" :fill="color(g.color)" fill-opacity=".075" :stroke="color(g.color)" stroke-opacity=".8" stroke-width="5" pointer-events="none"/>
-            <foreignObject :x="g.x+12" :y="g.y-44" :width="Math.max(g.width,300)" height="44" :data-node="g.id">
-              <div xmlns="http://www.w3.org/1999/xhtml" class="map-group-label" :style="{ color: color(g.color,'#c4a6f5') }" v-text="g.label"></div>
+            <foreignObject :x="g.x+12" :y="g.y-44" :width="Math.max(g.width,300)" height="62" :data-node="g.id">
+              <div xmlns="http://www.w3.org/1999/xhtml" class="map-group-heading">
+                <div class="map-group-label" :style="{ color: color(g.color,'#c4a6f5') }" v-text="g.label"></div>
+                <div v-if="g.description" class="map-group-description" v-text="g.description"></div>
+              </div>
             </foreignObject>
           </g>
           <g v-for="e in edges" :key="e.id" pointer-events="none">
@@ -254,6 +264,12 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
             </div>
             <textarea v-else class="inspector-selectable inspector-prose" :value="part.value" readonly spellcheck="false" :rows="Math.min(12,Math.max(2,part.value.split('\n').length+1))" aria-label="Texte sélectionnable" @click="selectBlock($event.currentTarget)"></textarea>
           </template>
+          <div v-if="selected.url || selected.sourceUrl || selected.internalUrl" class="inspector-links">
+            <a v-if="selected.url" :href="selected.url" target="_blank" rel="noopener noreferrer">Ouvrir la ressource</a>
+            <a v-if="selected.sourceUrl && selected.sourceUrl !== selected.url" :href="selected.sourceUrl" target="_blank" rel="noopener noreferrer">URL d’origine</a>
+            <a v-if="selected.internalUrl" :href="withBase(selected.internalUrl)">Voir dans le parcours</a>
+          </div>
+          <p v-if="selected.statusNote" class="inspector-note">{{ selected.statusNote }}</p>
           <p v-if="copyState === 'failed'" class="copy-feedback" role="status">Copie indisponible. Touche le bloc de texte pour le sélectionner entièrement.</p>
           <span v-else-if="copyState" class="copy-feedback" role="status">Copié dans le presse-papiers.</span>
         </div><a v-if="selected.type === 'file' && selected.file?.endsWith('PowerView Enumeration.canvas')" class="map-file-link" :href="withBase('/oscp/mindmap-powerview.html')">Ouvrir PowerView Enumeration</a>
@@ -280,7 +296,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .map-svg.dragging{cursor:grabbing}
 .map-svg [data-node],.map-svg [data-node] *{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .map-svg .map-node-text{pointer-events:none}
-.map-group-label{font:600 28px/1.2 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto}
+.map-group-heading{display:flex;flex-direction:column;gap:2px;pointer-events:auto}.map-group-label{font:600 23px/1.08 system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.map-group-description{font:400 12px/1.15 system-ui,sans-serif;color:#c3b4d3;white-space:normal;max-width:100%;overflow:hidden}
 .map-node-text{width:100%;height:100%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:4px;white-space:pre-wrap;overflow-wrap:anywhere;overflow:hidden;text-align:center;font:500 18px/1.18 system-ui,sans-serif}
 .map-node-text.map-code{display:block;text-align:left;font:400 15px/1.15 ui-monospace,SFMono-Regular,Consolas,monospace;padding:5px}
 .map-edge-label{font:500 16px system-ui,sans-serif;fill:#c4b4d7}
@@ -290,7 +306,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
 .inspector-actions{display:flex;align-items:center;gap:6px}
 .ad-mindmap .copy-primary{background:#62409a;border-color:#a78bfa;font-weight:600;min-height:44px;padding:8px 14px}
 .ad-mindmap .copy-primary:hover{background:#7550b6}
-.inspector-content{padding:10px;user-select:text;-webkit-user-select:text;touch-action:pan-y}
+.inspector-content{padding:10px;user-select:text;-webkit-user-select:text;touch-action:pan-y}.inspector-links{display:flex;flex-wrap:wrap;gap:8px;padding:0 10px 10px}.inspector-links a{display:inline-flex;align-items:center;border:1px solid #594077;border-radius:6px;padding:7px 10px;color:#d8c5f5;background:#241a32;font-size:11px;text-decoration:none}.inspector-links a:hover{border-color:#a78bfa;background:#352348}.inspector-note{margin:0 10px 12px;padding:8px 10px;border-left:2px solid #a78bfa;color:#c8b9d8;background:#211831;font-size:11px;line-height:1.45}
 .inspector-code{cursor:pointer;border:1px solid #4d3967;border-radius:7px;overflow:hidden;background:#100d17;margin:0 0 8px}
 .inspector-code-bar{display:flex;justify-content:space-between;align-items:center;min-height:26px;padding:4px 9px;color:#bca8d9;font-size:11px;background:#231a30}
 .inspector-code-bar button{padding:8px 12px;min-height:44px;background:#62409a;border-color:#a78bfa}
