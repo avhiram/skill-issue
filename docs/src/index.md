@@ -142,32 +142,32 @@ aside: false
 
 <div class="profile-proof">
   <a class="profile-proof-featured" href="https://drive.google.com/file/d/1RV5HkejIYTPiAiXKnAGwoR8wszsXBunR/view" target="_blank" rel="noopener noreferrer">
-    <span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M3 16c-3-1 3-6 9-9s12-3 9-1c3 1-3 6-9 9s-12 3-9 1Z"/><path d="M18 3v4m-2-2h4"/></svg></span>
+    <span class="proof-icon proof-logo proof-logo-nasa" aria-hidden="true"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/NASA_logo.svg" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">NASA</span></span>
     <span class="proof-content"><strong>NASA</strong><span class="proof-description">Lettre de reconnaissance de la NASA</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a class="profile-proof-featured" href="https://drive.google.com/file/d/1jQdPvtwOGkg3NKXgAksmnc1OO_N4V8Ri/view" target="_blank" rel="noopener noreferrer">
-    <span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v5c0 5 3.4 8.3 8 10 4.6-1.7 8-5 8-10V6l-8-3Z"/><path d="m9 12 2 2 4-5"/></svg></span>
+    <span class="proof-icon proof-logo proof-logo-nato" aria-hidden="true"><img src="/skill-issue/institutions/ccdcoe.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">NATO CCDCOE</span></span>
     <span class="proof-content"><strong>Locked Shields · OTAN</strong><span class="proof-description">Équipe de France · 2e sur 17</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a href="/skill-issue/justificatifs/reserve-extrait.png" target="_blank" rel="noopener noreferrer" title="Arrêté de nomination - extrait masqué">
-    <span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7l8 4 8-4-8-4ZM4 12l8 4 8-4M4 17l8 4 8-4"/></svg></span>
+    <span class="proof-icon proof-logo proof-logo-regiment" aria-hidden="true"><img src="https://www.sengager.fr/assets/insigne_cyber_f018566073.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Régiment de cyberdéfense</span></span>
     <span class="proof-content"><strong>Régiment de cyberdéfense</strong><span class="proof-description">Sergent-chef · Réserve opérationnelle</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a href="https://www.linkedin.com/posts/ecole2600_cyberharcelement-aezcole2600-cybersaezcuritaez-ugcPost-7528002547261898752-Mbb_" target="_blank" rel="noopener noreferrer" title="Publication École 2600 - cyberharcèlement">
-    <span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a7.5 7.5 0 0 1-8 7H8l-4 3v-6a7 7 0 0 1 0-4c0-4 3.6-7 8-7s8 3 8 7Z"/><path d="M8 11h8"/></svg></span>
+    <span class="proof-icon proof-logo proof-logo-elysee" aria-hidden="true"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/%C3%89LYSE%C3%89_PARIS_LOGO.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Élysée</span></span>
     <span class="proof-content"><strong>Première dame de France</strong><span class="proof-description">Projet avec la Première dame de France</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a href="/skill-issue/justificatifs/defhack-extrait.webp" target="_blank" rel="noopener noreferrer" title="Attestation DefHack 2024 - extrait masqué">
-    <span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h8v7a4 4 0 0 1-8 0V3Zm0 2H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4m-4 2v5m-4 2h8"/></svg></span>
+    <span class="proof-icon proof-logo proof-logo-comcyber" aria-hidden="true"><img src="https://www.defense.gouv.fr/sites/default/files/styles/homepage_medallion/public/comcyber/logo-COMCYBER.PNG?itok=POqubd5u" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">COMCYBER</span></span>
     <span class="proof-content"><strong>DefHack · COMCYBER</strong><span class="proof-description">Équipe gagnante · 2024</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
-    <span class="proof-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8m-8 4h8m-8 4h4"/></svg></span>
+    <span class="proof-icon proof-logo proof-logo-capital" aria-hidden="true"><img src="https://www.edition-livre-france.fr/img/logos-presse/capital-officiel.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Capital</span></span>
     <span class="proof-content"><strong>Capital</strong><span class="proof-description">Mes découvertes de vulnérabilités à la NASA mentionnées dans le magazine Capital</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
