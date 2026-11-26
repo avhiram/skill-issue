@@ -317,12 +317,12 @@ onUnmounted(() => {
         </section>
       </div>
     </Teleport>
-    <nav v-if="ready" class="skill-mobile-tools" aria-label="Accès rapides sur mobile">
+    <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
       <button type="button" @click="openMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
-      <button type="button" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
+      <button type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
       <button v-if="hasOutline" type="button" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Sommaire</span></button>
-      <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Cheatsheet' : 'Lecture' }}</span></button>
-      <button type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Dans la page</span></button>
+      <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Fiche' : 'Lecture' }}</span></button>
+      <button type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
       <button type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
     </nav>
   </div>
@@ -341,8 +341,10 @@ onUnmounted(() => {
 .skill-mobile-tools { display: none; }
 @media (max-width: 767px) {
   .skill-page-tools .skill-reading-toolbar { display: none; }
-  .skill-mobile-tools { display: flex; position: fixed; z-index: 29; inset: auto 0 0; padding: 5px max(5px, env(safe-area-inset-right, 0px)) calc(5px + env(safe-area-inset-bottom, 0px)) max(5px, env(safe-area-inset-left, 0px)); background: #15101e; border-top: 1px solid #3a2b4b; box-shadow: 0 -6px 20px rgba(0,0,0,.22); }
-  .skill-mobile-tools button { flex: 1 1 0; min-width: 0; min-height: 49px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #bdb2ce; font-size: 10px; line-height: 1.2; border-radius: 6px; }
+  .skill-mobile-tools { display: grid; grid-template-columns: repeat(var(--skill-nav-count, 6), minmax(0, 1fr)); align-items: stretch; gap: 2px; position: fixed; z-index: 29; inset: auto 0 0; padding: 5px max(5px, env(safe-area-inset-right, 0px)) calc(5px + env(safe-area-inset-bottom, 0px)) max(5px, env(safe-area-inset-left, 0px)); background: #15101e; border-top: 1px solid #3a2b4b; box-shadow: 0 -6px 20px rgba(0,0,0,.22); }
+  .skill-mobile-tools button { min-width: 0; height: 52px; padding: 5px 0; display: grid; grid-template-rows: 21px 13px; align-content: center; justify-items: center; gap: 4px; color: #bdb2ce; font-size: clamp(9px, 2.5vw, 11px); line-height: 13px; border-radius: 6px; box-sizing: border-box; }
+  .skill-mobile-tools button span { display: block; white-space: nowrap; text-align: center; max-width: 100%; }
+  .skill-mobile-tools button svg { align-self: center; }
   .skill-mobile-tools button[aria-pressed="true"] { color: #e4caff; background: #2a1d39; }
   .skill-mobile-tools svg { width: 19px; height: 19px; color: #c4a4f4; }
   .VPDoc:has(.skill-mobile-tools) { padding-bottom: max(100px, calc(85px + env(safe-area-inset-bottom, 0px))); }
