@@ -64,8 +64,12 @@ export const examGroups: {title:string; links:Link[]}[] = [
     ]
   },
   {
-    "title": "Systèmes",
+    "title": "Shell et systèmes",
     "links": [
+      {
+        "label": "Shell interactif (TTY)",
+        "path": "/oscp/exam-shell"
+      },
       {
         "label": "Linux",
         "path": "/oscp/privileges-linux"
@@ -84,12 +88,12 @@ export const examGroups: {title:string; links:Link[]}[] = [
     "title": "Réseau",
     "links": [
       {
-        "label": "Redirections de ports",
-        "path": "/oscp/redirection-ports"
+        "label": "Ligolo-ng et pivot",
+        "path": "/oscp/tunneling"
       },
       {
-        "label": "Tunnels et pivot",
-        "path": "/oscp/tunneling"
+        "label": "Redirections de ports",
+        "path": "/oscp/redirection-ports"
       }
     ]
   },
@@ -120,18 +124,6 @@ export const examGroups: {title:string; links:Link[]}[] = [
       {
         "label": "Mindmap AD",
         "path": "/oscp/mindmap-ad"
-      },
-      {
-        "label": "Synthèse AD",
-        "path": "/oscp/active-directory"
-      },
-      {
-        "label": "Cloud",
-        "path": "/oscp/cloud"
-      },
-      {
-        "label": "Antivirus et Metasploit (restrictions)",
-        "path": "/oscp/antivirus-metasploit"
       }
     ]
   }
