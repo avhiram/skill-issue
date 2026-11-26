@@ -229,9 +229,23 @@ export default defineConfig({
       options: {
         miniSearch: {
           options: {
-            processTerm: (term) => term.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
+            processTerm: (term) => {
+              const value = term.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '')
+              const equivalents: Record<string, string> = {
+                privesc: 'privilege', privileges: 'privilege', privilege: 'privilege',
+                elevation: 'privilege', escalation: 'privilege',
+                enum: 'enumeration', enumeration: 'enumeration',
+                reconnaissance: 'reconnaissance', recon: 'reconnaissance',
+                tunnelling: 'tunneling', tunneling: 'tunneling',
+                lateral: 'lateral', lateraux: 'lateral', laterale: 'lateral',
+                movements: 'movement', mouvement: 'movement', mouvements: 'movement',
+                vulnerabilites: 'vulnerability', vulnerabilite: 'vulnerability', vulnerabilities: 'vulnerability',
+                transferts: 'transfer', transfert: 'transfer', transfers: 'transfer'
+              }
+              return equivalents[value] || value
+            }
           },
-          searchOptions: { boost: { title: 4, titles: 3, text: 1 } }
+          searchOptions: { prefix: true, fuzzy: 0.15, boost: { title: 5, titles: 3, text: 2 } }
         },
         translations: {
           button: { buttonText: 'Rechercher', buttonAriaLabel: 'Rechercher dans le guide' },

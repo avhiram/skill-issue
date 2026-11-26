@@ -646,7 +646,15 @@ const minimalTitles: Record<string, string> = {
   "offsec - acces aux labs gratuits": "OffSec - labs gratuits",
   "offsec - pen-103 kali linux revealed (acces gratuit)": "OffSec - PEN-103 Kali Linux Revealed"
 }
-function displayTitle(item: AssignedResource) { return minimalTitles[simplify(item.title.trim())] || item.title }
+function displayTitle(item: AssignedResource) {
+  const title = minimalTitles[simplify(item.title.trim())] || item.title
+  const url = normalizeUrl(item.url)
+  if (url === normalizeUrl('https://tryhackme.com/room/hello') && /welcome/i.test(title)) return 'TryHackMe - Welcome (hello)'
+  if (url === normalizeUrl('https://tryhackme.com/room/welcome') && /welcome/i.test(title)) return 'TryHackMe - Welcome (welcome)'
+  return title
+}
+function roomMeta(item: AssignedResource) { return /tryhackme\.com\/room\//i.test(item.url) && /^TryHackMe\s*[-–]/i.test(displayTitle(item)) }
+function shortTitle(item: AssignedResource) { return roomMeta(item) ? displayTitle(item).replace(/^TryHackMe\s*[-–]\s*/i, '') : displayTitle(item) }
 const minimalDescriptions: Record<string, string> = {
   "root-me - web serveur": "Challenges Web sur la sécurité côté serveur.",
   "root-me - web client": "Challenges Web sur la sécurité côté navigateur.",
@@ -1080,13 +1088,17 @@ async function selectPath(showFreeOnly: boolean) {
 
           <ul class="academy-links">
             <li v-for="item in selectedCourses(level.id)" :key="item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
-              <span class="academy-explanation"> - {{ describe(item) }}</span>
-              <small v-if="!freeOnly" class="academy-free" title="Sélection sans achat">Gratuit</small>
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ shortTitle(item) }}</a>
+              <span v-if="roomMeta(item)" class="academy-resource-meta">TryHackMe · Gratuit</span>
+              <span v-else class="academy-explanation"> - {{ describe(item) }}</span>
+              <small v-if="!roomMeta(item) && !freeOnly" class="academy-free" title="Sélection sans achat">Gratuit</small>
+              <details v-if="roomMeta(item)" class="academy-resource-detail"><summary>Description</summary><span>{{ describe(item) }}</span></details>
             </li>
             <li v-for="item in freeOnly ? [] : otherCourses(level.id)" :key="item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
-              <span class="academy-explanation"> - {{ describe(item) }}</span>
+              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ shortTitle(item) }}</a>
+              <span v-if="roomMeta(item)" class="academy-resource-meta">TryHackMe</span>
+              <span v-else class="academy-explanation"> - {{ describe(item) }}</span>
+              <details v-if="roomMeta(item)" class="academy-resource-detail"><summary>Description</summary><span>{{ describe(item) }}</span></details>
             </li>
           </ul>
         </div>
@@ -1315,5 +1327,15 @@ async function selectPath(showFreeOnly: boolean) {
   .academy-links { padding-left: 34px !important; }
   .academy-links li { font-size: .96rem; line-height: 1.6; margin-bottom: 4px !important; }
   .academy-links li::before { left: -24px; }
+}
+.academy-resource-meta { display:block; color:#ad9cb9; font-size:.76rem; line-height:1.35; }
+.academy-resource-detail { margin:2px 0 5px; color:#bfb3c8; font-size:.76rem; }
+.academy-resource-detail summary { cursor:pointer; color:#bda7d2; }
+.academy-resource-detail span { display:block; padding:3px 0; }
+@media(max-width:650px) {
+  .academy-links { padding-left:21px !important; }
+  .academy-links li { padding-block:7px !important; border-bottom:1px solid #30273a; line-height:1.43; margin-bottom:0 !important; }
+  .academy-links li::before { left:-17px; top:7px; }
+  .academy-resource-detail summary { padding:3px 0; }
 }
 </style>

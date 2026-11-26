@@ -26,7 +26,7 @@ let frame = 0
 let refreshFrame = 0
 let observer: MutationObserver | undefined
 
-const enabled = computed(() => frontmatter.value.outline !== false && (frontmatter.value.aside !== false || (props.mode === 'mobile' && /\/(oscp|crto|crtp|osint|bug-bounty)\//.test(route.path))))
+const enabled = computed(() => frontmatter.value.outline !== false && (frontmatter.value.aside !== false || (props.mode === 'mobile' && /\/(oscp|crto|crtp|osint|bug-bounty|academy)\//.test(route.path))))
 const normalize = (s: string) => s.toLocaleLowerCase('fr').normalize('NFD').replace(/\p{Diacritic}/gu, '').trim()
 const terms = computed(() => normalize(query.value).split(/\s+/).filter(Boolean))
 const filtering = computed(() => terms.value.length > 0)
@@ -87,13 +87,16 @@ function collect() {
     return
   }
   const [min, max] = levels()
+  const academy = /\/academy\//.test(route.path)
   const result: Entry[] = []
   const stack: Entry[] = []
   elements.clear()
-  for (const heading of Array.from(doc.querySelectorAll<HTMLElement>('h2[id],h3[id],h4[id],h5[id],h6[id]'))) {
-    const level = Number(heading.tagName.slice(1))
+  for (const heading of Array.from(doc.querySelectorAll<HTMLElement>(academy ? 'section.academy-chapter[id],.academy-level[id]' : 'h2[id],h3[id],h4[id],h5[id],h6[id]'))) {
+    const level = academy ? (heading.classList.contains('academy-chapter') ? 2 : 3) : Number(heading.tagName.slice(1))
     if (level < min || level > max || heading.closest('.ignore-header, [data-outline-ignore]')) continue
-    const clone = heading.cloneNode(true) as HTMLElement
+    const labelElement = academy ? heading.querySelector(':scope > h2, :scope > h3') : heading
+    if (!labelElement) continue
+    const clone = labelElement.cloneNode(true) as HTMLElement
     clone.querySelectorAll('.header-anchor, .ignore-header, .VPBadge').forEach(node => node.remove())
     const label = (clone.textContent || '').replace(/\u200b/g, '').replace(/\s+/g, ' ').trim()
     if (!label || elements.has(heading.id)) continue

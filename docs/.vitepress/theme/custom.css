@@ -1218,3 +1218,18 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   .VPSidebar .VPSidebarItem .items { padding-left: 10px; }
   .VPSidebar .VPSidebarItem > .item .text { overflow-wrap: anywhere; }
 }
+
+/* Use the bottom navigation as the only mobile action bar after hydration.
+   Keep native buttons in the DOM for their existing handlers and fallback. */
+@media(max-width:767px) {
+  html.skill-mobile-nav-ready .VPNavBar .VPNavBarSearch,
+  html.skill-mobile-nav-ready .VPNavBar .VPNavBarHamburger,
+  html.skill-mobile-nav-ready .VPLocalNav {
+    display:none !important;
+  }
+  html.skill-mobile-nav-ready .skill-outline--mobile { margin-bottom: 12px; }
+  html.skill-mobile-nav-ready .skill-outline-mobile-toggle { display:none; }
+  html.skill-mobile-nav-ready .skill-outline--mobile:not(:has(.is-mobile-open)) { display:none; }
+  html.skill-mobile-nav-ready .skill-outline--mobile:has(.is-mobile-open) { border:0; margin:0; }
+  .skill-mobile-tools button { font-size:10px; }
+}
