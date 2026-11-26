@@ -38,6 +38,8 @@ const visible=computed(()=>entries.value.filter(item=>{
   return item.parents.every(parent=>expanded.value.has(parent.id))
 }))
 const parentIds=computed(()=>new Set(entries.value.flatMap(item=>item.parents.map(parent=>parent.id))))
+const allExpanded=computed(()=>parentIds.value.size>0&&[...parentIds.value].every(id=>expanded.value.has(id)))
+function toggleAll(){expanded.value=new Set(allExpanded.value?[]:parentIds.value)}
 function toggle(id:string){
  const next=new Set(expanded.value)
  if(next.has(id))next.delete(id);else next.add(id)
@@ -58,6 +60,7 @@ function rememberFull(event:MouseEvent){if(event.ctrlKey||event.metaKey||event.s
       <input v-model="query" type="search" placeholder="Rechercher une rubrique…" aria-label="Rechercher une rubrique" autocomplete="off" spellcheck="false">
       <button v-if="query" type="button" aria-label="Effacer" @click="query=''">×</button>
     </div>
+    <div v-if="entries.length" class="skill-rubric-meta"><span aria-live="polite">{{ filtering ? visible.length : entries.length }} rubrique{{ (filtering ? visible.length : entries.length) > 1 ? 's' : '' }}</span><button v-if="!filtering&&parentIds.size" type="button" @click="toggleAll">{{ allExpanded ? 'Tout replier' : 'Tout déplier' }}</button></div>
     <nav v-if="entries.length" class="exam-index-list" aria-label="Sous-rubriques">
       <div v-for="entry in visible" :key="entry.id" class="exam-index-row" :style="{paddingInlineStart:filtering?'0px':Math.min(entry.parents.length,4)*12+'px'}">
         <a :href="href(entry)" @click="remember(entry,$event)">
@@ -76,6 +79,7 @@ function rememberFull(event:MouseEvent){if(event.ctrlKey||event.metaKey||event.s
   </div>
 </template>
 <style scoped>
+.skill-rubric-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:#a99aba;font-size:12px}.skill-rubric-meta button{min-height:36px;color:#c4a4f4;padding:0 4px}
 .exam-index{display:grid;gap:10px;margin-top:14px;min-width:0}
 .exam-index-search{display:flex;align-items:center;gap:8px;min-height:48px;padding:0 12px;border:1px solid #49345e;border-radius:9px;background:#15101e;color:#b39aff}
 .exam-index-search:focus-within{border-color:#b39aff}

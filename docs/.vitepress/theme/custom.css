@@ -1239,3 +1239,17 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 
 /* Stable jump targets for the service index; no extra space in notes. */
 .vp-doc .port-jump-anchor { height:0; margin:0; padding:0; scroll-margin-top:100px; }
+
+/* Compact, consistent command blocks; original text and copy button are untouched. */
+.vp-doc div[class*="language-"] > pre { cursor: copy; }
+.vp-doc div[class*="language-"].skill-single-line { min-height: 46px; }
+.vp-doc div[class*="language-"].skill-single-line > pre { padding: 12px 54px 12px 0; min-height: 46px; }
+.vp-doc div[class*="language-"].skill-single-line > span.lang { display: none; }
+.vp-doc div[class*="language-"].skill-single-line > button.copy { top: 50%; transform: translateY(-50%); }
+@media (max-width: 767px) {
+  .vp-doc h2 { margin-top: 1.45rem; }
+  .vp-doc h3 { margin-top: 1.05rem; }
+  .vp-doc div[class*="language-"] { margin-bottom: .75rem; }
+  .vp-doc div[class*="language-"].skill-single-line { min-height: 54px; }
+  .vp-doc div[class*="language-"].skill-single-line > pre { min-height: 54px; padding: 15px 58px 12px 0; }
+}

@@ -1,4 +1,6 @@
 import { defineConfig } from 'vitepress'
+import { readdir, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import githubAlertsPlugin from './plugins/githubAlertsPlugin'
 import youtubeEmbedPlugin from './plugins/youtubeEmbedPlugin'
@@ -16,6 +18,22 @@ export default defineConfig({
     if (pageData.relativePath.startsWith('bug-bounty/')) {
       pageData.frontmatter.buildRevision = process.env.GITHUB_SHA?.slice(0, 12) || 'local'
     }
+  },
+  async buildEnd(site) {
+    // Only documentation and its local runtime, not personal documents or large media.
+    const paths: string[] = []
+    async function walk(dir: string, prefix = '') {
+      for (const entry of await readdir(dir, { withFileTypes: true })) {
+        const rel = prefix + entry.name
+        if (entry.isDirectory()) {
+          if (!/^(credentials|institutions|justificatifs|audit|images|database)$/.test(entry.name)) await walk(join(dir, entry.name), rel + '/')
+        } else if (/\.(html|js|css|json|woff2?|svg)$/i.test(rel) && !/^(offline-sw\.js|offline-index\.json)$/.test(rel)) {
+          paths.push(rel)
+        }
+      }
+    }
+    await walk(site.outDir)
+    await writeFile(join(site.outDir, 'offline-index.json'), JSON.stringify({ revision: process.env.GITHUB_SHA || 'local', files: paths.sort() }))
   },
   appearance: 'force-dark',
   srcExclude: [
@@ -241,7 +259,15 @@ export default defineConfig({
                 lateral: 'lateral', lateraux: 'lateral', laterale: 'lateral',
                 movements: 'movement', mouvement: 'movement', mouvements: 'movement',
                 vulnerabilites: 'vulnerability', vulnerabilite: 'vulnerability', vulnerabilities: 'vulnerability',
-                transferts: 'transfer', transfert: 'transfer', transfers: 'transfer'
+                transferts: 'transfer', transfert: 'transfer', transfers: 'transfer', transfer: 'transfer',
+                permissions: 'permission', permission: 'permission', droits: 'permission', rights: 'permission',
+                fichiers: 'file', fichier: 'file', files: 'file', file: 'file',
+                dossiers: 'directory', dossier: 'directory', directories: 'directory', directory: 'directory',
+                supprimer: 'delete', suppression: 'delete', effacer: 'delete', delete: 'delete',
+                copier: 'copy', copie: 'copy', copy: 'copy',
+                telecharger: 'download', telechargement: 'download', download: 'download',
+                rechercher: 'search', recherche: 'search', search: 'search',
+                utilisateurs: 'user', utilisateur: 'user', users: 'user', user: 'user'
               }
               return Object.prototype.hasOwnProperty.call(equivalents, value) ? equivalents[value] : value
             }
