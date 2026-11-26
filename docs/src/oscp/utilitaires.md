@@ -102,11 +102,12 @@ mv ancien nouveau
 
 ### Modifier les permissions (chmod)
 
-Rend exécutable ; ou fixe les permissions à rwxr-xr-x ; ou réserve lecture et écriture au propriétaire.
+`+x` : rendre exécutable. `755` : lecture et exécution pour tous, écriture pour le propriétaire. `777` : tous les droits pour tous (uniquement sur des fichiers de test). `600` : lecture et écriture pour le propriétaire uniquement.
 
 ```bash
 chmod +x fichier.sh
 chmod 755 fichier.sh
+chmod 777 fichier.sh
 chmod 600 fichier.txt
 ```
 
