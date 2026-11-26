@@ -74,7 +74,7 @@ function rememberFull(event:MouseEvent){if(event.ctrlKey||event.metaKey||event.s
       </div>
       <p v-if="!visible.length" role="status">Aucun résultat.</p>
     </nav>
-    <button v-if="inline" class="exam-index-full" type="button" @click="emit('full')">Ouvrir la fiche complète <span aria-hidden="true">›</span></button>
+    <button v-if="inline" class="exam-index-full" type="button" @click="emit('full')">Afficher la fiche <span aria-hidden="true">›</span></button>
     <a v-else class="exam-index-full" :href="withBase(source)" @click="rememberFull">Ouvrir la fiche complète <span aria-hidden="true">›</span></a>
   </div>
 </template>

@@ -1253,3 +1253,18 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   .vp-doc div[class*="language-"].skill-single-line { min-height: 54px; }
   .vp-doc div[class*="language-"].skill-single-line:has(> button.copy) > pre { min-height: 54px; padding: 15px 58px 12px 0; }
 }
+
+/* Folded technical sections: CSS only hides existing DOM nodes. */
+.vp-doc .skill-fold-hidden{display:none!important}
+.vp-doc :is(h2,h3,h4,h5,h6).skill-fold-title{position:relative;cursor:pointer;margin:9px 0;padding:12px 48px 12px 13px;min-height:46px;border:1px solid #352945;border-radius:8px;background:#15101e;line-height:1.35;font-size:clamp(15px,2.5vw,19px);font-weight:650;color:#d8c5f6;overflow-wrap:anywhere}
+.vp-doc :is(h3,h4,h5,h6).skill-fold-title{font-size:clamp(14px,2.3vw,16px);background:#110d19}
+.vp-doc .skill-fold-title.skill-fold-open{border-color:#5a4277;background:#1b1327}
+.vp-doc .skill-fold-title:hover{border-color:#71529a}
+.vp-doc .skill-fold-toggle{position:absolute;inset:0 0 0 auto;width:44px;min-height:44px;display:grid;place-items:center;color:#b39aff;border-radius:7px}
+.vp-doc .skill-fold-toggle::after{content:'';display:block;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg)}
+.vp-doc .skill-fold-toggle[aria-expanded=true]::after{transform:rotate(45deg)}
+.vp-doc .skill-fold-generic{background:transparent!important;border:0!important;padding:0!important;margin:0!important}
+.vp-doc .skill-fold-generic>summary{display:none!important}
+.skill-fold-tools{display:flex;justify-content:flex-end;margin:3px 0 9px}
+.skill-fold-tools button{min-height:36px;color:#c4a4f4;font-size:13px;padding:0 8px;border-radius:6px}
+.skill-fold-tools button:hover{background:#21172e}

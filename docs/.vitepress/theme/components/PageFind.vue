@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute } from 'vitepress'
+import { revealFoldTarget } from '../sectionFolds'
 const route = useRoute()
 const opened = ref(false), ready = ref(false), query = ref(''), count = ref(0), index = ref(0)
 const field = ref<HTMLInputElement | null>(null)
@@ -73,6 +74,7 @@ function go(delta: number) {
   const range = hits[index.value]
   const el = range.startContainer.parentElement
   if (!el || !el.isConnected) { collect(); return }
+  revealFoldTarget(el)
   for (let p: HTMLElement | null = el; p; p=p.parentElement) {
     if (p instanceof HTMLDetailsElement) p.open = true
     if (p.classList.contains('vp-doc')) break

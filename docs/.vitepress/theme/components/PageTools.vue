@@ -2,6 +2,7 @@
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, useRoute, onContentUpdated, withBase } from 'vitepress'
 import PageFind from './PageFind.vue'
+import { clearFolds, initFolds, revealFoldTarget, toggleAllFolds } from '../sectionFolds'
 import OfflineTools from './OfflineTools.vue'
 import Breadcrumbs from './Breadcrumbs.vue'
 import ExamChapterTree from './ExamChapterTree.vue'
@@ -13,6 +14,8 @@ const route = useRoute()
 const { frontmatter } = useData()
 const mode = ref<'read' | 'quick'>('read')
 const hasCode = ref(false)
+const foldCount = ref(0)
+const allFoldsOpen = ref(false)
 const hasOutline = ref(false)
 const wrapCode = ref(false)
 const readingSize = ref<'small'|'normal'|'large'|'xl'>('normal')
@@ -64,6 +67,7 @@ function jumpExamAnchor() {
   const el = document.getElementById(pendingExamAnchor)
   if (!el) return
   pendingExamAnchor = ''
+  revealFoldTarget(el)
   for (let node: HTMLElement | null = el; node; node = node.parentElement) {
     if (node instanceof HTMLDetailsElement) node.open = true
   }
@@ -149,6 +153,7 @@ function restorePosition(position: ReadingPosition) {
   closePanels()
   const el = position.hash ? document.getElementById(position.hash) : null
   if (el) {
+    revealFoldTarget(el)
     for (let node: HTMLElement | null = el; node; node = node.parentElement) {
       if (node instanceof HTMLDetailsElement) node.open = true
       if (node === currentDoc) break
@@ -216,6 +221,7 @@ function markCompactBlocks() {
   })
 }
 function clearDoc() {
+  clearFolds()
   if (!currentDoc) return
   currentDoc.classList.remove('skill-cheatsheet-mode', 'skill-wrap-code', 'skill-library-index-hidden')
   delete currentDoc.dataset.skillTextSize
@@ -258,6 +264,14 @@ function refresh() {
     markProse(doc)
   }
   markCompactBlocks()
+  const foldable = technical && sourcePath.value.split('/').length > 2 && frontmatter.value.outline !== false && !/\/(mindmap[^/]*|preparation|exam)$/.test(sourcePath.value)
+  if(doc && foldable) {
+    const fresh=initFolds(doc,(count,open)=>{foldCount.value=count;allFoldsOpen.value=open})
+    if(fresh && foldCount.value){
+      indexView.value=false
+      if(window.location.hash)handleHash()
+    }
+  } else clearFolds()
   applyMode()
   applyIndex()
   jumpExamAnchor()
@@ -319,6 +333,17 @@ function launchSearch(scope = 'all') {
 function openSearch() { launchSearch() }
 function searchInScope() { launchSearch(searchScope.value) }
 function openOutline() { closePanels(); window.dispatchEvent(new Event('skill-outline-open')) }
+function revealAnchorClick(event:MouseEvent) {
+  if(!(event.target instanceof Element)||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return
+  const a=event.target.closest<HTMLAnchorElement>('a[href]')
+  if(!a)return
+  const url=new URL(a.href,location.href)
+  const norm=(p:string)=>p.replace(/\.html$/,'').replace(/\/index$/,'').replace(/\/+$/,'')
+  if(url.origin!==location.origin||norm(url.pathname)!==norm(location.pathname)||!url.hash)return
+  let id=url.hash.slice(1);try{id=decodeURIComponent(id)}catch{}
+  const el=document.getElementById(id)
+  if(el){showFull();revealFoldTarget(el)}
+}
 function goTop() {
   closePanels()
   window.dispatchEvent(new Event('skill-outline-close'))
@@ -347,6 +372,7 @@ onMounted(async () => {
   document.addEventListener('pointermove',copyMove,{passive:true})
   document.addEventListener('pointercancel',copyCancel)
   document.addEventListener('click',copyClick)
+  document.addEventListener('click',revealAnchorClick,true)
   maybeRestore()
 })
 onContentUpdated(() => nextTick(refresh))
@@ -368,6 +394,7 @@ onUnmounted(() => {
   document.removeEventListener('pointermove',copyMove)
   document.removeEventListener('pointercancel',copyCancel)
   document.removeEventListener('click',copyClick)
+  document.removeEventListener('click',revealAnchorClick,true)
   clearSearchScope()
   document.documentElement.classList.remove('skill-mobile-nav-ready')
   clearDoc()
@@ -391,6 +418,7 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
+    <div v-if="foldCount&&!showIndex" class="skill-fold-tools"><button type="button" @click="toggleAllFolds">{{ allFoldsOpen ? 'Tout replier' : 'Tout déplier' }}</button></div>
     <PageFind />
     <div v-if="ready" class="skill-offline-desktop"><OfflineTools /></div>
     <div v-if="ready&&!showIndex" class="skill-library-toolbar">

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, shallowRef, watch } from 'vue'
 import { useData, useRoute } from 'vitepress'
+import { revealFoldTarget } from '../sectionFolds'
 
 const props = defineProps<{ mode: 'desktop' | 'mobile' }>()
 const route = useRoute()
@@ -97,7 +98,7 @@ function collect() {
     const labelElement = academy ? heading.querySelector(':scope > h2, :scope > h3, :scope > summary > h2, :scope > summary > h3, :scope > summary > .academy-chapter-label > h2') : heading
     if (!labelElement) continue
     const clone = labelElement.cloneNode(true) as HTMLElement
-    clone.querySelectorAll('.header-anchor, .ignore-header, .VPBadge').forEach(node => node.remove())
+    clone.querySelectorAll('.header-anchor, .ignore-header, .VPBadge, .skill-fold-toggle').forEach(node => node.remove())
     const label = (clone.textContent || '').replace(/\u200b/g, '').replace(/\s+/g, ' ').trim()
     if (!label || elements.has(heading.id)) continue
     while (stack.length && stack[stack.length - 1].level >= level) stack.pop()
@@ -152,6 +153,7 @@ function openAncestors(entry: Entry) {
 function navigate(entry: Entry) {
   // Open folded Markdown sections before the existing VitePress anchor navigation.
   let parent = elements.get(entry.id)
+  revealFoldTarget(parent)
   while (parent) {
     if (parent instanceof HTMLDetailsElement) parent.open = true
     if (parent.classList.contains('vp-doc')) break
