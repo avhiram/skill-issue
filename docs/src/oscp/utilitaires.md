@@ -7,6 +7,118 @@ description: "Commandes courantes et outils complémentaires."
 
 Commandes courantes et outils complémentaires.
 
+## Commandes Linux essentielles
+
+### Afficher les fichiers
+
+Affiche les fichiers cachés, les permissions et les tailles lisibles.
+
+```bash
+ls -lha
+```
+
+### Afficher le dossier actuel
+
+Affiche le chemin actuel.
+
+```bash
+pwd
+```
+
+### Changer de dossier
+
+Accède à un dossier ou remonte au dossier parent.
+
+```bash
+cd /chemin/dossier
+cd ..
+```
+
+### Créer un fichier
+
+Crée un fichier vide s’il n’existe pas.
+
+```bash
+touch fichier.txt
+```
+
+### Modifier un fichier
+
+Ouvre le fichier dans un éditeur de texte.
+
+```bash
+nano fichier.txt
+```
+
+### Lire un fichier
+
+Affiche son contenu.
+
+```bash
+cat fichier.txt
+```
+
+### Créer un dossier
+
+Crée un dossier.
+
+```bash
+mkdir dossier
+```
+
+### Supprimer un fichier
+
+Supprime le fichier après confirmation.
+
+```bash
+rm -i fichier.txt
+```
+
+### Supprimer un dossier
+
+Supprime un dossier vide ou son contenu récursivement, avec confirmation.
+
+```bash
+rmdir dossier
+rm -ri dossier
+```
+
+### Copier un fichier ou un dossier
+
+Copie un fichier ou un dossier.
+
+```bash
+cp fichier.txt destination/
+cp -r dossier destination/
+```
+
+### Déplacer ou renommer
+
+Déplace ou renomme un fichier ou un dossier.
+
+```bash
+mv ancien nouveau
+```
+
+### Modifier les permissions (chmod)
+
+Rend exécutable ; ou fixe les permissions à rwxr-xr-x ; ou réserve lecture et écriture au propriétaire.
+
+```bash
+chmod +x fichier.sh
+chmod 755 fichier.sh
+chmod 600 fichier.txt
+```
+
+### Afficher l’utilisateur
+
+Affiche le compte actuel et ses identifiants et groupes.
+
+```bash
+whoami
+id
+```
+
 ### Bash
 
 <p class="oscp-command-note">Bash : établir une connexion de shell inversé vers l'adresse et le port du laboratoire.</p>
