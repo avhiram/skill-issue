@@ -87,7 +87,7 @@ Exemple historique, non validé : `-SC` ne correspond pas à une option Nmap doc
 
 ### Scan complet avec Nmap
 
-[**Méthodologie Nmap en trois étapes (laboratoire)**](../oscp/exam-nmap.md). En bug bounty, adapter les ports et le débit aux autorisations du programme.
+[**Méthodologie Nmap en quatre étapes (laboratoire)**](../oscp/exam-nmap.md). En bug bounty, adapter les ports et le débit aux autorisations du programme.
 
 ::: details Ancien exemple de référence
 

@@ -88,30 +88,34 @@ nc -nvzu -w 2 192.0.2.10 53
 
 ##### 1. Découverte des hôtes
 
-Identifier les machines qui répondent sur le réseau de laboratoire.
+Identifier les machines actives du réseau autorisé.
 
 <LabCommand source='sudo nmap -sn -n "$SUBNET"' />
 
-##### 2. Scan complet TCP et UDP
+##### 2. Scan TCP rapide
 
-Examiner les ports 1 à 65 535 de chaque protocole. Conserver les résultats bruts.
+Examiner les 65 535 ports TCP.
 
-<LabCommand source='sudo nmap -sS -sU -p- -T4 -n -Pn "$IP" -oN rapport_ports.txt' />
+<LabCommand source='sudo nmap -sS -p- --min-rate 1000 -T4 -n -Pn "$IP" -oN tcp.txt' />
 
-##### 3. Analyse des services
+##### 3. Analyse approfondie TCP
 
-Renseigner les ports TCP ouverts et les ports UDP ouverts ou `open|filtered` identifiés précédemment. Analyser uniquement ces ports.
+Renseigner les ports TCP ouverts dans le configurateur. Analyser uniquement ces ports.
 
-<LabCommand source='sudo nmap -sS -sU -A -p "T:$TCP_PORTS,U:$UDP_PORTS" -n -Pn "$IP" -oN rapport_services.txt' />
+<LabCommand source='sudo nmap -A -p "$TCP_PORTS" -n -Pn "$IP" -oN services.txt' />
 
-Si un protocole ne présente aucun port à vérifier, retirer son indicateur de scan (`-sS` ou `-sU`) et sa partie dans `-p`.
+##### 4. Scan UDP indépendant
+
+Lancer dans un deuxième terminal, sans attendre la fin de l’analyse TCP. Examiner les 65 535 ports UDP.
+
+<LabCommand source='sudo nmap -sU -p- -n -Pn "$IP" -oN udp.txt' />
 
 ::: details Points de vigilance
-- Un hôte peut ne pas répondre à la découverte. Utiliser `-Pn` uniquement sur les machines connues et autorisées.
-- Un scan UDP intégral peut durer plusieurs heures. Aucun débit minimal forcé : les pertes et la limitation des réponses ICMP peuvent rendre le résultat incertain.
-- Les états `open|filtered` ne prouvent pas qu’un port est ouvert. La détection des versions peut aider à les distinguer.
-- Si des résultats sont incohérents, confirmer à un débit adapté. Aucun scan ne garantit la découverte de tous les services.
-- Contrôler les règles de l’épreuve et le comportement des scripts NSE avant leur utilisation.
+- La découverte ne garantit pas que tous les hôtes répondent. Utiliser `-Pn` uniquement sur les machines connues et autorisées.
+- `--min-rate 1000` est un débit minimal demandé, pas une limite maximale. Réduire le débit et confirmer les résultats si des pertes sont suspectées.
+- Un scan UDP intégral peut durer plusieurs heures. Aucun débit minimal forcé pour UDP.
+- Les ports UDP `open|filtered` nécessitent une vérification ciblée ; le scan UDP d’inventaire ne garantit pas l’identification de leurs versions.
+- Vérifier les règles de l’épreuve et le comportement des scripts NSE. Aucun scan ne garantit de détecter tous les services.
 :::
 
 #### Références complémentaires

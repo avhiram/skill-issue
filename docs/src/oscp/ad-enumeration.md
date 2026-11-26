@@ -11,7 +11,7 @@ Identifier les utilisateurs, groupes, services et relations du domaine.
 
 ## Reconnaissance avec Nmap
 
-[**Méthodologie Nmap en trois étapes**](./exam-nmap.md) · [Ports et services](./reconnaissance.md#services-par-port)
+[**Méthodologie Nmap en quatre étapes**](./exam-nmap.md) · [Ports et services](./reconnaissance.md#services-par-port)
 
 Vérifier les ports et les services de la cible autorisée.
 

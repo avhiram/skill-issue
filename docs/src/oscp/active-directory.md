@@ -31,7 +31,7 @@ nmap -sn 192.0.2.0/28
 
 #### Inventaire des ports et services
 
-[Consulter la séquence Nmap TCP et UDP en trois étapes](./reconnaissance.md#séquence-de-scans-nmap-pour-un-premier-diagnostic).
+[Consulter la séquence Nmap TCP et UDP en quatre étapes](./reconnaissance.md#séquence-de-scans-nmap-pour-un-premier-diagnostic).
 
 #### Identifier les services SMB
 
