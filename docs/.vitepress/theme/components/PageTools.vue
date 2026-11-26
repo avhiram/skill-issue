@@ -421,8 +421,7 @@ onUnmounted(() => {
           <header><strong>Navigation</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
             <div v-if="lastRead" class="skill-resume">
               <small>Reprendre ma lecture</small>
-              <button type="button" @click="resumeReading">{{ lastRead.title }} · {{ lastRead.progress }} %</button>
-              <progress :value="lastRead.progress" max="100" />
+              <button type="button" @click="resumeReading">{{ lastRead.title }}</button>
             </div>
             <button v-if="!onLibrary && currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
             <a v-for="section in sections" :key="section.path" :href="withBase(section.path)" @click="closePanels">{{ section.title }} <span>›</span></a>
@@ -546,7 +545,6 @@ onUnmounted(() => {
 .skill-exam-group a[aria-current="page"] { background:#2a1d39; border-radius:6px; color:#ead9ff; }
 .skill-exam-group a:hover,.skill-exam-group a:active { background:#261a35; }
 .skill-resume { border:1px solid #3a2b4b; border-radius:8px; padding:9px; margin-bottom:8px; }
-.skill-resume progress { width:100%; height:6px; accent-color:#b39aff; }
 @media(max-width:767px) {
   .skill-page-tools .skill-library-toolbar { display:none; }
   .skill-library-desktop { display:none; }
