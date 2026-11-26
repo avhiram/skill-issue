@@ -142,7 +142,7 @@ export default {
   },
   setup() {
     const route = useRoute()
-    const initZoom = () => mediumZoom('.main img', {
+    const initZoom = () => mediumZoom('.main img:not(.profile-logo-frame img):not(.proof-logo img):not(.profile-credential-image img)', {
       background: 'var(--vp-c-bg)',
       margin: 20
     })
