@@ -1385,3 +1385,9 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   border-radius:0!important;
 }
 .vp-doc .profile-proof .proof-logo { border:0; }
+
+/* Uniform pure-white logo surfaces, without tinted inner rectangles. */
+.vp-doc .profile-marquee-wrap :is(.profile-logo-frame,.profile-logo-frame-school),
+.vp-doc .profile-proof .proof-logo { background:#fff !important; }
+.vp-doc .profile-marquee-wrap .profile-logo-frame > img,
+.vp-doc .profile-proof .proof-logo img { background:transparent !important; mix-blend-mode:multiply; }
