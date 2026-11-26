@@ -307,9 +307,13 @@ onUnmounted(() => {
               </select>
               <button type="button" @click="searchInScope">Rechercher</button>
             </div>
-            <button type="button" @click="findInPage">Rechercher dans la page</button>
-            <label class="skill-size-control">Taille du texte <select v-model="readingSize" @change="changeReadingSize"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
-            <button type="button" @click="goTop">Retour en haut ↑</button>
+            <details class="skill-menu-settings">
+              <summary>Réglages d’affichage</summary>
+              <div class="skill-menu-settings-body">
+                <label class="skill-size-control">Taille du texte <select v-model="readingSize" @change="changeReadingSize" aria-label="Taille du texte"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
+                <label v-if="hasCode" class="skill-wrap-setting"><input type="checkbox" :checked="wrapCode" @change="toggleWrap"> Retour à la ligne des commandes</label>
+              </div>
+            </details>
         </section>
       </div>
     </Teleport>
@@ -336,9 +340,7 @@ onUnmounted(() => {
 .skill-page-tools button:focus-visible, .skill-outline-mobile-header button:focus-visible { outline: 2px solid #b39aff; outline-offset: 2px; }
 .skill-mobile-tools { display: none; }
 @media (max-width: 767px) {
-  .skill-reading-toolbar { margin-bottom: 14px; }
-  .skill-reading-label { font-size: 11px; }
-  .skill-reading-switch button { min-height: 44px; padding: 8px 10px; }
+  .skill-page-tools .skill-reading-toolbar { display: none; }
   .skill-mobile-tools { display: flex; position: fixed; z-index: 29; inset: auto 0 0; padding: 5px max(5px, env(safe-area-inset-right, 0px)) calc(5px + env(safe-area-inset-bottom, 0px)) max(5px, env(safe-area-inset-left, 0px)); background: #15101e; border-top: 1px solid #3a2b4b; box-shadow: 0 -6px 20px rgba(0,0,0,.22); }
   .skill-mobile-tools button { flex: 1 1 0; min-width: 0; min-height: 49px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #bdb2ce; font-size: 10px; line-height: 1.2; border-radius: 6px; }
   .skill-mobile-tools button[aria-pressed="true"] { color: #e4caff; background: #2a1d39; }
@@ -348,6 +350,7 @@ onUnmounted(() => {
 /* Visual wrapping only: the DOM text and original copy handlers remain unchanged. */
 .vp-doc.skill-wrap-code div[class*="language-"] pre,
 .vp-doc.skill-wrap-code .bounty-command pre,
+.vp-doc.skill-wrap-code .lab-command pre,
 .vp-doc.skill-wrap-code pre.vp-code { white-space: pre-wrap !important; overflow-wrap: anywhere; }
 .vp-doc.skill-wrap-code pre code, .vp-doc.skill-wrap-code pre code .line { white-space: inherit !important; overflow-wrap: inherit; }
 .skill-library-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin: 0 0 16px; }
@@ -361,10 +364,16 @@ onUnmounted(() => {
 .skill-tools-panel > a,.skill-tools-panel > button,.skill-resume button { display:flex; justify-content:space-between; align-items:center; text-align:left; width:100%; min-height:44px; padding:9px; border-bottom:1px solid #30243e; color:#d8c4f4; }
 .skill-tools-panel .skill-tools-chapter { color:#e6d3ff; background:#2a1d39; border-radius:7px; margin-bottom:7px; }
 .skill-tools-panel small { display:block; font-size:12px; color:#ab98c1; margin:12px 0 5px; }
+ .skill-menu-settings { margin-top:12px; border:1px solid #3a2b4b; border-radius:8px; }
+.skill-menu-settings summary { cursor:pointer; padding:12px; color:#dac6f5; font-size:13px; font-weight:600; }
+.skill-menu-settings-body { display:grid; gap:10px; padding:0 12px 12px; }
+.skill-menu-settings-body .skill-size-control { justify-content:space-between; }
+.skill-wrap-setting { display:flex; align-items:center; gap:8px; min-height:40px; font-size:13px; color:#d8c4f4; cursor:pointer; }
+.skill-wrap-setting input { width:18px; height:18px; flex:none; accent-color:#b39aff; }
 .skill-resume { border:1px solid #3a2b4b; border-radius:8px; padding:9px; margin-bottom:8px; }
 .skill-resume progress { width:100%; height:6px; accent-color:#b39aff; }
 @media(max-width:767px) {
-  .skill-library-toolbar button { min-height:40px; }
+  .skill-page-tools .skill-library-toolbar { display:none; }
   .skill-library-desktop { display:none; }
   .skill-tools-overlay { align-items:flex-end; }
   .skill-tools-panel { width:100%; border-radius:16px 16px 0 0; padding-bottom:calc(16px + env(safe-area-inset-bottom,0px)); }
