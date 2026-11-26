@@ -13,7 +13,7 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
     <div class="lab-vars-body">
       <label>
         <span>IP de la machine</span>
-        <input type="text" :value="values.IP" placeholder="192.0.2.10" autocomplete="off" spellcheck="false" :aria-invalid="!!values.IP.trim() && !validated.IP" @input="set('IP',($event.target as HTMLInputElement).value)">
+        <input type="text" :value="values.IP" placeholder="192.168.1.10" autocomplete="off" spellcheck="false" :aria-invalid="!!values.IP.trim() && !validated.IP" @input="set('IP',($event.target as HTMLInputElement).value)">
         <small v-if="values.IP.trim() && !validated.IP">IPv4 invalide</small>
       </label>
       <label>
@@ -26,7 +26,7 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
       </label>
       <label class="lab-subnet">
         <span>Réseau CIDR <small v-if="automaticSubnet && !values.SUBNET.trim()">· Calcul automatique</small></span>
-        <input type="text" :value="values.SUBNET" :placeholder="automaticSubnet || '192.0.2.0/24'" autocomplete="off" spellcheck="false" :aria-invalid="!!values.SUBNET.trim() && !validated.SUBNET" @input="set('SUBNET',($event.target as HTMLInputElement).value)">
+        <input type="text" :value="values.SUBNET" :placeholder="automaticSubnet || '192.168.1.0/24'" autocomplete="off" spellcheck="false" :aria-invalid="!!values.SUBNET.trim() && !validated.SUBNET" @input="set('SUBNET',($event.target as HTMLInputElement).value)">
         <small v-if="values.SUBNET.trim() && !validated.SUBNET">CIDR invalide</small>
         <small v-else-if="validated.SUBNET">Réseau utilisé : {{ validated.SUBNET }}</small>
         <small v-else>Saisir le réseau ou choisir le masque de l’IP.</small>
