@@ -123,7 +123,10 @@ async function toggleTextMode() {
       svg.removeAttribute('width'); svg.removeAttribute('height')
       svg.setAttribute('width','100%'); svg.setAttribute('height','100%')
       const markup=new XMLSerializer().serializeToString(svg)
-      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
+      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}.ocd-viewer.expanded,.ocd-viewer:fullscreen { width:100%; height:100dvh; max-height:100dvh; padding-bottom:env(safe-area-inset-bottom,0px); box-sizing:border-box; }
+.ocd-viewer.expanded .ocd-stage { min-height:0; height:auto; flex:1 1 0; }
+.map-fullscreen-control { border-color:#a78bfa !important; color:#e0caff !important; min-height:44px; }
+</style></head><body>'+markup+'</body></html>'
     }
     stageGestures.clear(); textMode.value=true
   } catch(e) {textMessage.value=e.message+' Le lecteur original reste disponible.'}
@@ -226,10 +229,38 @@ function wheel(e){e.preventDefault();if(e.deltaY)scale(Math.exp(-e.deltaY*.0015)
 function down(e){if(!textMode.value)stageGestures.down(e)}
 function move(e){if(!textMode.value)stageGestures.move(e)}
 function up(e){stageGestures.up(e)}
-function toggle(){expanded.value=!expanded.value;nextTick(fit)}
+let previousOverflow = ''
+function fullscreenChanged() {
+  if (expanded.value && document.fullscreenElement !== root.value && previousOverflow === '') {
+    expanded.value = false
+    nextTick(fit)
+  }
+}
+async function toggle() {
+  if (expanded.value) {
+    expanded.value = false
+    if (document.fullscreenElement === root.value) { try { await document.exitFullscreen() } catch {} }
+    if (previousOverflow !== '') { document.body.style.overflow = previousOverflow === '__empty__' ? '' : previousOverflow; previousOverflow = '' }
+    nextTick(fit)
+    return
+  }
+  expanded.value = true
+  if (root.value?.requestFullscreen && document.fullscreenEnabled) {
+    try { await root.value.requestFullscreen(); nextTick(fit); return } catch {}
+  }
+  previousOverflow = document.body.style.overflow || '__empty__'
+  document.body.style.overflow = 'hidden'
+  nextTick(fit)
+}
+function cleanupFullscreen() {
+  document.removeEventListener('fullscreenchange', fullscreenChanged)
+  if (document.fullscreenElement === root.value) document.exitFullscreen().catch(()=>{})
+  if (previousOverflow !== '') document.body.style.overflow = previousOverflow === '__empty__' ? '' : previousOverflow
+  previousOverflow = ''
+}
 function key(e){if(e.key==='Escape'&&expanded.value)toggle()}
-onMounted(()=>window.addEventListener('keydown',key))
-onBeforeUnmount(()=>{frameCleanup();stageGestures.clear();window.removeEventListener('keydown',key)})
+onMounted(()=>{window.addEventListener('keydown',key);document.addEventListener('fullscreenchange',fullscreenChanged)})
+onBeforeUnmount(()=>{cleanupFullscreen();frameCleanup();stageGestures.clear();window.removeEventListener('keydown',key)})
 </script>
 
 <template>
@@ -241,7 +272,7 @@ onBeforeUnmount(()=>{frameCleanup();stageGestures.clear();window.removeEventList
         <span>{{ (zoom*100).toFixed(zoom<.1?1:0) }} %</span>
         <button type="button" :disabled="!ready" aria-label="Zoomer" @click="scale(1.5)">+</button>
         <button type="button" :disabled="!ready" @click="fit">Vue globale</button>
-        <button type="button" @click="toggle">{{ expanded?'Quitter plein écran':'Plein écran' }}</button>
+        <button type="button" class="map-fullscreen-control" :aria-pressed="expanded" @click="toggle">{{ expanded?'Quitter plein écran':'Plein écran' }}</button>
         <button type="button" :disabled="!ready||loadingText" @click="toggleTextMode">{{ loadingText ? 'Chargement…' : textMode ? 'Vue SVG' : 'Texte interactif' }}</button>
         <a :href="src" target="_blank" rel="noopener noreferrer">SVG original</a>
       </div>

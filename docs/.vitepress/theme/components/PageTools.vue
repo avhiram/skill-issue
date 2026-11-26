@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, useRoute, onContentUpdated, withBase } from 'vitepress'
+import PageFind from './PageFind.vue'
 
 const route = useRoute()
 const { frontmatter } = useData()
@@ -8,6 +9,13 @@ const mode = ref<'read' | 'quick'>('read')
 const hasCode = ref(false)
 const hasOutline = ref(false)
 const wrapCode = ref(false)
+const readingSize = ref<'small'|'normal'|'large'|'xl'>('normal')
+const sizeKey = 'skill-issue:text-size:v1'
+function changeReadingSize() {
+  writeLocal(sizeKey, readingSize.value)
+  if (currentDoc) currentDoc.dataset.skillTextSize = readingSize.value
+}
+function findInPage() { closePanels(); window.dispatchEvent(new Event('skill-outline-close')); window.dispatchEvent(new Event('skill-page-find')) }
 const ready = ref(false)
 const libraryOpen = ref(false)
 const menuOpen = ref(false)
@@ -64,7 +72,7 @@ function removeFavorite(path: string) {
   writeLocal(favoriteKey, favorites.value)
 }
 function currentHeading() {
-  return Array.from(currentDoc?.querySelectorAll<HTMLElement>('h1[id],h2[id],h3[id],h4[id],section[id].academy-chapter,.academy-level[id]') ?? [])
+  return Array.from(currentDoc?.querySelectorAll<HTMLElement>('h1[id],h2[id],h3[id],h4[id],.academy-chapter[id],.academy-level[id]') ?? [])
     .filter(el => el.getClientRects().length && el.getBoundingClientRect().top <= 125).pop()
 }
 function saveReading() {
@@ -83,7 +91,7 @@ function restorePosition(position: ReadingPosition) {
   closePanels()
   const el = position.hash ? document.getElementById(position.hash) : null
   if (el) {
-    for (let node = el.parentElement; node; node = node.parentElement) {
+    for (let node: HTMLElement | null = el; node; node = node.parentElement) {
       if (node instanceof HTMLDetailsElement) node.open = true
       if (node === currentDoc) break
     }
@@ -122,6 +130,7 @@ const protectedContent = 'pre,code,table,img,svg,video,iframe,button,input,selec
 function clearDoc() {
   if (!currentDoc) return
   currentDoc.classList.remove('skill-cheatsheet-mode', 'skill-wrap-code')
+  delete currentDoc.dataset.skillTextSize
   currentDoc.querySelectorAll('[data-skill-reading-prose]').forEach(el => el.removeAttribute('data-skill-reading-prose'))
   currentDoc = null
 }
@@ -146,6 +155,7 @@ function refresh() {
   const doc = document.querySelector<HTMLElement>('.VPDoc .vp-doc')
   if (doc !== currentDoc) clearDoc()
   currentDoc = doc
+  if (doc) doc.dataset.skillTextSize = readingSize.value
   const technical = /\/(oscp|crto|crtp|osint|bug-bounty)\//.test(route.path)
   hasCode.value = !!(technical && doc?.querySelector('pre, .bounty-command'))
   const academy = /\/academy\//.test(route.path)
@@ -225,6 +235,8 @@ function goTop() {
 onMounted(async () => {
   try { if (localStorage.getItem(storageKey) === 'quick') mode.value = 'quick' } catch { /* optional browser storage */ }
   wrapCode.value = readLocal(wrapKey, false) === true
+  const size = readLocal(sizeKey, 'normal')
+  if (size === 'small' || size === 'normal' || size === 'large' || size === 'xl') readingSize.value = size
   const saved = readLocal<Bookmark[]>(favoriteKey, [])
   favorites.value = Array.isArray(saved) ? saved.filter(x => x && safePath(x.path) && typeof x.title === 'string') : []
   const last = readLocal<ReadingPosition | null>(progressKey, null)
@@ -269,7 +281,10 @@ onUnmounted(() => {
         </button>
       </div>
     </div>
-    <div v-if="ready && (currentBookmark || lastRead || favorites.length)" class="skill-library-toolbar">
+    <PageFind />
+    <div v-if="ready" class="skill-library-toolbar">
+      <label class="skill-size-control">Texte <select v-model="readingSize" @change="changeReadingSize" aria-label="Taille du texte"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
+      <button type="button" @click="findInPage">Rechercher dans la page</button>
       <button v-if="hasCode" type="button" :aria-pressed="wrapCode" @click="toggleWrap">{{ wrapCode ? 'Retour à la ligne' : 'Lignes originales' }}</button>
       <button v-if="currentBookmark" type="button" :aria-pressed="favoriteActive()" @click="toggleFavorite">{{ favoriteActive() ? '★ Favori' : '☆ Favori' }}</button>
       <button type="button" class="skill-library-desktop" @click="openLibrary">Ma bibliothèque</button>
@@ -310,6 +325,8 @@ onUnmounted(() => {
               </select>
               <button type="button" @click="searchInScope">Rechercher</button>
             </div>
+            <button type="button" @click="findInPage">Rechercher dans la page</button>
+            <label class="skill-size-control">Taille du texte <select v-model="readingSize" @change="changeReadingSize"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
             <button type="button" @click="goTop">Retour en haut ↑</button>
           </template>
           <template v-else>
@@ -397,4 +414,11 @@ onUnmounted(() => {
   .skill-scoped-search-desktop { display:none; }
   .skill-search-scope select,.skill-search-scope button { min-height:44px; }
 }
+.skill-size-control { display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#c9b7e2; }
+.skill-size-control select { min-height:34px; padding:5px 9px; border:1px solid #3a2b4b; background:#15101e; color:#e0caff; border-radius:6px; }
+.vp-doc[data-skill-text-size="small"] { --skill-prose-size:14px; --skill-code-size:12px; }
+.vp-doc[data-skill-text-size="large"] { --skill-prose-size:18px; --skill-code-size:15px; }
+.vp-doc[data-skill-text-size="xl"] { --skill-prose-size:21px; --skill-code-size:17px; }
+.vp-doc[data-skill-text-size]:not([data-skill-text-size="normal"]) :is(p,li,blockquote,td,th,.academy-resource-content>a,.academy-explanation) { font-size:var(--skill-prose-size) !important; }
+.vp-doc[data-skill-text-size]:not([data-skill-text-size="normal"]) :is(pre,pre code,pre code .line,code,.bounty-command pre) { font-size:var(--skill-code-size) !important; }
 </style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, nextTick } from 'vue'
+import { ref, computed, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { resources } from '../data/academy-organized'
 import { masteryResources } from '../data/academy-mastery'
 import { academyLevels, academyExtraResources, academyAssignments } from '../data/academy-unified'
@@ -1039,15 +1039,71 @@ function otherLinks(id: string): AssignedResource[] {
 
 // La vue complète reste identique. La vue gratuite affiche uniquement la sélection sans achat.
 const freeOnly = ref(false)
+const completed = ref<Set<string>>(new Set())
+const showDescriptions = ref(false)
+const academyRoot = ref<HTMLElement | null>(null)
+const progressKey = 'skill-issue:academy-progress:v1'
+const pathKey = 'skill-issue:academy-path:v1'
+const courseItems = (id: string) => [...selectedCourses(id), ...(freeOnly.value ? [] : otherCourses(id))]
+const activeCourses = computed(() => orderedLevels.flatMap(level => courseItems(level.id)))
+function isDone(item: AssignedResource) { return completed.value.has(normalizeUrl(item.url)) }
+function toggleDone(item: AssignedResource) {
+  const next = new Set(completed.value)
+  const key = normalizeUrl(item.url)
+  if (next.has(key)) next.delete(key); else next.add(key)
+  completed.value = next
+  try { localStorage.setItem(progressKey, JSON.stringify([...next])) } catch {}
+}
+function stats(items: AssignedResource[]) {
+  const total = items.length, done = items.filter(isDone).length
+  return { total, done, percent: total ? Math.round(done / total * 100) : 0 }
+}
+const totalProgress = computed(() => stats(activeCourses.value))
+function chapterStats(section: typeof sections[number]) { return stats(levelsIn(section).flatMap(level => courseItems(level.id))) }
+function resourceMeta(item: AssignedResource) {
+  let host = ''
+  try { host = new URL(item.url).hostname.replace(/^www\./, '') } catch {}
+  const known: Record<string,string> = { 'tryhackme.com':'TryHackMe', 'overthewire.org':'OverTheWire', 'linuxjourney.com':'Linux Journey', 'portswigger.net':'PortSwigger', 'root-me.org':'Root-Me', 'youtube.com':'YouTube', 'youtu.be':'YouTube', 'github.com':'GitHub', 'learn.microsoft.com':'Microsoft Learn' }
+  const provider = known[host] || host
+  const type = /tryhackme\.com\/room\//i.test(item.url) ? 'Lab' : item.type
+  const free = freeSets.get(item.routeLevel)?.has(normalizeUrl(item.url))
+  return [...new Set([provider, type, free ? 'Gratuit' : ''].filter(Boolean))].join(' · ')
+}
+function resourceTitle(item: AssignedResource) { return shortTitle(item) }
+function setAll(open: boolean) {
+  for (const detail of academyRoot.value?.querySelectorAll<HTMLDetailsElement>('details.academy-chapter, details.academy-level') ?? []) detail.open = open
+}
+function revealHash() {
+  if (!window.location.hash) return
+  let id = ''
+  try { id = decodeURIComponent(window.location.hash.slice(1)) } catch { return }
+  const target = document.getElementById(id)
+  if (!target || !academyRoot.value?.contains(target)) return
+  for (let node: HTMLElement | null = target; node; node = node.parentElement) {
+    if (node instanceof HTMLDetailsElement) node.open = true
+    if (node === academyRoot.value) break
+  }
+  nextTick(() => target.scrollIntoView({ block:'start' }))
+}
 async function selectPath(showFreeOnly: boolean) {
   freeOnly.value = showFreeOnly
+  try { localStorage.setItem(pathKey, JSON.stringify(showFreeOnly)) } catch {}
   await nextTick()
-  document.getElementById('premiers-pas')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
+onMounted(() => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(progressKey) || '[]')
+    if (Array.isArray(saved)) completed.value = new Set(saved.filter(x => typeof x === 'string'))
+    freeOnly.value = JSON.parse(localStorage.getItem(pathKey) || 'false') === true
+  } catch {}
+  window.addEventListener('hashchange', revealHash)
+  nextTick(revealHash)
+})
+onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
 </script>
 
 <template>
-  <div class="academy-syllabus">
+  <div ref="academyRoot" class="academy-syllabus">
     <header id="academy-top" class="academy-intro">
       <p class="academy-kicker">SKILL-ISSUE / ACADEMY</p>
       <h1>Cyber University</h1>
@@ -1058,15 +1114,10 @@ async function selectPath(showFreeOnly: boolean) {
       </div>
     </header>
 
-    <nav class="academy-contents" aria-label="Chapitres de la roadmap">
-      <p>Parcours</p>
-      <ul>
-        <li v-for="section in sections" :key="section.id">
-          <a :href="'#' + section.id">{{ section.title }}</a>
-        </li>
-      </ul>
-    </nav>
-
+    <div class="academy-progress">
+      <div><strong>Ma progression</strong><span>{{ totalProgress.done }} / {{ totalProgress.total }} · {{ totalProgress.percent }} %</span></div>
+      <progress :value="totalProgress.done" :max="Math.max(1,totalProgress.total)" aria-label="Progression du parcours" />
+    </div>
     <p class="academy-legend" aria-live="polite">
       <strong>{{ freeOnly ? 'Parcours gratuit' : 'Parcours complet' }}</strong>
       - {{ freeOnly ? 'Cours et labs sélectionnés sans achat.' : 'Cours et labs, gratuits et payants.' }}
@@ -1080,46 +1131,61 @@ async function selectPath(showFreeOnly: boolean) {
 
     <p class="academy-learning-note">Suis les cours et les labs dans l’ordre. Les logiciels et références sont regroupés dans la <a href="#academy-tools">boîte à outils</a>, à la fin.</p>
 
+    <div class="academy-fold-controls">
+      <strong>Parcours de formation</strong>
+      <div><button type="button" @click="setAll(true)">Tout déplier</button><button type="button" @click="setAll(false)">Tout replier</button></div>
+      <label><input v-model="showDescriptions" type="checkbox"> Afficher les descriptions</label>
+    </div>
     <main class="academy-chapters">
-      <section v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
-        <h2>{{ section.title }}</h2>
-        <div v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="academy-level">
-          <h3>Level {{ numberFor(level.id) }} - {{ titleFor(level.id, level.title) }}</h3>
-
-          <ul class="academy-links">
-            <li v-for="item in selectedCourses(level.id)" :key="item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ shortTitle(item) }}</a>
-              <span v-if="roomMeta(item)" class="academy-resource-meta">TryHackMe · Gratuit</span>
-              <span v-else class="academy-explanation"> - {{ describe(item) }}</span>
-              <small v-if="!roomMeta(item) && !freeOnly" class="academy-free" title="Sélection sans achat">Gratuit</small>
-              <details v-if="roomMeta(item)" class="academy-resource-detail"><summary>Description</summary><span>{{ describe(item) }}</span></details>
-            </li>
-            <li v-for="item in freeOnly ? [] : otherCourses(level.id)" :key="item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ shortTitle(item) }}</a>
-              <span v-if="roomMeta(item)" class="academy-resource-meta">TryHackMe</span>
-              <span v-else class="academy-explanation"> - {{ describe(item) }}</span>
-              <details v-if="roomMeta(item)" class="academy-resource-detail"><summary>Description</summary><span>{{ describe(item) }}</span></details>
-            </li>
-          </ul>
+      <details v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
+        <summary class="academy-chapter-summary">
+          <h2>{{ section.title }}</h2>
+          <span class="academy-fold-meta" aria-hidden="true">{{ chapterStats(section).done }}/{{ chapterStats(section).total }} <span class="academy-chevron">›</span></span>
+        </summary>
+        <div class="academy-chapter-body">
+          <p class="academy-chapter-intro">{{ section.summary }}</p>
+          <details v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="academy-level">
+            <summary class="academy-level-summary">
+              <h3>Niveau {{ numberFor(level.id) }} · {{ titleFor(level.id, level.title) }}</h3>
+              <span class="academy-fold-meta" aria-hidden="true">{{ stats(courseItems(level.id)).done }}/{{ stats(courseItems(level.id)).total }} <span class="academy-chevron">›</span></span>
+            </summary>
+            <ul class="academy-links academy-resource-list">
+              <li v-for="item in courseItems(level.id)" :key="item.id + item.url" class="academy-resource-row" :class="{ 'is-complete': isDone(item) }">
+                <input type="checkbox" :checked="isDone(item)" :aria-label="'Valider ' + resourceTitle(item)" @change="toggleDone(item)">
+                <div class="academy-resource-content">
+                  <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(item) }}</a>
+                  <span v-if="resourceMeta(item)" class="academy-resource-meta">{{ resourceMeta(item) }}</span>
+                  <span v-show="showDescriptions" class="academy-explanation">{{ describe(item) }}</span>
+                </div>
+                <a class="academy-open-resource" :href="item.url" target="_blank" rel="noopener noreferrer" :aria-label="'Ouvrir ' + resourceTitle(item)">↗</a>
+              </li>
+            </ul>
+            <p v-if="!courseItems(level.id).length" class="academy-empty-level">Aucune ressource dans ce parcours.</p>
+          </details>
         </div>
-      </section>
+      </details>
     </main>
-
-    <section id="academy-tools" class="academy-chapter academy-toolbox" aria-label="Boîte à outils">
-      <h2>Outils et références</h2>
-      <p class="academy-learning-note">Ces liens servent pendant les exercices. Ils ne constituent pas des étapes à apprendre dans l’ordre.</p>
-      <template v-for="section in sections" :key="'tools-' + section.id">
-        <div v-if="sectionTools(section).length" class="academy-level">
-          <h3>{{ section.title }}</h3>
-          <ul class="academy-links">
-            <li v-for="item in sectionTools(section)" :key="'tool-' + item.id + item.url">
-              <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ displayTitle(item) }}</a>
-              <span class="academy-explanation"> - {{ describe(item) }}</span>
-            </li>
-          </ul>
-        </div>
-      </template>
-    </section>
+    <details id="academy-tools" class="academy-chapter academy-toolbox" aria-label="Boîte à outils">
+      <summary class="academy-chapter-summary"><h2>Outils et références</h2><span class="academy-chevron" aria-hidden="true">›</span></summary>
+      <div class="academy-chapter-body">
+        <p class="academy-learning-note">Ces liens servent pendant les exercices. Ils ne constituent pas des étapes à apprendre dans l’ordre.</p>
+        <template v-for="section in sections" :key="'tools-' + section.id">
+          <details v-if="sectionTools(section).length" :id="'tools-' + section.id" class="academy-level">
+            <summary class="academy-level-summary"><h3>{{ section.title }}</h3><span class="academy-chevron" aria-hidden="true">›</span></summary>
+            <ul class="academy-links academy-resource-list">
+              <li v-for="item in sectionTools(section)" :key="'tool-' + item.id + item.url" class="academy-resource-row">
+                <div class="academy-resource-content">
+                  <a :href="item.url" target="_blank" rel="noopener noreferrer">{{ resourceTitle(item) }}</a>
+                  <span v-if="resourceMeta(item)" class="academy-resource-meta">{{ resourceMeta(item) }}</span>
+                  <span v-show="showDescriptions" class="academy-explanation">{{ describe(item) }}</span>
+                </div>
+                <a class="academy-open-resource" :href="item.url" target="_blank" rel="noopener noreferrer" :aria-label="'Ouvrir ' + resourceTitle(item)">↗</a>
+              </li>
+            </ul>
+          </details>
+        </template>
+      </div>
+    </details>
 
     <footer class="academy-footer">
       <a href="#academy-top">Retour au début</a>
@@ -1338,4 +1404,41 @@ async function selectPath(showFreeOnly: boolean) {
   .academy-links li::before { left:-17px; top:7px; }
   .academy-resource-detail summary { padding:3px 0; }
 }
+/* Native nested accordions: source links and level order remain unchanged. */
+.academy-progress { border:1px solid #3a2b4b; border-radius:10px; padding:13px; background:#191320; }
+.academy-progress > div { display:flex; justify-content:space-between; align-items:center; gap:8px; font-size:.84rem; color:#e0cfee; }
+.academy-progress progress { width:100%; height:7px; accent-color:#b39aff; display:block; margin-top:10px; }
+.academy-fold-controls { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin:24px 0 12px; font-size:.8rem; color:#cbb9dc; }
+.academy-fold-controls > div { display:flex; gap:8px; }
+.academy-fold-controls button { color:#d8bff4; min-height:34px; padding:5px 8px; border:1px solid #443451; border-radius:6px; }
+.academy-fold-controls label { display:flex; align-items:center; gap:6px; flex-basis:100%; min-height:36px; }
+.academy-syllabus input[type=checkbox] { accent-color:#b39aff; width:18px; height:18px; flex:none; cursor:pointer; }
+.academy-chapters { display:grid; gap:10px; }
+.academy-chapter,.academy-level { border:1px solid #3a2d48; border-radius:10px; background:#191420; padding:0 !important; margin:0 !important; overflow:clip; scroll-margin-top:85px; }
+.academy-chapter[open] { border-color:#604879; }
+.academy-chapter-summary,.academy-level-summary { display:flex; align-items:center; justify-content:space-between; gap:9px; min-height:54px; padding:12px 14px; cursor:pointer; list-style:none; }
+.academy-chapter-summary::-webkit-details-marker,.academy-level-summary::-webkit-details-marker { display:none; }
+.academy-chapter-summary h2,.academy-level-summary h3 { margin:0 !important; padding:0 !important; font-size:1rem !important; line-height:1.4; font-weight:620; color:#e0d3ee !important; }
+.academy-level-summary h3 { font-size:.91rem !important; color:#d0c1e1 !important; }
+.academy-fold-meta { display:flex; align-items:center; gap:8px; flex:none; color:#ab98bf; font-size:.73rem; }
+.academy-chevron { display:inline-block; font-size:1.3rem; color:#b39aff; flex:none; }
+details[open] > summary .academy-chevron { transform:rotate(90deg); }
+.academy-chapter-body { padding:0 12px 12px; display:grid; gap:8px; }
+.academy-chapter-intro { color:#bdb0cb; font-size:.84rem; margin:0 0 5px !important; }
+.academy-level { background:#21182c; border-color:#423150; }
+.academy-level-summary { min-height:48px; padding:10px; }
+.academy-resource-list { padding:0 10px !important; margin:0 !important; }
+.academy-resource-list .academy-resource-row { display:flex; align-items:flex-start; gap:10px; padding:10px 0 !important; margin:0 !important; border-top:1px solid #40324d; border-bottom:0; }
+.academy-resource-row::before { content:none !important; }
+.academy-resource-row input { margin-top:4px; }
+.academy-resource-content { flex:1; min-width:0; }
+.academy-resource-content > a { display:block; font-size:.93rem; line-height:1.4; }
+.academy-resource-content .academy-explanation { display:block; margin-top:4px; font-size:.8rem; line-height:1.45; }
+.academy-resource-content .academy-explanation[style*="display: none"] { display:none; }
+.academy-resource-meta { margin-top:3px; }
+.academy-open-resource { flex:none; min-width:32px; min-height:36px; text-align:center; font-size:1.05rem; padding:3px; }
+.academy-resource-row.is-complete .academy-resource-content > a { color:#aa9bbd !important; }
+.academy-empty-level { padding:8px 12px; color:#b5a4c5; font-size:.8rem; }
+.academy-toolbox { margin-top:24px !important; }
+@media(max-width:650px) { .academy-chapter-summary { padding:11px; } .academy-chapter-body { padding:0 8px 8px; } .academy-fold-controls button { min-height:44px; } .academy-resource-list { padding:0 8px !important; } .academy-resource-row input { width:20px; height:20px; } }
 </style>

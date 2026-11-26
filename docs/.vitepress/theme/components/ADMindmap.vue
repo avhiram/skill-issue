@@ -169,12 +169,41 @@ function up(e) {
     clickCandidate=null
   }
 }
-function toggleExpanded() { expanded.value=!expanded.value; nextTick(fit) }
+let previousOverflow = ''
+function fullscreenChanged() {
+  if (expanded.value && document.fullscreenElement !== root.value && previousOverflow === '') {
+    expanded.value = false
+    nextTick(fit)
+  }
+}
+async function toggleExpanded() {
+  if (expanded.value) {
+    expanded.value = false
+    if (document.fullscreenElement === root.value) { try { await document.exitFullscreen() } catch {} }
+    if (previousOverflow !== '') { document.body.style.overflow = previousOverflow === '__empty__' ? '' : previousOverflow; previousOverflow = '' }
+    nextTick(fit)
+    return
+  }
+  expanded.value = true
+  if (root.value?.requestFullscreen && document.fullscreenEnabled) {
+    try { await root.value.requestFullscreen(); nextTick(fit); return } catch {}
+  }
+  previousOverflow = document.body.style.overflow || '__empty__'
+  document.body.style.overflow = 'hidden'
+  nextTick(fit)
+}
+function cleanupFullscreen() {
+  document.removeEventListener('fullscreenchange', fullscreenChanged)
+  if (document.fullscreenElement === root.value) document.exitFullscreen().catch(()=>{})
+  if (previousOverflow !== '') document.body.style.overflow = previousOverflow === '__empty__' ? '' : previousOverflow
+  previousOverflow = ''
+}
 function onKey(e) { if(e.key==='Escape'){ if(expanded.value) toggleExpanded(); else selected.value=null } }
 const isCode = n => (n.text || '').includes('```')
 function cardText(n) { return (n.text || n.file || '').replace(/^\s*```[^\n]*$/gm, '').trim() }
 onMounted(async () => {
   window.addEventListener('keydown',onKey)
+  document.addEventListener('fullscreenchange',fullscreenChanged)
   try {
     const response=await fetch(withBase(props.src))
     if(!response.ok) throw Error('HTTP '+response.status)
@@ -193,7 +222,7 @@ onMounted(async () => {
     if(svg.value) observer.observe(svg.value)
   } catch(e){ error.value='Impossible de charger le Canvas : '+e.message }
 })
-onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keydown',onKey) })
+onBeforeUnmount(() => { cleanupFullscreen(); observer?.disconnect(); window.removeEventListener('keydown',onKey) })
 </script>
 
 <template>
@@ -205,7 +234,7 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
         <span class="zoom-readout">{{ percent }} %</span>
         <button type="button" @click="zoom(1.25)" title="Zoomer" aria-label="Zoomer">+</button>
         <button type="button" @click="fit">Vue globale</button>
-        <button type="button" @click="toggleExpanded">{{ expanded ? 'Quitter plein écran' : 'Plein écran' }}</button>
+        <button type="button" class="map-fullscreen-control" :aria-pressed="expanded" @click="toggleExpanded">{{ expanded ? 'Quitter plein écran' : 'Plein écran' }}</button>
       </div>
     </div>
     <div class="map-filters">
@@ -323,4 +352,8 @@ onBeforeUnmount(() => { observer?.disconnect(); window.removeEventListener('keyd
   .map-inspector{max-height:calc(100% - 24px);box-sizing:border-box;overscroll-behavior:contain}
 }
 @media(max-width:640px){.ad-mindmap:not(.expanded) .map-stage{min-height:350px}.ad-mindmap.expanded .map-stage{min-height:0;height:auto;flex:1 1 0}}
+.ad-mindmap.expanded,.ad-mindmap:fullscreen { width:100%; height:100dvh; max-height:100dvh; padding-bottom:env(safe-area-inset-bottom,0px); box-sizing:border-box; }
+.map-fullscreen-control { border-color:#a78bfa !important; color:#e0caff !important; min-height:44px; }
+.ad-mindmap.expanded .map-bar,.ad-mindmap.expanded .map-filters { flex:0 0 auto; }
+@media(max-width:640px) { .ad-mindmap.expanded .map-bar,.ad-mindmap.expanded .map-filters { padding:6px; gap:5px; } .ad-mindmap.expanded .map-heading small { display:none; } }
 </style>
