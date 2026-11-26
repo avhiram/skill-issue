@@ -26,7 +26,7 @@ let frame = 0
 let refreshFrame = 0
 let observer: MutationObserver | undefined
 
-const enabled = computed(() => frontmatter.value.outline !== false && (frontmatter.value.aside !== false || (props.mode === 'mobile' && /\/(oscp|crto|crtp|osint|bug-bounty|academy)\//.test(route.path))))
+const enabled = computed(() => frontmatter.value.outline !== false && (frontmatter.value.aside !== false || props.mode === 'mobile'))
 const normalize = (s: string) => s.toLocaleLowerCase('fr').normalize('NFD').replace(/\p{Diacritic}/gu, '').trim()
 const terms = computed(() => normalize(query.value).split(/\s+/).filter(Boolean))
 const filtering = computed(() => terms.value.length > 0)

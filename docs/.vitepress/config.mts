@@ -242,10 +242,20 @@ export default defineConfig({
                 vulnerabilites: 'vulnerability', vulnerabilite: 'vulnerability', vulnerabilities: 'vulnerability',
                 transferts: 'transfer', transfert: 'transfer', transfers: 'transfer'
               }
-              return equivalents[value] || value
+              return Object.prototype.hasOwnProperty.call(equivalents, value) ? equivalents[value] : value
             }
           },
-          searchOptions: { prefix: true, fuzzy: 0.15, boost: { title: 5, titles: 3, text: 2 } }
+          searchOptions: {
+            prefix: true, fuzzy: 0.15, boost: { title: 5, titles: 3, text: 2 },
+            filter: (result) => {
+              if (typeof document === 'undefined') return true
+              const scope = document.documentElement.dataset.skillSearchScope
+              if (!scope || !/^(academy|osint|bug-bounty|oscp|crto|crtp)$/.test(scope)) return true
+              const path = String(result.id).split('#')[0].replace(/^\/skill-issue\//, '/')
+              return path.startsWith('/' + scope + '/') || path.startsWith(scope + '/') ||
+                path === '/' + scope || path === scope
+            }
+          }
         },
         translations: {
           button: { buttonText: 'Rechercher', buttonAriaLabel: 'Rechercher dans le guide' },

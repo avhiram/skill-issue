@@ -11,6 +11,7 @@ const wrapCode = ref(false)
 const ready = ref(false)
 const libraryOpen = ref(false)
 const menuOpen = ref(false)
+const searchScope = ref('all')
 type Bookmark = { path: string; title: string; hash?: string }
 type ReadingPosition = Bookmark & { y: number; progress: number; offset?: number }
 const favorites = ref<Bookmark[]>([])
@@ -149,7 +150,6 @@ function refresh() {
   hasCode.value = !!(technical && doc?.querySelector('pre, .bounty-command'))
   const academy = /\/academy\//.test(route.path)
   hasOutline.value = !!(doc && frontmatter.value.outline !== false &&
-    (frontmatter.value.aside !== false || technical || academy) &&
     doc.querySelector('h2[id],h3[id],h4[id],h5[id],h6[id],.academy-chapter[id]'))
   const path = window.location.pathname
   const title = doc?.querySelector('h1')?.textContent?.replace(/\u200b/g, '').trim() || document.title.split('|')[0].trim()
@@ -184,12 +184,37 @@ function openChapterMenu() {
   closePanels()
   document.querySelector<HTMLButtonElement>('.VPLocalNav button.menu')?.click()
 }
-function openSearch() {
+let scopeObserver: MutationObserver | undefined
+let scopeTimeout: ReturnType<typeof setTimeout> | undefined
+function clearSearchScope() {
+  delete document.documentElement.dataset.skillSearchScope
+  scopeObserver?.disconnect()
+  scopeObserver = undefined
+  if (scopeTimeout) clearTimeout(scopeTimeout)
+}
+function launchSearch(scope = 'all') {
   closePanels()
   window.dispatchEvent(new Event('skill-outline-close'))
+  clearSearchScope()
   const button = document.querySelector<HTMLButtonElement>('#local-search button, .VPNavBarSearch button')
-  if (button) button.click()
+  if (!button) return
+  if (scope !== 'all') {
+    document.documentElement.dataset.skillSearchScope = scope
+    let appeared = false
+    scopeObserver = new MutationObserver(() => {
+      const modal = document.querySelector('.VPLocalSearchBox')
+      if (modal) {
+        appeared = true
+        if (scopeTimeout) clearTimeout(scopeTimeout)
+      } else if (appeared) clearSearchScope()
+    })
+    scopeObserver.observe(document.body, { childList: true, subtree: true })
+    scopeTimeout = setTimeout(() => { if (!appeared) clearSearchScope() }, 8000)
+  }
+  button.click()
 }
+function openSearch() { launchSearch() }
+function searchInScope() { launchSearch(searchScope.value) }
 function openOutline() { closePanels(); window.dispatchEvent(new Event('skill-outline-open')) }
 function goTop() {
   closePanels()
@@ -225,6 +250,7 @@ onUnmounted(() => {
   window.removeEventListener('scroll', queueReading)
   window.removeEventListener('pagehide', saveReading)
   window.removeEventListener('keydown', onEscape)
+  clearSearchScope()
   document.documentElement.classList.remove('skill-mobile-nav-ready')
   clearDoc()
 })
@@ -248,6 +274,21 @@ onUnmounted(() => {
       <button v-if="currentBookmark" type="button" :aria-pressed="favoriteActive()" @click="toggleFavorite">{{ favoriteActive() ? '★ Favori' : '☆ Favori' }}</button>
       <button type="button" class="skill-library-desktop" @click="openLibrary">Ma bibliothèque</button>
     </div>
+    <div v-if="ready" class="skill-scoped-search-desktop">
+      <div class="skill-search-scope">
+        <label for="skill-search-scope">Rechercher dans</label>
+        <select id="skill-search-scope" v-model="searchScope">
+          <option value="all">Tout le site</option>
+          <option value="academy">Academy</option>
+          <option value="osint">OSINT</option>
+          <option value="bug-bounty">Bug Bounty</option>
+          <option value="oscp">OSCP</option>
+          <option value="crto">CRTO</option>
+          <option value="crtp">CRTP</option>
+        </select>
+        <button type="button" @click="searchInScope">Rechercher</button>
+      </div>
+    </div>
     <Teleport to="body" :disabled="!ready">
       <div v-if="menuOpen || libraryOpen" class="skill-tools-overlay">
         <button type="button" class="skill-tools-backdrop" aria-label="Fermer" @click="closePanels" />
@@ -256,6 +297,19 @@ onUnmounted(() => {
           <template v-if="menuOpen">
             <button v-if="currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
             <a v-for="section in sections" :key="section.path" :href="withBase(section.path)" @click="closePanels">{{ section.title }} <span>›</span></a>
+            <div class="skill-search-scope">
+              <label for="skill-search-scope-mobile">Rechercher dans</label>
+              <select id="skill-search-scope-mobile" v-model="searchScope">
+                <option value="all">Tout le site</option>
+                <option value="academy">Academy</option>
+                <option value="osint">OSINT</option>
+                <option value="bug-bounty">Bug Bounty</option>
+                <option value="oscp">OSCP</option>
+                <option value="crto">CRTO</option>
+                <option value="crtp">CRTP</option>
+              </select>
+              <button type="button" @click="searchInScope">Rechercher</button>
+            </div>
             <button type="button" @click="goTop">Retour en haut ↑</button>
           </template>
           <template v-else>
@@ -333,5 +387,14 @@ onUnmounted(() => {
   .skill-library-desktop { display:none; }
   .skill-tools-overlay { align-items:flex-end; }
   .skill-tools-panel { width:100%; border-radius:16px 16px 0 0; padding-bottom:calc(16px + env(safe-area-inset-bottom,0px)); }
+}
+.skill-scoped-search-desktop { margin:0 0 16px; }
+.skill-search-scope { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 0; }
+.skill-search-scope label { font-size:12px; color:#b6aec5; }
+.skill-search-scope select,.skill-search-scope button { min-height:34px; padding:5px 9px; border:1px solid #3a2b4b; border-radius:7px; background:#15101e; color:#d8c4f4; font-size:12px; }
+.skill-search-scope button { background:#2a1d39; }
+@media(max-width:767px) {
+  .skill-scoped-search-desktop { display:none; }
+  .skill-search-scope select,.skill-search-scope button { min-height:44px; }
 }
 </style>
