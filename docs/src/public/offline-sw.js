@@ -1,8 +1,11 @@
 /* Optional offline copy. Online navigation always uses the network first. */
-const CACHE = 'skill-issue-offline-v1'
+const CACHE = 'skill-issue-offline-v2'
 const scope = new URL(self.registration.scope)
 self.addEventListener('install', event => event.waitUntil(self.skipWaiting()))
-self.addEventListener('activate', event => event.waitUntil(self.clients.claim()))
+self.addEventListener('activate', event => event.waitUntil((async () => {
+  await caches.delete('skill-issue-offline-v1')
+  await self.clients.claim()
+})()))
 function local(url) {
   return url.origin === scope.origin && url.pathname.startsWith(scope.pathname)
 }
