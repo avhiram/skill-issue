@@ -2,11 +2,12 @@
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
 import { data as headings } from '../examHeadings.data'
-const props=defineProps<{source:string}>()
+const props=defineProps<{source:string; inline?:boolean}>()
+const emit=defineEmits<{(e:'jump',id:string):void;(e:'full'):void}>()
 type Entry={label:string;id:string;level:number;parents:Entry[]}
 const sourcePath=computed(()=>props.source.split('#')[0])
 const entries=computed(()=>{
-  let items=headings[sourcePath.value]||[]
+  let items=(headings[sourcePath.value]||[]).filter(h=>h.level>=2)
   const hash=props.source.split('#')[1]
   if(hash){
     const start=items.findIndex(x=>x.id===hash)
@@ -45,6 +46,7 @@ function toggle(id:string){
 function href(entry:Entry){return withBase(sourcePath.value+'#'+encodeURIComponent(entry.id))}
 function remember(entry:Entry,event:MouseEvent){
  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return
+ if(props.inline){event.preventDefault();emit('jump',entry.id);return}
  try{sessionStorage.setItem('skill-issue:exam-jump:v1',JSON.stringify({path:withBase(sourcePath.value),id:entry.id}))}catch{}
 }
 </script>
@@ -68,7 +70,8 @@ function remember(entry:Entry,event:MouseEvent){
       </div>
       <p v-if="!visible.length" role="status">Aucun résultat.</p>
     </nav>
-    <a class="exam-index-full" :href="withBase(source)">Ouvrir la fiche complète <span aria-hidden="true">›</span></a>
+    <button v-if="inline" class="exam-index-full" type="button" @click="emit('full')">Ouvrir la fiche complète <span aria-hidden="true">›</span></button>
+    <a v-else class="exam-index-full" :href="withBase(source)">Ouvrir la fiche complète <span aria-hidden="true">›</span></a>
   </div>
 </template>
 <style scoped>
@@ -87,5 +90,5 @@ function remember(entry:Entry,event:MouseEvent){
 .exam-index-row button{display:grid;place-items:center;min-height:44px;width:44px;flex:none;color:#b39aff}
 .exam-index-arrow{margin-right:14px;color:#a68cc7;flex:none;pointer-events:none}
 .exam-index-list p{font-size:13px;color:#b6aec5}
-.exam-index-full{display:flex;justify-content:space-between;align-items:center;min-height:44px;color:#b39aff;font-size:13px;text-decoration:none}
+.exam-index-full{text-align:left;display:flex;justify-content:space-between;align-items:center;min-height:44px;color:#b39aff;font-size:13px;text-decoration:none}
 </style>

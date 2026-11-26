@@ -4,6 +4,9 @@ import { useData, useRoute, onContentUpdated, withBase } from 'vitepress'
 import PageFind from './PageFind.vue'
 import Breadcrumbs from './Breadcrumbs.vue'
 import ExamChapterTree from './ExamChapterTree.vue'
+import LibraryChapterTree from './LibraryChapterTree.vue'
+import ExamSectionIndex from './ExamSectionIndex.vue'
+import { data as siteHeadings } from '../examHeadings.data'
 
 const route = useRoute()
 const { frontmatter } = useData()
@@ -17,11 +20,23 @@ function changeReadingSize() {
   writeLocal(sizeKey, readingSize.value)
   if (currentDoc) currentDoc.dataset.skillTextSize = readingSize.value
 }
-function findInPage() { closePanels(); window.dispatchEvent(new Event('skill-outline-close')); window.dispatchEvent(new Event('skill-page-find')) }
+function findInPage() { showFull(); closePanels(); window.dispatchEvent(new Event('skill-outline-close')); window.dispatchEvent(new Event('skill-page-find')) }
 const ready = ref(false)
 const menuOpen = ref(false)
 const examOpen = ref(false)
-const onOscp = computed(() => /\/oscp(?:\/|$)/.test(route.path))
+const section= computed(()=>route.path.match(/\/(academy|osint|bug-bounty|oscp|crto|crtp)(?:\/|$)/)?.[1]||'')
+const onLibrary=computed(()=>!!section.value)
+const inExam=computed(()=>/\/oscp\/exam(?:-|\/|\.html|$)/.test(route.path))
+const sourcePath=computed(()=>{const m=route.path.match(/\/(academy|osint|bug-bounty|oscp|crto|crtp)(?:\/.*)?$/);return (m?.[0]||'').replace(/\.html$/,'').replace(/\/index$/,'/').replace(/\/+$/,'')})
+const indexAvailable=computed(()=>onLibrary.value&&section.value!=='academy'&&sourcePath.value.split('/').length>2&&!inExam.value&&!/\/(mindmap[^/]*|preparation)$/.test(sourcePath.value)&&frontmatter.value.outline!==false&&(siteHeadings[sourcePath.value]||[]).some(h=>h.level>=2))
+const indexView=ref(false)
+const showIndex=computed(()=>ready.value&&indexAvailable.value&&indexView.value)
+const sectionTitle=computed(()=>section.value==='bug-bounty'?'Bug Bounty':section.value==='academy'?'Academy':section.value.toUpperCase())
+function applyIndex(){currentDoc?.classList.toggle('skill-library-index-hidden',showIndex.value)}
+function showFull(){indexView.value=false;applyIndex()}
+function showRubrics(){indexView.value=true;applyIndex();window.scrollTo({top:0,behavior:'auto'})}
+function jumpLibrary(id:string){showFull();pendingExamAnchor=id;history.replaceState(history.state,'',window.location.pathname+window.location.search+'#'+encodeURIComponent(id));nextTick(jumpExamAnchor)}
+
 let pendingExamAnchor = ''
 function jumpExamAnchor() {
   if (!pendingExamAnchor) {
@@ -38,6 +53,7 @@ function jumpExamAnchor() {
     } catch {}
   }
   if (!pendingExamAnchor) return
+  showFull()
   const el = document.getElementById(pendingExamAnchor)
   if (!el) return
   pendingExamAnchor = ''
@@ -57,6 +73,8 @@ function navigateExam(path:string,event:MouseEvent) {
     event.preventDefault()
     history.replaceState(history.state,'',withBase(path))
     jumpExamAnchor()
+  } else {
+    try{sessionStorage.setItem('skill-issue:exam-jump:v1',JSON.stringify({path:withBase(target),id:pendingExamAnchor}))}catch{}
   }
 }
 function openExam() {
@@ -115,6 +133,7 @@ function queueReading() {
   saveTimer = setTimeout(saveReading, 350)
 }
 function restorePosition(position: ReadingPosition) {
+  showFull()
   closePanels()
   const el = position.hash ? document.getElementById(position.hash) : null
   if (el) {
@@ -156,7 +175,7 @@ const protectedContent = 'pre,code,table,img,svg,video,iframe,button,input,selec
 
 function clearDoc() {
   if (!currentDoc) return
-  currentDoc.classList.remove('skill-cheatsheet-mode', 'skill-wrap-code')
+  currentDoc.classList.remove('skill-cheatsheet-mode', 'skill-wrap-code', 'skill-library-index-hidden')
   delete currentDoc.dataset.skillTextSize
   currentDoc.querySelectorAll('[data-skill-reading-prose]').forEach(el => el.removeAttribute('data-skill-reading-prose'))
   currentDoc = null
@@ -197,6 +216,7 @@ function refresh() {
     markProse(doc)
   }
   applyMode()
+  applyIndex()
   jumpExamAnchor()
 }
 
@@ -268,8 +288,10 @@ onMounted(async () => {
   const last = readLocal<ReadingPosition | null>(progressKey, null)
   lastRead.value = last && safePath(last.path) && Number.isFinite(last.y) ? last : null
   await nextTick()
+  indexView.value=!window.location.hash
   refresh()
   ready.value = true
+  applyIndex()
   document.documentElement.classList.add('skill-mobile-nav-ready')
   window.addEventListener('scroll', queueReading, { passive: true })
   window.addEventListener('pagehide', saveReading)
@@ -280,6 +302,7 @@ onContentUpdated(() => nextTick(refresh))
 watch(() => route.path, () => {
   if (saveTimer) clearTimeout(saveTimer)
   closePanels()
+  indexView.value=!window.location.hash
   nextTick(refresh)
 }, { flush: 'post' })
 onUnmounted(() => {
@@ -297,7 +320,9 @@ onUnmounted(() => {
 <template>
   <div class="skill-page-tools">
     <Breadcrumbs />
-    <div v-if="hasCode" class="skill-reading-toolbar">
+    <div v-if="showIndex" class="skill-inline-index"><h1>{{siteHeadings[sourcePath]?.find(h=>h.level===1)?.label || currentBookmark?.title || sectionTitle}}</h1><ExamSectionIndex :key="sourcePath" :source="sourcePath" inline @jump="jumpLibrary" @full="showFull" /></div>
+    <button v-else-if="ready&&indexAvailable" type="button" class="skill-return-index" @click="showRubrics">‹ Rubriques</button>
+    <div v-if="hasCode&&!showIndex" class="skill-reading-toolbar">
       <div class="skill-reading-label">Mode d’affichage</div>
       <div class="skill-reading-switch" role="group" aria-label="Mode d’affichage">
         <button type="button" :aria-pressed="mode === 'read'" @click="setMode('read')">
@@ -309,13 +334,13 @@ onUnmounted(() => {
       </div>
     </div>
     <PageFind />
-    <div v-if="ready" class="skill-library-toolbar">
+    <div v-if="ready&&!showIndex" class="skill-library-toolbar">
       <label class="skill-size-control">Texte <select v-model="readingSize" @change="changeReadingSize" aria-label="Taille du texte"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
       <button type="button" @click="findInPage">Rechercher dans la page</button>
       <button v-if="hasCode" type="button" :aria-pressed="wrapCode" @click="toggleWrap">{{ wrapCode ? 'Retour à la ligne' : 'Lignes originales' }}</button>
       <button v-if="lastRead" type="button" class="skill-library-desktop" @click="resumeReading">Reprendre ma lecture</button>
     </div>
-    <div v-if="ready" class="skill-scoped-search-desktop">
+    <div v-if="ready&&!onLibrary" class="skill-scoped-search-desktop">
       <div class="skill-search-scope">
         <label for="skill-search-scope">Rechercher dans</label>
         <select id="skill-search-scope" v-model="searchScope">
@@ -340,7 +365,7 @@ onUnmounted(() => {
               <button type="button" @click="resumeReading">{{ lastRead.title }} · {{ lastRead.progress }} %</button>
               <progress :value="lastRead.progress" max="100" />
             </div>
-            <button v-if="!onOscp && currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
+            <button v-if="!onLibrary && currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
             <a v-for="section in sections" :key="section.path" :href="withBase(section.path)" @click="closePanels">{{ section.title }} <span>›</span></a>
             <div class="skill-search-scope">
               <label for="skill-search-scope-mobile">Rechercher dans</label>
@@ -355,7 +380,7 @@ onUnmounted(() => {
               </select>
               <button type="button" @click="searchInScope">Rechercher</button>
             </div>
-            <button v-if="onOscp" type="button" @click="goTop">Retour en haut <span>↑</span></button>
+            <button v-if="onLibrary" type="button" @click="goTop">Retour en haut <span>↑</span></button>
             <details class="skill-menu-settings">
               <summary>Réglages d’affichage</summary>
               <div class="skill-menu-settings-body">
@@ -367,26 +392,32 @@ onUnmounted(() => {
       </div>
       <div v-if="examOpen" class="skill-tools-overlay">
         <button type="button" class="skill-tools-backdrop" aria-label="Fermer" @click="closePanels" />
-        <section class="skill-tools-panel skill-exam-panel" role="dialog" aria-modal="true" aria-label="Chapitres OSCP">
-          <header><strong>Chapitres · OSCP</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
-          <ExamChapterTree :current-path="route.path" @navigate="navigateExam" @find="findInPage" />
+        <section class="skill-tools-panel skill-exam-panel" role="dialog" aria-modal="true" aria-label="Chapitres">
+          <header><strong>Chapitres · {{sectionTitle}}</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
+          <ExamChapterTree v-if="inExam" :current-path="route.path" @navigate="navigateExam" @find="findInPage" />
+          <LibraryChapterTree v-else :key="section" :section="section" :current-path="route.path" @navigate="navigateExam" @find="findInPage" />
         </section>
       </div>
     </Teleport>
-    <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': onOscp ? 3 + Number(hasCode) : 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
+    <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': onLibrary ? 3 + Number(hasCode) : 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
       <button type="button" @click="openMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
-      <button v-if="!onOscp" type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Chercher</span></button>
-      <button v-if="!onOscp && hasOutline" type="button" aria-label="Sommaire de la page" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Plan</span></button>
-      <button v-if="onOscp" type="button" aria-label="Chapitres et sous-chapitres OSCP" :aria-expanded="examOpen" @click="openExam"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16m3-11h5m-5 5h5"/></svg><span>Chapitres</span></button>
-      <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Fiche' : 'Lecture' }}</span></button>
-      <button v-if="!onOscp" type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
-      <button v-if="onOscp" type="button" aria-label="Recherche OSCP" @click="launchSearch('oscp')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
+      <button v-if="!onLibrary" type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Chercher</span></button>
+      <button v-if="!onLibrary && hasOutline" type="button" aria-label="Sommaire de la page" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Plan</span></button>
+      <button v-if="onLibrary" type="button" aria-label="Chapitres et sous-chapitres" :aria-expanded="examOpen" @click="openExam"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16m3-11h5m-5 5h5"/></svg><span>Chapitres</span></button>
+      <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="showFull();setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Fiche' : 'Lecture' }}</span></button>
+      <button v-if="!onLibrary" type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
+      <button v-if="onLibrary" type="button" aria-label="Recherche dans la section" @click="launchSearch(section)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
       <button v-else type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
     </nav>
   </div>
 </template>
 
 <style>
+.vp-doc.skill-library-index-hidden{display:none!important}
+.skill-inline-index{margin:20px 0 28px;min-width:0}
+.skill-inline-index h1{font-size:clamp(23px,4vw,32px);font-weight:700;line-height:1.25;margin:0 0 16px;color:var(--vp-c-text-1)}
+.skill-return-index{color:#b39aff;min-height:44px;font-size:13px;text-align:left}
+.skill-page-tools:has(.skill-inline-index) + .skill-outline--mobile{display:none!important}
 .skill-cheatsheet-mode [data-skill-reading-prose] { display: none !important; }
 .skill-reading-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }
 .skill-reading-label { color: #a99aba; font-size: 12px; font-weight: 600; }

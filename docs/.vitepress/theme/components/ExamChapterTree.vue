@@ -16,7 +16,7 @@ function headingNodes(path:string):Node[]{
   const base=pagePath(path)
   const stack:{level:number;node:Node}[]=[]
   const roots:Node[]=[]
-  for(const heading of headings[base]||[]){
+  for(const heading of (headings[base]||[]).filter(h=>h.level>=2)){
     const node={key:base+'#'+heading.id,label:heading.label,path:base+'#'+encodeURIComponent(heading.id),children:[] as Node[]}
     while(stack.length&&stack[stack.length-1].level>=heading.level)stack.pop()
     if(stack.length)stack[stack.length-1].node.children.push(node);else roots.push(node)
