@@ -102,6 +102,7 @@ export default defineConfig({
         link: '/oscp/',
         collapsed: true,
         items: [
+          { text: 'Exam Mode', link: '/oscp/exam' },
           { text: 'Reconnaissance', collapsed: true, items: [
             { text: 'Collecte d’informations', link: '/oscp/reconnaissance' },
             { text: 'Analyse de vulnérabilités', link: '/oscp/vulnerabilites' }

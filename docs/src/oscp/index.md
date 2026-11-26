@@ -11,6 +11,8 @@ description: Aide-mémoire OSCP en français
 
 **Pendant l’examen**, OffSec interdit notamment Nessus et SQLmap. [Règles officielles de l’OSCP+](https://help.offsec.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide).
 
+[**Exam Mode — OSCP**](exam.md)
+
 ## Toutes les rubriques
 
 - [**Collecte d’informations**](reconnaissance.md) : Identifier les hôtes, les services et les informations accessibles.

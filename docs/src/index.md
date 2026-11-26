@@ -12,6 +12,7 @@ aside: false
   <div class="profile-links">
     <a href="/skill-issue/academy/index.html">Academy</a>
     <a href="/skill-issue/osint/">OSINT</a>
+    <a href="/skill-issue/oscp/exam">Exam Mode</a>
     <a href="/skill-issue/oscp/">Notes OSCP</a>
     <a href="/skill-issue/crto/">Notes CRTO</a>
     <a href="/skill-issue/crtp/">Notes CRTP</a>

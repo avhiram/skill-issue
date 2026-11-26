@@ -32,6 +32,7 @@ const wrapKey = 'skill-issue:wrap-code:v1'
 const sections = [
   { title: 'Accueil', path: '/' },
   { title: 'Academy', path: '/academy/' },
+  { title: 'Exam Mode · OSCP', path: '/oscp/exam' },
   { title: 'OSINT', path: '/osint/' },
   { title: 'Bug Bounty', path: '/bug-bounty/' },
   { title: 'OSCP', path: '/oscp/' },
