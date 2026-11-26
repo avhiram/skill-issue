@@ -30,16 +30,24 @@ const stages: Stage[] = [
     {id:'report',text:'Vérifier les captures, le rapport et les critères de remise.'}
   ],links:[{label:'Rédaction du rapport',path:'/oscp/rapport'},{label:'Critères officiels',path:'/oscp/references'}]}
 ]
-const quickLinks: Link[] = [
-  {label:'Nmap',path:'/oscp/exam-nmap'},
-  {label:'Ports & services',path:'/oscp/reconnaissance#services-par-port'},
-  {label:'Méthodologie',path:'/oscp/methodologie'},
-  {label:'Web',path:'/oscp/applications-web'},
-  {label:'Windows',path:'/oscp/privileges-windows'},
-  {label:'Linux',path:'/oscp/privileges-linux'},
-  {label:'Active Directory',path:'/oscp/active-directory'},
-  {label:'Transferts',path:'/oscp/transferts'},
-  {label:'Preuves & rapport',path:'/oscp/rapport'}
+const groups: {title:string; links:Link[]}[] = [
+  {title:'Reconnaissance',links:[
+    {label:'Nmap',path:'/oscp/exam-nmap'},
+    {label:'Ports et services',path:'/oscp/reconnaissance#services-par-port'}
+  ]},
+  {title:'Analyse selon la cible',links:[
+    {label:'Méthodologie',path:'/oscp/methodologie'},
+    {label:'Web',path:'/oscp/applications-web'},
+    {label:'Active Directory',path:'/oscp/active-directory'}
+  ]},
+  {title:'Systèmes',links:[
+    {label:'Linux',path:'/oscp/privileges-linux'},
+    {label:'Windows',path:'/oscp/privileges-windows'},
+    {label:'Transferts',path:'/oscp/transferts'}
+  ]},
+  {title:'Rapport',links:[
+    {label:'Preuves et rapport',path:'/oscp/rapport'}
+  ]}
 ]
 const preparation=stages.find(stage=>stage.id==='prep')!
 const key = 'skill-issue:exam-oscp:v1'
@@ -69,12 +77,6 @@ onMounted(()=>{
 
 <template>
   <div class="exam-workspace">
-    <nav class="exam-quick" aria-label="Accès directs pendant l’examen">
-      <a v-for="link in quickLinks" :key="link.path" :href="withBase(link.path)">
-        <span>{{ link.label }}</span>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
-      </a>
-    </nav>
     <details class="exam-fold">
       <summary>Avant l’examen <span aria-hidden="true">⌄</span></summary>
       <div class="exam-fold-body">
@@ -84,6 +86,15 @@ onMounted(()=>{
         <p class="exam-local-note">PimpMyKali : facultatif, sur une VM Kali compatible, avant l’épreuve. Créer un snapshot, lire le script et vérifier les outils après installation.</p>
       </div>
     </details>
+    <nav class="exam-quick" aria-label="Parcours de travail">
+      <section v-for="group in groups" :key="group.title" class="exam-group">
+        <h2 class="exam-group-title">{{ group.title }}</h2>
+        <a v-for="link in group.links" :key="link.path" :href="withBase(link.path)">
+          <span>{{ link.label }}</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </a>
+      </section>
+    </nav>
     <details class="exam-fold">
       <summary>Checklist <span class="exam-count">{{ completed.length }}/{{ total }} <span aria-hidden="true">⌄</span></span></summary>
       <div class="exam-fold-body">
@@ -118,13 +129,16 @@ onMounted(()=>{
   </div>
 </template>
 <style scoped>
-.exam-workspace { display:grid; gap:12px; margin-top:16px; color:var(--vp-c-text-1); min-width:0; }
-.exam-quick { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
-.exam-quick a,.exam-links a { display:flex; align-items:center; justify-content:space-between; gap:6px; background:#191320; color:#dbc8f5; border:1px solid #40304f; border-radius:8px; padding:10px 12px; text-decoration:none; font-size:14px; font-weight:600; line-height:1.35; min-height:48px; min-width:0; }
+.exam-workspace { display:grid; gap:12px; margin-top:12px; color:var(--vp-c-text-1); min-width:0; }
+.exam-quick { display:grid; gap:14px; }
+.exam-group { min-width:0; }
+.exam-workspace .exam-group-title { margin:0 0 2px !important; padding:0 0 4px !important; border:0 !important; color:#b39aff; font-size:12px; font-weight:650; line-height:1.5; letter-spacing:0; }
+.exam-quick a,.exam-links a { display:flex; align-items:center; justify-content:space-between; gap:8px; color:#e6d9f6; text-decoration:none; font-size:14px; font-weight:550; line-height:1.35; min-width:0; }
+.exam-quick a { min-height:44px; padding:9px 4px; border-bottom:1px solid #29213a; }
 .exam-quick a svg { flex:none; color:#b39aff; }
-.exam-quick a:last-child { grid-column:1/-1; }
-.exam-quick a:hover,.exam-links a:hover { background:#261a36; border-color:#8966b6; }
+.exam-quick a:hover,.exam-links a:hover { color:#f0e4ff; background:#1b1425; }
 .exam-quick a:active,.exam-links a:active { background:#302043; }
+.exam-quick a:focus-visible,.exam-fold summary:focus-visible { outline:2px solid #b39aff; outline-offset:2px; }
 .exam-workspace .exam-fold { margin:0; padding:0; border:1px solid #3f304e; border-radius:9px; background:#15101e; }
 .exam-workspace .exam-fold > summary { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:48px; margin:0; padding:10px 12px; cursor:pointer; list-style:none; color:#cdbbe4; font-size:13px; font-weight:600; }
 .exam-fold > summary::-webkit-details-marker { display:none; }
@@ -145,10 +159,10 @@ onMounted(()=>{
 .exam-task { display:flex; gap:9px; align-items:flex-start; min-height:44px; padding:8px 0; color:#ded3ea; font-size:13px; line-height:1.45; cursor:pointer; }
 .exam-task input { width:18px; height:18px; flex:none; margin-top:2px; accent-color:#b39aff; }
 .exam-links { display:flex; flex-wrap:wrap; gap:6px; }
-.exam-links a { min-height:44px; font-size:12px; padding:8px 10px; }
+.exam-links a { min-height:44px; font-size:12px; padding:8px 10px; border:1px solid #40304f; border-radius:7px; background:#191320; }
 .exam-local-note { color:#b5a5c6; font-size:12px; margin:0 !important; line-height:1.5; }
 .exam-footer,.exam-confirm { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; color:#b5a5c6; font-size:12px; }
 .exam-footer button,.exam-confirm button { min-height:44px; padding:6px 8px; color:#dcc7f7; font-size:12px; }
 .exam-confirm button { border:1px solid #4d3a64; border-radius:6px; }
-@media(max-width:420px) { .exam-quick a { font-size:13px; padding:9px 10px; } }
+@media(max-width:420px) { .exam-quick { gap:12px; } .exam-quick a { font-size:14px; padding:8px 4px; } }
 </style>
