@@ -27,7 +27,7 @@ aside: false
   <div class="profile-marquee-track">
 <div class="profile-marquee-group">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/economie.webp" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/economie.webp" srcset="https://upload.wikimedia.org/wikipedia/commons/5/5d/Logo_economie_2020.png 2x" class="profile-economy-logo" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="if(this.hasAttribute('srcset')){this.removeAttribute('srcset');this.src='https://avhiram.github.io/skill-issue/institutions/economie.webp'}else{this.style.display='none'}" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Intérieur">
@@ -82,7 +82,7 @@ aside: false
 </div>
 <div class="profile-marquee-group" aria-hidden="true">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/economie.webp" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="https://avhiram.github.io/skill-issue/institutions/economie.webp" srcset="https://upload.wikimedia.org/wikipedia/commons/5/5d/Logo_economie_2020.png 2x" class="profile-economy-logo" alt="" loading="lazy" decoding="async" onerror="if(this.hasAttribute('srcset')){this.removeAttribute('srcset');this.src='https://avhiram.github.io/skill-issue/institutions/economie.webp'}else{this.style.display='none'}" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Intérieur">
