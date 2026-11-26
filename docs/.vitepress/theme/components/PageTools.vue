@@ -3,7 +3,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, useRoute, onContentUpdated, withBase } from 'vitepress'
 import PageFind from './PageFind.vue'
 import Breadcrumbs from './Breadcrumbs.vue'
-import { examGroups } from '../examNavigation'
+import ExamChapterTree from './ExamChapterTree.vue'
 
 const route = useRoute()
 const { frontmatter } = useData()
@@ -22,8 +22,30 @@ const ready = ref(false)
 const menuOpen = ref(false)
 const examOpen = ref(false)
 const onOscp = computed(() => /\/oscp(?:\/|$)/.test(route.path))
-function examPath(path: string) { return withBase(path.split('#')[0]).replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/+$/, '') }
-function isExamCurrent(path: string) { return examPath(path) === route.path.replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/+$/, '') }
+let pendingExamAnchor = ''
+function jumpExamAnchor() {
+  if (!pendingExamAnchor) return
+  const el = document.getElementById(pendingExamAnchor)
+  if (!el) return
+  pendingExamAnchor = ''
+  for (let node: HTMLElement | null = el; node; node = node.parentElement) {
+    if (node instanceof HTMLDetailsElement) node.open = true
+  }
+  requestAnimationFrame(() => el.scrollIntoView({block:'start',behavior:'auto'}))
+}
+function navigateExam(path:string,event:MouseEvent) {
+  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return
+  const [target,hash] = path.split('#')
+  closePanels()
+  if(!hash)return
+  try { pendingExamAnchor = decodeURIComponent(hash) } catch { pendingExamAnchor=hash }
+  const normalize=(s:string)=>s.replace(/\.html$/,'').replace(/\/+$/,'')
+  if(normalize(withBase(target))===normalize(route.path)){
+    event.preventDefault()
+    history.replaceState(history.state,'',withBase(path))
+    jumpExamAnchor()
+  }
+}
 function openExam() {
   closePanels()
   window.dispatchEvent(new Event('skill-outline-close'))
@@ -162,6 +184,7 @@ function refresh() {
     markProse(doc)
   }
   applyMode()
+  jumpExamAnchor()
 }
 
 async function setMode(value: 'read' | 'quick') {
@@ -304,7 +327,7 @@ onUnmounted(() => {
               <button type="button" @click="resumeReading">{{ lastRead.title }} · {{ lastRead.progress }} %</button>
               <progress :value="lastRead.progress" max="100" />
             </div>
-            <button v-if="currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
+            <button v-if="!onOscp && currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
             <a v-for="section in sections" :key="section.path" :href="withBase(section.path)" @click="closePanels">{{ section.title }} <span>›</span></a>
             <div class="skill-search-scope">
               <label for="skill-search-scope-mobile">Rechercher dans</label>
@@ -331,23 +354,20 @@ onUnmounted(() => {
       </div>
       <div v-if="examOpen" class="skill-tools-overlay">
         <button type="button" class="skill-tools-backdrop" aria-label="Fermer" @click="closePanels" />
-        <section class="skill-tools-panel skill-exam-panel" role="dialog" aria-modal="true" aria-label="Chapitres de l’examen">
-          <header><strong>Exam Mode · OSCP</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
-          <a class="skill-exam-home" :href="withBase('/oscp/exam')" @click="closePanels">Accueil de l’examen <span aria-hidden="true">›</span></a>
-          <div v-for="group in examGroups" :key="group.title" class="skill-exam-group">
-            <small>{{ group.title }}</small>
-            <a v-for="link in group.links" :key="link.path" :href="withBase(link.path)" :aria-current="isExamCurrent(link.path) ? 'page' : undefined" @click="closePanels">{{ link.label }} <span aria-hidden="true">›</span></a>
-          </div>
+        <section class="skill-tools-panel skill-exam-panel" role="dialog" aria-modal="true" aria-label="Chapitres OSCP">
+          <header><strong>Chapitres · OSCP</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
+          <ExamChapterTree :current-path="route.path" @navigate="navigateExam" @find="findInPage" />
         </section>
       </div>
     </Teleport>
-    <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
+    <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': onOscp ? 3 + Number(hasCode) : 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
       <button type="button" @click="openMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
-      <button type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Chercher</span></button>
-      <button v-if="hasOutline" type="button" aria-label="Sommaire de la page" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Plan</span></button>
+      <button v-if="!onOscp" type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Chercher</span></button>
+      <button v-if="!onOscp && hasOutline" type="button" aria-label="Sommaire de la page" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Plan</span></button>
+      <button v-if="onOscp" type="button" aria-label="Chapitres et sous-chapitres OSCP" :aria-expanded="examOpen" @click="openExam"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16m3-11h5m-5 5h5"/></svg><span>Chapitres</span></button>
       <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Fiche' : 'Lecture' }}</span></button>
-      <button type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
-      <button v-if="onOscp" type="button" aria-label="Chapitres de l’examen OSCP" :aria-expanded="examOpen" @click="openExam"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16m3-11h5m-5 5h5"/></svg><span>Examen</span></button>
+      <button v-if="!onOscp" type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
+      <button v-if="onOscp" type="button" aria-label="Recherche OSCP" @click="launchSearch('oscp')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
       <button v-else type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
     </nav>
   </div>
