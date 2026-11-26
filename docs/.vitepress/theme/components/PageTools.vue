@@ -2,6 +2,7 @@
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, useRoute, onContentUpdated, withBase } from 'vitepress'
 import PageFind from './PageFind.vue'
+import Breadcrumbs from './Breadcrumbs.vue'
 
 const route = useRoute()
 const { frontmatter } = useData()
@@ -270,6 +271,7 @@ onUnmounted(() => {
 
 <template>
   <div class="skill-page-tools">
+    <Breadcrumbs />
     <div v-if="hasCode" class="skill-reading-toolbar">
       <div class="skill-reading-label">Mode d’affichage</div>
       <div class="skill-reading-switch" role="group" aria-label="Mode d’affichage">

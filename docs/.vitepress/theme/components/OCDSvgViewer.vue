@@ -123,10 +123,7 @@ async function toggleTextMode() {
       svg.removeAttribute('width'); svg.removeAttribute('height')
       svg.setAttribute('width','100%'); svg.setAttribute('height','100%')
       const markup=new XMLSerializer().serializeToString(svg)
-      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}.ocd-viewer.expanded,.ocd-viewer:fullscreen { width:100%; height:100dvh; max-height:100dvh; padding-bottom:env(safe-area-inset-bottom,0px); box-sizing:border-box; }
-.ocd-viewer.expanded .ocd-stage { min-height:0; height:auto; flex:1 1 0; }
-.map-fullscreen-control { border-color:#a78bfa !important; color:#e0caff !important; min-height:44px; }
-</style></head><body>'+markup+'</body></html>'
+      frameDoc.value='<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:; font-src data:"><style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#100d17}svg{display:block;width:100%;height:100%;}svg{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}svg text,svg tspan{user-select:none!important;-webkit-user-select:none!important;cursor:pointer!important;pointer-events:all!important}</style></head><body>'+markup+'</body></html>'
     }
     stageGestures.clear(); textMode.value=true
   } catch(e) {textMessage.value=e.message+' Le lecteur original reste disponible.'}
@@ -313,4 +310,7 @@ onBeforeUnmount(()=>{cleanupFullscreen();frameCleanup();stageGestures.clear();wi
 .ocd-copy textarea{display:block;width:100%;resize:vertical;min-height:65px;max-height:30vh;margin-top:8px;padding:8px;border:1px solid #503b6b;border-radius:6px;background:#100d17;color:#eee5f9;font:13px/1.5 ui-monospace,monospace;user-select:text}
 .ocd-status,.ocd-hint{padding:10px 12px;color:#c4b5d9;font-size:12px}
 @media(max-width:640px){.ocd-stage{height:65vh;min-height:350px}.ocd-toolbar{padding:8px}}
+.ocd-viewer.expanded,.ocd-viewer:fullscreen { width:100%; height:100dvh; max-height:100dvh; padding-bottom:env(safe-area-inset-bottom,0px); box-sizing:border-box; }
+.ocd-viewer.expanded .ocd-stage { min-height:0; height:auto; flex:1 1 0; }
+.map-fullscreen-control { border-color:#a78bfa !important; color:#e0caff !important; min-height:44px; }
 </style>

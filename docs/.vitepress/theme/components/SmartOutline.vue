@@ -94,7 +94,7 @@ function collect() {
   for (const heading of Array.from(doc.querySelectorAll<HTMLElement>(academy ? '.academy-chapter[id],.academy-level[id]' : 'h2[id],h3[id],h4[id],h5[id],h6[id]'))) {
     const level = academy ? (heading.classList.contains('academy-chapter') ? 2 : 3) : Number(heading.tagName.slice(1))
     if (level < min || level > max || heading.closest('.ignore-header, [data-outline-ignore]')) continue
-    const labelElement = academy ? heading.querySelector(':scope > h2, :scope > h3, :scope > summary > h2, :scope > summary > h3') : heading
+    const labelElement = academy ? heading.querySelector(':scope > h2, :scope > h3, :scope > summary > h2, :scope > summary > h3, :scope > summary > .academy-chapter-label > h2') : heading
     if (!labelElement) continue
     const clone = labelElement.cloneNode(true) as HTMLElement
     clone.querySelectorAll('.header-anchor, .ignore-header, .VPBadge').forEach(node => node.remove())

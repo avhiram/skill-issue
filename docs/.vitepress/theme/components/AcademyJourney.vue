@@ -1038,6 +1038,21 @@ function otherLinks(id: string): AssignedResource[] {
 }
 
 // La vue complète reste identique. La vue gratuite affiche uniquement la sélection sans achat.
+const chapterIcons: Record<string,string> = {
+  'premiers-pas':'M3 4h18v13H3zM8 21h8M12 17v4',
+  'linux-windows':'M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z',
+  'code-et-web':'m8 6-6 6 6 6m8-12 6 6-6 6m-3-15-2 18',
+  'notions-securite':'M5 10h14v11H5zM8 10V6a4 4 0 0 1 8 0v4m-4 4v3',
+  'premiers-labs':'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20',
+  'bonus-windows':'M3 4h18v13H3zM8 21h8M12 17v4m-3-11 2 2 4-4',
+  'active-directory-red-team':'m4 6 6 6-6 6m10 0h6',
+  'blue-team':'M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11zM8 12l3 3 5-6',
+  'forensic-reverse':'M3 10a9 9 0 0 1 18 0M6 12V9a6 6 0 0 1 12 0v5M9 10v4a9 9 0 0 1-2 6m5-12v6a12 12 0 0 1-1 7m4-11v5a8 8 0 0 1-1 6',
+  'cloud-et-specialites':'M6 18a5 5 0 1 1 1-10 6 6 0 0 1 11 3 4 4 0 1 1 0 7H6',
+  'challenges-avances':'M5 22V3m0 1c4-3 7 3 11 0l3-1v12l-3 1c-4 3-7-3-11 0',
+  'veilles-certifications':'m2 9 10-5 10 5-10 5-10-5m4 2v6c4 3 8 3 12 0v-6m4-2v8',
+  'projet-final':'M3 6h7l2 2h9v12H3zM9 14l2 2 4-4'
+}
 const freeOnly = ref(false)
 const completed = ref<Set<string>>(new Set())
 const showDescriptions = ref(false)
@@ -1137,10 +1152,11 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
       <label><input v-model="showDescriptions" type="checkbox"> Afficher les descriptions</label>
     </div>
     <main class="academy-chapters">
-      <details v-for="section in sections" :id="section.id" :key="section.id" class="academy-chapter">
+      <details v-for="(section, chapterIndex) in sections" :id="section.id" :key="section.id" class="academy-chapter">
         <summary class="academy-chapter-summary">
-          <h2>{{ section.title }}</h2>
-          <span class="academy-fold-meta" aria-hidden="true">{{ chapterStats(section).done }}/{{ chapterStats(section).total }} <span class="academy-chevron">›</span></span>
+          <svg class="academy-chapter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path :d="chapterIcons[section.id]" /></svg>
+          <div class="academy-chapter-label"><h2>{{ section.title }}</h2><span class="academy-chapter-caption">Chapitre {{ chapterIndex + 1 }} · {{ chapterStats(section).done }}/{{ chapterStats(section).total }} ressources</span></div>
+          <span class="academy-chevron" aria-hidden="true">›</span>
         </summary>
         <div class="academy-chapter-body">
           <p class="academy-chapter-intro">{{ section.summary }}</p>
@@ -1166,7 +1182,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
       </details>
     </main>
     <details id="academy-tools" class="academy-chapter academy-toolbox" aria-label="Boîte à outils">
-      <summary class="academy-chapter-summary"><h2>Outils et références</h2><span class="academy-chevron" aria-hidden="true">›</span></summary>
+      <summary class="academy-chapter-summary"><svg class="academy-chapter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6a5 5 0 0 0-6 6L3 17l4 4 5-5a5 5 0 0 0 6-6l-3 3-4-4 3-3z"/></svg><div class="academy-chapter-label"><h2>Outils et références</h2><span class="academy-chapter-caption">Boîte à outils</span></div><span class="academy-chevron" aria-hidden="true">›</span></summary>
       <div class="academy-chapter-body">
         <p class="academy-learning-note">Ces liens servent pendant les exercices. Ils ne constituent pas des étapes à apprendre dans l’ordre.</p>
         <template v-for="section in sections" :key="'tools-' + section.id">
@@ -1441,4 +1457,12 @@ details[open] > summary .academy-chevron { transform:rotate(90deg); }
 .academy-empty-level { padding:8px 12px; color:#b5a4c5; font-size:.8rem; }
 .academy-toolbox { margin-top:24px !important; }
 @media(max-width:650px) { .academy-chapter-summary { padding:11px; } .academy-chapter-body { padding:0 8px 8px; } .academy-fold-controls button { min-height:44px; } .academy-resource-list { padding:0 8px !important; } .academy-resource-row input { width:20px; height:20px; } }
+.academy-chapter-icon { width:23px; height:23px; color:#b39aff; flex:0 0 23px; }
+.academy-chapter-label { flex:1; min-width:0; display:flex; flex-direction:column; gap:4px; }
+.academy-chapter-caption { color:#ab98bf; font-size:.73rem; line-height:1.3; }
+.academy-chapter-summary { min-height:70px; gap:12px; }
+.academy-chapter[open] > .academy-chapter-summary { background:#21182c; }
+.academy-chapter-body { padding-top:10px; }
+.academy-level-summary { background:#21182c; }
+@media(max-width:650px) { .academy-chapter-summary { min-height:68px; gap:10px; } .academy-chapter-caption { font-size:.71rem; } }
 </style>
