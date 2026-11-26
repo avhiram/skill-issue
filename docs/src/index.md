@@ -27,7 +27,7 @@ aside: false
   <div class="profile-marquee-track">
 <div class="profile-marquee-group">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="/skill-issue/institutions/economie.webp" alt="Logo du ministère de l’Économie" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" title="Ministère de l’Intérieur">
@@ -82,7 +82,7 @@ aside: false
 </div>
 <div class="profile-marquee-group" aria-hidden="true">
   <a class="profile-marquee-item" href="https://www.economie.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Économie">
-    <span class="profile-logo-frame"><img src="https://www.guadeloupe.cci.fr/sites/g/files/mwbcuj1136/files/2021-12/minist%C3%A8re%20de%20l%27%C3%A9conomie.jpg?tstmp=1639752017" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
+    <span class="profile-logo-frame"><img src="/skill-issue/institutions/economie.webp" alt="" loading="lazy" decoding="async" onerror="this.style.display='none'" draggable="false"></span>
     <span class="profile-logo-label">Ministère de l’Économie</span>
   </a>
   <a class="profile-marquee-item" href="https://www.interieur.gouv.fr/" target="_blank" rel="noopener noreferrer" tabindex="-1" title="Ministère de l’Intérieur">
