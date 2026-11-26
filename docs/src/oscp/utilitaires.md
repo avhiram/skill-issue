@@ -102,7 +102,13 @@ mv ancien nouveau
 
 ### Modifier les permissions (chmod)
 
-Donne les droits de lecture, d’écriture et d’exécution à tous. À réserver aux fichiers de test en laboratoire.
+Rendre un fichier exécutable.
+
+```bash
+chmod +x fichier.sh
+```
+
+Donner tous les droits à tous les utilisateurs (fichiers de test uniquement).
 
 ```bash
 chmod 777 fichier.sh
