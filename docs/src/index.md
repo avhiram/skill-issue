@@ -157,7 +157,7 @@ aside: false
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a href="https://www.linkedin.com/posts/ecole2600_cyberharcelement-aezcole2600-cybersaezcuritaez-ugcPost-7528002547261898752-Mbb_" target="_blank" rel="noopener noreferrer" title="Publication École 2600 - cyberharcèlement">
-    <span class="proof-icon proof-logo proof-logo-elysee" aria-hidden="true"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/%C3%89LYSE%C3%89_PARIS_LOGO.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Élysée</span></span>
+    <span class="proof-icon proof-logo proof-logo-elysee" aria-hidden="true"><img src="/skill-issue/institutions/elysee.webp" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Élysée</span></span>
     <span class="proof-content"><strong>Première dame de France</strong><span class="proof-description">Projet avec la Première dame de France</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
@@ -167,7 +167,7 @@ aside: false
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>
   <a href="https://www.2600.eu/wp-content/uploads/2025/02/Capital-30-01-2025-Pages-15455.pdf" target="_blank" rel="noopener noreferrer">
-    <span class="proof-icon proof-logo proof-logo-capital" aria-hidden="true"><img src="https://www.edition-livre-france.fr/img/logos-presse/capital-officiel.png" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Capital</span></span>
+    <span class="proof-icon proof-logo proof-logo-capital" aria-hidden="true"><img src="/skill-issue/institutions/capital.webp" alt="" loading="lazy" decoding="async" onerror="this.hidden=true"><span class="proof-logo-fallback">Capital</span></span>
     <span class="proof-content"><strong>Capital</strong><span class="proof-description">Mes découvertes de vulnérabilités à la NASA mentionnées dans le magazine Capital</span></span>
     <svg class="proof-arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg>
   </a>

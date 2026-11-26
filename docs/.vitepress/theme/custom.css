@@ -1366,3 +1366,7 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   .vp-doc .profile-proof > a { grid-template-columns:52px minmax(0,1fr) 16px; gap:11px; min-height:86px; }
   .vp-doc .profile-proof .proof-logo { width:52px; height:52px; }
 }
+
+/* Local user-supplied logos retain original colors on a neutral background. */
+.vp-doc .profile-proof .proof-logo-elysee,.vp-doc .profile-proof .proof-logo-capital { background:#fff; padding:4px; }
+.vp-doc .profile-proof .proof-logo-elysee .proof-logo-fallback { color:#342448; }
