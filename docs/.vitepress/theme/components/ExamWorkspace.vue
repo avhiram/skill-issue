@@ -15,7 +15,7 @@ const stages: Stage[] = [
   { id:'inventory',title:'Inventaire et résultats',tasks:[
     {id:'hosts',text:'Consigner les machines du périmètre et les services identifiés.'},
     {id:'results',text:'Conserver les résultats bruts et les observations.'}
-  ],links:[{label:'Reconnaissance',path:'/oscp/reconnaissance'},{label:'Nmap · Exam Mode',path:'/oscp/exam-nmap'},{label:'Référence Nmap complète',path:'/oscp/reconnaissance#nmap'},{label:'Services par port',path:'/oscp/reconnaissance#services-par-port'}]},
+  ],links:[{label:'Reconnaissance',path:'/oscp/reconnaissance'},{label:'Nmap · Exam Mode',path:'/oscp/exam-nmap'},{label:'Référence Nmap complète',path:'/oscp/reconnaissance#nmap'},{label:'Services par port',path:'/oscp/exam-ports'}]},
   { id:'analysis',title:'Analyse et références',tasks:[
     {id:'observations',text:'Classer les observations par machine et par technologie.'},
     {id:'validation',text:'Distinguer les hypothèses, les vérifications et les résultats confirmés.'}

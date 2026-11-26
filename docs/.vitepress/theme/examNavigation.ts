@@ -9,7 +9,7 @@ export const examGroups: {title:string; links:Link[]}[] = [
       },
       {
         "label": "Ports et services",
-        "path": "/oscp/reconnaissance#services-par-port"
+        "path": "/oscp/exam-ports"
       },
       {
         "label": "Collecte d’informations",

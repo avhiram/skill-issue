@@ -1236,3 +1236,6 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   html.skill-mobile-nav-ready .VPDoc:has(.skill-page-tools) .content { padding-inline:0; }
   html.skill-mobile-nav-ready .VPDoc:has(.skill-page-tools) .vp-doc > div > h1:first-child { line-height:1.22; margin-bottom:12px; }
 }
+
+/* Stable jump targets for the service index; no extra space in notes. */
+.vp-doc .port-jump-anchor { height:0; margin:0; padding:0; scroll-margin-top:100px; }

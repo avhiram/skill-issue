@@ -349,7 +349,11 @@ fping -a -g <RESEAU_CIDR> 2>/dev/null
 
 ## Services par port
 
+[**Index rapide des ports**](./exam-ports.md)
+
 Vérifier les ports et les services de la cible autorisée.
+
+<div id="port-ftp" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 21: FTP
 
@@ -407,6 +411,8 @@ Sur un serveur FTP prévu pour l’accès public, remplace `<IP_CIBLE>` par son 
 curl -v 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 curl --list-only 'ftp://anonymous:anonymous@<IP_CIBLE>/'
 ```
+
+<div id="port-ssh" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 22: SSH
 
@@ -606,6 +612,8 @@ ssh -i <private_key_file> <user>@<target_ip>
 
 ```
 
+<div id="port-telnet" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 23: Telnet
 
 <p class="oscp-command-note">Telnet : ouvrir une connexion TCP 23. Identifiants non chiffrés.</p>
@@ -618,6 +626,8 @@ telnet 192.0.2.10 23
 telnet -l utilisateur 192.0.2.10 23
 
 ```
+
+<div id="port-smtp" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 25: SMTP
 
@@ -733,6 +743,8 @@ Méthode alternative si VRFY est désactivée. Ce contrôle envoie des requêtes
 smtp-user-enum -M RCPT -U <FICHIER_UTILISATEURS>.txt -t <IP_CIBLE>
 ```
 
+<div id="port-dns" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 53: DNS
 
 Interroger les enregistrements DNS et identifier les services associés.
@@ -799,6 +811,8 @@ Vérifier si un transfert AXFR non autorisé est accepté par le serveur DNS.
 ```bash
 dig @<SERVEUR_DNS> <DOMAINE> AXFR
 ```
+
+<div id="port-tftp" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 69: TFTP
 
@@ -879,6 +893,8 @@ printf 'get fichier_distant fichier_local\nquit\n' | tftp 192.0.2.10
 printf 'put fichier_local fichier_distant\nquit\n' | tftp 192.0.2.10
 
 ```
+
+<div id="port-kerberos" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 88: Kerberos
 
@@ -988,6 +1004,8 @@ klist
 
 ```
 
+<div id="port-pop3" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 110: POP3
 
 <p class="oscp-command-note">Nmap POP3 : identifier les capacités du service et les informations NTLM éventuellement exposées.</p>
@@ -1047,6 +1065,8 @@ QUIT
 
 ```
 
+<div id="port-rpc" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 111: RPC
 
 <p class="oscp-command-note">Nmap : lister les programmes RPC enregistrés sur le port 111.</p>
@@ -1069,6 +1089,8 @@ rpcinfo -p <IP_CIBLE>
 showmount -e <IP_CIBLE>
 
 ```
+
+<div id="port-msrpc" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 135, 593: MSRPC
 
@@ -1207,6 +1229,8 @@ rpcclient -U 'administrateur' 192.0.2.10 -c 'querydominfo'
 rpcclient -U '' -N 192.0.2.10 -c 'enumdomusers'
 
 ```
+
+<div id="port-smb" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 139, 445: SMB
 
@@ -1390,6 +1414,8 @@ Lister uniquement les ressources visibles pour le compte fourni dans le périmè
 nxc smb <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' --shares
 ```
 
+<div id="port-imap" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 143, 993: IMAP
 
 <p class="oscp-command-note">Nmap : détecter IMAP et les informations NTLM disponibles.</p>
@@ -1463,6 +1489,8 @@ Examiner le certificat d'un service IMAPS sans tenter d'authentification.
 ```bash
 openssl s_client -connect <IP_CIBLE>:993 -servername <NOM_DNS> -brief
 ```
+
+<div id="port-snmp" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 161 (UDP): SNMP
 
@@ -1581,6 +1609,8 @@ Interroger les noms de processus déclarés par l'agent. Les données dépendent
 ```bash
 snmpwalk -v2c -c '<COMMUNAUTE>' <IP_CIBLE> 1.3.6.1.2.1.25.4.2.1.2
 ```
+
+<div id="port-ldap" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 389, 636, 3268 & 3269: LDAP
 
@@ -1740,6 +1770,8 @@ Lister le nom des comptes exposés à un utilisateur LDAP autorisé.
 ldapsearch -LLL -x -H ldap://<IP_DC> -D '<DN_COMPTE>' -W -b '<DN_BASE>' '(&(objectCategory=person)(objectClass=user))' sAMAccountName
 ```
 
+<div id="port-mssql" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 1433: MSSQL
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -1835,6 +1867,8 @@ Vérifier le type d'authentification demandé par l'instance MSSQL.
 impacket-mssqlclient '<DOMAINE>/<UTILISATEUR>:<MOT_DE_PASSE>@<IP_CIBLE>' -windows-auth
 ```
 
+<div id="port-nfs" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 2049: NFS
 
 <p class="oscp-command-note">Nmap : énumérer les exports et informations NFS accessibles.</p>
@@ -1865,6 +1899,8 @@ sudo mkdir -p /mnt/partage_nfs
 sudo mount -t nfs -o ro,vers=3 <IP_CIBLE>:/export/partage /mnt/partage_nfs
 
 ```
+
+<div id="port-3003" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 3003 : service à identifier
 
@@ -1967,6 +2003,8 @@ version
 
 ```
 
+<div id="port-mysql" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 3306 : MySQL / MariaDB
 
 Examiner les connexions, la configuration et les requêtes de la base de données.
@@ -2040,6 +2078,8 @@ SELECT LOAD_FILE('C:/xampp/htdocs/test.txt');
 icacls "C:\xampp\htdocs\test.txt"
 ```
 
+<div id="port-rdp" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 3389: RDP
 
 <p class="oscp-command-note">Nmap : relever la sécurité RDP et les informations NTLM disponibles.</p>
@@ -2097,6 +2137,8 @@ Tester un compte de laboratoire sur le service RDP si les règles d'audit autori
 ```bash
 nxc rdp <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>'
 ```
+
+<div id="port-postgresql" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 5432, 5433: PostgreSQL
 
@@ -2195,6 +2237,8 @@ UPDATE test_table SET name = 'updated_data' WHERE name = 'example_data';
 DELETE FROM test_table WHERE name = 'updated_data';
 ```
 
+<div id="port-vnc" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 5900: VNC (Virtual Network Computing)
 
 <p class="oscp-command-note">Nmap : identifier la version VNC et les modes d'authentification.</p>
@@ -2239,6 +2283,8 @@ vnc
 4. Manipuler des fichiers de test uniquement
 
 ```
+
+<div id="port-winrm" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### 5985, 5986: WinRM
 
@@ -2292,6 +2338,8 @@ Tester des identifiants fournis pour l'audit sur une seule cible, sans mot de pa
 nxc winrm <IP_CIBLE> -u '<UTILISATEUR>' -p '<MOT_DE_PASSE>' -d '<DOMAINE>'
 ```
 
+<div id="port-redis" class="port-jump-anchor" aria-hidden="true"></div>
+
 ### 6379: Redis
 
 <p class="oscp-command-note">Nmap Redis : consulter redis-info sur TCP 6379 sans tentative d'exécution distante.</p>
@@ -2340,6 +2388,8 @@ CONFIG GET '*'
 SET mykey myvalue
 GET mykey
 ```
+
+<div id="port-unknown" class="port-jump-anchor" aria-hidden="true"></div>
 
 ### Port inconnu
 
