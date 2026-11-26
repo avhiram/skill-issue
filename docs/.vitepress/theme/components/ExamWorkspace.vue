@@ -10,7 +10,7 @@ const stages: Stage[] = [
     {id:'rules',text:'Lire les consignes officielles et les restrictions applicables.'},
     {id:'workspace',text:'Préparer un espace de travail et vérifier la connexion au laboratoire.'},
     {id:'scope',text:'Noter le périmètre autorisé et les objectifs de l’exercice.'}
-  ],links:[{label:'Consignes officielles',path:'/oscp/references'},{label:'Utilitaires',path:'/oscp/utilitaires'}]},
+  ],links:[{label:'Consignes officielles',path:'/oscp/references'},{label:'Utilitaires',path:'/oscp/utilitaires'},{label:'PimpMyKali · Préparer une VM Kali',path:'https://github.com/Dewalt-arch/pimpmykali'}]},
   { id:'inventory',title:'Inventaire et résultats',tasks:[
     {id:'hosts',text:'Consigner les machines du périmètre et les services identifiés.'},
     {id:'results',text:'Conserver les résultats bruts et les observations.'}
@@ -102,8 +102,9 @@ onMounted(()=>{
           <input type="checkbox" :checked="completed.includes(task.id)" @change="toggleTask(task.id)">
           <span>{{ task.text }}</span>
         </label>
+        <p v-if="stage.id==='prep'" class="exam-local-note">PimpMyKali : facultatif, sur une VM Kali compatible, avant l’épreuve. Créer un snapshot, lire le script et vérifier les outils après installation.</p>
         <div class="exam-links">
-          <a v-for="link in stage.links" :key="link.path" :href="withBase(link.path)">{{ link.label }} <span aria-hidden="true">›</span></a>
+          <a v-for="link in stage.links" :key="link.path" :href="link.path.startsWith('https://') ? link.path : withBase(link.path)" :target="link.path.startsWith('https://') ? '_blank' : undefined" :rel="link.path.startsWith('https://') ? 'noopener noreferrer' : undefined">{{ link.label }} <span aria-hidden="true">›</span></a>
         </div>
       </div>
     </section>
