@@ -2,6 +2,7 @@ import { h, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import SmartOutline from './components/SmartOutline.vue'
+import PageTools from './components/PageTools.vue'
 import CustomSidebarItem from './components/CustomSidebarItem.vue'
 import TransferSelector from './components/TransferSelector.vue'
 import AcademyJourney from './components/AcademyJourney.vue'
@@ -124,7 +125,7 @@ export default {
   extends: DefaultTheme,
   Layout: () => h(DefaultTheme.Layout, null, {
     'aside-outline-before': () => h(SmartOutline, { mode: 'desktop' }),
-    'doc-before': () => h(SmartOutline, { mode: 'mobile' })
+    'doc-before': () => [h(PageTools), h(SmartOutline, { mode: 'mobile' })]
   }),
   enhanceApp({ app }) {
     app.component('VPSidebarItem', CustomSidebarItem)

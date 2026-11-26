@@ -26,7 +26,7 @@ let frame = 0
 let refreshFrame = 0
 let observer: MutationObserver | undefined
 
-const enabled = computed(() => frontmatter.value.aside !== false && frontmatter.value.outline !== false)
+const enabled = computed(() => frontmatter.value.outline !== false && (frontmatter.value.aside !== false || (props.mode === 'mobile' && /\/(oscp|crto|crtp|osint|bug-bounty)\//.test(route.path))))
 const normalize = (s: string) => s.toLocaleLowerCase('fr').normalize('NFD').replace(/\p{Diacritic}/gu, '').trim()
 const terms = computed(() => normalize(query.value).split(/\s+/).filter(Boolean))
 const filtering = computed(() => terms.value.length > 0)
@@ -186,10 +186,24 @@ watch(() => route.path, async () => {
   observe()
 }, { flush: 'post' })
 
+function closeMobile() { mobileOpen.value = false }
+function openMobile() {
+  if (props.mode === 'mobile' && enabled.value && entries.value.length) mobileOpen.value = true
+}
+function onEscape(event: KeyboardEvent) {
+  if (event.key === 'Escape' && mobileOpen.value) closeMobile()
+}
+
 onMounted(async () => {
   await nextTick()
   collect()
   observe()
+  window.addEventListener('skill-reading-mode', onScroll)
+  if (props.mode === 'mobile') {
+    window.addEventListener('skill-outline-open', openMobile)
+    window.addEventListener('skill-outline-close', closeMobile)
+    window.addEventListener('keydown', onEscape)
+  }
   window.addEventListener('scroll', onScroll, { passive: true })
   window.addEventListener('resize', onScroll, { passive: true })
   document.addEventListener('toggle', onScroll, true)
@@ -198,6 +212,10 @@ onUnmounted(() => {
   observer?.disconnect()
   cancelAnimationFrame(frame)
   cancelAnimationFrame(refreshFrame)
+  window.removeEventListener('skill-reading-mode', onScroll)
+  window.removeEventListener('skill-outline-open', openMobile)
+  window.removeEventListener('skill-outline-close', closeMobile)
+  window.removeEventListener('keydown', onEscape)
   window.removeEventListener('scroll', onScroll)
   window.removeEventListener('resize', onScroll)
   document.removeEventListener('toggle', onScroll, true)
@@ -210,7 +228,9 @@ onUnmounted(() => {
       <span><span class="skill-outline-icon" aria-hidden="true">≡</span> Sur cette page</span>
       <span class="skill-outline-mobile-meta">{{ entries.length }} rubriques <span aria-hidden="true">{{ mobileOpen ? '⌄' : '›' }}</span></span>
     </button>
-    <div v-show="mode === 'desktop' || mobileOpen" :id="panelId" class="skill-outline-panel">
+    <button v-if="mode === 'mobile' && mobileOpen" class="skill-outline-backdrop" type="button" aria-label="Fermer le sommaire" @click="closeMobile" />
+    <div v-show="mode === 'desktop' || mobileOpen" :id="panelId" class="skill-outline-panel" :class="{ 'is-mobile-open': mode === 'mobile' && mobileOpen }">
+      <div v-if="mode === 'mobile'" class="skill-outline-mobile-header"><strong>Sommaire</strong><button type="button" aria-label="Fermer le sommaire" @click="closeMobile">×</button></div>
       <div v-if="mode === 'desktop'" class="skill-outline-header">
         <span class="skill-outline-heading">Sur cette page</span>
         <span class="skill-outline-count">{{ entries.length }}</span>
@@ -293,4 +313,21 @@ onUnmounted(() => {
   .skill-outline--mobile .skill-outline-caret, .skill-outline--mobile .skill-outline-dot { height: 35px; flex-basis: 25px; }
 }
 @media (prefers-reduced-motion: reduce) { .skill-outline-caret svg { transition: none; } }
+.skill-outline-backdrop, .skill-outline-mobile-header { display: none; }
+@media (max-width: 767px) {
+  .skill-outline--mobile .skill-outline-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 36; background: rgba(8,5,13,.64);
+  }
+  .skill-outline--mobile .skill-outline-panel.is-mobile-open {
+    position: fixed; inset: auto 0 0; z-index: 37; padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px));
+    background: #15101e; border: 1px solid #4a355e; border-radius: 16px 16px 0 0;
+    box-shadow: 0 -12px 36px rgba(0,0,0,.35);
+  }
+  .skill-outline-mobile-header { display: flex; align-items: center; justify-content: space-between; color: #eee6ff; margin-bottom: 8px; font-size: 15px; }
+  .skill-outline-mobile-header button { width: 44px; height: 44px; font-size: 24px; color: #cbb0f2; }
+  .skill-outline--mobile .skill-outline-list { max-height: 52dvh; }
+  .skill-outline--mobile .skill-outline-row a { min-height: 44px; padding-block: 11px; }
+  .skill-outline--mobile .skill-outline-caret { height: 44px; flex-basis: 38px; }
+  .skill-outline--mobile .skill-outline-search input { font-size: 16px; }
+}
 </style>

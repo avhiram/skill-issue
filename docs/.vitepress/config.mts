@@ -41,13 +41,18 @@ export default defineConfig({
     sidebar: {
       '/crtp/': [
         { text: 'CRTP', link: '/crtp/', collapsed: true, items: [
-          { text: 'AD Enumeration', link: '/crtp/enumeration' },
-          { text: 'Windows PrivEsc', link: '/crtp/windows-privesc' },
-          { text: 'Lateral Movement', link: '/crtp/lateral-movement' },
-          { text: 'Offensive .NET', link: '/crtp/offensive-dotnet' },
-          { text: 'AD Persistence', link: '/crtp/ad-persistence' },
-          { text: 'AD PrivEsc', link: '/crtp/ad-privesc' },
-          { text: 'AD Defense', link: '/crtp/defense' }
+          { text: 'Cheatsheet AD', link: '/crtp/cheatsheet' },
+          { text: 'Fondamentaux & progression', collapsed: true, items: [
+            { text: 'AD Enumeration', link: '/crtp/enumeration' },
+            { text: 'Windows PrivEsc', link: '/crtp/windows-privesc' },
+            { text: 'Lateral Movement', link: '/crtp/lateral-movement' },
+            { text: 'Offensive .NET', link: '/crtp/offensive-dotnet' }
+          ] },
+          { text: 'Active Directory', collapsed: true, items: [
+            { text: 'AD Persistence', link: '/crtp/ad-persistence' },
+            { text: 'AD PrivEsc', link: '/crtp/ad-privesc' },
+            { text: 'AD Defense', link: '/crtp/defense' }
+          ] },
         ] }
       ],
       '/academy/': [],
@@ -97,29 +102,41 @@ export default defineConfig({
         link: '/oscp/',
         collapsed: true,
         items: [
-          { text: 'Collecte d’informations', link: '/oscp/reconnaissance' },
-          { text: 'Analyse de vulnérabilités', link: '/oscp/vulnerabilites' },
-          { text: 'Applications web', link: '/oscp/applications-web' },
-          { text: 'Attaques côté client', link: '/oscp/attaques-client' },
-          { text: 'Évasion antivirus et Metasploit', link: '/oscp/antivirus-metasploit' },
-          { text: 'Attaques par mots de passe', link: '/oscp/mots-de-passe' },
-          { text: 'Élévation de privilèges Windows', link: '/oscp/privileges-windows' },
-          { text: 'Élévation de privilèges Linux', link: '/oscp/privileges-linux' },
-          { text: 'Redirections SSH, Socat et netsh', link: '/oscp/redirection-ports' },
-          { text: 'Ligolo-ng, Chisel et pivot', link: '/oscp/tunneling' },
-          { text: 'Active Directory', link: '/oscp/active-directory' },
-          { text: 'Mindmap AD', link: '/oscp/mindmap-ad' },
-          { text: 'Mindmaps', link: '/oscp/mindmaps' },
-          { text: 'Théorie Active Directory', link: '/oscp/ad-theorie' },
-          { text: 'Énumération Active Directory', link: '/oscp/ad-enumeration' },
-          { text: 'Attaques Active Directory', link: '/oscp/ad-techniques' },
-          { text: 'Mouvement latéral Active Directory', link: '/oscp/ad-lateral' },
-          { text: 'Infrastructures cloud', link: '/oscp/cloud' },
-          { text: 'Rédaction de rapports', link: '/oscp/rapport' },
-          { text: 'Transferts Linux et Windows', link: '/oscp/transferts' },
-          { text: 'Utilitaires', link: '/oscp/utilitaires' },
-          { text: 'Méthodologie', link: '/oscp/methodologie' },
-          { text: 'Références', link: '/oscp/references' }
+          { text: 'Reconnaissance', collapsed: true, items: [
+            { text: 'Collecte d’informations', link: '/oscp/reconnaissance' },
+            { text: 'Analyse de vulnérabilités', link: '/oscp/vulnerabilites' }
+          ] },
+          { text: 'Exploitation', collapsed: true, items: [
+            { text: 'Applications web', link: '/oscp/applications-web' },
+            { text: 'Attaques côté client', link: '/oscp/attaques-client' },
+            { text: 'Évasion antivirus et Metasploit', link: '/oscp/antivirus-metasploit' },
+            { text: 'Attaques par mots de passe', link: '/oscp/mots-de-passe' }
+          ] },
+          { text: 'Élévation de privilèges', collapsed: true, items: [
+            { text: 'Élévation de privilèges Windows', link: '/oscp/privileges-windows' },
+            { text: 'Élévation de privilèges Linux', link: '/oscp/privileges-linux' }
+          ] },
+          { text: 'Pivoting & transferts', collapsed: true, items: [
+            { text: 'Redirections SSH, Socat et netsh', link: '/oscp/redirection-ports' },
+            { text: 'Ligolo-ng, Chisel et pivot', link: '/oscp/tunneling' },
+            { text: 'Transferts Linux et Windows', link: '/oscp/transferts' }
+          ] },
+          { text: 'Active Directory', collapsed: true, items: [
+            { text: 'Active Directory', link: '/oscp/active-directory' },
+            { text: 'Théorie Active Directory', link: '/oscp/ad-theorie' },
+            { text: 'Énumération Active Directory', link: '/oscp/ad-enumeration' },
+            { text: 'Attaques Active Directory', link: '/oscp/ad-techniques' },
+            { text: 'Mouvement latéral Active Directory', link: '/oscp/ad-lateral' },
+            { text: 'Mindmap AD', link: '/oscp/mindmap-ad' }
+          ] },
+          { text: 'Ressources', collapsed: true, items: [
+            { text: 'Infrastructures cloud', link: '/oscp/cloud' },
+            { text: 'Utilitaires', link: '/oscp/utilitaires' },
+            { text: 'Méthodologie', link: '/oscp/methodologie' },
+            { text: 'Rédaction de rapports', link: '/oscp/rapport' },
+            { text: 'Références', link: '/oscp/references' },
+            { text: 'Mindmaps', link: '/oscp/mindmaps' }
+          ] },
         ]
       },
       {
@@ -127,27 +144,35 @@ export default defineConfig({
         link: '/crto/',
         collapsed: true,
         items: [
-          { text: 'Notes générales', link: '/crto/liham/README' },
-          { text: 'Bibliothèque de commandes', link: '/crto/liham/crto-command-library' },
-          { text: 'Cobalt Strike · Introduction', link: '/crto/liham/cheatsheets/cobalt-strike-primer' },
-          { text: 'Initial Access', link: '/crto/liham/cheatsheets/initial-access' },
-          { text: 'Discovery', link: '/crto/liham/cheatsheets/discovery' },
-          { text: 'User Impersonation', link: '/crto/liham/cheatsheets/user-impersonation' },
-          { text: 'Credential Access', link: '/crto/liham/cheatsheets/credential-access' },
-          { text: 'Lateral Movement', link: '/crto/liham/cheatsheets/lateral-movement' },
-          { text: 'Defense Evasion', link: '/crto/liham/cheatsheets/defense-evasion' },
-          { text: 'AppLocker', link: '/crto/liham/cheatsheets/applocker' },
-          { text: 'Privilege Escalation', link: '/crto/liham/cheatsheets/privilege-escalation' },
-          { text: 'Post-Exploitation', link: '/crto/liham/cheatsheets/post-exploitation' },
-          { text: 'Énumération Post-Exploitation', link: '/crto/liham/cheatsheets/Post-Exploitation-Privilege-Escalation-Enumeration' },
-          { text: 'Persistence', link: '/crto/liham/cheatsheets/persistence' },
-          { text: 'Elevated Persistence', link: '/crto/liham/cheatsheets/elevated-persistence' },
-          { text: 'Pivoting', link: '/crto/liham/cheatsheets/pivoting' },
-          { text: 'Kerberos', link: '/crto/liham/cheatsheets/kerberos' },
-          { text: 'Domain Dominance', link: '/crto/liham/cheatsheets/domain-dominance' },
-          { text: 'Forest & Domain Trusts', link: '/crto/liham/cheatsheets/forest-domain-trusts' },
-          { text: 'AD CS', link: '/crto/liham/cheatsheets/adcs' },
-          { text: 'Microsoft SQL Server', link: '/crto/liham/cheatsheets/ms-sql-server' },
+          { text: 'Accès rapide', collapsed: true, items: [
+            { text: 'Notes générales', link: '/crto/liham/README' },
+            { text: 'Bibliothèque de commandes', link: '/crto/liham/crto-command-library' }
+          ] },
+          { text: 'Opérations · fondamentaux', collapsed: true, items: [
+            { text: 'Cobalt Strike · Introduction', link: '/crto/liham/cheatsheets/cobalt-strike-primer' },
+            { text: 'Initial Access', link: '/crto/liham/cheatsheets/initial-access' },
+            { text: 'Discovery', link: '/crto/liham/cheatsheets/discovery' },
+            { text: 'User Impersonation', link: '/crto/liham/cheatsheets/user-impersonation' },
+            { text: 'Credential Access', link: '/crto/liham/cheatsheets/credential-access' }
+          ] },
+          { text: 'Opérations · progression', collapsed: true, items: [
+            { text: 'Lateral Movement', link: '/crto/liham/cheatsheets/lateral-movement' },
+            { text: 'Defense Evasion', link: '/crto/liham/cheatsheets/defense-evasion' },
+            { text: 'AppLocker', link: '/crto/liham/cheatsheets/applocker' },
+            { text: 'Privilege Escalation', link: '/crto/liham/cheatsheets/privilege-escalation' },
+            { text: 'Post-Exploitation', link: '/crto/liham/cheatsheets/post-exploitation' },
+            { text: 'Énumération Post-Exploitation', link: '/crto/liham/cheatsheets/Post-Exploitation-Privilege-Escalation-Enumeration' },
+            { text: 'Persistence', link: '/crto/liham/cheatsheets/persistence' },
+            { text: 'Elevated Persistence', link: '/crto/liham/cheatsheets/elevated-persistence' },
+            { text: 'Pivoting', link: '/crto/liham/cheatsheets/pivoting' }
+          ] },
+          { text: 'Active Directory & SQL', collapsed: true, items: [
+            { text: 'Kerberos', link: '/crto/liham/cheatsheets/kerberos' },
+            { text: 'Domain Dominance', link: '/crto/liham/cheatsheets/domain-dominance' },
+            { text: 'Forest & Domain Trusts', link: '/crto/liham/cheatsheets/forest-domain-trusts' },
+            { text: 'AD CS', link: '/crto/liham/cheatsheets/adcs' },
+            { text: 'Microsoft SQL Server', link: '/crto/liham/cheatsheets/ms-sql-server' }
+          ] },
           {
             text: 'Labs · Opérations',
             collapsed: true,
@@ -191,8 +216,10 @@ export default defineConfig({
               { text: 'Golden Certificates · DPERSIST1', link: '/crto/liham/labs/dpersist1' }
             ]
           },
-          { text: 'Consignes de l’examen', link: '/crto/liham/notes/Exam-Instructions' },
-          { text: 'Shadow Credentials · Étude de cas', link: '/crto/liham/notes/shadow-credential-to-ransomware-storytime' }
+          { text: 'Examen & études de cas', collapsed: true, items: [
+            { text: 'Consignes de l’examen', link: '/crto/liham/notes/Exam-Instructions' },
+            { text: 'Shadow Credentials · Étude de cas', link: '/crto/liham/notes/shadow-credential-to-ransomware-storytime' }
+          ] }
         ]
       }
     ]

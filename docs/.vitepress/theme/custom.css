@@ -1204,3 +1204,17 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   .VPSidebar .VPSidebarItem.level-0 > .item,
   .VPSidebar .caret-icon { transition: none; }
 }
+
+/* Groupes de navigation : niveaux intermédiaires plus lisibles, sans toucher aux pages. */
+.VPSidebar .VPSidebarItem.level-1.collapsible > .item {
+  min-height: 36px; margin-top: 5px; background: #1a1423;
+}
+.VPSidebar .VPSidebarItem.level-1.collapsible > .item > .text {
+  color: #dfd1f1; font-weight: 650;
+}
+@media (max-width: 767px) {
+  .VPSidebar .VPSidebarItem > .item { min-height: 44px; align-items: center; }
+  .VPSidebar .VPSidebarItem > .item > .caret { width: 44px; height: 44px; }
+  .VPSidebar .VPSidebarItem .items { padding-left: 10px; }
+  .VPSidebar .VPSidebarItem > .item .text { overflow-wrap: anywhere; }
+}
