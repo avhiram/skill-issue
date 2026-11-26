@@ -3,6 +3,8 @@ import type { Theme } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import SmartOutline from './components/SmartOutline.vue'
 import PageTools from './components/PageTools.vue'
+import LabVariables from './components/LabVariables.vue'
+import LabCommand from './components/LabCommand.vue'
 import CustomSidebarItem from './components/CustomSidebarItem.vue'
 import TransferSelector from './components/TransferSelector.vue'
 import AcademyJourney from './components/AcademyJourney.vue'
@@ -134,6 +136,8 @@ export default {
     app.component('BountyChecklist', BountyChecklist)
     app.component('BountyTarget', BountyTarget)
     app.component('BountyCommand', BountyCommand)
+    app.component('LabVariables', LabVariables)
+    app.component('LabCommand', LabCommand)
     enhanceAppWithTabs(app)
   },
   setup() {

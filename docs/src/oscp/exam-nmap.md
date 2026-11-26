@@ -9,31 +9,25 @@ next: false
 
 [← Exam Mode](./exam.md) · [Référence Nmap complète](./reconnaissance.md#nmap)
 
-`$SUBNET` : réseau autorisé en CIDR · `$IP` : machine du laboratoire · `$TCP_PORTS` et `$UDP_PORTS` : listes de ports séparés par des virgules.
+<LabVariables />
 
 ## 1. Découverte des hôtes
 
 Identifier les machines qui répondent sur le réseau de laboratoire.
 
-```bash
-sudo nmap -sn -n "$SUBNET"
-```
+<LabCommand source='sudo nmap -sn -n "$SUBNET"' />
 
 ## 2. Scan complet TCP et UDP
 
 Examiner les ports 1 à 65 535 de chaque protocole. Conserver les résultats bruts.
 
-```bash
-sudo nmap -sS -sU -p- -T4 -n -Pn "$IP" -oN rapport_ports.txt
-```
+<LabCommand source='sudo nmap -sS -sU -p- -T4 -n -Pn "$IP" -oN rapport_ports.txt' />
 
 ## 3. Analyse des services
 
 Renseigner les ports TCP ouverts et les ports UDP ouverts ou `open|filtered` identifiés précédemment. Analyser uniquement ces ports.
 
-```bash
-sudo nmap -sS -sU -A -p "T:$TCP_PORTS,U:$UDP_PORTS" -n -Pn "$IP" -oN rapport_services.txt
-```
+<LabCommand source='sudo nmap -sS -sU -A -p "T:$TCP_PORTS,U:$UDP_PORTS" -n -Pn "$IP" -oN rapport_services.txt' />
 
 Si un protocole ne présente aucun port à vérifier, retirer son indicateur de scan (`-sS` ou `-sU`) et sa partie dans `-p`.
 
