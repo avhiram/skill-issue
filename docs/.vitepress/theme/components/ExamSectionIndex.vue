@@ -47,8 +47,9 @@ function href(entry:Entry){return withBase(sourcePath.value+'#'+encodeURICompone
 function remember(entry:Entry,event:MouseEvent){
  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return
  if(props.inline){event.preventDefault();emit('jump',entry.id);return}
- try{sessionStorage.setItem('skill-issue:exam-jump:v1',JSON.stringify({path:withBase(sourcePath.value),id:entry.id}))}catch{}
+ try{sessionStorage.setItem('skill-issue:exam-context:v1',withBase(sourcePath.value));sessionStorage.setItem('skill-issue:exam-jump:v1',JSON.stringify({path:withBase(sourcePath.value),id:entry.id}))}catch{}
 }
+function rememberFull(event:MouseEvent){if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;try{sessionStorage.setItem('skill-issue:exam-context:v1',withBase(sourcePath.value))}catch{}}
 </script>
 <template>
   <div class="exam-index">
@@ -71,7 +72,7 @@ function remember(entry:Entry,event:MouseEvent){
       <p v-if="!visible.length" role="status">Aucun résultat.</p>
     </nav>
     <button v-if="inline" class="exam-index-full" type="button" @click="emit('full')">Ouvrir la fiche complète <span aria-hidden="true">›</span></button>
-    <a v-else class="exam-index-full" :href="withBase(source)">Ouvrir la fiche complète <span aria-hidden="true">›</span></a>
+    <a v-else class="exam-index-full" :href="withBase(source)" @click="rememberFull">Ouvrir la fiche complète <span aria-hidden="true">›</span></a>
   </div>
 </template>
 <style scoped>

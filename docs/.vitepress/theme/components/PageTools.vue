@@ -26,7 +26,12 @@ const menuOpen = ref(false)
 const examOpen = ref(false)
 const section= computed(()=>route.path.match(/\/(academy|osint|bug-bounty|oscp|crto|crtp)(?:\/|$)/)?.[1]||'')
 const onLibrary=computed(()=>!!section.value)
-const inExam=computed(()=>/\/oscp\/exam(?:-|\/|\.html|$)/.test(route.path))
+const examSource=ref(false)
+const inExam=computed(()=>examSource.value||/\/oscp\/exam(?:-|\/|\.html|$)/.test(route.path))
+function readExamContext(){
+  try{const clean=(s:string)=>s.replace(/\.html$/,'').replace(/\/+$/,'');examSource.value=!!sessionStorage.getItem('skill-issue:exam-context:v1')&&clean(sessionStorage.getItem('skill-issue:exam-context:v1')||'')===clean(route.path)}catch{examSource.value=false}
+}
+function handleHash(){if(window.location.hash){showFull();try{pendingExamAnchor=decodeURIComponent(window.location.hash.slice(1))}catch{pendingExamAnchor=window.location.hash.slice(1)};nextTick(jumpExamAnchor)}}
 const sourcePath=computed(()=>{const m=route.path.match(/\/(academy|osint|bug-bounty|oscp|crto|crtp)(?:\/.*)?$/);return (m?.[0]||'').replace(/\.html$/,'').replace(/\/index$/,'/').replace(/\/+$/,'')})
 const indexAvailable=computed(()=>onLibrary.value&&section.value!=='academy'&&sourcePath.value.split('/').length>2&&!inExam.value&&!/\/(mindmap[^/]*|preparation)$/.test(sourcePath.value)&&frontmatter.value.outline!==false&&(siteHeadings[sourcePath.value]||[]).some(h=>h.level>=2))
 const indexView=ref(false)
@@ -65,6 +70,8 @@ function jumpExamAnchor() {
 function navigateExam(path:string,event:MouseEvent) {
   if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return
   const [target,hash] = path.split('#')
+  if(inExam.value&&target.startsWith('/oscp/')){try{sessionStorage.setItem('skill-issue:exam-context:v1',withBase(target))}catch{}}
+  else {try{sessionStorage.removeItem('skill-issue:exam-context:v1')}catch{}}
   closePanels()
   if(!hash)return
   try { pendingExamAnchor = decodeURIComponent(hash) } catch { pendingExamAnchor=hash }
@@ -251,6 +258,7 @@ function clearSearchScope() {
   if (scopeTimeout) clearTimeout(scopeTimeout)
 }
 function launchSearch(scope = 'all') {
+  showFull()
   closePanels()
   window.dispatchEvent(new Event('skill-outline-close'))
   clearSearchScope()
@@ -288,6 +296,7 @@ onMounted(async () => {
   const last = readLocal<ReadingPosition | null>(progressKey, null)
   lastRead.value = last && safePath(last.path) && Number.isFinite(last.y) ? last : null
   await nextTick()
+  readExamContext()
   indexView.value=!window.location.hash
   refresh()
   ready.value = true
@@ -296,12 +305,14 @@ onMounted(async () => {
   window.addEventListener('scroll', queueReading, { passive: true })
   window.addEventListener('pagehide', saveReading)
   window.addEventListener('keydown', onEscape)
+  window.addEventListener('hashchange',handleHash)
   maybeRestore()
 })
 onContentUpdated(() => nextTick(refresh))
 watch(() => route.path, () => {
   if (saveTimer) clearTimeout(saveTimer)
   closePanels()
+  readExamContext()
   indexView.value=!window.location.hash
   nextTick(refresh)
 }, { flush: 'post' })
@@ -311,6 +322,7 @@ onUnmounted(() => {
   window.removeEventListener('scroll', queueReading)
   window.removeEventListener('pagehide', saveReading)
   window.removeEventListener('keydown', onEscape)
+  window.removeEventListener('hashchange',handleHash)
   clearSearchScope()
   document.documentElement.classList.remove('skill-mobile-nav-ready')
   clearDoc()
@@ -320,6 +332,7 @@ onUnmounted(() => {
 <template>
   <div class="skill-page-tools">
     <Breadcrumbs />
+    <div v-if="ready&&onLibrary" class="skill-library-top"><button type="button" @click="openExam">Chapitres <span aria-hidden="true">›</span></button><button type="button" @click="launchSearch(section)">Recherche <span aria-hidden="true">⌕</span></button></div>
     <div v-if="showIndex" class="skill-inline-index"><h1>{{siteHeadings[sourcePath]?.find(h=>h.level===1)?.label || currentBookmark?.title || sectionTitle}}</h1><ExamSectionIndex :key="sourcePath" :source="sourcePath" inline @jump="jumpLibrary" @full="showFull" /></div>
     <button v-else-if="ready&&indexAvailable" type="button" class="skill-return-index" @click="showRubrics">‹ Rubriques</button>
     <div v-if="hasCode&&!showIndex" class="skill-reading-toolbar">
@@ -417,6 +430,9 @@ onUnmounted(() => {
 .skill-inline-index{margin:20px 0 28px;min-width:0}
 .skill-inline-index h1{font-size:clamp(23px,4vw,32px);font-weight:700;line-height:1.25;margin:0 0 16px;color:var(--vp-c-text-1)}
 .skill-return-index{color:#b39aff;min-height:44px;font-size:13px;text-align:left}
+.skill-library-top{display:flex;gap:14px;margin:8px 0 12px}.skill-library-top button{color:#b39aff;font-size:13px;min-height:36px;text-align:left}.skill-library-top button span{margin-left:4px}
+.VPDoc:has(.skill-library-index-hidden) .skill-outline--desktop{display:none!important}
+@media(max-width:767px){.skill-library-top{display:none}}
 .skill-page-tools:has(.skill-inline-index) + .skill-outline--mobile{display:none!important}
 .skill-cheatsheet-mode [data-skill-reading-prose] { display: none !important; }
 .skill-reading-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin: 0 0 18px; }

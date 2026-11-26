@@ -14,6 +14,7 @@ const filtered=computed(()=>{
  }
  return entries.filter(item=>normalize(item.label+' '+item.ports).includes(q))
 })
+function rememberExam(path:string,event:MouseEvent){if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;try{sessionStorage.setItem('skill-issue:exam-context:v1',withBase(path.split('#')[0]))}catch{}}
 </script>
 <template>
   <div class="port-index">
@@ -23,7 +24,7 @@ const filtered=computed(()=>{
       <button v-if="query" type="button" aria-label="Effacer la recherche" @click="query=''">×</button>
     </div>
     <nav aria-label="Index des ports et services" class="port-list">
-      <a v-for="item in filtered" :key="item.path" :href="withBase(item.path)">
+      <a v-for="item in filtered" :key="item.path" :href="withBase(item.path)" @click="rememberExam(item.path,$event)">
         <span class="port-number">{{ item.ports || '—' }}</span>
         <span class="port-service">{{ item.label }}</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>

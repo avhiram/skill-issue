@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useData, withBase } from 'vitepress'
 import { data as headings } from '../examHeadings.data'
 const props=defineProps<{section:string;currentPath:string}>()
@@ -48,6 +48,12 @@ const sidebar=Array.isArray(config)?config:config?.[prefix+'/']
 const roots=convert(Array.isArray(sidebar)?sidebar:sidebar?.items||[],'sidebar')
 const extra=Object.keys(headings).filter(p=>p.startsWith(prefix+'/')&&!used.has(p)&&!p.startsWith('/oscp/exam-')&&p!=='/oscp/exam').sort().map(path=>({key:path,label:headings[path].find(h=>h.level===1)?.label||path.split('/').pop()!,path,children:headingNodes(path)}))
 if(extra.length)roots.push({key:'other',label:roots.length?'Autres fiches':'Rubriques',children:extra})
+const dynamicRoots=ref<Node[]>([])
+onMounted(()=>{
+ if(props.section!=='academy')return
+ const doc=document.querySelector('.VPDoc .vp-doc')
+ dynamicRoots.value=Array.from(doc?.querySelectorAll<HTMLElement>('details.academy-chapter[id]')||[]).map(chapter=>({key:'academy:'+chapter.id,label:chapter.querySelector('summary h2')?.textContent?.trim()||chapter.id,path:'/academy/#'+encodeURIComponent(chapter.id),children:Array.from(chapter.querySelectorAll<HTMLElement>('details.academy-level[id]')).map(level=>({key:'academy:'+level.id,label:level.querySelector('summary h3')?.textContent?.trim()||level.id,path:'/academy/#'+encodeURIComponent(level.id),children:[]}))}))
+})
 const expanded=ref(new Set<string>())
 function activate(nodes:Node[],parents:string[]=[]){
  for(const node of nodes){
@@ -66,7 +72,8 @@ function prune(node:Node):Node|null{
 const rows=computed(()=>{
  const out:{node:Node;depth:number}[]=[]
  const walk=(node:Node,depth:number)=>{out.push({node,depth});if(filtering.value||expanded.value.has(node.key))node.children.forEach(x=>walk(x,depth+1))}
- const visible=filtering.value?roots.map(prune).filter((x):x is Node=>x!==null):roots
+ const all=props.section==='academy'&&dynamicRoots.value.length?dynamicRoots.value:roots
+ const visible=filtering.value?all.map(prune).filter((x):x is Node=>x!==null):all
  visible.forEach(n=>walk(n,0))
  return out
 })
