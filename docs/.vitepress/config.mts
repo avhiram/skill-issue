@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { readdir, writeFile } from 'node:fs/promises'
+import { copyFile, readdir, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 import githubAlertsPlugin from './plugins/githubAlertsPlugin'
@@ -32,6 +32,7 @@ export default defineConfig({
         }
       }
     }
+    await copyFile(join(site.srcDir, 'public', 'offline-sw.js'), join(site.outDir, 'offline-sw.js'))
     await walk(site.outDir)
     await writeFile(join(site.outDir, 'offline-index.json'), JSON.stringify({ revision: process.env.GITHUB_SHA || 'local', files: paths.sort() }))
   },
