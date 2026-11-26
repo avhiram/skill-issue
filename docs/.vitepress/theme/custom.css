@@ -1268,3 +1268,36 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .skill-fold-tools{display:flex;justify-content:flex-end;margin:3px 0 9px}
 .skill-fold-tools button{min-height:36px;color:#c4a4f4;font-size:13px;padding:0 8px;border-radius:6px}
 .skill-fold-tools button:hover{background:#21172e}
+
+/* A visible tree: active parent, indented descendants, independent main sections. */
+.vp-doc .skill-fold-title {
+  --skill-fold-indent: 13px;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.vp-doc .skill-fold-nested {
+  margin-inline-start: calc(var(--skill-fold-depth, 0) * 13px) !important;
+}
+.vp-doc :is(h2,h3,h4,h5,h6).skill-fold-title.skill-fold-nested {
+  border-left: 2px solid #6c5291;
+  background: #110d19;
+  border-top-color: #2c2338;
+  border-right-color: #2c2338;
+  border-bottom-color: #2c2338;
+}
+.vp-doc :is(h2,h3,h4,h5,h6).skill-fold-title.skill-fold-open {
+  border-color: #9271d3;
+  border-left: 3px solid #b39aff;
+  background: #251a36;
+  color: #f0e4ff;
+}
+.vp-doc .skill-fold-title.skill-fold-open > .skill-fold-toggle { color:#e0caff; }
+.vp-doc .skill-fold-title:not(.skill-fold-nested) { font-weight: 730; }
+.vp-doc .skill-fold-title > .header-anchor { opacity: 0; }
+.vp-doc .skill-fold-title > .header-anchor:focus-visible,
+.vp-doc .skill-fold-title:hover > .header-anchor { opacity: 1; }
+@media (max-width: 767px) {
+  .vp-doc .skill-fold-nested { margin-inline-start: calc(var(--skill-fold-depth, 0) * 10px) !important; }
+  .vp-doc .skill-fold-title > .header-anchor { opacity: 0 !important; }
+  .vp-doc .skill-fold-title > .header-anchor:focus-visible { opacity: 1 !important; }
+}
+@media (prefers-reduced-motion: reduce) { .vp-doc .skill-fold-title { transition:none; } }

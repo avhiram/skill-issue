@@ -18,7 +18,13 @@ function generic(node: HTMLElement): node is HTMLDetailsElement {
   return node instanceof HTMLDetailsElement && /^(afficher les commandes|voir les commandes)$/i.test(node.querySelector(':scope > summary')?.textContent?.trim() || '')
 }
 function render() {
-  for (const [el, chain] of owners) el.classList.toggle('skill-fold-hidden', chain.some(f => !f.open))
+  for (const [el, chain] of owners) {
+    el.classList.toggle('skill-fold-hidden', chain.some(f => !f.open))
+    const depth = Math.min(chain.length, 3)
+    if (genericDetails.has(el as HTMLDetailsElement)) continue
+    el.style.setProperty('--skill-fold-depth', String(depth))
+    el.classList.toggle('skill-fold-nested', depth > 0)
+  }
   for (const f of folds) {
     f.heading.classList.toggle('skill-fold-open', f.open)
     f.button.setAttribute('aria-expanded', String(f.open))
@@ -66,7 +72,10 @@ function headingClick(event: MouseEvent){
 }
 export function clearFolds(){
   activeRoot?.removeEventListener('click',headingClick)
-  for(const [el] of owners)el.classList.remove('skill-fold-hidden')
+  for(const [el] of owners){
+    el.classList.remove('skill-fold-hidden','skill-fold-nested')
+    el.style.removeProperty('--skill-fold-depth')
+  }
   for(const f of folds){f.button.remove();f.heading.classList.remove('skill-fold-title','skill-fold-open')}
   for(const [el,open] of genericDetails){el.classList.remove('skill-fold-generic');el.open=open}
   owners.clear();byHeading.clear();genericDetails.clear();folds=[];headings=[];activeRoot=null;activeDoc=null
