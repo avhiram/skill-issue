@@ -23,6 +23,100 @@ pageClass: skill-home-page
   </div>
 </div>
 
+
+## J'ai voulu jouer au hacker, maintenant je dois assumer le personnage.
+
+Salut les gars, moi c'est Morad !
+
+À force de galérer, j'en ai fait un site.
+
+Pas de bac au départ, aujourd'hui en dernière année de bac+5 en cybersécurité.
+
+J'ai commencé avec Google, des forums et des documentations en anglais. Pas de ChatGPT à l'époque. Quand ça ne marchait pas, le problème, c'était moi.
+
+Big up aux Indiens sur YouTube. Leurs tutoriels m'ont sauvé un nombre incalculable de fois.
+
+Entre les experts autoproclamés qui te facturent 300 € pour expliquer PowerShell et les outils GitHub qui pouvaient potentiellement t'envoyer une backdoor vers Moscou, j'ai eu quelques aventures.
+
+Des milliers d'heures, de l'argent dépensé et quelques cheveux blancs.
+
+J'ai aussi rencontré des personnes qui m'ont aidé. Elles se reconnaîtront, je ne les oublie pas.
+
+**Côté certifications :** OSCP, OSCP+, CRTO, CPTS, APTLabs, CELMS, COPO, CBBH, eCDFP, eCPPT, CRTA, CRT-ID et eWPT.
+
+Ma banque préfère ne pas commenter.
+
+## La suite du scénario
+
+J'ai tenté le Bug Bounty. Mon premier VDP m'a permis de signaler plusieurs vulnérabilités en un mois et d'obtenir une lettre de reconnaissance de la NASA. Je ne réalise toujours pas.
+
+**Spoiler alert : j'ai dû hacker la NASA pour vesqui Parcoursup.**
+
+Les portes se sont ensuite ouvertes : une grande école de cybersécurité, une interview dans Capital, puis deux ans au ministère de l'Économie en **Adversary Simulation / Red Team**. Aujourd'hui, je suis au ministère de l'Intérieur.
+
+Pas de piston, pas de carnet d'adresses. J'ai bossé jusqu'à ce qu'on vienne me chercher.
+
+J'ai remporté **DefHack COMCYBER** avec mon équipe, puis été sélectionné par l'armée française pour représenter la France à **Locked Shields**, l'exercice international de cyberdéfense de l'OTAN.
+
+Résultat : deuxième place du classement, devant les États-Unis. On m'a ensuite proposé de rejoindre un régiment de cyberdéfense. Je suis aujourd'hui **sergent-chef**.
+
+Entre le boulot, les études et les projets, l'agenda est bien rempli. Ça change des longues nuits sur Hack The Box pour finir avec zéro flag.
+
+Je suis aussi mentor dans mon école. Quand je vois des étudiants galérer, je revois mes débuts.
+
+## Pourquoi SKILL-ISSUE ?
+
+Quand tu réinstalles Kali alors que le problème, c'est toi. Je suis passé par là aussi.
+
+J'ai regroupé ce que j'aurais aimé trouver à mes débuts :
+
+- Parcours pédagogiques
+- Notes et cheatsheets
+- Labs et exercices
+- Outils et ressources
+
+**Tout est gratuit**, notamment mes notes OSCP et CRTP.
+
+Pour le CRTO, on va éviter de distribuer les clés du futur groupe APT. L'accès aux notes sera réservé aux profils avancés que j'accompagne dans un cadre éthique, après la mise en place d'un espace privé.
+
+## Besoin d'un coup de main ?
+
+Si tu galères à trouver une alternance, à faire ton CV, à écrire une lettre de motivation ou simplement à savoir quelles compétences développer, je suis passé par là.
+
+On peut prendre 15 minutes ensemble, gratuitement. Je te donnerai les conseils que j'aurais aimé recevoir à mes débuts. Pas de bullshit.
+
+<div class="profile-links">
+  <a href="https://calendly.com/avhi2600/echange-decouverte-15-min" target="_blank" rel="noopener noreferrer">On se cale 15 minutes gratuitement</a>
+</div>
+
+Après, si t'as un vrai projet et que tu veux qu'on bosse dessus ensemble, on peut prendre plus de temps :
+
+- Monter en compétences techniques.
+- Préparer une certification.
+- Construire un parcours adapté à ton niveau.
+- Refaire ton CV et ta lettre de motivation.
+- Travailler ta recherche d'alternance.
+- Préparer tes entretiens techniques.
+
+Le but, c'est qu'on avance ensemble, pas que je te récite ce que tu peux déjà trouver sur Google.
+
+<div class="profile-links">
+  <a href="https://ko-fi.com/avhiram" target="_blank" rel="noopener noreferrer">On bosse ensemble</a>
+</div>
+
+Je veux bien vous faire économiser des retakes, mais laissez-moi financer les miens.
+
+<div class="profile-links">
+  <a href="https://ko-fi.com/avhiram" target="_blank" rel="noopener noreferrer">Soutenir les projets gratuits</a>
+</div>
+
+Toute ma vie, on m'a dit que ce n'était pas possible.
+
+**On va leur montrer.**
+
+Bienvenue sur SKILL-ISSUE.
+
+
 ## Parcours
 
 <div class="profile-marquee-wrap" role="region" aria-label="Institutions et organismes liés à mon parcours">
