@@ -123,3 +123,28 @@ export const examGroups: {title:string; links:Link[]}[] = [
     ]
   }
 ]
+
+// Keep the original content routes available for heading indexing.
+export const examIndexes: Record<string,string> = {
+  "/oscp/applications-web": "/oscp/exam-applications-web",
+  "/oscp/mots-de-passe": "/oscp/exam-mots-de-passe",
+  "/oscp/transferts": "/oscp/exam-transferts",
+  "/oscp/privileges-linux": "/oscp/exam-privileges-linux",
+  "/oscp/privileges-windows": "/oscp/exam-privileges-windows",
+  "/oscp/ad-enumeration": "/oscp/exam-ad-enumeration",
+  "/oscp/ad-techniques": "/oscp/exam-ad-techniques",
+  "/oscp/ad-lateral": "/oscp/exam-ad-lateral",
+  "/oscp/tunneling": "/oscp/exam-tunneling",
+  "/oscp/redirection-ports": "/oscp/exam-redirection-ports",
+  "/oscp/rapport": "/oscp/exam-rapport",
+  "/oscp/references": "/oscp/exam-references",
+  "/oscp/methodologie": "/oscp/exam-methodologie",
+  "/oscp/reconnaissance": "/oscp/exam-reconnaissance",
+  "/oscp/vulnerabilites#nmap-nse": "/oscp/exam-vulnerabilites",
+  "/oscp/attaques-client": "/oscp/exam-attaques-client",
+  "/oscp/ad-theorie": "/oscp/exam-ad-theorie",
+  "/oscp/utilitaires": "/oscp/exam-utilitaires",
+  "/oscp/mindmaps": "/oscp/exam-mindmaps",
+  "/oscp/mindmap-ad": "/oscp/exam-mindmap-ad"
+}
+export const examIndexPath = (path:string) => examIndexes[path] ?? path

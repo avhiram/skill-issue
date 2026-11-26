@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { withBase } from 'vitepress'
-import { examGroups as groups } from '../examNavigation'
+import { examGroups as groups, examIndexPath } from '../examNavigation'
 
 type Link = { label: string; path: string }
 type Task = { id: string; text: string }
@@ -63,7 +63,7 @@ onMounted(()=>{
       <summary>Préparation <span aria-hidden="true">⌄</span></summary>
       <div class="exam-fold-body">
         <div class="exam-links">
-          <a v-for="link in preparation.links" :key="link.path" :href="link.path.startsWith('https://') ? link.path : withBase(link.path)" :target="link.path.startsWith('https://') ? '_blank' : undefined" :rel="link.path.startsWith('https://') ? 'noopener noreferrer' : undefined">{{ link.label }} <span aria-hidden="true">›</span></a>
+          <a v-for="link in preparation.links" :key="link.path" :href="link.path.startsWith('https://') ? link.path : withBase(examIndexPath(link.path))" :target="link.path.startsWith('https://') ? '_blank' : undefined" :rel="link.path.startsWith('https://') ? 'noopener noreferrer' : undefined">{{ link.label }} <span aria-hidden="true">›</span></a>
         </div>
         <p class="exam-local-note">PimpMyKali : facultatif, sur une VM Kali compatible, avant l’épreuve. Créer un snapshot, lire le script et vérifier les outils après installation.</p>
       </div>
@@ -71,7 +71,7 @@ onMounted(()=>{
     <nav class="exam-quick" aria-label="Parcours de travail">
       <section v-for="group in groups.filter(g=>g.title!=='Références')" :key="group.title" class="exam-group">
         <h2 class="exam-group-title">{{ group.title }}</h2>
-        <a v-for="link in group.links" :key="link.path" :href="withBase(link.path)">
+        <a v-for="link in group.links" :key="link.path" :href="withBase(examIndexPath(link.path))">
           <span>{{ link.label }}</span>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
         </a>
@@ -81,7 +81,7 @@ onMounted(()=>{
       <summary>Références <span aria-hidden="true">⌄</span></summary>
       <div class="exam-fold-body">
         <div class="exam-links">
-          <a v-for="link in groups.find(g=>g.title==='Références')?.links || []" :key="link.path" :href="withBase(link.path)">{{ link.label }} <span aria-hidden="true">›</span></a>
+          <a v-for="link in groups.find(g=>g.title==='Références')?.links || []" :key="link.path" :href="withBase(examIndexPath(link.path))">{{ link.label }} <span aria-hidden="true">›</span></a>
         </div>
       </div>
     </details>
@@ -104,7 +104,7 @@ onMounted(()=>{
               <span>{{ task.text }}</span>
             </label>
             <div v-if="stage.id!=='prep'" class="exam-links">
-              <a v-for="link in stage.links" :key="link.path" :href="withBase(link.path)">{{ link.label }} <span aria-hidden="true">›</span></a>
+              <a v-for="link in stage.links" :key="link.path" :href="withBase(examIndexPath(link.path))">{{ link.label }} <span aria-hidden="true">›</span></a>
             </div>
           </div>
         </section>

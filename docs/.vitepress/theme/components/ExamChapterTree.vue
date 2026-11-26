@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { examGroups } from '../examNavigation'
+import { examGroups, examIndexPath } from '../examNavigation'
 import { portEntries } from '../portNavigation'
 import { data as headings } from '../examHeadings.data'
 const props=defineProps<{ currentPath:string }>()
@@ -26,10 +26,10 @@ function headingNodes(path:string):Node[]{
 }
 const groups:Node[]=examGroups.map(group=>({key:'group:'+group.title,label:group.title,children:group.links.map(link=>{
   const children=link.path==='/oscp/exam-ports' ? portEntries.map(port=>({key:'port:'+port.path,label:port.label,meta:port.ports,path:port.path,children:[] as Node[]})) : headingNodes(link.path)
-  return {key:link.path,label:link.label,path:link.path,children}
+  return {key:link.path,label:link.label,path:examIndexPath(link.path),children}
 })}))
 for(const group of groups){
-  const active=group.children.find(node=>node.path&&current(node.path))
+  const active=group.children.find(node=>node.path&&(current(node.path)||Object.entries(examGroups.flatMap(g=>g.links)).some(([,link])=>examIndexPath(link.path)===node.path&&current(link.path))))
   if(active){expanded.value.add(group.key)}
 }
 function toggle(key:string){const next=new Set(expanded.value);if(next.has(key))next.delete(key);else next.add(key);expanded.value=next}

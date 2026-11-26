@@ -24,6 +24,19 @@ const examOpen = ref(false)
 const onOscp = computed(() => /\/oscp(?:\/|$)/.test(route.path))
 let pendingExamAnchor = ''
 function jumpExamAnchor() {
+  if (!pendingExamAnchor) {
+    try {
+      const raw=sessionStorage.getItem('skill-issue:exam-jump:v1')
+      if(raw){
+        const item=JSON.parse(raw)
+        const clean=(s:string)=>s.replace(/\.html$/,'').replace(/\/+$/,'')
+        if(typeof item.path==='string'&&typeof item.id==='string'&&clean(item.path)===clean(route.path)){
+          pendingExamAnchor=item.id
+          sessionStorage.removeItem('skill-issue:exam-jump:v1')
+        }
+      }
+    } catch {}
+  }
   if (!pendingExamAnchor) return
   const el = document.getElementById(pendingExamAnchor)
   if (!el) return
