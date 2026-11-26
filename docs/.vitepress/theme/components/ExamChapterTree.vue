@@ -30,15 +30,15 @@ const groups:Node[]=examGroups.map(group=>({key:'group:'+group.title,label:group
 })}))
 for(const group of groups){
   const active=group.children.find(node=>node.path&&current(node.path))
-  if(active){expanded.value.add(group.key);expanded.value.add(active.key)}
+  if(active){expanded.value.add(group.key)}
 }
 function toggle(key:string){const next=new Set(expanded.value);if(next.has(key))next.delete(key);else next.add(key);expanded.value=next}
 const terms=computed(()=>normalize(query.value).split(/\s+/).filter(Boolean))
 const filtering=computed(()=>terms.value.length>0)
 function matches(node:Node){const value=normalize(node.label+' '+(node.meta||''));return terms.value.every(term=>/^\d+$/.test(term)&&node.meta?node.meta.split(',').some(port=>port.trim()===term):value.includes(term))}
 function prune(node:Node):Node|null {
- if(matches(node))return node
  const children=node.children.map(prune).filter((x):x is Node=>x!==null)
+ if(matches(node))return {...node,children}
  return children.length?{...node,children}:null
 }
 const visibleGroups=computed(()=>filtering.value?groups.map(prune).filter((x):x is Node=>x!==null):groups)

@@ -4,29 +4,12 @@ export const examGroups: {title:string; links:Link[]}[] = [
     "title": "Reconnaissance",
     "links": [
       {
-        "label": "Nmap",
+        "label": "Scan Nmap",
         "path": "/oscp/exam-nmap"
       },
       {
-        "label": "Ports et services",
+        "label": "Services par port",
         "path": "/oscp/exam-ports"
-      },
-      {
-        "label": "Collecte d’informations",
-        "path": "/oscp/reconnaissance"
-      },
-      {
-        "label": "Analyse de vulnérabilités (NSE)",
-        "path": "/oscp/vulnerabilites#nmap-nse"
-      }
-    ]
-  },
-  {
-    "title": "Analyse selon la cible",
-    "links": [
-      {
-        "label": "Méthodologie",
-        "path": "/oscp/methodologie"
       },
       {
         "label": "Web",
@@ -35,10 +18,27 @@ export const examGroups: {title:string; links:Link[]}[] = [
       {
         "label": "Mots de passe",
         "path": "/oscp/mots-de-passe"
+      }
+    ]
+  },
+  {
+    "title": "Systèmes",
+    "links": [
+      {
+        "label": "Shell interactif",
+        "path": "/oscp/exam-shell"
       },
       {
-        "label": "Côté client",
-        "path": "/oscp/attaques-client"
+        "label": "Transferts",
+        "path": "/oscp/transferts"
+      },
+      {
+        "label": "Linux",
+        "path": "/oscp/privileges-linux"
+      },
+      {
+        "label": "Windows",
+        "path": "/oscp/privileges-windows"
       }
     ]
   },
@@ -56,31 +56,6 @@ export const examGroups: {title:string; links:Link[]}[] = [
       {
         "label": "Mouvement latéral",
         "path": "/oscp/ad-lateral"
-      },
-      {
-        "label": "Fondamentaux AD",
-        "path": "/oscp/ad-theorie"
-      }
-    ]
-  },
-  {
-    "title": "Shell et systèmes",
-    "links": [
-      {
-        "label": "Shell interactif (TTY)",
-        "path": "/oscp/exam-shell"
-      },
-      {
-        "label": "Linux",
-        "path": "/oscp/privileges-linux"
-      },
-      {
-        "label": "Windows",
-        "path": "/oscp/privileges-windows"
-      },
-      {
-        "label": "Transferts",
-        "path": "/oscp/transferts"
       }
     ]
   },
@@ -88,31 +63,51 @@ export const examGroups: {title:string; links:Link[]}[] = [
     "title": "Réseau",
     "links": [
       {
-        "label": "Ligolo-ng et pivot",
+        "label": "Ligolo-ng",
         "path": "/oscp/tunneling"
       },
       {
-        "label": "Redirections de ports",
+        "label": "Redirections",
         "path": "/oscp/redirection-ports"
       }
     ]
   },
   {
-    "title": "Preuves et rapport",
+    "title": "Rapport",
     "links": [
       {
-        "label": "Rapport",
+        "label": "Preuves et rapport",
         "path": "/oscp/rapport"
-      },
-      {
-        "label": "Consignes OffSec",
-        "path": "/oscp/references"
       }
     ]
   },
   {
-    "title": "Références complémentaires",
+    "title": "Références",
     "links": [
+      {
+        "label": "Consignes OffSec",
+        "path": "/oscp/references"
+      },
+      {
+        "label": "Méthodologie complète",
+        "path": "/oscp/methodologie"
+      },
+      {
+        "label": "Collecte d’informations",
+        "path": "/oscp/reconnaissance"
+      },
+      {
+        "label": "NSE",
+        "path": "/oscp/vulnerabilites#nmap-nse"
+      },
+      {
+        "label": "Côté client",
+        "path": "/oscp/attaques-client"
+      },
+      {
+        "label": "Fondamentaux AD",
+        "path": "/oscp/ad-theorie"
+      },
       {
         "label": "Utilitaires",
         "path": "/oscp/utilitaires"

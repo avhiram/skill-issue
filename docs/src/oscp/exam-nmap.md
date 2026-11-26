@@ -5,33 +5,27 @@ prev: false
 next: false
 ---
 
-# Nmap · Exam Mode
-
-[← Exam Mode](./exam.md) · [Référence Nmap complète](./reconnaissance.md#nmap)
+# Scan Nmap
 
 <LabVariables />
 
-## 1. Découverte des hôtes
-
-Identifier les machines actives du réseau autorisé.
+## Découverte des hôtes
 
 <LabCommand source='sudo nmap -sn -n "$SUBNET"' />
 
-## 2. Scan TCP rapide
-
-Examiner les 65 535 ports TCP.
+## TCP · Tous les ports
 
 <LabCommand source='sudo nmap -sS -p- --min-rate 1000 -T4 -n -Pn "$IP"' />
 
-## 3. Analyse approfondie TCP
+## TCP · Services détectés
 
-Renseigner les ports TCP ouverts dans le configurateur. Analyser uniquement ces ports.
+Renseigner les ports ouverts.
 
 <LabCommand source='sudo nmap -A -p "$TCP_PORTS" -n -Pn "$IP"' />
 
-## 4. Scan UDP indépendant
+## UDP · Tous les ports
 
-Lancer dans un deuxième terminal, sans attendre la fin de l’analyse TCP. Examiner les 65 535 ports UDP.
+Dans un second terminal.
 
 <LabCommand source='sudo nmap -sU -p- -n -Pn "$IP"' />
 
@@ -43,4 +37,8 @@ Lancer dans un deuxième terminal, sans attendre la fin de l’analyse TCP. Exam
 - Vérifier les règles de l’épreuve et le comportement des scripts NSE. Aucun scan ne garantit de détecter tous les services.
 :::
 
-[Services par port](./reconnaissance.md#services-par-port) · [Documentation Nmap TCP/UDP](https://nmap.org/book/man-port-specification.html)
+[**Services par port →**](./exam-ports.md)
+
+::: details Références
+[Notes Nmap complètes](./reconnaissance.md#nmap) · [Documentation Nmap](https://nmap.org/book/man-port-specification.html)
+:::

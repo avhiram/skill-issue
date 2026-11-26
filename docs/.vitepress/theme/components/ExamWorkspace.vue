@@ -60,7 +60,7 @@ onMounted(()=>{
 <template>
   <div class="exam-workspace">
     <details class="exam-fold">
-      <summary>Avant l’examen <span aria-hidden="true">⌄</span></summary>
+      <summary>Préparation <span aria-hidden="true">⌄</span></summary>
       <div class="exam-fold-body">
         <div class="exam-links">
           <a v-for="link in preparation.links" :key="link.path" :href="link.path.startsWith('https://') ? link.path : withBase(link.path)" :target="link.path.startsWith('https://') ? '_blank' : undefined" :rel="link.path.startsWith('https://') ? 'noopener noreferrer' : undefined">{{ link.label }} <span aria-hidden="true">›</span></a>
@@ -69,7 +69,7 @@ onMounted(()=>{
       </div>
     </details>
     <nav class="exam-quick" aria-label="Parcours de travail">
-      <section v-for="group in groups" :key="group.title" class="exam-group">
+      <section v-for="group in groups.filter(g=>g.title!=='Références')" :key="group.title" class="exam-group">
         <h2 class="exam-group-title">{{ group.title }}</h2>
         <a v-for="link in group.links" :key="link.path" :href="withBase(link.path)">
           <span>{{ link.label }}</span>
@@ -77,6 +77,14 @@ onMounted(()=>{
         </a>
       </section>
     </nav>
+    <details class="exam-fold">
+      <summary>Références <span aria-hidden="true">⌄</span></summary>
+      <div class="exam-fold-body">
+        <div class="exam-links">
+          <a v-for="link in groups.find(g=>g.title==='Références')?.links || []" :key="link.path" :href="withBase(link.path)">{{ link.label }} <span aria-hidden="true">›</span></a>
+        </div>
+      </div>
+    </details>
     <details class="exam-fold">
       <summary>Checklist <span class="exam-count">{{ completed.length }}/{{ total }} <span aria-hidden="true">⌄</span></span></summary>
       <div class="exam-fold-body">
