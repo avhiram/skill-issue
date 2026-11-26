@@ -177,6 +177,31 @@ jobs:
         run: |
           gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --jq '.status'
 
+      - name: Diagnose public homepage
+        run: |
+          base='https://avhiram.github.io/skill-issue'
+          for url in "$base/" "$base/index.html" "$base/?deployment=$GITHUB_RUN_ID" "$base/academy/" "$base/academy/index.html"; do
+            echo "::group::${url}"
+            rm -f /tmp/homepage-headers /tmp/homepage-body
+            curl -sSL --max-time 30 -D /tmp/homepage-headers -o /tmp/homepage-body -w 'HTTP %{http_code} | final URL %{url_effective}\n' "$url" || true
+            if [ -f /tmp/homepage-headers ]; then
+              grep -Ei '^HTTP/|^location:|^cache-control:|^age:|^etag:|^last-modified:|^x-cache:|^x-served-by:|^via:|^x-github-request-id:' /tmp/homepage-headers || true
+            fi
+            if [ -f /tmp/homepage-body ]; then
+              grep -Eo '<meta name="skill-issue-build" content="[^"]+"|<title>[^<]+</title>|assets/app\.[^"]+\.js' /tmp/homepage-body | head -n 5 || true
+            fi
+            echo "::endgroup::"
+          done
+          for attempt in $(seq 1 12); do
+            if curl -fsSL --max-time 20 "$base/" -o /tmp/homepage-live.html && grep -Fq "content=\"${GITHUB_SHA}\"" /tmp/homepage-live.html; then
+              echo 'Public homepage without query parameters is current.'
+              exit 0
+            fi
+            sleep 10
+          done
+          echo '::error::Public homepage without query parameters is unavailable or stale.'
+          exit 1
+
       - name: Verify actual public Academy page after deployment
         run: |
           for attempt in $(seq 1 30); do
