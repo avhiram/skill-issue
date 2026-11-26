@@ -82,80 +82,45 @@ nc -nvzu -w 2 192.0.2.10 53
 
 ### Nmap
 
-Vérifier les ports et les services de la cible autorisée.
-
 #### Séquence de scans Nmap pour un premier diagnostic
 
-**Énumération avancée**
+`$SUBNET` : réseau autorisé en CIDR · `$IP` : machine du laboratoire · `$TCP_PORTS` et `$UDP_PORTS` : listes de ports séparés par des virgules.
 
-<p class="oscp-command-note">Nmap : détecter OS, services et scripts par défaut, puis enregistrer le résultat.</p>
+##### 1. Découverte des hôtes
 
-```bash
-sudo nmap -A <IP_CIBLE> -oN rapport_avance.txt
-
-```
-
-**Scan SYN de tous les ports TCP (débit minimal demandé, risque de pertes)**
+Identifier les machines qui répondent sur le réseau de laboratoire.
 
 ```bash
-sudo nmap -sS -p- --min-rate 1000 --max-retries 1 -T4 <IP_CIBLE>
-
+sudo nmap -sn -n "$SUBNET"
 ```
 
-**Scan de tous les ports TCP sans découverte d'hôte préalable (-Pn)**
+##### 2. Scan complet TCP et UDP
 
-<p class="oscp-command-note">Nmap : scanner tous les ports TCP sans DNS ni découverte préalable.</p>
+Examiner les ports 1 à 65 535 de chaque protocole. Conserver les résultats bruts.
 
 ```bash
-nmap -p- -T4 -n -Pn <IP_CIBLE> -oN rapport_ports.txt
-
+sudo nmap -sS -sU -p- -T4 -n -Pn "$IP" -oN rapport_ports.txt
 ```
 
-**Scan SYN à débit élevé sur tous les ports TCP (résultats à confirmer)**
+##### 3. Analyse des services
 
-<p class="oscp-command-note">Nmap : scan SYN rapide ; confirmer les résultats si le débit est trop élevé.</p>
+Renseigner les ports TCP ouverts et les ports UDP ouverts ou `open|filtered` identifiés précédemment. Analyser uniquement ces ports.
 
 ```bash
-sudo nmap -sS --min-rate 5000 -p- -vvv -Pn -n -oG openPorts.txt <IP_CIBLE>
-
+sudo nmap -sS -sU -A -p "T:$TCP_PORTS,U:$UDP_PORTS" -n -Pn "$IP" -oN rapport_services.txt
 ```
 
-**Scan des 65 535 ports TCP avec les réglages Nmap par défaut**
+Si un protocole ne présente aucun port à vérifier, retirer son indicateur de scan (`-sS` ou `-sU`) et sa partie dans `-p`.
 
-<p class="oscp-command-note">Nmap : scanner tous les ports TCP et enregistrer la sortie.</p>
+::: details Points de vigilance
+- Un hôte peut ne pas répondre à la découverte. Utiliser `-Pn` uniquement sur les machines connues et autorisées.
+- Un scan UDP intégral peut durer plusieurs heures. Aucun débit minimal forcé : les pertes et la limitation des réponses ICMP peuvent rendre le résultat incertain.
+- Les états `open|filtered` ne prouvent pas qu’un port est ouvert. La détection des versions peut aider à les distinguer.
+- Si des résultats sont incohérents, confirmer à un débit adapté. Aucun scan ne garantit la découverte de tous les services.
+- Contrôler les règles de l’épreuve et le comportement des scripts NSE avant leur utilisation.
+:::
 
-```bash
-nmap -p- <IP_CIBLE> -oN rapport_ports.txt
-
-```
-
-**Scanner les 100 ports TCP les plus fréquents**
-
-<p class="oscp-command-note">Nmap : scanner les 100 ports les plus courants.</p>
-
-```bash
-nmap --top-ports 100 192.0.2.10
-
-```
-
-#### Types de scan
-
-Vérifier les ports et les services de la cible autorisée.
-
-**Scan combiné TCP SYN et UDP (`-sS -sU`)**
-
-<p class="oscp-command-note">Nmap : scanner les ports TCP SYN et UDP avec `sudo`.</p>
-
-```bash
-sudo nmap -sU -sS <IP_CIBLE>
-
-```
-
-```bash
-# Examiner les ports UDP
-sudo nmap -sU --top-ports 500 -T3 <IP_CIBLE>
-
-```
+#### Vérifications complémentaires
 
 **Connexion TCP complète (TCP Connect, -sT)**
 
@@ -178,64 +143,12 @@ nmap -p 445 192.0.2.10
 
 ```
 
-**Découverte d'hôtes sans scan de ports (`-sn`)**
-
-<p class="oscp-command-note">Nmap : rechercher les hôtes actifs sans scanner les ports.</p>
-
-```bash
-nmap -sn 192.0.2.0/24
-
-```
-
-**Scanner les 20 ports TCP les plus fréquents**
-
-<p class="oscp-command-note">Nmap : scanner les 20 ports les plus courants.</p>
-
-```bash
-nmap --top-ports 20 <IP_CIBLE>
-
-```
-
-#### Identifier le système d’exploitation et les services
-
-Vérifier les ports et les services de la cible autorisée.
-
-**Détection du système d'exploitation (`-O`)**
-
-<p class="oscp-command-note">Nmap : estimer le système d'exploitation de la cible.</p>
-
-```bash
-sudo nmap -O <IP_CIBLE>
-
-```
-
 **Détection OS avec hypothèses moins certaines (`--osscan-guess`)**
 
 ```bash
 sudo nmap -O --osscan-guess <IP_CIBLE>
 
 ```
-
-**Identifier les versions des services (`-sV`)**
-
-<p class="oscp-command-note">Nmap : identifier les services et leurs versions.</p>
-
-```bash
-nmap -sV 192.0.2.10
-
-```
-
-**Détection avancée des services, de l'OS et du chemin réseau (`-A`)**
-
-<p class="oscp-command-note">Nmap : détecter OS, versions, scripts NSE et traceroute.</p>
-
-```bash
-sudo nmap -A <IP_CIBLE>
-
-```
-
-**Paramètres et repères :**
-`-sV` (versions de service)  
 
 #### Enregistrer et exploiter les résultats Nmap
 
@@ -299,17 +212,21 @@ nmap -p 80 --script http-headers 192.0.2.10
 
 ```
 
-**Exécuter les scripts NSE par défaut (catégorie `default`) sur les ports détectés**
-
-```bash
-nmap --script default 192.0.2.10
-
-```
-
 **Catégories NSE :**
 `auth` (authentification) · `broadcast` (diffusion) · `brute` (essais de mots de passe) · `default` (scripts par défaut)  
 `discovery` (découverte) · `exploit` (tests d'exploitation) · `fuzzer` (fuzzing) · `malware` (malwares)  
 `safe` (non intrusifs selon NSE) · `version` (versions) · `vuln` (vulnérabilités)  
+
+#### Contrôle des scripts NSE
+
+Afficher la documentation d'un script puis consulter son comportement avant de l'exécuter.
+
+<p class="oscp-command-note">Nmap : consulter l'aide d'un script NSE avant son exécution.</p>
+
+```bash
+nmap --script-help <SCRIPT_NSE>
+nmap -sV -p <PORT> --script <SCRIPT_NSE> <IP_CIBLE>
+```
 
 #### Fonctions PowerShell
 
@@ -329,38 +246,6 @@ Test-NetConnection -ComputerName 192.0.2.10 -Port 445
 ```powershell
 1..1024 | ForEach-Object { $port = $_; $client = [Net.Sockets.TcpClient]::new(); try { if ($client.ConnectAsync('192.0.2.10', $port).Wait(150)) { "TCP $port ouvert" } } catch {} finally { $client.Dispose() } }
 
-```
-
-#### Inventaire TCP complet
-
-Découvrir les ports TCP puis identifier les services dans le périmètre autorisé.
-
-<p class="oscp-command-note">Nmap : détecter tous les ports TCP, puis identifier les services ouverts.</p>
-
-```bash
-sudo nmap -sS -p- -Pn -n -oN rapport_ports.txt <IP_CIBLE>
-nmap -sV -sC -p <LISTE_PORTS> -oN rapport_services.txt <IP_CIBLE>
-```
-
-#### Contrôle des scripts NSE
-
-Afficher la documentation d'un script puis consulter son comportement avant de l'exécuter.
-
-<p class="oscp-command-note">Nmap : consulter l'aide d'un script NSE avant son exécution.</p>
-
-```bash
-nmap --script-help <SCRIPT_NSE>
-nmap -sV -p <PORT> --script <SCRIPT_NSE> <IP_CIBLE>
-```
-
-#### Découverte de plusieurs hôtes
-
-Effectuer un ping sweep sans lancer de scan de ports. Les pare-feu peuvent masquer des hôtes présents.
-
-<p class="oscp-command-note">Nmap : rechercher les hôtes actifs sans scanner leurs ports.</p>
-
-```bash
-nmap -sn -n 192.0.2.0/24
 ```
 
 ### RustScan
@@ -411,12 +296,7 @@ rustscan -a <IP_CIBLE> -- -oN rapport_rustscan.txt
 
 ```
 
-**Scan UDP avec Nmap (RustScan découvre principalement les ports TCP)**
-
-```bash
-sudo nmap -sU --top-ports 100 <IP_CIBLE>
-
-```
+**UDP :** RustScan découvre principalement les ports TCP. [Inventaire TCP et UDP avec Nmap](#séquence-de-scans-nmap-pour-un-premier-diagnostic).
 
 **Lancer les scripts NSE de catégorie `vuln` après la découverte TCP (potentiellement intrusif)**
 

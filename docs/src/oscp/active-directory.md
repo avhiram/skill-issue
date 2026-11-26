@@ -27,37 +27,9 @@ Les exemples utilisent les adresses réservées à la documentation `192.0.2.0/2
 nmap -sn 192.0.2.0/28
 ```
 
-#### Identifier les ports TCP les plus courants
+#### Inventaire des ports et services
 
-<p class="oscp-command-note">Effectuer un premier inventaire des 50 ports les plus fréquents et des versions des services ouverts.</p>
-
-```bash
-nmap -Pn -sV --top-ports 50 --open 192.0.2.10
-```
-
-#### Examiner les ports TCP courants
-
-<p class="oscp-command-note">Identifier les services sur les ports TCP par défaut et enregistrer les résultats dans les trois formats Nmap. Les scripts par défaut ne sont à utiliser que dans le périmètre autorisé.</p>
-
-```bash
-nmap -Pn -sC -sV -oA ad-tcp 192.0.2.10
-```
-
-#### Examiner tous les ports TCP
-
-<p class="oscp-command-note">Étendre l’inventaire aux 65 535 ports TCP lorsque le premier contrôle ne suffit pas.</p>
-
-```bash
-nmap -Pn -sC -sV -p- -oA ad-tcp-complet 192.0.2.10
-```
-
-#### Examiner les services UDP
-
-<p class="oscp-command-note">Compléter le relevé TCP par un inventaire UDP. Ce contrôle peut être plus lent et nécessiter des privilèges élevés.</p>
-
-```bash
-nmap -sU -sC -sV -oA ad-udp 192.0.2.10
-```
+[Consulter la séquence Nmap TCP et UDP en trois étapes](./reconnaissance.md#séquence-de-scans-nmap-pour-un-premier-diagnostic).
 
 #### Identifier les services SMB
 
