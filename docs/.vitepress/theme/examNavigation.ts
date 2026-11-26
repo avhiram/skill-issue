@@ -6,8 +6,12 @@ export const examGroups: {title:string; links:Link[]}[] = [
   ]},
   {title:'Analyse selon la cible',links:[
     {label:'Méthodologie',path:'/oscp/methodologie'},
-    {label:'Web',path:'/oscp/applications-web'},
-    {label:'Active Directory',path:'/oscp/active-directory'}
+    {label:'Web',path:'/oscp/applications-web'}
+  ]},
+  {title:'Active Directory',links:[
+    {label:'Énumération',path:'/oscp/ad-enumeration'},
+    {label:'Techniques AD',path:'/oscp/ad-techniques'},
+    {label:'Mouvement latéral',path:'/oscp/ad-lateral'}
   ]},
   {title:'Systèmes',links:[
     {label:'Linux',path:'/oscp/privileges-linux'},

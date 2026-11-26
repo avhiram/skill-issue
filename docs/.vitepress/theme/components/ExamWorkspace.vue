@@ -25,7 +25,7 @@ const stages: Stage[] = [
   ],links:[{label:'Références Windows',path:'/oscp/privileges-windows'},{label:'Références Linux',path:'/oscp/privileges-linux'},{label:'Transferts de fichiers',path:'/oscp/transferts'}]},
   { id:'ad',title:'Active Directory',tasks:[
     {id:'domain-context',text:'Documenter les machines, le domaine et les observations pertinentes si cet environnement est présent.'}
-  ],links:[{label:'Active Directory',path:'/oscp/active-directory'},{label:'Théorie Active Directory',path:'/oscp/ad-theorie'},{label:'Mindmap AD',path:'/oscp/mindmap-ad'}]},
+  ],links:[{label:'Énumération AD',path:'/oscp/ad-enumeration'},{label:'Techniques AD',path:'/oscp/ad-techniques'},{label:'Mouvement latéral',path:'/oscp/ad-lateral'},{label:'Théorie Active Directory',path:'/oscp/ad-theorie'},{label:'Mindmap AD',path:'/oscp/mindmap-ad'}]},
   { id:'evidence',title:'Preuves et rapport',tasks:[
     {id:'evidence-context',text:'Associer chaque preuve à la machine et au constat correspondant.'},
     {id:'report',text:'Vérifier les captures, le rapport et les critères de remise.'}
