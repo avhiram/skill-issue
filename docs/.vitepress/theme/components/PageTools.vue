@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useData, useRoute, onContentUpdated, withBase } from 'vitepress'
 import PageFind from './PageFind.vue'
 import Breadcrumbs from './Breadcrumbs.vue'
+import { examGroups } from '../examNavigation'
 
 const route = useRoute()
 const { frontmatter } = useData()
@@ -19,6 +20,15 @@ function changeReadingSize() {
 function findInPage() { closePanels(); window.dispatchEvent(new Event('skill-outline-close')); window.dispatchEvent(new Event('skill-page-find')) }
 const ready = ref(false)
 const menuOpen = ref(false)
+const examOpen = ref(false)
+const onOscp = computed(() => /\/oscp(?:\/|$)/.test(route.path))
+function examPath(path: string) { return withBase(path.split('#')[0]).replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/+$/, '') }
+function isExamCurrent(path: string) { return examPath(path) === route.path.replace(/\.html$/, '').replace(/\/index$/, '').replace(/\/+$/, '') }
+function openExam() {
+  closePanels()
+  window.dispatchEvent(new Event('skill-outline-close'))
+  examOpen.value = true
+}
 const searchScope = ref('all')
 type Bookmark = { path: string; title: string; hash?: string }
 type ReadingPosition = Bookmark & { y: number; progress: number; offset?: number }
@@ -50,6 +60,7 @@ function safePath(path: unknown): path is string {
 }
 function closePanels() {
   menuOpen.value = false
+  examOpen.value = false
 }
 function onEscape(event: KeyboardEvent) { if (event.key === 'Escape') closePanels() }
 function currentHeading() {
@@ -168,6 +179,7 @@ async function setMode(value: 'read' | 'quick') {
 
 function openMenu() {
   window.dispatchEvent(new Event('skill-outline-close'))
+  examOpen.value = false
   menuOpen.value = !menuOpen.value
 }
 function openChapterMenu() {
@@ -307,6 +319,7 @@ onUnmounted(() => {
               </select>
               <button type="button" @click="searchInScope">Rechercher</button>
             </div>
+            <button v-if="onOscp" type="button" @click="goTop">Retour en haut <span>↑</span></button>
             <details class="skill-menu-settings">
               <summary>Réglages d’affichage</summary>
               <div class="skill-menu-settings-body">
@@ -316,6 +329,17 @@ onUnmounted(() => {
             </details>
         </section>
       </div>
+      <div v-if="examOpen" class="skill-tools-overlay">
+        <button type="button" class="skill-tools-backdrop" aria-label="Fermer" @click="closePanels" />
+        <section class="skill-tools-panel skill-exam-panel" role="dialog" aria-modal="true" aria-label="Chapitres de l’examen">
+          <header><strong>Exam Mode · OSCP</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
+          <a class="skill-exam-home" :href="withBase('/oscp/exam')" @click="closePanels">Accueil de l’examen <span aria-hidden="true">›</span></a>
+          <div v-for="group in examGroups" :key="group.title" class="skill-exam-group">
+            <small>{{ group.title }}</small>
+            <a v-for="link in group.links" :key="link.path" :href="withBase(link.path)" :aria-current="isExamCurrent(link.path) ? 'page' : undefined" @click="closePanels">{{ link.label }} <span aria-hidden="true">›</span></a>
+          </div>
+        </section>
+      </div>
     </Teleport>
     <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
       <button type="button" @click="openMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
@@ -323,7 +347,8 @@ onUnmounted(() => {
       <button v-if="hasOutline" type="button" aria-label="Sommaire de la page" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Plan</span></button>
       <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Fiche' : 'Lecture' }}</span></button>
       <button type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
-      <button type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
+      <button v-if="onOscp" type="button" aria-label="Chapitres de l’examen OSCP" :aria-expanded="examOpen" @click="openExam"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16m3-11h5m-5 5h5"/></svg><span>Examen</span></button>
+      <button v-else type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
     </nav>
   </div>
 </template>
@@ -376,6 +401,12 @@ onUnmounted(() => {
 .skill-menu-settings-body .skill-size-control { justify-content:space-between; }
 .skill-wrap-setting { display:flex; align-items:center; gap:8px; min-height:40px; font-size:13px; color:#d8c4f4; cursor:pointer; }
 .skill-wrap-setting input { width:18px; height:18px; flex:none; accent-color:#b39aff; }
+.skill-exam-panel .skill-exam-home { background:#21172e; border-radius:7px; font-weight:650; }
+.skill-exam-group { padding:8px 0 2px; }
+.skill-exam-panel .skill-exam-group small { color:#b39aff; margin:4px 8px; font-size:12px; font-weight:650; }
+.skill-exam-group a { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:8px; border-bottom:1px solid #30243e; color:#e6d9f6; font-size:14px; text-decoration:none; }
+.skill-exam-group a[aria-current="page"] { background:#2a1d39; border-radius:6px; color:#ead9ff; }
+.skill-exam-group a:hover,.skill-exam-group a:active { background:#261a35; }
 .skill-resume { border:1px solid #3a2b4b; border-radius:8px; padding:9px; margin-bottom:8px; }
 .skill-resume progress { width:100%; height:6px; accent-color:#b39aff; }
 @media(max-width:767px) {

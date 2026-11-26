@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { withBase } from 'vitepress'
+import { examGroups as groups } from '../examNavigation'
 
 type Link = { label: string; path: string }
 type Task = { id: string; text: string }
@@ -29,25 +30,6 @@ const stages: Stage[] = [
     {id:'evidence-context',text:'Associer chaque preuve à la machine et au constat correspondant.'},
     {id:'report',text:'Vérifier les captures, le rapport et les critères de remise.'}
   ],links:[{label:'Rédaction du rapport',path:'/oscp/rapport'},{label:'Critères officiels',path:'/oscp/references'}]}
-]
-const groups: {title:string; links:Link[]}[] = [
-  {title:'Reconnaissance',links:[
-    {label:'Nmap',path:'/oscp/exam-nmap'},
-    {label:'Ports et services',path:'/oscp/reconnaissance#services-par-port'}
-  ]},
-  {title:'Analyse selon la cible',links:[
-    {label:'Méthodologie',path:'/oscp/methodologie'},
-    {label:'Web',path:'/oscp/applications-web'},
-    {label:'Active Directory',path:'/oscp/active-directory'}
-  ]},
-  {title:'Systèmes',links:[
-    {label:'Linux',path:'/oscp/privileges-linux'},
-    {label:'Windows',path:'/oscp/privileges-windows'},
-    {label:'Transferts',path:'/oscp/transferts'}
-  ]},
-  {title:'Rapport',links:[
-    {label:'Preuves et rapport',path:'/oscp/rapport'}
-  ]}
 ]
 const preparation=stages.find(stage=>stage.id==='prep')!
 const key = 'skill-issue:exam-oscp:v1'
