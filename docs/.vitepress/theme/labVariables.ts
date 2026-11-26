@@ -1,14 +1,25 @@
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 
 type Values = { IP: string; SUBNET: string; TCP_PORTS: string; UDP_PORTS: string }
+type Settings = Values & { PREFIX: string }
 export type LabKey = keyof Values
 const keys: LabKey[] = ['IP','SUBNET','TCP_PORTS','UDP_PORTS']
+const settingsKeys: (keyof Settings)[] = [...keys,'PREFIX']
 const storageKey = 'skill-issue:lab-variables:v1'
 const eventName = 'skill-lab-variables'
-const blank = (): Values => ({IP:'',SUBNET:'',TCP_PORTS:'',UDP_PORTS:''})
+const blank = (): Settings => ({IP:'',SUBNET:'',TCP_PORTS:'',UDP_PORTS:'',PREFIX:''})
 function ip(value: string) {
   const parts = value.split('.')
   return parts.length === 4 && parts.every(part => /^(0|[1-9]\d{0,2})$/.test(part) && Number(part)<=255)
+}
+export function networkCidr(address: string, prefix: string): string {
+  if (!ip(address) || !/^(0|[1-9]|[12]\d|3[012])$/.test(prefix)) return ''
+  const bits=Number(prefix)
+  const n=address.split('.').reduce((acc,octet)=>acc*256+Number(octet),0)
+  const size=2**(32-bits)
+  const network=Math.floor(n/size)*size
+  const octets=[24,16,8,0].map(shift=>Math.floor(network/2**shift)%256)
+  return octets.join('.')+'/'+bits
 }
 function ports(value: string) {
   return /^\d{1,5}(,\d{1,5})*$/.test(value) && value.split(',').every(p=>Number(p)>=1 && Number(p)<=65535)
@@ -25,26 +36,31 @@ export function validValue(key: LabKey, raw: string) {
   return ports(p)?p:''
 }
 export function useLabVariables() {
-  const values=ref<Values>(blank())
-  const validated=computed(()=>Object.fromEntries(keys.map(k=>[k,validValue(k,values.value[k])])) as Values)
+  const values=ref<Settings>(blank())
+  const automaticSubnet=computed(()=>networkCidr(validValue('IP',values.value.IP),values.value.PREFIX))
+  const validated=computed(()=>{
+    const result=Object.fromEntries(keys.map(k=>[k,validValue(k,values.value[k])])) as Values
+    if (!values.value.SUBNET.trim()) result.SUBNET=automaticSubnet.value
+    return result
+  })
   function sync(event?: Event) {
-    let data: Partial<Values> = {}
+    let data: Partial<Settings> = {}
     try {
       if(event instanceof CustomEvent) data=event.detail||{}
       else data=JSON.parse(sessionStorage.getItem(storageKey)||'{}')
     } catch {}
     const next=blank()
-    for(const k of keys) if(typeof data?.[k]==='string') next[k]=data[k]!.slice(0,2048)
+    for(const k of settingsKeys) if(typeof data?.[k]==='string') next[k]=data[k]!.slice(0,2048)
     values.value=next
   }
-  function publish(next: Values) {
+  function publish(next: Settings) {
     values.value=next
     try { sessionStorage.setItem(storageKey,JSON.stringify(next)) } catch {}
     window.dispatchEvent(new CustomEvent(eventName,{detail:next}))
   }
-  function set(key:LabKey,value:string) { publish({...values.value,[key]:value.slice(0,2048)}) }
+  function set(key:keyof Settings,value:string) { publish({...values.value,[key]:value.slice(0,2048)}) }
   function reset() { publish(blank()); try { sessionStorage.removeItem(storageKey) } catch {} }
   onMounted(()=>{sync();window.addEventListener(eventName,sync)})
   onBeforeUnmount(()=>window.removeEventListener(eventName,sync))
-  return {values,validated,set,reset}
+  return {values,validated,automaticSubnet,set,reset}
 }
