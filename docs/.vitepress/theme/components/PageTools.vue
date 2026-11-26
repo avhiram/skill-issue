@@ -18,17 +18,14 @@ function changeReadingSize() {
 }
 function findInPage() { closePanels(); window.dispatchEvent(new Event('skill-outline-close')); window.dispatchEvent(new Event('skill-page-find')) }
 const ready = ref(false)
-const libraryOpen = ref(false)
 const menuOpen = ref(false)
 const searchScope = ref('all')
 type Bookmark = { path: string; title: string; hash?: string }
 type ReadingPosition = Bookmark & { y: number; progress: number; offset?: number }
-const favorites = ref<Bookmark[]>([])
 const lastRead = ref<ReadingPosition | null>(null)
 const currentBookmark = ref<Bookmark | null>(null)
 let saveTimer: ReturnType<typeof setTimeout> | undefined
 let restoreFrame = 0
-const favoriteKey = 'skill-issue:favorites:v1'
 const progressKey = 'skill-issue:last-read:v1'
 const resumeKey = 'skill-issue:resume:v1'
 const wrapKey = 'skill-issue:wrap-code:v1'
@@ -51,27 +48,9 @@ function safePath(path: unknown): path is string {
   return typeof path === 'string' && path.startsWith(withBase('/')) && !path.startsWith('//')
 }
 function closePanels() {
-  libraryOpen.value = false
   menuOpen.value = false
-}
-function openLibrary() {
-  window.dispatchEvent(new Event('skill-outline-close'))
-  menuOpen.value = false
-  libraryOpen.value = !libraryOpen.value
 }
 function onEscape(event: KeyboardEvent) { if (event.key === 'Escape') closePanels() }
-function favoriteActive() { return !!currentBookmark.value && favorites.value.some(x => x.path === currentBookmark.value?.path) }
-function toggleFavorite() {
-  const item = currentBookmark.value
-  if (!item) return
-  if (favoriteActive()) favorites.value = favorites.value.filter(x => x.path !== item.path)
-  else favorites.value = [{ ...item }, ...favorites.value].slice(0, 100)
-  writeLocal(favoriteKey, favorites.value)
-}
-function removeFavorite(path: string) {
-  favorites.value = favorites.value.filter(x => x.path !== path)
-  writeLocal(favoriteKey, favorites.value)
-}
 function currentHeading() {
   return Array.from(currentDoc?.querySelectorAll<HTMLElement>('h1[id],h2[id],h3[id],h4[id],.academy-chapter[id],.academy-level[id]') ?? [])
     .filter(el => el.getClientRects().length && el.getBoundingClientRect().top <= 125).pop()
@@ -188,7 +167,6 @@ async function setMode(value: 'read' | 'quick') {
 
 function openMenu() {
   window.dispatchEvent(new Event('skill-outline-close'))
-  libraryOpen.value = false
   menuOpen.value = !menuOpen.value
 }
 function openChapterMenu() {
@@ -238,8 +216,6 @@ onMounted(async () => {
   wrapCode.value = readLocal(wrapKey, false) === true
   const size = readLocal(sizeKey, 'normal')
   if (size === 'small' || size === 'normal' || size === 'large' || size === 'xl') readingSize.value = size
-  const saved = readLocal<Bookmark[]>(favoriteKey, [])
-  favorites.value = Array.isArray(saved) ? saved.filter(x => x && safePath(x.path) && typeof x.title === 'string') : []
   const last = readLocal<ReadingPosition | null>(progressKey, null)
   lastRead.value = last && safePath(last.path) && Number.isFinite(last.y) ? last : null
   await nextTick()
@@ -288,8 +264,7 @@ onUnmounted(() => {
       <label class="skill-size-control">Texte <select v-model="readingSize" @change="changeReadingSize" aria-label="Taille du texte"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
       <button type="button" @click="findInPage">Rechercher dans la page</button>
       <button v-if="hasCode" type="button" :aria-pressed="wrapCode" @click="toggleWrap">{{ wrapCode ? 'Retour à la ligne' : 'Lignes originales' }}</button>
-      <button v-if="currentBookmark" type="button" :aria-pressed="favoriteActive()" @click="toggleFavorite">{{ favoriteActive() ? '★ Favori' : '☆ Favori' }}</button>
-      <button type="button" class="skill-library-desktop" @click="openLibrary">Ma bibliothèque</button>
+      <button v-if="lastRead" type="button" class="skill-library-desktop" @click="resumeReading">Reprendre ma lecture</button>
     </div>
     <div v-if="ready" class="skill-scoped-search-desktop">
       <div class="skill-search-scope">
@@ -307,11 +282,15 @@ onUnmounted(() => {
       </div>
     </div>
     <Teleport to="body" :disabled="!ready">
-      <div v-if="menuOpen || libraryOpen" class="skill-tools-overlay">
+      <div v-if="menuOpen" class="skill-tools-overlay">
         <button type="button" class="skill-tools-backdrop" aria-label="Fermer" @click="closePanels" />
-        <section class="skill-tools-panel" role="dialog" aria-label="Navigation et bibliothèque">
-          <header><strong>{{ menuOpen ? 'Navigation' : 'Ma bibliothèque' }}</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
-          <template v-if="menuOpen">
+        <section class="skill-tools-panel" role="dialog" aria-label="Navigation">
+          <header><strong>Navigation</strong><button type="button" aria-label="Fermer" @click="closePanels">×</button></header>
+            <div v-if="lastRead" class="skill-resume">
+              <small>Reprendre ma lecture</small>
+              <button type="button" @click="resumeReading">{{ lastRead.title }} · {{ lastRead.progress }} %</button>
+              <progress :value="lastRead.progress" max="100" />
+            </div>
             <button v-if="currentBookmark && !currentBookmark.path.includes('/academy/')" class="skill-tools-chapter" type="button" @click="openChapterMenu">Rubriques de la section ›</button>
             <a v-for="section in sections" :key="section.path" :href="withBase(section.path)" @click="closePanels">{{ section.title }} <span>›</span></a>
             <div class="skill-search-scope">
@@ -330,21 +309,6 @@ onUnmounted(() => {
             <button type="button" @click="findInPage">Rechercher dans la page</button>
             <label class="skill-size-control">Taille du texte <select v-model="readingSize" @change="changeReadingSize"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
             <button type="button" @click="goTop">Retour en haut ↑</button>
-          </template>
-          <template v-else>
-            <div v-if="lastRead" class="skill-resume">
-              <small>Reprendre ma lecture</small>
-              <button type="button" @click="resumeReading">{{ lastRead.title }} · {{ lastRead.progress }} %</button>
-              <progress :value="lastRead.progress" max="100" />
-            </div>
-            <button v-if="currentBookmark" type="button" @click="toggleFavorite">{{ favoriteActive() ? '★ Retirer cette page des favoris' : '☆ Ajouter cette page aux favoris' }}</button>
-            <small>Mes favoris</small>
-            <div v-for="item in favorites" :key="item.path" class="skill-favorite-row">
-              <a :href="item.path" @click="closePanels">{{ item.title }}</a>
-              <button type="button" :aria-label="'Retirer ' + item.title" @click="removeFavorite(item.path)">×</button>
-            </div>
-            <p v-if="!favorites.length" class="skill-library-empty">Aucun favori pour le moment.</p>
-          </template>
         </section>
       </div>
     </Teleport>
@@ -353,7 +317,7 @@ onUnmounted(() => {
       <button type="button" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
       <button v-if="hasOutline" type="button" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Sommaire</span></button>
       <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Cheatsheet' : 'Lecture' }}</span></button>
-      <button type="button" @click="openLibrary"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg><span>Favoris</span></button>
+      <button type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Dans la page</span></button>
       <button type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
     </nav>
   </div>
@@ -392,15 +356,12 @@ onUnmounted(() => {
 .skill-tools-backdrop { position:absolute; inset:0; background:rgba(8,5,13,.7); }
 .skill-tools-panel { position:relative; width:min(440px,calc(100% - 24px)); max-height:75dvh; overflow:auto; overscroll-behavior:contain; background:#15101e; border:1px solid #4a355e; border-radius:14px; padding:16px; color:#e5d8f4; box-shadow:0 10px 35px #0005; }
 .skill-tools-panel header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.skill-tools-panel header button,.skill-favorite-row button { flex:none; width:44px; min-height:44px; font-size:21px; }
+.skill-tools-panel header button { flex:none; width:44px; min-height:44px; font-size:21px; }
 .skill-tools-panel > a,.skill-tools-panel > button,.skill-resume button { display:flex; justify-content:space-between; align-items:center; text-align:left; width:100%; min-height:44px; padding:9px; border-bottom:1px solid #30243e; color:#d8c4f4; }
 .skill-tools-panel .skill-tools-chapter { color:#e6d3ff; background:#2a1d39; border-radius:7px; margin-bottom:7px; }
 .skill-tools-panel small { display:block; font-size:12px; color:#ab98c1; margin:12px 0 5px; }
 .skill-resume { border:1px solid #3a2b4b; border-radius:8px; padding:9px; margin-bottom:8px; }
 .skill-resume progress { width:100%; height:6px; accent-color:#b39aff; }
-.skill-favorite-row { display:flex; align-items:center; border-bottom:1px solid #30243e; }
-.skill-favorite-row a { flex:1; min-width:0; padding:10px 5px; overflow-wrap:anywhere; }
-.skill-library-empty { color:#b6aec5; font-size:13px; padding:6px; }
 @media(max-width:767px) {
   .skill-library-toolbar button { min-height:40px; }
   .skill-library-desktop { display:none; }
