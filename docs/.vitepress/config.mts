@@ -115,11 +115,12 @@ export default defineConfig({
           { text: 'Cheatsheet', link: '/osint/cheatsheet' }
         ] }
       ],
-      '/': [
+      '/': [],
+      '/oscp/': [
       {
         text: 'OSCP',
         link: '/oscp/',
-        collapsed: true,
+        collapsed: false,
         items: [
           { text: 'Exam Mode', link: '/oscp/exam', collapsed: true, items: [{ text: 'Nmap', link: '/oscp/exam-nmap' }] },
           { text: 'Reconnaissance', collapsed: true, items: [
@@ -158,11 +159,13 @@ export default defineConfig({
             { text: 'Mindmaps', link: '/oscp/mindmaps' }
           ] },
         ]
-      },
+      }
+      ],
+      '/crto/': [
       {
         text: 'CRTO',
         link: '/crto/',
-        collapsed: true,
+        collapsed: false,
         items: [
           { text: 'Accès rapide', collapsed: true, items: [
             { text: 'Notes générales', link: '/crto/liham/README' },

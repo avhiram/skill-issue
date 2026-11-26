@@ -1206,7 +1206,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
 .academy-syllabus * { box-sizing: border-box; }
 :global(.academy-page),
 :global(.academy-page .VPContent),
-:global(.academy-page .VPDoc) { background: #151119; }
+:global(.academy-page .VPDoc) { background: var(--vp-c-bg); }
 :global(.academy-page .VPDoc .container),
 :global(.academy-page .VPDoc .content),
 :global(.academy-page .VPDoc .content-container) {

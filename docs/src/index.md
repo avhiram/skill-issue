@@ -3,6 +3,8 @@ title: Morad H. - SKILL-ISSUE
 description: Notes techniques, Pentest, Red Team et parcours de Morad H.
 next: false
 aside: false
+sidebar: false
+pageClass: skill-home-page
 ---
 
 <div class="profile-intro">

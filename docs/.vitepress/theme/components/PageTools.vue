@@ -403,7 +403,16 @@ onUnmounted(() => {
 
 <template>
   <div class="skill-page-tools">
-    <Breadcrumbs />
+    <div class="skill-page-top"><Breadcrumbs />
+      <div v-if="ready" class="skill-desktop-actions" aria-label="Outils de navigation et de lecture">
+        <button v-if="onLibrary" type="button" @click="openExam">Chapitres</button>
+        <button v-if="indexAvailable" type="button" :aria-pressed="showIndex" @click="showIndex ? showFull() : showRubrics()">Rubriques</button>
+        <button v-if="onLibrary" type="button" @click="openSearchChoices">Rechercher</button>
+        <button v-if="hasCode" type="button" :aria-pressed="mode==='quick'" @click="showFull();setMode(mode==='read'?'quick':'read')">{{mode==='quick'?'Cheatsheet':'Lecture'}}</button>
+        <button v-if="foldCount&&!showIndex" type="button" @click="toggleAllFolds">{{allFoldsOpen?'Tout replier':'Tout déplier'}}</button>
+        <button type="button" aria-label="Navigation, réglages et accès hors ligne" @click="openMenu"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="8" cy="7" r="2" fill="var(--vp-c-bg)"/><circle cx="16" cy="12" r="2" fill="var(--vp-c-bg)"/><circle cx="10" cy="17" r="2" fill="var(--vp-c-bg)"/></svg> Options</button>
+      </div>
+    </div>
     <div v-if="ready&&onLibrary" class="skill-library-top"><button type="button" @click="openExam">Chapitres <span aria-hidden="true">›</span></button><button type="button" @click="openSearchChoices">Recherche <span aria-hidden="true">⌕</span></button></div>
     <div v-if="showIndex" class="skill-inline-index"><h1>{{siteHeadings[sourcePath]?.find(h=>h.level===1)?.label || currentBookmark?.title || sectionTitle}}</h1><ExamSectionIndex :key="sourcePath" :source="sourcePath" inline @jump="jumpLibrary" @full="showFull" /></div>
     <button v-else-if="ready&&indexAvailable" type="button" class="skill-return-index" @click="showRubrics">‹ Rubriques</button>
@@ -420,7 +429,7 @@ onUnmounted(() => {
     </div>
     <div v-if="foldCount&&!showIndex" class="skill-fold-tools"><button type="button" @click="toggleAllFolds">{{ allFoldsOpen ? 'Tout replier' : 'Tout déplier' }}</button></div>
     <PageFind />
-    <div v-if="ready" class="skill-offline-desktop"><OfflineTools /></div>
+
     <div v-if="ready&&!showIndex" class="skill-library-toolbar">
       <label class="skill-size-control">Texte <select v-model="readingSize" @change="changeReadingSize" aria-label="Taille du texte"><option value="small">A−</option><option value="normal">A</option><option value="large">A+</option><option value="xl">A++</option></select></label>
       <button type="button" @click="findInPage">Rechercher dans la page</button>
@@ -467,6 +476,7 @@ onUnmounted(() => {
               <button type="button" @click="searchInScope">Rechercher</button>
             </div>
             <button v-if="onLibrary" type="button" @click="goTop">Retour en haut <span>↑</span></button>
+            <button type="button" @click="findInPage">Rechercher dans cette page <span>⌕</span></button>
             <OfflineTools />
             <details class="skill-menu-settings">
               <summary>Réglages d’affichage</summary>
@@ -598,4 +608,15 @@ onUnmounted(() => {
 .vp-doc[data-skill-text-size="xl"] { --skill-prose-size:21px; --skill-code-size:17px; }
 .vp-doc[data-skill-text-size]:not([data-skill-text-size="normal"]) :is(p,li,blockquote,td,th,.academy-resource-content>a,.academy-explanation) { font-size:var(--skill-prose-size) !important; }
 .vp-doc[data-skill-text-size]:not([data-skill-text-size="normal"]) :is(pre,pre code,pre code .line,code,.bounty-command pre) { font-size:var(--skill-code-size) !important; }
+
+/* Desktop: keep all secondary controls inside the existing Options dialog. */
+.skill-desktop-actions{display:none}
+@media(min-width:768px){
+  .skill-page-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin-bottom:18px;min-height:34px}
+  .skill-page-top .skill-breadcrumbs{margin:0;flex:1 1 180px;min-width:0}
+  .skill-desktop-actions{display:flex;align-items:center;flex-wrap:wrap;gap:5px;margin-left:auto}
+  .skill-desktop-actions button{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:5px 10px;font-size:12px;font-weight:550;border:1px solid #382b49;border-radius:6px;background:#15101e;color:#d7c6ee;white-space:nowrap}
+  .skill-desktop-actions button:hover,.skill-desktop-actions button[aria-pressed=true]{background:#2a1d39;border-color:#71529a;color:#f1e5ff}
+  .skill-page-tools :is(.skill-library-top,.skill-return-index,.skill-reading-toolbar,.skill-fold-tools,.skill-library-toolbar,.skill-scoped-search-desktop){display:none!important}
+}
 </style>

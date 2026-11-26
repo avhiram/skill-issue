@@ -1391,3 +1391,41 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 .vp-doc .profile-proof .proof-logo { background:#fff !important; }
 .vp-doc .profile-marquee-wrap .profile-logo-frame > img,
 .vp-doc .profile-proof .proof-logo img { background:transparent !important; mix-blend-mode:multiply; }
+
+/* Desktop workspace. Responsive widths instead of a fixed narrow reading column. */
+@media(min-width:768px){
+  .skill-home-page .VPDoc,.academy-page .VPDoc{padding-top:32px}
+  .skill-home-page .VPDoc .container,.academy-page .VPDoc .container{max-width:1200px!important;margin-inline:auto}
+  .skill-home-page .VPDoc .content,.academy-page .VPDoc .content{max-width:100%!important;min-width:0}
+  .skill-home-page .VPDoc .content-container,.academy-page .VPDoc .content-container{max-width:1120px!important;margin-inline:auto}
+  .skill-home-page .profile-intro{padding-top:0;padding-bottom:24px;margin-bottom:0;border-bottom:0}
+  .skill-home-page .profile-intro h1{font-size:clamp(2.4rem,4vw,3.2rem)}
+  .skill-home-page .profile-intro .profile-subtitle{font-size:1.05rem}
+  .skill-home-page .profile-links{gap:8px}
+  .skill-home-page .profile-proof{gap:12px}
+  .academy-page .academy-syllabus{max-width:100%!important;padding-top:0}
+  .academy-page .academy-intro{padding-top:0!important}
+  .academy-page .academy-fold-controls label{flex-basis:auto!important}
+  .academy-page .academy-chapter-summary h2{font-size:1.05rem!important}
+  .academy-page .academy-level-summary h3{font-size:.98rem!important}
+  .academy-page .academy-resource-row{min-width:0}
+  .academy-page .academy-resource-content{min-width:0;overflow-wrap:anywhere}
+}
+@media(min-width:960px){
+  :root{--vp-layout-max-width:1720px;--vp-sidebar-width:260px}
+  .VPDoc:not(.has-aside) .content-container{max-width:1080px}
+  .VPDoc.has-aside .content-container{max-width:1000px}
+  .VPDoc .content{min-width:0}
+  .VPDoc .vp-doc{font-size:16px;line-height:1.7}
+  .VPDoc .vp-doc div[class*="language-"]>pre>code{font-size:14px;line-height:1.65}
+  .VPSidebar .VPSidebarItem.level-0>.item{min-height:40px}
+}
+@media(min-width:1280px){
+  .VPDoc.has-sidebar{padding-inline:24px}
+  .VPDoc.has-sidebar .content{padding-inline:18px;min-width:0}
+  .VPDoc.has-aside .aside{max-width:240px;padding-left:24px}
+  .skill-home-page .VPDoc .content-container,.academy-page .VPDoc .content-container{max-width:1120px!important}
+}
+@media(min-width:768px) and (max-width:959px){
+  .skill-desktop-actions{justify-content:flex-end}
+}
