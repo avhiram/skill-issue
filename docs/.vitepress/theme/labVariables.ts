@@ -1,13 +1,13 @@
 import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 
-type Values = { IP: string; SUBNET: string; TCP_PORTS: string; UDP_PORTS: string }
+type Values = { IP: string; SUBNET: string; TCP_PORTS: string; UDP_PORTS: string; DC_IP: string; DOMAIN: string; DC_HOST: string; BASE_DN: string }
 type Settings = Values & { PREFIX: string }
 export type LabKey = keyof Values
-const keys: LabKey[] = ['IP','SUBNET','TCP_PORTS','UDP_PORTS']
+const keys: LabKey[] = ['IP','SUBNET','TCP_PORTS','UDP_PORTS','DC_IP','DOMAIN','DC_HOST','BASE_DN']
 const settingsKeys: (keyof Settings)[] = [...keys,'PREFIX']
 const storageKey = 'skill-issue:lab-variables:v1'
 const eventName = 'skill-lab-variables'
-const blank = (): Settings => ({IP:'',SUBNET:'',TCP_PORTS:'',UDP_PORTS:'',PREFIX:''})
+const blank = (): Settings => ({IP:'',SUBNET:'',TCP_PORTS:'',UDP_PORTS:'',DC_IP:'',DOMAIN:'',DC_HOST:'',BASE_DN:'',PREFIX:''})
 function ip(value: string) {
   const parts = value.split('.')
   return parts.length === 4 && parts.every(part => /^(0|[1-9]\d{0,2})$/.test(part) && Number(part)<=255)
@@ -27,7 +27,11 @@ function ports(value: string) {
 export function validValue(key: LabKey, raw: string) {
   const v=raw.trim()
   if (!v) return ''
-  if (key==='IP') return ip(v)?v:''
+  if (key==='IP' || key==='DC_IP') return ip(v)?v:''
+  if (key==='DOMAIN' || key==='DC_HOST') {
+    return v.length<=253 && v.includes('.') && v.split('.').every(label=>/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i.test(label)) ? v.toLowerCase() : ''
+  }
+  if (key==='BASE_DN') return /^(?:DC=[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:,DC=[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)+$/i.test(v)?v:''
   if (key==='SUBNET') {
     const parts=v.split('/')
     return parts.length===2 && ip(parts[0]) && /^(0|[1-9]|[12]\d|3[012])$/.test(parts[1])?v:''
@@ -41,6 +45,7 @@ export function useLabVariables() {
   const validated=computed(()=>{
     const result=Object.fromEntries(keys.map(k=>[k,validValue(k,values.value[k])])) as Values
     if (!values.value.SUBNET.trim()) result.SUBNET=automaticSubnet.value
+    if (!values.value.BASE_DN.trim() && result.DOMAIN) result.BASE_DN=result.DOMAIN.split('.').map(label=>'DC='+label).join(',')
     return result
   })
   function sync(event?: Event) {

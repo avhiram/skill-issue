@@ -5,6 +5,8 @@ description: "Parcours de révision Active Directory, inventaire des notions et 
 
 # Active Directory
 
+<LabVariables ad />
+
 Parcours de révision à utiliser dans un laboratoire autorisé. Les rubriques suivent un ordre d’apprentissage, pas une chaîne d’exploitation automatique.
 
 ## Fondamentaux
@@ -61,9 +63,7 @@ nmcli dev show eth0
 
 <p class="oscp-command-note">Interroger les enregistrements SRV LDAP du domaine. Utiliser le serveur DNS du laboratoire et remplacer example.test par le domaine étudié.</p>
 
-```bash
-nslookup -type=SRV _ldap._tcp.dc._msdcs.example.test
-```
+<LabCommand language="bash" :source="&quot;nslookup -type=SRV _ldap._tcp.dc._msdcs.example.test&quot;" :bindings="{&quot;example.test&quot;:&quot;DOMAIN&quot;}" />
 
 #### Identifier les serveurs Kerberos
 
@@ -123,9 +123,7 @@ enum4linux-ng -A -u '' -p '' 192.0.2.10
 
 <p class="oscp-command-note">Lire la RootDSE pour identifier les contextes de nommage, notamment defaultNamingContext. La portée base limite la recherche à l’objet racine ; -x utilise l’authentification simple, ici sans identifiants.</p>
 
-```bash
-ldapsearch -x -H ldap://dc.example.test -s base -b ''
-```
+<LabCommand language="bash" :source="&quot;ldapsearch -x -H ldap://dc.example.test -s base -b ''&quot;" :bindings="{&quot;dc.example.test&quot;:&quot;DC_HOST&quot;}" />
 
 #### Vérifier la RootDSE avec Nmap
 

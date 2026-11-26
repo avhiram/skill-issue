@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import {computed,ref,watch} from 'vue'
 import {useLabVariables,type LabKey} from '../labVariables'
-const props=defineProps<{source:string}>()
+const props=withDefaults(defineProps<{source:string; language?:string; bindings?:Record<string,LabKey>}>(),{language:'Bash'})
 const {validated}=useLabVariables()
-const required=computed(()=>[...new Set([...props.source.matchAll(/\$(TCP_PORTS|UDP_PORTS|SUBNET|IP)\b/g)].map(m=>m[1] as LabKey))])
+const required=computed(()=>props.bindings?[...new Set(Object.values(props.bindings))]:[...new Set([...props.source.matchAll(/\$(TCP_PORTS|UDP_PORTS|SUBNET|IP)\b/g)].map(m=>m[1] as LabKey))])
 const complete=computed(()=>required.value.every(k=>!!validated.value[k]))
-const command=computed(()=>props.source.replace(/\$(TCP_PORTS|UDP_PORTS|SUBNET|IP)\b/g,(original,key:LabKey)=>validated.value[key]||original))
+const command=computed(()=>{
+  if (props.bindings) {
+    return Object.entries(props.bindings).reduce((source,[token,key])=>validated.value[key]?source.split(token).join(validated.value[key]):source,props.source)
+  }
+  return props.source.replace(/\$(TCP_PORTS|UDP_PORTS|SUBNET|IP)\b/g,(original,key:LabKey)=>validated.value[key]||original)
+})
 const status=ref('')
 watch(command,()=>status.value='')
 async function copy(){
@@ -15,7 +20,7 @@ async function copy(){
 </script>
 <template>
   <div class="lab-command">
-    <div class="lab-command-bar"><span>Bash</span><button type="button" @click="copy">{{ status || (complete ? 'Copier' : 'Copier le modèle') }}</button></div>
+    <div class="lab-command-bar"><span>{{ language }}</span><button type="button" @click="copy">{{ status || (complete ? 'Copier' : 'Copier le modèle') }}</button></div>
     <pre><code>{{ command }}</code></pre>
   </div>
 </template>

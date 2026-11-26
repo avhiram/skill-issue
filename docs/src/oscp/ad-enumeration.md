@@ -5,6 +5,8 @@ description: "Identifier les utilisateurs, groupes, services et relations du dom
 
 # OSCP · Active Directory : énumération
 
+<LabVariables ad />
+
 Identifier les utilisateurs, groupes, services et relations du domaine.
 
 ## Reconnaissance avec Nmap
@@ -20,10 +22,7 @@ nmap -p 53,88,135,139,389,445,464,593,636,3268,3269,5985,9389,47001,49152-65535 
 
 <p class="oscp-command-note">Interroger les objets LDAP.</p>
 
-```bash
-ldapsearch -x -H ldap://<dc-ip> -b "dc=domain,dc=com"
-
-```
+<LabCommand language="bash" :source="&quot;ldapsearch -x -H ldap://&lt;dc-ip&gt; -b \&quot;dc=domain,dc=com\&quot;\n&quot;" :bindings="{&quot;&lt;dc-ip&gt;&quot;:&quot;DC_IP&quot;,&quot;dc=domain,dc=com&quot;:&quot;BASE_DN&quot;}" />
 
 <p class="oscp-command-note">Énumérer les répertoires ou sous-domaines avec Gobuster.</p>
 
@@ -85,12 +84,7 @@ dig axfr @<dc-ip> <domain>
 
 ```
 
-```bash
-# Interroger les enregistrements DNS
-dig A <domain> @<dc-ip>
-dig SRV _ldap._tcp.dc._msdcs.<domain> @<dc-ip>
-
-```
+<LabCommand language="bash" :source="&quot;# Interroger les enregistrements DNS\ndig A &lt;domain&gt; @&lt;dc-ip&gt;\ndig SRV _ldap._tcp.dc._msdcs.&lt;domain&gt; @&lt;dc-ip&gt;\n&quot;" :bindings="{&quot;&lt;domain&gt;&quot;:&quot;DOMAIN&quot;,&quot;&lt;dc-ip&gt;&quot;:&quot;DC_IP&quot;}" />
 
 ```bash
 # Interroger les enregistrements DNS

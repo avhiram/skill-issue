@@ -5,6 +5,10 @@ description: "Commandes et repères pour Active Directory, Windows et Kerberos."
 
 # CRTP · Cheatsheet
 
+<LabVariables ad />
+
+[Variables et commandes adaptées à l’énumération du domaine](./enumeration.md)
+
 Référence rapide des commandes. Chaque bloc est accompagné d'une explication courte.
 
 ## Bypass

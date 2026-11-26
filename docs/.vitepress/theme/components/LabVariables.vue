@@ -1,6 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useLabVariables, type LabKey } from '../labVariables'
 const {values,validated,automaticSubnet,set,reset}=useLabVariables()
+const props=withDefaults(defineProps<{ad?:boolean}>(),{ad:false})
+const activeKeys=computed<LabKey[]>(()=>props.ad?['DC_IP','DOMAIN','DC_HOST','BASE_DN']:['IP','SUBNET','TCP_PORTS','UDP_PORTS'])
+const adFields: {key:LabKey;label:string;example:string;help:string}[]=[
+ {key:'DC_IP',label:'IP du contrôleur de domaine (DC)',example:'192.168.1.10',help:'Adresse IPv4 du DC, pas celle du poste client.'},
+ {key:'DOMAIN',label:'Domaine DNS',example:'corp.local',help:'Nom DNS complet du domaine.'},
+ {key:'DC_HOST',label:'Nom complet du DC (FQDN)',example:'dc01.corp.local',help:'Nom de la machine suivi du domaine DNS.'},
+ {key:'BASE_DN',label:'Base LDAP (DN)',example:'DC=corp,DC=local',help:'Calculée depuis le domaine, ou saisie manuellement.'}
+]
 const prefixes=Array.from({length:33},(_,i)=>32-i)
 const fields: {key:LabKey;label:string;placeholder:string}[] = [
   {key:'TCP_PORTS',label:'Ports TCP',placeholder:'22,80,445'},
@@ -9,8 +18,9 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
 </script>
 <template>
   <details class="lab-vars">
-    <summary>Variables du laboratoire <span>{{ Object.values(validated).filter(Boolean).length }}/4</span></summary>
+    <summary>{{ ad ? "Variables Active Directory" : "Variables du laboratoire" }} <span>{{ activeKeys.filter(key=>validated[key]).length }}/{{ activeKeys.length }}</span></summary>
     <div class="lab-vars-body">
+      <template v-if="!ad">
       <label>
         <span>IP de la machine</span>
         <input type="text" :value="values.IP" placeholder="192.168.1.10" autocomplete="off" spellcheck="false" :aria-invalid="!!values.IP.trim() && !validated.IP" @input="set('IP',($event.target as HTMLInputElement).value)">
@@ -37,7 +47,19 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
         <input type="text" :value="values[field.key]" :placeholder="field.placeholder" autocomplete="off" spellcheck="false" :aria-invalid="!!values[field.key].trim() && !validated[field.key]" @input="set(field.key,($event.target as HTMLInputElement).value)">
         <small v-if="values[field.key].trim() && !validated[field.key]">Format invalide</small>
       </label>
-      <div class="lab-vars-footer"><small>Valeurs conservées dans cet onglet.</small><button type="button" @click="reset">Réinitialiser</button></div>
+      </template>
+      <template v-else>
+        <label v-for="field in adFields" :key="field.key">
+          <span>{{ field.label }}</span>
+          <input type="text" :value="values[field.key]" :placeholder="field.key==='BASE_DN' && validated.BASE_DN ? validated.BASE_DN : field.example" autocomplete="off" spellcheck="false" :aria-invalid="!!values[field.key].trim() && !validated[field.key]" @input="set(field.key,($event.target as HTMLInputElement).value)">
+          <small>{{ field.help }}</small>
+          <small>Exemple : <code>{{ field.example }}</code></small>
+          <small v-if="values[field.key].trim() && !validated[field.key]">Format invalide</small>
+          <small v-else-if="field.key==='BASE_DN' && validated.BASE_DN && !values.BASE_DN.trim()">Calcul automatique : {{ validated.BASE_DN }}</small>
+          <button v-if="field.key==='BASE_DN' && values.BASE_DN.trim()" type="button" class="lab-auto" @click="set('BASE_DN','')">Utiliser le calcul automatique</button>
+        </label>
+      </template>
+      <div class="lab-vars-footer"><small>Valeurs conservées dans cet onglet.</small><button type="button" @click="ad ? activeKeys.forEach(key=>set(key,'')) : reset()">Réinitialiser</button></div>
     </div>
   </details>
 </template>

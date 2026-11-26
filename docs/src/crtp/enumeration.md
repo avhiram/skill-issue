@@ -4,6 +4,8 @@ title: "1 - Énumération Active Directory"
 
 # Énumération Active Directory
 
+<LabVariables ad />
+
 - Domaine
 - GPO 
 - ACL 
@@ -66,10 +68,7 @@ Get-ADDomain (ActiveDirectory Module)
 
 ### Autre domaine
 Interroger un domaine spécifié.
-```powershell
-Get-Domain -Domain domain.local
-Get-ADDomain -Identity domain.local
-```
+<LabCommand language="powershell" :source="&quot;Get-Domain -Domain domain.local\nGet-ADDomain -Identity domain.local&quot;" :bindings="{&quot;domain.local&quot;:&quot;DOMAIN&quot;}" />
 	
 ### SID du domaine
 Afficher le Security Identifier du domaine courant.
@@ -100,10 +99,7 @@ Get-ADDomainController
 	
 ### Contrôleurs d'un autre domaine
 Lister les Domain Controllers du domaine indiqué.
-```powershell
-Get-DomainController -Domain domain.local
-Get-ADDomainController -DomainName domain.local -Discover
-```
+<LabCommand language="powershell" :source="&quot;Get-DomainController -Domain domain.local\nGet-ADDomainController -DomainName domain.local -Discover&quot;" :bindings="{&quot;domain.local&quot;:&quot;DOMAIN&quot;}" />
 ### Utilisateurs
 Lister les comptes utilisateurs du domaine courant.
 ```powershell
