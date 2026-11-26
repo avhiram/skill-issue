@@ -1231,5 +1231,8 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   html.skill-mobile-nav-ready .skill-outline-mobile-toggle { display:none; }
   html.skill-mobile-nav-ready .skill-outline--mobile:not(:has(.is-mobile-open)) { display:none; }
   html.skill-mobile-nav-ready .skill-outline--mobile:has(.is-mobile-open) { border:0; margin:0; }
-  .skill-mobile-tools button { font-size:10px; }
+  /* Mobile typography and navigation are owned by PageTools. */
+  html.skill-mobile-nav-ready .VPDoc:has(.skill-page-tools) { padding-top: 16px; padding-inline: 16px; }
+  html.skill-mobile-nav-ready .VPDoc:has(.skill-page-tools) .content { padding-inline:0; }
+  html.skill-mobile-nav-ready .VPDoc:has(.skill-page-tools) .vp-doc > div > h1:first-child { line-height:1.22; margin-bottom:12px; }
 }

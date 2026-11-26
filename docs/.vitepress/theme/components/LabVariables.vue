@@ -17,7 +17,7 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
 </script>
 <template>
   <details class="lab-vars">
-    <summary>{{ ad ? "Variables Active Directory" : "Variables du laboratoire" }} <span>{{ activeKeys.filter(key=>validated[key]).length }}/{{ activeKeys.length }}</span></summary>
+    <summary>{{ ad ? "Variables Active Directory" : "Variables du laboratoire" }} <span class="lab-summary-end"><span>{{ activeKeys.filter(key=>validated[key]).length }}/{{ activeKeys.length }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
     <div class="lab-vars-body">
       <template v-if="!ad">
       <label>
@@ -66,7 +66,11 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
 .lab-vars{border:1px solid #433251;border-radius:9px;background:#191320;margin:16px 0;padding:0}
 .lab-vars summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:12px 14px;color:#dac5f8;font-weight:650;font-size:14px;min-height:44px}
 .lab-vars summary::-webkit-details-marker{display:none}
-.lab-vars summary span{font-size:12px;color:#ab95c8}
+.lab-summary-end{display:inline-flex;align-items:center;gap:9px;flex-shrink:0;font-size:12px;color:#bfa6df;font-variant-numeric:tabular-nums}
+.lab-summary-end svg{transition:transform .15s ease}
+.lab-vars[open] .lab-summary-end svg{transform:rotate(180deg)}
+@media(prefers-reduced-motion:reduce){.lab-summary-end svg{transition:none}}
+.lab-vars input:focus-visible,.lab-vars select:focus-visible{outline:2px solid #b39aff;outline-offset:1px}
 .lab-vars-body{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:12px;border-top:1px solid #433251}
 .lab-vars label{display:grid;gap:4px;color:#cbb9df;font-size:12px;min-width:0}
 .lab-vars input,.lab-vars select{min-height:40px;width:100%;min-width:0;border:1px solid #4a385f;border-radius:6px;padding:8px;background:#100d17;color:#eee4fb;font-size:16px}
@@ -76,5 +80,6 @@ const fields: {key:LabKey;label:string;placeholder:string}[] = [
 .lab-auto{justify-self:start;color:#d5bcff;font-size:12px;padding:6px 0;min-height:36px}
 .lab-vars-footer{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:8px}
 .lab-vars-footer button{color:#d5bcff;font-size:12px;padding:8px;min-height:40px}
+@media(max-width:767px){.vp-doc .lab-vars{margin:12px 0;padding:0}.vp-doc .lab-vars summary{min-height:48px;padding:10px 12px;margin:0}.lab-vars-body{gap:10px}.lab-vars input,.lab-vars select{min-height:44px}}
 @media(max-width:420px){.lab-vars-body{grid-template-columns:1fr}}
 </style>

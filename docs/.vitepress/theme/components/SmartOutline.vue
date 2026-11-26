@@ -328,7 +328,10 @@ onUnmounted(() => {
   }
   .skill-outline-mobile-header { display: flex; align-items: center; justify-content: space-between; color: #eee6ff; margin-bottom: 8px; font-size: 15px; }
   .skill-outline-mobile-header button { width: 44px; height: 44px; font-size: 24px; color: #cbb0f2; }
-  .skill-outline--mobile .skill-outline-list { max-height: 52dvh; }
+  .skill-outline--mobile .skill-outline-list { max-height: 56dvh; }
+  .skill-outline--mobile .skill-outline-row-inner { align-items: center; }
+  .skill-outline--mobile .skill-outline-row a { display:flex; align-items:center; }
+  .skill-outline--mobile .skill-outline-row a:active { color:#f0e2ff; }
   .skill-outline--mobile .skill-outline-row a { min-height: 44px; padding-block: 11px; }
   .skill-outline--mobile .skill-outline-caret { height: 44px; flex-basis: 38px; }
   .skill-outline--mobile .skill-outline-search input { font-size: 16px; }

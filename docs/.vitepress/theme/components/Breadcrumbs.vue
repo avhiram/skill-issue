@@ -76,5 +76,5 @@ watch(path,()=>{openGroup.value=-1})
 .skill-crumb-dropdown { position:absolute; left:0; top:calc(100% + 6px); z-index:45; display:flex; flex-direction:column; width:max-content; max-width:min(260px,75vw); max-height:50vh; overflow:auto; padding:6px; background:#1b1426; border:1px solid #503b6b; border-radius:8px; box-shadow:0 8px 24px #0006; }
 .skill-crumb-dropdown a { padding:8px 10px; border-radius:5px; white-space:normal; }
 .skill-crumb-dropdown a:hover { background:#2a1d39; }
-@media(max-width:767px) { .skill-breadcrumbs { font-size:11px; margin-bottom:13px; } .skill-crumb-dropdown a { min-height:38px; } }
+@media(max-width:767px) { .skill-breadcrumbs { font-size:12px; gap:3px 6px; margin:0 0 12px; line-height:1.45; } .skill-crumb-dropdown a { min-height:44px; } .skill-crumb-current { font-weight:600; } }
 </style>

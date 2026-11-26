@@ -319,8 +319,8 @@ onUnmounted(() => {
     </Teleport>
     <nav v-if="ready" class="skill-mobile-tools" :style="{ '--skill-nav-count': 4 + Number(hasOutline) + Number(hasCode) }" aria-label="Accès rapides sur mobile">
       <button type="button" @click="openMenu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg><span>Menu</span></button>
-      <button type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Recherche</span></button>
-      <button v-if="hasOutline" type="button" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Sommaire</span></button>
+      <button type="button" aria-label="Recherche globale" @click="openSearch"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><span>Chercher</span></button>
+      <button v-if="hasOutline" type="button" aria-label="Sommaire de la page" @click="openOutline"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5h11M9 12h11M9 19h11M4 5h.01M4 12h.01M4 19h.01"/></svg><span>Plan</span></button>
       <button v-if="hasCode" type="button" :aria-pressed="mode === 'quick'" aria-label="Basculer entre Lecture et Cheatsheet" @click="setMode(mode === 'read' ? 'quick' : 'read')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 6 6 6-6 6m9 0h7"/></svg><span>{{ mode === 'quick' ? 'Fiche' : 'Lecture' }}</span></button>
       <button type="button" @click="findInPage" aria-label="Rechercher dans cette page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3H5v18h7M13 3v5h5v3M13 3l5 5"/><circle cx="17" cy="16" r="3.5"/><path d="m19.5 18.5 2.5 2.5"/></svg><span>Page</span></button>
       <button type="button" @click="goTop"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4m-7 7 7-7 7 7"/></svg><span>Haut</span></button>
@@ -341,12 +341,16 @@ onUnmounted(() => {
 .skill-mobile-tools { display: none; }
 @media (max-width: 767px) {
   .skill-page-tools .skill-reading-toolbar { display: none; }
-  .skill-mobile-tools { display: grid; grid-template-columns: repeat(var(--skill-nav-count, 6), minmax(0, 1fr)); align-items: stretch; gap: 2px; position: fixed; z-index: 29; inset: auto 0 0; padding: 5px max(5px, env(safe-area-inset-right, 0px)) calc(5px + env(safe-area-inset-bottom, 0px)) max(5px, env(safe-area-inset-left, 0px)); background: #15101e; border-top: 1px solid #3a2b4b; box-shadow: 0 -6px 20px rgba(0,0,0,.22); }
-  .skill-mobile-tools button { min-width: 0; height: 52px; padding: 5px 0; display: grid; grid-template-rows: 21px 13px; align-content: center; justify-items: center; gap: 4px; color: #bdb2ce; font-size: clamp(9px, 2.5vw, 11px); line-height: 13px; border-radius: 6px; box-sizing: border-box; }
-  .skill-mobile-tools button span { display: block; white-space: nowrap; text-align: center; max-width: 100%; }
+  .skill-mobile-tools { display: grid; grid-template-columns: repeat(var(--skill-nav-count, 6), minmax(0, 1fr)); align-items: stretch; gap: 2px; position: fixed; z-index: 29; inset: auto 0 0; padding: 5px max(5px, env(safe-area-inset-right, 0px)) calc(5px + env(safe-area-inset-bottom, 0px)) max(5px, env(safe-area-inset-left, 0px)); background: #15101e; border-top: 1px solid #3a2b4b; box-shadow: 0 -4px 18px rgba(0,0,0,.28); }
+  .skill-mobile-tools button { min-width: 0; height: 56px; padding: 4px 1px; display: grid; grid-template-rows: 23px 14px; align-content: center; justify-items: center; gap: 4px; color: #c7bed5; font-size: clamp(9px, 2.65vw, 11px); font-weight: 550; line-height: 14px; border-radius: 9px; box-sizing: border-box; transition: background-color .15s ease, color .15s ease; -webkit-tap-highlight-color: transparent; }
+  .skill-mobile-tools button span { display: block; white-space: nowrap; text-align: center; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .skill-mobile-tools button:active { background: #302341; }
+  .skill-mobile-tools button:focus-visible { outline-offset: -2px; }
+  @media (prefers-reduced-motion: reduce) { .skill-mobile-tools button { transition: none; } }
   .skill-mobile-tools button svg { align-self: center; }
   .skill-mobile-tools button[aria-pressed="true"] { color: #e4caff; background: #2a1d39; }
-  .skill-mobile-tools svg { width: 19px; height: 19px; color: #c4a4f4; }
+  .skill-mobile-tools svg { width: 21px; height: 21px; color: #c4a4f4; }
+  .skill-mobile-tools button[aria-pressed="true"] svg { color: #e2ccff; }
   .VPDoc:has(.skill-mobile-tools) { padding-bottom: max(100px, calc(85px + env(safe-area-inset-bottom, 0px))); }
 }
 /* Visual wrapping only: the DOM text and original copy handlers remain unchanged. */
@@ -378,7 +382,10 @@ onUnmounted(() => {
   .skill-page-tools .skill-library-toolbar { display:none; }
   .skill-library-desktop { display:none; }
   .skill-tools-overlay { align-items:flex-end; }
-  .skill-tools-panel { width:100%; border-radius:16px 16px 0 0; padding-bottom:calc(16px + env(safe-area-inset-bottom,0px)); }
+  .skill-tools-panel { width:100%; max-height:82dvh; border-radius:18px 18px 0 0; padding:12px 16px calc(16px + env(safe-area-inset-bottom,0px)); }
+  .skill-tools-panel header { position:sticky; top:-12px; z-index:1; background:#15101e; padding:4px 0; margin-bottom:8px; border-bottom:1px solid #30243e; }
+  .skill-tools-panel > a,.skill-tools-panel > button { min-height:48px; border-radius:6px; }
+  .skill-tools-panel > a:active,.skill-tools-panel > button:active { background:#261a35; }
 }
 .skill-scoped-search-desktop { margin:0 0 16px; }
 .skill-search-scope { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 0; }
