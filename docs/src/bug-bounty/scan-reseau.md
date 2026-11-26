@@ -87,6 +87,10 @@ Exemple historique, non validé : `-SC` ne correspond pas à une option Nmap doc
 
 ### Scan complet avec Nmap
 
+[**Méthodologie Nmap en trois étapes (laboratoire)**](../oscp/exam-nmap.md). En bug bounty, adapter les ports et le débit aux autorisations du programme.
+
+::: details Ancien exemple de référence
+
 ```bash
 nmap -p- --min-rate 1000 -T4 -A example.com -oA fullscan
 ```
@@ -94,6 +98,8 @@ nmap -p- --min-rate 1000 -T4 -A example.com -oA fullscan
 Exemple historique de scan TCP étendu. `-A` active plusieurs familles de détection et `-oA` produit trois fichiers (`fullscan.nmap`, `fullscan.xml`, `fullscan.gnmap`). Les sorties existantes peuvent être écrasées.
 
 > Exemple historique réservé à l'étude en laboratoire. `--min-rate` est un minimum demandé, pas une limite maximale de débit.
+
+:::
 
 ### Scan avec Masscan
 

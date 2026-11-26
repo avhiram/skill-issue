@@ -114,7 +114,11 @@ Si un protocole ne présente aucun port à vérifier, retirer son indicateur de 
 - Contrôler les règles de l’épreuve et le comportement des scripts NSE avant leur utilisation.
 :::
 
-#### Vérifications complémentaires
+#### Références complémentaires
+
+::: details Options, scripts NSE, exports et PowerShell
+
+##### Vérifications complémentaires
 
 **Connexion TCP complète (TCP Connect, -sT)**
 
@@ -144,7 +148,7 @@ sudo nmap -O --osscan-guess <IP_CIBLE>
 
 ```
 
-#### Enregistrer et exploiter les résultats Nmap
+##### Enregistrer et exploiter les résultats Nmap
 
 Conserver les résultats de découverte puis extraire les adresses des hôtes détectés.
 
@@ -169,7 +173,7 @@ awk '/^Host: / && /Status: Up/{print $2}' decouverte.gnmap
 
 ```
 
-#### Scripts Nmap (NSE)
+##### Scripts Nmap (NSE)
 
 Vérifier les ports et les services de la cible autorisée.
 
@@ -211,7 +215,7 @@ nmap -p 80 --script http-headers 192.0.2.10
 `discovery` (découverte) · `exploit` (tests d'exploitation) · `fuzzer` (fuzzing) · `malware` (malwares)  
 `safe` (non intrusifs selon NSE) · `version` (versions) · `vuln` (vulnérabilités)  
 
-#### Contrôle des scripts NSE
+##### Contrôle des scripts NSE
 
 Afficher la documentation d'un script puis consulter son comportement avant de l'exécuter.
 
@@ -222,7 +226,7 @@ nmap --script-help <SCRIPT_NSE>
 nmap -sV -p <PORT> --script <SCRIPT_NSE> <IP_CIBLE>
 ```
 
-#### Fonctions PowerShell
+##### Fonctions PowerShell
 
 Observer les permissions et la configuration de Windows.
 
@@ -241,6 +245,8 @@ Test-NetConnection -ComputerName 192.0.2.10 -Port 445
 1..1024 | ForEach-Object { $port = $_; $client = [Net.Sockets.TcpClient]::new(); try { if ($client.ConnectAsync('192.0.2.10', $port).Wait(150)) { "TCP $port ouvert" } } catch {} finally { $client.Dispose() } }
 
 ```
+
+:::
 
 ### RustScan
 

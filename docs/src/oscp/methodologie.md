@@ -5,7 +5,31 @@ description: "Organiser les vérifications et la collecte des résultats."
 
 # Méthodologie OSCP
 
-### Scan initial
+### Scan initial · Nmap
+
+<LabVariables />
+
+#### 1. Découverte des hôtes
+
+Identifier les machines qui répondent sur le réseau de laboratoire.
+
+<LabCommand source='sudo nmap -sn -n "$SUBNET"' />
+
+#### 2. Scan complet TCP et UDP
+
+Examiner les ports 1 à 65 535 de chaque protocole. Conserver les résultats bruts.
+
+<LabCommand source='sudo nmap -sS -sU -p- -T4 -n -Pn "$IP" -oN rapport_ports.txt' />
+
+#### 3. Analyse des services
+
+Renseigner les ports TCP ouverts et les ports UDP ouverts ou `open|filtered` identifiés précédemment. Analyser uniquement ces ports.
+
+<LabCommand source='sudo nmap -sS -sU -A -p "T:$TCP_PORTS,U:$UDP_PORTS" -n -Pn "$IP" -oN rapport_services.txt' />
+
+Si un protocole ne présente aucun port à vérifier, retirer son indicateur de scan (`-sS` ou `-sU`) et sa partie dans `-p`.
+
+[Points de vigilance et détails Nmap](./exam-nmap.md)
 
 ### Méthodologie générale
 

@@ -11,6 +11,8 @@ Identifier les utilisateurs, groupes, services et relations du domaine.
 
 ## Reconnaissance avec Nmap
 
+[**Méthodologie Nmap en trois étapes**](./exam-nmap.md) · [Ports et services](./reconnaissance.md#services-par-port)
+
 Vérifier les ports et les services de la cible autorisée.
 
 <p class="oscp-command-note">Identifier les versions des services.</p>
