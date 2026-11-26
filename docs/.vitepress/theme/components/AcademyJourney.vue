@@ -1122,7 +1122,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
     <header id="academy-top" class="academy-intro">
       <p class="academy-kicker">SKILL-ISSUE / ACADEMY</p>
       <h1>Cyber University</h1>
-      <p class="academy-description">Apprendre la cybersécurité de zéro, étape par étape. Une roadmap complète avec des cours, des exercices et des labs, y compris sans budget.</p>
+      <p class="academy-description">Apprendre la cybersécurité, étape par étape.</p>
       <div class="academy-actions" role="group" aria-label="Choisir le parcours">
         <button class="academy-start" :class="{ 'academy-start-active': freeOnly }" type="button" :aria-pressed="freeOnly" @click="selectPath(true)">Parcours gratuit</button>
         <button class="academy-start" :class="{ 'academy-start-active': !freeOnly }" type="button" :aria-pressed="!freeOnly" @click="selectPath(false)">Parcours complet</button>
@@ -1133,19 +1133,6 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
       <div><strong>Ma progression</strong><span>{{ totalProgress.done }} / {{ totalProgress.total }} · {{ totalProgress.percent }} %</span></div>
       <progress :value="totalProgress.done" :max="Math.max(1,totalProgress.total)" aria-label="Progression du parcours" />
     </div>
-    <p class="academy-legend" aria-live="polite">
-      <strong>{{ freeOnly ? 'Parcours gratuit' : 'Parcours complet' }}</strong>
-      - {{ freeOnly ? 'Cours et labs sélectionnés sans achat.' : 'Cours et labs, gratuits et payants.' }}
-    </p>
-    <p v-if="freeOnly" class="academy-free-picks">
-      <strong>Labs pour commencer :</strong>
-      <a href="https://www.root-me.org/" target="_blank" rel="noopener noreferrer">Root-Me</a>
-      <span aria-hidden="true"> · </span>
-      <a href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">PortSwigger Academy</a>
-    </p>
-
-    <p class="academy-learning-note">Suis les cours et les labs dans l’ordre. Les logiciels et références sont regroupés dans la <a href="#academy-tools">boîte à outils</a>, à la fin.</p>
-
     <div class="academy-fold-controls">
       <strong>Parcours de formation</strong>
       <div><button type="button" @click="setAll(true)">Tout déplier</button><button type="button" @click="setAll(false)">Tout replier</button></div>
@@ -1159,7 +1146,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
           <span class="academy-chevron" aria-hidden="true">›</span>
         </summary>
         <div class="academy-chapter-body">
-          <p class="academy-chapter-intro">{{ section.summary }}</p>
+          <p v-if="showDescriptions" class="academy-chapter-intro">{{ section.summary }}</p>
           <details v-for="level in levelsIn(section)" :id="'level-' + level.id" :key="level.id" class="academy-level">
             <summary class="academy-level-summary">
               <h3>Niveau {{ numberFor(level.id) }} · {{ titleFor(level.id, level.title) }}</h3>
@@ -1184,7 +1171,6 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
     <details id="academy-tools" class="academy-chapter academy-toolbox" aria-label="Boîte à outils">
       <summary class="academy-chapter-summary"><svg class="academy-chapter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6a5 5 0 0 0-6 6L3 17l4 4 5-5a5 5 0 0 0 6-6l-3 3-4-4 3-3z"/></svg><div class="academy-chapter-label"><h2>Outils et références</h2><span class="academy-chapter-caption">Boîte à outils</span></div><span class="academy-chevron" aria-hidden="true">›</span></summary>
       <div class="academy-chapter-body">
-        <p class="academy-learning-note">Ces liens servent pendant les exercices. Ils ne constituent pas des étapes à apprendre dans l’ordre.</p>
         <template v-for="section in sections" :key="'tools-' + section.id">
           <details v-if="sectionTools(section).length" :id="'tools-' + section.id" class="academy-level">
             <summary class="academy-level-summary"><h3>{{ section.title }}</h3><span class="academy-chevron" aria-hidden="true">›</span></summary>
@@ -1203,9 +1189,6 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', revealHash))
       </div>
     </details>
 
-    <footer class="academy-footer">
-      <a href="#academy-top">Retour au début</a>
-    </footer>
   </div>
 </template>
 <style scoped>
