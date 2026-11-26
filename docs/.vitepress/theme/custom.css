@@ -1105,3 +1105,102 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
     max-height: 55px;
   }
 }
+
+
+/* Navigation SKILL-ISSUE : onglets sobres et sections laterales repliables. */
+.VPNavBarMenu {
+  align-items: center;
+  gap: 3px;
+}
+.VPNavBarMenu .VPNavBarMenuLink {
+  position: relative;
+  box-sizing: border-box;
+  height: 36px;
+  line-height: 34px;
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: #c8bed7;
+  font-size: 13px;
+  font-weight: 570;
+  white-space: nowrap;
+  transition: color .18s ease, background .18s ease, border-color .18s ease;
+}
+.VPNavBarMenu .VPNavBarMenuLink:hover {
+  color: #f0e7ff;
+  background: #21182d;
+}
+.VPNavBarMenu .VPNavBarMenuLink.active {
+  color: #e4d3ff;
+  border-color: #4a3565;
+  background: #21172e;
+}
+.VPNavBarMenuLink[href^="https://avhiram.github.io/skill-issue/"]::after,
+.VPNavScreenMenuLink[href^="https://avhiram.github.io/skill-issue/"]::after {
+  display: none !important;
+}
+.VPSidebar .VPSidebarItem.level-0 {
+  padding-bottom: 8px;
+}
+.VPSidebar .VPSidebarItem.level-0 > .item {
+  align-items: center;
+  min-height: 44px;
+  padding: 4px 8px 4px 12px;
+  box-sizing: border-box;
+  border: 1px solid #30243e;
+  border-radius: 9px;
+  background: #16111f;
+  transition: background .18s ease, border-color .18s ease;
+}
+.VPSidebar .VPSidebarItem.level-0 > .item:hover {
+  background: #21182d;
+  border-color: #61447d;
+}
+.VPSidebar .VPSidebarItem.level-0.has-active > .item,
+.VPSidebar .VPSidebarItem.level-0.is-active > .item {
+  border-color: #594176;
+  background: #21172e;
+}
+.VPSidebar .VPSidebarItem.level-0 > .item .text {
+  font-size: 13px;
+  font-weight: 680;
+  letter-spacing: .015em;
+}
+.VPSidebar .VPSidebarItem > .item > .caret {
+  margin-right: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  color: #ad98cf;
+  flex-shrink: 0;
+}
+.VPSidebar .VPSidebarItem > .item > .caret:hover {
+  color: #e4d3ff;
+  background: rgba(179,154,255,.10);
+}
+.VPSidebar .VPSidebarItem.level-0 > .items {
+  margin: 6px 0 0 13px;
+  padding-left: 9px;
+  border-left: 1px solid #392b4d;
+}
+.VPSidebar .VPSidebarItem:not(.level-0) > .item {
+  border-radius: 6px;
+  padding: 0 6px;
+  box-sizing: border-box;
+}
+.VPSidebar .VPSidebarItem:not(.level-0) > .item:hover {
+  background: #1c1427;
+}
+.VPSidebar .VPSidebarItem:not(.level-0).is-active > .item {
+  background: #241831;
+}
+.VPSidebar .VPSidebarItem:not(.level-0) > .item .text {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.VPSidebar .VPSidebarItem.collapsed > .items { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .VPNavBarMenu .VPNavBarMenuLink,
+  .VPSidebar .VPSidebarItem.level-0 > .item,
+  .VPSidebar .caret-icon { transition: none; }
+}

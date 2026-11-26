@@ -45,7 +45,7 @@ const textTag = computed(() => {
       ? 'p'
       : `h${props.depth + 2}`
 })
-const itemRole = computed(() => (isLink.value ? undefined : 'button'))
+const itemRole = computed(() => (!isLink.value && hasChildren.value ? 'button' : undefined))
 
 const classes = computed(() => [
   [`level-${props.depth}`],
@@ -57,15 +57,15 @@ const classes = computed(() => [
 ])
 
 function onItemInteraction(e: MouseEvent | Event) {
-  if ('key' in e && e.key !== 'Enter') {
+  if ('key' in e && e.key !== 'Enter' && e.key !== ' ') {
     return
   }
-  !props.item.link && toggle()
+  if (!props.item.link) {
+    e.preventDefault()
+    toggle()
+  }
 }
 
-function onCaretClick() {
-  props.item.link && toggle()
-}
 </script>
 
 
@@ -80,7 +80,7 @@ function onCaretClick() {
           ? { click: onItemInteraction, keydown: onItemInteraction }
           : {}
       "
-      :tabindex="item.items && 0"
+      :tabindex="item.items && !isLink ? 0 : undefined"
     >
       <div class="indicator" />
 
@@ -102,17 +102,17 @@ function onCaretClick() {
         <span v-if="badgeText" :class="['badge', badgeClass]">{{ badgeText }}</span>
       </component>
 
-      <div
+      <button
         v-if="item.collapsed != null && item.items && item.items.length"
+        type="button"
         class="caret"
-        role="button"
-        aria-label="toggle section"
-        @click="onCaretClick"
-        @keydown.enter="onCaretClick"
-        tabindex="0"
+        :aria-expanded="!collapsed"
+        :aria-label="(collapsed ? 'Déplier ' : 'Replier ') + cleanSidebarLabel(item.text || '')"
+        @click.stop="toggle"
+        @keydown.stop
       >
-        <span class="vpi-chevron-right caret-icon" />
-      </div>
+        <span class="vpi-chevron-right caret-icon" aria-hidden="true" />
+      </button>
     </div>
 
     <div v-if="item.items && item.items.length" class="items">

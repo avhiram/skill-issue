@@ -31,16 +31,16 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: 'SKILL-ISSUE',
     nav: [
-      { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
+      { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self', activeMatch: '^/academy/' },
       { text: 'OSINT', link: '/osint/' },
-      { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
+      { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self', activeMatch: '^/bug-bounty/' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' },
       { text: 'CRTP', link: '/crtp/' }
     ],
     sidebar: {
       '/crtp/': [
-        { text: 'CRTP', link: '/crtp/', items: [
+        { text: 'CRTP', link: '/crtp/', collapsed: true, items: [
           { text: 'AD Enumeration', link: '/crtp/enumeration' },
           { text: 'Windows PrivEsc', link: '/crtp/windows-privesc' },
           { text: 'Lateral Movement', link: '/crtp/lateral-movement' },
@@ -52,7 +52,7 @@ export default defineConfig({
       ],
       '/academy/': [],
       '/bug-bounty/': [
-        { text: 'Bug Bounty', link: '/bug-bounty/index.html', items: [
+        { text: 'Bug Bounty', link: '/bug-bounty/index.html', collapsed: true, items: [
           { text: 'Programme et préparation', link: `https://avhiram.github.io/skill-issue/bug-bounty/preparation.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
           { text: 'Reconnaissance passive', link: '/bug-bounty/reconnaissance' },
           { text: 'Reconnaissance active', link: '/bug-bounty/scan-reseau' },
@@ -79,14 +79,14 @@ export default defineConfig({
           { text: 'Rapport et signalement', link: '/bug-bounty/rapport' },
           { text: 'Suivi et prime', link: '/bug-bounty/suivi' }
         ] },
-        { text: 'Espaces complémentaires', items: [
+        { text: 'Espaces complémentaires', collapsed: true, items: [
           { text: 'IA & Bug Bounty', link: '/bug-bounty/ia' },
           { text: 'Security Tools', link: '/bug-bounty/ressources#security-tools' },
           { text: 'Browser Extensions', link: '/bug-bounty/ressources#browser-extensions' }
         ] }
       ],
       '/osint/': [
-        { text: 'OSINT', link: '/osint/', items: [
+        { text: 'OSINT', link: '/osint/', collapsed: true, items: [
           { text: 'Ressources', link: '/osint/' },
           { text: 'Cheatsheet', link: '/osint/cheatsheet' }
         ] }
@@ -95,7 +95,7 @@ export default defineConfig({
       {
         text: 'OSCP',
         link: '/oscp/',
-        collapsed: false,
+        collapsed: true,
         items: [
           { text: 'Collecte d’informations', link: '/oscp/reconnaissance' },
           { text: 'Analyse de vulnérabilités', link: '/oscp/vulnerabilites' },
@@ -125,7 +125,7 @@ export default defineConfig({
       {
         text: 'CRTO',
         link: '/crto/',
-        collapsed: false,
+        collapsed: true,
         items: [
           { text: 'Notes générales', link: '/crto/liham/README' },
           { text: 'Bibliothèque de commandes', link: '/crto/liham/crto-command-library' },
