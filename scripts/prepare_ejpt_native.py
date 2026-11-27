@@ -1238,6 +1238,110 @@ def refine_later_chapters(soup, article):
     return result
 
 
+
+# Editorial review of the final headings and conceptual descriptions.
+# Preserve every original code block, source link and fragment identifier.
+def refine_final_chapters(soup, article):
+    before=[c.get_text() for c in article.select("pre code")]
+    links=[a.get("href") for a in article.find_all("a",href=True)]
+    counts={"social":0,"web":0,"cms":0,"titles":0}
+    def set_title(node,title):
+        if node.get_text(" ",strip=True)==title or node.find("a",href=True):
+            return
+        node.clear()
+        node.append(title)
+        node["class"]=node.get("class",[])+["ejpt-final-reviewed-heading"]
+        counts["titles"]+=1
+    def set_context(node,description,kind):
+        following=node.find_next_sibling()
+        if following is not None and following.name=="p" and "ejpt-section-description" in following.get("class",[]):
+            p=following
+        else:
+            p=soup.new_tag("p")
+            node.insert_after(p)
+        p.string=description
+        p["class"]=p.get("class",[])+["ejpt-final-context","ejpt-final-"+kind]
+        counts[kind]+=1
+    def is_generated(node):
+        return any(c in node.get("class",[]) for c in ("ejpt-existing-note-heading","ejpt-context-heading"))
+    roots=[h for h in article.find_all(["h2","h3"]) if not is_generated(h)]
+    for root in roots:
+        label=root.get_text(" ",strip=True)
+        if label=="Social Engineering":
+            set_context(root,"Le social engineering concerne les risques liés à la manipulation humaine, à la confiance et à la sensibilisation.","social")
+        elif label=="Pentest Web":
+            set_context(root,"Notions de sécurité des applications Web, des services HTTP et des composants applicatifs.","web")
+            labels={"Tools":"Outils","Enumeration & Scanning":"Énumération et scanning",
+                    "Attacks":"Vulnérabilités Web"}
+            for node in list(root.next_siblings):
+                if not getattr(node,"name",None) or not re.fullmatch(r"h[1-6]",node.name):
+                    continue
+                if int(node.name[1])<=int(root.name[1]):
+                    break
+                if is_generated(node):
+                    continue
+                name=node.get_text(" ",strip=True)
+                if name in labels:
+                    set_title(node,labels[name])
+    complement=next((h for h in roots if h.get("id")=="complements-de-revision"),None)
+    if complement is None:
+        raise RuntimeError("Missing complement chapter")
+    cms=None
+    wp_labels={
+        "Basic Information":"Informations générales",
+        "Main WordPress Files":"Fichiers WordPress",
+        "Users Permissions":"Utilisateurs et permissions",
+        "Passive Enumeration":"Énumération passive",
+        "Get WordPress version":"Version WordPress",
+        "Get Plugins":"Extensions",
+        "Get Themes":"Thèmes",
+        "Extract versions in general":"Versions des composants",
+        "Active enumeration":"Énumération active",
+        "Plugins and Themes":"Extensions et thèmes",
+        "Users":"Utilisateurs",
+    }
+    drupal_labels={
+        "Version":"Version du CMS",
+        "Hidden pages":"Pages et ressources",
+        "Installed modules info":"Modules installés",
+        "References (tranks to all):":"Références",
+    }
+    for node in list(complement.next_siblings):
+        if not getattr(node,"name",None) or not re.fullmatch(r"h[1-6]",node.name):
+            continue
+        if int(node.name[1])<=2:
+            break
+        if is_generated(node):
+            continue
+        label=node.get_text(" ",strip=True)
+        if node.name=="h3":
+            if label.casefold()=="wordpress":
+                cms="wp"
+                set_title(node,"WordPress")
+                set_context(node,"CMS organisé autour d’un noyau, de thèmes, d’extensions et de rôles utilisateurs.","cms")
+                continue
+            if label.casefold()=="drupal":
+                cms="drupal"
+                set_context(node,"CMS modulaire dont la sécurité dépend notamment des versions, des modules et des permissions.","cms")
+                continue
+            if cms=="drupal" and label in ("Discovery","Énumération","Enumeration"):
+                set_title(node,"Drupal — découverte" if label=="Discovery" else "Drupal — énumération")
+                continue
+            cms=None
+        if cms=="wp" and label in wp_labels:
+            set_title(node,wp_labels[label])
+        elif cms=="drupal" and label in drupal_labels:
+            set_title(node,drupal_labels[label])
+    if counts["social"]!=2 or counts["web"]!=2 or counts["cms"]!=2 or counts["titles"]<4:
+        raise RuntimeError("Final chapter heading coverage incomplete: "+str(counts))
+    if before!=[c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("Final chapter presentation changed original code")
+    if links!=[a.get("href") for a in article.find_all("a",href=True)]:
+        raise RuntimeError("Final chapter presentation changed source links")
+    print("Final chapter presentation review:",counts)
+    return counts
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -1314,6 +1418,7 @@ for page in report["pages"]:
         report["cheatsheet_network_layout"]=refine_network_layout(soup,article)
         report["cheatsheet_framework_layout"]=refine_framework_layout(soup,article)
         report["cheatsheet_later_layout"]=refine_later_chapters(soup,article)
+        report["cheatsheet_final_layout"]=refine_final_chapters(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
