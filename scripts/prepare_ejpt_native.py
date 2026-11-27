@@ -699,6 +699,124 @@ def add_note_explanations(soup, article):
 
 
 
+
+# Editorial pass over the six existing service-enumeration sections.
+# Descriptions identify the tools and concepts; the source examples remain intact.
+enumeration_topics = {
+    "nmap": ("Inventaire du service avec Nmap", "Nmap présente les ports et les informations disponibles sur les services réseau."),
+    "smbmap": ("Partages réseau et permissions", "SMBMap présente les ressources partagées et les droits associés."),
+    "smbclient": ("Client SMB et RPC", "SMBClient et RPCClient sont des interfaces clientes pour les ressources et services Windows."),
+    "rpcclient": ("Interface RPC", "RPCClient est un client pour les services RPC Windows."),
+    "enum4linux": ("Informations sur les ressources Windows", "Enum4linux présente des informations relatives aux services Windows et Samba."),
+    "hydra": ("Authentification — notes Hydra", "Cette partie concerne les risques liés aux mots de passe et les contrôles d’authentification."),
+    "metasploit": ("Modules Metasploit du cours", "Extraits originaux du cours associés à ce service. Les exemples sont réservés au laboratoire autorisé."),
+    "ftp": ("Client FTP", "Un client FTP permet d’interagir avec le service de transfert de fichiers selon les droits accordés."),
+    "ssh": ("Client SSH", "SSH fournit un canal chiffré pour les sessions distantes."),
+    "netcat": ("Informations du service avec Netcat", "Netcat est un utilitaire réseau qui interagit avec des connexions TCP ou UDP."),
+    "http": ("Outils et clients HTTP", "Ces outils présentent différents aspects des échanges et technologies HTTP."),
+    "mysql": ("Client MySQL", "MySQL utilise des sessions SQL pour accéder aux bases de données selon les permissions accordées."),
+    "smtp": ("Dialogue SMTP", "Le protocole SMTP définit les échanges entre clients et serveurs de messagerie."),
+    "smtp-user-enum": ("Identités et service SMTP", "Cette partie traite de la visibilité des identités par les services de messagerie et des risques associés."),
+}
+def refine_enumeration(soup, article):
+    from collections import Counter
+    before = [c.get_text() for c in article.select("pre code")]
+    headings = list(article.find_all(re.compile(r"^h[1-6]$")))
+    primary = next((h for h in headings if h.name=="h2" and h.get_text(strip=True)=="Énumération"),None)
+    complementary = next((h for h in headings if h.name=="h3" and h.get_text(strip=True)=="Énumération" and h.get("id","").startswith("complement-")),None)
+    if primary is None or complementary is None:
+        raise RuntimeError("Missing original enumeration sections")
+    counts = Counter()
+    seen_titles = Counter()
+    for root in (primary,complementary):
+        root_level = int(root.name[1])
+        service = None
+        duplicate_source_headings = []
+        for node in list(root.next_siblings):
+            if not getattr(node,"name",None):
+                continue
+            if re.fullmatch(r"h[1-6]",node.name):
+                level = int(node.name[1])
+                if level <= root_level:
+                    break
+                label = node.get_text(" ",strip=True)
+                if "ejpt-existing-note-heading" not in node.get("class",[]) and "ejpt-context-heading" not in node.get("class",[]):
+                    if level==root_level+1 and label in {"SMB","FTP","SSH","HTTP","SQL","SMTP"}:
+                        service = label
+                    elif service and label.casefold()==service.casefold():
+                        duplicate_source_headings.append(node)
+                continue
+            if node.name != "pre":
+                continue
+            code = node.find("code",recursive=False)
+            if code is None or service is None:
+                continue
+            lines = code.get_text().splitlines()
+            first = next((line.strip() for line in lines if line.strip()),"")
+            first_command = next((line.strip() for line in lines if line.strip() and not line.lstrip().startswith("#")),"")
+            # Classification is based on the original lead comment/tool only.
+            lead = first.casefold()
+            command = first_command.casefold()
+            if "metasploit" in lead or re.match(r"^(?:msfconsole|use |setg |service postgresql)",command):
+                kind = "metasploit"
+            elif "hydra" in lead or re.match(r"^(?:hydra|gzip)\b",command):
+                kind = "hydra"
+            elif "smbmap" in lead or command.startswith("smbmap "):
+                kind = "smbmap"
+            elif "smb connection" in lead or command.startswith("smbclient "):
+                kind = "smbclient"
+            elif "rpcclient" in lead or command.startswith("rpcclient "):
+                kind = "rpcclient"
+            elif "enum4linux" in lead or "null sessions" in lead or command.startswith("enum4linux "):
+                kind = "enum4linux"
+            elif "nmap" in lead or re.match(r"^(?:sudo\s+)?nmap\b",command):
+                kind = "nmap"
+            elif "netcat" in lead or (service=="SSH" and command.startswith("nc ")):
+                kind = "netcat"
+            elif service=="FTP" and command.startswith("ftp "):
+                kind = "ftp"
+            elif service=="SSH" and command.startswith("ssh "):
+                kind = "ssh"
+            elif service=="HTTP" and re.match(r"^(?:whatweb|http|curl|wget|browsh|dirb|lynx)\b",command):
+                kind = "http"
+            elif service=="SQL" and ("mysql" in lead or command.startswith("mysql ")):
+                kind = "mysql"
+            elif service=="SMTP" and command.startswith("smtp-user-enum "):
+                kind = "smtp-user-enum"
+            elif service=="SMTP" and re.match(r"^(?:nc|telnet)\b",command):
+                kind = "smtp"
+            else:
+                raise RuntimeError("Unclassified existing enumeration block for "+service)
+            title,desc = enumeration_topics[kind]
+            key = (service,kind)
+            seen_titles[key] += 1
+            if seen_titles[key] > 1:
+                title += " — complément "+str(seen_titles[key]-1)
+            previous = node.find_previous_sibling()
+            if previous is None or previous.name!="p" or "ejpt-action-description" not in previous.get("class",[]):
+                raise RuntimeError("Missing enumeration description")
+            heading = previous.find_previous_sibling()
+            if heading is None or not re.fullmatch(r"h[1-6]",heading.name or ""):
+                raise RuntimeError("Missing enumeration label")
+            heading.clear()
+            heading.append(title)
+            heading["class"] = heading.get("class",[]) + ["ejpt-reviewed-enum-title"]
+            previous.string = desc
+            previous["class"] = previous.get("class",[]) + ["ejpt-reviewed-enum-description"]
+            counts[service] += 1
+        for heading in duplicate_source_headings:
+            # Keep the original fragment identifier without a repeated menu.
+            heading.clear()
+            heading.name = "span"
+            heading["aria-hidden"] = "true"
+            heading["class"] = heading.get("class",[]) + ["ejpt-repeated-service-anchor"]
+    assert before == [c.get_text() for c in article.select("pre code")], "Enumeration changed original code"
+    if set(counts) != {"SMB","FTP","SSH","HTTP","SQL","SMTP"}:
+        raise RuntimeError("Enumeration service coverage incomplete")
+    print("Enumeration editorial check:",dict(counts))
+    return dict(counts)
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -769,6 +887,7 @@ for page in report["pages"]:
         report["cheatsheet_remaining_headings"]=format_remaining_sections(soup,article)
         report["cheatsheet_footprinting_actions"]=format_footprinting(soup,article)
         report["cheatsheet_context"]=add_note_explanations(soup,article)
+        report["cheatsheet_enumeration"]=refine_enumeration(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
