@@ -100,6 +100,10 @@ jobs:
           assert len(sheet.select('.ejpt-reviewed-enum-title'))==sum(enum.values()), 'Enumeration titles incomplete'
           assert len(sheet.select('.ejpt-va-title'))==report['cheatsheet_vulnerability_assessment']==5, 'Assessment titles incomplete'
           assert len(sheet.select('.ejpt-va-description'))==5, 'Assessment descriptions incomplete'
+          system_layout=report['cheatsheet_system_layout']
+          assert len(system_layout)==2, 'System sections incomplete'
+          assert len(sheet.select('.ejpt-system-reviewed-heading'))==sum(x['headings'] for x in system_layout), 'System headings incomplete'
+          assert len(sheet.select('.ejpt-system-section-context'))==sum(x['descriptions'] for x in system_layout), 'System context incomplete'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
           assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'
