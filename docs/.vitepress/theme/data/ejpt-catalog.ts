@@ -7,25 +7,25 @@ export const groups = [
     "children": [
       {
         "path": "penetration-testing-prerequisites/README.html",
-        "title": "Présentation des prérequis",
+        "title": "Plan du module : prérequis",
         "depth": 0,
         "order": 0
       },
       {
         "path": "penetration-testing-prerequisites/introduction.html",
-        "title": "Introduction au pentest",
+        "title": "Sécurité informatique, cryptographie et VPN",
         "depth": 0,
         "order": 1
       },
       {
         "path": "penetration-testing-prerequisites/networking.html",
-        "title": "Fondamentaux réseau",
+        "title": "Protocoles réseau et modèle OSI",
         "depth": 0,
         "order": 1
       },
       {
         "path": "penetration-testing-prerequisites/web-applications.html",
-        "title": "Applications Web",
+        "title": "Fondamentaux HTTP et HTTPS",
         "depth": 0,
         "order": 1
       }
@@ -39,25 +39,25 @@ export const groups = [
     "children": [
       {
         "path": "assessment-methodologies/README.html",
-        "title": "Introduction à la méthodologie",
+        "title": "Plan du module : méthodologie et audit",
         "depth": 0,
         "order": 0
       },
       {
         "path": "assessment-methodologies/1-info-gathering.html",
-        "title": "Collecte d’informations",
+        "title": "Reconnaissance passive et active",
         "depth": 0,
         "order": 1
       },
       {
         "path": "assessment-methodologies/2-footprint-scan.html",
-        "title": "Footprinting et scanning",
+        "title": "Cartographie réseau, footprinting et scanning",
         "depth": 0,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration.html",
-        "title": "Énumération",
+        "title": "Présentation de l’énumération des services",
         "depth": 0,
         "order": 1
       },
@@ -69,7 +69,7 @@ export const groups = [
       },
       {
         "path": "assessment-methodologies/3-enumeration/http-enum.html",
-        "title": "Énumération HTTP",
+        "title": "Inventaire des services HTTP",
         "depth": 1,
         "order": 1
       },
@@ -105,7 +105,7 @@ export const groups = [
       },
       {
         "path": "assessment-methodologies/5-audit.html",
-        "title": "Audit des hôtes et réseaux",
+        "title": "Principes d’audit, conformité et sécurité",
         "depth": 0,
         "order": 1
       }
@@ -119,19 +119,19 @@ export const groups = [
     "children": [
       {
         "path": "hostnetwork-penetration-testing/README.html",
-        "title": "Introduction au pentest système et réseau",
+        "title": "Plan du module : systèmes et réseaux",
         "depth": 0,
         "order": 0
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack.html",
-        "title": "Attaques système",
+        "title": "Présentation des attaques système",
         "depth": 0,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks.html",
-        "title": "Attaques Linux",
+        "title": "Vulnérabilités des systèmes Linux",
         "depth": 1,
         "order": 1
       },
@@ -179,7 +179,7 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks.html",
-        "title": "Attaques Windows",
+        "title": "Vulnérabilités des systèmes Windows",
         "depth": 1,
         "order": 1
       },
@@ -227,7 +227,7 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks/winkernel.html",
-        "title": "Privilèges du noyau Windows",
+        "title": "Privilege Escalation du noyau Windows",
         "depth": 2,
         "order": 1
       },
@@ -239,7 +239,7 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/2-network-attack.html",
-        "title": "Attaques réseau",
+        "title": "Présentation des attaques réseau",
         "depth": 0,
         "order": 1
       },
@@ -251,7 +251,7 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit.html",
-        "title": "Metasploit Framework",
+        "title": "Architecture et composants de Metasploit",
         "depth": 0,
         "order": 1
       },
@@ -311,7 +311,7 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/4-exploitation.html",
-        "title": "Exploitation",
+        "title": "Méthodologie d’exploitation",
         "depth": 0,
         "order": 1
       },
@@ -341,7 +341,7 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit.html",
-        "title": "Post-exploitation",
+        "title": "Méthodologie de post-exploitation",
         "depth": 0,
         "order": 1
       },
@@ -409,19 +409,19 @@ export const groups = [
     "children": [
       {
         "path": "webapp-penetration-testing/README.html",
-        "title": "Introduction au pentest Web",
+        "title": "Plan du module : pentest Web",
         "depth": 0,
         "order": 0
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http.html",
-        "title": "HTTP et pentest Web",
+        "title": "Méthodes HTTP, cookies et sécurité Web",
         "depth": 0,
         "order": 1
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http/http-enum.html",
-        "title": "Énumération HTTP",
+        "title": "Énumération des méthodes et répertoires HTTP",
         "depth": 1,
         "order": 1
       },
@@ -433,7 +433,7 @@ export const groups = [
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http/webapp-scan.html",
-        "title": "Scanning Web",
+        "title": "Scanning Web : ZAP et Nikto",
         "depth": 1,
         "order": 1
       }
@@ -447,13 +447,13 @@ export const groups = [
     "children": [
       {
         "path": "exam-preparation-labs/README.html",
-        "title": "Présentation des laboratoires",
+        "title": "Plan du module : préparation pratique",
         "depth": 0,
         "order": 0
       },
       {
         "path": "exam-preparation-labs/p.t.-prerequisites-labs/README.html",
-        "title": "Labs PTS v1",
+        "title": "Laboratoires de prérequis PTS v1",
         "depth": 1,
         "order": 0
       },
@@ -483,7 +483,7 @@ export const groups = [
       },
       {
         "path": "exam-preparation-labs/pts2-labs.html",
-        "title": "Labs PTS v2",
+        "title": "Laboratoires pratiques PTS v2",
         "depth": 0,
         "order": 1
       }

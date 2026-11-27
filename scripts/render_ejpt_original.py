@@ -83,6 +83,9 @@ def title(n):
 titles = json.loads(Path("imports/ejpt/display-titles.json").read_text(encoding="utf-8"))
 if set(titles) != set(notes):
     raise RuntimeError("Display titles must cover all 80 original notes")
+normalized_titles = [re.sub(r"\s+", " ", label).strip().casefold() for label in titles.values()]
+if len(set(normalized_titles)) != len(notes):
+    raise RuntimeError("Duplicate eJPT page titles")
 emoji = re.compile(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0E\uFE0F\u200D\u20E3]")
 def clean_heading(text):
     return re.sub(r"\s+", " ", emoji.sub("", text)).strip()
