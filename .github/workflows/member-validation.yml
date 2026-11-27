@@ -57,6 +57,8 @@ jobs:
           assert set(enum)=={'SMB','FTP','SSH','HTTP','SQL','SMTP'}, 'Missing reviewed enumeration service'
           assert len(sheet.select('.ejpt-reviewed-enum-description'))==sum(enum.values()), 'Enumeration descriptions incomplete'
           assert len(sheet.select('.ejpt-reviewed-enum-title'))==sum(enum.values()), 'Enumeration titles incomplete'
+          assert len(sheet.select('.ejpt-va-title'))==report['cheatsheet_vulnerability_assessment']==5, 'Assessment titles incomplete'
+          assert len(sheet.select('.ejpt-va-description'))==5, 'Assessment descriptions incomplete'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
           assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'

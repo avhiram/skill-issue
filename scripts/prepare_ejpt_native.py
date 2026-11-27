@@ -838,6 +838,91 @@ def refine_enumeration(soup, article):
     return dict(counts)
 
 
+
+# Editorial presentation of the existing vulnerability-assessment notes.
+# Definitions give context without introducing additional procedures.
+def refine_vulnerability_assessment(soup, article):
+    before = [c.get_text() for c in article.select("pre code")]
+    root = next((h for h in article.find_all("h2") if h.get_text(strip=True)=="Évaluation des vulnérabilités"),None)
+    if root is None:
+        raise RuntimeError("Missing vulnerability assessment section")
+    candidates = []
+    for node in root.next_siblings:
+        if not getattr(node,"name",None):
+            continue
+        if node.name=="h2":
+            break
+        if node.name=="pre":
+            candidates.append(node)
+    if len(candidates)!=2:
+        raise RuntimeError("Unexpected vulnerability assessment source block count")
+    descriptions = {
+        "# HEARTBLEED": ("Heartbleed", "Vulnérabilité de la gestion des messages Heartbeat dans certaines versions d’OpenSSL, susceptible d’exposer des données en mémoire."),
+        "# ETERNALBLUE": ("EternalBlue", "Nom associé à l’exploitation d’une vulnérabilité du protocole SMBv1 sous Windows."),
+        "# BLUEKEEP": ("BlueKeep", "Vulnérabilité affectant les services Bureau à distance de certaines versions de Windows."),
+        "# LOG4J": ("Log4j", "Bibliothèque de journalisation Java ; certaines versions ont été affectées par la vulnérabilité Log4Shell."),
+    }
+    combined, reference = candidates
+    code=combined.find("code",recursive=False)
+    if code is None:
+        raise RuntimeError("Missing original vulnerability assessment code")
+    old=code.get_text()
+    groups=[]
+    for line in old.splitlines(keepends=True):
+        if line.rstrip("\r\n") in descriptions:
+            groups.append((line.rstrip("\r\n"),[line]))
+        elif groups:
+            groups[-1][1].append(line)
+        else:
+            raise RuntimeError("Unexpected text before first vulnerability heading")
+    if [key for key,_ in groups]!=list(descriptions):
+        raise RuntimeError("Vulnerability assessment source headings changed")
+    if "".join("".join(lines) for _,lines in groups)!=old:
+        raise RuntimeError("Source block reconstruction failed")
+    desc=combined.find_previous_sibling()
+    heading=desc.find_previous_sibling() if desc else None
+    if desc is None or heading is None or "ejpt-action-description" not in desc.get("class",[]) or "ejpt-existing-note-heading" not in heading.get("class",[]):
+        raise RuntimeError("Missing original assessment presentation")
+    # Keep anchor IDs and the validation marker on the existing heading.
+    heading.clear()
+    heading.append("Vulnérabilités étudiées")
+    desc.string="Les exemples originaux portent sur quatre sujets de sécurité distincts."
+    for i,(key,lines) in enumerate(groups,1):
+        title,explanation=descriptions[key]
+        label=soup.new_tag("p",id="ejpt-va-"+str(i),attrs={"class":"ejpt-leaf-title ejpt-va-title"})
+        strong=soup.new_tag("strong")
+        strong.string=title
+        label.append(strong)
+        combined.insert_before(label)
+        para=soup.new_tag("p",attrs={"class":"ejpt-action-description ejpt-va-description"})
+        para.string=explanation
+        combined.insert_before(para)
+        block=soup.new_tag("pre")
+        inner=soup.new_tag("code",attrs={"class":code.get("class",[])})
+        inner.string="".join(lines)
+        block.append(inner)
+        combined.insert_before(block)
+    if combined.get("id"):
+        combined.insert_before(soup.new_tag("span",id=combined["id"]))
+    combined.decompose()
+    previous=reference.find_previous_sibling()
+    label=previous.find_previous_sibling() if previous else None
+    if previous is None or label is None or "ejpt-action-description" not in previous.get("class",[]):
+        raise RuntimeError("Missing SearchSploit presentation")
+    label.clear()
+    label.append("Référence SearchSploit")
+    label["class"]=label.get("class",[])+["ejpt-va-title"]
+    previous.string="SearchSploit est un outil de consultation de références publiques issues d’Exploit-DB."
+    previous["class"]=previous.get("class",[])+["ejpt-va-description"]
+    expected=list(before)
+    position=expected.index(old)
+    expected[position:position+1]=["".join(lines) for _,lines in groups]
+    if expected != [c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("Assessment presentation changed original code")
+    print("Vulnerability assessment editorial check: 5 labels, original code reconstructed exactly")
+    return 5
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -909,6 +994,7 @@ for page in report["pages"]:
         report["cheatsheet_footprinting_actions"]=format_footprinting(soup,article)
         report["cheatsheet_context"]=add_note_explanations(soup,article)
         report["cheatsheet_enumeration"]=refine_enumeration(soup,article)
+        report["cheatsheet_vulnerability_assessment"]=refine_vulnerability_assessment(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
