@@ -59,6 +59,7 @@ export default defineConfig({
         text: 'Accès gratuit',
         items: [
           { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
+          { text: 'eJPT', link: '/ejpt/' },
           { text: 'OSINT', link: '/osint/' },
           { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
           { text: 'OSCP', link: '/oscp/' },
@@ -74,6 +75,18 @@ export default defineConfig({
       }
     ],
     sidebar: {
+      '/ejpt/': [
+        { text: 'Junior Penetration Tester', link: '/ejpt/' },
+        { text: 'Cours', link: '/ejpt/cours', collapsed: true, items: [
+          { text: 'Prérequis', link: '/ejpt/prerequis' },
+          { text: 'Réseaux et méthodologie', link: '/ejpt/methodologie' },
+          { text: 'Audit des hôtes et réseaux', link: '/ejpt/audit' },
+          { text: 'Pentest système et réseau', link: '/ejpt/pentest-systeme' },
+          { text: 'Pentest Web', link: '/ejpt/pentest-web' },
+          { text: 'Labs et préparation', link: '/ejpt/labs' }
+        ] },
+        { text: 'Cheatsheet', link: '/ejpt/cheatsheet' }
+      ],
       '/crtp/': [
         { text: 'CRTP', link: '/crtp/', collapsed: true, items: [
           { text: 'Cheatsheet AD', link: '/crtp/cheatsheet' },

@@ -12,6 +12,7 @@ pageClass: skill-home-page
   <h1>Morad H.</h1>
   <p class="profile-subtitle">Adversary Simulation · Cyberdéfense</p>
   <div class="profile-links">
+    <a href="/skill-issue/ejpt/">eJPT gratuit</a>
     <a href="/skill-issue/academy/index.html">Accès gratuit</a>
     <a href="/skill-issue/membres/">Accès membre</a>
     <a href="https://www.linkedin.com/in/l14m" target="_blank" rel="noopener noreferrer">LinkedIn</a>
@@ -75,7 +76,7 @@ J'ai regroupé ce que j'aurais aimé trouver à mes débuts :
     <span class="access-kicker">OUVERT À TOUS</span>
     <strong>Accès gratuit</strong>
     <span>Pour ceux qui veulent apprendre, même sans budget.</span>
-    <small>Academy · OSINT · Bug Bounty · OSCP · CRTP</small>
+    <small>eJPT · Academy · OSINT · Bug Bounty · OSCP · CRTP</small>
   </a>
   <a class="access-card access-card-member" href="/skill-issue/membres/">
     <span class="access-kicker">ESPACE RÉSERVÉ</span>
