@@ -1,0 +1,3 @@
+[submodule "imports/ejpt/eJPT-main"]
+	path = imports/ejpt/eJPT-main
+	url = https://github.com/e-hakson/eJPT.git
