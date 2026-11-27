@@ -889,7 +889,7 @@ def refine_vulnerability_assessment(soup, article):
     desc.string="Les exemples originaux portent sur quatre sujets de sécurité distincts."
     for i,(key,lines) in enumerate(groups,1):
         title,explanation=descriptions[key]
-        label=soup.new_tag("p",id="ejpt-va-"+str(i),attrs={"class":"ejpt-leaf-title ejpt-va-title"})
+        label=soup.new_tag("p",id="ejpt-va-"+str(i),attrs={"class":"ejpt-va-title"})
         strong=soup.new_tag("strong")
         strong.string=title
         label.append(strong)
