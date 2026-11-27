@@ -5,21 +5,21 @@ prev: false
 next: false
 ---
 
-# The Best Claude Code Setup for Bug Bounty Hunting
+# La meilleure configuration de Claude Code pour le Bug Bounty
 
-*Turn Claude Code into a powerful bug bounty hunting assistant with MCP, custom skills, agents, tools and automated security workflows.*
+*Transformez Claude Code en un puissant assistant de Bug Bounty grâce à MCP, aux Skills personnalisées, aux agents, aux outils et aux workflows de sécurité automatisés.*
 
-*Published Aug 27, 2026 · Free: No*
+*Publié le 27 août 2026 · Gratuit : non*
 
 ### Introduction
 
-**Bug bounty hunting** isn't just about finding vulnerabilities. It involves recon, analyzing JavaScript and HTTP requests, mapping the attack surface, testing and reporting. A lot of this work is repetitive and that's where Claude Code and MCP come in. In this guide, I'll show you how to set everything up from scratch, automate parts of the workflow and connect Claude Code directly to Burp Suite through MCP.
+**Le Bug Bounty** ne consiste pas uniquement à trouver des vulnérabilités. Il implique également la reconnaissance, l’analyse du JavaScript et des requêtes HTTP, la cartographie de la surface d’attaque, les tests et la rédaction de rapports. Une grande partie de ce travail est répétitive, et c’est là que Claude Code et MCP interviennent. Dans ce guide, je vais vous montrer comment tout configurer depuis zéro, automatiser certaines parties du workflow et connecter Claude Code directement à Burp Suite via MCP.
 
-### What Is Claude Code?
+### Qu’est-ce que Claude Code ?
 
-Claude Code is a terminal-based coding and agentic assistant from Anthropic. Instead of interacting with an AI only through a browser, you can run it directly from your terminal and allow it to work with files, commands and other tools. That makes it particularly interesting for security research because much of a bug bounty workflow already happens inside the terminal.
+Claude Code est un assistant de programmation agentique d’Anthropic qui fonctionne dans le terminal. Au lieu d’interagir avec une IA uniquement via un navigateur, vous pouvez l’exécuter directement dans votre terminal et lui permettre de travailler avec des fichiers, des commandes et d’autres outils. Cela le rend particulièrement intéressant pour la recherche en sécurité, car une grande partie du workflow de Bug Bounty se déroule déjà dans le terminal.
 
-For example, you might have a directory containing:
+Par exemple, vous pourriez avoir un répertoire contenant :
 
 ```typescript
 target/
@@ -30,42 +30,42 @@ target/
 └── notes/
 ```
 
-Claude Code can work with that project context instead of forcing you to manually copy everything into a chat interface.
+Claude Code peut travailler avec le contexte de ce projet sans vous obliger à tout copier manuellement dans une interface de conversation.
 
-### What is MCP
+### Qu’est-ce que MCP ?
 
-MCP stands for **Model Context Protocol**. In simple terms, it allows AI models like Claude to connect with external tools and actually interact with them. Think of Claude as the brain and MCP as the bridge. Without MCP, Claude can understand your instructions and analyze the information you provide, but it cannot directly interact with tools like Burp Suite. Once you connect the Burp Suite MCP server, Claude can access your Burp HTTP history and use the tools featured by Burp MCP to analyze and interact with captured traffic.
+MCP signifie **Model Context Protocol**. En termes simples, il permet aux modèles d’IA comme Claude de se connecter à des outils externes et d’interagir réellement avec eux. Imaginez Claude comme le cerveau et MCP comme le pont. Sans MCP, Claude peut comprendre vos instructions et analyser les informations que vous lui fournissez, mais il ne peut pas interagir directement avec des outils comme Burp Suite. Une fois le serveur MCP de Burp Suite connecté, Claude peut accéder à votre historique HTTP de Burp et utiliser les outils proposés par Burp MCP pour analyser le trafic capturé et interagir avec celui-ci.
 
 ![Architecture MCP](https://miro.medium.com/v2/resize:fit:1400/1*pTli88BeDE_GNI9j4PHXNg.png)
 
-### Step 1: Setting Up the Burp Suite MCP Server
+### Étape 1 : Configuration du serveur MCP de Burp Suite
 
-Let's get everything set up. For this walkthrough, I'm using a dedicated test website so I can safely experiment with the setup without affecting any real-world targets.
+Commençons par tout configurer. Pour cette démonstration, j’utilise un site web de test dédié afin de pouvoir expérimenter en toute sécurité sans affecter de cibles réelles.
 
-1. **Install the Extension:** Open Burp Suite, navigate to the **BApp Store** and search for "MCP." Verify the extension's features and author, then click **Install**. It should open in a new tab once finished.
+1. **Installer l’extension :** ouvrez Burp Suite, accédez au **BApp Store** et recherchez « MCP ». Vérifiez les fonctionnalités et l’auteur de l’extension, puis cliquez sur **Install**. Une fois installée, elle devrait s’ouvrir dans un nouvel onglet.
 
 ![Installation de l'extension MCP](https://miro.medium.com/v2/resize:fit:1400/1*nSGuFsFeBJqQzQqVDZbNRw.png)
 
-**2. Configure Auto-Approved Targets:** In the new MCP tab, enable the required options. You will see a setting for Auto-Approved HTTP Targets. Add your target domain, subdomains or use a wildcard (e.g., *.test-target.com). Note: This step is crucial. It ensures Claude won't pause to ask for permission every single time it interacts with that host.
+**2. Configurer les cibles automatiquement approuvées :** dans le nouvel onglet MCP, activez les options nécessaires. Vous verrez un paramètre nommé Auto-Approved HTTP Targets. Ajoutez votre domaine cible, ses sous-domaines ou utilisez un caractère générique (par exemple, *.test-target.com). Remarque : cette étape est cruciale. Elle évite à Claude de s’interrompre pour demander une autorisation à chaque interaction avec cet hôte.
 
 ![Configuration des cibles HTTP](https://miro.medium.com/v2/resize:fit:1400/1*vxRSoZ7l2P5-33YfeoVEEg.png)
 
-**3. Get the JAR File:**
+**3. Récupérer le fichier JAR :**
 
-- If you are using Claude Desktop, you can usually follow the built-in installation button.
+- Si vous utilisez Claude Desktop, vous pouvez généralement utiliser le bouton d’installation intégré.
 
 ![Installation Claude Desktop](https://miro.medium.com/v2/resize:fit:1400/1*8YOLSkDrdFQhdIgzRAuEiw.png)
 
-- If you are running Claude from your terminal, you need the compiled JAR file. You can extract this from the extension or generate it by following the build instructions on the project's official GitHub repository.
+- Si vous exécutez Claude depuis votre terminal, vous avez besoin du fichier JAR compilé. Vous pouvez l’extraire de l’extension ou le générer en suivant les instructions de compilation du dépôt GitHub officiel du projet.
 
-[**GitHub - PortSwigger/mcp-server: MCP Server for Burp**](https://github.com/PortSwigger/mcp-server)
-*MCP Server for Burp. Contribute to PortSwigger/mcp-server development by creating an account on GitHub.*
+[**GitHub - PortSwigger/mcp-server : serveur MCP pour Burp**](https://github.com/PortSwigger/mcp-server)
+*Serveur MCP pour Burp. Contribuez au développement de PortSwigger/mcp-server en créant un compte GitHub.*
 
-4. **Load the Extension:** Go to the Extensions tab in Burp Suite and load the MCP JAR file. Once loaded, verify that the MCP server is running on localhost with its specific assigned port.
+4. **Charger l’extension :** accédez à l’onglet Extensions de Burp Suite et chargez le fichier JAR de MCP. Une fois chargé, vérifiez que le serveur MCP fonctionne sur localhost avec le port qui lui a été attribué.
 
 ![Configuration du serveur local](https://miro.medium.com/v2/resize:fit:1400/1*Eu0I4XcTSDBqYwTn72Yvug.png)
 
-5. **Connect Claude:** Finally, open your terminal and enter the connection command provided by the extension to link Claude to your local Burp MCP server.
+5. **Connecter Claude :** ouvrez enfin votre terminal et saisissez la commande de connexion fournie par l’extension pour relier Claude à votre serveur Burp MCP local.
 
 ```csharp
 claude mcp add burp --transport sse http://127.0.0.1:9876
@@ -73,27 +73,27 @@ claude mcp add burp --transport sse http://127.0.0.1:9876
 
 ![Serveur Burp dans Claude Code](https://miro.medium.com/v2/resize:fit:1400/1*oXo-BKj4aDFTXVw9JCn1TQ.png)
 
-If you navigate to the MCP section inside Claude, you should now see your Burp MCP server listed. Clicking **View Tools** will reveal all the Burp functionalities Claude now has access to.
+Si vous accédez à la section MCP de Claude, votre serveur Burp MCP devrait désormais apparaître dans la liste. En cliquant sur **View Tools**, vous découvrirez toutes les fonctionnalités de Burp auxquelles Claude a maintenant accès.
 
-### Step 2: Traffic Collection and Reconnaissance
+### Étape 2 : Collecte du trafic et reconnaissance
 
-Before we start testing with AI, we need to provide it with enough data to understand the target and its attack surface.
+Avant de commencer les tests avec l’IA, nous devons lui fournir suffisamment de données pour comprendre la cible et sa surface d’attaque.
 
-1. **Set the Scope:** Open your target website, ensure Burp's Proxy is enabled, and add your target to the scope in the **Target** tab.
-2. **Filter the History:** Go to your HTTP history filter and select "**Show only in-scope items."** This keeps the noise out and ensures Burp only tracks relevant traffic.
-3. **Manual Crawling:** Browse the target application like a normal user. Click buttons, fill out forms, test search fields, log in, log out and interact with as many features as possible. The goal is to generate your HTTP history with a rich dataset of URLs, API endpoints, and parameters.
-4. **Automated Discovery (Optional but Recommended):** To dig deeper, go to the Target tab, open **Engagement Tools** and select **Discover Content**. Let Burp crawl the app to find hidden directories and endpoints.
-5. **Refine the View:** Once you have enough traffic, stop the crawl. Go back to your HTTP history filter and check "**Show only parameterized requests."** You are now looking at the prime candidates for security testing.
+1. **Définir le périmètre :** ouvrez le site web cible, assurez-vous que le Proxy de Burp est activé et ajoutez votre cible au périmètre dans l’onglet **Target**.
+2. **Filtrer l’historique :** accédez au filtre de l’historique HTTP et sélectionnez « **Show only in-scope items.** » Cela élimine le bruit et garantit que Burp ne suit que le trafic pertinent.
+3. **Exploration manuelle :** parcourez l’application cible comme un utilisateur ordinaire. Cliquez sur les boutons, remplissez les formulaires, testez les champs de recherche, connectez-vous, déconnectez-vous et interagissez avec autant de fonctionnalités que possible. L’objectif est d’alimenter votre historique HTTP avec un ensemble riche d’URL, d’endpoints d’API et de paramètres.
+4. **Découverte automatisée (facultative mais recommandée) :** pour approfondir la recherche, accédez à l’onglet Target, ouvrez **Engagement Tools** et sélectionnez **Discover Content**. Laissez Burp explorer l’application pour trouver des répertoires et endpoints cachés.
+5. **Affiner l’affichage :** une fois que vous avez suffisamment de trafic, arrêtez l’exploration. Retournez dans le filtre de l’historique HTTP et cochez « **Show only parameterized requests.** » Vous visualisez maintenant les requêtes les plus pertinentes pour les tests de sécurité.
 
-### Step 3: The AI Bug Hunting Workflow
+### Étape 3 : Workflow de recherche de vulnérabilités avec l’IA
 
-Now comes the interesting part. We're going to use Claude Code to analyze the data we just gathered.
+Voici la partie intéressante. Nous allons utiliser Claude Code pour analyser les données que nous venons de collecter.
 
-#### Phase 1: Analyzing and Organizing Traffic
+#### Phase 1 : Analyse et organisation du trafic
 
-Instead of scrolling through hundreds of raw requests, we use our first prompt to tell Claude:
+Au lieu de parcourir des centaines de requêtes brutes, nous utilisons notre premier prompt pour demander à Claude :
 
-**Prompt 1 — List & understand the history**
+**Prompt 1 — Lister et comprendre l’historique**
 
 ```sql
   List the requests in my Burp proxy history, showing method, URL, and status code for each. Then do all of this in order:
@@ -106,13 +106,13 @@ Instead of scrolling through hundreds of raw requests, we use our first prompt t
 
 ![Analyse de l'historique HTTP](https://miro.medium.com/v2/resize:fit:1400/1*kp_wvHtJeM9ZSUE8FYcJAQ.png)
 
-Claude will analyze the data, remove duplicates, and give you a clean overview of the application. It will identify API endpoints, interesting parameters, and any sensitive information exposed in the traffic.
+Claude analysera les données, supprimera les doublons et vous fournira une vue d’ensemble claire de l’application. Il identifiera les endpoints d’API, les paramètres intéressants et toute information sensible exposée dans le trafic.
 
-### Phase 2: Mapping the Attack Surface
+### Phase 2 : Cartographie de la surface d’attaque
 
-Next, we'll ask Claude to look for potential areas where vulnerabilities could be hiding:
+Ensuite, nous demanderons à Claude de rechercher les zones susceptibles de contenir des vulnérabilités :
 
-**Prompt 2 — Pick the attack surface**
+**Prompt 2 — Sélectionner la surface d’attaque**
 
 ```sql
 Analyze my Burp proxy history for ginandjuice.shop and identify the attack surface. In order:
@@ -125,13 +125,13 @@ Analyze my Burp proxy history for ginandjuice.shop and identify the attack surfa
 
 ![Cartographie applicative](https://miro.medium.com/v2/resize:fit:1400/1*zi9X-ZEL8B9OvlbL2_6c5g.png)
 
-Claude turns the raw URL list into a clear attack map, showing which requests are worth investigating for different vulnerability types.
+Claude transforme la liste brute d’URL en une cartographie claire de la surface d’attaque, en indiquant quelles requêtes méritent d’être examinées pour chaque type de vulnérabilité.
 
-### Phase 3: Active Vulnerability Testing
+### Phase 3 : Tests actifs de vulnérabilités
 
-This is where we move into the **actual security testing**. We'll ask Claude to test the relevant endpoints and vulnerability types identified in the previous phase.
+C’est ici que nous passons aux **véritables tests de sécurité**. Nous demanderons à Claude de tester les endpoints et les types de vulnérabilités pertinents identifiés lors de la phase précédente.
 
-**Prompt 3 — Test for bugs (the main show)**
+**Prompt 3 — Tester les vulnérabilités (la partie principale)**
 
 ```sql
 Using the endpoints from the attack surface list, test ginandjuice.shop for vulnerabilities, one bug class at a time. Do them in this order and report a one-line result
@@ -147,17 +147,17 @@ Using the endpoints from the attack surface list, test ginandjuice.shop for vuln
   At the end, list every confirmed or suspected finding with severity, the endpoint, and which request proved it.
 ```
 
-This phase can take some time. While Claude is running, press **Ctrl+O** to view its background processes. You'll be able to watch Claude send requests through Burp Suite using the MCP connection, test different parameters, and analyze the resulting HTTP responses.
+Cette phase peut prendre un certain temps. Pendant l’exécution de Claude, appuyez sur **Ctrl+O** pour afficher ses processus en arrière-plan. Vous pourrez observer Claude envoyer des requêtes via Burp Suite en utilisant la connexion MCP, tester différents paramètres et analyser les réponses HTTP obtenues.
 
 ![Résultats de l'analyse](https://miro.medium.com/v2/resize:fit:1400/1*zaoccEruIK8FJBOPEuBsag.png)
 
-Once the testing is complete, Claude will provide a list of the vulnerabilities it tested, separating confirmed findings from suspected issues. It will also include the relevant HTTP requests and supporting evidence for each finding.
+Une fois les tests terminés, Claude fournira une liste des vulnérabilités testées en distinguant les résultats confirmés des problèmes suspectés. Il inclura également les requêtes HTTP pertinentes et les éléments de preuve associés à chaque constat.
 
-### Phase 4: Generating the Final Report
+### Phase 4 : Génération du rapport final
 
-Finally, we turn the validated findings into a **clear, professional security report**, including the affected endpoints, technical evidence, impact, severity, and recommended remediation.
+Enfin, nous transformons les résultats validés en un **rapport de sécurité clair et professionnel**, comprenant les endpoints affectés, les preuves techniques, l’impact, la sévérité et les mesures correctives recommandées.
 
-**Prompt 4 — Wrap up like a pro**
+**Prompt 4 — Finaliser comme un professionnel**
 
 ```vbnet
 Write a professional pentest-style summary report of everything we found on ginandjuice.shop. For each finding include: vulnerability name, severity
@@ -167,11 +167,11 @@ Write a professional pentest-style summary report of everything we found on gina
 
 ![Rapport final](https://miro.medium.com/v2/resize:fit:1400/1*P839XfMuiuLfvd2m2yCLQg.png)
 
-Within seconds, Claude generates a clean, well-organized report that's ready for a bug bounty submission.
+En quelques secondes, Claude génère un rapport clair et bien organisé, prêt à être soumis à un programme de Bug Bounty.
 
-### The One-Shot Prompt
+### Le prompt One-Shot
 
-If running all four phases separately feels too time-consuming, you can combine them into a single "**One-Shot" prompt**. This tells Claude to handle the entire workflow in one go, from analyzing the data and mapping the attack surface to testing for vulnerabilities, validating the findings and generating the final report.
+Si l’exécution séparée des quatre phases vous semble trop chronophage, vous pouvez les combiner dans un seul prompt « **One-Shot** ». Celui-ci demande à Claude de gérer l’intégralité du workflow en une seule fois, depuis l’analyse des données et la cartographie de la surface d’attaque jusqu’aux tests de vulnérabilités, à la validation des résultats et à la génération du rapport final.
 
 ```sql
 ROLE
@@ -240,21 +240,21 @@ ROLE
 
 ![Synthèse du workflow](https://miro.medium.com/v2/resize:fit:1400/1*5FfJVbQPCZTMnK5M178nWw.png)
 
-Because the one-shot prompt runs the entire workflow in a single process, it may take some time, especially when there's a large amount of HTTP history to analyze. Let Claude work through each phase, and once it's finished, you'll have a complete security report with validated findings and potential vulnerability chains.
+Comme le prompt One-Shot exécute l’intégralité du workflow en un seul processus, cela peut prendre un certain temps, notamment lorsqu’une grande quantité d’historique HTTP doit être analysée. Laissez Claude parcourir chaque phase. Une fois terminé, vous disposerez d’un rapport de sécurité complet, avec des résultats validés et des chaînes de vulnérabilités potentielles.
 
-### Bonus: Bug Hunting Without Burp MCP
+### Bonus : Recherche de vulnérabilités sans Burp MCP
 
-In my previous video, I showed how Claude Code can work directly with individual security artifacts, such as Burp raw request files and JavaScript **files**. This approach is much simpler when you only want to investigate a specific request, source file, or piece of reconnaissance data.
+Dans ma précédente vidéo, j’ai montré comment Claude Code peut travailler directement avec des artefacts de sécurité individuels, tels que des fichiers de requêtes brutes Burp et des **fichiers** JavaScript. Cette approche est beaucoup plus simple lorsque vous souhaitez uniquement examiner une requête précise, un fichier source ou un élément issu de la reconnaissance.
 
-So, if you don't want to set up **Burp MCP**, you can still build a powerful workflow by giving Claude Code the exact data you want it to analyze.
+Ainsi, si vous ne souhaitez pas configurer **Burp MCP**, vous pouvez tout de même construire un workflow puissant en fournissant à Claude Code les données exactes que vous souhaitez analyser.
 
-Here are some of the most useful shortcuts:
+Voici quelques-uns des raccourcis les plus utiles :
 
-#### 1. Analyze a Burp Raw Request
+#### 1. Analyser une requête brute Burp
 
-Save any interesting Burp request as a .txt file, then give it to Claude and let it analyze the request for you.
+Enregistrez toute requête Burp intéressante dans un fichier .txt, puis transmettez-le à Claude pour qu’il analyse la requête.
 
-Here's a realistic example of a **Burp Suite raw request** you can use for the demo.
+Voici un exemple réaliste de **requête brute Burp Suite** que vous pouvez utiliser pour la démonstration.
 
 ```makefile
 POST /api/v1/auth/signup HTTP/2
@@ -294,11 +294,11 @@ Do not assume a vulnerability exists.
 Separate observations from hypotheses.
 ```
 
-This is useful when you have a particularly interesting request and only want Claude to focus on that specific request instead of your entire Burp history.
+Cela est utile lorsque vous disposez d’une requête particulièrement intéressante et souhaitez que Claude se concentre uniquement sur cette requête plutôt que sur l’intégralité de votre historique Burp.
 
-#### 2. Analyze a JavaScript File
+#### 2. Analyser un fichier JavaScript
 
-JavaScript analysis is another useful shortcut. Instead of connecting Claude to Burp, you can simply give it a JavaScript file and let it analyze the code directly.
+L’analyse JavaScript constitue un autre raccourci utile. Au lieu de connecter Claude à Burp, vous pouvez simplement lui fournir un fichier JavaScript et le laisser analyser directement le code.
 
 ```markdown
 Analyze this JavaScript file from a bug bounty perspective.
@@ -320,13 +320,13 @@ For every interesting discovery, explain why it deserves further investigation.
 Do not report something as a vulnerability unless there is enough evidence to support it.
 ```
 
-#### 3. Testing a JavaScript File Directly from a URL
+#### 3. Tester un fichier JavaScript directement depuis une URL
 
-You don't always need to download a JavaScript file manually. If you find a .js file during recon, you can give the URL directly to Claude and ask it to analyze the file.
+Vous n’avez pas toujours besoin de télécharger manuellement un fichier JavaScript. Si vous trouvez un fichier .js pendant la reconnaissance, vous pouvez transmettre directement son URL à Claude et lui demander de l’analyser.
 
-This is useful when you find an interesting JavaScript bundle and want to quickly identify API endpoints, hidden routes, sensitive information and other security-relevant clues.
+Cela est utile lorsque vous trouvez un bundle JavaScript intéressant et souhaitez identifier rapidement des endpoints d’API, des routes cachées, des informations sensibles et d’autres indices pertinents pour la sécurité.
 
-**Use a prompt like this:**
+**Utilisez un prompt comme celui-ci :**
 
 ```markdown
 Analyze this JavaScript file for security-relevant information:
@@ -343,9 +343,9 @@ Look for:
 For each finding, explain why it is interesting and provide the relevant code or URL as evidence.
 ```
 
-#### 4. Analyze Multiple JS Files
+#### 4. Analyser plusieurs fichiers JS
 
-If you've already collected JavaScript files during recon, put them into a same directory and let Claude analyze them together.
+Si vous avez déjà collecté des fichiers JavaScript pendant la reconnaissance, placez-les dans un même répertoire et laissez Claude les analyser ensemble.
 
 ```markdown
 Analyze every JavaScript file in this directory.
@@ -373,13 +373,13 @@ At the end, rank the top 10 discoveries that deserve manual security testing and
 Do not assume a vulnerability exists. Clearly separate observed functionality from security hypotheses.
 ```
 
-This is especially useful for large applications where searching through many JavaScript files can take a lot of time.
+Cela est particulièrement utile pour les grandes applications, dans lesquelles parcourir de nombreux fichiers JavaScript peut prendre beaucoup de temps.
 
-#### 5. Ask Claude to Investigate a Specific Vulnerability
+#### 5. Demander à Claude d’examiner une vulnérabilité précise
 
-You can also use Claude as a second opinion when you already have a suspicious request.
+Vous pouvez également utiliser Claude pour obtenir un second avis lorsque vous disposez déjà d’une requête suspecte.
 
-**For example:**
+**Par exemple :**
 
 ```vbnet
 Analyze this request for a possible IDOR/BOLA vulnerability.
@@ -396,11 +396,11 @@ Clearly distinguish observations from hypotheses.
 Explain what evidence would be required to confirm the issue.
 ```
 
-This works well when you've already discovered something manually and want Claude to help structure the investigation.
+Cette approche fonctionne bien lorsque vous avez déjà découvert quelque chose manuellement et souhaitez que Claude vous aide à structurer l’investigation.
 
-#### 6. Review Source Code
+#### 6. Auditer le code source
 
-If the source code is available, Claude Code can go beyond recon and help perform a deeper security review of the code itself.
+Si le code source est disponible, Claude Code peut aller au-delà de la reconnaissance et contribuer à un audit de sécurité plus approfondi du code lui-même.
 
 ```markdown
 Review this source code from a security perspective.
@@ -427,11 +427,11 @@ Clearly distinguish confirmed issues, security-relevant observations, and hypoth
 Prioritize findings by severity and practical exploitability.
 ```
 
-This gives you another workflow that doesn't require Burp at all.
+Vous disposez ainsi d’un autre workflow qui ne nécessite pas du tout Burp.
 
-#### 7. Turn Everything Into a Bug Bounty Report
+#### 7. Transformer l’ensemble des résultats en rapport de Bug Bounty
 
-Once you've finished your investigation, you can give Claude the evidence and let it organize everything into a clear report.
+Une fois votre investigation terminée, vous pouvez fournir les preuves à Claude et le laisser les organiser dans un rapport clair.
 
 ```vbnet
 Based on the provided HTTP requests, JavaScript analysis, recon results, and testing notes, create a professional bug bounty report.
@@ -459,11 +459,11 @@ Clearly distinguish observed behavior from security conclusions.
 Rank confirmed findings by severity and practical impact.
 ```
 
-### The Full Shortcut
+### Le raccourci complet
 
-The real advantage comes when you combine these approaches.
+Le véritable avantage apparaît lorsque vous combinez ces approches.
 
-**You can give Claude Code:**
+**Vous pouvez fournir à Claude Code :**
 
 ```bash
 project/
@@ -486,7 +486,7 @@ project/
     └── application-code/
 ```
 
-**Then ask Claude to connect the dots and correlate everything:**
+**Demandez ensuite à Claude de faire le lien entre les éléments et de tout corréler :**
 
 ```markdown
 You are assisting with an authorized security assessment.
@@ -509,74 +509,74 @@ Do not treat suspicious patterns as confirmed vulnerabilities.
 For every finding, clearly explain the evidence that supports it and what additional validation is required.
 ```
 
-This gives you a lightweight alternative to the MCP workflow.
+Vous disposez ainsi d’une alternative légère au workflow MCP.
 
-MCP is useful when you want Claude to interact directly with Burp and work continuously with live traffic. But if you only want Claude to analyze specific artifacts, these shortcuts can be much faster and easier to set up.
+MCP est utile lorsque vous souhaitez que Claude interagisse directement avec Burp et travaille en continu avec le trafic en direct. Toutefois, si vous souhaitez uniquement que Claude analyse des artefacts précis, ces raccourcis peuvent être beaucoup plus rapides et plus faciles à mettre en place.
 
-**You can also watch this video where I showed the complete practicle of this method:**
+**Vous pouvez également regarder cette vidéo dans laquelle j’ai présenté la démonstration pratique complète de cette méthode :**
 
 <!-- iframe: 854x480 -->
-[Embedded content](https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FVr-NEWVLN9Y%3Ffeature%3Doembed&display_name=YouTube&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DVr-NEWVLN9Y&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FVr-NEWVLN9Y%2Fhqdefault.jpg&type=text%2Fhtml&schema=youtube)
+[Contenu intégré](https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FVr-NEWVLN9Y%3Ffeature%3Doembed&display_name=YouTube&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DVr-NEWVLN9Y&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FVr-NEWVLN9Y%2Fhqdefault.jpg&type=text%2Fhtml&schema=youtube)
 
-### Claude Code Skills for Bug Hunting
+### Les Skills de Claude Code pour la recherche de vulnérabilités
 
-Claude Code Skills let you package a bug-hunting methodology into a reusable workflow. Instead of giving Claude the same prompts and instructions repeatedly, you can define the methodology, tools, workflow, payloads and references inside a Skill and reuse it whenever you need it.
+Les Skills de Claude Code permettent de transformer une méthodologie de recherche de vulnérabilités en un workflow réutilisable. Au lieu de donner à Claude les mêmes prompts et instructions à chaque fois, vous pouvez définir la méthodologie, les outils, le workflow, les payloads et les références dans une Skill et la réutiliser chaque fois que nécessaire.
 
-Think of a Skill like a Nuclei template, but for Claude. Instead of defining a vulnerability check, a Skill defines the methodology Claude should follow for a specific task.
+Imaginez une Skill comme un template Nuclei, mais pour Claude. Au lieu de définir un test de vulnérabilité, une Skill définit la méthodologie que Claude doit suivre pour une tâche précise.
 
-Skills are especially useful for repetitive bug-hunting workflows because you can build the process once and then reuse it across different authorized targets.
+Les Skills sont particulièrement utiles pour les workflows répétitifs de recherche de vulnérabilités, car vous pouvez définir le processus une seule fois, puis le réutiliser sur différentes cibles autorisées.
 
-#### Using Open-Source Bug Hunting Skills
+#### Utiliser des Skills open source pour la recherche de vulnérabilités
 
-You don't always need to create every Skill yourself. There are already open-source Skills created by the community that you can install and use with Claude Code.
+Vous n’avez pas toujours besoin de créer chaque Skill vous-même. Il existe déjà des Skills open source créées par la communauté que vous pouvez installer et utiliser avec Claude Code.
 
 ![Catalogue des Skills](https://miro.medium.com/v2/resize:fit:1400/1*Ts9JbWP72mEbc7FxFXYSAQ.png)
 
-[**The Agent Skills Directory**](https://www.skills.sh/)
-*Discover and install skills for AI agents.*
+[**L’annuaire des Skills pour agents**](https://www.skills.sh/)
+*Découvrez et installez des Skills pour les agents d’IA.*
 
-You can visit **skill.sh** to browse available Skills and search for the type of workflow you need. You'll find different collections covering areas such as OSINT, bug hunting and offensive security.
+Vous pouvez consulter **skill.sh** pour parcourir les Skills disponibles et rechercher le type de workflow dont vous avez besoin. Vous trouverez différentes collections couvrant des domaines tels que l’OSINT, la recherche de vulnérabilités et la sécurité offensive.
 
-#### Adding GitHub-Hosted Bug Hunting Skills
+#### Ajouter des Skills de recherche de vulnérabilités hébergées sur GitHub
 
-Apart from skill.sh, you can also find useful bug-hunting Skills directly on GitHub. Many security researchers publish their own Skills and complete collections that you can add to Claude Code.
+En dehors de skill.sh, vous pouvez également trouver des Skills utiles pour la recherche de vulnérabilités directement sur GitHub. De nombreux chercheurs en sécurité publient leurs propres Skills et des collections complètes que vous pouvez ajouter à Claude Code.
 
 ![Collections de Skills](https://miro.medium.com/v2/resize:fit:1400/1*nEEBjvOwGRIxrDnJS7zXuw.png)
 
-[**Claude-Red/Skills/web at main · SnailSploit/Claude-Red**](https://github.com/SnailSploit/Claude-Red/tree/main/Skills/web)
-*claude-red is a curated library of offensive security skills designed for the Claude skills system. Each skill is a…*
+[**Claude-Red/Skills/web sur la branche main · SnailSploit/Claude-Red**](https://github.com/SnailSploit/Claude-Red/tree/main/Skills/web)
+*claude-red est une bibliothèque sélectionnée de Skills de sécurité offensive conçues pour le système de Skills de Claude. Chaque Skill est une…*
 
-[**GitHub - elementalsouls/Claude-BugHunter: A Claude Code skill bundle for bug hunting and external…**](https://github.com/elementalsouls/Claude-BugHunter)
-*A Claude Code skill bundle for bug hunting and external red-team work - 82 skills, 15 slash commands, 681…*
+[**GitHub - elementalsouls/Claude-BugHunter : un ensemble de Skills Claude Code pour la recherche de vulnérabilités et les…**](https://github.com/elementalsouls/Claude-BugHunter)
+*Un ensemble de Skills Claude Code pour la recherche de vulnérabilités et les opérations Red Team externes : 82 Skills, 15 commandes slash, 681…*
 
-[**GitHub - Awarexone/Agentic-Bug-Hunter: AI-powered bug bounty hunting toolkit that works with or…**](https://github.com/Awarexone/Agentic-Bug-Hunter)
-*AI-powered bug bounty hunting toolkit that works with or without subscription. - Awarexone/Agentic-Bug-Hunter*
+[**GitHub - Awarexone/Agentic-Bug-Hunter : boîte à outils de Bug Bounty propulsée par l’IA, fonctionnant avec ou…**](https://github.com/Awarexone/Agentic-Bug-Hunter)
+*Boîte à outils de Bug Bounty propulsée par l’IA, fonctionnant avec ou sans abonnement. - Awarexone/Agentic-Bug-Hunter*
 
-These repositories can contain Skills for specific tasks such as reconnaissance, vulnerability discovery, endpoint analysis, authentication testing, API testing and other parts of the bug-bounty workflow.
+Ces dépôts peuvent contenir des Skills pour des tâches précises, telles que la reconnaissance, la découverte de vulnérabilités, l’analyse des endpoints, les tests d’authentification, les tests d’API et d’autres parties du workflow de Bug Bounty.
 
-### Creating Your Own Custom Bug Hunting Skills
+### Créer vos propres Skills personnalisées pour la recherche de vulnérabilités
 
-The more interesting option is creating your own Skills from the methodologies you already use.
+L’option la plus intéressante consiste à créer vos propres Skills à partir des méthodologies que vous utilisez déjà.
 
-You can take an existing bug-hunting methodology, such as a research article, your own notes, a testing workflow or a collection of techniques, and convert it into a reusable Skill.
+Vous pouvez prendre une méthodologie existante de recherche de vulnérabilités, comme un article de recherche, vos propres notes, un workflow de test ou une collection de techniques, et la convertir en une Skill réutilisable.
 
-#### Claude Skill Structure & Format
+#### Structure et format d’une Skill Claude
 
 ![Structure d'une Skill](https://miro.medium.com/v2/resize:fit:1400/1*GxiOymmzy7yuOchJ5bHERg.png)
 
 ![Format SKILL.md](https://miro.medium.com/v2/resize:fit:1400/1*CDvK8ZpiMF6cfeylT1vWag.png)
 
-A Skill can contain the title, description, methodology, tools, workflows, payloads, scripts and other resources that Claude can use while executing the task.
+Une Skill peut contenir le titre, la description, la méthodologie, les outils, les workflows, les payloads, les scripts et d’autres ressources que Claude peut utiliser pendant l’exécution de la tâche.
 
 ![Organisation des ressources](https://miro.medium.com/v2/resize:fit:1400/1*vXLXk943Mb_OtI0eb1C3pA.png)
 
-Then, instead of giving Claude a long prompt every time, you can simply provide the Skill name and the target information. Claude can follow the workflow defined inside the Skill and generate the results in a consistent format.
+Ensuite, au lieu de fournir un long prompt à chaque fois, vous pouvez simplement indiquer le nom de la Skill et les informations relatives à la cible. Claude peut suivre le workflow défini dans la Skill et générer les résultats dans un format cohérent.
 
-#### Example Prompts for Creating Custom Bug Hunting Skills
+#### Exemples de prompts pour créer des Skills personnalisées de recherche de vulnérabilités
 
-Here are some examples of prompts you can use to turn your existing methodologies into reusable Skills.
+Voici quelques exemples de prompts que vous pouvez utiliser pour transformer vos méthodologies existantes en Skills réutilisables.
 
-#### **Open Redirect Skill**
+#### **Skill de redirection ouverte (Open Redirect)**
 
 ```diff
 Create a Claude Code Skill for finding and validating open redirect vulnerabilities.
@@ -601,7 +601,7 @@ Organize everything into a practical workflow Claude can follow during an author
 Do not invent techniques that are not supported by the methodology. Keep the Skill focused on open redirect testing.
 ```
 
-#### **XSS Skill**
+#### **Skill XSS**
 
 ```diff
 Create a Claude Code Skill for XSS hunting based on the methodology below:
@@ -625,9 +625,9 @@ Include:
 Preserve the methodology from my research and organize it into a repeatable workflow.
 ```
 
-#### **Custom Methodology → Skill**
+#### **Méthodologie personnalisée → Skill**
 
-You can also give Claude an entire methodology and let it structure the Skill for you:
+Vous pouvez également fournir à Claude une méthodologie complète et le laisser structurer la Skill pour vous :
 
 ```markdown
 I have developed the following bug hunting methodology:
@@ -661,19 +661,19 @@ My locally installed security tools are available at:
 Use these existing binaries when appropriate instead of attempting to install alternative versions.
 ```
 
-You can then take the generated Skill, review the SKILL.md and any supporting files, make adjustments and place it in your Claude Skills directory.
+Vous pouvez ensuite récupérer la Skill générée, examiner le fichier SKILL.md et les éventuels fichiers complémentaires, apporter des ajustements et placer le tout dans votre répertoire de Skills Claude.
 
-This is where custom Skills become particularly useful. Instead of repeatedly explaining your methodology to Claude, you turn your experience into a reusable workflow that you can continuously improve over time.
+C’est là que les Skills personnalisées deviennent particulièrement utiles. Au lieu d’expliquer votre méthodologie à Claude à plusieurs reprises, vous transformez votre expérience en un workflow réutilisable que vous pouvez continuellement améliorer.
 
-**You can also watch this video where I showed the complete practicle of this method:**
+**Vous pouvez également regarder cette vidéo dans laquelle j’ai présenté la démonstration pratique complète de cette méthode :**
 
 <!-- iframe: 854x480 -->
-[Embedded content](https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FyTmfDSkr8sI%3Ffeature%3Doembed&display_name=YouTube&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DyTmfDSkr8sI&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FyTmfDSkr8sI%2Fhqdefault.jpg&type=text%2Fhtml&schema=youtube)
+[Contenu intégré](https://cdn.embedly.com/widgets/media.html?src=https%3A%2F%2Fwww.youtube.com%2Fembed%2FyTmfDSkr8sI%3Ffeature%3Doembed&display_name=YouTube&url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DyTmfDSkr8sI&image=https%3A%2F%2Fi.ytimg.com%2Fvi%2FyTmfDSkr8sI%2Fhqdefault.jpg&type=text%2Fhtml&schema=youtube)
 
 ### Conclusion
 
-This workflow can save hours of repetitive work across traffic analysis, attack-surface mapping, testing and reporting. With Skills, you can also turn your own bug-hunting methodologies into reusable workflows and use open-source Skills from the community. The real power comes from combining MCP, Skills, strong prompts and your own methodology while still manually validating findings.
+Ce workflow peut faire gagner des heures de travail répétitif lors de l’analyse du trafic, de la cartographie de la surface d’attaque, des tests et de la rédaction de rapports. Grâce aux Skills, vous pouvez également transformer vos propres méthodologies de recherche de vulnérabilités en workflows réutilisables et utiliser les Skills open source de la communauté. La véritable puissance réside dans la combinaison de MCP, des Skills, de prompts efficaces et de votre propre méthodologie, tout en continuant à valider manuellement les résultats.
 
-### Disclaimer
+### Avertissement
 
-> _The content provided in this article is for educational and informational purposes only. Always ensure you have proper authorization before conducting security assessments. Use this information responsibly._
+> _Le contenu fourni dans cet article est destiné uniquement à des fins éducatives et informatives. Assurez-vous toujours de disposer des autorisations nécessaires avant de réaliser des évaluations de sécurité. Utilisez ces informations de manière responsable._
