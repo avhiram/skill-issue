@@ -994,9 +994,6 @@ def refine_system_layout(soup, article):
 # Make long capture-analysis examples easier to read without changing their text.
 def refine_network_layout(soup, article):
     before=[c.get_text() for c in article.select("pre code")]
-    roots=[h for h in article.find_all(["h2","h3"]) if h.get_text(strip=True)=="Pentest réseau"]
-    if len(roots)!=2:
-        raise RuntimeError("Missing network sections")
     # Use broad topics already explicitly present in the original notes.
     wireshark={
         "# Filter by ip": ("Adresses IP", "Les filtres d’affichage distinguent les paquets selon les adresses IP."),
@@ -1013,13 +1010,9 @@ def refine_network_layout(soup, article):
     count=0
     sources=0
     replacement=[]
-    for root in roots:
-        level=int(root.name[1])
-        for node in list(root.next_siblings):
+    for node in list(article.find_all("pre")):
             if not getattr(node,"name",None):
                 continue
-            if re.fullmatch(r"h[1-6]",node.name) and int(node.name[1])<=level:
-                break
             if node.name!="pre":
                 continue
             code=node.find("code",recursive=False)
