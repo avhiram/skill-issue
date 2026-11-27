@@ -1,5 +1,5 @@
 ---
-title: Cheatsheet
+title: Cheatsheet eJPTv2
 aside: false
 prev: false
 next: false
@@ -8,8 +8,6 @@ next: false
 import EjptCatalog from '../../.vitepress/theme/components/EjptCatalog.vue'
 </script>
 
-# Cheatsheet
-
-Les fiches de révision du parcours.
+# Cheatsheet eJPTv2
 
 <EjptCatalog mode="cheatsheet" />

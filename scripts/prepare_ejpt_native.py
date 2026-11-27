@@ -65,6 +65,12 @@ for page in report["pages"]:
     for img in article.find_all("img"):
         img["loading"]="lazy"
         img["decoding"]="async"
+        if img.get("src","").endswith("/assets/eJPT-small.png"):
+            img["src"]="/skill-issue/ejpt-logo.png"
+            img["width"]="100"
+            img["height"]="132"
+            img["style"]="object-fit:contain"
+
     title=titles[page[:-5]+".md"]
     heading=article.find("h1")
     if heading is not None and not heading.find(["img","code"]):
@@ -73,6 +79,21 @@ for page in report["pages"]:
     # Keep sanitized content as data rather than compiling upstream HTML as
     # a Vue template. This prevents asset import rewriting and interpolation.
     article.attrs.pop("v-pre",None)
+    if page=="ejpt-cheatsheet.html":
+        extra=soup.new_tag("details",attrs={"class":"custom-block details"})
+        summary=soup.new_tag("summary")
+        summary.string="Ressources complémentaires"
+        extra.append(summary)
+        for label,link in [
+            ("Notes complémentaires","cheatsheet-additional.html"),
+            ("Références eJPT","ejpt-references.html"),
+        ]:
+            p=soup.new_tag("p")
+            a=soup.new_tag("a",href="/skill-issue/ejpt/original/"+link)
+            a.string=label
+            p.append(a)
+            extra.append(p)
+        article.append(extra)
     body=str(article)
     parsed=BeautifulSoup(body,"html.parser")
     assert before==[x.get_text() for x in parsed.select("pre code")],page

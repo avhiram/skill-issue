@@ -81,7 +81,7 @@ export default defineConfig({
           "link": "/ejpt/"
         },
         {
-          "text": "Cours",
+          "text": "Junior Pentester — Formation complète",
           "link": "/ejpt/cours"
         },
         {
@@ -419,27 +419,8 @@ export default defineConfig({
           ]
         },
         {
-          "text": "Cheatsheets",
-          "link": "/ejpt/cheatsheet",
-          "collapsed": true,
-          "items": [
-            {
-              "text": "Cheatsheet principale",
-              "link": "/ejpt/original/ejpt-cheatsheet"
-            },
-            {
-              "text": "Cheatsheet sans liens",
-              "link": "/ejpt/original/cheatsheet-files/ejpt-cheatsheet_nolinks"
-            },
-            {
-              "text": "Cheatsheet complémentaire",
-              "link": "/ejpt/original/cheatsheet-additional"
-            },
-            {
-              "text": "Références eJPT",
-              "link": "/ejpt/original/ejpt-references"
-            }
-          ]
+          "text": "Cheatsheet eJPTv2",
+          "link": "/ejpt/original/ejpt-cheatsheet"
         }
       ],
       '/crtp/': [

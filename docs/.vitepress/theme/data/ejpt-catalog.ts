@@ -493,22 +493,7 @@ export const groups = [
 export const sheets = [
   {
     "path": "ejpt-cheatsheet.html",
-    "title": "Cheatsheet principale",
-    "description": "Fiche originale du cours"
-  },
-  {
-    "path": "cheatsheet-files/ejpt-cheatsheet_nolinks.html",
-    "title": "Cheatsheet sans liens",
-    "description": "Version alternative"
-  },
-  {
-    "path": "cheatsheet-additional.html",
-    "title": "Cheatsheet complémentaire",
-    "description": "Fiche supplémentaire fournie"
-  },
-  {
-    "path": "ejpt-references.html",
-    "title": "Références eJPT",
-    "description": "Ressources du parcours"
+    "title": "Cheatsheet eJPTv2",
+    "description": "Fiche de révision principale"
   }
 ]
