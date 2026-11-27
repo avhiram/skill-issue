@@ -78,11 +78,11 @@ export default defineConfig({
       '/ejpt/': [
         { text: 'Junior Penetration Tester', link: '/ejpt/' },
         { text: 'Cours', link: '/ejpt/cours', collapsed: true, items: [
-          { text: 'Prérequis', link: '/ejpt/original/penetration-testing-prerequisites/README.html', target: '_self' },
-          { text: 'Assessment Methodologies', link: '/ejpt/original/assessment-methodologies/README.html', target: '_self' },
-          { text: 'Host & Network Penetration Testing', link: '/ejpt/original/hostnetwork-penetration-testing/README.html', target: '_self' },
-          { text: 'Web Application Penetration Testing', link: '/ejpt/original/webapp-penetration-testing/README.html', target: '_self' },
-          { text: 'Exam Preparation Labs', link: '/ejpt/original/exam-preparation-labs/README.html', target: '_self' }
+          { text: 'Prérequis', link: 'https://avhiram.github.io/skill-issue/ejpt/original/penetration-testing-prerequisites/README.html', target: '_self' },
+          { text: 'Assessment Methodologies', link: 'https://avhiram.github.io/skill-issue/ejpt/original/assessment-methodologies/README.html', target: '_self' },
+          { text: 'Host & Network Penetration Testing', link: 'https://avhiram.github.io/skill-issue/ejpt/original/hostnetwork-penetration-testing/README.html', target: '_self' },
+          { text: 'Web Application Penetration Testing', link: 'https://avhiram.github.io/skill-issue/ejpt/original/webapp-penetration-testing/README.html', target: '_self' },
+          { text: 'Exam Preparation Labs', link: 'https://avhiram.github.io/skill-issue/ejpt/original/exam-preparation-labs/README.html', target: '_self' }
         ] },
         { text: 'Cheatsheet', link: '/ejpt/cheatsheet' }
       ],

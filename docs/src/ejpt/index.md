@@ -12,13 +12,13 @@ next: false
 Un parcours progressif pour apprendre les fondamentaux du pentest et s'entraîner dans des laboratoires autorisés.
 
 <div class="access-overview">
-  <a class="access-card access-card-free" href="/skill-issue/ejpt/cours.html">
+  <a class="access-card access-card-free" href="/skill-issue/ejpt/cours.html" target="_self">
     <span class="access-kicker">APPRENDRE</span>
     <strong>Cours</strong>
     <span>Les chapitres dans l'ordre, des fondamentaux à la préparation pratique.</span>
     <small>Cours original · chapitres distincts</small>
   </a>
-  <a class="access-card" href="/skill-issue/ejpt/cheatsheet.html">
+  <a class="access-card" href="/skill-issue/ejpt/cheatsheet.html" target="_self">
     <span class="access-kicker">RÉVISER</span>
     <strong>Cheatsheet</strong>
     <span>Les commandes classées par thème, avec copie rapide.</span>
