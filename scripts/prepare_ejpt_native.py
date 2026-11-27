@@ -33,11 +33,91 @@ for p in src.rglob("*"):
     if p.suffix.lower() in {".png",".gif"}:
         count+=1
 assert count==report["images"]
+# Consolidate the existing sheets at render time. The original source files
+# remain byte-verified and unchanged. Deduplicate only identical rendered
+# code blocks, including whitespace; no command is rewritten.
+canonical = "ejpt-cheatsheet.html"
+aliases = {
+    "cheatsheet-files/ejpt-cheatsheet_nolinks.html",
+    "cheatsheet-additional.html",
+}
+canonical_url = "/skill-issue/ejpt/original/" + canonical
+def load_article(page):
+    doc = BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
+    result = doc.find("article")
+    if result is None:
+        raise RuntimeError("Missing sheet article: "+page)
+    return result
+sheet_sources = [canonical, "cheatsheet-files/ejpt-cheatsheet_nolinks.html", "cheatsheet-additional.html"]
+source_blocks = {
+    p: [c.get_text() for c in load_article(p).select("pre code")]
+    for p in sheet_sources
+}
+expected_blocks = set().union(*(set(v) for v in source_blocks.values()))
+if set(source_blocks[sheet_sources[1]]) != set(source_blocks[canonical]):
+    raise RuntimeError("The no-links variant has different blocks; review before consolidation")
+def consolidate_sheets(soup, article):
+    seen = {}
+    def dedup(part):
+        for pre in list(part.find_all("pre")):
+            code = pre.find("code",recursive=False)
+            if code is None:
+                continue
+            key = code.get_text()
+            if key in seen:
+                note = soup.new_tag("p",attrs={"class":"ejpt-duplicate-note"})
+                link = soup.new_tag("a",href="#"+seen[key])
+                link.string = "Bloc identique — voir la commande"
+                note.append(link)
+                pre.replace_with(note)
+            else:
+                ident = "ejpt-code-"+str(len(seen)+1)
+                pre["id"] = ident
+                seen[key] = ident
+    dedup(article)
+    supplement = load_article("cheatsheet-additional.html")
+    # Keep the original headings, explanations, images and context for
+    # non-identical material, inside the same canonical sheet.
+    for node in supplement.select("[id]"):
+        node["id"] = "complement-"+node["id"]
+    for link in supplement.select('a[href^="#"]'):
+        if len(link["href"])>1:
+            link["href"] = "#complement-"+link["href"][1:]
+    dedup(supplement)
+    extra = soup.new_tag("details",attrs={"class":"custom-block details"})
+    summary = soup.new_tag("summary")
+    summary.string = "Compléments de révision"
+    extra.append(summary)
+    for child in list(supplement.contents):
+        if getattr(child,"name",None) == "h1":
+            child.extract()
+            continue
+        extra.append(child.extract())
+    article.append(extra)
+    actual = [c.get_text() for c in article.select("pre code")]
+    if set(actual) != expected_blocks or len(actual) != len(expected_blocks):
+        raise RuntimeError("Consolidation lost or duplicated a source code block")
+    print("Unified eJPT cheatsheet:",len(actual),"distinct original rendered code blocks")
+    return article
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
     if article is None:
         raise RuntimeError("Missing article: "+page)
+    if page in aliases:
+        article.clear()
+        article["class"]="ejpt-native-content"
+        heading=soup.new_tag("h1")
+        heading.string="Cheatsheet eJPTv2"
+        article.append(heading)
+        paragraph=soup.new_tag("p")
+        link=soup.new_tag("a",href=canonical_url)
+        link.string="Ouvrir la Cheatsheet eJPTv2"
+        paragraph.append(link)
+        article.append(paragraph)
+    elif page==canonical:
+        article=consolidate_sheets(soup,article)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
@@ -71,7 +151,7 @@ for page in report["pages"]:
             img["height"]="132"
             img["style"]="object-fit:contain"
 
-    title=titles[page[:-5]+".md"]
+    title="Cheatsheet eJPTv2" if page in aliases else titles[page[:-5]+".md"]
     heading=article.find("h1")
     if heading is not None and not heading.find(["img","code"]):
         heading.clear()
@@ -79,21 +159,6 @@ for page in report["pages"]:
     # Keep sanitized content as data rather than compiling upstream HTML as
     # a Vue template. This prevents asset import rewriting and interpolation.
     article.attrs.pop("v-pre",None)
-    if page=="ejpt-cheatsheet.html":
-        extra=soup.new_tag("details",attrs={"class":"custom-block details"})
-        summary=soup.new_tag("summary")
-        summary.string="Ressources complémentaires"
-        extra.append(summary)
-        for label,link in [
-            ("Notes complémentaires","cheatsheet-additional.html"),
-            ("Références eJPT","ejpt-references.html"),
-        ]:
-            p=soup.new_tag("p")
-            a=soup.new_tag("a",href="/skill-issue/ejpt/original/"+link)
-            a.string=label
-            p.append(a)
-            extra.append(p)
-        article.append(extra)
     body=str(article)
     parsed=BeautifulSoup(body,"html.parser")
     assert before==[x.get_text() for x in parsed.select("pre code")],page
@@ -102,9 +167,14 @@ for page in report["pages"]:
     data_file=dest.with_suffix(".content.json")
     data_file.write_text(json.dumps(body,ensure_ascii=False),encoding="utf-8")
     import_path="./"+data_file.name
+    redirect_script = (
+        "import { onMounted } from 'vue'\n"
+        "onMounted(() => window.location.replace("+json.dumps(canonical_url)+"))\n"
+        if page in aliases else ""
+    )
     dest.write_text(
         "---\ntitle: "+json.dumps(title,ensure_ascii=False)+"\noutline: deep\n---\n\n"
-        "<script setup>\nimport chapterHtml from "+json.dumps(import_path)+"\n</script>\n\n"
+        "<script setup>\nimport chapterHtml from "+json.dumps(import_path)+"\n"+redirect_script+"</script>\n\n"
         '<div class="ejpt-native-page" data-ejpt-native="true" v-html="chapterHtml"></div>\n',
         encoding="utf-8"
     )

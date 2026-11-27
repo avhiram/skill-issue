@@ -5,9 +5,11 @@ prev: false
 next: false
 ---
 <script setup>
-import EjptCatalog from '../../.vitepress/theme/components/EjptCatalog.vue'
+import { onMounted } from 'vue'
+import { withBase } from 'vitepress'
+onMounted(() => window.location.replace(withBase('/ejpt/original/ejpt-cheatsheet.html')))
 </script>
 
 # Cheatsheet eJPTv2
 
-<EjptCatalog mode="cheatsheet" />
+[Ouvrir la Cheatsheet eJPTv2](/ejpt/original/ejpt-cheatsheet)
