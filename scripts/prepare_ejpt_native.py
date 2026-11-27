@@ -923,6 +923,73 @@ def refine_vulnerability_assessment(soup, article):
     return 5
 
 
+
+# Clarify the existing Windows/Linux section hierarchy, without changing code.
+system_section_labels = {
+    "Windows Exploitation": "Windows — services et vulnérabilités",
+    "Linux Exploitation": "Linux — services et vulnérabilités",
+    "Windows Privilege Escalation": "Windows — privilèges",
+    "Linux Privilege Escalation": "Linux — privilèges",
+    "Windows Credential Dumping": "Windows — protection des identifiants",
+    "Linux Credential Dumping": "Linux — protection des identifiants",
+    "IIS WEBDAV": "IIS et WebDAV",
+    "WINRM": "WinRM",
+    "SAMBA": "Samba",
+    "Kernel": "Noyau du système",
+    "Access Token": "Jetons d’accès Windows",
+    "Cron Jobs": "Tâches Cron",
+    "SUID": "Permissions SUID",
+    "UAC": "User Account Control (UAC)",
+}
+system_section_descriptions = {
+    "Windows Exploitation": "Services Windows et vulnérabilités étudiés dans le cours.",
+    "Linux Exploitation": "Services Linux et vulnérabilités étudiés dans le cours.",
+    "Windows Privilege Escalation": "Modèle de permissions Windows et risques associés aux privilèges.",
+    "Linux Privilege Escalation": "Modèle de permissions Unix et risques associés aux privilèges.",
+    "Windows Credential Dumping": "Notions relatives à la protection des informations d’authentification Windows.",
+    "Linux Credential Dumping": "Notions relatives à la protection des informations d’authentification Linux.",
+}
+def refine_system_layout(soup, article):
+    before = [c.get_text() for c in article.select("pre code")]
+    roots = [h for h in article.find_all(["h2","h3"]) if h.get_text(strip=True)=="Pentest système"]
+    if len(roots)!=2:
+        raise RuntimeError("Missing original system sections")
+    counts=[]
+    for root in roots:
+        changed=0
+        described=0
+        root_level=int(root.name[1])
+        for node in list(root.next_siblings):
+            if not getattr(node,"name",None) or not re.fullmatch(r"h[1-6]",node.name):
+                continue
+            if int(node.name[1])<=root_level:
+                break
+            if any(c in node.get("class",[]) for c in ("ejpt-existing-note-heading","ejpt-context-heading")):
+                continue
+            label=node.get_text(" ",strip=True)
+            if label not in system_section_labels:
+                continue
+            # Preserve anchors and any embedded links.
+            if node.find("a",href=True):
+                continue
+            node.clear()
+            node.append(system_section_labels[label])
+            node["class"]=node.get("class",[])+["ejpt-system-reviewed-heading"]
+            changed+=1
+            if label in system_section_descriptions:
+                p=soup.new_tag("p",attrs={"class":"ejpt-system-section-context"})
+                p.string=system_section_descriptions[label]
+                node.insert_after(p)
+                described+=1
+        counts.append({"headings":changed,"descriptions":described})
+    if any(c["headings"]<6 or c["descriptions"]<3 for c in counts):
+        raise RuntimeError("System heading review incomplete")
+    if before!=[c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("System presentation changed original code")
+    print("System presentation review:",counts)
+    return counts
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -995,6 +1062,7 @@ for page in report["pages"]:
         report["cheatsheet_context"]=add_note_explanations(soup,article)
         report["cheatsheet_enumeration"]=refine_enumeration(soup,article)
         report["cheatsheet_vulnerability_assessment"]=refine_vulnerability_assessment(soup,article)
+        report["cheatsheet_system_layout"]=refine_system_layout(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
