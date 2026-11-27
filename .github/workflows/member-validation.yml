@@ -67,6 +67,11 @@ jobs:
           assert network_layout['sources']==3, 'Network capture source coverage incomplete'
           assert len(sheet.select('.ejpt-network-reviewed-title'))==network_layout['groups'], 'Network capture titles incomplete'
           assert len(sheet.select('.ejpt-network-reviewed-description'))==network_layout['groups'], 'Network capture descriptions incomplete'
+          framework=report['cheatsheet_framework_layout']
+          assert len(framework)==2, 'Framework chapters incomplete'
+          assert len(sheet.select('.ejpt-framework-reviewed-heading'))==sum(x['headings'] for x in framework), 'Framework headings incomplete'
+          assert len(sheet.select('.ejpt-framework-context'))==sum(x['descriptions'] for x in framework), 'Framework context incomplete'
+          assert sum(x['blocks'] for x in report['cheatsheet_block_sizes'].values())==len(sheet.select('pre code')), 'Block size inventory incomplete'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
           assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'
