@@ -598,6 +598,377 @@ def format_footprinting(soup, article):
     return count
 
 
+
+# French presentation metadata for existing source topics.
+# These are conceptual labels, not additional commands or procedures.
+note_topics = [
+    (r"\b(?:IIS|WebDAV)\b", "IIS et WebDAV", "IIS est un serveur Web Windows. WebDAV étend HTTP pour la gestion de ressources distantes."),
+    (r"\b(?:SMB|SMBMap|SMBClient|Enum4linux|RPCClient|Nmblookup|Samba)\b", "SMB et Samba", "SMB est un protocole de partage de ressources. Samba en fournit une implémentation pour les systèmes Unix."),
+    (r"\b(?:FTP|VSFTPD|FTPD)\b", "FTP", "FTP est un protocole de transfert de fichiers. Les droits d’accès et la protection des échanges constituent des points de vigilance."),
+    (r"\b(?:SSH|OpenSSH)\b", "SSH", "SSH fournit un canal d’administration distante chiffré. La configuration et l’authentification déterminent la sécurité du service."),
+    (r"\b(?:SMTP|mail)\b", "SMTP", "SMTP est le protocole de transport des messages électroniques."),
+    (r"\b(?:MySQL|MSSQL|SQL)\b", "Bases de données SQL", "Les bases SQL stockent des données structurées. La gestion des permissions et des entrées utilisateur est essentielle."),
+    (r"\bRDP\b", "RDP", "RDP permet l’accès à une session graphique distante sous Windows."),
+    (r"\bWinRM\b", "WinRM", "WinRM fournit un mécanisme d’administration distante des systèmes Windows."),
+    (r"\b(?:HTTP|HTTPS|HFS|Tomcat|Apache)\b", "Services Web", "Les serveurs Web traitent des requêtes HTTP ou HTTPS. Leur configuration et leur version influencent leur surface d’exposition."),
+    (r"\b(?:Nmap|port scan|UDP scan|service enumeration)\b", "Inventaire réseau", "Les résultats d’inventaire décrivent les hôtes, les ports et les services observés dans un périmètre autorisé."),
+    (r"\b(?:Wireshark|TShark|ARP)\b", "Trafic réseau", "L’analyse de paquets permet de comprendre les échanges réseau. ARP associe des adresses IP et MAC sur un réseau local."),
+    (r"\b(?:Heartbleed|Eternalblue|Bluekeep|Log4j|CVE|Shellshock|vulnerability scanning|vulnérabilités)\b", "Vulnérabilités", "Une vulnérabilité décrit une faiblesse de sécurité. Un indice de scan ne constitue pas à lui seul une confirmation."),
+    (r"\b(?:Nessus|WMAP)\b", "Résultats d’audit", "Les outils d’évaluation produisent des résultats qui nécessitent une interprétation et une validation."),
+    (r"\b(?:kernel|noyau)\b", "Noyau du système", "Le noyau gère les ressources du système et constitue une frontière importante de sécurité."),
+    (r"\bUAC\b", "UAC", "User Account Control contrôle les demandes d’élévation de privilèges sous Windows."),
+    (r"\b(?:token|access token)\b", "Access Token", "Un jeton d’accès représente l’identité et les droits associés à un processus Windows."),
+    (r"\b(?:SUID)\b", "Permissions SUID", "Le bit SUID modifie l’identité effective d’exécution d’un programme Unix ; il nécessite une gestion rigoureuse."),
+    (r"\b(?:cron)\b", "Tâches Cron", "Cron planifie des tâches sur les systèmes Unix. Le propriétaire et les permissions des fichiers associés sont importants."),
+    (r"\b(?:credentials?|hashes|hash|hydra|cracking|brute|keylogging|password)\b", "Authentification et identifiants", "Les identifiants et les données d’authentification sont des informations sensibles. Leur exposition constitue un risque de sécurité."),
+    (r"\b(?:payloads?|msfvenom|meterpreter|metasploit|msfconsole|armitage)\b", "Environnement Metasploit", "Cette partie concerne le vocabulaire et les composants de l’environnement de laboratoire Metasploit."),
+    (r"\b(?:persistence|persistance|backdoored)\b", "Persistance", "La persistance désigne la capacité d’un accès non autorisé à subsister ; sa détection et sa suppression sont des objectifs de défense."),
+    (r"\b(?:pivoting|pivot)\b", "Segmentation réseau", "La segmentation limite les communications entre zones et réduit la propagation d’une compromission."),
+    (r"\b(?:clearing|obfuscation|shellter|empire)\b", "Visibilité et sécurité", "Cette notion concerne les risques liés à la dissimulation et l’importance de la journalisation et de la détection."),
+    (r"\b(?:shells?|TTY|bash|python|perl|netcat)\b", "Interfaces de commande", "Un shell est une interface d’interaction avec un système. Un terminal fournit son environnement d’affichage et de saisie."),
+    (r"\b(?:files|folders|fichiers|tmux|transferring)\b", "Fichiers et sessions", "Cette partie concerne la gestion des fichiers et des sessions dans un environnement de laboratoire."),
+    (r"\b(?:privilege escalation|privesc)\b", "Privilèges", "Une élévation de privilèges correspond à un changement de niveau d’accès. Le principe du moindre privilège vise à limiter ce risque."),
+    (r"\b(?:enumeration|énumération|discovery)\b", "Inventaire", "L’inventaire consiste à relever les informations disponibles sur les éléments du périmètre de test."),
+    (r"\b(?:WordPress|WPScan|plugins|themes)\b", "WordPress", "WordPress est un CMS dont le noyau, les extensions et les thèmes constituent des composants distincts."),
+    (r"\b(?:Drupal|modules)\b", "Drupal", "Drupal est un CMS modulaire. Les versions, les modules et leurs permissions doivent être suivis."),
+    (r"\bXSS\b", "Cross-Site Scripting", "Une XSS est une vulnérabilité liée à l’interprétation de données non fiables dans le navigateur."),
+    (r"\b(?:injection|SQLMap)\b", "Injection SQL", "Une injection SQL survient lorsque des données non fiables modifient la structure d’une requête SQL."),
+    (r"\b(?:gophish|social engineering)\b", "Social Engineering", "Le social engineering exploite des facteurs humains. La sensibilisation et les mécanismes de vérification contribuent à la prévention."),
+    (r"\b(?:windows|win)\b", "Environnement Windows", "Exemple issu des notes sur les caractéristiques et la sécurité de Windows."),
+    (r"\b(?:linux|unix)\b", "Environnement Linux", "Exemple issu des notes sur les caractéristiques et la sécurité des systèmes Unix."),
+]
+def add_note_explanations(soup, article):
+    before = [c.get_text() for c in article.select("pre code")]
+    stack = []
+    previous_heading = None
+    count = 0
+    contextual = 0
+    generic = 0
+    for node in list(article.find_all(re.compile(r"^(?:h[1-6]|pre)$"))):
+        if node.name != "pre":
+            level = int(node.name[1])
+            label = node.get_text(" ",strip=True)
+            while stack and stack[-1][0] >= level:
+                stack.pop()
+            stack.append((level,label))
+            previous_heading = node
+            continue
+        if node.find("code",recursive=False) is None:
+            continue
+        # The three already reviewed sections have explicit action descriptions.
+        previous = node.find_previous_sibling()
+        if previous is not None and "ejpt-action-description" in previous.get("class",[]):
+            continue
+        if previous is not None and previous.name=="p" and previous.get("data-ejpt-note-description")=="true":
+            continue
+        source_labels = [label for _,label in stack]
+        # Prefer specific original labels; then the nearest source topic.
+        match = None
+        for label in reversed(source_labels):
+            for pattern, topic, desc in note_topics:
+                if re.search(pattern,label,re.I):
+                    match = (topic,desc)
+                    break
+            if match:
+                break
+        if match:
+            topic,desc = match
+            contextual += 1
+        else:
+            topic = source_labels[-1] if source_labels else "Notes de laboratoire"
+            desc = next((section_context[x] for x in reversed(source_labels) if x in section_context),
+                        "Exemple original du cours. À replacer dans le contexte du laboratoire autorisé.")
+            generic += 1
+        # Guarantee a nearby title without rewriting source code or changing
+        # heading IDs that existing internal links reference.
+        if previous is None or not re.fullmatch(r"h[1-6]",previous.name or ""):
+            count += 1
+            label = topic
+            h = soup.new_tag("h"+str(min((stack[-1][0]+1) if stack else 3,6)),
+                             id="ejpt-context-"+str(count),attrs={"class":"ejpt-context-heading"})
+            h.string = label
+            node.insert_before(h)
+        p = soup.new_tag("p",attrs={"class":"ejpt-action-description","data-ejpt-note-description":"true"})
+        p.string = desc
+        node.insert_before(p)
+    after = [c.get_text() for c in article.select("pre code")]
+    if before != after:
+        raise RuntimeError("Explanatory presentation changed existing code blocks")
+    print("Cheatsheet context:",contextual,"topic descriptions,",generic,"general descriptions")
+    return {"topic":contextual,"general":generic,"extra_headings":count}
+
+
+
+
+# Editorial pass over the six existing service-enumeration sections.
+# Descriptions identify the tools and concepts; the source examples remain intact.
+enumeration_topics = {
+    "nmap": ("Inventaire du service avec Nmap", "Nmap présente les ports et les informations disponibles sur les services réseau."),
+    "nmblookup": ("Informations NetBIOS", "NetBIOS fournit notamment des mécanismes de nommage utilisés sur certains réseaux."),
+    "smbmap": ("Partages réseau et permissions", "SMBMap présente les ressources partagées et les droits associés."),
+    "smbclient": ("Client SMB et RPC", "SMBClient et RPCClient sont des interfaces clientes pour les ressources et services Windows."),
+    "rpcclient": ("Interface RPC", "RPCClient est un client pour les services RPC Windows."),
+    "enum4linux": ("Informations sur les ressources Windows", "Enum4linux présente des informations relatives aux services Windows et Samba."),
+    "hydra": ("Authentification — notes Hydra", "Cette partie concerne les risques liés aux mots de passe et les contrôles d’authentification."),
+    "metasploit": ("Modules Metasploit du cours", "Extraits originaux du cours associés à ce service. Les exemples sont réservés au laboratoire autorisé."),
+    "ftp": ("Client FTP", "Un client FTP permet d’interagir avec le service de transfert de fichiers selon les droits accordés."),
+    "ssh": ("Client SSH", "SSH fournit un canal chiffré pour les sessions distantes."),
+    "netcat": ("Informations du service avec Netcat", "Netcat est un utilitaire réseau qui interagit avec des connexions TCP ou UDP."),
+    "http": ("Outils et clients HTTP", "Ces outils présentent différents aspects des échanges et technologies HTTP."),
+    "mysql": ("Client MySQL", "MySQL utilise des sessions SQL pour accéder aux bases de données selon les permissions accordées."),
+    "smtp": ("Dialogue SMTP", "Le protocole SMTP définit les échanges entre clients et serveurs de messagerie."),
+    "smtp-user-enum": ("Identités et service SMTP", "Cette partie traite de la visibilité des identités par les services de messagerie et des risques associés."),
+}
+def refine_enumeration(soup, article):
+    from collections import Counter
+    before = [c.get_text() for c in article.select("pre code")]
+    headings = list(article.find_all(re.compile(r"^h[1-6]$")))
+    primary = next((h for h in headings if h.name=="h2" and h.get_text(strip=True)=="Énumération"),None)
+    complementary = next((h for h in headings if h.name=="h3" and h.get_text(strip=True)=="Énumération" and h.get("id","").startswith("complement-")),None)
+    if primary is None or complementary is None:
+        raise RuntimeError("Missing original enumeration sections")
+    counts = Counter()
+    seen_titles = Counter()
+    for root in (primary,complementary):
+        root_level = int(root.name[1])
+        service = None
+        duplicate_source_headings = []
+        for node in list(root.next_siblings):
+            if not getattr(node,"name",None):
+                continue
+            if re.fullmatch(r"h[1-6]",node.name):
+                level = int(node.name[1])
+                if level <= root_level:
+                    break
+                label = node.get_text(" ",strip=True)
+                if "ejpt-existing-note-heading" not in node.get("class",[]) and "ejpt-context-heading" not in node.get("class",[]):
+                    if level==root_level+1 and label in {"SMB","FTP","SSH","HTTP","SQL","SMTP"}:
+                        service = label
+                    elif service and label.casefold()==service.casefold():
+                        duplicate_source_headings.append(node)
+                continue
+            if node.name != "pre":
+                continue
+            code = node.find("code",recursive=False)
+            if code is None or service is None:
+                continue
+            lines = code.get_text().splitlines()
+            first = next((line.strip() for line in lines if line.strip()),"")
+            first_command = next((line.strip() for line in lines if line.strip() and not line.lstrip().startswith("#")),"")
+            # Classification is based on the original lead comment/tool only.
+            lead = first.casefold()
+            command = first_command.casefold()
+            if "metasploit" in lead or re.match(r"^(?:msfconsole|use |setg |service postgresql)",command):
+                kind = "metasploit"
+            elif "hydra" in lead or re.match(r"^(?:hydra|gzip)\b",command):
+                kind = "hydra"
+            elif "smbmap" in lead or command.startswith("smbmap "):
+                kind = "smbmap"
+            elif "smb connection" in lead or command.startswith("smbclient "):
+                kind = "smbclient"
+            elif "rpcclient" in lead or command.startswith("rpcclient "):
+                kind = "rpcclient"
+            elif "enum4linux" in lead or "null sessions" in lead or command.startswith("enum4linux "):
+                kind = "enum4linux"
+            elif "nmblookup" in lead or re.match(r"^(?:sudo\s+)?nmblookup\b",command):
+                kind = "nmblookup"
+            elif "nmap" in lead or re.match(r"^(?:sudo\s+)?nmap\b",command):
+                kind = "nmap"
+            elif "netcat" in lead or (service=="SSH" and command.startswith("nc ")):
+                kind = "netcat"
+            elif service=="FTP" and command.startswith("ftp "):
+                kind = "ftp"
+            elif service=="SSH" and command.startswith("ssh "):
+                kind = "ssh"
+            elif service=="HTTP" and re.match(r"^(?:whatweb|http|curl|wget|browsh|dirb|lynx)\b",command):
+                kind = "http"
+            elif service=="SQL" and ("mysql" in lead or command.startswith("mysql ")):
+                kind = "mysql"
+            elif service=="SMTP" and command.startswith("smtp-user-enum "):
+                kind = "smtp-user-enum"
+            elif service=="SMTP" and re.match(r"^(?:nc|telnet)\b",command):
+                kind = "smtp"
+            else:
+                # Some source examples are indented or contain prompt markers.
+                # Use the nearest original heading for presentation only.
+                source_heading = node.find_previous_sibling(lambda el: bool(
+                    getattr(el,"name",None) and re.fullmatch(r"h[1-6]",el.name)
+                    and "ejpt-existing-note-heading" not in el.get("class",[])
+                    and "ejpt-context-heading" not in el.get("class",[])))
+                source_label = source_heading.get_text(" ",strip=True).casefold() if source_heading else ""
+                kind = {"nmblookup":"nmblookup","nmap":"nmap","smbmap":"smbmap",
+                        "smb connection":"smbclient","rpcclient":"rpcclient",
+                        "enum4linux":"enum4linux","hydra":"hydra","metasploit":"metasploit",
+                        "ftp client":"ftp","netcat":"netcat","ssh":"ssh",
+                        "alternative":"http"}.get(source_label)
+                if kind is None:
+                    # Do not guess what an unmatched block does.
+                    kind = "source-"+service.casefold()
+                    enumeration_topics[kind] = ("Notes originales — "+service,
+                        "Extrait original de cette rubrique, conservé sans interprétation technique.")
+                    print("Enumeration label to review:",service,source_label)
+
+            title,desc = enumeration_topics[kind]
+            key = (service,kind)
+            seen_titles[key] += 1
+            if seen_titles[key] > 1:
+                title += " — complément "+str(seen_titles[key]-1)
+            previous = node.find_previous_sibling()
+            if previous is None or previous.name!="p" or "ejpt-action-description" not in previous.get("class",[]):
+                raise RuntimeError("Missing enumeration description")
+            heading = previous.find_previous_sibling()
+            if heading is None or not re.fullmatch(r"h[1-6]",heading.name or ""):
+                raise RuntimeError("Missing enumeration label")
+            heading.clear()
+            heading.append(title)
+            heading["class"] = heading.get("class",[]) + ["ejpt-reviewed-enum-title"]
+            previous.string = desc
+            previous["class"] = previous.get("class",[]) + ["ejpt-reviewed-enum-description"]
+            counts[service] += 1
+        for heading in duplicate_source_headings:
+            # Keep the original fragment identifier without a repeated menu.
+            heading.clear()
+            heading.name = "span"
+            heading["aria-hidden"] = "true"
+            heading["class"] = heading.get("class",[]) + ["ejpt-repeated-service-anchor"]
+    assert before == [c.get_text() for c in article.select("pre code")], "Enumeration changed original code"
+    if set(counts) != {"SMB","FTP","SSH","HTTP","SQL","SMTP"}:
+        raise RuntimeError("Enumeration service coverage incomplete")
+    print("Enumeration editorial check:",dict(counts))
+    return dict(counts)
+
+
+
+# Editorial presentation of the existing vulnerability-assessment notes.
+# Definitions give context without introducing additional procedures.
+def refine_vulnerability_assessment(soup, article):
+    before = [c.get_text() for c in article.select("pre code")]
+    root = next((h for h in article.find_all("h2") if h.get_text(strip=True)=="Évaluation des vulnérabilités"),None)
+    if root is None:
+        raise RuntimeError("Missing vulnerability assessment section")
+    candidates = []
+    for node in root.next_siblings:
+        if not getattr(node,"name",None):
+            continue
+        if node.name=="h2":
+            break
+        if node.name=="pre":
+            candidates.append(node)
+    if len(candidates)!=2:
+        raise RuntimeError("Unexpected vulnerability assessment source block count")
+    descriptions = {
+        "# HEARTBLEED": ("Heartbleed", "Vulnérabilité de la gestion des messages Heartbeat dans certaines versions d’OpenSSL, susceptible d’exposer des données en mémoire."),
+        "# ETERNALBLUE": ("EternalBlue", "Nom associé à l’exploitation d’une vulnérabilité du protocole SMBv1 sous Windows."),
+        "# BLUEKEEP": ("BlueKeep", "Vulnérabilité affectant les services Bureau à distance de certaines versions de Windows."),
+        "# LOG4J": ("Log4j", "Bibliothèque de journalisation Java ; certaines versions ont été affectées par la vulnérabilité Log4Shell."),
+    }
+    combined, reference = candidates
+    code=combined.find("code",recursive=False)
+    if code is None:
+        raise RuntimeError("Missing original vulnerability assessment code")
+    old=code.get_text()
+    groups=[]
+    for line in old.splitlines(keepends=True):
+        if line.rstrip("\r\n") in descriptions:
+            groups.append((line.rstrip("\r\n"),[line]))
+        elif groups:
+            groups[-1][1].append(line)
+        else:
+            raise RuntimeError("Unexpected text before first vulnerability heading")
+    if [key for key,_ in groups]!=list(descriptions):
+        raise RuntimeError("Vulnerability assessment source headings changed")
+    if "".join("".join(lines) for _,lines in groups)!=old:
+        raise RuntimeError("Source block reconstruction failed")
+    desc=combined.find_previous_sibling()
+    heading=desc.find_previous_sibling() if desc else None
+    if desc is None or heading is None or "ejpt-action-description" not in desc.get("class",[]) or "ejpt-existing-note-heading" not in heading.get("class",[]):
+        raise RuntimeError("Missing original assessment presentation")
+    # Keep anchor IDs and the validation marker on the existing heading.
+    heading.clear()
+    heading.append("Vulnérabilités étudiées")
+    desc.string="Les exemples originaux portent sur quatre sujets de sécurité distincts."
+    for i,(key,lines) in enumerate(groups,1):
+        title,explanation=descriptions[key]
+        label=soup.new_tag("p",id="ejpt-va-"+str(i),attrs={"class":"ejpt-va-title"})
+        strong=soup.new_tag("strong")
+        strong.string=title
+        label.append(strong)
+        combined.insert_before(label)
+        para=soup.new_tag("p",attrs={"class":"ejpt-action-description ejpt-va-description"})
+        para.string=explanation
+        combined.insert_before(para)
+        block=soup.new_tag("pre")
+        inner=soup.new_tag("code",attrs={"class":code.get("class",[])})
+        inner.string="".join(lines)
+        block.append(inner)
+        combined.insert_before(block)
+    if combined.get("id"):
+        combined.insert_before(soup.new_tag("span",id=combined["id"]))
+    combined.decompose()
+    previous=reference.find_previous_sibling()
+    label=previous.find_previous_sibling() if previous else None
+    if previous is None or label is None or "ejpt-action-description" not in previous.get("class",[]):
+        raise RuntimeError("Missing SearchSploit presentation")
+    label.clear()
+    label.append("Référence SearchSploit")
+    label["class"]=label.get("class",[])+["ejpt-va-title"]
+    previous.string="SearchSploit est un outil de consultation de références publiques issues d’Exploit-DB."
+    previous["class"]=previous.get("class",[])+["ejpt-va-description"]
+    expected=list(before)
+    position=expected.index(old)
+    expected[position:position+1]=["".join(lines) for _,lines in groups]
+    if expected != [c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("Assessment presentation changed original code")
+    print("Vulnerability assessment editorial check: 5 labels, original code reconstructed exactly")
+    return 5
+
+
+def simplify_note_titles(soup, article):
+    """Keep actual sections collapsible; display leaf labels as plain text."""
+    before = [c.get_text() for c in article.select("pre code")]
+    stack = []
+    simplified = 0
+    redundant = 0
+    def normal(label):
+        return re.sub(r"[\W_]+", "", label.casefold())
+    for node in list(article.find_all(re.compile(r"^h[1-6]$"))):
+        level = int(node.name[1])
+        label = node.get_text(" ",strip=True)
+        while stack and stack[-1][0] >= level:
+            stack.pop()
+        classes = node.get("class",[])
+        # These headings were created solely to label a code block.
+        # The source sections and the three individually reviewed sections
+        # retain their existing accordion controls.
+        if ("ejpt-existing-note-heading" in classes or
+                "ejpt-context-heading" in classes):
+            # Footprinting uses its generated heading as a real parent.
+            next_heading = node.find_next_sibling(re.compile(r"^h[1-6]$"))
+            if next_heading is not None and "ejpt-footprint-heading" in next_heading.get("class",[]) and int(next_heading.name[1]) > level:
+                stack.append((level,label))
+                continue
+            duplicate = any(normal(label) == normal(parent) for _,parent in stack)
+            node.clear()
+            if duplicate:
+                node.name = "span"
+                node["class"] = classes + ["ejpt-redundant-title"]
+                node["aria-hidden"] = "true"
+                redundant += 1
+            else:
+                node.name = "p"
+                node["class"] = classes + ["ejpt-leaf-title"]
+                strong = soup.new_tag("strong")
+                strong.string = label
+                node.append(strong)
+                simplified += 1
+        else:
+            stack.append((level,label))
+    assert before == [c.get_text() for c in article.select("pre code")], "Title formatting changed existing code"
+    assert not article.select("h2.ejpt-leaf-title,h3.ejpt-leaf-title,h4.ejpt-leaf-title,h5.ejpt-leaf-title,h6.ejpt-leaf-title")
+    print("Cheatsheet leaf labels:",simplified,"plain titles;",redundant,"redundant titles suppressed")
+    return {"plain_titles":simplified,"redundant_titles":redundant}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -621,6 +992,10 @@ for page in report["pages"]:
         format_information_gathering(soup,article)
         report["cheatsheet_remaining_headings"]=format_remaining_sections(soup,article)
         report["cheatsheet_footprinting_actions"]=format_footprinting(soup,article)
+        report["cheatsheet_context"]=add_note_explanations(soup,article)
+        report["cheatsheet_enumeration"]=refine_enumeration(soup,article)
+        report["cheatsheet_vulnerability_assessment"]=refine_vulnerability_assessment(soup,article)
+        report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
