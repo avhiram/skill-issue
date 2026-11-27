@@ -72,7 +72,11 @@ for page in report["pages"]:
         heading.append(title)
     # Keep headings and the full rendered text on the page rather than an iframe.
     # No Vue script or external JS from the upstream notes is executed.
-    body=str(article)
+    # A Markdown HTML block ends at a blank line. Keep the entire sanitized
+    # article in one HTML block; numeric entities preserve code line breaks.
+    body=str(article).replace("\r", "&#13;").replace("\n", "&#10;")
+    parsed=BeautifulSoup(body,"html.parser")
+    assert before==[x.get_text() for x in parsed.select("pre code")],page
     dest=target/Path(page).with_suffix(".md")
     dest.parent.mkdir(parents=True,exist_ok=True)
     # v-pre makes the raw HTML safe for the Vue template compiler.
