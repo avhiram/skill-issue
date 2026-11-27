@@ -79,7 +79,14 @@ def content(n):
 def title(n):
     m = re.search(r"^#\s+(.+)$", content(n), re.M)
     return m.group(1).strip() if m else PurePosixPath(n).stem
-titles = {n:title(n) for n in notes}
+# Display titles are separate from the byte-verified source archive.
+titles = json.loads(Path("imports/ejpt/display-titles.json").read_text(encoding="utf-8"))
+if set(titles) != set(notes):
+    raise RuntimeError("Display titles must cover all 80 original notes")
+emoji = re.compile(r"[\U0001F000-\U0001FAFF\u2600-\u27BF\uFE0E\uFE0F\u200D\u20E3]")
+def clean_heading(text):
+    return re.sub(r"\s+", " ", emoji.sub("", text)).strip()
+
 byname = collections.defaultdict(list)
 for n in files:
     byname[PurePosixPath(n).name].append(n)
@@ -92,12 +99,12 @@ def url(n):
 def slug(s):
     return re.sub(r"[^\w-]", "", re.sub(r"\s+", "-", s.lower().strip()))
 groups = [
-    ("Prérequis", "penetration-testing-prerequisites/"),
-    ("Assessment Methodologies", "assessment-methodologies/"),
-    ("Host & Network Penetration Testing", "hostnetwork-penetration-testing/"),
-    ("Web Application Penetration Testing", "webapp-penetration-testing/"),
-    ("Exam Preparation Labs", "exam-preparation-labs/"),
-    ("Cheatsheets & References", "")
+    ("Prérequis du pentest", "penetration-testing-prerequisites/"),
+    ("Méthodologie et audit", "assessment-methodologies/"),
+    ("Pentest système et réseau", "hostnetwork-penetration-testing/"),
+    ("Pentest Web", "webapp-penetration-testing/"),
+    ("Labs et préparation", "exam-preparation-labs/"),
+    ("Cheatsheets et références", "")
 ]
 def navigation(current):
     out = ['<a class="home" href="/skill-issue/ejpt/">eJPT · Accueil</a>',
@@ -172,6 +179,18 @@ def render(n):
         count=used[base]
         used[base]+=1
         heading["id"]=base+("-"+str(count) if count else "")
+        # Keep original fragment identifiers and inline code intact.
+        for node in list(heading.find_all(string=True)):
+            if node.find_parent("code") is None:
+                node.replace_with(emoji.sub("", str(node)))
+    first = soup.find("h1")
+    if first is None:
+        first = soup.new_tag("h1")
+        first.string = titles[n]
+        soup.insert(0, first)
+    elif not first.find(["a", "img", "code"]):
+        first.clear()
+        first.append(titles[n])
     return str(soup)
 
 CSS = """

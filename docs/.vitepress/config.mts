@@ -78,11 +78,11 @@ export default defineConfig({
       '/ejpt/': [
         { text: 'Junior Penetration Tester', link: '/ejpt/' },
         { text: 'Cours', link: '/ejpt/cours', collapsed: true, items: [
-          { text: 'Prérequis', link: '/ejpt/cours#penetration-testing-prerequisites' },
-          { text: 'Assessment Methodologies', link: '/ejpt/cours#assessment-methodologies' },
-          { text: 'Host & Network Penetration Testing', link: '/ejpt/cours#hostnetwork-penetration-testing' },
-          { text: 'Web Application Penetration Testing', link: '/ejpt/cours#webapp-penetration-testing' },
-          { text: 'Exam Preparation Labs', link: '/ejpt/cours#exam-preparation-labs' }
+          { text: 'Prérequis du pentest', link: '/ejpt/cours#penetration-testing-prerequisites' },
+          { text: 'Méthodologie et audit', link: '/ejpt/cours#assessment-methodologies' },
+          { text: 'Pentest système et réseau', link: '/ejpt/cours#hostnetwork-penetration-testing' },
+          { text: 'Pentest Web', link: '/ejpt/cours#webapp-penetration-testing' },
+          { text: 'Labs et préparation', link: '/ejpt/cours#exam-preparation-labs' }
         ] },
         { text: 'Cheatsheet', link: '/ejpt/cheatsheet' }
       ],

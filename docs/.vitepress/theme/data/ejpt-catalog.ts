@@ -1,31 +1,31 @@
 export const groups = [
   {
     "id": "penetration-testing-prerequisites",
-    "title": "Prérequis",
+    "title": "Prérequis du pentest",
     "description": "Fondamentaux et environnement",
     "number": "01",
     "children": [
       {
         "path": "penetration-testing-prerequisites/README.html",
-        "title": "Introduction",
+        "title": "Présentation des prérequis",
         "depth": 0,
         "order": 0
       },
       {
         "path": "penetration-testing-prerequisites/introduction.html",
-        "title": "Introduction",
+        "title": "Introduction au pentest",
         "depth": 0,
         "order": 1
       },
       {
         "path": "penetration-testing-prerequisites/networking.html",
-        "title": "Networking",
+        "title": "Fondamentaux réseau",
         "depth": 0,
         "order": 1
       },
       {
         "path": "penetration-testing-prerequisites/web-applications.html",
-        "title": "Web Applications",
+        "title": "Applications Web",
         "depth": 0,
         "order": 1
       }
@@ -33,79 +33,79 @@ export const groups = [
   },
   {
     "id": "assessment-methodologies",
-    "title": "Assessment Methodologies",
+    "title": "Méthodologie et audit",
     "description": "Méthodologie et audit",
     "number": "02",
     "children": [
       {
         "path": "assessment-methodologies/README.html",
-        "title": "Introduction",
+        "title": "Introduction à la méthodologie",
         "depth": 0,
         "order": 0
       },
       {
         "path": "assessment-methodologies/1-info-gathering.html",
-        "title": "Information Gathering",
+        "title": "Collecte d’informations",
         "depth": 0,
         "order": 1
       },
       {
         "path": "assessment-methodologies/2-footprint-scan.html",
-        "title": "Footprinting & Scanning",
+        "title": "Footprinting et scanning",
         "depth": 0,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration.html",
-        "title": "Enumeration",
+        "title": "Énumération",
         "depth": 0,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration/ftp-enum.html",
-        "title": "FTP Enumeration",
+        "title": "Énumération FTP",
         "depth": 1,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration/http-enum.html",
-        "title": "HTTP Enumeration",
+        "title": "Énumération HTTP",
         "depth": 1,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration/mysql-enum.html",
-        "title": "MySQL Enumeration",
+        "title": "Énumération MySQL",
         "depth": 1,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration/smb-enum.html",
-        "title": "SMB Enumeration",
+        "title": "Énumération SMB",
         "depth": 1,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration/smtp-enum.html",
-        "title": "SMTP Enumeration",
+        "title": "Énumération SMTP",
         "depth": 1,
         "order": 1
       },
       {
         "path": "assessment-methodologies/3-enumeration/ssh-enum.html",
-        "title": "SSH Enumeration",
+        "title": "Énumération SSH",
         "depth": 1,
         "order": 1
       },
       {
         "path": "assessment-methodologies/4-va.html",
-        "title": "Vulnerability Assessment",
+        "title": "Évaluation des vulnérabilités",
         "depth": 0,
         "order": 1
       },
       {
         "path": "assessment-methodologies/5-audit.html",
-        "title": "Host & Network Auditing",
+        "title": "Audit des hôtes et réseaux",
         "depth": 0,
         "order": 1
       }
@@ -113,25 +113,25 @@ export const groups = [
   },
   {
     "id": "hostnetwork-penetration-testing",
-    "title": "Host & Network Penetration Testing",
+    "title": "Pentest système et réseau",
     "description": "Sécurité des systèmes et réseaux",
     "number": "03",
     "children": [
       {
         "path": "hostnetwork-penetration-testing/README.html",
-        "title": "Introduction",
+        "title": "Introduction au pentest système et réseau",
         "depth": 0,
         "order": 0
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack.html",
-        "title": "System Attacks",
+        "title": "Attaques système",
         "depth": 0,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks.html",
-        "title": "Linux Attacks",
+        "title": "Attaques Linux",
         "depth": 1,
         "order": 1
       },
@@ -143,43 +143,43 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks/creds-dump-unix.html",
-        "title": "Credentials Dump Unix",
+        "title": "Hashes sous Linux",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks/cron.html",
-        "title": "Cron",
+        "title": "Tâches Cron",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks/ftp-unix.html",
-        "title": "FTP Unix",
+        "title": "FTP sous Linux",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks/samba-unix.html",
-        "title": "Samba Unix",
+        "title": "Samba sous Linux",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks/ssh-unix.html",
-        "title": "SSH Unix",
+        "title": "SSH sous Linux",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/linux-attacks/suid.html",
-        "title": "SUID",
+        "title": "Permissions SUID",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks.html",
-        "title": "Windows Attacks",
+        "title": "Attaques Windows",
         "depth": 1,
         "order": 1
       },
@@ -197,13 +197,13 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks/creds-dump.html",
-        "title": "Credentials Dump",
+        "title": "Identifiants Windows",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks/iis-webdav.html",
-        "title": "IIS Webdav",
+        "title": "IIS et WebDAV",
         "depth": 2,
         "order": 1
       },
@@ -215,19 +215,19 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks/smb-psexec.html",
-        "title": "SMB PsExec",
+        "title": "SMB et PsExec",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks/uacme.html",
-        "title": "UACMe",
+        "title": "UAC Bypass",
         "depth": 2,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/1-system-attack/windows-attacks/winkernel.html",
-        "title": "Windows Kernel",
+        "title": "Privilèges du noyau Windows",
         "depth": 2,
         "order": 1
       },
@@ -239,73 +239,73 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/2-network-attack.html",
-        "title": "Network Attacks",
+        "title": "Attaques réseau",
         "depth": 0,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/2-network-attack/tshark-arp.html",
-        "title": "TShark ARP",
+        "title": "TShark, ARP et Wi-Fi",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit.html",
-        "title": "Metasploit",
+        "title": "Metasploit Framework",
         "depth": 0,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/ftpd-msf-exp.html",
-        "title": "FTP MSF Exploitation",
+        "title": "FTP et Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/hfs-msf-exp.html",
-        "title": "HFS MSF Exploitation",
+        "title": "HFS et Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/linux-post-msf.html",
-        "title": "Linux Post MSF",
+        "title": "Post-exploitation Linux avec Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/meterpreter-msf.html",
-        "title": "Meterpreter MSF",
+        "title": "Meterpreter",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/samba-msf-exp.html",
-        "title": "Samba MSF Exploitation",
+        "title": "Samba et Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/smtp-msf-exp.html",
-        "title": "SMTP MSF Exploitation",
+        "title": "SMTP et Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/ssh-msf-exp.html",
-        "title": "SSH MSF Exploitation",
+        "title": "SSH et Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/tomcat-msf-exp.html",
-        "title": "Tomcat MSF Exploitation",
+        "title": "Tomcat et Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/3-metasploit/win-post-msf.html",
-        "title": "Windows Post MSF",
+        "title": "Post-exploitation Windows avec Metasploit",
         "depth": 1,
         "order": 1
       },
@@ -317,55 +317,55 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/4-exploitation/fix-exp.html",
-        "title": "Fix Exploitation",
+        "title": "Adaptation des exploits HFS",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/4-exploitation/linux-blackbox-exp.html",
-        "title": "Linux Black Box Exploitation",
+        "title": "Pentest Black Box Linux",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/4-exploitation/win-blackbox-exp.html",
-        "title": "Windows Black Box Exploitation",
+        "title": "Pentest Black Box Windows",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/4-exploitation/workflow-exp.html",
-        "title": "Workflow Exploitation",
+        "title": "Workflow Windows avec Metasploit",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit.html",
-        "title": "Post-Exploitation",
+        "title": "Post-exploitation",
         "depth": 0,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/crack-hashes.html",
-        "title": "Crack Hashes",
+        "title": "Hashes et mots de passe",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/linux-persistence.html",
-        "title": "Linux Persistence",
+        "title": "Persistance Linux",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/linux-post-exp.html",
-        "title": "Linux Post Exploitation",
+        "title": "Post-exploitation Linux",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/linux-privesc.html",
-        "title": "Linux Privilege Escalation",
+        "title": "Privilege Escalation Linux",
         "depth": 1,
         "order": 1
       },
@@ -377,19 +377,19 @@ export const groups = [
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/win-persistence.html",
-        "title": "Windows Persistence",
+        "title": "Persistance Windows",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/win-post-exp.html",
-        "title": "Windows Post Exploitation",
+        "title": "Post-exploitation Windows",
         "depth": 1,
         "order": 1
       },
       {
         "path": "hostnetwork-penetration-testing/5-post-exploit/win-privesc.html",
-        "title": "Windows Privilege Escalation",
+        "title": "Privilege Escalation Windows",
         "depth": 1,
         "order": 1
       },
@@ -403,37 +403,37 @@ export const groups = [
   },
   {
     "id": "webapp-penetration-testing",
-    "title": "Web Application Penetration Testing",
+    "title": "Pentest Web",
     "description": "Sécurité des applications Web",
     "number": "04",
     "children": [
       {
         "path": "webapp-penetration-testing/README.html",
-        "title": "Introduction",
+        "title": "Introduction au pentest Web",
         "depth": 0,
         "order": 0
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http.html",
-        "title": "HTTP & Web Applications",
+        "title": "HTTP et pentest Web",
         "depth": 0,
         "order": 1
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http/http-enum.html",
-        "title": "HTTP Enumeration",
+        "title": "Énumération HTTP",
         "depth": 1,
         "order": 1
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http/webapp-attacks.html",
-        "title": "Web Application Attacks",
+        "title": "Attaques Web",
         "depth": 1,
         "order": 1
       },
       {
         "path": "webapp-penetration-testing/1-webapp-http/webapp-scan.html",
-        "title": "Web Application Scan",
+        "title": "Scanning Web",
         "depth": 1,
         "order": 1
       }
@@ -441,25 +441,25 @@ export const groups = [
   },
   {
     "id": "exam-preparation-labs",
-    "title": "Exam Preparation Labs",
+    "title": "Labs et préparation",
     "description": "Préparation et laboratoires",
     "number": "05",
     "children": [
       {
         "path": "exam-preparation-labs/README.html",
-        "title": "Introduction",
+        "title": "Présentation des laboratoires",
         "depth": 0,
         "order": 0
       },
       {
         "path": "exam-preparation-labs/p.t.-prerequisites-labs/README.html",
-        "title": "Introduction",
+        "title": "Labs PTS v1",
         "depth": 1,
         "order": 0
       },
       {
         "path": "exam-preparation-labs/p.t.-prerequisites-labs/burp-suite-basics.html",
-        "title": "Burp Suite Basics",
+        "title": "Burp Suite et énumération de répertoires",
         "depth": 1,
         "order": 1
       },
@@ -471,19 +471,19 @@ export const groups = [
       },
       {
         "path": "exam-preparation-labs/p.t.-prerequisites-labs/find-the-secret-server.html",
-        "title": "Find The Secret Server",
+        "title": "Find the Secret Server",
         "depth": 1,
         "order": 1
       },
       {
         "path": "exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing.html",
-        "title": "HTTP S Traffic Sniffing",
+        "title": "Analyse du trafic HTTP(S)",
         "depth": 1,
         "order": 1
       },
       {
         "path": "exam-preparation-labs/pts2-labs.html",
-        "title": "PTS v2 Labs",
+        "title": "Labs PTS v2",
         "depth": 0,
         "order": 1
       }
