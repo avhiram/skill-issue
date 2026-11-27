@@ -148,6 +148,106 @@ def format_sheet(soup, article):
             p.append(a)
             heading.insert_after(p)
 
+
+# Separate the basic networking commands by purpose and operating system.
+# Only presentation labels and comments are moved; every command line is
+# checked against the original before generating the displayed blocks.
+network_labels = {
+    "# Routing": ("Table de routage", "Afficher les routes utilisées par le système."),
+    "# IP": ("Adresses IP et interfaces", "Identifier les interfaces réseau et leurs adresses IP."),
+    "# ARP": ("Table ARP et voisins réseau", "Consulter les associations d’adresses IP et MAC connues du système."),
+    "# PORTS": ("Ports et connexions locales", "Afficher les ports et les connexions réseau du système."),
+    "# Connect": ("Tester une connexion réseau", "Vérifier une connexion TCP ou TLS vers un service autorisé."),
+}
+platform_labels = {
+    "# Linux": ("Linux", "bash"),
+    "# Windows": ("Windows", "bat"),
+    "# Mac OS X / Linux": ("macOS / Linux", "bash"),
+}
+def format_network_basics(soup, article):
+    network = article.find("h2", id="networking")
+    if network is None:
+        network = next((h for h in article.find_all("h2") if h.get_text(strip=True)=="Fondamentaux réseau"), None)
+    if network is None:
+        raise RuntimeError("Missing networking section")
+    candidates = []
+    for sibling in network.next_siblings:
+        if getattr(sibling,"name",None)=="h2":
+            break
+        if getattr(sibling,"name",None)=="pre":
+            candidates.append(sibling)
+    changed = set()
+    for pre in candidates:
+        code = pre.find("code",recursive=False)
+        if code is None:
+            continue
+        lines = code.get_text().splitlines()
+        if not lines or lines[0] not in network_labels:
+            continue
+        marker = lines[0]
+        if marker in changed:
+            raise RuntimeError("Duplicate networking source section")
+        changed.add(marker)
+        name, description = network_labels[marker]
+        base = "reseau-"+{"# Routing":"routage","# IP":"ip","# ARP":"arp","# PORTS":"ports","# Connect":"connexion"}[marker]
+        ident = pre.get("id",base)
+        heading = soup.new_tag("h3",id=ident)
+        heading.string = name
+        pre.insert_before(heading)
+        desc = soup.new_tag("p")
+        desc.string = description
+        pre.insert_before(desc)
+        parts = []
+        if marker != "# Connect":
+            current = None
+            for line in lines[1:]:
+                if line in platform_labels:
+                    current = [*platform_labels[line],[]]
+                    parts.append(current)
+                elif current is not None:
+                    current[2].append(line)
+                elif line.strip():
+                    raise RuntimeError("Unexpected content before platform heading")
+            if len(parts)!=3:
+                raise RuntimeError("Unexpected networking platform count")
+            removed = set(platform_labels) | {marker}
+        else:
+            # The existing block contains three groups separated by blank lines.
+            raw = "\n".join(lines[1:]).strip()
+            chunks = [c for c in re.split(r"\n[ \t]*\n",raw) if c.strip()]
+            if len(chunks)!=3 or not chunks[2].startswith("# Scan port\n"):
+                raise RuntimeError("Unexpected connection block structure")
+            parts = [
+                ["Connexion TCP avec Netcat","bash",chunks[0].splitlines()],
+                ["Connexion TLS avec OpenSSL","bash",chunks[1].splitlines()],
+                ["Vérification d’un port avec Netcat","bash",chunks[2].splitlines()[1:]],
+            ]
+            removed = {marker,"# Scan port"}
+        original = [line for line in lines if line.strip() and line not in removed]
+        displayed = []
+        for i,(label,language,commands) in enumerate(parts,1):
+            while commands and not commands[0].strip():
+                commands.pop(0)
+            while commands and not commands[-1].strip():
+                commands.pop()
+            if not commands:
+                raise RuntimeError("Empty networking block")
+            displayed.extend(line for line in commands if line.strip())
+            sub = soup.new_tag("h4",id=base+"-"+str(i))
+            sub.string = label
+            pre.insert_before(sub)
+            block = soup.new_tag("pre")
+            newcode = soup.new_tag("code",attrs={"class":"language-"+language})
+            newcode.string = "\n".join(commands)+"\n"
+            block.append(newcode)
+            pre.insert_before(block)
+        if displayed != original:
+            raise RuntimeError("Networking formatting changed command lines")
+        pre.decompose()
+    if changed != set(network_labels):
+        raise RuntimeError("Networking layout incomplete")
+    print("Network presentation verified: 5 source blocks split into 15, every command line retained")
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -167,6 +267,7 @@ for page in report["pages"]:
     elif page==canonical:
         article=consolidate_sheets(soup,article)
         format_sheet(soup,article)
+        format_network_basics(soup,article)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
