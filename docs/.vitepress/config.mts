@@ -26,7 +26,7 @@ export default defineConfig({
       for (const entry of await readdir(dir, { withFileTypes: true })) {
         const rel = prefix + entry.name
         if (entry.isDirectory()) {
-          if (!/^(credentials|institutions|justificatifs|audit|images|database)$/.test(entry.name)) await walk(join(dir, entry.name), rel + '/')
+          if (!/^(credentials|institutions|justificatifs|audit|images|database|membres)$/.test(entry.name)) await walk(join(dir, entry.name), rel + '/')
         } else if (/\.(html|js|css|json|woff2?|svg)$/i.test(rel) && !/^(offline-sw\.js|offline-index\.json)$/.test(rel)) {
           paths.push(rel)
         }
@@ -60,7 +60,8 @@ export default defineConfig({
       { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self', activeMatch: '^/bug-bounty/' },
       { text: 'OSCP', link: '/oscp/' },
       { text: 'CRTO', link: '/crto/' },
-      { text: 'CRTP', link: '/crtp/' }
+      { text: 'CRTP', link: '/crtp/' },
+      { text: 'Espace membre', link: '/membres/' }
     ],
     sidebar: {
       '/crtp/': [
