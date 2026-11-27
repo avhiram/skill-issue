@@ -9,149 +9,479 @@ next: false
 
 [Retour au parcours](./index.md)
 
-Analyse, organisation et rédaction avec l'IA. Exemples adaptés de The Best Claude Code Setup for Bug Bounty Hunting. Validation humaine des actions réseau.
+Claude Code permet de centraliser la reconnaissance, l'analyse HTTP, la revue JavaScript, la validation des vulnérabilités et la rédaction de rapports. MCP et les Skills permettent de réutiliser cette méthodologie dans un environnement de test autorisé.
 
-## Configuration Claude Code et Burp Suite MCP
+## Claude Code
 
-- Installer l'extension MCP officielle dans Burp Suite : [PortSwigger MCP Server](https://github.com/PortSwigger/mcp-server).
-- Vérifier que le serveur SSE écoute localement et que le port correspond à la configuration de l'extension.
-- Définir le scope dans Burp Suite avant de connecter le client. Ne pas activer l'approbation automatique globale.
+Claude Code est un assistant accessible depuis le terminal. Il peut travailler avec les fichiers d'un projet, les commandes et les outils connectés.
 
-### Ajouter le serveur MCP Burp
+```text
+target/
+├── javascript/
+├── requests/
+├── urls.txt
+├── endpoints.txt
+└── notes/
+```
+
+Organiser les artefacts dans un dossier dédié permet à Claude de les analyser sans copier chaque fichier dans une interface de conversation.
+
+## Model Context Protocol (MCP)
+
+MCP permet de connecter un assistant IA à des outils externes. Le serveur MCP de Burp Suite expose notamment des fonctionnalités liées à l'historique HTTP et à l'analyse du trafic.
+
+## Configuration de Burp Suite MCP
+
+### Installation
+
+1. Ouvrir Burp Suite et accéder au BApp Store.
+2. Rechercher MCP et vérifier l'auteur ainsi que les fonctionnalités de l'extension.
+3. Installer l'extension officielle : [PortSwigger MCP Server](https://github.com/PortSwigger/mcp-server).
+4. Dans l'onglet MCP, vérifier la configuration du serveur et les autorisations HTTP. Limiter les autorisations aux hôtes du laboratoire et conserver une validation des actions actives.
+5. Pour Claude Desktop, utiliser l'installation proposée par l'extension. Pour une installation manuelle, récupérer le JAR compilé ou suivre les instructions de compilation du dépôt.
+6. Si nécessaire, charger le JAR dans Extensions et vérifier l'adresse locale et le port.
+
+### Connexion à Claude Code
 
 ```bash
 claude mcp add --transport sse burp http://127.0.0.1:9876
 ```
 
-Enregistre le serveur MCP local dans Claude Code. Syntaxe conforme à la [documentation Claude Code](https://code.claude.com/docs/en/mcp) et adresse SSE indiquée par [PortSwigger](https://github.com/PortSwigger/mcp-server/blob/main/BappDescription.html). SSE est déprécié côté Claude Code mais reste pris en charge pour les serveurs compatibles. Vérifier le port configuré dans Burp. Connexion réelle non testée.
+Ajoute le serveur MCP Burp à Claude Code. Adapter le port à la configuration réelle. Consulter les outils exposés dans la section MCP de Claude. Le transport SSE est celui utilisé dans cet exemple.
 
-### Organisation des fichiers du projet
+Documentation : [Claude Code MCP](https://code.claude.com/docs/en/mcp).
 
-```text
-./example.com/
-  scope/
-    domains.txt
-  inventory_subs.txt
-  all_subs.txt
-  resolved_subs.txt
-  live_websites.txt
-  allurls.txt
-  js_inventory.txt
-  recon/
-    inventaires-XXXXXX/
-  requests/
-    login.txt
-    profile.txt
-    api.txt
-    headers.txt
-    response.json
-    openapi.json
-  javascript/
-    app.js
-  preuves/
-  rapports/
-```
+## Collecte du trafic et reconnaissance
 
-Le dossier est créé dans le répertoire courant choisi. Même structure que le chapitre [Programme et préparation](./preparation.md). Les inventaires sont créés au fil du parcours ; les fichiers HTTP et JavaScript illustrés sont à préparer séparément. Ne fournir à l'IA que des copies autorisées et expurgées.
+1. Ajouter l'application autorisée au scope dans Target.
+2. Dans Proxy > HTTP history, activer Show only in-scope items.
+3. Parcourir les fonctionnalités : formulaires, recherche, connexion, déconnexion, panier et API.
+4. Si les règles du laboratoire le permettent, utiliser Engagement Tools > Discover Content pour compléter l'inventaire.
+5. Arrêter la découverte, puis utiliser Show only parameterized requests pour isoler les requêtes paramétrées.
 
-## Prompts d'analyse
+## Workflow Bug Bounty
 
-### Historique HTTP Burp
+### Phase 1 — Analyse de l'historique HTTP
 
 ```text
-Analyse les requêtes HTTP exportées de Burp et fournies pour le périmètre autorisé.
-Liste les méthodes, URL, statuts et paramètres.
-Résume les fonctionnalités et distingue login, recherche, panier, paiement et API.
-Signale les catégories de données sensibles sans reproduire les valeurs.
-N'envoie aucune requête et ne modifie aucun fichier.
+Analyse l'historique HTTP de Burp pour le périmètre autorisé du laboratoire.
+
+1. Liste les requêtes avec méthode, URL et statut HTTP.
+2. Résume l'application et ses fonctionnalités principales.
+3. Regroupe les routes de connexion, recherche, panier, paiement et API.
+4. Construis un tableau des endpoints API avec méthode, chemin et paramètres.
+5. Repère les catégories de données sensibles : mots de passe, tokens, clés API, emails et données personnelles. Masque les valeurs.
+6. Déduplique les résultats et résume les points à examiner.
 ```
 
-Transforme l'historique HTTP fourni en inventaire structuré. Adaptation du prompt Proxy History.
+Transforme les captures HTTP en inventaire exploitable.
 
-### Cartographie applicative
+### Phase 2 — Cartographie de la surface d'attaque
 
 ```text
-À partir des captures autorisées, classe les routes par fonctionnalité.
-Identifie les paramètres, les identifiants d'objets, les formulaires, les interfaces d'administration et les API.
-Indique les contrôles de sécurité attendus et les informations manquantes.
-Ne teste pas les routes et n'accède pas à d'autres comptes.
+Analyse les captures HTTP et les fichiers JavaScript disponibles pour le laboratoire.
+
+1. Identifie les paramètres search et q.
+2. Inventorie les identifiants numériques, références d'objets et commandes.
+3. Classe les endpoints admin, profile, user, account, upload et API.
+4. Examine les fichiers JavaScript fournis : routes API, logique applicative et références à des secrets.
+5. Sélectionne six points prioritaires à examiner manuellement, par catégorie : SQLi, XSS, IDOR et authentification.
+
+Distingue les hypothèses des vulnérabilités démontrées.
 ```
 
-Adaptation du prompt Attack Surface pour examiner les observations et définir les contrôles à vérifier manuellement.
+Organise les surfaces applicatives et les contrôles de sécurité à examiner.
 
-### Analyse JavaScript
+### Phase 3 — Tests de vulnérabilités
+
+Les tests actifs sont réalisés dans le laboratoire avec des comptes et des données de démonstration. Examiner les résultats de chaque famille avant de poursuivre.
 
 ```text
-Analyse les fichiers JavaScript locaux fournis.
-Inventorie les routes API, méthodes, paramètres, logique de session, fonctions d'autorisation, uploads, téléchargements et intégrations tierces.
-Repère les sources et sinks DOM, flags de fonctionnalités et références à des secrets sans afficher leur valeur.
-Déduplique les routes et cite les fichiers et lignes.
-Distingue observations, hypothèses et constats démontrés.
+À partir de la cartographie et des résultats des tests manuels du laboratoire, examine dans cet ordre :
+
+1. SQL injection : comportement des entrées de recherche et traitement côté serveur.
+2. XSS réfléchie : réflexion des entrées et encodage selon le contexte.
+3. IDOR : isolation des objets appartenant aux deux comptes de test.
+4. Identifiants faibles ou par défaut : résultats des vérifications autorisées sur les comptes de démonstration.
+5. Énumération utilisateur : différences entre les réponses de connexion des comptes de test.
+6. Rate limiting : résultats des contrôles de limitation et de verrouillage.
+7. Broken Access Control : respect des permissions sur les interfaces administratives et API.
+8. Logique métier : application des règles de remise et du panier.
+
+Pour chaque catégorie, résume le résultat, les preuves, l'endpoint, la sévérité justifiée et les limites de validation.
+Ne confirme aucune vulnérabilité sans preuve.
 ```
 
-Regroupe les trois prompts JavaScript de l'article : fichier individuel, revue du code fourni et analyse d'un dossier.
+Claude Code permet également de consulter le détail de ses opérations avec Ctrl+O selon la version utilisée.
 
-### Revue IDOR et BOLA
+### Phase 4 — Rapport final
 
 ```text
-Analyse la requête de laboratoire fournie et les réponses de mes deux comptes de test.
-Identifie le paramètre d'objet et la frontière d'autorisation attendue.
-Explique si les preuves démontrent une violation de cette frontière.
-Propose des contrôles manuels avec des objets de test uniquement.
-Ne conclus pas à une vulnérabilité sans preuve et n'effectue aucune requête.
+Rédige un rapport de pentest à partir des résultats validés du laboratoire.
+
+Pour chaque vulnérabilité :
+- Titre.
+- Sévérité : Critical, High, Medium ou Low.
+- Endpoint affecté.
+- Étapes de reproduction déjà validées.
+- Preuve : requête et réponse HTTP.
+- Impact.
+- Remédiation.
+
+Termine par une liste de corrections classées par priorité.
+Identifie les requêtes à conserver dans Burp Organizer.
 ```
 
-Adaptation du prompt IDOR/BOLA pour des preuves obtenues avec des comptes et objets de test autorisés.
+Centralise les preuves et distingue les constats confirmés des observations.
+
+## Prompt global — One-Shot
+
+Ce prompt rassemble les six phases d'une évaluation assistée par IA, à partir des artefacts du laboratoire et des tests validés par l'opérateur.
+
+```text
+RÔLE
+Tu assistes un analyste dans l'évaluation autorisée d'une application e-commerce de laboratoire.
+
+PÉRIMÈTRE
+- Utilise uniquement les captures, fichiers et résultats fournis pour le laboratoire.
+- Appuie-toi sur les artefacts Burp : historique, Repeater, Organizer et résultats Collaborator disponibles.
+- Distingue les observations des hypothèses et des constats confirmés.
+- Ne lance pas de test actif sans validation de l'opérateur.
+
+PHASE 1 — INVENTAIRE ET MODÉLISATION
+1. Inventorie les hôtes, pages, endpoints, méthodes et paramètres.
+2. Examine les en-têtes serveur, signatures de frameworks, cookies, JWT, bibliothèques JS et indices CDN/WAF.
+3. Analyse les bundles JavaScript fournis : routes API, secrets masqués et logique applicative.
+4. Cartographie connexion, cycle de vie des tokens, réinitialisation de mot de passe, inscription, rôles et sessions.
+5. Classe les paramètres id, search, q et les routes admin, user, profile, upload.
+6. Produis une cartographie des surfaces et des classes de vulnérabilité pertinentes.
+
+PHASE 2 — HYPOTHÈSES ET PRIORISATION
+- Classe les hypothèses selon impact, vraisemblance et effort.
+- Examine en priorité la logique métier et les contrôles d'accès.
+- Formule cinq à huit hypothèses vérifiables.
+- Définis la preuve nécessaire pour confirmer ou infirmer chacune.
+
+PHASE 3 — REVUE DES TESTS
+Examine les résultats de tests manuels pour les catégories suivantes :
+1. Logique métier : prix, quantités, devises, remises, transitions du paiement.
+2. IDOR/BOLA : isolation des objets et autorisations des comptes de test.
+3. Authentification et sessions : credentials faibles, énumération, limitation, fixation, invalidation, tokens.
+4. Contrôles d'accès : séparation des rôles et permissions des API.
+5. Injections : SQLi, XSS réfléchie, stockée et DOM, SSTI et injection de commandes.
+6. Out-of-band : interprétation des preuves SSRF, XXE et interactions DNS/HTTP de laboratoire.
+7. Uploads et divulgation : validation des fichiers, types MIME, origine, source maps, debug, sauvegardes et erreurs.
+
+PHASE 4 — CORRÉLATION ET IMPACT
+- Identifie les relations entre les constats déjà démontrés.
+- Évalue les conséquences sur les comptes, sessions, données, permissions et opérations métier.
+- Décris les dépendances entre constats et les contrôles qui limitent leur impact.
+- Repère les composants susceptibles de partager la même cause racine.
+- Ne présente pas une chaîne hypothétique comme une chaîne validée.
+
+PHASE 5 — VALIDATION
+- Examine les reproductions minimales réalisées dans Repeater.
+- Vérifie que les preuves démontrent un impact réel.
+- Écarte les constats non reproductibles ou insuffisamment étayés.
+- Référence les preuves conservées dans Organizer.
+
+PHASE 6 — RAPPORT
+1. Résumé exécutif.
+2. Constats confirmés : titre, sévérité, vecteur et score CVSS 3.1 si justifiés, endpoint, catégorie, reproduction, preuve, impact, remédiation.
+3. Relations entre constats démontrés.
+4. Tableau de synthèse par sévérité.
+5. Annexe des références Organizer.
+
+En l'absence de vulnérabilité confirmée, indique-le et propose trois priorités de durcissement étayées.
+```
+
+## Analyse sans Burp MCP
+
+Claude Code peut également travailler directement sur des requêtes HTTP, des fichiers JavaScript et du code source.
+
+### Analyser une requête HTTP brute
+
+Exporter une requête Burp dans un fichier texte. Exemple fictif d'inscription :
+
+```http
+POST /api/v1/auth/signup HTTP/2
+Host: demo.local
+Cookie: session=eyJhbGciOiJIUzI1NiJ9.demo.session
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/139.0.0.0 Safari/537.36
+Accept: application/json, text/plain, */*
+Accept-Language: en-US,en;q=0.9
+Content-Type: application/json
+Origin: https://demo.local
+Referer: https://demo.local/register
+X-CSRF-Token: demo-csrf-token
+X-Forwarded-For: 127.0.0.1
+Connection: keep-alive
+
+{
+  "username": "john.doe",
+  "email": "john@example.com",
+  "password": "Password123!",
+  "confirmPassword": "Password123!",
+  "role": "user",
+  "inviteCode": "",
+  "referrer": "newsletter"
+}
+```
+
+```text
+Analyse cette requête HTTP.
+
+Identifie :
+1. Les entrées contrôlées par l'utilisateur.
+2. Les mécanismes d'authentification et d'autorisation.
+3. Les références d'objets et identifiants.
+4. Les candidats IDOR/BOLA.
+5. Les points d'injection potentiels.
+6. Les paramètres de logique métier.
+7. Les en-têtes et cookies pertinents.
+8. Les comportements inhabituels à examiner.
+
+Explique l'intérêt de chaque point, les contrôles manuels nécessaires et les preuves attendues.
+Sépare observations et hypothèses. Ne conclus pas sans preuve.
+```
+
+### Analyser un fichier JavaScript
+
+```text
+Analyse le fichier JavaScript fourni.
+
+Extrais et classe :
+1. Endpoints API et chemins URL.
+2. Méthodes HTTP.
+3. Paramètres.
+4. Logique d'authentification et d'autorisation.
+5. Références à des secrets, tokens ou clés API, avec valeurs masquées.
+6. Endpoints administratifs et internes.
+7. Upload et téléchargement.
+8. Debug et développement.
+9. Fonctionnalités cachées et feature flags.
+10. Sources et sinks DOM.
+11. Intégrations tierces.
+
+Pour chaque observation, indique le fichier, les lignes pertinentes et l'intérêt de la revue.
+Ne confirme pas une vulnérabilité sans preuve.
+```
+
+### Analyser un JavaScript depuis une URL
+
+```text
+Analyse le fichier JavaScript accessible à cette URL autorisée :
+<JS_URL>
+
+Recherche les routes API, paramètres, contrôles d'authentification et d'autorisation, références à des secrets, fonctionnalités internes et administratives, endpoints de debug et problèmes côté client.
+
+Pour chaque observation, explique son intérêt et référence le code concerné.
+Limite la collecte au fichier autorisé et masque les valeurs sensibles.
+```
+
+### Analyser plusieurs fichiers JavaScript
+
+```text
+Analyse tous les fichiers JavaScript du dossier.
+
+Construis une cartographie consolidée :
+1. Endpoints API.
+2. Méthodes HTTP.
+3. Paramètres.
+4. Authentification.
+5. Autorisation.
+6. Fonctions administratives.
+7. Upload et download.
+8. Endpoints WebSocket.
+9. Intégrations tierces.
+10. Références à des secrets et identifiants, valeurs masquées.
+11. Sinks côté client.
+12. Fonctionnalités cachées ou non documentées.
+
+Déduplique les endpoints et regroupe les fonctionnalités.
+Classe les dix observations prioritaires pour une revue manuelle.
+Sépare les fonctionnalités observées des hypothèses de vulnérabilité.
+```
+
+### Examiner une vulnérabilité spécifique — IDOR/BOLA
+
+```text
+Analyse la requête et les réponses des deux comptes de test pour une éventuelle IDOR/BOLA.
+
+1. Explique pourquoi la requête mérite une revue.
+2. Identifie le paramètre de référence d'objet.
+3. Décris la frontière d'autorisation attendue.
+4. Indique les différences de réponse qui démontreraient une violation.
+5. Précise les contrôles manuels à réaliser avec les objets de démonstration.
+
+Distingue les observations des hypothèses et indique les preuves nécessaires.
+```
 
 ### Revue du code source
 
 ```text
-Examine le code source local autorisé.
-Évalue authentification, autorisation, validation des entrées, injections, gestion des fichiers, sessions et logique métier.
-Pour chaque constat étayé, indique la cause, la ligne concernée, l'impact, la correction et une vérification manuelle en laboratoire.
-Ne présente pas une hypothèse comme un fait.
+Effectue une revue de sécurité du code source fourni.
+
+Examine :
+1. Authentification.
+2. Autorisation et contrôles d'accès.
+3. Validation des entrées.
+4. Risques d'injection.
+5. Exposition de données sensibles.
+6. Gestion des fichiers.
+7. Gestion des sessions.
+8. Logique métier.
+
+Pour chaque constat étayé : cause racine, code concerné, impact, correction et méthode de validation en laboratoire.
+
+Distingue les vulnérabilités confirmées, observations et hypothèses.
+Classe les constats selon leur sévérité et leur impact pratique.
 ```
 
-Adaptation du prompt Source Code Review.
-
-### Corrélation des résultats
+### Générer un rapport Bug Bounty
 
 ```text
-Corrèle les fichiers locaux de reconnaissance, captures HTTP, JavaScript et code source.
-Construis un inventaire des routes, paramètres, contrôles d'accès et fonctionnalités.
-Déduplique les observations et classe les vérifications manuelles selon les preuves disponibles.
-Sépare les constats confirmés et les hypothèses.
-Produis un rapport sans lancer de test actif.
+À partir des requêtes HTTP, analyses JavaScript, résultats de reconnaissance et notes de test, rédige un rapport professionnel.
+
+Pour chaque constat confirmé :
+- Titre
+- Sévérité
+- Endpoint affecté
+- Classe de vulnérabilité
+- Étapes de reproduction validées
+- Preuves
+- Impact
+- Remédiation
+
+Sépare :
+1. Vulnérabilités confirmées.
+2. Observations de sécurité.
+3. Hypothèses nécessitant une validation supplémentaire.
+
+Classe les constats par sévérité et impact réel. Ne transforme pas une hypothèse en fait.
 ```
 
-Adaptation du prompt de corrélation multi-sources.
+## Corrélation des résultats
 
-### Rapport de vulnérabilité
+### Structure du projet
 
 ```text
-À partir des constats validés et des preuves expurgées, rédige un rapport.
-Inclure le titre, le composant, la sévérité justifiée, les étapes de reproduction documentées, les preuves, l'impact et la remédiation.
-Séparer les observations des vulnérabilités confirmées.
-Ne rien inventer.
+project/
+├── recon/
+│   ├── subdomains.txt
+│   ├── alive.txt
+│   └── urls.txt
+├── requests/
+│   ├── login.txt
+│   ├── profile.txt
+│   └── api.txt
+├── javascript/
+│   ├── app.js
+│   ├── dashboard.js
+│   └── auth.js
+└── source/
+    └── application-code/
 ```
 
-Adaptation du prompt de reporting de l'article.
+### Prompt de corrélation
+
+```text
+Analyse les fichiers du projet d'évaluation autorisée et corrèle les résultats de reconnaissance, les captures HTTP, JavaScript et le code source.
+
+Construis :
+1. Une cartographie applicative.
+2. Un inventaire des API.
+3. Une cartographie de l'authentification et de l'autorisation.
+4. Une liste des paramètres et identifiants d'objets.
+5. Les fonctionnalités non documentées découvertes dans le code.
+6. Les hypothèses de vulnérabilité.
+7. Un plan de validation manuelle priorisé.
+8. Les constats confirmés par les preuves fournies.
+9. Un rapport professionnel.
+
+Pour chaque constat, référence les preuves et indique la validation restante.
+```
+
+Cette approche constitue une alternative à MCP pour l'analyse d'artefacts déjà collectés.
 
 ## Skills Claude Code
 
-### Créer une skill de revue
+Une Skill formalise une méthodologie réutilisable : description, ressources, étapes, critères de validation et format des résultats. Elle évite de répéter les mêmes instructions à chaque revue.
+
+### Ressources communautaires
+
+[Skills.sh](https://skills.sh/) propose un catalogue de Skills pour agents IA. Examiner le code, la licence, les permissions et les dépendances avant installation.
+
+### Skills personnalisées
+
+Une Skill peut être construite à partir de notes de recherche, d'une méthodologie de test, de fichiers de référence et de procédures de validation existantes. Le fichier principal SKILL.md définit son rôle et son workflow ; les ressources associées apportent le contexte nécessaire.
+
+### Skill Open Redirect
 
 ```text
-À partir de ma méthodologie de revue autorisée, crée une skill Claude Code de lecture seule.
-Définis le nom, la description, SKILL.md, les fichiers d'entrée, les étapes d'inventaire et d'analyse, les critères de validation et le format du rapport.
-Précise que les hypothèses doivent être séparées des preuves et qu'aucune action réseau ou modification ne doit être lancée automatiquement.
-Ne propose pas de technique absente de mes notes.
+Crée une Skill Claude Code de revue Open Redirect à partir de ma méthodologie :
+
+[COLLER LA MÉTHODOLOGIE OPEN REDIRECT]
+
+Inclure :
+- Nom et description.
+- Méthodologie de détection.
+- Organisation des paramètres et routes de redirection.
+- Analyse des tests documentés et des mécanismes de validation.
+- Outils de revue.
+- Critères de confirmation et faux positifs.
+- Format du rapport.
+
+Reste fidèle à la méthodologie fournie. Réserve les tests actifs à une validation manuelle dans le laboratoire.
 ```
 
-Adaptation des trois prompts de création de skills pour organiser l'analyse, la revue des résultats XSS et Open Redirect et le reporting.
+### Skill XSS
 
-## Provenance
+```text
+Crée une Skill de revue XSS à partir des notes suivantes :
 
-[The Best Claude Code Setup for Bug Bounty Hunting](https://lostsec.medium.com/the-best-claude-code-setup-for-bug-bounty-hunting-a16a0a50e811), 27 août 2026. Les prompts sont reformulés pour l'analyse de données fournies et la validation manuelle ; les workflows de test autonome, les chaînes d'exploitation et les instructions de contournement ne sont pas reproduits. Les exemples HTTP contenant des identifiants de démonstration ne sont pas republiés.
+[COLLER LES NOTES XSS]
+
+Organise :
+- Reconnaissance et découverte des entrées.
+- Analyse de la réflexion.
+- Inventaire des paramètres et endpoints.
+- Identification des contextes.
+- Analyse des cas de test déjà documentés.
+- Revue des filtres et de l'encodage.
+- Critères de validation.
+- Outils de revue.
+- Faux positifs.
+- Documentation et reporting.
+
+Préserve la méthodologie et distingue analyse, hypothèses et résultats confirmés.
+```
+
+### Skill à partir d'une méthodologie complète
+
+```text
+Transforme ma méthodologie en Skill Claude Code réutilisable :
+
+[COLLER LA MÉTHODOLOGIE]
+
+Crée :
+1. Nom.
+2. Description.
+3. SKILL.md.
+4. Liste des outils.
+5. Workflow d'analyse et de revue.
+6. Cas de test documentés et critères attendus.
+7. Scripts auxiliaires de traitement des artefacts si nécessaire.
+8. Méthodologie de validation.
+9. Format de rapport.
+10. Fichiers de référence.
+
+Outils installés :
+[COLLER LES CHEMINS DES OUTILS]
+
+Utilise les ressources existantes et ne déclenche pas d'installation ou d'action réseau sans validation.
+```
+
+Relire le SKILL.md et ses ressources avant de les intégrer au répertoire de Skills.
 
 [Retour au parcours](./index.md)
