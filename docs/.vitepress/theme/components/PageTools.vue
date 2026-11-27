@@ -250,7 +250,8 @@ function refresh() {
   if (doc !== currentDoc) clearDoc()
   currentDoc = doc
   if (doc) doc.dataset.skillTextSize = readingSize.value
-  const technical = /\/(oscp|crto|crtp|osint|bug-bounty)\//.test(route.path)
+  const ejptSheet = /\/ejpt\/original\/ejpt-cheatsheet(?:\.html)?\/?$/.test(route.path)
+  const technical = ejptSheet || /\/(oscp|crto|crtp|osint|bug-bounty)\//.test(route.path)
   hasCode.value = !!(technical && doc?.querySelector('pre, .bounty-command'))
   const academy = /\/academy\//.test(route.path)
   hasOutline.value = !!(doc && frontmatter.value.outline !== false &&
@@ -264,7 +265,7 @@ function refresh() {
     markProse(doc)
   }
   markCompactBlocks()
-  const foldable = technical && sourcePath.value.split('/').length > 2 && frontmatter.value.outline !== false && !/\/(mindmap[^/]*|preparation|exam)$/.test(sourcePath.value)
+  const foldable = technical && (ejptSheet || sourcePath.value.split('/').length > 2) && frontmatter.value.outline !== false && !/\/(mindmap[^/]*|preparation|exam)$/.test(sourcePath.value)
   if(doc && foldable) {
     const fresh=initFolds(doc,(count,open)=>{foldCount.value=count;allFoldsOpen.value=open})
     if(fresh && foldCount.value){

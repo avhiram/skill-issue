@@ -84,21 +84,69 @@ def consolidate_sheets(soup, article):
         if len(link["href"])>1:
             link["href"] = "#complement-"+link["href"][1:]
     dedup(supplement)
-    extra = soup.new_tag("details",attrs={"class":"custom-block details"})
-    summary = soup.new_tag("summary")
-    summary.string = "Compléments de révision"
-    extra.append(summary)
+    # Use the same heading hierarchy as the rest of the site's native sheets.
+    # This is presentation only: retain all existing prose, images and code.
+    extra = soup.new_tag("h2", id="complements-de-revision")
+    extra.string = "Compléments de révision"
+    article.append(extra)
+    for heading in supplement.find_all(re.compile(r"^h[2-6]$")):
+        heading.name = "h"+str(min(int(heading.name[1])+1,6))
     for child in list(supplement.contents):
         if getattr(child,"name",None) == "h1":
             child.extract()
             continue
-        extra.append(child.extract())
-    article.append(extra)
+        article.append(child.extract())
     actual = [c.get_text() for c in article.select("pre code")]
     if set(actual) != expected_blocks or len(actual) != len(expected_blocks):
         raise RuntimeError("Consolidation lost or duplicated a source code block")
     print("Unified eJPT cheatsheet:",len(actual),"distinct original rendered code blocks")
     return article
+
+# Display labels only; preserve the original IDs and course references.
+sheet_labels = {
+    "Networking": "Fondamentaux réseau",
+    "Information Gathering": "Collecte d’informations",
+    "Footprinting & Scanning": "Footprinting et scanning",
+    "Enumeration": "Énumération",
+    "Vulnerability Assessment": "Évaluation des vulnérabilités",
+    "Host Based Attacks": "Pentest système",
+    "Network Based Attacks": "Pentest réseau",
+    "Metasploit": "Metasploit",
+    "Exploitation": "Exploitation",
+    "Post-Exploitation": "Post-exploitation",
+    "Social Engineering": "Social Engineering",
+    "Web Application Penetration Testing": "Pentest Web",
+}
+def format_sheet(soup, article):
+    # Do not expose the obsolete download variants in the unified web sheet.
+    for link in list(article.find_all("a",href=True)):
+        href=link["href"].split("#",1)[0].split("?",1)[0]
+        if re.search(r"/cheatsheet-files/ejpt-cheatsheet_nolinks\.(?:md|pdf|html|docx)$",href,re.I):
+            parent=link.parent
+            if parent.name=="li" and parent.get_text(strip=True)==link.get_text(strip=True):
+                parent.decompose()
+            else:
+                link.replace_with(link.get_text())
+    for ul in list(article.find_all(["ul","ol"])):
+        if not ul.find("li"):
+            ul.decompose()
+    for heading in article.find_all(re.compile(r"^h[23]$")):
+        label=heading.get_text(" ",strip=True)
+        if label not in sheet_labels:
+            continue
+        if heading.get("id","").startswith("complement-"):
+            heading.string=sheet_labels[label]
+            continue
+        link=heading.find("a",href=True)
+        href=link["href"] if link else None
+        heading.clear()
+        heading.append(sheet_labels[label])
+        if href:
+            p=soup.new_tag("p",attrs={"class":"ejpt-course-link"})
+            a=soup.new_tag("a",href=href)
+            a.string="Voir le cours"
+            p.append(a)
+            heading.insert_after(p)
 
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
@@ -118,6 +166,7 @@ for page in report["pages"]:
         article.append(paragraph)
     elif page==canonical:
         article=consolidate_sheets(soup,article)
+        format_sheet(soup,article)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
@@ -139,7 +188,7 @@ for page in report["pages"]:
     # Raw precompiled HTML is inert, not interpreted as Vue expressions.
     # Encode literal braces so user-provided examples cannot become template expressions.
     # v-pre protects all markup from Vue evaluation.
-    article["class"]="ejpt-native-content"
+    article["class"]="ejpt-native-content ejpt-cheatsheet-content" if page==canonical else "ejpt-native-content"
     article["v-pre"]=""
     article["data-ejpt-native"]="true"
     for img in article.find_all("img"):

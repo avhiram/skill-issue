@@ -11,6 +11,8 @@ let report: ((count: number, allOpen: boolean) => void) | undefined
 const selector = 'h2[id],h3[id],h4[id],h5[id],h6[id]'
 function isHeading(node: HTMLElement) { return node.matches(selector) && !node.closest('.ignore-header,[data-outline-ignore]') }
 function rootOf(doc: HTMLElement) {
+  const ejpt = doc.querySelector<HTMLElement>(".ejpt-cheatsheet-content")
+  if (ejpt) return ejpt
   if (doc.querySelector(':scope > h2[id],:scope > h3[id]')) return doc
   return Array.from(doc.children).find(el => el.querySelector(':scope > h2[id],:scope > h3[id]')) as HTMLElement || doc
 }
