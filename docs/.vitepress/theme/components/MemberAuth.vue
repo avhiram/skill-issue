@@ -123,7 +123,10 @@ async function logout() {
     </template>
     <template v-else>
       <h2>{{ mode === 'register' ? 'Créer un compte' : mode === 'reset' ? 'Mot de passe oublié' : mode === 'recover' ? 'Nouveau mot de passe' : 'Connexion' }}</h2>
-      <p class="member-muted">L’inscription est gratuite. Les ressources privées nécessitent une autorisation distincte.</p>
+      <div class="member-paths">
+        <p><strong>Accès gratuit</strong><span>Pour ceux qui veulent apprendre, même sans budget.</span></p>
+        <p><strong>Accès membre</strong><span>Pour ceux qui veulent aller plus loin et développer leurs compétences.</span></p>
+      </div>
       <form @submit.prevent="submit">
         <label v-if="mode !== 'recover'">Adresse email<input v-model="email" type="email" autocomplete="email" required :disabled="busy"></label>
         <label v-if="mode !== 'reset'">Mot de passe<input v-model="password" type="password" :autocomplete="mode === 'login' ? 'current-password' : 'new-password'" :minlength="mode === 'login' ? undefined : 12" required :disabled="busy"></label>
@@ -153,4 +156,10 @@ async function logout() {
 .member-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
 .member-links button { color: var(--vp-c-brand-1); font-size: 13px; text-decoration: underline; }
 .member-message { font-size: 14px; overflow-wrap: anywhere; }
+.member-paths { display: grid; gap: 12px; margin: 18px 0 24px; }
+.member-paths p { margin: 0; padding: 0 0 0 12px; border-left: 2px solid var(--vp-c-divider); font-size: 13px; line-height: 1.6; }
+.member-paths p + p { border-left-color: var(--vp-c-brand-1); }
+.member-paths strong, .member-paths span { display: block; }
+.member-paths strong { color: var(--vp-c-text-1); font-size: 14px; }
+.member-paths span { color: var(--vp-c-text-2); }
 </style>
