@@ -698,6 +698,53 @@ def add_note_explanations(soup, article):
     return {"topic":contextual,"general":generic,"extra_headings":count}
 
 
+
+def simplify_note_titles(soup, article):
+    """Keep actual sections collapsible; display leaf labels as plain text."""
+    before = [c.get_text() for c in article.select("pre code")]
+    stack = []
+    simplified = 0
+    redundant = 0
+    def normal(label):
+        return re.sub(r"[\W_]+", "", label.casefold())
+    for node in list(article.find_all(re.compile(r"^h[1-6]$"))):
+        level = int(node.name[1])
+        label = node.get_text(" ",strip=True)
+        while stack and stack[-1][0] >= level:
+            stack.pop()
+        classes = node.get("class",[])
+        # These headings were created solely to label a code block.
+        # The source sections and the three individually reviewed sections
+        # retain their existing accordion controls.
+        if ("ejpt-existing-note-heading" in classes or
+                "ejpt-context-heading" in classes):
+            # Footprinting uses its generated heading as a real parent.
+            next_heading = node.find_next_sibling(re.compile(r"^h[1-6]$"))
+            if next_heading is not None and "ejpt-footprint-heading" in next_heading.get("class",[]) and int(next_heading.name[1]) > level:
+                stack.append((level,label))
+                continue
+            duplicate = any(normal(label) == normal(parent) for _,parent in stack)
+            node.clear()
+            if duplicate:
+                node.name = "span"
+                node["class"] = classes + ["ejpt-redundant-title"]
+                node["aria-hidden"] = "true"
+                redundant += 1
+            else:
+                node.name = "p"
+                node["class"] = classes + ["ejpt-leaf-title"]
+                strong = soup.new_tag("strong")
+                strong.string = label
+                node.append(strong)
+                simplified += 1
+        else:
+            stack.append((level,label))
+    assert before == [c.get_text() for c in article.select("pre code")], "Title formatting changed existing code"
+    assert not article.select("h2.ejpt-leaf-title,h3.ejpt-leaf-title,h4.ejpt-leaf-title,h5.ejpt-leaf-title,h6.ejpt-leaf-title")
+    print("Cheatsheet leaf labels:",simplified,"plain titles;",redundant,"redundant titles suppressed")
+    return {"plain_titles":simplified,"redundant_titles":redundant}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -722,6 +769,7 @@ for page in report["pages"]:
         report["cheatsheet_remaining_headings"]=format_remaining_sections(soup,article)
         report["cheatsheet_footprinting_actions"]=format_footprinting(soup,article)
         report["cheatsheet_context"]=add_note_explanations(soup,article)
+        report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
