@@ -14,6 +14,7 @@ import BountyCommand from './components/BountyCommand.vue'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import mediumZoom from 'medium-zoom'
 import { useRoute } from 'vitepress'
+import { initEjptSelectionCopy } from './ejptSelectionCopy'
 import './custom.css'
 
 
@@ -147,15 +148,19 @@ export default {
       margin: 20
     })
     let cleanupMarquee: () => void = () => {}
+    let cleanupEjptSelection: () => void = () => {}
     onMounted(() => {
       initZoom()
       cleanupMarquee = initInstitutionMarquee()
+      cleanupEjptSelection = initEjptSelectionCopy()
     })
-    onUnmounted(() => cleanupMarquee())
+    onUnmounted(() => { cleanupMarquee(); cleanupEjptSelection() })
     watch(() => route.path, () => nextTick(() => {
       initZoom()
       cleanupMarquee()
       cleanupMarquee = initInstitutionMarquee()
+      cleanupEjptSelection()
+      cleanupEjptSelection = initEjptSelectionCopy()
     }))
   }
 } satisfies Theme

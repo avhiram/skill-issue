@@ -1484,3 +1484,30 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 @media (max-width: 640px) {
   .vp-doc .access-overview { grid-template-columns: 1fr; }
 }
+
+/* eJPT: preserve native code blocks and support copying a selected passage. */
+.ejpt-cheatsheet-content pre code {
+  user-select: text;
+  -webkit-user-select: text;
+  line-height: 1.65;
+}
+.ejpt-cheatsheet-content .ejpt-leaf-title,
+.ejpt-cheatsheet-content .ejpt-network-reviewed-title {
+  margin-top: 1.5rem;
+  margin-bottom: .35rem;
+}
+.ejpt-cheatsheet-content .ejpt-selection-copy {
+  display: block;
+  margin: 0 .75rem .75rem auto;
+  padding: .35rem .7rem;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  font-size: .8rem;
+  cursor: pointer;
+}
+.ejpt-cheatsheet-content .ejpt-selection-copy:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
