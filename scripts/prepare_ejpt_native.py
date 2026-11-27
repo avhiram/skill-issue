@@ -1157,6 +1157,87 @@ def audit_cheatsheet_block_sizes(article):
     return sizes
 
 
+
+# Editorial pass over existing chapter headings, with no changes to examples.
+def refine_later_chapters(soup, article):
+    before=[c.get_text() for c in article.select("pre code")]
+    chapters={
+        "Exploitation": {
+            "Vulnerability Scanning": "Évaluation des vulnérabilités",
+            "Exploits": "Notions d’exploitation",
+            "Shells": "Shells",
+            "Frameworks": "Frameworks",
+            "Win Exploitation": "Windows — notes du cours",
+            "Linux Exploitation": "Linux — notes du cours",
+            "OPENSSH": "OpenSSH",
+            "MYSQL": "MySQL",
+            "VSFTPD": "vsftpd",
+            "Obfuscation": "Obfuscation — notes du cours",
+        },
+        "Post-exploitation": {
+            "Win Local Enumeration": "Énumération locale Windows",
+            "Linux Local Enumeration": "Énumération locale Linux",
+            "Transferring Files": "Transfert de fichiers",
+            "Shells": "Shells",
+            "TTY Shells": "Terminaux TTY",
+            "Win Privilege Escalation": "Privilèges Windows",
+            "Linux Privilege Escalation": "Privilèges Linux",
+            "Win Persistence": "Persistance Windows",
+            "Linux Persistence": "Persistance Linux",
+            "Dumping & Cracking": "Identifiants — notes du cours",
+            "Pivoting": "Pivoting",
+            "Clearing Tracks": "Traces et journalisation",
+        },
+    }
+    context={
+        "Vulnerability Scanning": "Les résultats d’une analyse doivent être interprétés et vérifiés.",
+        "Frameworks": "Les frameworks regroupent différents outils et composants.",
+        "Shells": "Un shell est une interface d’interaction avec un système.",
+        "Win Local Enumeration": "Inventaire des informations propres à un système Windows.",
+        "Linux Local Enumeration": "Inventaire des informations propres à un système Linux.",
+        "TTY Shells": "Un terminal TTY fournit une interface de saisie et d’affichage.",
+        "Clearing Tracks": "La journalisation et la conservation des traces sont essentielles à l’investigation.",
+    }
+    result={}
+    for chapter,labels in chapters.items():
+        roots=[h for h in article.find_all(["h2","h3"])
+               if h.get_text(" ",strip=True).casefold()==chapter.casefold()
+               and (h.name=="h2" or h.get("id","").startswith("complement-"))]
+        if len(roots)!=2:
+            raise RuntimeError("Missing original chapter: "+chapter)
+        counts=[]
+        for root in roots:
+            changed=0
+            described=0
+            for node in list(root.next_siblings):
+                if not getattr(node,"name",None) or not re.fullmatch(r"h[1-6]",node.name):
+                    continue
+                if int(node.name[1])<=int(root.name[1]):
+                    break
+                if any(c in node.get("class",[]) for c in ("ejpt-existing-note-heading","ejpt-context-heading")):
+                    continue
+                label=node.get_text(" ",strip=True)
+                if label in labels and not node.find("a",href=True):
+                    if labels[label]!=label:
+                        node.clear()
+                        node.append(labels[label])
+                        node["class"]=node.get("class",[])+["ejpt-later-reviewed-heading"]
+                        changed+=1
+                if label in context:
+                    p=soup.new_tag("p",attrs={"class":"ejpt-later-section-context"})
+                    p.string=context[label]
+                    node.insert_after(p)
+                    described+=1
+            counts.append({"headings":changed,"descriptions":described})
+        if any(c["headings"]<4 or c["descriptions"]<2 for c in counts):
+            raise RuntimeError("Chapter heading review incomplete: "+chapter)
+        result[chapter]=counts
+    if before!=[c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("Chapter presentation changed original code")
+    print("Later chapter presentation review:",result)
+    return result
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -1232,6 +1313,7 @@ for page in report["pages"]:
         report["cheatsheet_system_layout"]=refine_system_layout(soup,article)
         report["cheatsheet_network_layout"]=refine_network_layout(soup,article)
         report["cheatsheet_framework_layout"]=refine_framework_layout(soup,article)
+        report["cheatsheet_later_layout"]=refine_later_chapters(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
