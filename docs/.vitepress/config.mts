@@ -55,13 +55,23 @@ export default defineConfig({
     logo: '/logo.svg',
     siteTitle: 'SKILL-ISSUE',
     nav: [
-      { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self', activeMatch: '^/academy/' },
-      { text: 'OSINT', link: '/osint/' },
-      { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self', activeMatch: '^/bug-bounty/' },
-      { text: 'OSCP', link: '/oscp/' },
-      { text: 'CRTO', link: '/crto/' },
-      { text: 'CRTP', link: '/crtp/' },
-      { text: 'Espace membre', link: '/membres/' }
+      {
+        text: 'Accès gratuit',
+        items: [
+          { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
+          { text: 'OSINT', link: '/osint/' },
+          { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
+          { text: 'OSCP', link: '/oscp/' },
+          { text: 'CRTP', link: '/crtp/' }
+        ]
+      },
+      {
+        text: 'Accès membre',
+        items: [
+          { text: 'Espace membre', link: '/membres/' },
+          { text: 'CRTO · Accès réservé', link: '/crto/' }
+        ]
+      }
     ],
     sidebar: {
       '/crtp/': [

@@ -1429,3 +1429,58 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
 @media(min-width:768px) and (max-width:959px){
   .skill-desktop-actions{justify-content:flex-end}
 }
+
+
+/* SKILL-ISSUE access split */
+.vp-doc .access-overview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin: 1.1rem 0 1.5rem;
+}
+.vp-doc .access-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .5rem;
+  min-width: 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid #382b49;
+  border-radius: 9px;
+  background: #15101d;
+  color: #e8dff0;
+  text-decoration: none;
+  transition: border-color .16s, background .16s, transform .16s;
+}
+.vp-doc .access-card:hover {
+  border-color: #7953be;
+  background: #1b1426;
+  transform: translateY(-1px);
+  color: #fff;
+}
+.vp-doc .access-card-member { border-color: #63458f; }
+.vp-doc .access-kicker {
+  color: #a995c7;
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+.vp-doc .access-card strong {
+  color: #f0eafa;
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+.vp-doc .access-card > span:not(.access-kicker) {
+  color: #b6aec5;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+.vp-doc .access-card small {
+  margin-top: .2rem;
+  color: #9c8bb7;
+  font-size: .72rem;
+  line-height: 1.45;
+}
+@media (max-width: 640px) {
+  .vp-doc .access-overview { grid-template-columns: 1fr; }
+}
