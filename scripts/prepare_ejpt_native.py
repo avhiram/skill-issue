@@ -598,6 +598,106 @@ def format_footprinting(soup, article):
     return count
 
 
+
+# French presentation metadata for existing source topics.
+# These are conceptual labels, not additional commands or procedures.
+note_topics = [
+    (r"\b(?:IIS|WebDAV)\b", "IIS et WebDAV", "IIS est un serveur Web Windows. WebDAV étend HTTP pour la gestion de ressources distantes."),
+    (r"\b(?:SMB|SMBMap|SMBClient|Enum4linux|RPCClient|Nmblookup|Samba)\b", "SMB et Samba", "SMB est un protocole de partage de ressources. Samba en fournit une implémentation pour les systèmes Unix."),
+    (r"\b(?:FTP|VSFTPD|FTPD)\b", "FTP", "FTP est un protocole de transfert de fichiers. Les droits d’accès et la protection des échanges constituent des points de vigilance."),
+    (r"\b(?:SSH|OpenSSH)\b", "SSH", "SSH fournit un canal d’administration distante chiffré. La configuration et l’authentification déterminent la sécurité du service."),
+    (r"\b(?:SMTP|mail)\b", "SMTP", "SMTP est le protocole de transport des messages électroniques."),
+    (r"\b(?:MySQL|MSSQL|SQL)\b", "Bases de données SQL", "Les bases SQL stockent des données structurées. La gestion des permissions et des entrées utilisateur est essentielle."),
+    (r"\bRDP\b", "RDP", "RDP permet l’accès à une session graphique distante sous Windows."),
+    (r"\bWinRM\b", "WinRM", "WinRM fournit un mécanisme d’administration distante des systèmes Windows."),
+    (r"\b(?:HTTP|HTTPS|HFS|Tomcat|Apache)\b", "Services Web", "Les serveurs Web traitent des requêtes HTTP ou HTTPS. Leur configuration et leur version influencent leur surface d’exposition."),
+    (r"\b(?:Nmap|port scan|UDP scan|service enumeration)\b", "Inventaire réseau", "Les résultats d’inventaire décrivent les hôtes, les ports et les services observés dans un périmètre autorisé."),
+    (r"\b(?:Wireshark|TShark|ARP)\b", "Trafic réseau", "L’analyse de paquets permet de comprendre les échanges réseau. ARP associe des adresses IP et MAC sur un réseau local."),
+    (r"\b(?:Heartbleed|Eternalblue|Bluekeep|Log4j|CVE|Shellshock|vulnerability scanning|vulnérabilités)\b", "Vulnérabilités", "Une vulnérabilité décrit une faiblesse de sécurité. Un indice de scan ne constitue pas à lui seul une confirmation."),
+    (r"\b(?:Nessus|WMAP)\b", "Résultats d’audit", "Les outils d’évaluation produisent des résultats qui nécessitent une interprétation et une validation."),
+    (r"\b(?:kernel|noyau)\b", "Noyau du système", "Le noyau gère les ressources du système et constitue une frontière importante de sécurité."),
+    (r"\bUAC\b", "UAC", "User Account Control contrôle les demandes d’élévation de privilèges sous Windows."),
+    (r"\b(?:token|access token)\b", "Access Token", "Un jeton d’accès représente l’identité et les droits associés à un processus Windows."),
+    (r"\b(?:SUID)\b", "Permissions SUID", "Le bit SUID modifie l’identité effective d’exécution d’un programme Unix ; il nécessite une gestion rigoureuse."),
+    (r"\b(?:cron)\b", "Tâches Cron", "Cron planifie des tâches sur les systèmes Unix. Le propriétaire et les permissions des fichiers associés sont importants."),
+    (r"\b(?:credentials?|hashes|hash|hydra|cracking|brute|keylogging|password)\b", "Authentification et identifiants", "Les identifiants et les données d’authentification sont des informations sensibles. Leur exposition constitue un risque de sécurité."),
+    (r"\b(?:payloads?|msfvenom|meterpreter|metasploit|msfconsole|armitage)\b", "Environnement Metasploit", "Cette partie concerne le vocabulaire et les composants de l’environnement de laboratoire Metasploit."),
+    (r"\b(?:persistence|persistance|backdoored)\b", "Persistance", "La persistance désigne la capacité d’un accès non autorisé à subsister ; sa détection et sa suppression sont des objectifs de défense."),
+    (r"\b(?:pivoting|pivot)\b", "Segmentation réseau", "La segmentation limite les communications entre zones et réduit la propagation d’une compromission."),
+    (r"\b(?:clearing|obfuscation|shellter|empire)\b", "Visibilité et sécurité", "Cette notion concerne les risques liés à la dissimulation et l’importance de la journalisation et de la détection."),
+    (r"\b(?:shells?|TTY|bash|python|perl|netcat)\b", "Interfaces de commande", "Un shell est une interface d’interaction avec un système. Un terminal fournit son environnement d’affichage et de saisie."),
+    (r"\b(?:files|folders|fichiers|tmux|transferring)\b", "Fichiers et sessions", "Cette partie concerne la gestion des fichiers et des sessions dans un environnement de laboratoire."),
+    (r"\b(?:privilege escalation|privesc)\b", "Privilèges", "Une élévation de privilèges correspond à un changement de niveau d’accès. Le principe du moindre privilège vise à limiter ce risque."),
+    (r"\b(?:enumeration|énumération|discovery)\b", "Inventaire", "L’inventaire consiste à relever les informations disponibles sur les éléments du périmètre de test."),
+    (r"\b(?:WordPress|WPScan|plugins|themes)\b", "WordPress", "WordPress est un CMS dont le noyau, les extensions et les thèmes constituent des composants distincts."),
+    (r"\b(?:Drupal|modules)\b", "Drupal", "Drupal est un CMS modulaire. Les versions, les modules et leurs permissions doivent être suivis."),
+    (r"\bXSS\b", "Cross-Site Scripting", "Une XSS est une vulnérabilité liée à l’interprétation de données non fiables dans le navigateur."),
+    (r"\b(?:injection|SQLMap)\b", "Injection SQL", "Une injection SQL survient lorsque des données non fiables modifient la structure d’une requête SQL."),
+    (r"\b(?:gophish|social engineering)\b", "Social Engineering", "Le social engineering exploite des facteurs humains. La sensibilisation et les mécanismes de vérification contribuent à la prévention."),
+    (r"\b(?:windows|win)\b", "Environnement Windows", "Exemple issu des notes sur les caractéristiques et la sécurité de Windows."),
+    (r"\b(?:linux|unix)\b", "Environnement Linux", "Exemple issu des notes sur les caractéristiques et la sécurité des systèmes Unix."),
+]
+def add_note_explanations(soup, article):
+    before = [c.get_text() for c in article.select("pre code")]
+    stack = []
+    previous_heading = None
+    count = 0
+    contextual = 0
+    generic = 0
+    for node in list(article.find_all(re.compile(r"^(?:h[1-6]|pre)$"))):
+        if node.name != "pre":
+            level = int(node.name[1])
+            label = node.get_text(" ",strip=True)
+            while stack and stack[-1][0] >= level:
+                stack.pop()
+            stack.append((level,label))
+            previous_heading = node
+            continue
+        if node.find("code",recursive=False) is None:
+            continue
+        # The three already reviewed sections have explicit action descriptions.
+        previous = node.find_previous_sibling()
+        if previous is not None and "ejpt-action-description" in previous.get("class",[]):
+            continue
+        if previous is not None and previous.name=="p" and previous.get("data-ejpt-note-description")=="true":
+            continue
+        source_labels = [label for _,label in stack]
+        # Prefer specific original labels; then the nearest source topic.
+        match = None
+        for label in reversed(source_labels):
+            for pattern, topic, desc in note_topics:
+                if re.search(pattern,label,re.I):
+                    match = (topic,desc)
+                    break
+            if match:
+                break
+        if match:
+            topic,desc = match
+            contextual += 1
+        else:
+            topic = source_labels[-1] if source_labels else "Notes de laboratoire"
+            desc = next((section_context[x] for x in reversed(source_labels) if x in section_context),
+                        "Exemple original du cours. À replacer dans le contexte du laboratoire autorisé.")
+            generic += 1
+        # Guarantee a nearby title without rewriting source code or changing
+        # heading IDs that existing internal links reference.
+        if previous is None or not re.fullmatch(r"h[1-6]",previous.name or ""):
+            count += 1
+            label = topic
+            h = soup.new_tag("h"+str(min((stack[-1][0]+1) if stack else 3,6)),
+                             id="ejpt-context-"+str(count),attrs={"class":"ejpt-context-heading"})
+            h.string = label
+            node.insert_before(h)
+        p = soup.new_tag("p",attrs={"class":"ejpt-action-description","data-ejpt-note-description":"true"})
+        p.string = desc
+        node.insert_before(p)
+    after = [c.get_text() for c in article.select("pre code")]
+    if before != after:
+        raise RuntimeError("Explanatory presentation changed existing code blocks")
+    print("Cheatsheet context:",contextual,"topic descriptions,",generic,"general descriptions")
+    return {"topic":contextual,"general":generic,"extra_headings":count}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -621,6 +721,7 @@ for page in report["pages"]:
         format_information_gathering(soup,article)
         report["cheatsheet_remaining_headings"]=format_remaining_sections(soup,article)
         report["cheatsheet_footprinting_actions"]=format_footprinting(soup,article)
+        report["cheatsheet_context"]=add_note_explanations(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.

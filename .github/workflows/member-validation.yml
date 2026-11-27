@@ -22,7 +22,39 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: python3 .github/scripts/prepare_crto_for_vitepress.py
       - run: python3 .github/scripts/normalize_site_dashes.py
+      - name: Prepare native VitePress eJPT chapters
+        run: |
+          python3 -m pip install --disable-pip-version-check markdown-it-py==3.0.0 beautifulsoup4==4.12.3
+          python3 scripts/render_ejpt_original.py "$RUNNER_TEMP/ejpt-render"
+          python3 scripts/prepare_ejpt_native.py "$RUNNER_TEMP/ejpt-render"
       - run: npm run docs:build
+      - name: Verify native eJPT build
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('docs/.vitepress/dist/ejpt/original')
+          report=json.loads((root/'import-report.json').read_text())
+          assert len(report['pages'])==80
+          for p in report['pages']:
+              body=(root/p).read_text(encoding='utf-8')
+              assert 'data-ejpt-native' in body and 'VPDoc' in body and 'VPNav' in body, p
+          from bs4 import BeautifulSoup
+          sheet=BeautifulSoup((root/'ejpt-cheatsheet.html').read_text(encoding='utf-8'),'html.parser').select_one('.ejpt-cheatsheet-content')
+          assert sheet is not None, 'Missing native cheatsheet content'
+          assert len(sheet.select('pre code'))==report['cheatsheet_display_blocks'], 'Unexpected change in displayed code block count'
+          assert len(sheet.select('.ejpt-action-heading'))>=20, 'Missing information gathering action headings'
+          assert len(sheet.select('.ejpt-existing-note-heading'))==report['cheatsheet_remaining_headings'], 'Incomplete remaining section headings'
+          assert report['cheatsheet_remaining_headings']>=100, 'Incomplete remaining cheatsheet presentation'
+          context=report['cheatsheet_context']
+          assert len(sheet.select('[data-ejpt-note-description]'))==context['topic']+context['general'], 'Missing block context'
+          assert context['topic']+context['general']>=100, 'Incomplete block descriptions'
+          assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
+          assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
+          assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'
+          assert sheet.select_one('h2#complements-de-revision'), 'Missing folded complement'
+          print('80 native VitePress eJPT pages validated; cheatsheet presentation and displayed block count verified (237 source blocks)')
+          PY
       - name: Verify public and member pages
         run: |
           test -s docs/.vitepress/dist/index.html

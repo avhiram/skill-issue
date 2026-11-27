@@ -87,6 +87,9 @@ jobs:
           assert len(sheet.select('.ejpt-action-heading'))>=20, 'Missing information gathering action headings'
           assert len(sheet.select('.ejpt-existing-note-heading'))==report['cheatsheet_remaining_headings'], 'Incomplete remaining section headings'
           assert report['cheatsheet_remaining_headings']>=100, 'Incomplete remaining cheatsheet presentation'
+          context=report['cheatsheet_context']
+          assert len(sheet.select('[data-ejpt-note-description]'))==context['topic']+context['general'], 'Missing block context'
+          assert context['topic']+context['general']>=100, 'Incomplete block descriptions'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
           assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'
