@@ -507,6 +507,97 @@ def format_remaining_sections(soup, article):
     return annotated
 
 
+
+# Presentation only: preserve the existing network-inventory examples.
+def format_footprinting(soup, article):
+    candidates = []
+    for pre in article.find_all("pre"):
+        code = pre.find("code", recursive=False)
+        if code is None:
+            continue
+        lines = code.get_text().splitlines()
+        if '## fping with no "Host Unreachable errors"' in lines and any(line.startswith("sudo arp-scan ") for line in lines):
+            candidates.append((pre, lines))
+    if len(candidates) != 2:
+        raise RuntimeError("Unexpected number of original footprinting blocks")
+    seen = {}
+    count = 0
+    labels = {
+        "arp": ("Découverte ARP", "Identifier les équipements visibles sur le réseau local de laboratoire."),
+        "ping": ("Test de connectivité ICMP", "Vérifier si un équipement répond aux requêtes ICMP."),
+        "nmap": ("Inventaire des hôtes", "Consulter les résultats de découverte des hôtes."),
+        "tracert": ("Chemin réseau sous Windows", "Observer le trajet réseau vers une destination."),
+        "traceroute": ("Chemin réseau sous Linux", "Observer le trajet réseau vers une destination."),
+        "fping": ("Découverte avec fping", "Consulter les réponses ICMP dans le périmètre de test."),
+        "fping-note": ("Variante fping des notes originales", "Attention : la ligne source semble concaténer deux commandes. Elle est conservée à l’identique et doit être vérifiée avant utilisation."),
+    }
+    for source_index, (pre, lines) in enumerate(candidates, 1):
+        parent_heading = pre.find_previous_sibling(re.compile(r"^h[1-6]$"))
+        if parent_heading is None or "ejpt-existing-note-heading" not in parent_heading.get("class", []):
+            raise RuntimeError("Missing footprinting heading")
+        parent_heading.string = "Découverte réseau" if source_index == 1 else "Compléments de découverte réseau"
+        level = min(int(parent_heading.name[1])+1, 6)
+        marker = None
+        removed = []
+        groups = []
+        for line in lines:
+            if line in ('# NETWORK DISCOVERY', '## fping', '## fping with no "Host Unreachable errors"'):
+                removed.append(line)
+                if line.startswith("## fping"):
+                    marker = "fping-note" if "Host Unreachable" in line else "fping"
+                continue
+            if not line.strip():
+                continue
+            if line.startswith("sudo arp-scan "):
+                key = "arp"
+            elif line.startswith("ping "):
+                key = "ping"
+            elif line.startswith("sudo nmap "):
+                key = "nmap"
+            elif line.startswith("tracert "):
+                key = "tracert"
+            elif line.startswith("traceroute "):
+                key = "traceroute"
+            elif line.startswith("fping ") and marker in ("fping", "fping-note"):
+                key = marker
+            else:
+                raise RuntimeError("Unknown footprinting source line")
+            groups.append((key,line))
+        original = [line for line in lines if line.strip() and line not in removed]
+        if original != [line for _,line in groups]:
+            raise RuntimeError("Footprinting formatting changed original lines")
+        if pre.get("id"):
+            pre.insert_before(soup.new_tag("span",id=pre["id"]))
+        for key,line in groups:
+            if line in seen:
+                p = soup.new_tag("p",attrs={"class":"ejpt-duplicate-note"})
+                link = soup.new_tag("a",href="#"+seen[line])
+                link.string = labels[key][0]
+                p.append(link)
+                pre.insert_before(p)
+                continue
+            count += 1
+            ident = "ejpt-footprint-"+str(count)
+            title,desc = labels[key]
+            h = soup.new_tag("h"+str(level),id=ident,attrs={"class":"ejpt-footprint-heading"})
+            h.string = title
+            pre.insert_before(h)
+            p = soup.new_tag("p",attrs={"class":"ejpt-action-description"})
+            p.string = desc
+            pre.insert_before(p)
+            block = soup.new_tag("pre")
+            code = soup.new_tag("code",attrs={"class":"language-bat" if key=="tracert" else "language-bash"})
+            code.string = line+"\n"
+            block.append(code)
+            pre.insert_before(block)
+            seen[line] = ident
+        pre.decompose()
+    if count != 7:
+        raise RuntimeError("Unexpected footprinting display count")
+    print("Footprinting presentation verified: 2 original blocks, 7 distinct action blocks")
+    return count
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -529,6 +620,7 @@ for page in report["pages"]:
         format_network_basics(soup,article)
         format_information_gathering(soup,article)
         report["cheatsheet_remaining_headings"]=format_remaining_sections(soup,article)
+        report["cheatsheet_footprinting_actions"]=format_footprinting(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
