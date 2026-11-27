@@ -104,6 +104,10 @@ jobs:
           assert len(system_layout)==2, 'System sections incomplete'
           assert len(sheet.select('.ejpt-system-reviewed-heading'))==sum(x['headings'] for x in system_layout), 'System headings incomplete'
           assert len(sheet.select('.ejpt-system-section-context'))==sum(x['descriptions'] for x in system_layout), 'System context incomplete'
+          network_layout=report['cheatsheet_network_layout']
+          assert network_layout['sources']==3, 'Network capture source coverage incomplete'
+          assert len(sheet.select('.ejpt-network-reviewed-title'))==network_layout['groups'], 'Network capture titles incomplete'
+          assert len(sheet.select('.ejpt-network-reviewed-description'))==network_layout['groups'], 'Network capture descriptions incomplete'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
           assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'

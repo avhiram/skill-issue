@@ -990,6 +990,89 @@ def refine_system_layout(soup, article):
     return counts
 
 
+
+# Make long capture-analysis examples easier to read without changing their text.
+def refine_network_layout(soup, article):
+    before=[c.get_text() for c in article.select("pre code")]
+    # Use broad topics already explicitly present in the original notes.
+    wireshark={
+        "# Filter by ip": ("Adresses IP", "Les filtres d’affichage distinguent les paquets selon les adresses IP."),
+        "# Filter by tcp port": ("Ports TCP", "Les ports identifient les points de communication des services."),
+        "# Filter SYN flag": ("En-têtes TCP", "Les indicateurs TCP décrivent les états et le fonctionnement des connexions."),
+        "# Broadcast filter": ("Diffusion réseau", "Le broadcast désigne les trames destinées à l’ensemble d’un domaine de diffusion."),
+    }
+    tshark={
+        "# First 100 packets": ("Lecture de la capture", "TShark permet de consulter des captures réseau en ligne de commande."),
+        "# Protocl hierarchy statistics": ("Statistiques de protocoles", "La hiérarchie des protocoles résume la composition d’une capture."),
+        "# HTTP traffic": ("Trafic HTTP", "Les messages HTTP sont structurés en requêtes et réponses."),
+        "# Check session ID": ("Autres observations de la capture", "Les extraits suivants restent regroupés dans leur ordre original."),
+    }
+    count=0
+    sources=0
+    replacement=[]
+    for node in list(article.find_all("pre")):
+            if not getattr(node,"name",None):
+                continue
+            if node.name!="pre":
+                continue
+            code=node.find("code",recursive=False)
+            if code is None:
+                continue
+            old=code.get_text()
+            markers=wireshark if "# Filter by ip\n" in old else tshark if "# First 100 packets" in old else None
+            if markers is None:
+                continue
+            groups=[]
+            current=["Ouverture et lecture de la capture","Extrait original consacré à l’analyse réseau.",[]]
+            for line in old.splitlines(keepends=True):
+                key=line.rstrip("\r\n")
+                if key in markers:
+                    if current[2]:
+                        groups.append(current)
+                    current=[*markers[key],[]]
+                current[2].append(line)
+            if current[2]:
+                groups.append(current)
+            if len(groups)<3 or "".join("".join(g[2]) for g in groups)!=old:
+                raise RuntimeError("Network block reconstruction failed")
+            sources+=1
+            previous=node.find_previous_sibling()
+            label=previous.find_previous_sibling() if previous else None
+            if previous is not None and label is not None and "ejpt-action-description" in previous.get("class",[]) and "ejpt-existing-note-heading" in label.get("class",[]):
+                label.clear()
+                label.append("Wireshark" if markers is wireshark else "TShark")
+                previous.string="Notes originales sur l’analyse de captures réseau."
+            for title,desc,lines in groups:
+                count+=1
+                h=soup.new_tag("p",id="ejpt-network-note-"+str(count),attrs={"class":"ejpt-network-reviewed-title"})
+                b=soup.new_tag("strong")
+                b.string=title
+                h.append(b)
+                node.insert_before(h)
+                p=soup.new_tag("p",attrs={"class":"ejpt-action-description ejpt-network-reviewed-description"})
+                p.string=desc
+                node.insert_before(p)
+                block=soup.new_tag("pre")
+                inner=soup.new_tag("code",attrs={"class":code.get("class",[])})
+                inner.string="".join(lines)
+                block.append(inner)
+                node.insert_before(block)
+            if node.get("id"):
+                node.insert_before(soup.new_tag("span",id=node["id"]))
+            replacement.append((old,["".join(g[2]) for g in groups]))
+            node.decompose()
+    expected=list(before)
+    for old,new in replacement:
+        pos=expected.index(old)
+        expected[pos:pos+1]=new
+    if expected!=[c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("Network presentation changed original code")
+    if sources!=3 or count<9:
+        raise RuntimeError("Network capture review incomplete")
+    print("Network capture review:",sources,"source blocks;",count,"display groups")
+    return {"sources":sources,"groups":count}
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -1063,6 +1146,7 @@ for page in report["pages"]:
         report["cheatsheet_enumeration"]=refine_enumeration(soup,article)
         report["cheatsheet_vulnerability_assessment"]=refine_vulnerability_assessment(soup,article)
         report["cheatsheet_system_layout"]=refine_system_layout(soup,article)
+        report["cheatsheet_network_layout"]=refine_network_layout(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
