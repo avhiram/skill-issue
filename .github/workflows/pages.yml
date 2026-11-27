@@ -115,6 +115,13 @@ jobs:
           fi
       - name: Audit all rendered HTML for visible Markdown fences
         run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
+      - name: Render original eJPT course and verify archive
+        run: |
+          python3 -m pip install --disable-pip-version-check markdown-it-py==3.0.0 beautifulsoup4==4.12.3
+          python3 scripts/render_ejpt_original.py docs/.vitepress/dist/ejpt/original
+          test -s docs/.vitepress/dist/ejpt/original/README.html
+          test -s docs/.vitepress/dist/ejpt/original/ejpt-cheatsheet.html
+          test -s docs/.vitepress/dist/ejpt/original/cheatsheet-additional.html
       - name: Stamp compiled pages with source revision
         run: |
           python3 - <<'PY'

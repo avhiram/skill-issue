@@ -16,19 +16,17 @@ Un parcours progressif pour apprendre les fondamentaux du pentest et s'entraîne
     <span class="access-kicker">APPRENDRE</span>
     <strong>Cours</strong>
     <span>Les chapitres dans l'ordre, des fondamentaux à la préparation pratique.</span>
-    <small>6 chapitres</small>
+    <small>Cours original · chapitres distincts</small>
   </a>
   <a class="access-card" href="/skill-issue/ejpt/cheatsheet.html">
     <span class="access-kicker">RÉVISER</span>
     <strong>Cheatsheet</strong>
     <span>Les commandes classées par thème, avec copie rapide.</span>
-    <small>Réseaux · Systèmes · HTTP</small>
+    <small>Deux fichiers de révision</small>
   </a>
 </div>
 
-::: info Parcours en construction
-La navigation est disponible. Les liens permettent de consulter les notes originales en anglais ; la rédaction française sera intégrée chapitre par chapitre.
-:::
+Les notes originales sont disponibles en anglais, chapitre par chapitre, avec les images fournies. La traduction française viendra ensuite.
 
 [Programme eJPT officiel](https://ine.com/security/certifications/ejpt-certification)
 
