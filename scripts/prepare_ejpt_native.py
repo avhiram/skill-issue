@@ -1073,6 +1073,90 @@ def refine_network_layout(soup, article):
     return {"sources":sources,"groups":count}
 
 
+
+# Review the existing Metasploit chapter headings only. Existing examples
+# remain in their original order and are not rewritten or expanded.
+def refine_framework_layout(soup, article):
+    before=[c.get_text() for c in article.select("pre code")]
+    roots=[h for h in article.find_all(["h2","h3"]) if h.get_text(" ",strip=True)=="Metasploit"
+           and (h.name=="h2" or h.get("id","").startswith("complement-"))]
+    if len(roots)!=2:
+        raise RuntimeError("Missing original framework sections")
+    labels={
+        "Info Gathering & Enumeration":"Collecte d’informations et énumération",
+        "Vulnerability Scanning":"Évaluation des vulnérabilités",
+        "Win Exploitation":"Windows — notes du cours",
+        "Linux Exploitation":"Linux — notes du cours",
+        "Default MSF Start":"Environnement Metasploit",
+        "Post-Exploitation Fundamentals":"Notions de post-exploitation",
+        "Win Post-Exploitation":"Post-exploitation — Windows",
+        "Linux Post-Exploitation":"Post-exploitation — Linux",
+        "WINRM":"WinRM",
+        "TOMCAT":"Tomcat",
+        "SAMBA":"Samba",
+    }
+    context={
+        "Meterpreter":"Composant de l’environnement Metasploit étudié dans le cours.",
+        "Vulnerability Scanning":"Les résultats de scan constituent des indices à vérifier.",
+        "Armitage":"Interface graphique historique associée à Metasploit.",
+    }
+    counts=[]
+    for root in roots:
+        changed=0
+        described=0
+        for node in list(root.next_siblings):
+            if not getattr(node,"name",None) or not re.fullmatch(r"h[1-6]",node.name):
+                continue
+            if int(node.name[1])<=int(root.name[1]):
+                break
+            if any(c in node.get("class",[]) for c in ("ejpt-existing-note-heading","ejpt-context-heading")):
+                continue
+            label=node.get_text(" ",strip=True)
+            if label in labels and not node.find("a",href=True):
+                node.clear()
+                node.append(labels[label])
+                node["class"]=node.get("class",[])+["ejpt-framework-reviewed-heading"]
+                changed+=1
+            if label in context:
+                p=soup.new_tag("p",attrs={"class":"ejpt-framework-context"})
+                p.string=context[label]
+                node.insert_after(p)
+                described+=1
+        counts.append({"headings":changed,"descriptions":described})
+    if any(c["headings"]<4 or c["descriptions"]<2 for c in counts):
+        raise RuntimeError("Framework heading review incomplete")
+    if before!=[c.get_text() for c in article.select("pre code")]:
+        raise RuntimeError("Framework presentation changed source code")
+    print("Framework presentation review:",counts)
+    return counts
+
+# Record large existing blocks for subsequent manual presentation review.
+# This inventory does not alter any code, command, argument or sequence.
+def audit_cheatsheet_block_sizes(article):
+    sizes={}
+    section="Introduction"
+    extra=None
+    for node in article.find_all(re.compile(r"^(?:h[23]|pre)$")):
+        if node.name=="h2":
+            section=node.get_text(" ",strip=True)
+            extra=None
+        elif node.name=="h3" and section=="Compléments de révision":
+            extra=node.get_text(" ",strip=True)
+        elif node.name=="pre":
+            code=node.find("code",recursive=False)
+            if code is None:
+                continue
+            name=extra or section
+            n=sum(bool(line.strip()) for line in code.get_text().splitlines())
+            row=sizes.setdefault(name,{"blocks":0,"long":0,"max_lines":0})
+            row["blocks"]+=1
+            row["long"]+=int(n>=15)
+            row["max_lines"]=max(row["max_lines"],n)
+    print("Cheatsheet block size review:",sum(x["blocks"] for x in sizes.values()),"blocks;",
+          sum(x["long"] for x in sizes.values()),"blocks of 15+ nonempty lines")
+    return sizes
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -1147,7 +1231,9 @@ for page in report["pages"]:
         report["cheatsheet_vulnerability_assessment"]=refine_vulnerability_assessment(soup,article)
         report["cheatsheet_system_layout"]=refine_system_layout(soup,article)
         report["cheatsheet_network_layout"]=refine_network_layout(soup,article)
+        report["cheatsheet_framework_layout"]=refine_framework_layout(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
+        report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
