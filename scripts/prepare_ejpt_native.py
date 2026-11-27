@@ -704,6 +704,7 @@ def add_note_explanations(soup, article):
 # Descriptions identify the tools and concepts; the source examples remain intact.
 enumeration_topics = {
     "nmap": ("Inventaire du service avec Nmap", "Nmap présente les ports et les informations disponibles sur les services réseau."),
+    "nmblookup": ("Informations NetBIOS", "NetBIOS fournit notamment des mécanismes de nommage utilisés sur certains réseaux."),
     "smbmap": ("Partages réseau et permissions", "SMBMap présente les ressources partagées et les droits associés."),
     "smbclient": ("Client SMB et RPC", "SMBClient et RPCClient sont des interfaces clientes pour les ressources et services Windows."),
     "rpcclient": ("Interface RPC", "RPCClient est un client pour les services RPC Windows."),
@@ -769,6 +770,8 @@ def refine_enumeration(soup, article):
                 kind = "rpcclient"
             elif "enum4linux" in lead or "null sessions" in lead or command.startswith("enum4linux "):
                 kind = "enum4linux"
+            elif "nmblookup" in lead or re.match(r"^(?:sudo\s+)?nmblookup\b",command):
+                kind = "nmblookup"
             elif "nmap" in lead or re.match(r"^(?:sudo\s+)?nmap\b",command):
                 kind = "nmap"
             elif "netcat" in lead or (service=="SSH" and command.startswith("nc ")):
@@ -786,7 +789,25 @@ def refine_enumeration(soup, article):
             elif service=="SMTP" and re.match(r"^(?:nc|telnet)\b",command):
                 kind = "smtp"
             else:
-                raise RuntimeError("Unclassified existing enumeration block for "+service)
+                # Some source examples are indented or contain prompt markers.
+                # Use the nearest original heading for presentation only.
+                source_heading = node.find_previous_sibling(lambda el: bool(
+                    getattr(el,"name",None) and re.fullmatch(r"h[1-6]",el.name)
+                    and "ejpt-existing-note-heading" not in el.get("class",[])
+                    and "ejpt-context-heading" not in el.get("class",[])))
+                source_label = source_heading.get_text(" ",strip=True).casefold() if source_heading else ""
+                kind = {"nmblookup":"nmblookup","nmap":"nmap","smbmap":"smbmap",
+                        "smb connection":"smbclient","rpcclient":"rpcclient",
+                        "enum4linux":"enum4linux","hydra":"hydra","metasploit":"metasploit",
+                        "ftp client":"ftp","netcat":"netcat","ssh":"ssh",
+                        "alternative":"http"}.get(source_label)
+                if kind is None:
+                    # Do not guess what an unmatched block does.
+                    kind = "source-"+service.casefold()
+                    enumeration_topics[kind] = ("Notes originales — "+service,
+                        "Extrait original de cette rubrique, conservé sans interprétation technique.")
+                    print("Enumeration label to review:",service,source_label)
+
             title,desc = enumeration_topics[kind]
             key = (service,kind)
             seen_titles[key] += 1
