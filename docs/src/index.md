@@ -12,13 +12,8 @@ pageClass: skill-home-page
   <h1>Morad H.</h1>
   <p class="profile-subtitle">Adversary Simulation · Cyberdéfense</p>
   <div class="profile-links">
-    <a href="/skill-issue/academy/index.html">Academy</a>
-    <a href="/skill-issue/osint/">OSINT</a>
-    <a href="/skill-issue/oscp/exam">Exam Mode</a>
-    <a href="/skill-issue/oscp/">Notes OSCP</a>
-    <a href="/skill-issue/crto/">Notes CRTO</a>
-    <a href="/skill-issue/crtp/">Notes CRTP</a>
-    <a href="/skill-issue/oscp/mindmaps.html">Mindmap</a>
+    <a href="/skill-issue/academy/index.html">Accès gratuit</a>
+    <a href="/skill-issue/membres/">Accès membre</a>
     <a href="https://www.linkedin.com/in/l14m" target="_blank" rel="noopener noreferrer">LinkedIn</a>
   </div>
 </div>
@@ -75,9 +70,20 @@ J'ai regroupé ce que j'aurais aimé trouver à mes débuts :
 - Labs et exercices
 - Outils et ressources
 
-**Tout est gratuit**, notamment mes notes OSCP et CRTP.
-
-Pour le CRTO, on va éviter de distribuer les clés du futur groupe APT. L'accès aux notes sera réservé aux profils avancés que j'accompagne dans un cadre éthique, après la mise en place d'un espace privé.
+<div class="access-overview">
+  <a class="access-card access-card-free" href="/skill-issue/academy/index.html">
+    <span class="access-kicker">OUVERT À TOUS</span>
+    <strong>Accès gratuit</strong>
+    <span>Pour ceux qui veulent apprendre, même sans budget.</span>
+    <small>Academy · OSINT · Bug Bounty · OSCP · CRTP</small>
+  </a>
+  <a class="access-card access-card-member" href="/skill-issue/membres/">
+    <span class="access-kicker">ESPACE RÉSERVÉ</span>
+    <strong>Accès membre</strong>
+    <span>Pour ceux qui veulent aller plus loin et développer leurs compétences.</span>
+    <small>Ressources avancées · Contenus réservés · CRTO</small>
+  </a>
+</div>
 
 ## Besoin d'un coup de main ?
 
