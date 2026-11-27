@@ -71,6 +71,11 @@ jobs:
           assert len(framework)==2, 'Framework chapters incomplete'
           assert len(sheet.select('.ejpt-framework-reviewed-heading'))==sum(x['headings'] for x in framework), 'Framework headings incomplete'
           assert len(sheet.select('.ejpt-framework-context'))==sum(x['descriptions'] for x in framework), 'Framework context incomplete'
+          later=report['cheatsheet_later_layout']
+          assert set(later)=={'Exploitation','Post-exploitation'}, 'Missing later chapters'
+          assert all(len(v)==2 for v in later.values()), 'Missing original chapter variants'
+          assert len(sheet.select('.ejpt-later-reviewed-heading'))==sum(x['headings'] for v in later.values() for x in v), 'Later chapter headings incomplete'
+          assert len(sheet.select('.ejpt-later-section-context'))==sum(x['descriptions'] for v in later.values() for x in v), 'Later chapter context incomplete'
           assert sum(x['blocks'] for x in report['cheatsheet_block_sizes'].values())==len(sheet.select('pre code')), 'Block size inventory incomplete'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
