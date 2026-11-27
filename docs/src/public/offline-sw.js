@@ -33,6 +33,7 @@ self.addEventListener('fetch', event => {
   const request = event.request
   const url = new URL(request.url)
   if (request.method !== 'GET' || !local(url) || url.pathname.endsWith('/offline-sw.js') || url.pathname.endsWith('/offline-index.json')) return
+  if (/\/membres(?:\/|\.html$|$)/.test(url.pathname)) return
   const navigation = request.mode === 'navigate'
   if (!navigation && !/\.(js|css|json|woff2?|svg)$/i.test(url.pathname)) return
   if (/\/(credentials|institutions|justificatifs|audit|database)\//.test(url.pathname)) return

@@ -1,0 +1,41 @@
+name: Validate member space
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: ['feature/member-auth']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - run: python3 .github/scripts/prepare_crto_for_vitepress.py
+      - run: python3 .github/scripts/normalize_site_dashes.py
+      - run: npm run docs:build
+      - name: Verify public and member pages
+        run: |
+          test -s docs/.vitepress/dist/index.html
+          test -s docs/.vitepress/dist/membres/index.html
+          grep -q 'Espace membre' docs/.vitepress/dist/membres/index.html
+          test -s docs/.vitepress/dist/academy/index.html
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('docs/.vitepress/dist')
+          paths = json.loads((root / 'offline-index.json').read_text())['files']
+          assert not any(p.startswith('membres/') for p in paths), 'Member page in offline index'
+          assert not any(p.startswith('crto/liham/') for p in paths), 'Private path in offline index'
+          PY
+      - name: Audit rendered Markdown
+        run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
