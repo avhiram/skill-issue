@@ -70,16 +70,22 @@ for page in report["pages"]:
     if heading is not None and not heading.find(["img","code"]):
         heading.clear()
         heading.append(title)
-    # Keep headings and the full rendered text on the page rather than an iframe.
-    # No Vue script or external JS from the upstream notes is executed.
-    # A Markdown HTML block ends at a blank line. Keep the entire sanitized
-    # article in one HTML block; numeric entities preserve code line breaks.
-    body=str(article).replace("\r", "&#13;").replace("\n", "&#10;")
+    # Keep sanitized content as data rather than compiling upstream HTML as
+    # a Vue template. This prevents asset import rewriting and interpolation.
+    article.attrs.pop("v-pre",None)
+    body=str(article)
     parsed=BeautifulSoup(body,"html.parser")
     assert before==[x.get_text() for x in parsed.select("pre code")],page
     dest=target/Path(page).with_suffix(".md")
     dest.parent.mkdir(parents=True,exist_ok=True)
-    # v-pre makes the raw HTML safe for the Vue template compiler.
-    dest.write_text("---\ntitle: "+json.dumps(title,ensure_ascii=False)+"\noutline: deep\n---\n\n"+body+"\n",encoding="utf-8")
+    data_file=dest.with_suffix(".content.json")
+    data_file.write_text(json.dumps(body,ensure_ascii=False),encoding="utf-8")
+    import_path="./"+data_file.name
+    dest.write_text(
+        "---\ntitle: "+json.dumps(title,ensure_ascii=False)+"\noutline: deep\n---\n\n"
+        "<script setup>\nimport chapterHtml from "+json.dumps(import_path)+"\n</script>\n\n"
+        '<div class="ejpt-native-page" data-ejpt-native="true" v-html="chapterHtml"></div>\n',
+        encoding="utf-8"
+    )
 assert len(list(target.rglob("*.md")))==80
 print("Native eJPT pages: 80; verified original images:",count)
