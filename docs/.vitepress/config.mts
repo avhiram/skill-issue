@@ -78,11 +78,11 @@ export default defineConfig({
       '/ejpt/': [
         { text: 'Junior Penetration Tester', link: '/ejpt/' },
         { text: 'Cours', link: '/ejpt/cours', collapsed: true, items: [
-          { text: 'Prérequis', link: 'https://avhiram.github.io/skill-issue/ejpt/original/penetration-testing-prerequisites/README.html', target: '_self' },
-          { text: 'Assessment Methodologies', link: 'https://avhiram.github.io/skill-issue/ejpt/original/assessment-methodologies/README.html', target: '_self' },
-          { text: 'Host & Network Penetration Testing', link: 'https://avhiram.github.io/skill-issue/ejpt/original/hostnetwork-penetration-testing/README.html', target: '_self' },
-          { text: 'Web Application Penetration Testing', link: 'https://avhiram.github.io/skill-issue/ejpt/original/webapp-penetration-testing/README.html', target: '_self' },
-          { text: 'Exam Preparation Labs', link: 'https://avhiram.github.io/skill-issue/ejpt/original/exam-preparation-labs/README.html', target: '_self' }
+          { text: 'Prérequis', link: '/ejpt/cours#penetration-testing-prerequisites' },
+          { text: 'Assessment Methodologies', link: '/ejpt/cours#assessment-methodologies' },
+          { text: 'Host & Network Penetration Testing', link: '/ejpt/cours#hostnetwork-penetration-testing' },
+          { text: 'Web Application Penetration Testing', link: '/ejpt/cours#webapp-penetration-testing' },
+          { text: 'Exam Preparation Labs', link: '/ejpt/cours#exam-preparation-labs' }
         ] },
         { text: 'Cheatsheet', link: '/ejpt/cheatsheet' }
       ],

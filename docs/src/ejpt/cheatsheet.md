@@ -1,14 +1,15 @@
 ---
-title: Cheatsheet eJPT
+title: Cheatsheet
+aside: false
 prev: false
 next: false
 ---
+<script setup>
+import EjptCatalog from '../../.vitepress/theme/components/EjptCatalog.vue'
+</script>
 
 # Cheatsheet
 
-Les fiches originales, en anglais, sans réécriture des commandes.
+Les fiches de révision du parcours.
 
-- <a href="/skill-issue/ejpt/original/ejpt-cheatsheet.html" target="_self">Cheatsheet du cours</a>
-- <a href="/skill-issue/ejpt/original/cheatsheet-files/ejpt-cheatsheet_nolinks.html" target="_self">Version sans liens</a>
-- <a href="/skill-issue/ejpt/original/cheatsheet-additional.html" target="_self">Cheatsheet supplémentaire fournie</a>
-
+<EjptCatalog mode="cheatsheet" />
