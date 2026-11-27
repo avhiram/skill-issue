@@ -248,6 +248,158 @@ def format_network_basics(soup, article):
         raise RuntimeError("Networking layout incomplete")
     print("Network presentation verified: 5 source blocks split into 15, every command line retained")
 
+
+# Presentation metadata for the existing information-gathering notes.
+# Do not change commands or add procedures; split only known source blocks.
+info_labels = {
+    "host": ("Résolution DNS", "Consulter les informations DNS associées à un nom d’hôte."),
+    "whatweb": ("Technologies Web", "Identifier les technologies visibles sur une application Web autorisée."),
+    "whois": ("Informations WHOIS", "Consulter les informations publiques d’enregistrement d’un domaine ou d’une adresse IP."),
+    "dnsrecon": ("Informations DNS avec DNSRecon", "Consulter les informations DNS dans le périmètre autorisé."),
+    "wafw00f": ("Identification du WAF", "Identifier la présence éventuelle d’un pare-feu applicatif sur un site de test."),
+    "sublist3r": ("Sous-domaines", "Recenser les sous-domaines du périmètre autorisé."),
+    "theHarvester": ("Informations publiques", "Consulter les informations publiques associées au domaine de test."),
+    "sudo": ("Fichier hosts local", "Consulter ou modifier la résolution locale des noms sur sa machine de laboratoire."),
+    "dnsenum": ("DNS avec DNSenum", "Examiner les informations DNS du domaine de test."),
+    "dig": ("Requêtes DNS avec Dig", "Interroger le DNS dans le cadre du laboratoire autorisé."),
+    "fierce": ("Inventaire DNS avec Fierce", "Consulter les informations DNS dans le périmètre défini."),
+    "dorks": ("Opérateurs de recherche", "Repères de syntaxe des moteurs de recherche. Rester dans le périmètre autorisé."),
+    "## Ping scan": ("Découverte des hôtes", "Identifier les hôtes visibles sur le réseau de laboratoire."),
+    "## ARP scan": ("Découverte ARP", "Consulter les hôtes visibles sur le réseau local de test."),
+    "# NMAP PORT SCAN": ("Scan de ports", "Identifier les ports accessibles sur un hôte autorisé."),
+    "## Skip ping": ("Scan sans découverte préalable", "Repère sur le comportement de la phase de découverte Nmap."),
+    "## Host discovery + saving into file": ("Enregistrer les résultats de découverte", "Conserver les résultats du laboratoire dans un fichier."),
+    "## Scan all ports": ("Ensemble des ports TCP", "Repère sur le périmètre de ports examiné."),
+    "## Open ports scan + saving into file": ("Enregistrer les résultats du scan", "Conserver les résultats du scan de laboratoire."),
+    "## Port 80 only scan": ("Port HTTP", "Examiner le port indiqué dans le périmètre de test."),
+    "## Custom list of ports scan": ("Liste de ports", "Définir les ports à examiner."),
+    "## Custom ports range scan": ("Plage de ports", "Définir un intervalle de ports à examiner."),
+    "## Fast mode & verbose scan": ("Mode rapide et affichage détaillé", "Repère sur les options de scan et d’affichage."),
+    "## UDP scan": ("Ports UDP", "Examiner les ports utilisant le protocole UDP."),
+    "## Service scan": ("Identification des services", "Identifier les services et leurs versions."),
+    "## Service + O.S. detection scan": ("Services et système", "Consulter les informations de détection des services et du système."),
+    "## Default Scripts scan": ("Scripts Nmap par défaut", "Repère sur les scripts proposés par Nmap dans un laboratoire autorisé."),
+    "## Aggressive scan": ("Mode de détection étendu", "Repère sur les options de détection combinées ; respecter les règles d’engagement."),
+    "## Timing (T0=slow ... T5=insanely fast) scan": ("Temporisation du scan", "Repère sur les profils de temporisation ; adapter les tests aux règles d’engagement."),
+    "## Output scan": ("Formats de sortie", "Conserver les résultats sous forme de fichiers."),
+    "## Output to all formats": ("Export des résultats", "Conserver les résultats dans les formats de sortie prévus."),
+}
+def format_information_gathering(soup, article):
+    seen = {}
+    counts = [0,0]
+    def format_block(pre,kind,depth):
+        code=pre.find("code",recursive=False)
+        if code is None:
+            raise RuntimeError("Missing source code in information gathering")
+        lines=code.get_text().splitlines()
+        removed=set()
+        parts=[]
+        current=None
+        def add(key):
+            nonlocal current
+            if key not in info_labels:
+                raise RuntimeError("Unknown information gathering label: "+key)
+            current=[key,[]]
+            parts.append(current)
+        if kind=="dorks":
+            add("dorks")
+        for line in lines:
+            if line in {"# Passive","# Google Dorks","# DNS","# HOST DISCOVERY"}:
+                removed.add(line)
+                continue
+            if kind=="scan" and line in info_labels and line.startswith("#"):
+                removed.add(line)
+                add(line)
+                continue
+            if kind in {"passive","dns"} and line.strip() and not line.startswith("#"):
+                key=line.split()[0]
+                if key not in info_labels:
+                    raise RuntimeError("Unexpected information gathering source group")
+                if current is None or current[0]!=key:
+                    add(key)
+            if current is not None:
+                current[1].append(line)
+            elif line.strip():
+                raise RuntimeError("Unclassified information gathering source line")
+        original=[line for line in lines if line.strip() and line not in removed]
+        reconstructed=[]
+        source_id=pre.get("id","info-source-"+str(counts[0]+1))
+        anchor=soup.new_tag("span",id=source_id)
+        pre.insert_before(anchor)
+        duplicate_targets=[]
+        for i,(key,group) in enumerate(parts,1):
+            while group and not group[0].strip():
+                group.pop(0)
+            while group and not group[-1].strip():
+                group.pop()
+            if not group:
+                continue
+            reconstructed.extend(x for x in group if x.strip())
+            content="\n".join(group)+"\n"
+            if content in seen:
+                duplicate_targets.append(seen[content])
+                continue
+            title,desc=info_labels[key]
+            ident="info-"+str(counts[0]+1)+"-"+str(i)
+            heading=soup.new_tag("h"+str(depth),id=ident,attrs={"class":"ejpt-action-heading"})
+            heading.string=title
+            pre.insert_before(heading)
+            para=soup.new_tag("p",attrs={"class":"ejpt-action-description"})
+            para.string=desc
+            pre.insert_before(para)
+            block=soup.new_tag("pre")
+            newcode=soup.new_tag("code",attrs={"class":"language-text" if kind=="dorks" else "language-bash"})
+            newcode.string=content
+            block.append(newcode)
+            pre.insert_before(block)
+            seen[content]=ident
+            counts[1]+=1
+        if original!=reconstructed:
+            raise RuntimeError("Information gathering formatting changed original command lines")
+        if duplicate_targets:
+            p=soup.new_tag("p",attrs={"class":"ejpt-duplicate-note"})
+            p.append("Blocs déjà présentés : ")
+            for i,ident in enumerate(dict.fromkeys(duplicate_targets)):
+                if i:
+                    p.append(" · ")
+                a=soup.new_tag("a",href="#"+ident)
+                target=article.find(id=ident)
+                a.string=target.get_text(strip=True)
+                p.append(a)
+            pre.insert_before(p)
+        counts[0]+=1
+        pre.decompose()
+
+    def section(heading,level,depth):
+        if heading is None:
+            raise RuntimeError("Information gathering section missing")
+        candidates=[]
+        for sibling in heading.next_siblings:
+            tag=getattr(sibling,"name",None)
+            if tag and re.fullmatch(r"h[1-6]",tag) and int(tag[1])<=level:
+                break
+            if tag=="pre":
+                candidates.append(sibling)
+        for pre in candidates:
+            first=next((x for x in pre.get_text().splitlines() if x.strip()),"")
+            if first.startswith("# Passive") or first.startswith("host "):
+                kind="passive"
+            elif first.startswith("# Google Dorks") or first=="site:":
+                kind="dorks"
+            elif first=="# DNS" or first.startswith("sudo nano "):
+                kind="dns"
+            elif first in {"# HOST DISCOVERY","## Ping scan"}:
+                kind="scan"
+            else:
+                raise RuntimeError("Unexpected original block in information gathering")
+            format_block(pre,kind,depth)
+    section(next((h for h in article.find_all("h2") if h.get_text(strip=True)=="Collecte d’informations"),None),2,3)
+    section(next((h for h in article.find_all("h3") if h.get("id","").startswith("complement-") and h.get_text(strip=True)=="Collecte d’informations"),None),3,5)
+    if counts[0] < 4:
+        raise RuntimeError("Information gathering presentation incomplete")
+    print("Information gathering presentation verified:",counts[0],"source blocks,",counts[1],"distinct displayed blocks")
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -268,6 +420,8 @@ for page in report["pages"]:
         article=consolidate_sheets(soup,article)
         format_sheet(soup,article)
         format_network_basics(soup,article)
+        format_information_gathering(soup,article)
+        report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
@@ -329,4 +483,5 @@ for page in report["pages"]:
         encoding="utf-8"
     )
 assert len(list(target.rglob("*.md")))==80
+(assets/"import-report.json").write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
 print("Native eJPT pages: 80; verified original images:",count)
