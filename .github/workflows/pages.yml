@@ -85,6 +85,8 @@ jobs:
           assert sheet is not None, 'Missing native cheatsheet content'
           assert len(sheet.select('pre code'))==report['cheatsheet_display_blocks'], 'Unexpected change in displayed code block count'
           assert len(sheet.select('.ejpt-action-heading'))>=20, 'Missing information gathering action headings'
+          assert len(sheet.select('.ejpt-existing-note-heading'))==report['cheatsheet_remaining_headings'], 'Incomplete remaining section headings'
+          assert report['cheatsheet_remaining_headings']>=100, 'Incomplete remaining cheatsheet presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
           assert not any('cheatsheet-files/ejpt-cheatsheet_nolinks.' in a.get('href','') for a in sheet.select('a[href]')), 'Obsolete export link'
           assert sheet.select_one('h2#complements-de-revision'), 'Missing folded complement'

@@ -400,6 +400,113 @@ def format_information_gathering(soup, article):
     print("Information gathering presentation verified:",counts[0],"source blocks,",counts[1],"distinct displayed blocks")
 
 
+
+# Presentation-only pass over the remaining source sections.
+# Existing headings and comments are the basis for labels; code remains intact.
+section_context = {
+    "Footprinting et scanning": "Inventaire des équipements et observation du réseau dans un laboratoire autorisé.",
+    "Énumération": "Identification des services et lecture des informations disponibles pour documenter leur configuration.",
+    "Évaluation des vulnérabilités": "Repères pour comprendre les vulnérabilités et distinguer un résultat de scan d'une preuve confirmée.",
+    "Pentest système": "Notes de laboratoire sur les configurations et les risques de sécurité des systèmes.",
+    "Pentest réseau": "Notes sur les protocoles, le trafic réseau et les risques associés.",
+    "Metasploit": "Référence des notions et des outils étudiés dans le cours, à utiliser en laboratoire autorisé.",
+    "Exploitation": "Notes de laboratoire sur la validation des vulnérabilités et de leurs impacts.",
+    "Post-exploitation": "Notes de cours sur les impacts d'une compromission et les mesures de défense associées.",
+    "Social Engineering": "Étude des risques liés à la manipulation humaine et à la sensibilisation.",
+    "Pentest Web": "Référence aux notions de sécurité des applications et des protocoles Web.",
+    "Compléments de révision": "Notes complémentaires issues de la seconde fiche, regroupées avec les références originales.",
+    "Wordpress": "Notions de sécurité et de configuration du CMS WordPress.",
+    "Drupal": "Notions de sécurité et de configuration du CMS Drupal.",
+    "Discovery": "Notes de découverte issues du complément de révision.",
+}
+display_labels = {
+    "NETWORK DISCOVERY": "Découverte réseau",
+    "NMAP": "Nmap",
+    "SMBMAP": "SMBMap",
+    "ENUM4LINUX": "Enum4linux",
+    "METASPLOIT": "Metasploit",
+    "NETCAT": "Netcat",
+    "MYSQL": "MySQL",
+    "SMB Connection": "Connexion SMB",
+    "MSF Install": "Installation de Metasploit",
+    "NESSUS Results Import": "Import des résultats Nessus",
+    "Tools": "Outils",
+    "Enumeration & Scanning": "Énumération et scanning",
+    "Vulnerability Scanning": "Scan de vulnérabilités",
+    "Info Gathering & Enumeration": "Collecte d’informations et énumération",
+    "Network Discovery": "Découverte réseau",
+    "Transferring Files": "Transfert de fichiers",
+    "Win Local Enumeration": "Énumération locale Windows",
+    "Linux Local Enumeration": "Énumération locale Linux",
+    "Win Privilege Escalation": "Privilege Escalation Windows",
+    "Linux Privilege Escalation": "Privilege Escalation Linux",
+    "Cron Jobs": "Tâches Cron",
+    "Wordpress": "WordPress",
+}
+def format_remaining_sections(soup, article):
+    from collections import Counter
+    before = [c.get_text() for c in article.select("pre code")]
+    titles = Counter()
+    stack = []
+    main = ""
+    complement = ""
+    index = 0
+    annotated = 0
+    contexts = set()
+    # Snapshot nodes so new headings are not processed recursively.
+    for node in list(article.find_all(re.compile(r"^(?:h[1-6]|pre)$"))):
+        if node.name != "pre":
+            level = int(node.name[1])
+            label = node.get_text(" ",strip=True)
+            while stack and stack[-1][0] >= level:
+                stack.pop()
+            stack.append((level,label))
+            if level == 2:
+                main = label
+                complement = ""
+            if main == "Compléments de révision" and level == 3:
+                complement = label
+            if label in section_context and level in (2,3) and label not in contexts:
+                p = soup.new_tag("p",attrs={"class":"ejpt-section-description"})
+                p.string = section_context[label]
+                node.insert_after(p)
+                contexts.add(label)
+            continue
+        if main in ("Fondamentaux réseau","Collecte d’informations"):
+            continue
+        if main == "Compléments de révision" and complement in ("Fondamentaux réseau","Networking","Collecte d’informations"):
+            continue
+        code = node.find("code",recursive=False)
+        if code is None:
+            continue
+        index += 1
+        context = stack[-1][1] if stack else "Notes de révision"
+        label = display_labels.get(context,context)
+        # Reuse an existing short comment as a display heading, not a command.
+        first = next((line.strip() for line in code.get_text().splitlines() if line.strip()),"")
+        comment = re.fullmatch(r"#{1,3}\s+([\w][\w .&()/+-]{0,62})",first)
+        if comment:
+            original = comment.group(1).strip()
+            label = display_labels.get(original,original)
+        if not label:
+            label = "Notes de laboratoire"
+        key = (main,complement,context,label)
+        titles[key] += 1
+        if titles[key] > 1:
+            label += " · " + str(titles[key])
+        # Do not introduce nested fold levels beyond HTML's heading range.
+        depth = min((stack[-1][0]+1) if stack else 3,6)
+        heading = soup.new_tag("h"+str(depth),id="ejpt-note-"+str(index),attrs={"class":"ejpt-action-heading ejpt-existing-note-heading"})
+        heading.string = label
+        node.insert_before(heading)
+        annotated += 1
+    assert before == [c.get_text() for c in article.select("pre code")], "Presentation changed original blocks"
+    if annotated < 100:
+        raise RuntimeError("Remaining cheatsheet layout incomplete")
+    print("Remaining cheatsheet presentation:",annotated,"code block headings;",len(contexts),"section descriptions")
+    return annotated
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -421,6 +528,7 @@ for page in report["pages"]:
         format_sheet(soup,article)
         format_network_basics(soup,article)
         format_information_gathering(soup,article)
+        report["cheatsheet_remaining_headings"]=format_remaining_sections(soup,article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
