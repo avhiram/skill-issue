@@ -561,4 +561,8 @@ Relire le SKILL.md et ses ressources avant de les intégrer au répertoire de Sk
 [Vidéo — Création d'une Skill personnalisée](https://www.youtube.com/watch?v=yTmfDSkr8sI)
 
 
+## Disclaimer
+
+Ce contenu est destiné à un usage pédagogique et informatif. Toute évaluation de sécurité doit être menée avec une autorisation préalable et dans le périmètre défini. Utiliser ces informations de manière responsable.
+
 [Retour au parcours](./index.md)
