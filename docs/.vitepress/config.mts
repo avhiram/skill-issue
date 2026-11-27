@@ -76,15 +76,371 @@ export default defineConfig({
     ],
     sidebar: {
       '/ejpt/': [
-        { text: 'Junior Penetration Tester', link: '/ejpt/' },
-        { text: 'Cours', link: '/ejpt/cours', collapsed: true, items: [
-          { text: 'Prérequis du pentest', link: '/ejpt/cours#penetration-testing-prerequisites' },
-          { text: 'Méthodologie et audit', link: '/ejpt/cours#assessment-methodologies' },
-          { text: 'Pentest système et réseau', link: '/ejpt/cours#hostnetwork-penetration-testing' },
-          { text: 'Pentest Web', link: '/ejpt/cours#webapp-penetration-testing' },
-          { text: 'Labs et préparation', link: '/ejpt/cours#exam-preparation-labs' }
-        ] },
-        { text: 'Cheatsheet', link: '/ejpt/cheatsheet' }
+        {
+          "text": "Junior Penetration Tester",
+          "link": "/ejpt/"
+        },
+        {
+          "text": "Cours",
+          "link": "/ejpt/cours"
+        },
+        {
+          "text": "Parcours et certification",
+          "link": "/ejpt/original/README"
+        },
+        {
+          "text": "Prérequis du pentest",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "Plan du module : prérequis",
+              "link": "/ejpt/original/penetration-testing-prerequisites/README"
+            },
+            {
+              "text": "Sécurité informatique, cryptographie et VPN",
+              "link": "/ejpt/original/penetration-testing-prerequisites/introduction"
+            },
+            {
+              "text": "Protocoles réseau et modèle OSI",
+              "link": "/ejpt/original/penetration-testing-prerequisites/networking"
+            },
+            {
+              "text": "Fondamentaux HTTP et HTTPS",
+              "link": "/ejpt/original/penetration-testing-prerequisites/web-applications"
+            }
+          ]
+        },
+        {
+          "text": "Méthodologie et audit",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "Plan du module : méthodologie et audit",
+              "link": "/ejpt/original/assessment-methodologies/README"
+            },
+            {
+              "text": "Reconnaissance passive et active",
+              "link": "/ejpt/original/assessment-methodologies/1-info-gathering"
+            },
+            {
+              "text": "Cartographie réseau, footprinting et scanning",
+              "link": "/ejpt/original/assessment-methodologies/2-footprint-scan"
+            },
+            {
+              "text": "Présentation de l’énumération des services",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration"
+            },
+            {
+              "text": "Énumération FTP",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration/ftp-enum"
+            },
+            {
+              "text": "Inventaire des services HTTP",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration/http-enum"
+            },
+            {
+              "text": "Énumération MySQL",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration/mysql-enum"
+            },
+            {
+              "text": "Énumération SMB",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration/smb-enum"
+            },
+            {
+              "text": "Énumération SMTP",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration/smtp-enum"
+            },
+            {
+              "text": "Énumération SSH",
+              "link": "/ejpt/original/assessment-methodologies/3-enumeration/ssh-enum"
+            },
+            {
+              "text": "Évaluation des vulnérabilités",
+              "link": "/ejpt/original/assessment-methodologies/4-va"
+            },
+            {
+              "text": "Principes d’audit, conformité et sécurité",
+              "link": "/ejpt/original/assessment-methodologies/5-audit"
+            }
+          ]
+        },
+        {
+          "text": "Pentest système et réseau",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "Plan du module : systèmes et réseaux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/README"
+            },
+            {
+              "text": "Présentation des attaques système",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack"
+            },
+            {
+              "text": "Vulnérabilités des systèmes Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks"
+            },
+            {
+              "text": "Bash Shell",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/bash-shell"
+            },
+            {
+              "text": "Hashes sous Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/creds-dump-unix"
+            },
+            {
+              "text": "Tâches Cron",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/cron"
+            },
+            {
+              "text": "FTP sous Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/ftp-unix"
+            },
+            {
+              "text": "Samba sous Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/samba-unix"
+            },
+            {
+              "text": "SSH sous Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/ssh-unix"
+            },
+            {
+              "text": "Permissions SUID",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/linux-attacks/suid"
+            },
+            {
+              "text": "Vulnérabilités des systèmes Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks"
+            },
+            {
+              "text": "Access Token",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/accesstoken"
+            },
+            {
+              "text": "Alternate Data Streams",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/alternateds"
+            },
+            {
+              "text": "Identifiants Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/creds-dump"
+            },
+            {
+              "text": "IIS et WebDAV",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/iis-webdav"
+            },
+            {
+              "text": "RDP",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/rdp"
+            },
+            {
+              "text": "SMB et PsExec",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/smb-psexec"
+            },
+            {
+              "text": "UAC Bypass",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/uacme"
+            },
+            {
+              "text": "Privilege Escalation du noyau Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/winkernel"
+            },
+            {
+              "text": "WinRM",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/1-system-attack/windows-attacks/winrm"
+            },
+            {
+              "text": "Présentation des attaques réseau",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/2-network-attack"
+            },
+            {
+              "text": "TShark, ARP et Wi-Fi",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/2-network-attack/tshark-arp"
+            },
+            {
+              "text": "Architecture et composants de Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit"
+            },
+            {
+              "text": "FTP et Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/ftpd-msf-exp"
+            },
+            {
+              "text": "HFS et Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/hfs-msf-exp"
+            },
+            {
+              "text": "Post-exploitation Linux avec Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/linux-post-msf"
+            },
+            {
+              "text": "Meterpreter",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/meterpreter-msf"
+            },
+            {
+              "text": "Samba et Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/samba-msf-exp"
+            },
+            {
+              "text": "SMTP et Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/smtp-msf-exp"
+            },
+            {
+              "text": "SSH et Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/ssh-msf-exp"
+            },
+            {
+              "text": "Tomcat et Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/tomcat-msf-exp"
+            },
+            {
+              "text": "Post-exploitation Windows avec Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/3-metasploit/win-post-msf"
+            },
+            {
+              "text": "Méthodologie d’exploitation",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/4-exploitation"
+            },
+            {
+              "text": "Adaptation des exploits HFS",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/4-exploitation/fix-exp"
+            },
+            {
+              "text": "Pentest Black Box Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/4-exploitation/linux-blackbox-exp"
+            },
+            {
+              "text": "Pentest Black Box Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/4-exploitation/win-blackbox-exp"
+            },
+            {
+              "text": "Workflow Windows avec Metasploit",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/4-exploitation/workflow-exp"
+            },
+            {
+              "text": "Méthodologie de post-exploitation",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit"
+            },
+            {
+              "text": "Hashes et mots de passe",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/crack-hashes"
+            },
+            {
+              "text": "Persistance Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/linux-persistence"
+            },
+            {
+              "text": "Post-exploitation Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/linux-post-exp"
+            },
+            {
+              "text": "Privilege Escalation Linux",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/linux-privesc"
+            },
+            {
+              "text": "Pivoting",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/pivoting"
+            },
+            {
+              "text": "Persistance Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/win-persistence"
+            },
+            {
+              "text": "Post-exploitation Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/win-post-exp"
+            },
+            {
+              "text": "Privilege Escalation Windows",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/5-post-exploit/win-privesc"
+            },
+            {
+              "text": "Social Engineering",
+              "link": "/ejpt/original/hostnetwork-penetration-testing/6-social-engineer"
+            }
+          ]
+        },
+        {
+          "text": "Pentest Web",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "Plan du module : pentest Web",
+              "link": "/ejpt/original/webapp-penetration-testing/README"
+            },
+            {
+              "text": "Méthodes HTTP, cookies et sécurité Web",
+              "link": "/ejpt/original/webapp-penetration-testing/1-webapp-http"
+            },
+            {
+              "text": "Énumération des méthodes et répertoires HTTP",
+              "link": "/ejpt/original/webapp-penetration-testing/1-webapp-http/http-enum"
+            },
+            {
+              "text": "Attaques Web",
+              "link": "/ejpt/original/webapp-penetration-testing/1-webapp-http/webapp-attacks"
+            },
+            {
+              "text": "Scanning Web : ZAP et Nikto",
+              "link": "/ejpt/original/webapp-penetration-testing/1-webapp-http/webapp-scan"
+            }
+          ]
+        },
+        {
+          "text": "Labs et préparation",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "Plan du module : préparation pratique",
+              "link": "/ejpt/original/exam-preparation-labs/README"
+            },
+            {
+              "text": "Laboratoires de prérequis PTS v1",
+              "link": "/ejpt/original/exam-preparation-labs/p.t.-prerequisites-labs/README"
+            },
+            {
+              "text": "Burp Suite et énumération de répertoires",
+              "link": "/ejpt/original/exam-preparation-labs/p.t.-prerequisites-labs/burp-suite-basics"
+            },
+            {
+              "text": "Data Exfiltration",
+              "link": "/ejpt/original/exam-preparation-labs/p.t.-prerequisites-labs/data-exfiltration"
+            },
+            {
+              "text": "Find the Secret Server",
+              "link": "/ejpt/original/exam-preparation-labs/p.t.-prerequisites-labs/find-the-secret-server"
+            },
+            {
+              "text": "Analyse du trafic HTTP(S)",
+              "link": "/ejpt/original/exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing"
+            },
+            {
+              "text": "Laboratoires pratiques PTS v2",
+              "link": "/ejpt/original/exam-preparation-labs/pts2-labs"
+            }
+          ]
+        },
+        {
+          "text": "Cheatsheets",
+          "link": "/ejpt/cheatsheet",
+          "collapsed": true,
+          "items": [
+            {
+              "text": "Cheatsheet principale",
+              "link": "/ejpt/original/ejpt-cheatsheet"
+            },
+            {
+              "text": "Cheatsheet sans liens",
+              "link": "/ejpt/original/cheatsheet-files/ejpt-cheatsheet_nolinks"
+            },
+            {
+              "text": "Cheatsheet complémentaire",
+              "link": "/ejpt/original/cheatsheet-additional"
+            },
+            {
+              "text": "Références eJPT",
+              "link": "/ejpt/original/ejpt-references"
+            }
+          ]
+        }
       ],
       '/crtp/': [
         { text: 'CRTP', link: '/crtp/', collapsed: true, items: [

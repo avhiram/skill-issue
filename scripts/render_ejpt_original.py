@@ -186,12 +186,15 @@ def render(n):
         for node in list(heading.find_all(string=True)):
             if node.find_parent("code") is None:
                 node.replace_with(emoji.sub("", str(node)))
+    for node in list(soup.find_all(string=True)):
+        if node.find_parent(["pre", "code", "kbd"]) is None:
+            node.replace_with(emoji.sub("", str(node)))
     first = soup.find("h1")
     if first is None:
         first = soup.new_tag("h1")
         first.string = titles[n]
         soup.insert(0, first)
-    elif not first.find(["a", "img", "code"]):
+    elif not first.find(["img", "code"]):
         first.clear()
         first.append(titles[n])
     return str(soup)

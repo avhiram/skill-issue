@@ -62,8 +62,26 @@ jobs:
         run: python3 .github/scripts/prepare_crto_for_vitepress.py
       - name: Normalize published prose typography
         run: python3 .github/scripts/normalize_site_dashes.py
+      - name: Prepare native VitePress eJPT chapters
+        run: |
+          python3 -m pip install --disable-pip-version-check markdown-it-py==3.0.0 beautifulsoup4==4.12.3
+          python3 scripts/render_ejpt_original.py "$RUNNER_TEMP/ejpt-render"
+          python3 scripts/prepare_ejpt_native.py "$RUNNER_TEMP/ejpt-render"
       - name: Build VitePress website
         run: npm run docs:build
+      - name: Verify native eJPT build
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('docs/.vitepress/dist/ejpt/original')
+          report=json.loads((root/'import-report.json').read_text())
+          assert len(report['pages'])==80
+          for p in report['pages']:
+              body=(root/p).read_text(encoding='utf-8')
+              assert 'data-ejpt-native' in body and 'VPDoc' in body and 'VPNav' in body, p
+          print('80 native VitePress eJPT pages validated')
+          PY
       - name: Verify generated website
         run: |
           test -s docs/.vitepress/dist/index.html
@@ -115,13 +133,6 @@ jobs:
           fi
       - name: Audit all rendered HTML for visible Markdown fences
         run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
-      - name: Render original eJPT course and verify archive
-        run: |
-          python3 -m pip install --disable-pip-version-check markdown-it-py==3.0.0 beautifulsoup4==4.12.3
-          python3 scripts/render_ejpt_original.py docs/.vitepress/dist/ejpt/original
-          test -s docs/.vitepress/dist/ejpt/original/README.html
-          test -s docs/.vitepress/dist/ejpt/original/ejpt-cheatsheet.html
-          test -s docs/.vitepress/dist/ejpt/original/cheatsheet-additional.html
       - name: Stamp compiled pages with source revision
         run: |
           python3 - <<'PY'

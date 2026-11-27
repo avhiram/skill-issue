@@ -18,8 +18,8 @@ def check(path):
         data=get(path)
         if STAMP not in data:
             return path+" (stale)"
-        if path.startswith("original/") and b"<article>" not in data:
-            return path+" (missing reader)"
+        if path.startswith("original/") and (b"data-ejpt-native" not in data or b"VPDoc" not in data or b"VPNav" not in data):
+            return path+" (missing native theme)"
         return None
     except Exception as e:
         return path+" ("+str(e)+")"
