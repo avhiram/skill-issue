@@ -75,13 +75,13 @@ J'ai regroupé ce que j'aurais aimé trouver à mes débuts :
     <span class="access-kicker">OUVERT À TOUS</span>
     <strong>Accès gratuit</strong>
     <span>Pour ceux qui veulent apprendre, même sans budget.</span>
-    <small>Academy · OSINT · Bug Bounty · OSCP · CRTP</small>
+    <small>Academy · OSINT · OSCP · CRTP</small>
   </a>
   <a class="access-card access-card-member" href="/skill-issue/membres/">
     <span class="access-kicker">ESPACE RÉSERVÉ</span>
     <strong>Accès membre</strong>
     <span>Pour ceux qui veulent aller plus loin et développer leurs compétences.</span>
-    <small>Ressources avancées · Contenus réservés · CRTO</small>
+    <small>Bug Bounty avancé · CRTO · Ressources réservées</small>
   </a>
 </div>
 

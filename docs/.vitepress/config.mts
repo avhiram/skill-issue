@@ -60,7 +60,6 @@ export default defineConfig({
         items: [
           { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
           { text: 'OSINT', link: '/osint/' },
-          { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
           { text: 'OSCP', link: '/oscp/' },
           { text: 'CRTP', link: '/crtp/' }
         ]
@@ -69,6 +68,7 @@ export default defineConfig({
         text: 'Accès membre',
         items: [
           { text: 'Espace membre', link: '/membres/' },
+          { text: 'Bug Bounty · Accès membre', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
           { text: 'CRTO · Accès réservé', link: '/crto/' }
         ]
       }
