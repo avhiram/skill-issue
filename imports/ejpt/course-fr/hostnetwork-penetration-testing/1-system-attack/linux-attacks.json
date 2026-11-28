@@ -53,5 +53,100 @@
     "line": 31,
     "source": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) - **Nix* shell part of the GNU project and default shell for most Linux distros.",
     "translation": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) : shell des systèmes Unix et assimilés, faisant partie du projet GNU et utilisé par défaut dans la plupart des distributions Linux."
+  },
+  {
+    "line": 45,
+    "source": "> 🔬 Check the [Bash - ShellShock Lab here](linux-attacks/bash-shell.md)",
+    "translation": "> 🔬 Consulter le [laboratoire Bash et ShellShock](linux-attacks/bash-shell.md)."
+  },
+  {
+    "line": 49,
+    "source": "🗒️ [**FTP**](https://en.wikipedia.org/wiki/File_Transfer_Protocol) (File Transfer Protocol) - facilitate file sharing between a server and clients. Used for transfering files to and from a web server (`e.g.` CPanel or FTP credentials).",
+    "translation": "🗒️ [**FTP**](https://en.wikipedia.org/wiki/File_Transfer_Protocol) (File Transfer Protocol) : facilite le partage de fichiers entre un serveur et ses clients. Il permet de transférer des fichiers depuis ou vers un serveur Web (`e.g.` identifiants CPanel ou FTP)."
+  },
+  {
+    "line": 51,
+    "source": "- Port: **`21`** (TCP) - default",
+    "translation": "- Port par défaut : **`21`** (TCP)"
+  },
+  {
+    "line": 52,
+    "source": "- *User Authentication* -  `username` & `password`",
+    "translation": "- *Authentification utilisateur* : `username` et `password`"
+  },
+  {
+    "line": 53,
+    "source": "  - ***anonymous*** access may be configured on FTP - no credentials needed",
+    "translation": "  - Un accès ***anonymous*** peut être configuré sur FTP sans nécessiter d’identifiants."
+  },
+  {
+    "line": 60,
+    "source": "> 🔬 Check the [FTP Brute force Lab here](linux-attacks/ftp-unix.md)",
+    "translation": "> 🔬 Consulter le [laboratoire FTP Brute Force](linux-attacks/ftp-unix.md)."
+  },
+  {
+    "line": 64,
+    "source": "🗒️ [**SSH**](https://en.wikipedia.org/wiki/Secure_Shell) (**S**ecure **Sh**ell) - cryptographic remote administration protocol, tipically used for servers remote access",
+    "translation": "🗒️ [**SSH**](https://en.wikipedia.org/wiki/Secure_Shell) (**S**ecure **Sh**ell) : protocole cryptographique d’administration à distance, généralement utilisé pour accéder aux serveurs à distance."
+  },
+  {
+    "line": 66,
+    "source": "- Port: **`22`** (TCP) - default",
+    "translation": "- Port par défaut : **`22`** (TCP)"
+  },
+  {
+    "line": 67,
+    "source": "- SSH Authentication:",
+    "translation": "- Authentification SSH :"
+  },
+  {
+    "line": 68,
+    "source": "  - *User Authentication* -  `username` & `password`",
+    "translation": "  - *Authentification utilisateur* : `username` et `password`"
+  },
+  {
+    "line": 69,
+    "source": "  - `Key` based, 2 key pairs (**public** and **private** keys) - no username and password",
+    "translation": "  - Authentification par `Key` : clés **publique** et **privée**, présentée dans le cours comme une alternative à l’identifiant et au mot de passe."
+  },
+  {
+    "line": 76,
+    "source": "> 🔬 Check the [SSH Brute force Lab here](linux-attacks/ssh-unix.md)",
+    "translation": "> 🔬 Consulter le [laboratoire SSH Brute Force](linux-attacks/ssh-unix.md)."
+  },
+  {
+    "line": 80,
+    "source": "🗒️ [**SAMBA**](https://www.samba.org/samba/what_is_samba.html) - network file sharing protocol, for file and peripherals sharing on a LAN. It is the Linux implementation of SMB",
+    "translation": "🗒️ [**SAMBA**](https://www.samba.org/samba/what_is_samba.html) : permet le partage de fichiers et de périphériques sur un réseau local (LAN). C’est l’implémentation Linux de SMB."
+  },
+  {
+    "line": 82,
+    "source": "- Port: **`445`** (TCP)",
+    "translation": "- Port : **`445`** (TCP)"
+  },
+  {
+    "line": 83,
+    "source": "- Not pre-packed, not a common running service",
+    "translation": "- Non préinstallé et rarement actif par défaut."
+  },
+  {
+    "line": 84,
+    "source": "- *User Authentication* -  `username` & `password`",
+    "translation": "- *Authentification utilisateur* : `username` et `password`"
+  },
+  {
+    "line": 91,
+    "source": "> 🔬 Check the [SAMBA Brute force Lab here](linux-attacks/samba-unix.md)",
+    "translation": "> 🔬 Consulter le [laboratoire Samba Brute Force](linux-attacks/samba-unix.md)."
+  },
+  {
+    "line": 97,
+    "source": "> ❗ **Targeting Kernel can cause system crashes, data loss, kernel panics etc** ❗",
+    "translation": "> ❗ **Les interventions sur le noyau peuvent provoquer des plantages du système, des pertes de données ou des kernel panics.** ❗"
+  },
+  {
+    "line": 99,
+    "source": "Linux kernel vulnerabilities can be targetted to execute arbitrary code and obtain privileged system shell.",
+    "translation": "Les vulnérabilités du noyau Linux peuvent entraîner une exécution de code arbitraire et l’obtention d’un shell avec des privilèges élevés."
   }
 ]

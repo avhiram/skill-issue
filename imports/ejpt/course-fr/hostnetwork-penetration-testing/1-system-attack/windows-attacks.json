@@ -93,5 +93,130 @@
     "line": 33,
     "source": "| Protocol/Service                                             | Ports                                   | Purpose                                                      |",
     "translation": "| Protocole / Service | Ports | Fonction |"
+  },
+  {
+    "line": 35,
+    "source": "| [Microsoft **IIS**](https://www.iis.net/) (**I**nternet **I**nformation **S**ervices) | TCP `80`/`443`                          | Microsoft Web server for Windows, hosting web applications   |",
+    "translation": "| [Microsoft **IIS**](https://www.iis.net/) (**I**nternet **I**nformation **S**ervices) | TCP `80`/`443` | Serveur Web Microsoft pour Windows, destiné à héberger des applications Web |"
+  },
+  {
+    "line": 36,
+    "source": "| [**WebDAV**](https://learn.microsoft.com/en-us/windows/win32/webdav/webdav-portal) (**W**eb **D**istributed **A**uthoring & **V**ersioning) | TCP `80`/`443`                          | HTTP extension that allows clients to copy, move, delete and update files on a web server. Used to enable a web server to act as a *file server* |",
+    "translation": "| [**WebDAV**](https://learn.microsoft.com/en-us/windows/win32/webdav/webdav-portal) (**W**eb **D**istributed **A**uthoring & **V**ersioning) | TCP `80`/`443` | Extension HTTP permettant aux clients de copier, déplacer, supprimer et mettre à jour des fichiers sur un serveur Web. Permet au serveur Web de faire office de *serveur de fichiers*. |"
+  },
+  {
+    "line": 37,
+    "source": "| [**SMB**](https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview)/CIFS (**S**erver **M**essage **B**lock) | TCP `445` / on top of NetBios `137-139` | Network file and peripherals sharing protocol, betweend computers on a local network (LAN) |",
+    "translation": "| [**SMB**](https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview)/CIFS (**S**erver **M**essage **B**lock) | TCP `445` / via NetBIOS `137-139` | Protocole de partage de fichiers et de périphériques entre ordinateurs sur un réseau local (LAN) |"
+  },
+  {
+    "line": 38,
+    "source": "| [**RDP**](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (**R**emote **D**esktop **P**rotocol) | TCP `3389`                              | GUI remote access protocol used to remotely authenticate and interact with Windows *(Disabled by default)* |",
+    "translation": "| [**RDP**](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (**R**emote **D**esktop **P**rotocol) | TCP `3389` | Protocole d’accès distant avec interface graphique permettant de s’authentifier et d’interagir à distance avec Windows *(désactivé par défaut)* |"
+  },
+  {
+    "line": 39,
+    "source": "| [**WinRM**](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) (**W**indows **R**emote **M**anagement **P**rotocol) | TCP `5986`/`443`                        | Used to facilitate remote access with Windows systems, execute remote commands |",
+    "translation": "| [**WinRM**](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) (**W**indows **R**emote **M**anagement **P**rotocol) | TCP `5986`/`443` | Facilite l’administration à distance des systèmes Windows et l’exécution de commandes distantes |"
+  },
+  {
+    "line": 43,
+    "source": "🗒️ [Microsoft **IIS**](https://www.iis.net/) (**I**nternet **I**nformation **S**ervices) - a Microsoft proprietary extensible web server developed for use with Windows.",
+    "translation": "🗒️ [Microsoft **IIS**](https://www.iis.net/) (**I**nternet **I**nformation **S**ervices) : serveur Web propriétaire et extensible de Microsoft, conçu pour Windows."
+  },
+  {
+    "line": 45,
+    "source": "- Ports: **`80`** (no certificate), **`443`** (with SSL Certificate)",
+    "translation": "- Ports : **`80`** (sans certificat), **`443`** (avec certificat SSL)"
+  },
+  {
+    "line": 46,
+    "source": "- Host websites and web applications",
+    "translation": "- Hébergement de sites et d’applications Web"
+  },
+  {
+    "line": 47,
+    "source": "- Administrative GUI for IIS management",
+    "translation": "- Interface graphique d’administration d’IIS"
+  },
+  {
+    "line": 48,
+    "source": "-  Static and dynamic web pages, developed in `ASP.NET` and `PHP`",
+    "translation": "- Pages Web statiques et dynamiques développées en `ASP.NET` et `PHP`"
+  },
+  {
+    "line": 49,
+    "source": "- Supported file extensions: `.asp`, `.aspx`, `.config`, `.php`",
+    "translation": "- Extensions de fichiers prises en charge : `.asp`, `.aspx`, `.config`, `.php`"
+  },
+  {
+    "line": 51,
+    "source": "🗒️ [**WebDAV**](https://learn.microsoft.com/en-us/windows/win32/webdav/webdav-portal) (**W**eb **D**istributed **A**uthoring & **V**ersioning) - a set of HTTP protocol extentions used by users to manage file on remote web servers.",
+    "translation": "🗒️ [**WebDAV**](https://learn.microsoft.com/en-us/windows/win32/webdav/webdav-portal) (**W**eb **D**istributed **A**uthoring & **V**ersioning) : ensemble d’extensions du protocole HTTP permettant aux utilisateurs de gérer des fichiers sur des serveurs Web distants."
+  },
+  {
+    "line": 53,
+    "source": "- Web server as `File server`",
+    "translation": "- Le serveur Web fait office de `File server` (serveur de fichiers)."
+  },
+  {
+    "line": 54,
+    "source": "- Runs on top of Apache or IIS - ports `80`/`443`",
+    "translation": "- Fonctionne sur Apache ou IIS, ports `80`/`443`."
+  },
+  {
+    "line": 55,
+    "source": "- Credentials, `username` & `password`, are necessary for connection the WebDAV server",
+    "translation": "- Les identifiants `username` et `password` sont nécessaires pour se connecter au serveur WebDAV."
+  },
+  {
+    "line": 73,
+    "source": "> [**`cadaver`**](https://www.kali.org/tools/cadaver/) - supports file *upload, download, on-screen display, in-place editing, namespace operations (move/copy), collection creation and deletion, property manipulation, and resource locking*. Pre-installed on Kali Linux and Parrot OS.",
+    "translation": "> [**`cadaver`**](https://www.kali.org/tools/cadaver/) : prend en charge *l’envoi et le téléchargement de fichiers, leur affichage, leur édition sur place, les opérations de déplacement et de copie, la création et la suppression de collections, la gestion des propriétés et le verrouillage des ressources*. Préinstallé sur Kali Linux et Parrot OS."
+  },
+  {
+    "line": 89,
+    "source": "> 🔬 Check some hands-on labs in the [IIS - WebDAV section](windows-attacks/iis-webdav.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section IIS et WebDAV](windows-attacks/iis-webdav.md)."
+  },
+  {
+    "line": 93,
+    "source": "🗒️ [**SMB**](https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview) (**S**erver **M**essage **B**lock) - a network file sharing protocol, used for files and peripherals sharing, on Windows",
+    "translation": "🗒️ [**SMB**](https://learn.microsoft.com/en-us/windows-server/storage/file-server/file-server-smb-overview) (**S**erver **M**essage **B**lock) : protocole de partage de fichiers et de périphériques sur un réseau, utilisé sous Windows."
+  },
+  {
+    "line": 95,
+    "source": "- Ports: **`445`** (TCP), **`139`** (NetBIOS)",
+    "translation": "- Ports : **`445`** (TCP), **`139`** (NetBIOS)"
+  },
+  {
+    "line": 96,
+    "source": "- Two levels of authentication to access a share:",
+    "translation": "- Deux niveaux d’authentification pour accéder à un partage :"
+  },
+  {
+    "line": 97,
+    "source": "  - *User Authentication* -  `username` & `password`",
+    "translation": "  - *Authentification utilisateur* : `username` et `password`"
+  },
+  {
+    "line": 98,
+    "source": "  - *Share Authentication* - `password`",
+    "translation": "  - *Authentification du partage* : `password`"
+  },
+  {
+    "line": 99,
+    "source": "  - both utilize a challenge response authentication system",
+    "translation": "  - Les deux utilisent un système d’authentification par challenge-response."
+  },
+  {
+    "line": 101,
+    "source": "🗒️ **SAMBA** is the open source *Linux* SMB",
+    "translation": "🗒️ **SAMBA** est l’implémentation open source de SMB sous *Linux*."
+  },
+  {
+    "line": 103,
+    "source": "- it allows Windows systems to access Linux shares",
+    "translation": "- Elle permet aux systèmes Windows d’accéder aux partages Linux."
   }
 ]
