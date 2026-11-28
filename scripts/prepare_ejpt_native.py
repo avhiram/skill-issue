@@ -2193,12 +2193,29 @@ def translate_course_ui_labels(article):
         "File System": "Système de fichiers",
         "Filtering": "Filtrage",
         "Methodology": "Méthodologie",
+        "Useful Commands": "Commandes utiles",
+        "Port Scan Example": "Exemple de scan de ports",
+        "Module Variables": "Variables des modules",
+        "Metasploit Enum": "Énumération avec Metasploit",
+        "Nmap Enum": "Énumération avec Nmap",
+        "Nmap Enumeration": "Énumération avec Nmap",
+        "MSFdb Import": "Import dans MSFdb",
+        "Lab Network Service Scanning": "Laboratoire de scan des services réseau",
+        "UDP Scan": "Scan UDP",
+        "Information Gathering & Enumeration with MSF": "Collecte d’informations et énumération avec MSF",
+        "Vulnerability Scanning With MSF": "Scan de vulnérabilités avec MSF",
+        "Pentesting with MSF": "Pentest avec MSF",
+        "MSF Introduction": "Introduction à Metasploit",
+        "Metasploit Fundamentals": "Fondamentaux de Metasploit",
+        "Database": "Base de données",
+        "Port Scanning": "Scan de ports",
+        "Services Enumeration": "Énumération des services",
     }
     changed = 0
     for node in list(article.find_all(string=True)):
         if node.find_parent(["pre", "code", "kbd", "samp", "script", "style", "textarea", "a"]):
             continue
-        if not node.find_parent(["h1", "h2", "h3", "h4", "h5", "h6", "summary", "th", "strong"]):
+        if not node.find_parent(["h1", "h2", "h3", "h4", "h5", "h6", "summary", "th", "strong", "b", "em", "i"]):
             continue
         value = str(node)
         old = value.strip()
