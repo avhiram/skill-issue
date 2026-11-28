@@ -1,0 +1,272 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic networks concepts and Cybersecurity",
+    "translation": "> * Notions fondamentales des réseaux et de la cybersécurité"
+  },
+  {
+    "line": 9,
+    "source": "> * Describe and recognize vulnerabilities, exposures reports and national vulnerability database submissions",
+    "translation": "> * Décrire et reconnaître les vulnérabilités, les rapports d’exposition et les soumissions aux bases nationales de vulnérabilités"
+  },
+  {
+    "line": 10,
+    "source": "> * Describe vulnerability management and perform research",
+    "translation": "> * Décrire la gestion des vulnérabilités et effectuer des recherches"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform network auditing",
+    "translation": "> * Réaliser un audit réseau"
+  },
+  {
+    "line": 21,
+    "source": "🗒️ A **vulnerability** is *a weakness in an information system, system security procedures, internal controls, or implementation that could be exploited or triggered by a threat source.* When exploited, it results in a negative impact to `confidentiality`, `integrity` or `availability`.",
+    "translation": "🗒️ Une **vulnérabilité** est *une faiblesse dans un système d’information, ses procédures de sécurité, ses contrôles internes ou son implémentation, susceptible d’être exploitée ou déclenchée par une source de menace*. Son exploitation entraîne un impact négatif sur la `confidentiality` (confidentialité), l’`integrity` (intégrité) ou l’`availability` (disponibilité)."
+  },
+  {
+    "line": 23,
+    "source": "- **`Physical layer`** - `e.g.` people, physical controls, vaults, door locks, gates, fences, cameras, badge readers, etc. There can be vulnerabilities in those as well, exploited through social engineering  techniques or hardware exploitation. for physical access.",
+    "translation": "- **`Physical layer`** : `e.g.` personnes, contrôles physiques, coffres, serrures, portails, clôtures, caméras, lecteurs de badges, etc. Ces éléments peuvent également présenter des vulnérabilités liées au Social Engineering ou au matériel, permettant un accès physique."
+  },
+  {
+    "line": 24,
+    "source": "- Vulnerabilities on a computer comes from the operating system, systems and installed services, found by *DevSec engineers, Security researchers, Pentesters, Software developers, Users.*",
+    "translation": "- Les vulnérabilités informatiques peuvent provenir du système d’exploitation, des systèmes ou des services installés. Elles sont découvertes par des *ingénieurs DevSec, chercheurs en sécurité, pentesters, développeurs et utilisateurs*."
+  },
+  {
+    "line": 25,
+    "source": "- [**NVD** (**N**ational **V**ulnerability **D**atabase)](https://nvd.nist.gov/general) - a United States government repository of standards based vulnerability management data represented using the **SCAP** (**S**ecurity **C**ontent **A**utomation **P**rotocol), maintained by [NIST](https://www.nist.gov/).",
+    "translation": "- La [**NVD** (**N**ational **V**ulnerability **D**atabase)](https://nvd.nist.gov/general) est une base de données du gouvernement américain consacrée à la gestion des vulnérabilités selon des normes, représentées au moyen du **SCAP** (**S**ecurity **C**ontent **A**utomation **P**rotocol). Elle est maintenue par le [NIST](https://www.nist.gov/)."
+  },
+  {
+    "line": 26,
+    "source": "- All vulnerabilities in the NVD have been assigned a CVE identifier.",
+    "translation": "- Toutes les vulnérabilités recensées dans la NVD disposent d’un identifiant CVE."
+  },
+  {
+    "line": 28,
+    "source": "🗒️ The [**`CVE`** (**C**ommon **V**ulnerabilities and **E**xposures)](https://nvd.nist.gov/general/cve-process) program is a public glossary of vulnerabilities identified for specific code bases, software applications or open libraries, maintained by MITRE corporation. A unique **CVE ID** is primarily assigned by MITRE or by **CNAs** (**C**VE **N**umbering **A**uthorities), allowing stakeholders, vendors and researchers to commonly identify unique or new exploits and vulnerabilities.",
+    "translation": "🗒️ Le programme [**`CVE`** (**C**ommon **V**ulnerabilities and **E**xposures)](https://nvd.nist.gov/general/cve-process) est un répertoire public des vulnérabilités identifiées dans des bases de code, applications logicielles ou bibliothèques ouvertes, maintenu par MITRE. Un **CVE ID** unique est attribué notamment par MITRE ou les **CNAs** (**C**VE **N**umbering **A**uthorities), permettant aux parties prenantes, éditeurs et chercheurs d’identifier les vulnérabilités de manière commune."
+  },
+  {
+    "line": 30,
+    "source": "- [CVE new website](https://www.cve.org/)",
+    "translation": "- [Nouveau site CVE](https://www.cve.org/)"
+  },
+  {
+    "line": 31,
+    "source": "- **`E.g.`** - high impact, critical vulnerabilities:",
+    "translation": "- **`E.g.`** : vulnérabilités critiques à fort impact :"
+  },
+  {
+    "line": 36,
+    "source": "| [CVE Page Components](https://nvd.nist.gov/vuln/vulnerability-detail-pages) |",
+    "translation": "| [Composants d’une fiche CVE](https://nvd.nist.gov/vuln/vulnerability-detail-pages) |"
+  },
+  {
+    "line": 38,
+    "source": "|                         Description                          |",
+    "translation": "| Description |"
+  },
+  {
+    "line": 39,
+    "source": "|                           Severity                           |",
+    "translation": "| Gravité |"
+  },
+  {
+    "line": 40,
+    "source": "|          References (Advisories, Solutions, Tools)           |",
+    "translation": "| Références (avis de sécurité, solutions, outils) |"
+  },
+  {
+    "line": 41,
+    "source": "|                     Weakness Enumeration                     |",
+    "translation": "| Classification des faiblesses |"
+  },
+  {
+    "line": 42,
+    "source": "|            Known Affected Software Configurations            |",
+    "translation": "| Configurations logicielles affectées connues |"
+  },
+  {
+    "line": 44,
+    "source": "🗒️ The [**`CVSS`** (**CV**E **S**coring **S**ystem)](https://nvd.nist.gov/vuln-metrics/cvss) is the method used to supply a qualitative measure of severity, consisting of three metric groups: Base, Temporal and Environmental.",
+    "translation": "🗒️ Le [**`CVSS`** (**CV**E **S**coring **S**ystem)](https://nvd.nist.gov/vuln-metrics/cvss) est présenté dans le cours comme une méthode de mesure qualitative de la gravité, composée de trois groupes de métriques : Base, Temporal et Environmental."
+  },
+  {
+    "line": 46,
+    "source": "- [**Zero-day** exploits](https://www.crowdstrike.com/cybersecurity-101/zero-day-exploit/) are vulnerabilities exploits not yet found, used or reported by anyone, or discovered by attackers before the vendor's security team has become aware of it. `e.g.`:",
+    "translation": "- Les [exploits **Zero-day**](https://www.crowdstrike.com/cybersecurity-101/zero-day-exploit/) concernent des vulnérabilités encore inconnues, non signalées ou découvertes par des attaquants avant que l’équipe de sécurité de l’éditeur en ait connaissance. `e.g.` :"
+  },
+  {
+    "line": 50,
+    "source": "Scope, impact and usefulness will come down to **business needs**, along with the **risk management** and cybersecurity recommendations.",
+    "translation": "Le périmètre, l’impact et l’utilité dépendent des **besoins métier**, de la **gestion des risques** et des recommandations de cybersécurité."
+  },
+  {
+    "line": 52,
+    "source": "Risk Management includes **vulnerability management**. By doing a **`VA`** (Vulnerability **A**ssessment), the pentester is going to define, identify, classify and prioritize security deficiencies in computer systems, applications, and network infrastructures. Some procedures to find vulnerabilities are:",
+    "translation": "La gestion des risques comprend la **gestion des vulnérabilités**. Lors d’une **`VA`** (Vulnerability **A**ssessment), le pentester définit, identifie, classe et priorise les faiblesses de sécurité des systèmes informatiques, applications et infrastructures réseau. Parmi les méthodes de recherche de vulnérabilités :"
+  },
+  {
+    "line": 55,
+    "source": "- Asset Identification and Research",
+    "translation": "- Identification des actifs et recherche"
+  },
+  {
+    "line": 56,
+    "source": "- Fuzz Testing (input/handling validation)",
+    "translation": "- Fuzz Testing (validation des entrées et de leur traitement)"
+  },
+  {
+    "line": 58,
+    "source": "🗒️ [**`Nessus`**](https://www.tenable.com/products/nessus) is a network vulnerability scanning tool. It can be hosted locally and used for Vulnerability Assessment.",
+    "translation": "🗒️ [**`Nessus`**](https://www.tenable.com/products/nessus) est un outil de scan des vulnérabilités réseau. Il peut être hébergé localement et utilisé pour le Vulnerability Assessment."
+  },
+  {
+    "line": 66,
+    "source": "> *The (1) TLS and (2) DTLS implementations in OpenSSL 1.0.1 before 1.0.1g do not properly handle Heartbeat Extension packets, which allows remote attackers to obtain sensitive information from process memory via crafted packets that trigger a buffer over-read, as demonstrated by reading private keys, related to d1_both.c and t1_lib.c, aka the **Heartbleed** bug.*",
+    "translation": "> *Les implémentations TLS et DTLS d’OpenSSL 1.0.1 antérieures à 1.0.1g gèrent incorrectement les paquets Heartbeat Extension, ce qui peut entraîner une divulgation d’informations sensibles présentes en mémoire, notamment des clés privées, par une lecture hors limites du tampon. Cette vulnérabilité, liée à d1_both.c et t1_lib.c, est appelée **Heartbleed**.*"
+  },
+  {
+    "line": 70,
+    "source": "- Show accepted ciphersuites and compressors with [nmap ssl-enum-ciphers](https://nmap.org/nsedoc/scripts/ssl-enum-ciphers.html) script.",
+    "translation": "- Afficher les suites cryptographiques et méthodes de compression acceptées avec le script [nmap ssl-enum-ciphers](https://nmap.org/nsedoc/scripts/ssl-enum-ciphers.html)."
+  },
+  {
+    "line": 76,
+    "source": "- Detect OpenSSL Heartbleed bug vulnerable servers with [nmap ssl-heartbleed](https://nmap.org/nsedoc/scripts/ssl-heartbleed.html) script, or with Metasploit enumerate module.",
+    "translation": "- Détecter les serveurs vulnérables à Heartbleed avec le script [nmap ssl-heartbleed](https://nmap.org/nsedoc/scripts/ssl-heartbleed.html) ou le module d’énumération Metasploit."
+  },
+  {
+    "line": 83,
+    "source": "- [exploit-db.com](https://www.exploit-db.com/) is useful too",
+    "translation": "- [exploit-db.com](https://www.exploit-db.com/) constitue également une ressource utile."
+  },
+  {
+    "line": 84,
+    "source": "  - ❗ **always check the exploit behavior before using it**",
+    "translation": "  - ❗ **Toujours vérifier le comportement d’un exploit avant de l’utiliser.**"
+  },
+  {
+    "line": 85,
+    "source": "  - search for `heartbleed`",
+    "translation": "  - Rechercher `heartbleed`."
+  },
+  {
+    "line": 93,
+    "source": "> *The SMBv1 server in Microsoft Windows Vista SP2; Windows Server 2008 SP2 and R2 SP1; Windows 7 SP1; Windows 8.1; Windows Server 2012 Gold and R2; Windows RT 8.1; and Windows 10 Gold, 1511, and 1607; and Windows Server 2016 allows remote attackers to execute arbitrary code via crafted packets, aka \"**Windows SMB Remote Code Execution Vulnerability.**\" This vulnerability is different from those described in CVE-2017-0144, CVE-2017-0145, CVE-2017-0146, and CVE-2017-0148.*",
+    "translation": "> *Le serveur SMBv1 de Microsoft Windows Vista SP2, Windows Server 2008 SP2 et R2 SP1, Windows 7 SP1, Windows 8.1, Windows Server 2012 Gold et R2, Windows RT 8.1, Windows 10 Gold, 1511 et 1607, ainsi que Windows Server 2016, présente une vulnérabilité d’exécution de code à distance, appelée **Windows SMB Remote Code Execution Vulnerability**. Elle se distingue des vulnérabilités décrites dans CVE-2017-0144, CVE-2017-0145, CVE-2017-0146 et CVE-2017-0148.*"
+  },
+  {
+    "line": 95,
+    "source": "> Widely used in the [WannaCry ransomware attack](https://www.mandiant.com/resources/blog/smb-exploited-wannacry-use-of-eternalblue).",
+    "translation": "> Largement utilisée lors de l’[attaque du ransomware WannaCry](https://www.mandiant.com/resources/blog/smb-exploited-wannacry-use-of-eternalblue)."
+  },
+  {
+    "line": 97,
+    "source": "> The EternalBlue exploit developed by the NSA was leaked to public in 2017 (by Shadow Brokers hacker group).",
+    "translation": "> L’exploit EternalBlue, développé par la NSA, a été rendu public en 2017 par le groupe Shadow Brokers."
+  },
+  {
+    "line": 99,
+    "source": "- Specific [nmap smb-vuln-ms17-010](https://nmap.org/nsedoc/scripts/smb-vuln-ms17-010.html) script",
+    "translation": "- Script spécifique [nmap smb-vuln-ms17-010](https://nmap.org/nsedoc/scripts/smb-vuln-ms17-010.html)."
+  },
+  {
+    "line": 107,
+    "source": "> 🔬 Check the [Lab 2 - Eternal Blue here](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/smb-psexec.md)",
+    "translation": "> 🔬 Consulter le [Lab 2 : Eternal Blue](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/smb-psexec.md)."
+  },
+  {
+    "line": 113,
+    "source": "> *A remote code execution vulnerability exists in Remote Desktop Services formerly known as Terminal Services when an unauthenticated attacker connects to the target system using RDP and sends specially crafted requests, aka **Remote Desktop Services Remote Code Execution Vulnerability**.*",
+    "translation": "> *Une vulnérabilité d’exécution de code à distance affecte Remote Desktop Services, anciennement Terminal Services. Elle concerne les connexions RDP non authentifiées et est appelée **Remote Desktop Services Remote Code Execution Vulnerability**.*"
+  },
+  {
+    "line": 115,
+    "source": "> The vulnerability was made public by Microsoft in May 2019 and affected Windows XP, Windows Vista, Windows 7, Windows Server 2008 & R2. ",
+    "translation": "> Microsoft a rendu cette vulnérabilité publique en mai 2019. Elle affectait Windows XP, Windows Vista, Windows 7, Windows Server 2008 et R2."
+  },
+  {
+    "line": 117,
+    "source": "> It allows access to a chunk of kernel memory, allowing the attacker to remotely execute arbitary code at the system level without authentication.",
+    "translation": "> Elle permet un accès à une partie de la mémoire du noyau et une exécution de code arbitraire à distance au niveau système, sans authentification."
+  },
+  {
+    "line": 119,
+    "source": "- BlueKeep **PoC**'s (**P**roof **o**f **C**oncepts) and exploits could be malicious in nature.",
+    "translation": "- Les **PoC** (**P**roof **o**f **C**oncepts) et exploits BlueKeep peuvent eux-mêmes être malveillants."
+  },
+  {
+    "line": 123,
+    "source": "> 🔬 Check the [Lab 2 - BlueKeep here](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/rdp.md)",
+    "translation": "> 🔬 Consulter le [Lab 2 : BlueKeep](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/rdp.md)."
+  },
+  {
+    "line": 129,
+    "source": "> *Apache Log4j2 2.0-beta9 through 2.15.0 (excluding security releases 2.12.2, 2.12.3, and 2.3.1) JNDI features used in configuration, log messages, and parameters do not protect against attacker controlled LDAP and other JNDI related endpoints. An attacker who can control log messages or log message parameters can execute arbitrary code loaded from LDAP servers when message lookup substitution is enabled. From log4j 2.15.0, this behavior has been disabled by default. From version 2.16.0 (along with 2.12.2, 2.12.3, and 2.3.1), this functionality has been completely removed. Note that this vulnerability is specific to log4j-core and does not affect log4net, log4cxx, or other Apache Logging Services projects.*",
+    "translation": "> *Dans Apache Log4j2, de la version 2.0-beta9 à 2.15.0 (hors versions correctives 2.12.2, 2.12.3 et 2.3.1), certaines fonctionnalités JNDI utilisées dans la configuration, les journaux et leurs paramètres ne protègent pas contre les points de terminaison LDAP et JNDI contrôlés par un attaquant. Cela peut entraîner une exécution de code arbitraire lorsque la substitution des recherches dans les messages est activée. À partir de Log4j 2.15.0, ce comportement est désactivé par défaut. La fonctionnalité est supprimée à partir de la version 2.16.0 ainsi que dans les versions 2.12.2, 2.12.3 et 2.3.1. Cette vulnérabilité concerne uniquement log4j-core et n’affecte pas log4net, log4cxx ni les autres projets Apache Logging Services.*"
+  },
+  {
+    "line": 131,
+    "source": "- [**`nmap-log4shell`**](https://github.com/giterlizzi/nmap-log4shell) - a NSE script for Apache Log4j RCE vulnerability discovery",
+    "translation": "- [**`nmap-log4shell`**](https://github.com/giterlizzi/nmap-log4shell) : script NSE de détection de la vulnérabilité RCE d’Apache Log4j."
+  },
+  {
+    "line": 145,
+    "source": ">  - Target IP: `10.2.28.13`",
+    "translation": ">  - IP cible : `10.2.28.13`"
+  },
+  {
+    "line": 146,
+    "source": ">  - Fingerprint the application and exploit the found vulnerability",
+    "translation": ">  - Identifier l’application et évaluer la vulnérabilité trouvée dans le laboratoire."
+  },
+  {
+    "line": 169,
+    "source": "- Research the vulnerability of `BadBlue httpd 2.7` using various tools:",
+    "translation": "- Rechercher la vulnérabilité de `BadBlue httpd 2.7` à l’aide de différentes ressources :"
+  },
+  {
+    "line": 170,
+    "source": "  - Google it",
+    "translation": "  - Effectuer une recherche sur Google."
+  },
+  {
+    "line": 175,
+    "source": "> *Stack-based buffer overflow in the PassThru functionality in ext.dll in BadBlue 2.72b and earlier allows remote attackers to execute arbitrary code via a long query string.*",
+    "translation": "> *Un dépassement de tampon sur la pile dans la fonctionnalité PassThru de ext.dll, dans BadBlue 2.72b et les versions antérieures, permet une exécution de code arbitraire à distance via une chaîne de requête trop longue.*"
+  },
+  {
+    "line": 177,
+    "source": "- Search for exploits from [exploit-db.com](https://www.exploit-db.com/exploits/16806) or using a command line tool such as **`searchsploit`**",
+    "translation": "- Rechercher les exploits référencés sur [exploit-db.com](https://www.exploit-db.com/exploits/16806) ou avec un outil en ligne de commande comme **`searchsploit`**."
+  },
+  {
+    "line": 183,
+    "source": "> **`searchsploit`** - *a command line search tool for Exploit-DB*. A copy of Exploit Database can be used offline.",
+    "translation": "> **`searchsploit`** : *outil de recherche en ligne de commande pour Exploit-DB*. Une copie de la base Exploit Database peut être utilisée hors ligne."
+  },
+  {
+    "line": 187,
+    "source": "- Use Metasploit to exploit the target using the [PassThru Buffer Overflow module](https://www.rapid7.com/db/modules/exploit/windows/http/badblue_passthru/)",
+    "translation": "- Le laboratoire utilise Metasploit et le [module PassThru Buffer Overflow](https://www.rapid7.com/db/modules/exploit/windows/http/badblue_passthru/)."
+  },
+  {
+    "line": 189,
+    "source": "  - *This module exploits a stack buffer overflow in the PassThru functionality in ext.dll in BadBlue 2.72b and earlier.*",
+    "translation": "  - *Ce module concerne un dépassement de tampon sur la pile dans la fonctionnalité PassThru de ext.dll, dans BadBlue 2.72b et les versions antérieures.*"
+  },
+  {
+    "line": 191,
+    "source": "> ❗ **Before running an exploit, ALWAYS check its [Source Code](https://github.com/rapid7/metasploit-framework/blob/master//modules/exploits/windows/http/badblue_passthru.rb)** to understand what it is doing❗",
+    "translation": "> ❗ **Avant toute exécution d’un exploit, TOUJOURS vérifier son [code source](https://github.com/rapid7/metasploit-framework/blob/master//modules/exploits/windows/http/badblue_passthru.rb)** pour comprendre son comportement. ❗"
+  },
+  {
+    "line": 214,
+    "source": "- Use [meterpreter](https://www.offsec.com/metasploit-unleashed/about-meterpreter/) commands to find the flag",
+    "translation": "- Le laboratoire utilise les commandes [meterpreter](https://www.offsec.com/metasploit-unleashed/about-meterpreter/) pour retrouver le flag."
+  }
+]
