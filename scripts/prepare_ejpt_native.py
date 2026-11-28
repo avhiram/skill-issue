@@ -2173,6 +2173,103 @@ def remove_em_dashes(article):
     return {"removed":count, "remaining_in_prose":0, "content_preserved":True}
 
 
+# First course module: translate the navigation labels from the original headings.
+# Do not alter technical examples, links, images, or the source lesson text.
+PREREQUISITE_HEADINGS = {
+    "Topics": "Thèmes abordés",
+    "Sections": "Chapitres",
+    "The Information Security Field": "La sécurité informatique",
+    "InfoSec Culture": "Culture InfoSec",
+    "Career Opportunities": "Débouchés professionnels",
+    "Information Security Terms": "Terminologie de la sécurité informatique",
+    "Cryptography Protocols & VPNs": "Protocoles cryptographiques et VPN",
+    "Clear-text Protocols": "Protocoles en clair",
+    "Cryptographic Protocols": "Protocoles cryptographiques",
+    "Virtual Private Networks (VPN)": "Réseaux privés virtuels (VPN)",
+    "Binary Arithmetic Basics": "Bases de l’arithmétique binaire",
+    "Binary and Decimal Bases": "Bases binaire et décimale",
+    "Bitwise operations": "Opérations bit à bit",
+    "Hexadecimal arithmetic": "Arithmétique hexadécimale",
+    "Protocols": "Protocoles",
+    "Packets": "Paquets",
+    "Protocol Layers": "Couches protocolaires",
+    "Routing": "Routage",
+    "Routing table": "Table de routage",
+    "IP/Mask": "Adresse IP et masque",
+    "Link Layer Devices & Protocols": "Équipements et protocoles de la couche liaison",
+    "MAC Addresses": "Adresses MAC",
+    "IP and MAC Address usage": "Utilisation des adresses IP et MAC",
+    "Hubs": "Hubs",
+    "Switches": "Switches",
+    "CAM / Forwarding Table": "Table CAM",
+    "TCP & UDP": "TCP et UDP",
+    "TCP 3-Way Handshake": "TCP 3-Way Handshake",
+    "Firewall & Defense": "Pare-feu et défense",
+    "Packet Filtering Firewalls": "Pare-feu à filtrage de paquets",
+    "Application Layer Firewalls": "Pare-feu applicatifs",
+    "Spot an obstacle": "Identifier un obstacle réseau",
+    "NAT and IP Masquerading": "NAT et IP Masquerading",
+    "DNS Structure/Hierarchy": "Structure et hiérarchie DNS",
+    "DNS Names Resolution": "Résolution des noms DNS",
+    "Reverse DNS Resolution": "Résolution DNS inverse",
+    "Capturing": "Capture",
+    "Filtering": "Filtrage",
+    "HTTP Protocol Basics": "Fondamentaux du protocole HTTP",
+    "HTTP Requests": "Requêtes HTTP",
+    "HTTP Responses": "Réponses HTTP",
+    "HTTPS Protocol Basics": "Fondamentaux du protocole HTTPS",
+    "Command Line / GUI Tools": "Outils en ligne de commande et interface graphique",
+    "HTTP Cookies": "Cookies HTTP",
+    "Cookies Format": "Format des cookies",
+    "Cookies Domain & Path": "Domaine et chemin des cookies",
+    "Other Attributes": "Autres attributs",
+    "Session Cookies": "Cookies de session",
+    "Burp Suite Tool": "Burp Suite",
+    "Burp Suite - Tools": "Outils de Burp Suite",
+}
+PREREQUISITE_INTRO = {
+    "These notes are from the first version of the PTS1 Learning Path on INE.": "Ces notes proviennent de la première version du parcours PTS1 sur INE.",
+    "Information Security": "Sécurité informatique",
+    "Foundational and technical skills on:": "Fondamentaux et compétences techniques :",
+    "Computer networks": "Réseaux informatiques",
+    "Protocols": "Protocoles",
+    "Web applications": "Applications Web",
+    "Theoretical + Hands on sessions (Labs)": "Théorie et sessions pratiques (Labs)",
+    "Introduction": "Introduction",
+    "Networking": "Réseaux",
+    "Web Applications": "Applications Web",
+}
+def format_prerequisite_headings(article, page):
+    before = [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    links = [a["href"] for a in article.find_all("a", href=True)]
+    images = [str(i) for i in article.find_all("img")]
+    ids = [n["id"] for n in article.select("[id]")]
+    renamed = 0
+    for heading in article.find_all(re.compile(r"^h[2-6]$")):
+        old = heading.get_text(" ", strip=True)
+        if old in PREREQUISITE_HEADINGS and heading.string is not None and not heading.find(["a","code","img","kbd"]):
+            new = PREREQUISITE_HEADINGS[old]
+            if new != old:
+                heading.string.replace_with(new)
+                renamed += 1
+    overview = 0
+    if page.endswith("/README.html"):
+        for node in list(article.find_all(string=True)):
+            if node.find_parent(["pre","code","kbd","samp","script","style"]):
+                continue
+            value = str(node)
+            old = value.strip()
+            if old in PREREQUISITE_INTRO and old != PREREQUISITE_INTRO[old]:
+                node.replace_with(value.replace(old, PREREQUISITE_INTRO[old], 1))
+                overview += 1
+    assert before == [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    assert links == [a["href"] for a in article.find_all("a", href=True)]
+    assert images == [str(i) for i in article.find_all("img")]
+    assert ids == [n["id"] for n in article.select("[id]")]
+    print("eJPT prerequisite navigation:", page, renamed, "headings;", overview, "overview fragments")
+    return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2214,6 +2311,8 @@ for page in report["pages"]:
         report["cheatsheet_punctuation"]=remove_em_dashes(article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
+    elif page.startswith("penetration-testing-prerequisites/"):
+        report.setdefault("prerequisite_navigation", {})[page] = format_prerequisite_headings(article, page)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
