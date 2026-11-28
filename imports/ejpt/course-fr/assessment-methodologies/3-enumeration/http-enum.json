@@ -1,0 +1,17 @@
+[
+  {
+    "line": 3,
+    "source": "**`HTTP`** (**H**yper **T**ext **T**ransfer **P**rotocol) - a *client-server* application layer protocol, used to load web pages using hypertext links. ",
+    "translation": "**`HTTP`** (**H**yper **T**ext **T**ransfer **P**rotocol) : protocole de couche applicative reposant sur un modèle _client-serveur_, utilisé pour charger des pages Web à l’aide de liens hypertextes."
+  },
+  {
+    "line": 5,
+    "source": "A client machine makes a `request` to a server (usually from a website), which then sends a `response` message back to the client.",
+    "translation": "Un client envoie une `request` (requête) à un serveur, qui lui renvoie une `response` (réponse)."
+  },
+  {
+    "line": 7,
+    "source": "Default `HTTP` port is **`80`** and `HTTPS` port is **`443`**.",
+    "translation": "Le port par défaut de `HTTP` est **`80`** et celui de `HTTPS` est **`443`**."
+  }
+]

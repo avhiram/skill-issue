@@ -1,0 +1,12 @@
+[
+  {
+    "line": 3,
+    "source": "**`SMTP`** (**S**imple **M**ail **T**ransfer **P**rotocol) - a communication protocol used for the *transmission of email*.",
+    "translation": "**`SMTP`** (**S**imple **M**ail **T**ransfer **P**rotocol) : protocole de communication utilisé pour la _transmission des courriers électroniques_."
+  },
+  {
+    "line": 5,
+    "source": "Default SMTP TCP port is **`25`**.",
+    "translation": "Le port TCP par défaut de SMTP est **`25`**."
+  }
+]

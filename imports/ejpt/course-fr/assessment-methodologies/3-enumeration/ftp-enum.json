@@ -1,0 +1,17 @@
+[
+  {
+    "line": 3,
+    "source": "**`FTP`** (**F**ile **T**ransfer **P**rotocol) - a *client-server* protocol used to transfer files between a network using TCP/UDP connections.",
+    "translation": "**`FTP`** (**F**ile **T**ransfer **P**rotocol) : protocole _client-serveur_ utilisé pour transférer des fichiers sur un réseau. Le cours mentionne des connexions TCP/UDP."
+  },
+  {
+    "line": 5,
+    "source": "It requires a command channel and a data channel.",
+    "translation": "Il nécessite un canal de commande et un canal de données."
+  },
+  {
+    "line": 7,
+    "source": "Default FTP port is **`21`**, opened when FTP is activated for sharing data.",
+    "translation": "Le port FTP par défaut est **`21`**, ouvert lorsque FTP est activé pour le partage de données."
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "line": 3,
+    "source": "**`MYSQL`** - an open-source relational database management system, used to add, access and process data stored in a server database using the **`SQL`** (**S**tructured **Q**uery **L**anguage) syntax. It's also included in the `LAMP` technology stack (Linux, Apache, MySQL, PHP) to store and retrieve data in well-known applications, websites and services.",
+    "translation": "**`MYSQL`** : système de gestion de bases de données relationnelles open source permettant d’ajouter, de consulter et de traiter les données stockées sur un serveur avec la syntaxe **`SQL`** (**S**tructured **Q**uery **L**anguage). Il fait également partie de la pile `LAMP` (Linux, Apache, MySQL, PHP), utilisée pour stocker et récupérer les données de nombreux sites Web, applications et services."
+  },
+  {
+    "line": 5,
+    "source": "Default `MYSQL` port is **`3306`**.",
+    "translation": "Le port par défaut de `MYSQL` est **`3306`**."
+  }
+]
