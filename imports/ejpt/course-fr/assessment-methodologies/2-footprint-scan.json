@@ -1,0 +1,247 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic familiarity with Linux",
+    "translation": "> * Connaissances de base de Linux"
+  },
+  {
+    "line": 6,
+    "source": "> * Basic networks concepts",
+    "translation": "> * Notions fondamentales des réseaux"
+  },
+  {
+    "line": 10,
+    "source": "> * Purpose of network mapping and port scanning in relation to an engagement",
+    "translation": "> * Comprendre l’objectif de la cartographie réseau et du scan de ports dans le cadre d’une mission"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform network host discovery and port scanning",
+    "translation": "> * Identifier les hôtes du réseau et réaliser des scans de ports"
+  },
+  {
+    "line": 12,
+    "source": "> * Think and act like an adversary",
+    "translation": "> * Penser et agir comme un adversaire"
+  },
+  {
+    "line": 20,
+    "source": "> ❗***Never run these techniques on un-authorized addresses❗A proper authorization is required to conduct the footprinting and scanning activity.***",
+    "translation": "> ❗***Ne jamais utiliser ces techniques sur des adresses non autorisées ! Une autorisation préalable est nécessaire pour réaliser des activités de footprinting et de scanning.***"
+  },
+  {
+    "line": 26,
+    "source": "Before any type engangement the **purpose** of a pentest must be defined and negociated with the client, in order to mitigate risk and harden the client's system.",
+    "translation": "Avant toute mission, l’**objectif** du pentest doit être défini et convenu avec le client afin de réduire les risques et de renforcer la sécurité de son système."
+  },
+  {
+    "line": 28,
+    "source": "* The pentester must determine both the type of access to the client's network to begin the **`discovery`** and the **`scope`** of what will be valuable to the client, while not interfering with its business.",
+    "translation": "* Le pentester doit déterminer à la fois le type d’accès au réseau du client nécessaire pour commencer la **`discovery`** et le **`scope`** pertinent pour le client, sans perturber ses activités."
+  },
+  {
+    "line": 32,
+    "source": "**Physical Access**",
+    "translation": "**Accès physique**"
+  },
+  {
+    "line": 34,
+    "source": "* physical security - access controls, camera, guards",
+    "translation": "* Sécurité physique : contrôle d’accès, caméras, agents de sécurité"
+  },
+  {
+    "line": 35,
+    "source": "* **`OSINT`** (**O**pen **S**ource **Int**elligence) - DNS records, websites, public IP addresses",
+    "translation": "* **`OSINT`** (**O**pen **S**ource **Int**elligence) : enregistrements DNS, sites Web, adresses IP publiques"
+  },
+  {
+    "line": 36,
+    "source": "* **`Social Engineering`** - _psychological manipulation of people into performing security mistakes or giving away sensitive information_",
+    "translation": "* **`Social Engineering`** : _manipulation psychologique visant à amener des personnes à commettre des erreurs de sécurité ou à divulguer des informations sensibles_"
+  },
+  {
+    "line": 37,
+    "source": "* **`sniffing`** - (once connected) sniff network traffic through passive reconnaissance and packet capturing",
+    "translation": "* **`sniffing`** : une fois connecté, observer le trafic réseau par reconnaissance passive et capture de paquets"
+  },
+  {
+    "line": 38,
+    "source": "  * collect IP address and MAC addresses for further enumeration",
+    "translation": "  * Collecter les adresses IP et MAC pour poursuivre l’énumération"
+  },
+  {
+    "line": 39,
+    "source": "* [**`ARP`**](../penetration-testing-prerequisites/networking.md#arp) (**A**ddress **R**esolution **P**rotocol) - take advantage of the ARP table and broadcast communications",
+    "translation": "* [**`ARP`**](../penetration-testing-prerequisites/networking.md#arp) (**A**ddress **R**esolution **P**rotocol) : utiliser les informations de la table ARP et les communications broadcast"
+  },
+  {
+    "line": 40,
+    "source": "* **`ICMP`** (**I**nternet **C**ontrol **M**essage **P**rotocol) - `traceroute`, `ping`",
+    "translation": "* **`ICMP`** (**I**nternet **C**ontrol **M**essage **P**rotocol) : `traceroute`, `ping`"
+  },
+  {
+    "line": 53,
+    "source": "Launch `wireshark` and start monitoring the internet network interface (`eth0` in this case).",
+    "translation": "Lancer `wireshark` et commencer à surveiller l’interface réseau (`eth0` dans cet exemple)."
+  },
+  {
+    "line": 55,
+    "source": "Run an `arp-scan` on the same interface and check the traffic inside wireshark.",
+    "translation": "Lancer un `arp-scan` sur la même interface et observer le trafic dans Wireshark."
+  },
+  {
+    "line": 63,
+    "source": "> **`ip`** - show/manipulate routing, network devices, interfaces and tunnels",
+    "translation": "> **`ip`** : afficher et gérer le routage, les équipements réseau, les interfaces et les tunnels"
+  },
+  {
+    "line": 73,
+    "source": "> **`arp-scan`** - send ARP requests to target hosts and display responses",
+    "translation": "> **`arp-scan`** : envoyer des requêtes ARP aux hôtes cibles et afficher les réponses"
+  },
+  {
+    "line": 83,
+    "source": "> **`ping`** - send ICMP ECHO\\_REQUEST to network hosts",
+    "translation": "> **`ping`** : envoyer des messages ICMP ECHO\\_REQUEST aux hôtes du réseau"
+  },
+  {
+    "line": 97,
+    "source": "> **`fping`** - send ICMP ECHO\\_REQUEST packets to multiple network hosts",
+    "translation": "> **`fping`** : envoyer des paquets ICMP ECHO\\_REQUEST à plusieurs hôtes du réseau"
+  },
+  {
+    "line": 105,
+    "source": "* Launch `fping` without \"Host Unreachable\" errors",
+    "translation": "* Lancer `fping` sans afficher les erreurs « Host Unreachable »"
+  },
+  {
+    "line": 115,
+    "source": "> **`nmap`** - Network exploration tool and security/port scanner",
+    "translation": "> **`nmap`** : outil d’exploration réseau et de scan de sécurité et de ports"
+  },
+  {
+    "line": 126,
+    "source": "> **`zenmap`** - the official `nmap` GUI",
+    "translation": "> **`zenmap`** : interface graphique officielle de `nmap`"
+  },
+  {
+    "line": 143,
+    "source": "The purpose of port scanning is to identify **services** and **operating systems**, in order to understand what type of devices are discovered (servers, desktops, network devices, etc).",
+    "translation": "Le scan de ports vise à identifier les **services** et les **systèmes d’exploitation** afin de déterminer le type d’équipements découverts (serveurs, postes de travail, équipements réseau, etc.)."
+  },
+  {
+    "line": 147,
+    "source": "* An O.S. is revealed by its signatures or its services.",
+    "translation": "* Un système d’exploitation peut être identifié par ses signatures ou ses services."
+  },
+  {
+    "line": 148,
+    "source": "* The response from the machine (software version, services name) is compared to a **signature database**, with a percentage of confidence.",
+    "translation": "* La réponse de la machine (version logicielle, noms des services) est comparée à une **base de signatures**, avec un pourcentage de confiance."
+  },
+  {
+    "line": 152,
+    "source": "* Find services by connecting to ports and analyzing the response.",
+    "translation": "* Identifier les services en se connectant aux ports et en analysant les réponses."
+  },
+  {
+    "line": 153,
+    "source": "* Connect to TCP - a [TCP 3-Way Handshake](../penetration-testing-prerequisites/networking.md##tcp-3-way-handshake) is used to identify **open ports**.",
+    "translation": "* Connexion TCP : un [TCP 3-Way Handshake](../penetration-testing-prerequisites/networking.md##tcp-3-way-handshake) permet d’identifier les **ports ouverts**."
+  },
+  {
+    "line": 155,
+    "source": "> **Open Port**",
+    "translation": "> **Port ouvert**"
+  },
+  {
+    "line": 157,
+    "source": "> * `SYN` sent ➡️ `SYN+ACK` received ➡️ `ACK` sent",
+    "translation": "> * `SYN` envoyé ➡️ `SYN+ACK` reçu ➡️ `ACK` envoyé"
+  },
+  {
+    "line": 158,
+    "source": "> * Port is identified/_open_",
+    "translation": "> * Le port est identifié comme _ouvert_"
+  },
+  {
+    "line": 159,
+    "source": "> * Close the connection with ➡️ `RST+ACK` sent",
+    "translation": "> * Fermer la connexion avec ➡️ `RST+ACK` envoyé"
+  },
+  {
+    "line": 161,
+    "source": "> **Closed Port**",
+    "translation": "> **Port fermé**"
+  },
+  {
+    "line": 163,
+    "source": "> * `SYN` sent ➡️ `RST+ACK` received",
+    "translation": "> * `SYN` envoyé ➡️ `RST+ACK` reçu"
+  },
+  {
+    "line": 164,
+    "source": "> * Port is _closed_",
+    "translation": "> * Le port est _fermé_"
+  },
+  {
+    "line": 166,
+    "source": "> **\"Stealthy\" Scan**",
+    "translation": "> **Scan furtif**"
+  },
+  {
+    "line": 168,
+    "source": "> * `SYN` sent ➡️ `SYN+ACK` received ➡️ `RST` sent",
+    "translation": "> * `SYN` envoyé ➡️ `SYN+ACK` reçu ➡️ `RST` envoyé"
+  },
+  {
+    "line": 169,
+    "source": "> * Drops the connection after the received `SYN+ACK`",
+    "translation": "> * Interrompt la connexion après réception du `SYN+ACK`"
+  },
+  {
+    "line": 171,
+    "source": "> **Service Version Scan**",
+    "translation": "> **Scan de version des services**"
+  },
+  {
+    "line": 173,
+    "source": "> * `SYN` sent ➡️ `SYN+ACK` received ➡️ `ACK` sent ➡️ `BANNER` received ➡️ `RST+ACK` sent",
+    "translation": "> * `SYN` envoyé ➡️ `SYN+ACK` reçu ➡️ `ACK` envoyé ➡️ `BANNER` reçu ➡️ `RST+ACK` envoyé"
+  },
+  {
+    "line": 174,
+    "source": "> * If `BANNER` received, the application will send back some information.",
+    "translation": "> * Si un `BANNER` est reçu, l’application renvoie des informations."
+  },
+  {
+    "line": 175,
+    "source": "> * \"noisy\" scan!",
+    "translation": "> * Scan bruyant !"
+  },
+  {
+    "line": 177,
+    "source": "* Connect to UDP",
+    "translation": "* Connexion UDP"
+  },
+  {
+    "line": 178,
+    "source": "  * slower, can be sped up",
+    "translation": "  * Plus lente, mais peut être accélérée"
+  },
+  {
+    "line": 179,
+    "source": "  * port is _open_",
+    "translation": "  * Le port est _ouvert_"
+  },
+  {
+    "line": 180,
+    "source": "  * port is _filtered_ (unknown status)",
+    "translation": "  * Le port est _filtré_ (état inconnu)"
+  },
+  {
+    "line": 182,
+    "source": "> 📌 Check [Port Scanning lab With Nmap here](1-info-gathering.md#port-scanning-with-nmap)",
+    "translation": "> 📌 Consulter le [laboratoire de scan de ports avec Nmap](1-info-gathering.md#port-scanning-with-nmap)."
+  }
+]
