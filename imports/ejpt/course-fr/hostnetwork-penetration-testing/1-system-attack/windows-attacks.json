@@ -220,6 +220,21 @@
     "translation": "- Elle permet aux systèmes Windows d’accéder aux partages Linux."
   },
   {
+    "line": 107,
+    "source": "1. Auth request from the client to the server",
+    "translation": "1. Requête d’authentification du client vers le serveur."
+  },
+  {
+    "line": 109,
+    "source": "3. The client sends the encrypted string to the server",
+    "translation": "3. Le client transmet la chaîne chiffrée au serveur."
+  },
+  {
+    "line": 110,
+    "source": "4. The server checks the actual string value of that users matches the client's one, and grant access. It doesn't match access is denied",
+    "translation": "4. Le serveur vérifie la correspondance avec la valeur attendue et autorise l’accès. En cas de différence, l’accès est refusé."
+  },
+  {
     "line": 127,
     "source": "> 🔬 Check some hands-on labs in the [SMB - PsExec section](windows-attacks/smb-psexec.md)",
     "translation": "> 🔬 Consulter les exercices pratiques dans la [section SMB et PsExec](windows-attacks/smb-psexec.md)."
@@ -275,6 +290,16 @@
     "translation": "  - Accéder aux hôtes Windows d’un réseau local, interagir avec eux et exécuter des commandes à distance."
   },
   {
+    "line": 147,
+    "source": "  - remotely manage and configure Windows systems",
+    "translation": "  - Administrer et configurer les systèmes Windows à distance."
+  },
+  {
+    "line": 148,
+    "source": "- Various form of authentication are used for access control and security",
+    "translation": "- Plusieurs formes d’authentification permettent de contrôler et de sécuriser les accès."
+  },
+  {
     "line": 170,
     "source": "> 🔬 Jump to the hands-on labs in the [WinRM section](windows-attacks/winrm.md)",
     "translation": "> 🔬 Consulter les exercices pratiques dans la [section WinRM](windows-attacks/winrm.md)."
@@ -308,6 +333,21 @@
     "line": 185,
     "source": "The kernel facilitates the communication between hardware and software layers.",
     "translation": "Le noyau facilite la communication entre les couches matérielles et logicielles."
+  },
+  {
+    "line": 187,
+    "source": "[Windows NT](https://en.wikipedia.org/wiki/Windows_NT) is the Microsoft Windows kernel and consists of two modes of operation",
+    "translation": "[Windows NT](https://en.wikipedia.org/wiki/Windows_NT) désigne le noyau de Microsoft Windows, qui possède deux modes de fonctionnement :"
+  },
+  {
+    "line": 189,
+    "source": "- User Mode - end-user programs with limited access to system resources",
+    "translation": "- User Mode : programmes utilisateurs avec un accès limité aux ressources système."
+  },
+  {
+    "line": 190,
+    "source": "- Kernel Mode - unlimited accesso to system resources and functionality",
+    "translation": "- Kernel Mode : accès complet aux ressources et fonctionnalités du système."
   },
   {
     "line": 211,
@@ -390,9 +430,29 @@
     "translation": "- Le cours présente deux types de flux associés à un fichier :"
   },
   {
+    "line": 279,
+    "source": "  - **data stream** - contains the data of the file",
+    "translation": "  - **Data stream** : contient les données du fichier."
+  },
+  {
+    "line": 280,
+    "source": "  - **resource stream** - contains the `metadata` of the file (data of the data)",
+    "translation": "  - **Resource stream** : contient les `metadata` (métadonnées) du fichier."
+  },
+  {
     "line": 284,
     "source": "> 🔬 Jump to the [ADS demonstration section](windows-attacks/alternateds.md)",
     "translation": "> 🔬 Consulter la [démonstration ADS](windows-attacks/alternateds.md)."
+  },
+  {
+    "line": 291,
+    "source": "- SAM db file cannot be copied while the O.S. is running",
+    "translation": "- Le fichier de la base SAM ne peut pas être copié pendant le fonctionnement du système."
+  },
+  {
+    "line": 292,
+    "source": "- SAM db is encrypted with a `SysKey`",
+    "translation": "- La base SAM est chiffrée avec une `SysKey`."
   },
   {
     "line": 294,
@@ -403,6 +463,11 @@
     "line": 298,
     "source": "Storing passwords locally is a big security risk, specially if stored unencrypted and in *clear-text* strings.",
     "translation": "Le stockage local des mots de passe présente un risque important pour la sécurité, surtout lorsqu’ils sont conservés sans chiffrement, en *texte clair*."
+  },
+  {
+    "line": 301,
+    "source": "- **`NTLM`** only is used from Windows Vista onwards",
+    "translation": "- Seul **`NTLM`** est utilisé à partir de Windows Vista."
   },
   {
     "line": 303,
@@ -443,6 +508,11 @@
     "line": 323,
     "source": "  - Allows symbols and unicode chars",
     "translation": "  - Prend en charge les symboles et les caractères Unicode."
+  },
+  {
+    "line": 324,
+    "source": "  - NTLMv1, NTLMv2 - *challenge response protocols used for authentication in Windows environments*",
+    "translation": "  - NTLMv1, NTLMv2 : *protocoles Challenge-Response utilisés pour l’authentification dans les environnements Windows*."
   },
   {
     "line": 329,

@@ -155,6 +155,16 @@
     "translation": "Les vulnérabilités du noyau Linux peuvent entraîner une exécution de code arbitraire et l’obtention d’un shell avec des privilèges élevés."
   },
   {
+    "line": 101,
+    "source": "- Kernel version and distribution is important",
+    "translation": "- La version du noyau et la distribution sont importantes."
+  },
+  {
+    "line": 111,
+    "source": "> - Verifying state of kernel hardening security measures",
+    "translation": "> - Vérification de l’état des mesures de durcissement du noyau."
+  },
+  {
     "line": 127,
     "source": "🗒️ **Cron** - a time-based daemon/service, scheduler of applications, scripts and commands. It executed non-interactive jobs.",
     "translation": "🗒️ **Cron** est un service de planification qui permet de programmer l’exécution d’applications, de scripts et de commandes à des heures définies. Il exécute des tâches non interactives."
@@ -188,6 +198,11 @@
     "line": 143,
     "source": "🗒️ [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) - is a type of special access permission given to a file. A file with SUID *always executes as its the owner*, regardless of the user passing the command. ",
     "translation": "🗒️ Le [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) est une permission spéciale attribuée à un fichier. Le cours indique qu’un fichier SUID _s’exécute avec les droits de son propriétaire_, quel que soit l’utilisateur qui lance la commande."
+  },
+  {
+    "line": 153,
+    "source": "  - **access permissions** - `x` executable permissions are required to execute the SUID binary",
+    "translation": "  - **Permissions d’accès** : la permission d’exécution `x` est nécessaire pour exécuter le binaire SUID."
   },
   {
     "line": 155,

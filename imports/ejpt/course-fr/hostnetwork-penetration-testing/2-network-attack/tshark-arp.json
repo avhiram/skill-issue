@@ -65,9 +65,44 @@
     "translation": "- Afficher le trafic `HTTP` du fichier `.pcap`."
   },
   {
+    "line": 85,
+    "source": "- Show only the IP packets sent from IP address `192.168.252.128` to IP address `52.32.74.91`",
+    "translation": "- Afficher uniquement les paquets IP envoyés depuis l’adresse `192.168.252.128` vers l’adresse `52.32.74.91`."
+  },
+  {
     "line": 93,
     "source": "- Print only packets containing GET requests",
     "translation": "- Afficher uniquement les paquets contenant des requêtes GET."
+  },
+  {
+    "line": 101,
+    "source": "- Print only packets with frame time, source IP and URL for all GET requests",
+    "translation": "- Afficher l’heure de capture, l’adresse IP source et l’URL de chaque requête GET."
+  },
+  {
+    "line": 109,
+    "source": "- Print packets containing a string",
+    "translation": "- Afficher les paquets contenant une chaîne de caractères."
+  },
+  {
+    "line": 119,
+    "source": "- Check the **destination IP** for `GET` requests sent to `www.nytimes.com`",
+    "translation": "- Vérifier l’**adresse IP de destination** des requêtes `GET` envoyées vers `www.nytimes.com`."
+  },
+  {
+    "line": 127,
+    "source": "> 📌 `170.149.159.130` is the destination IP of `www.nytimes.com`",
+    "translation": "> 📌 `170.149.159.130` est l’adresse IP de destination de `www.nytimes.com`."
+  },
+  {
+    "line": 139,
+    "source": "- Find the **OS** type on the machine with IP `192.168.252.128`",
+    "translation": "- Identifier le **système d’exploitation** de la machine dont l’adresse IP est `192.168.252.128`."
+  },
+  {
+    "line": 147,
+    "source": "- Use the `User_agent` string to find the specific distribution",
+    "translation": "- Utiliser la chaîne `User_agent` pour identifier la distribution."
   },
   {
     "line": 151,
@@ -78,6 +113,51 @@
     "line": 157,
     "source": ">  🔬 *INE Platform Lab*",
     "translation": ">  🔬 *Laboratoire de la plateforme INE*"
+  },
+  {
+    "line": 236,
+    "source": "> - **WiFi** basic traffic analysis with `Wireshark`",
+    "translation": "> - Analyse élémentaire du trafic **WiFi** avec `Wireshark`."
+  },
+  {
+    "line": 239,
+    "source": "  - Beacon frame = `0x0008`",
+    "translation": "  - Trame Beacon : `0x0008`"
+  },
+  {
+    "line": 240,
+    "source": "  - Wlan tag `48` = **[RSN-IE](https://mrncciew.com/2014/08/21/cwsp-rsn-information-elements/)** (Robust Security Network Information Element)",
+    "translation": "  - Tag WLAN `48` : **[RSN-IE](https://mrncciew.com/2014/08/21/cwsp-rsn-information-elements/)** (Robust Security Network Information Element)."
+  },
+  {
+    "line": 309,
+    "source": "  - wlan.ta = transmitted",
+    "translation": "  - wlan.ta : adresse de l’émetteur"
+  },
+  {
+    "line": 310,
+    "source": "  - wlan.ra = received",
+    "translation": "  - wlan.ra : adresse du récepteur"
+  },
+  {
+    "line": 373,
+    "source": "> - **Tshark** usage and filtering",
+    "translation": "> - Utilisation de **TShark** et des filtres."
+  },
+  {
+    "line": 375,
+    "source": "- Show only WiFi traffic",
+    "translation": "- Afficher uniquement le trafic Wi-Fi."
+  },
+  {
+    "line": 384,
+    "source": "  - *Every management frame in WiFi has can be classified under a **type** and **subtype***",
+    "translation": "  - *Chaque trame de gestion Wi-Fi peut être classée selon un **type** et un **sous-type**.*"
+  },
+  {
+    "line": 394,
+    "source": "  - **EAPoL** (Extensible Authentication Protocol over LAN) is used for WPA handshake",
+    "translation": "  - **EAPoL** (Extensible Authentication Protocol over LAN) est utilisé lors du WPA Handshake."
   },
   {
     "line": 456,
