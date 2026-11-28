@@ -30,11 +30,29 @@ while True:
         pages=report["pages"]
         if len(pages)!=80 or len(set(pages))!=80:
             raise RuntimeError("expected 80 distinct source pages")
-        paths=["index.html","cours.html","cheatsheet.html"]+["original/"+p for p in pages]
+        groups = {
+            "prerequisite_navigation": ("penetration-testing-prerequisites/", 4),
+            "assessment_navigation": ("assessment-methodologies/", 12),
+            "host_network_navigation": ("hostnetwork-penetration-testing/", 47),
+        }
+        for key, (prefix, count) in groups.items():
+            expected = {p for p in pages if p.startswith(prefix)}
+            actual = report.get(key, {})
+            if len(expected) != count or set(actual) != expected:
+                raise RuntimeError("Incomplete navigation coverage: " + key)
+            if not all(v.get("content_preserved") is True for v in actual.values()):
+                raise RuntimeError("Content preservation not verified: " + key)
+        expected = {p for p in pages if p.startswith(("webapp-penetration-testing/", "exam-preparation-labs/"))}
+        actual = report.get("web_labs_navigation", {})
+        if len(expected) != 12 or set(actual) != expected:
+            raise RuntimeError("Incomplete Web/Labs navigation coverage")
+        if not all(v.get("content_preserved") is True for v in actual.values()):
+            raise RuntimeError("Content preservation not verified: Web/Labs")
+        paths=["index.html","cours.html","cheatsheet.html","prerequis.html","methodologie.html","audit.html","pentest-systeme.html","pentest-web.html","labs.html"]+["original/"+p for p in pages]
         with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
             failures=[e for e in pool.map(check,paths) if e]
         if not failures:
-            print("Public eJPT verified: 83 HTML pages at revision "+REV)
+            print(f"Public eJPT verified: {len(paths)} HTML pages, 75 navigation reviews at revision {REV}")
             break
         print("Unverified eJPT pages:",len(failures),failures[:8],flush=True)
     except Exception as e:
