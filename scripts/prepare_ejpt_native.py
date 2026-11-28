@@ -1742,7 +1742,7 @@ def refine_long_blocks(soup, article):
             pre.insert_before(soup.new_tag("span", id=pre["id"]))
         for group,title_override,description_override in groups:
             title,description = title_and_description(group,title_override,description_override)
-            label = soup.new_tag("p", attrs={"class":"ejpt-leaf-title"})
+            label = soup.new_tag("p", attrs={"class":"ejpt-long-block-title"})
             strong = soup.new_tag("strong")
             strong.string = title
             label.append(strong)
