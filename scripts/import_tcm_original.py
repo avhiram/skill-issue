@@ -89,6 +89,7 @@ def render(name):
     source = source_text(name)
     soup = BeautifulSoup(md.render(source), "html.parser")
     original_blocks = [block.get_text() for block in soup.select("pre code")]
+    original_images = len(soup.select("img"))
     # Render source examples as inert text; never execute embedded source scripts.
     for tag in list(soup.find_all(True)):
         if tag.name is None:
@@ -141,6 +142,34 @@ def render(name):
     if original_blocks != [block.get_text() for block in soup.select("pre code")]:
         raise RuntimeError("Rendered code differs from source: " + name)
     code_counts[name] = len(original_blocks)
+    if len(soup.select("img")) != original_images:
+        raise RuntimeError("Rendered images differ from source: " + name)
+    # UI only: add stable heading anchors and copy buttons outside original code.
+    ids = set(tag.get("id") for tag in soup.find_all(id=True))
+    for i, heading in enumerate(soup.select("h2, h3, h4"), 1):
+        if not heading.get("id"):
+            ident = "section-" + str(i)
+            while ident in ids:
+                ident += "-a"
+            heading["id"] = ident
+            ids.add(ident)
+    for block in list(soup.select("pre")):
+        if not block.find("code"):
+            continue
+        wrapper = soup.new_tag("div", attrs={"class":"code-panel"})
+        block.wrap(wrapper)
+        code = block.find("code")
+        language = next((x[9:] for x in code.get("class", []) if x.startswith("language-")), "")
+        toolbar = soup.new_tag("div", attrs={"class":"code-toolbar"})
+        label = soup.new_tag("span")
+        label.string = language.upper() if language else "CODE"
+        toolbar.append(label)
+        button = soup.new_tag("button", attrs={"type":"button","class":"copy-code","aria-label":"Copier le bloc"})
+        button.string = "Copier"
+        toolbar.append(button)
+        block.insert_before(toolbar)
+    if original_blocks != [block.get_text() for block in soup.select("pre code")]:
+        raise RuntimeError("UI changed source commands: " + name)
     return str(soup)
 
 css = """
@@ -158,7 +187,52 @@ code{font:14px/1.55 ui-monospace,monospace;color:#d9c6fa}pre code{color:inherit}
 table{display:block;max-width:100%;overflow:auto;border-collapse:collapse}td,th{border:1px solid var(--line);padding:8px}footer{margin-top:42px;border-top:1px solid var(--line);padding-top:16px;color:var(--muted);font-size:13px}
 @media(max-width:780px){.layout{display:block}aside{position:static;max-height:none;border:0;border-bottom:1px solid var(--line);padding:14px 20px}main{padding:20px 16px 70px}header{padding:14px 16px}}
 """
+css += """
+header{position:sticky;top:0;z-index:10;background:var(--bg);align-items:center}
+header .nav-toggle,header .reading-toggle,.copy-code{font:inherit;font-size:12px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--text);padding:6px 12px;cursor:pointer}
+header .reading-toggle{margin-left:auto}header .nav-toggle{display:none}
+aside{top:65px;max-height:calc(100vh - 65px)}main{max-width:980px}
+.breadcrumb{display:flex;flex-wrap:wrap;gap:8px;color:var(--muted);font-size:13px;margin:0 0 24px}
+.breadcrumb a{text-decoration:none}.breadcrumb span{overflow-wrap:anywhere}
+article h1,article h2,article h3,article h4{scroll-margin-top:90px}
+article h1{font-size:clamp(25px,4vw,36px);margin:0 0 25px}
+article h2{font-size:22px}article h3{font-size:18px}article p,article ul,article ol{margin:12px 0}
+.code-panel{margin:16px 0;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--panel)}
+.code-toolbar{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-bottom:1px solid var(--line);color:var(--muted);font-size:11px;letter-spacing:.04em}
+.code-panel pre{margin:0;border:0;border-radius:0;padding:16px;max-width:100%}.copy-code{letter-spacing:0}
+.page-nav{display:flex;justify-content:space-between;gap:12px;margin:42px 0 0}
+.page-nav a{border:1px solid var(--line);border-radius:9px;padding:12px 16px;text-decoration:none;flex:1;min-width:0;overflow-wrap:anywhere}
+.page-nav a:last-child{text-align:right}.page-nav small{display:block;color:var(--muted)}
+footer details summary{cursor:pointer;font-size:12px}footer details p{margin:10px 0}
+.reading-mode .layout{display:block}.reading-mode aside{display:none}
+@media(max-width:780px){header .nav-toggle{display:inline-block}aside{display:none;position:static;max-height:none}aside.open{display:block}main{padding-top:22px}.page-nav a{padding:10px;font-size:13px}header{gap:12px}.reading-mode aside.open{display:block}}
+"""
 write("reader.css", css)
+write("reader.js", """document.addEventListener('click', async (event) => {
+  const button = event.target.closest('button');
+  if (!button) return;
+  if (button.classList.contains('nav-toggle')) {
+    const nav = document.querySelector('aside');
+    const open = nav.classList.toggle('open');
+    button.setAttribute('aria-expanded', String(open));
+  }
+  if (button.classList.contains('reading-toggle')) {
+    const enabled = document.body.classList.toggle('reading-mode');
+    button.setAttribute('aria-pressed', String(enabled));
+  }
+  if (!button.classList.contains('copy-code')) return;
+  const code = button.closest('.code-panel').querySelector('pre code');
+  try {
+    await navigator.clipboard.writeText(code.textContent);
+    button.textContent = 'Copié';
+  } catch {
+    const selection = window.getSelection(), range = document.createRange();
+    range.selectNodeContents(code); selection.removeAllRanges(); selection.addRange(range);
+    button.textContent = 'Sélectionné';
+  }
+  window.setTimeout(() => {button.textContent = 'Copier'}, 1800);
+});
+""")
 escape = html.escape
 for name in ordered:
     current = name.split("/")[0]
@@ -191,15 +265,31 @@ for name in ordered:
                 nav.append(nav_link(item))
         nav.append("</details>")
     body = render(name)
+    course_home = current + "/README.md"
+    course_pages = [item for item in ordered if item.startswith(current+"/")]
+    index = course_pages.index(name)
+    breadcrumb = '<nav class="breadcrumb" aria-label="Fil d’Ariane"><a href="/skill-issue/">Accueil</a><span>›</span><a href="/skill-issue/tcm/">TCM</a><span>›</span>'
+    if name != course_home:
+        breadcrumb += '<a href="' + url(page(course_home)) + '">' + escape(titles[course_home]) + '</a><span>›</span>'
+    breadcrumb += '<span aria-current="page">' + escape(titles[name]) + '</span></nav>'
+    adjacent = '<nav class="page-nav" aria-label="Navigation du cours">'
+    if index:
+        previous = course_pages[index-1]
+        adjacent += '<a href="' + url(page(previous)) + '"><small>Précédent</small>' + escape(titles[previous]) + '</a>'
+    if index+1 < len(course_pages):
+        following = course_pages[index+1]
+        adjacent += '<a href="' + url(page(following)) + '"><small>Suivant</small>' + escape(titles[following]) + '</a>'
+    adjacent += '</nav>'
     document = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
         '<title>' + escape(titles[name]) + ' | SKILL-ISSUE</title><link rel="stylesheet" href="' + url("reader.css") + '">'
-        '</head><body><header><a href="/skill-issue/"><strong>SKILL-ISSUE</strong></a><a href="/skill-issue/tcm/">TCM</a></header>'
-        '<div class="layout"><aside aria-label="Courses">' + "".join(nav) + '</aside><main><article>' + body + '</article>'
-        '<footer>Source: <a href="https://github.com/' + repository + '/tree/' + revision + '">syselement/tcm-sec-notes</a> · '
+        '<script src="' + url("reader.js") + '" defer></script></head><body><header><a href="/skill-issue/"><strong>SKILL-ISSUE</strong></a><a href="/skill-issue/tcm/">TCM</a>'
+        '<button type="button" class="nav-toggle" aria-expanded="false">Chapitres</button><button type="button" class="reading-toggle" aria-pressed="false">Lecture</button></header>'
+        '<div class="layout"><aside aria-label="Chapitres">' + "".join(nav) + '</aside><main>' + breadcrumb + '<article>' + body + '</article>' + adjacent +
+        '<footer><details><summary>Licence et attributions</summary><p>Notes originales : <a href="https://github.com/' + repository + '/tree/' + revision + '">syselement/tcm-sec-notes</a> · '
         '<a href="' + url("LICENSE.txt") + '">CC BY-SA 4.0</a> · '
-        '<a href="' + url("markdown/"+name) + '">Original Markdown</a> · '
-        '<a href="' + url("source.zip") + '">Complete source archive</a>. '
-        'Original credits and third-party notices remain applicable. Presentation adapted for SKILL-ISSUE.</footer></main></div></body></html>')
+        '<a href="' + url("markdown/"+name) + '">Markdown original</a> · '
+        '<a href="' + url("source.zip") + '">Archive complète</a>. '
+        'Présentation adaptée pour SKILL-ISSUE ; mentions originales et droits des tiers conservés.</p></details></footer></main></div></body></html>')
     write(page(name), document)
 
 report = {"repository":repository,"revision":revision,"files_verified":len(files),"archive_sha256":hashlib.sha256(archive).hexdigest(),"images_verified":len(images),"courses":{course:sum(n.startswith(course+"/") for n in notes) for course in courses},"rendered_pages":len(notes),"unresolved_source_references":missing,"resolved_lab_examples":resolved_examples,"code_blocks_verified":sum(code_counts.values()),"code_pages_verified":len(code_counts)}
