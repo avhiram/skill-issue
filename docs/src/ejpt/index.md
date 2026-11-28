@@ -20,7 +20,7 @@ Un parcours progressif pour apprendre les fondamentaux du pentest et s'entraîne
 <div class="access-overview">
   <a class="access-card access-card-free" href="/skill-issue/ejpt/cours.html" target="_self">
     <span class="access-kicker">APPRENDRE</span>
-    <strong>Junior Pentester — Formation complète</strong>
+    <strong>Junior Pentester : formation complète</strong>
     <span>Les chapitres dans l'ordre, des fondamentaux à la préparation pratique.</span>
     <small>Cours original · chapitres distincts</small>
   </a>

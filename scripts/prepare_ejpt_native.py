@@ -2588,6 +2588,8 @@ for page in report["pages"]:
         report.setdefault("host_network_navigation", {})[page] = format_host_network_navigation(article, page)
     elif page in WEB_LABS_GENERAL_PAGES:
         report.setdefault("web_labs_navigation", {})[page] = format_web_labs_navigation(article, page)
+    if page != canonical:
+        report.setdefault("course_punctuation", {})[page] = remove_em_dashes(article)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):

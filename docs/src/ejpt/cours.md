@@ -1,5 +1,5 @@
 ---
-title: Junior Pentester — Formation complète
+title: Junior Pentester : formation complète
 aside: false
 prev: false
 next: false
@@ -8,7 +8,7 @@ next: false
 import EjptCatalog from '../../.vitepress/theme/components/EjptCatalog.vue'
 </script>
 
-# Junior Pentester — Formation complète
+# Junior Pentester : formation complète
 
 Les modules du parcours, organisés par chapitre.
 
