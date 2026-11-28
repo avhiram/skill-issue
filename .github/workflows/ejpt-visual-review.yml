@@ -62,6 +62,41 @@ jobs:
                   metrics["accordionResponds"] = was_open != now_open
                   metrics["expandedDocumentWidth"] = page.evaluate("document.documentElement.scrollWidth")
                   toggle.click()
+                  # Open existing sections to inspect the complete layout.
+                  for button in root.locator("button.skill-fold-toggle").all():
+                      if button.get_attribute("aria-expanded") == "false":
+                          button.evaluate("(button) => button.click()")
+                  metrics["allExpandedWidth"] = page.evaluate("document.documentElement.scrollWidth")
+                  metrics["openAccordionCount"] = root.locator('button.skill-fold-toggle[aria-expanded="true"]').count()
+                  # Request each actual image through Chromium and check decoding.
+                  metrics["images"] = page.evaluate("""async () => {
+                    const images = Array.from(document.querySelectorAll('.ejpt-cheatsheet-content img'));
+                    const results = await Promise.all(images.map(async img => {
+                      img.loading = 'eager';
+                      try {
+                        await Promise.race([img.decode(), new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 15000))]);
+                        return {ok: img.naturalWidth > 0, src: img.currentSrc || img.src};
+                      } catch (_) {
+                        return {ok: false, src: img.currentSrc || img.src};
+                      }
+                    }));
+                    return {total: results.length, loaded: results.filter(r => r.ok).length, failed: results.filter(r => !r.ok).map(r => r.src)};
+                  }""")
+                  # Verify copy using the first basic network display block only.
+                  page.context.grant_permissions(["clipboard-read", "clipboard-write"])
+                  first_block = root.locator('div[class*="language-"]:has(> button.copy)').first
+                  first_block.wait_for(state="visible", timeout=10000)
+                  expected = first_block.locator("pre code").text_content()
+                  first_block.locator("button.copy").click(force=True)
+                  try:
+                      page.wait_for_function("(expected) => navigator.clipboard.readText().then(text => text === expected || text.trim() === expected.trim())", arg=expected, timeout=5000)
+                      metrics["copyWorks"] = True
+                  except Exception:
+                      metrics["copyWorks"] = False
+                  # Capture the opening viewport of each chapter, without altering content.
+                  for i, heading in enumerate(root.locator("h2").all(), 1):
+                      heading.scroll_into_view_if_needed()
+                      page.screenshot(path=str(out / f"{name}-chapter-{i:02d}.png"), full_page=False)
                   results.append({"device": name, **metrics})
                   print(json.dumps(results[-1]))
                   page.close()
@@ -71,10 +106,12 @@ jobs:
           for m in results:
               if not m["revision"]: failures.append(f'{m["device"]}: missing deployment revision')
               if m["visibleChapterCount"] < 1: failures.append(f'{m["device"]}: no visible chapter')
-              if max(m["documentWidth"],m["expandedDocumentWidth"]) > m["viewport"] + 2: failures.append(f'{m["device"]}: horizontal overflow')
+              if max(m["documentWidth"],m["expandedDocumentWidth"],m["allExpandedWidth"]) > m["viewport"] + 2: failures.append(f'{m["device"]}: horizontal overflow')
               if m["deepAccordionCount"]: failures.append(f'{m["device"]}: accordion nesting too deep')
               if m["visibleRedundantDescriptions"] or m["visibleRedundantTitles"]: failures.append(f'{m["device"]}: repetitive generated text visible')
               if not m["accordionResponds"]: failures.append(f'{m["device"]}: accordion did not respond')
+              if not m["copyWorks"]: failures.append(f'{m["device"]}: copy button did not return the expected text')
+              if m["images"]["loaded"] != m["images"]["total"]: failures.append(f'{m["device"]}: images missing or not decoded')
           if failures:
               raise SystemExit("\n".join(failures))
           print("Responsive checks passed on both viewports.")
