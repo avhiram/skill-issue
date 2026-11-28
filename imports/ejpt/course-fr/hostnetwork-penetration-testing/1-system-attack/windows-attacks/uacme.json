@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [UAC Bypass: UACMe](https://attackdefense.com/challengedetailsnoauth?cid=2208)",
+    "translation": "> 🔬 [Laboratoire UAC Bypass : UACMe](https://attackdefense.com/challengedetailsnoauth?cid=2208)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `10.4.19.119`",
+    "translation": "> - IP cible du laboratoire : `10.4.19.119`"
+  },
+  {
+    "line": 8,
+    "source": "> - **UAC** bypass",
+    "translation": "> - Étude du contournement de l’**UAC**."
+  }
+]

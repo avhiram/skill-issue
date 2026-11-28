@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [Windows: SMB Server PSexec](https://attackdefense.com/challengedetailsnoauth?cid=1959)",
+    "translation": "> 🔬 [Windows : serveur SMB et PsExec](https://attackdefense.com/challengedetailsnoauth?cid=1959)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `10.4.16.36`",
+    "translation": "> - IP cible du laboratoire : `10.4.16.36`"
+  },
+  {
+    "line": 8,
+    "source": "> - **SMB** exploitation",
+    "translation": "> - Étude des vulnérabilités du service **SMB**."
+  }
+]

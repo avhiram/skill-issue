@@ -1,0 +1,12 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Password Cracker: Linux](https://attackdefense.com/challengedetails?cid=1776)",
+    "translation": ">  🔬 [Laboratoire sur les mots de passe Linux](https://attackdefense.com/challengedetails?cid=1776)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.75.64.3`",
+    "translation": ">  - IP cible du laboratoire : `192.75.64.3`"
+  }
+]

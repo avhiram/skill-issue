@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Unattended Installation](https://attackdefense.com/challengedetails?cid=2106)",
+    "translation": ">  🔬 [Installation automatisée de Windows](https://attackdefense.com/challengedetails?cid=2106)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `10.4.19.9`",
+    "translation": ">  - IP cible du laboratoire : `10.4.19.9`"
+  },
+  {
+    "line": 9,
+    "source": ">  - Both Kali Machine and Attacker/Victim Windows machine are provided",
+    "translation": ">  - Le laboratoire fournit une machine Kali et une machine Windows."
+  }
+]
