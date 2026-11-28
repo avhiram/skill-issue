@@ -12,10 +12,8 @@ pageClass: skill-home-page
   <h1>Morad H.</h1>
   <p class="profile-subtitle">Adversary Simulation · Cyberdéfense</p>
   <div class="profile-links">
-    <a href="/skill-issue/ejpt/">eJPT gratuit</a>
     <a href="/skill-issue/academy/index.html">Accès gratuit</a>
     <a href="/skill-issue/membres/">Accès membre</a>
-    <a href="https://www.linkedin.com/in/l14m" target="_blank" rel="noopener noreferrer">LinkedIn</a>
   </div>
 </div>
 
