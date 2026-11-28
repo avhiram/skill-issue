@@ -20,8 +20,98 @@
     "translation": "> * Étudier les attaques **MITM (Man in the Middle)**"
   },
   {
+    "line": 17,
+    "source": "> - [Tshark Traffic Analysis](https://attackdefense.com/listing?labtype=traffic-analysis&subtype=tshark-basics)",
+    "translation": "> - [Analyse du trafic avec TShark](https://attackdefense.com/listing?labtype=traffic-analysis&subtype=tshark-basics)"
+  },
+  {
+    "line": 18,
+    "source": ">   - [Traffic Analysis: TSHARK Unleashed - Course](https://www.pentesteracademy.com/course?id=42)",
+    "translation": ">   - [Cours d’analyse du trafic : TSHARK Unleashed](https://www.pentesteracademy.com/course?id=42)"
+  },
+  {
+    "line": 19,
+    "source": "> - [WIFI Traffic Analysis](https://attackdefense.com/listing?labtype=wifi-security-basics&subtype=wifi-security-basics-traffic-analysis)",
+    "translation": "> - [Analyse du trafic Wi-Fi](https://attackdefense.com/listing?labtype=wifi-security-basics&subtype=wifi-security-basics-traffic-analysis)"
+  },
+  {
+    "line": 20,
+    "source": ">   - [Wi-Fi Security and Pentesting - Course](https://www.pentesteracademy.com/course?id=9)",
+    "translation": ">   - [Cours de sécurité et pentest Wi-Fi](https://www.pentesteracademy.com/course?id=9)"
+  },
+  {
     "line": 22,
     "source": "🗒️ **Network based attacks** are attacks targeted towards specific network traffic and services.",
     "translation": "🗒️ Les **attaques réseau** ciblent certains types de trafic et services réseau."
+  },
+  {
+    "line": 31,
+    "source": "🗒️ **MITM** (**M**an **I**n **T**he **M**iddle) is a type of cybersecurity attack that *allows the attacker to eavesdrop/listen on the legitimate communication between two targets*.",
+    "translation": "🗒️ Une attaque **MITM** (**M**an **I**n **T**he **M**iddle) est une cyberattaque qui _permet à un attaquant d’intercepter ou d’écouter des communications légitimes entre deux parties_."
+  },
+  {
+    "line": 37,
+    "source": "- [**ARP Poisoning**](https://medium.com/geekculture/understanding-arp-poisoning-mitm-attack-7b12a3b061bd) - intercept communication through broadcasting ARP packets and waiting for answers from other machines.",
+    "translation": "- [**ARP Poisoning**](https://medium.com/geekculture/understanding-arp-poisoning-mitm-attack-7b12a3b061bd) : interception de communications par manipulation des échanges ARP sur un réseau."
+  },
+  {
+    "line": 38,
+    "source": "- **Promiscuous mode** - listen to all the traffic on a network",
+    "translation": "- **Promiscuous mode** : mode permettant d’écouter le trafic visible sur une interface réseau."
+  },
+  {
+    "line": 44,
+    "source": "> 🔬 Check some `Wireshark` traffic sniffing in [this lab](../exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing.md)",
+    "translation": "> 🔬 Consulter [ce laboratoire](../exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing.md) consacré à l’analyse du trafic avec `Wireshark`."
+  },
+  {
+    "line": 46,
+    "source": "- `e.g.` Capture a `nmap` scan traffic with  **`Wireshark`**",
+    "translation": "- `e.g.` Capturer le trafic d’un scan `nmap` avec **`Wireshark`**."
+  },
+  {
+    "line": 47,
+    "source": "  - Check the interface before beginning the capture",
+    "translation": "  - Vérifier l’interface avant de commencer la capture."
+  },
+  {
+    "line": 48,
+    "source": "  - Protocol Hierarchy Statistics",
+    "translation": "  - Statistiques de hiérarchie des protocoles (Protocol Hierarchy Statistics)."
+  },
+  {
+    "line": 49,
+    "source": "  - Identify all layers looking at captured packets",
+    "translation": "  - Identifier les différentes couches en examinant les paquets capturés."
+  },
+  {
+    "line": 50,
+    "source": "  - Default time display setting is *relative time in seconds*",
+    "translation": "  - L’affichage temporel par défaut est le _temps relatif en secondes_."
+  },
+  {
+    "line": 51,
+    "source": "  - Follow > TCP Stream to check an entire stream",
+    "translation": "  - Follow > TCP Stream permet d’examiner un flux complet."
+  },
+  {
+    "line": 59,
+    "source": "> [**tshark**](https://tshark.dev/) - a network protocol analyzer that captures packet data from a live network or from a saved capture file. It is the CLI component of `Wireshark`.",
+    "translation": "> [**TShark**](https://tshark.dev/) : analyseur de protocoles réseau capable de lire les paquets d’un réseau actif ou d’un fichier de capture enregistré. Il constitue l’interface en ligne de commande de `Wireshark`."
+  },
+  {
+    "line": 61,
+    "source": "> - Native capture file format is `pcapng ` (Wireshark compatible)",
+    "translation": "> - Le format natif des fichiers de capture est `pcapng ` (compatible avec Wireshark)."
+  },
+  {
+    "line": 67,
+    "source": "> [**`arpspoof`**](https://www.kali.org/tools/dsniff/#arpspoof) - a (old) tool to send out unrequested (and possibly forged) `ARP` replies and intercept packets on a switched LAN",
+    "translation": "> [**`arpspoof`**](https://www.kali.org/tools/dsniff/#arpspoof) : ancien outil de test de sécurité lié aux réponses `ARP` non sollicitées et à l’interception de paquets sur un réseau local commuté."
+  },
+  {
+    "line": 73,
+    "source": "> 🔬 Check some hands-on labs in the [Tshark, ARP, WiFi Lab section](2-network-attack/tshark-arp.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section TShark, ARP et Wi-Fi](2-network-attack/tshark-arp.md)."
   }
 ]

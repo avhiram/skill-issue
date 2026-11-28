@@ -1,0 +1,72 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [Scanning Web Application with ZAProxy](https://attackdefense.com/challengedetails?cid=1888)",
+    "translation": "> 🔬 [Analyse d’une application Web avec ZAProxy](https://attackdefense.com/challengedetails?cid=1888)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `192.192.29.3`",
+    "translation": "> - IP cible du laboratoire : `192.192.29.3`"
+  },
+  {
+    "line": 8,
+    "source": "> - Scan and identify a vulnerable web app (bWAPP) with **ZAProxy**",
+    "translation": "> - Scanner et identifier une application Web vulnérable (bWAPP) avec **ZAProxy**."
+  },
+  {
+    "line": 17,
+    "source": "- Start **`owasp-zap`** from the start menu",
+    "translation": "- Lancer **`owasp-zap`** depuis le menu de démarrage."
+  },
+  {
+    "line": 18,
+    "source": "  - Use **`Manual Explore`** and input the URL",
+    "translation": "  - Utiliser **`Manual Explore`** et renseigner l’URL."
+  },
+  {
+    "line": 20,
+    "source": "  - **Launch Browser** to open the browser session with the ZAP HUB",
+    "translation": "  - **Launch Browser** ouvre une session de navigateur avec l’interface ZAP."
+  },
+  {
+    "line": 59,
+    "source": "- In the `Alerts` tab check the 🚩`High` risk Alerts",
+    "translation": "- Dans l’onglet `Alerts`, consulter les alertes 🚩`High` (risque élevé)."
+  },
+  {
+    "line": 70,
+    "source": "- Using the `ZAP HUD`, Site Alerts can be accessed. Every vulnerability is clickable and can be directly tried via the URL",
+    "translation": "- Le `ZAP HUD` permet de consulter les alertes du site. Chaque vulnérabilité dispose d’un lien vers son URL."
+  },
+  {
+    "line": 86,
+    "source": "> 🔬 [Scanning Web Application with Nikto](https://attackdefense.com/challengedetails?cid=2128)",
+    "translation": "> 🔬 [Analyse d’une application Web avec Nikto](https://attackdefense.com/challengedetails?cid=2128)"
+  },
+  {
+    "line": 88,
+    "source": "> - Target IP: `192.157.60.3`",
+    "translation": "> - IP cible du laboratoire : `192.157.60.3`"
+  },
+  {
+    "line": 89,
+    "source": "> - Scan and identify web app vulnerabilities (Multillidae II) with **Nikto**",
+    "translation": "> - Scanner et identifier les vulnérabilités d’une application Web (Multillidae II) avec **Nikto**."
+  },
+  {
+    "line": 99,
+    "source": "- Open the browser and navigate to",
+    "translation": "- Ouvrir le navigateur et accéder à l’adresse suivante :"
+  },
+  {
+    "line": 104,
+    "source": "- In the Bash terminal run **`nikto`** and output the results to a file",
+    "translation": "- Dans le terminal Bash, lancer **`nikto`** et enregistrer les résultats dans un fichier."
+  },
+  {
+    "line": 130,
+    "source": "- *The PHP-Nuke Rocket add-in is vulnerable to **file traversal**, allowing an attacker to view any file on the host*",
+    "translation": "- *L’extension PHP-Nuke Rocket présente une vulnérabilité de **file traversal** susceptible d’exposer les fichiers de l’hôte.*"
+  }
+]
