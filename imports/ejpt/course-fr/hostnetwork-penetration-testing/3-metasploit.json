@@ -173,5 +173,80 @@
     "line": 92,
     "source": "| **Auxiliary** | Is not paired with a payload, used to perform additional functionality - **e.g.** port scanners, fuzzers, sniffers, etc |",
     "translation": "| **Auxiliary** | Module sans payload associé, assurant des fonctions complémentaires telles que le scan de ports, le fuzzing ou l’analyse du trafic |"
+  },
+  {
+    "line": 118,
+    "source": "- MSF filesystem is intuitive and organized by directories.",
+    "translation": "- Le système de fichiers du MSF est intuitif et organisé en répertoires."
+  },
+  {
+    "line": 119,
+    "source": "- Modules are stored under:",
+    "translation": "- Les modules sont stockés dans les répertoires suivants :"
+  },
+  {
+    "line": 121,
+    "source": "  - `~/.msf4/modules` - user specified modules",
+    "translation": "  - `~/.msf4/modules` : modules ajoutés par l’utilisateur."
+  },
+  {
+    "line": 133,
+    "source": "🗒️ [**PTES**](http://www.pentest-standard.org/index.php/Main_Page) (**P**enetration **T**esting **E**xecution **S**tandard) is a methodology that contains 7 main sections, defined by the standard as a comprehensive basis for penetration testing execution.",
+    "translation": "🗒️ Le [**PTES**](http://www.pentest-standard.org/index.php/Main_Page) (**P**enetration **T**esting **E**xecution **S**tandard) est une méthodologie qui comprend sept sections principales, définies par le standard comme une base complète pour la réalisation d’un pentest."
+  },
+  {
+    "line": 135,
+    "source": "- can be adopted as a roadmap for Metasploit integration and understanding of the phases of a penetration test.",
+    "translation": "- Il peut servir de feuille de route pour intégrer Metasploit et comprendre les différentes phases d’un pentest."
+  },
+  {
+    "line": 137,
+    "source": "> The various phases involved in a typical pentest should be:",
+    "translation": "> Les différentes phases d’un pentest type sont les suivantes :"
+  },
+  {
+    "line": 139,
+    "source": "> 📌 **Pre-Engagement Interactions**",
+    "translation": "> 📌 **Échanges préalables à la mission**"
+  },
+  {
+    "line": 143,
+    "source": "> 📌 **Information Gathering**",
+    "translation": "> 📌 **Collecte d’informations**"
+  },
+  {
+    "line": 147,
+    "source": "> 📌 **Enumeration**",
+    "translation": "> 📌 **Énumération**"
+  },
+  {
+    "line": 149,
+    "source": "> - Threat Modeling",
+    "translation": "> - Modélisation des menaces"
+  },
+  {
+    "line": 150,
+    "source": "> - Vulnerability Analysis",
+    "translation": "> - Analyse des vulnérabilités"
+  },
+  {
+    "line": 172,
+    "source": "> 📌 **Reporting**",
+    "translation": "> 📌 **Rédaction du rapport**"
+  },
+  {
+    "line": 174,
+    "source": "|            Pentesting Phase             | MSF Implementation                     |",
+    "translation": "| Phase du pentest | Mise en œuvre avec MSF |"
+  },
+  {
+    "line": 176,
+    "source": "| **Information Gathering & Enumeration** | Auxiliary Modules, `nmap` reports      |",
+    "translation": "| **Collecte d’informations et énumération** | Modules Auxiliary, rapports `nmap` |"
+  },
+  {
+    "line": 177,
+    "source": "|       **Vulnerability Scanning**        | Auxiliary Modules, `nessus` reports    |",
+    "translation": "| **Scan de vulnérabilités** | Modules Auxiliary, rapports `nessus` |"
   }
 ]

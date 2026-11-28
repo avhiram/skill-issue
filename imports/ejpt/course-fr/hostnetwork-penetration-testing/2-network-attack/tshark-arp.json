@@ -1,0 +1,72 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Getting Started: Tshark](https://attackdefense.com/challengedetails?cid=1)",
+    "translation": ">  🔬 [Prise en main de TShark](https://attackdefense.com/challengedetails?cid=1)"
+  },
+  {
+    "line": 7,
+    "source": ">  - **Tshark** usage",
+    "translation": ">  - Utilisation de **TShark**."
+  },
+  {
+    "line": 17,
+    "source": "> 📌 Running Tshark version is `2.6.1`",
+    "translation": "> 📌 La version de TShark utilisée est `2.6.1`."
+  },
+  {
+    "line": 23,
+    "source": "- These are all supported network interfaces for monitoring",
+    "translation": "- Liste des interfaces réseau prises en charge pour la surveillance."
+  },
+  {
+    "line": 27,
+    "source": "- Sniff some traffic on `eth0`",
+    "translation": "- Capturer du trafic sur `eth0`."
+  },
+  {
+    "line": 35,
+    "source": "> 📌 `student` user don't have permission to capture on `eth0` interface",
+    "translation": "> 📌 L’utilisateur `student` ne possède pas les permissions nécessaires pour effectuer une capture sur l’interface `eth0`."
+  },
+  {
+    "line": 37,
+    "source": "- Display the packet list of the `.pcap` file",
+    "translation": "- Afficher la liste des paquets du fichier `.pcap`."
+  },
+  {
+    "line": 43,
+    "source": "- Count `.pcap` file number of lines to find total number of packets",
+    "translation": "- Compter les lignes du fichier `.pcap` pour déterminer le nombre total de paquets."
+  },
+  {
+    "line": 52,
+    "source": "- Read first 100 packets from the `.pcap` file",
+    "translation": "- Lire les 100 premiers paquets du fichier `.pcap`."
+  },
+  {
+    "line": 58,
+    "source": "- List the Protocol Hierarchy Statistics from the `.pcap` file",
+    "translation": "- Afficher les statistiques de hiérarchie des protocoles du fichier `.pcap`."
+  },
+  {
+    "line": 70,
+    "source": ">  🔬 [Filtering Basics: HTTP](https://attackdefense.com/challengedetails?cid=2)",
+    "translation": ">  🔬 [Bases du filtrage HTTP](https://attackdefense.com/challengedetails?cid=2)"
+  },
+  {
+    "line": 72,
+    "source": ">  - **Tshark** usage and filtering",
+    "translation": ">  - Utilisation de **TShark** et des filtres."
+  },
+  {
+    "line": 76,
+    "source": "- Show the `HTTP` traffic from a `.pcap` file",
+    "translation": "- Afficher le trafic `HTTP` du fichier `.pcap`."
+  },
+  {
+    "line": 93,
+    "source": "- Print only packets containing GET requests",
+    "translation": "- Afficher uniquement les paquets contenant des requêtes GET."
+  }
+]
