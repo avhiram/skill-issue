@@ -195,6 +195,11 @@
     "translation": "> 🔬 Consulter le [laboratoire SUID](linux-attacks/suid.md)."
   },
   {
+    "line": 161,
+    "source": "Linux has multi-user support, this can increase the overall risk of a server.",
+    "translation": "Linux prend en charge plusieurs utilisateurs, ce qui peut augmenter le risque global pour un serveur."
+  },
+  {
     "line": 191,
     "source": "> 🔬 Check the [Dumping Linux Hashes Lab here](linux-attacks/creds-dump-unix.md)",
     "translation": "> 🔬 Consulter le [laboratoire sur les hashes Linux](linux-attacks/creds-dump-unix.md)."

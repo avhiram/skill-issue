@@ -340,6 +340,16 @@
     "translation": "- Un compte standard reçoit à la place une **demande d’identifiants** administrateur."
   },
   {
+    "line": 225,
+    "source": "  - A **local administrators group** user account is necessary",
+    "translation": "  - Un compte utilisateur membre du **groupe des administrateurs locaux** est nécessaire."
+  },
+  {
+    "line": 227,
+    "source": "UAC has *integrity levels* ranging from Low to High.",
+    "translation": "L’UAC comporte plusieurs *niveaux d’intégrité*, de faible à élevé."
+  },
+  {
     "line": 243,
     "source": "> 🔬 Jump to the hands-on labs in the [UAC Bypass section](windows-attacks/uacme.md)",
     "translation": "> 🔬 Consulter les exercices pratiques dans la [section UAC Bypass](windows-attacks/uacme.md)."
@@ -390,9 +400,19 @@
     "translation": "🗒️ Le ***Hashing*** consiste à transformer une donnée en une autre valeur à l’aide d’une **fonction de hachage**, qui génère cette nouvelle valeur selon un algorithme."
   },
   {
+    "line": 298,
+    "source": "Storing passwords locally is a big security risk, specially if stored unencrypted and in *clear-text* strings.",
+    "translation": "Le stockage local des mots de passe présente un risque important pour la sécurité, surtout lorsqu’ils sont conservés sans chiffrement, en *texte clair*."
+  },
+  {
     "line": 303,
     "source": "🗒️ [**LSA**](https://learn.microsoft.com/en-us/windows/win32/secauthn/lsa-authentication) (**L**ocal **S**ecurity **A**uthority) - the central component of the Windows security subsystem, responsible for enforcing the security policy of the system, `e.g.` authentication, credentials verification, etc.",
     "translation": "🗒️ La [**LSA**](https://learn.microsoft.com/en-us/windows/win32/secauthn/lsa-authentication) (**L**ocal **S**ecurity **A**uthority) est le composant central du sous-système de sécurité Windows. Elle applique la politique de sécurité du système, `e.g.` authentification, vérification des identifiants, etc."
+  },
+  {
+    "line": 305,
+    "source": "The Windows NT Kernel keeps the SAM database file locked.",
+    "translation": "Le noyau Windows NT maintient le fichier de base de données SAM verrouillé."
   },
   {
     "line": 313,
@@ -413,6 +433,26 @@
     "line": 318,
     "source": "🗒️ **`NTLM`** (`NTHash`) - a collection of authentication protocols and the currently used algorithm for *storing passwords on modern Windows systems*.",
     "translation": "🗒️ **`NTLM`** (`NTHash`) : ensemble de protocoles d’authentification, présenté dans le cours en lien avec le stockage des mots de passe sous Windows."
+  },
+  {
+    "line": 322,
+    "source": "  - It is case sensitive",
+    "translation": "  - Sensible à la casse."
+  },
+  {
+    "line": 323,
+    "source": "  - Allows symbols and unicode chars",
+    "translation": "  - Prend en charge les symboles et les caractères Unicode."
+  },
+  {
+    "line": 329,
+    "source": "Windows configuration files can contain stored passwords, `e.g.` in the *Unattended Windows Setup* utility, used to mass deploy Windows on systems.",
+    "translation": "Les fichiers de configuration Windows peuvent contenir des mots de passe enregistrés, `e.g.` avec l’utilitaire *Unattended Windows Setup*, utilisé pour déployer Windows sur un grand nombre de machines."
+  },
+  {
+    "line": 331,
+    "source": "- The configuration file can contain specific configurations and user account credentials",
+    "translation": "- Le fichier de configuration peut contenir des paramètres spécifiques et des identifiants de comptes utilisateurs."
   },
   {
     "line": 342,

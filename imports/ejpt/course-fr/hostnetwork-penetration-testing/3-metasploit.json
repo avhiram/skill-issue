@@ -298,5 +298,15 @@
     "line": 177,
     "source": "|       **Vulnerability Scanning**        | Auxiliary Modules, `nessus` reports    |",
     "translation": "| **Scan de vulnérabilités** | Modules Auxiliary, rapports `nessus` |"
+  },
+  {
+    "line": 235,
+    "source": "- It is launched by running the `msfconsole` command",
+    "translation": "Il se lance en exécutant la commande `msfconsole`."
+  },
+  {
+    "line": 249,
+    "source": "An MSF module requires additional information that can be configured through the use of MSF **variables**, both *local* or *global* variables, called **`options`** inside the msfconsole.",
+    "translation": "Un module MSF nécessite des informations supplémentaires, configurables à l’aide de **variables** MSF, *locales* ou *globales*, appelées **`options`** dans msfconsole."
   }
 ]
