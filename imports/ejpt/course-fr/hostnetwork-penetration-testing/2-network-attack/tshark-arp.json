@@ -68,5 +68,20 @@
     "line": 93,
     "source": "- Print only packets containing GET requests",
     "translation": "- Afficher uniquement les paquets contenant des requêtes GET."
+  },
+  {
+    "line": 151,
+    "source": "> 📌 The OS is `Linux x86_64; rv:31.0` - [user-agents.net](https://user-agents.net/string/mozilla-5-0-x11-linux-x86-64-rv-31-0-gecko-20100101-firefox-31-0-iceweasel-31-8-0)",
+    "translation": "> 📌 Système d’exploitation : `Linux x86_64; rv:31.0` : [user-agents.net](https://user-agents.net/string/mozilla-5-0-x11-linux-x86-64-rv-31-0-gecko-20100101-firefox-31-0-iceweasel-31-8-0)"
+  },
+  {
+    "line": 157,
+    "source": ">  🔬 *INE Platform Lab*",
+    "translation": ">  🔬 *Laboratoire de la plateforme INE*"
+  },
+  {
+    "line": 456,
+    "source": "> 📌 The device is a **Motorola MotoG3**.",
+    "translation": "> 📌 L’appareil est un **Motorola MotoG3**."
   }
 ]

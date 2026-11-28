@@ -25,6 +25,11 @@
     "translation": ">  - Énumération d’un serveur [OpenSSH](https://www.openssh.com/)."
   },
   {
+    "line": 37,
+    "source": "> 📌 SSH server version is  `OpenSSH 7.2p2 Ubuntu 4ubuntu2.6`.",
+    "translation": "> 📌 Version du serveur SSH : `OpenSSH 7.2p2 Ubuntu 4ubuntu2.6`."
+  },
+  {
     "line": 41,
     "source": "> **`nc`** (netcat) - *TCP/IP swiss army knife*, tool wich reads and writes data across network connections",
     "translation": "> **`nc`** (netcat) : outil polyvalent TCP/IP permettant de lire et d’écrire des données via des connexions réseau."
@@ -33,5 +38,10 @@
     "line": 55,
     "source": "> **`ssh`** - establish an encrypted secure connection with the host machine",
     "translation": "> **`ssh`** : établit une connexion sécurisée et chiffrée avec une machine distante."
+  },
+  {
+    "line": 113,
+    "source": "> 📌 There are `6` supported *encryption_algorithms*",
+    "translation": "> 📌 Le serveur prend en charge `6` *algorithmes de chiffrement*."
   }
 ]
