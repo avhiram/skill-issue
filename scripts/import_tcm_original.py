@@ -77,8 +77,29 @@ summary = files["SUMMARY.md"].decode("utf-8")
 ordered = [p for p in re.findall(r"\]\(([^)]+\.md)\)", summary) if p in notes]
 ordered = list(dict.fromkeys(ordered + sorted(notes)))
 titles = {}
+def strip_frontmatter(text):
+    return re.sub(r"\A---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*\r?\n", "", text, count=1)
+
+translation_dir = Path("imports/tcm/course-fr")
+translations = {p.relative_to(translation_dir).as_posix(): p.read_text(encoding="utf-8") for p in translation_dir.rglob("*.md")}
+if not set(translations).issubset(notes):
+    raise RuntimeError("Unknown TCM translation path")
+
 def source_text(name):
-    return re.sub(r"\A---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*\r?\n", "", files[name].decode("utf-8-sig"), count=1)
+    return strip_frontmatter(translations.get(name, files[name].decode("utf-8-sig")))
+
+def protected_content(markup):
+    parsed = BeautifulSoup(md.render(markup), "html.parser")
+    return {
+        "code": [tag.get_text() for tag in parsed.select("code")],
+        "links": [tag.get("href") for tag in parsed.select("a[href]")],
+        "images": [(tag.get("src"), tag.get("alt")) for tag in parsed.select("img")],
+    }
+
+for name, translated in translations.items():
+    if protected_content(strip_frontmatter(files[name].decode("utf-8-sig"))) != protected_content(strip_frontmatter(translated)):
+        raise RuntimeError("Translation changed protected code, links or images: " + name)
+
 for name in notes:
     match = re.search(r"^#\s+(.+)$", source_text(name), re.M)
     titles[name] = re.sub(r"[*_]", "", match.group(1)).strip() if match else PurePosixPath(name).stem
@@ -288,7 +309,7 @@ for name in ordered:
         following = course_pages[index+1]
         adjacent += '<a href="' + url(page(following)) + '"><small>Suivant</small>' + escape(titles[following]) + '</a>'
     adjacent += '</nav>'
-    document = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+    document = ('<!doctype html><html lang="' + ("fr" if name in translations else "en") + '"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
         '<title>' + escape(titles[name]) + ' | SKILL-ISSUE</title><link rel="stylesheet" href="' + url("reader.css") + '">'
         '<script src="' + url("reader.js") + '" defer></script></head><body><header><a href="/skill-issue/"><strong>SKILL-ISSUE</strong></a><a href="/skill-issue/tcm/">TCM</a>'
         '<button type="button" class="nav-toggle" aria-expanded="false">Chapitres</button><button type="button" class="reading-toggle" aria-pressed="false">Lecture</button></header>'
@@ -296,7 +317,7 @@ for name in ordered:
         '</main></div></body></html>')
     write(page(name), document)
 
-report = {"repository":repository,"revision":revision,"files_verified":len(files),"archive_sha256":hashlib.sha256(archive).hexdigest(),"images_verified":len(images),"courses":{course:sum(n.startswith(course+"/") for n in notes) for course in courses},"rendered_pages":len(notes),"unresolved_source_references":missing,"resolved_lab_examples":resolved_examples,"code_blocks_verified":sum(code_counts.values()),"code_pages_verified":len(code_counts)}
+report = {"repository":repository,"revision":revision,"files_verified":len(files),"archive_sha256":hashlib.sha256(archive).hexdigest(),"images_verified":len(images),"courses":{course:sum(n.startswith(course+"/") for n in notes) for course in courses},"rendered_pages":len(notes),"unresolved_source_references":missing,"resolved_lab_examples":resolved_examples,"code_blocks_verified":sum(code_counts.values()),"code_pages_verified":len(code_counts),"translated_pages":sorted(translations),"translated_course_counts":{course:sum(n.startswith(course+"/") for n in translations) for course in courses}}
 write("import-report.json", json.dumps(report, ensure_ascii=False, indent=2))
 assert all((out / page(n)).is_file() for n in notes)
 assert not (out / "source.zip").exists() and not (out / "markdown").exists(), "Raw course archive must not be published"
