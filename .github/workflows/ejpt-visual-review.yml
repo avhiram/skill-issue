@@ -1,0 +1,89 @@
+name: eJPT responsive layout review
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/ejpt-visual-review.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  visual-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install playwright==1.51.0
+          python -m playwright install --with-deps chromium
+      - name: Check responsive layout of deployed page
+        run: |
+          mkdir -p visual-review
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from playwright.sync_api import sync_playwright
+          url = "https://avhiram.github.io/skill-issue/ejpt/original/ejpt-cheatsheet.html"
+          out = Path("visual-review")
+          results = []
+          with sync_playwright() as pw:
+              browser = pw.chromium.launch()
+              for name, width, height in [("desktop", 1440, 900), ("mobile", 390, 844)]:
+                  page = browser.new_page(viewport={"width": width, "height": height}, device_scale_factor=1, is_mobile=(name == "mobile"), has_touch=(name == "mobile"))
+                  response = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+                  assert response and response.ok, f"{name}: page not available"
+                  root = page.locator(".ejpt-cheatsheet-content")
+                  root.wait_for(state="visible", timeout=30000)
+                  root.locator(".skill-fold-toggle").first.wait_for(state="attached", timeout=30000)
+                  page.evaluate("document.fonts.ready")
+                  metrics = page.evaluate("""() => {
+                    const root = document.querySelector('.ejpt-cheatsheet-content');
+                    const visible = el => el.getClientRects().length > 0;
+                    return {
+                      revision: document.querySelector('meta[name=skill-issue-build]')?.content || null,
+                      viewport: document.documentElement.clientWidth,
+                      documentWidth: document.documentElement.scrollWidth,
+                      visibleChapterCount: Array.from(root.querySelectorAll('h2')).filter(visible).length,
+                      deepAccordionCount: root.querySelectorAll('h4 .skill-fold-toggle,h5 .skill-fold-toggle,h6 .skill-fold-toggle').length,
+                      visibleRedundantDescriptions: Array.from(root.querySelectorAll('[data-ejpt-repetitive-description=true]')).filter(visible).length,
+                      visibleRedundantTitles: Array.from(root.querySelectorAll('[data-ejpt-repetitive-title=true]')).filter(visible).length
+                    };
+                  }""")
+                  page.screenshot(path=str(out / f"{name}-initial.png"), full_page=False)
+                  first = root.locator("h2.skill-fold-title").first
+                  toggle = first.locator("button.skill-fold-toggle")
+                  was_open = toggle.get_attribute("aria-expanded") == "true"
+                  toggle.click()
+                  now_open = toggle.get_attribute("aria-expanded") == "true"
+                  metrics["accordionResponds"] = was_open != now_open
+                  metrics["expandedDocumentWidth"] = page.evaluate("document.documentElement.scrollWidth")
+                  toggle.click()
+                  results.append({"device": name, **metrics})
+                  print(json.dumps(results[-1]))
+                  page.close()
+              browser.close()
+          (out / "results.json").write_text(json.dumps(results, indent=2))
+          failures = []
+          for m in results:
+              if not m["revision"]: failures.append(f'{m["device"]}: missing deployment revision')
+              if m["visibleChapterCount"] < 1: failures.append(f'{m["device"]}: no visible chapter')
+              if max(m["documentWidth"],m["expandedDocumentWidth"]) > m["viewport"] + 2: failures.append(f'{m["device"]}: horizontal overflow')
+              if m["deepAccordionCount"]: failures.append(f'{m["device"]}: accordion nesting too deep')
+              if m["visibleRedundantDescriptions"] or m["visibleRedundantTitles"]: failures.append(f'{m["device"]}: repetitive generated text visible')
+              if not m["accordionResponds"]: failures.append(f'{m["device"]}: accordion did not respond')
+          if failures:
+              raise SystemExit("\n".join(failures))
+          print("Responsive checks passed on both viewports.")
+          PY
+      - name: Save review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ejpt-responsive-review
+          path: visual-review/
+          retention-days: 7
+          if-no-files-found: warn
