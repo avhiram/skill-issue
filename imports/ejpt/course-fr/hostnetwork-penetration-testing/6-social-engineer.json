@@ -1,0 +1,62 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic Network and Cybersecurity Concepts",
+    "translation": "> * Notions fondamentales des réseaux et de la cybersécurité"
+  },
+  {
+    "line": 9,
+    "source": "> * Perform **phishing** and **watering hole** attacks",
+    "translation": "> * Étudier les attaques par **phishing** et **watering hole**"
+  },
+  {
+    "line": 10,
+    "source": "> * Describe **Social Engineering** fundamentals",
+    "translation": "> * Décrire les fondamentaux du **Social Engineering**"
+  },
+  {
+    "line": 11,
+    "source": "> * Identify techniques and real-life scenarios",
+    "translation": "> * Identifier les techniques et les situations réelles"
+  },
+  {
+    "line": 13,
+    "source": "🗒️ **Social engineering** is a type of cyber attack that exploits human psychology to gain access to sensitive information or systems. Instead of using technical exploits to hack into a system, social engineers manipulate people into giving up confidential information (*gather information*) or performing actions that compromise security (*gain access*).",
+    "translation": "🗒️ Le **Social Engineering** est une forme de cyberattaque qui exploite la psychologie humaine pour accéder à des informations sensibles ou à des systèmes. Au lieu d’utiliser des exploits techniques, les attaquants manipulent des personnes afin qu’elles divulguent des informations confidentielles (*collecte d’informations*) ou effectuent des actions compromettant la sécurité (*obtention d’un accès*)."
+  },
+  {
+    "line": 15,
+    "source": "The success of social engineering attacks relies on the attacker's ability to **create a convincing scenario** that triggers an *emotional response, such as curiosity, fear, or urgency, in the victim*.",
+    "translation": "Les attaques de Social Engineering peuvent s’appuyer sur des **scénarios convaincants** suscitant une réaction émotionnelle, notamment la peur, la curiosité ou un sentiment d’urgence."
+  },
+  {
+    "line": 17,
+    "source": "Social engineering through physical security is an effective tactic to gain **physical access** to a restricted building or office area.",
+    "translation": "Le Social Engineering peut également menacer la **sécurité physique** des bâtiments et des locaux à accès restreint."
+  },
+  {
+    "line": 19,
+    "source": "Here are some examples of manipulating attacks:",
+    "translation": "Exemples de techniques de manipulation :"
+  },
+  {
+    "line": 22,
+    "source": "- Impersonation",
+    "translation": "- Usurpation d’identité"
+  },
+  {
+    "line": 24,
+    "source": "- Emotional pull, Urgency",
+    "translation": "- Manipulation émotionnelle, sentiment d’urgence"
+  },
+  {
+    "line": 25,
+    "source": "- Quid pro quo, Blackmail",
+    "translation": "- Quid pro quo, chantage"
+  },
+  {
+    "line": 28,
+    "source": "> ❗ **It's important to stay vigilant against phishing attacks and be wary of any unsolicited messages asking for personal or sensitive information.**",
+    "translation": "> ❗ **Il est important de rester vigilant face au phishing et de se méfier des messages non sollicités demandant des informations personnelles ou sensibles.**"
+  }
+]
