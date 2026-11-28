@@ -13,5 +13,125 @@
     "line": 8,
     "source": "> - **UAC** bypass",
     "translation": "> - Étude du contournement de l’**UAC**."
+  },
+  {
+    "line": 10,
+    "source": "- Some useful Win CMD commands",
+    "translation": "- Quelques commandes Windows CMD utiles"
+  },
+  {
+    "line": 37,
+    "source": "- Determine the version information of the web server on port `80`",
+    "translation": "- Identifier la version du serveur Web sur le port `80`"
+  },
+  {
+    "line": 49,
+    "source": "- The version can be checked in a browser by opening the link",
+    "translation": "- La version peut être vérifiée dans un navigateur en ouvrant le lien"
+  },
+  {
+    "line": 58,
+    "source": "- Set the target IP as **GLOBAL RHOSTS variable**",
+    "translation": "- Définir l’IP cible comme **variable globale RHOSTS**"
+  },
+  {
+    "line": 72,
+    "source": "- [Rejetto HTTP File Server (HFS) 2.3.x - Remote Command Execution](https://www.exploit-db.com/exploits/39161)",
+    "translation": "- [Rejetto HTTP File Server (HFS) 2.3.x : exécution de commandes à distance](https://www.exploit-db.com/exploits/39161)"
+  },
+  {
+    "line": 77,
+    "source": "- Use `meterpreter` commands to gain more information about the target",
+    "translation": "- Utiliser les commandes `meterpreter` pour obtenir davantage d’informations sur la cible"
+  },
+  {
+    "line": 93,
+    "source": "- Migrate current x86 `meterpreter` session to a x64 process",
+    "translation": "- Migrer la session x86 `meterpreter` actuelle vers un processus x64"
+  },
+  {
+    "line": 100,
+    "source": "- Get `admin` user privileges",
+    "translation": "- Récupérer les privilèges de l’utilisateur `admin`"
+  },
+  {
+    "line": 117,
+    "source": "- Verify if `admin` user is part of the local administrators group",
+    "translation": "- Vérifier si l’utilisateur `admin` appartient au groupe Administrateurs local"
+  },
+  {
+    "line": 135,
+    "source": "- In order to run programs or tasks with elevated privileges, UAC bypass is necessary",
+    "translation": "- Pour exécuter des programmes ou des tâches avec des privilèges élevés, un UAC Bypass est nécessaire"
+  },
+  {
+    "line": 139,
+    "source": "- [UACMe Akagi](https://github.com/hfiref0x/UACME/tree/master/Source/Akagi) executable is already present on the attack machine",
+    "translation": "- L’exécutable [UACMe Akagi](https://github.com/hfiref0x/UACME/tree/master/Source/Akagi) est déjà présent sur la machine attaquante"
+  },
+  {
+    "line": 146,
+    "source": "- Generate a `meterpreter` payload with `msfvenom`",
+    "translation": "- Générer un payload `meterpreter` avec `msfvenom`"
+  },
+  {
+    "line": 157,
+    "source": "- Set up a new `msfconsole` session and set up a listener  with `multi/handler`, to receive the connection one the payload is executed on the target",
+    "translation": "- Configurer une nouvelle session `msfconsole` et un listener avec `multi/handler` pour recevoir la connexion lorsque le payload est exécuté sur la cible"
+  },
+  {
+    "line": 158,
+    "source": "  - set the payload used with `msfvenom` - the `windows/meterpreter/reverse_tcp` one",
+    "translation": "  - Définir le payload utilisé avec `msfvenom` : `windows/meterpreter/reverse_tcp`"
+  },
+  {
+    "line": 159,
+    "source": "  - set the LHOST IP and LPORT of the attack machine, based on the `msfvenom` generated payload",
+    "translation": "  - Définir l’IP LHOST et le port LPORT de la machine attaquante selon le payload généré par `msfvenom`"
+  },
+  {
+    "line": 173,
+    "source": "- The `reverse_tcp handler` is listening and ready to receive the connection from the malicious payload",
+    "translation": "- Le `reverse_tcp handler` est en écoute, prêt à recevoir la connexion du payload malveillant"
+  },
+  {
+    "line": 174,
+    "source": "- Head back in the `meterpreter` session already opened",
+    "translation": "- Revenir à la session `meterpreter` déjà ouverte"
+  },
+  {
+    "line": 189,
+    "source": "- UAC would prevent running `backdoor.exe`",
+    "translation": "- L’UAC empêcherait l’exécution de `backdoor.exe`"
+  },
+  {
+    "line": 190,
+    "source": "- Run `Akagi64.exe` executable with UACMe methor 23",
+    "translation": "- Exécuter `Akagi64.exe` avec la méthode UACMe 23"
+  },
+  {
+    "line": 198,
+    "source": "- Elevated `meterpreter` session should be received on the listener",
+    "translation": "- Une session `meterpreter` avec des privilèges élevés devrait être reçue sur le listener"
+  },
+  {
+    "line": 202,
+    "source": "- Migrate to a `NT AUTHORITY\\SYSTEM` service",
+    "translation": "- Migrer vers un service `NT AUTHORITY\\SYSTEM`"
+  },
+  {
+    "line": 213,
+    "source": "> 📌 **Privileges successfully elevated** by bypassing UAC on a system running Windows 2012 R2.",
+    "translation": "> 📌 **Privilèges élevés avec succès** en contournant l’UAC sur un système Windows 2012 R2."
+  },
+  {
+    "line": 215,
+    "source": "- Dump hashes to get the flag",
+    "translation": "- Extraire les hashes pour récupérer le flag"
+  },
+  {
+    "line": 226,
+    "source": "<summary>Reveal Flag - admin NTLM Hash is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : hash NTLM d’admin : 🚩</summary>"
   }
 ]

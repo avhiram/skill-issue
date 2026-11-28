@@ -10,8 +10,198 @@
     "translation": ">  - IP cible du laboratoire : `10.4.19.9`"
   },
   {
+    "line": 8,
+    "source": ">  - Searching for password in Windows Configuration files",
+    "translation": ">  - Recherche de mots de passe dans les fichiers de configuration Windows"
+  },
+  {
     "line": 9,
     "source": ">  - Both Kali Machine and Attacker/Victim Windows machine are provided",
     "translation": ">  - Le laboratoire fournit une machine Kali et une machine Windows."
+  },
+  {
+    "line": 11,
+    "source": "- On the Attacker machine check the current user",
+    "translation": "- Sur la machine attaquante, vérifier l’utilisateur actuel"
+  },
+  {
+    "line": 17,
+    "source": "- From the Kali machine, generate a `meterpreter` x64 payload",
+    "translation": "- Depuis la machine Kali, générer un payload x64 `meterpreter`"
+  },
+  {
+    "line": 23,
+    "source": "- Set up a web server to host the payload",
+    "translation": "- Configurer un serveur Web pour héberger le payload"
+  },
+  {
+    "line": 29,
+    "source": "- Download the payload file on the target system using the `certutil` tool in `cmd`",
+    "translation": "- Télécharger le fichier du payload sur le système cible avec l’outil `certutil` dans `cmd`"
+  },
+  {
+    "line": 36,
+    "source": "- Stop the http server and start `msfconsole` on the Kali machine",
+    "translation": "- Arrêter le serveur HTTP et démarrer `msfconsole` sur la machine Kali"
+  },
+  {
+    "line": 50,
+    "source": "- Execute the `payload.exe` on the Win target system and check the reverse shell on Kali ",
+    "translation": "- Exécuter `payload.exe` sur le système Windows cible et vérifier le reverse shell sur Kali"
+  },
+  {
+    "line": 54,
+    "source": "- Manually search for the **`unattend.xml`** file, it should be inside",
+    "translation": "- Rechercher manuellement le fichier **`unattend.xml`**, qui devrait se trouver dans"
+  },
+  {
+    "line": 65,
+    "source": "- In a new terminal tab",
+    "translation": "- Dans un nouvel onglet du terminal"
+  },
+  {
+    "line": 75,
+    "source": "- `administrator` user configured base64 password is **`QWRtaW5AMTIz`**",
+    "translation": "- Le mot de passe configuré en Base64 pour l’utilisateur `administrator` est **`QWRtaW5AMTIz`**"
+  },
+  {
+    "line": 76,
+    "source": "  - Save it to a new file",
+    "translation": "  - L’enregistrer dans un nouveau fichier"
+  },
+  {
+    "line": 77,
+    "source": "  - Decode it using the `base64` tool",
+    "translation": "  - Le décoder avec l’outil `base64`"
+  },
+  {
+    "line": 89,
+    "source": "- Test the `administrator`:`Admin@123root` credentials with the `psexec` tool",
+    "translation": "- Tester les identifiants `administrator`:`Admin@123root` avec l’outil `psexec`"
+  },
+  {
+    "line": 103,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 117,
+    "source": "> 🔬 [Windows: Meterpreter: Kiwi Extension](https://attackdefense.com/challengedetails?cid=2340)",
+    "translation": "> 🔬 [Windows : Meterpreter et extension Kiwi](https://attackdefense.com/challengedetails?cid=2340)"
+  },
+  {
+    "line": 119,
+    "source": "> - Target IP: `10.2.29.32`",
+    "translation": "> - IP cible : `10.2.29.32`"
+  },
+  {
+    "line": 120,
+    "source": "> - Dumping passwords hashes with **mimikatz**",
+    "translation": "> - Extraction des hashes de mots de passe avec **mimikatz**"
+  },
+  {
+    "line": 121,
+    "source": "> - Both Kali Machine and Attacker/Victim Windows machine are provided",
+    "translation": "> - La machine Kali et la machine Windows attaquante/cible sont fournies"
+  },
+  {
+    "line": 146,
+    "source": "- 📌 Exploit **BadBlue 2.7** with `metasploit`",
+    "translation": "- 📌 Exploiter **BadBlue 2.7** avec `metasploit`"
+  },
+  {
+    "line": 172,
+    "source": "- In the `meterpreter` session load **Kiwi**",
+    "translation": "- Dans la session `meterpreter`, charger **Kiwi**"
+  },
+  {
+    "line": 183,
+    "source": "- Retrieve all credentials",
+    "translation": "- Récupérer tous les identifiants"
+  },
+  {
+    "line": 214,
+    "source": "- Dump LSA SAM (NTLM hashes for all users)",
+    "translation": "- Extraire la LSA SAM (hashes NTLM de tous les utilisateurs)"
+  },
+  {
+    "line": 250,
+    "source": "- Dump LSA secrets. This could provide with clear-text passwords",
+    "translation": "- Extraire les secrets LSA. Cela peut fournir des mots de passe en clair"
+  },
+  {
+    "line": 294,
+    "source": "- Run `mimikatz.exe`",
+    "translation": "- Exécuter `mimikatz.exe`"
+  },
+  {
+    "line": 303,
+    "source": "- Dump the cache of the `lsass` process",
+    "translation": "- Extraire le cache du processus `lsass`"
+  },
+  {
+    "line": 317,
+    "source": "- Display logon passwords, when stored in clear-text",
+    "translation": "- Afficher les mots de passe de connexion lorsqu’ils sont stockés en clair"
+  },
+  {
+    "line": 318,
+    "source": "  - in this case clear-text password are disabled - `(null)`",
+    "translation": "  - Dans ce cas, les mots de passe en clair sont désactivés : `(null)`"
+  },
+  {
+    "line": 329,
+    "source": "<summary>Reveal Flag - Administrator NTLM Hash is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : hash NTLM d’Administrator : 🚩</summary>"
+  },
+  {
+    "line": 340,
+    "source": "<summary>Reveal Flag - Student NTLM Hash is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : hash NTLM de Student : 🚩</summary>"
+  },
+  {
+    "line": 351,
+    "source": "<summary>Reveal Flag - SysKey is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : SysKey : 🚩</summary>"
+  },
+  {
+    "line": 363,
+    "source": "> 🔬 [Windows: Meterpreter: Kiwi Extension](https://attackdefense.com/challengedetails?cid=2340) - same lab as Lab 2",
+    "translation": "> 🔬 [Windows : Meterpreter et extension Kiwi](https://attackdefense.com/challengedetails?cid=2340), même laboratoire que le Lab 2"
+  },
+  {
+    "line": 365,
+    "source": "> - Target IP changed: `10.2.29.32`",
+    "translation": "> - IP cible modifiée : `10.2.29.32`"
+  },
+  {
+    "line": 366,
+    "source": "> - Use **Pass-the-hash** attack",
+    "translation": "> - Utiliser une attaque **Pass-the-hash**"
+  },
+  {
+    "line": 367,
+    "source": "> - Both Kali Machine and Attacker/Victim Windows machine are provided",
+    "translation": "> - La machine Kali et la machine Windows attaquante/cible sont fournies"
+  },
+  {
+    "line": 393,
+    "source": "- 📌 Exploit **BadBlue 2.7** with `metasploit`",
+    "translation": "- 📌 Exploiter **BadBlue 2.7** avec `metasploit`"
+  },
+  {
+    "line": 453,
+    "source": "> 📌 Save users NTLM hashes in a text file for future use",
+    "translation": "> 📌 Enregistrer les hashes NTLM des utilisateurs dans un fichier texte pour une utilisation ultérieure"
+  },
+  {
+    "line": 473,
+    "source": "- LM+NTLM hash is necessary, so copy the string:",
+    "translation": "- Le hash LM+NTLM est nécessaire, copier donc la chaîne :"
+  },
+  {
+    "line": 477,
+    "source": "- **Use PSExec to login with `Administrator` user and its password hashes**",
+    "translation": "- **Utiliser PSExec pour se connecter avec l’utilisateur `Administrator` et ses hashes de mots de passe**"
   }
 ]

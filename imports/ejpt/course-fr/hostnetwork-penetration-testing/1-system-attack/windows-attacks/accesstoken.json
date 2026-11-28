@@ -18,5 +18,55 @@
     "line": 25,
     "source": "- Determine the version information of the web server on port `80`",
     "translation": "- Identifier la version du serveur Web sur le port `80`."
+  },
+  {
+    "line": 35,
+    "source": "- Without using `nmap`, the `http` server version can be checked in a browser by opening the link",
+    "translation": "- Sans utiliser `nmap`, la version du serveur `http` peut être vérifiée dans un navigateur en ouvrant le lien"
+  },
+  {
+    "line": 45,
+    "source": "- Set the target IP as **GLOBAL RHOSTS variable**",
+    "translation": "- Définir l’IP cible comme **variable globale RHOSTS**"
+  },
+  {
+    "line": 67,
+    "source": "- Migrate current x86 `meterpreter` session to a x64 process",
+    "translation": "- Migrer la session x86 `meterpreter` actuelle vers un processus x64"
+  },
+  {
+    "line": 91,
+    "source": "- This `meterpreter` session (with this particular user account) can be utilized to impersonate other access tokens available.",
+    "translation": "- Cette session `meterpreter`, avec ce compte utilisateur particulier, peut être utilisée pour usurper d’autres Access Tokens disponibles."
+  },
+  {
+    "line": 117,
+    "source": "- `ATTACKDEFENSE\\Administrator` account access token would provide elevated privileges",
+    "translation": "- L’Access Token du compte `ATTACKDEFENSE\\Administrator` fournirait des privilèges élevés"
+  },
+  {
+    "line": 134,
+    "source": "- Listing tokens with this account, there can be additional available tokens",
+    "translation": "- En listant les tokens avec ce compte, d’autres tokens peuvent être disponibles"
+  },
+  {
+    "line": 153,
+    "source": "- `NT AUTHORITY\\SYSTEM` can be impersonated, getting the privileges associated with its access token",
+    "translation": "- Il est possible d’usurper `NT AUTHORITY\\SYSTEM` et d’obtenir les privilèges associés à son Access Token"
+  },
+  {
+    "line": 159,
+    "source": "- In the case of no Delegation or Impersonation tokens found, the `Potato Attack` can be used to get or generate a `NT AUTHORITY/SYSTEM` access token, impersonating it and obtain privileges associated to it.",
+    "translation": "- Si aucun token de délégation ou d’impersonation n’est trouvé, le `Potato Attack` peut être utilisé pour obtenir ou générer un Access Token `NT AUTHORITY/SYSTEM`, l’usurper et obtenir les privilèges associés."
+  },
+  {
+    "line": 160,
+    "source": "- Get the flag of the lab:",
+    "translation": "- Récupérer le flag du laboratoire :"
+  },
+  {
+    "line": 169,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

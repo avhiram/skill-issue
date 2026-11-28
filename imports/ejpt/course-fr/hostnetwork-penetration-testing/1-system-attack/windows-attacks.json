@@ -170,9 +170,34 @@
     "translation": "- Les identifiants `username` et `password` sont nécessaires pour se connecter au serveur WebDAV."
   },
   {
+    "line": 59,
+    "source": "1. Check *if WebDAV is configured* to run on the IIS web server.",
+    "translation": "1. Vérifier *si WebDAV est configuré* sur le serveur Web IIS."
+  },
+  {
+    "line": 60,
+    "source": "2. **Brute-force attack** on the WebDAV server - *identify legitimate credentials*.",
+    "translation": "2. Effectuer une **attaque par Brute Force** sur le serveur WebDAV pour *identifier des identifiants valides*."
+  },
+  {
+    "line": 61,
+    "source": "3. Use the obtained credentials to *authenticate with the WebDAV* and upload malicious code, like an `.asp` **payload**, used to execute arbitrary commands or obtain **reverse shell** on the target.",
+    "translation": "3. Utiliser les identifiants obtenus pour *s’authentifier auprès de WebDAV* et téléverser du code malveillant, comme un **payload** `.asp` permettant d’exécuter des commandes arbitraires ou d’obtenir un **reverse shell** sur la cible."
+  },
+  {
+    "line": 65,
+    "source": "> [**`davtest`**](https://www.kali.org/tools/davtest) - scanner tool used to *scan, authenticate and exploit a WebDAV server, by uploading test executable files which allow for command execution on the target.* Pre-installed on Kali Linux and Parrot OS.",
+    "translation": "> [**`davtest`**](https://www.kali.org/tools/davtest) : outil de scan permettant de *scanner un serveur WebDAV, de s’y authentifier et de l’exploiter en téléversant des fichiers exécutables de test permettant l’exécution de commandes sur la cible.* Préinstallé sur Kali Linux et Parrot OS."
+  },
+  {
     "line": 73,
     "source": "> [**`cadaver`**](https://www.kali.org/tools/cadaver/) - supports file *upload, download, on-screen display, in-place editing, namespace operations (move/copy), collection creation and deletion, property manipulation, and resource locking*. Pre-installed on Kali Linux and Parrot OS.",
     "translation": "> [**`cadaver`**](https://www.kali.org/tools/cadaver/) : prend en charge *l’envoi et le téléchargement de fichiers, leur affichage, leur édition sur place, les opérations de déplacement et de copie, la création et la suppression de collections, la gestion des propriétés et le verrouillage des ressources*. Préinstallé sur Kali Linux et Parrot OS."
+  },
+  {
+    "line": 81,
+    "source": "> [**`msfvenom`**](https://www.kali.org/tools/metasploit-framework/#msfvenom) - a Metasploit standalone payload generator and encoder",
+    "translation": "> [**`msfvenom`**](https://www.kali.org/tools/metasploit-framework/#msfvenom) : générateur et encodeur de payloads autonome de Metasploit"
   },
   {
     "line": 89,
@@ -225,6 +250,11 @@
     "translation": "1. Requête d’authentification du client vers le serveur."
   },
   {
+    "line": 108,
+    "source": "2. The server request the client to encrypt string with user's hash",
+    "translation": "2. Le serveur demande au client de chiffrer une chaîne avec le hash de l’utilisateur"
+  },
+  {
     "line": 109,
     "source": "3. The client sends the encrypted string to the server",
     "translation": "3. Le client transmet la chaîne chiffrée au serveur."
@@ -233,6 +263,46 @@
     "line": 110,
     "source": "4. The server checks the actual string value of that users matches the client's one, and grant access. It doesn't match access is denied",
     "translation": "4. Le serveur vérifie la correspondance avec la valeur attendue et autorise l’accès. En cas de différence, l’accès est refusé."
+  },
+  {
+    "line": 114,
+    "source": "> [**`psexec`**](https://learn.microsoft.com/en-us/sysinternals/downloads/psexec) - a light-weight telnet-replacement that lets you execute processes on remote systems, complete with full interactivity for console applications, using any user's credentials",
+    "translation": "> [**`psexec`**](https://learn.microsoft.com/en-us/sysinternals/downloads/psexec) : alternative légère à Telnet permettant d’exécuter des processus sur des systèmes distants, avec une interactivité complète pour les applications console, en utilisant les identifiants d’un utilisateur"
+  },
+  {
+    "line": 116,
+    "source": "- PsExec authentication is performed via SMB",
+    "translation": "- L’authentification PsExec s’effectue via SMB"
+  },
+  {
+    "line": 117,
+    "source": "- Run arbitrary commands or a remote command prompt",
+    "translation": "- Exécuter des commandes arbitraires ou obtenir une invite de commandes distante"
+  },
+  {
+    "line": 118,
+    "source": "- Commands are sent via **`CMD`** (without a GUI like `RDP`)",
+    "translation": "- Les commandes sont envoyées via **`CMD`** (sans interface graphique comme `RDP`)"
+  },
+  {
+    "line": 119,
+    "source": "- Legitimate user account and passwords/hashes are necessary to gain Windows target access",
+    "translation": "- Un compte utilisateur valide et des mots de passe ou hashes sont nécessaires pour accéder à la cible Windows"
+  },
+  {
+    "line": 123,
+    "source": "1. Leverage various techniques, `e.g.` **SMB login brute-force** attack.",
+    "translation": "1. Utiliser différentes techniques, `e.g.` une attaque **SMB login brute-force**."
+  },
+  {
+    "line": 124,
+    "source": "2. Narrow down the attack to only common Win user accounts, `e.g.` **Administrator**.",
+    "translation": "2. Limiter l’attaque aux comptes Windows courants, `e.g.` **Administrator**."
+  },
+  {
+    "line": 125,
+    "source": "3. Use the obtained credentials to authenticate via **`PsExec`** and execute system commands or get a reverse shell.",
+    "translation": "3. Utiliser les identifiants obtenus pour s’authentifier via **`PsExec`** et exécuter des commandes système ou obtenir un reverse shell."
   },
   {
     "line": 127,
@@ -300,6 +370,21 @@
     "translation": "- Plusieurs formes d’authentification permettent de contrôler et de sécuriser les accès."
   },
   {
+    "line": 152,
+    "source": "> [**`crackmapexec`**](https://www.kali.org/tools/crackmapexec/) - a python script, *a swiss army knife for pentesting Windows/Active Directory environments. From enumerating logged on users and spidering SMB shares to executing psexec style attacks, auto-injecting Mimikatz/Shellcode/DLL’s into memory using Powershell, dumping the NTDS.dit and more.*",
+    "translation": "> [**`crackmapexec`**](https://www.kali.org/tools/crackmapexec/) : script Python, *véritable couteau suisse du pentest Windows/Active Directory. Il permet notamment d’énumérer les utilisateurs connectés, de parcourir les partages SMB, d’exécuter des attaques de type PsExec, d’injecter automatiquement Mimikatz, du shellcode ou des DLL en mémoire via PowerShell et d’extraire NTDS.dit.*"
+  },
+  {
+    "line": 154,
+    "source": "> Can be utilized for brute-force WinRM to find legitimate credentials.",
+    "translation": "> Peut être utilisé pour effectuer un Brute Force WinRM afin de trouver des identifiants valides."
+  },
+  {
+    "line": 162,
+    "source": "> [**`evil-winrm`**](https://www.kali.org/tools/evil-winrm/) - a Ruby script used to optain a command shell session on a target system",
+    "translation": "> [**`evil-winrm`**](https://www.kali.org/tools/evil-winrm/) : script Ruby permettant d’obtenir une session de type command shell sur un système cible"
+  },
+  {
     "line": 170,
     "source": "> 🔬 Jump to the hands-on labs in the [WinRM section](windows-attacks/winrm.md)",
     "translation": "> 🔬 Consulter les exercices pratiques dans la [section WinRM](windows-attacks/winrm.md)."
@@ -350,6 +435,36 @@
     "translation": "- Kernel Mode : accès complet aux ressources et fonctionnalités du système."
   },
   {
+    "line": 192,
+    "source": "An attacker can get shell code execution with the highest privileges by targeting vulnerabilities in the Windows kernel.",
+    "translation": "Un attaquant peut exécuter du shellcode avec les privilèges les plus élevés en ciblant des vulnérabilités du noyau Windows."
+  },
+  {
+    "line": 194,
+    "source": "The **Windows Kernel Exploitation** process will be different, depending on the attacked system. It consists of:",
+    "translation": "Le processus d’**exploitation du noyau Windows** varie selon le système ciblé. Il comprend :"
+  },
+  {
+    "line": 196,
+    "source": "1. Identifying kernel vulnerabilities (via automation scripts)",
+    "translation": "1. Identifier les vulnérabilités du noyau à l’aide de scripts d’automatisation"
+  },
+  {
+    "line": 197,
+    "source": "2. Downloading, compiling and transferring kernel exploits onto the target system, based on the target Windows version",
+    "translation": "2. Télécharger, compiler et transférer les exploits du noyau vers le système cible, selon la version de Windows"
+  },
+  {
+    "line": 199,
+    "source": "> [**Windows-Exploit-Suggester**](https://github.com/AonCyberLabs/Windows-Exploit-Suggester) - a python tool that *compares a targets patch levels against the Microsoft vulnerability database in order to detect potential missing patches on the target. It notifies the user if there are public exploits and Metasploit modules available for the missing bulletins.*",
+    "translation": "> [**Windows-Exploit-Suggester**](https://github.com/AonCyberLabs/Windows-Exploit-Suggester) : outil Python qui *compare les niveaux de correctifs d’une cible à la base de vulnérabilités Microsoft afin de détecter les correctifs potentiellement manquants. Il indique si des exploits publics et des modules Metasploit sont disponibles pour les bulletins manquants.*"
+  },
+  {
+    "line": 207,
+    "source": "> [**windows-kernel-exploits**](https://github.com/SecWiki/windows-kernel-exploits) - a Github collection of Windows Kernel Exploits sorted by CVE",
+    "translation": "> [**windows-kernel-exploits**](https://github.com/SecWiki/windows-kernel-exploits) : collection GitHub d’exploits du noyau Windows classés par CVE"
+  },
+  {
     "line": 211,
     "source": "> 🔬 Take a look at the Windows 2008 R2 home lab in the [Win Kernel section](windows-attacks/winkernel.md)",
     "translation": "> 🔬 Consulter le laboratoire local Windows 2008 R2 dans la [section Windows Kernel](windows-attacks/winkernel.md)."
@@ -380,6 +495,11 @@
     "translation": "- Un compte standard reçoit à la place une **demande d’identifiants** administrateur."
   },
   {
+    "line": 224,
+    "source": "- Depending on the type of access to the Windows system, **attacks can bypass UAC**, in order to execute malicious programs.",
+    "translation": "- Selon le type d’accès au système Windows, **des attaques peuvent contourner l’UAC** pour exécuter des programmes malveillants."
+  },
+  {
     "line": 225,
     "source": "  - A **local administrators group** user account is necessary",
     "translation": "  - Un compte utilisateur membre du **groupe des administrateurs locaux** est nécessaire."
@@ -388,6 +508,21 @@
     "line": 227,
     "source": "UAC has *integrity levels* ranging from Low to High.",
     "translation": "L’UAC comporte plusieurs *niveaux d’intégrité*, de faible à élevé."
+  },
+  {
+    "line": 229,
+    "source": "- The bypass tools depend on the Windows release and the UAC integrity level.",
+    "translation": "- Les outils de contournement dépendent de la version de Windows et du niveau d’intégrité UAC."
+  },
+  {
+    "line": 233,
+    "source": "> [**UACMe**](https://github.com/hfiref0x/UACME) - a privilege escalation tool used to bypass Windows UAC. *Defeating Windows User Account Control by abusing built-in **Windows AutoElevate backdoor**.*",
+    "translation": "> [**UACMe**](https://github.com/hfiref0x/UACME) : outil de Privilege Escalation utilisé pour contourner l’UAC de Windows. *Contournement du contrôle des comptes utilisateurs en exploitant la **backdoor Windows AutoElevate** intégrée.*"
+  },
+  {
+    "line": 235,
+    "source": "> - the repository has a lot of exploits that can be used to bypass UAC",
+    "translation": "> - Le dépôt contient de nombreux exploits permettant de contourner l’UAC"
   },
   {
     "line": 243,
@@ -415,9 +550,69 @@
     "translation": "- Chaque processus exécuté par cet utilisateur possède une copie de cet **access token**, associé au processus `userinit.exe`."
   },
   {
+    "line": 253,
+    "source": "**Security levels** are used to determine the token assigned privileges:",
+    "translation": "Les **niveaux de sécurité** permettent de déterminer les privilèges attribués au token :"
+  },
+  {
+    "line": 255,
+    "source": "- `Impersonate-level` - non-interactive login on Windows (services, domain logons)",
+    "translation": "- `Impersonate-level` : connexion non interactive sous Windows (services, connexions au domaine)"
+  },
+  {
+    "line": 256,
+    "source": "  - *can be used to impersonate a token **on the local system***",
+    "translation": "  - *Peut être utilisé pour usurper un token **sur le système local***"
+  },
+  {
+    "line": 257,
+    "source": "- `Delegate-level` - interactive login on Windows (traditional login, RDP)",
+    "translation": "- `Delegate-level` : connexion interactive sous Windows (connexion classique, RDP)"
+  },
+  {
+    "line": 258,
+    "source": "  - *can be used to impersonate a token **on any system*** ❗",
+    "translation": "  - *Peut être utilisé pour usurper un token **sur n’importe quel système*** ❗"
+  },
+  {
+    "line": 260,
+    "source": "**Windows Privileges** determine what the user can or can't do.",
+    "translation": "Les **privilèges Windows** déterminent les actions autorisées ou non pour l’utilisateur."
+  },
+  {
+    "line": 262,
+    "source": "For a successful **impersonation attack**, the following privileges are required:",
+    "translation": "Pour réussir une **attaque par impersonation**, les privilèges suivants sont nécessaires :"
+  },
+  {
+    "line": 264,
+    "source": "- `SeAssignPrimaryToken` - allows a user to impersonate tokens",
+    "translation": "- `SeAssignPrimaryToken` : permet à un utilisateur d’usurper des tokens"
+  },
+  {
+    "line": 265,
+    "source": "- `SeCreateToken` - allows a user to create an arbitrary token with administrative privileges",
+    "translation": "- `SeCreateToken` : permet à un utilisateur de créer un token arbitraire avec des privilèges administratifs"
+  },
+  {
+    "line": 266,
+    "source": "- `SeImpersonatePrivilege ` - allows a user to impersonate a token, creating a process under the security context of another (privileged) user",
+    "translation": "- `SeImpersonatePrivilege ` : permet à un utilisateur d’usurper un token et de créer un processus dans le contexte de sécurité d’un autre utilisateur privilégié"
+  },
+  {
+    "line": 268,
+    "source": "> **`incognito`** meterpreter module - allows to list available tokens and to impersonate user tokens after exploitation",
+    "translation": "> Module Meterpreter **`incognito`** : permet de lister les tokens disponibles et d’usurper les tokens utilisateurs après exploitation"
+  },
+  {
     "line": 270,
     "source": "> 🔬 Jump to the hands-on labs in the [Access Token section](windows-attacks/accesstoken.md)",
     "translation": "> 🔬 Consulter les exercices pratiques dans la [section Access Token](windows-attacks/accesstoken.md)."
+  },
+  {
+    "line": 272,
+    "source": "> 🔗 [Abusing Tokens - HackTricks](https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens)",
+    "translation": "> 🔗 [Exploitation des tokens : HackTricks](https://book.hacktricks.xyz/windows-hardening/windows-local-privilege-escalation/privilege-escalation-abusing-tokens)"
   },
   {
     "line": 276,
@@ -440,9 +635,29 @@
     "translation": "  - **Resource stream** : contient les `metadata` (métadonnées) du fichier."
   },
   {
+    "line": 281,
+    "source": "- With ADS, *malicious code can be hidden in legitimate files in order to evade detection* by basic signature Antiviruses",
+    "translation": "- Avec les ADS, *du code malveillant peut être dissimulé dans des fichiers légitimes afin d’échapper à la détection* des antivirus basiques utilisant des signatures"
+  },
+  {
+    "line": 282,
+    "source": "  - the payload is stored in the metadata of the file.",
+    "translation": "  - Le payload est stocké dans les métadonnées du fichier."
+  },
+  {
     "line": 284,
     "source": "> 🔬 Jump to the [ADS demonstration section](windows-attacks/alternateds.md)",
     "translation": "> 🔬 Consulter la [démonstration ADS](windows-attacks/alternateds.md)."
+  },
+  {
+    "line": 288,
+    "source": "🗒️ [**SAM**](https://www.windows-active-directory.com/windows-security-account-manager.html) (**S**ecurity **A**ccounts **M**anager) is a database file stored within `C:\\Windows\\System32\\config`. It is used to *authenticate local and remote users and uses cryptographic measures to prevent unauthenticated users from accessing the system*. On a Domain Controller, it simply stores passwords hashes in `HKEY_LOCAL_MACHINE\\SAM`.",
+    "translation": "🗒️ [**SAM**](https://www.windows-active-directory.com/windows-security-account-manager.html) (**S**ecurity **A**ccounts **M**anager) est un fichier de base de données stocké dans `C:\\Windows\\System32\\config`. Il sert à *authentifier les utilisateurs locaux et distants et utilise des mesures cryptographiques pour empêcher les utilisateurs non authentifiés d’accéder au système*. Sur un contrôleur de domaine, il stocke simplement les hashes de mots de passe dans `HKEY_LOCAL_MACHINE\\SAM`."
+  },
+  {
+    "line": 290,
+    "source": "- All the hashed user account passwords are stored in the SAM database",
+    "translation": "- Tous les hashes des mots de passe des comptes utilisateurs sont stockés dans la base de données SAM"
   },
   {
     "line": 291,
@@ -460,9 +675,19 @@
     "translation": "🗒️ Le ***Hashing*** consiste à transformer une donnée en une autre valeur à l’aide d’une **fonction de hachage**, qui génère cette nouvelle valeur selon un algorithme."
   },
   {
+    "line": 296,
+    "source": "- the result is called **hash/hash value**",
+    "translation": "- Le résultat est appelé **hash ou valeur de hash**"
+  },
+  {
     "line": 298,
     "source": "Storing passwords locally is a big security risk, specially if stored unencrypted and in *clear-text* strings.",
     "translation": "Le stockage local des mots de passe présente un risque important pour la sécurité, surtout lorsqu’ils sont conservés sans chiffrement, en *texte clair*."
+  },
+  {
+    "line": 300,
+    "source": "- **`LM`** and **`NTLM`** are two types of hashes, utilized in versions up to Windows Server 2003",
+    "translation": "- **`LM`** et **`NTLM`** sont deux types de hashes utilisés dans les versions allant jusqu’à Windows Server 2003"
   },
   {
     "line": 301,
@@ -478,6 +703,16 @@
     "line": 305,
     "source": "The Windows NT Kernel keeps the SAM database file locked.",
     "translation": "Le noyau Windows NT maintient le fichier de base de données SAM verrouillé."
+  },
+  {
+    "line": 307,
+    "source": "- An attacker utilize *in-memory* attack techniques and hash dumping tools to interact with the LSASS process",
+    "translation": "- Un attaquant utilise des techniques d’attaque *en mémoire* et des outils d’extraction de hashes pour interagir avec le processus LSASS"
+  },
+  {
+    "line": 309,
+    "source": "❗ *Elevated privileges are required for LSASS process interaction.*",
+    "translation": "❗ *Des privilèges élevés sont nécessaires pour interagir avec le processus LSASS.*"
   },
   {
     "line": 313,
@@ -500,6 +735,16 @@
     "translation": "🗒️ **`NTLM`** (`NTHash`) : ensemble de protocoles d’authentification, présenté dans le cours en lien avec le stockage des mots de passe sous Windows."
   },
   {
+    "line": 320,
+    "source": "- Algorithm - the password is encrypted using the **`MD4`** hashing algorithm and the original password is disposed of",
+    "translation": "- Algorithme : le mot de passe est chiffré avec l’algorithme de hashage **`MD4`** et le mot de passe original est supprimé"
+  },
+  {
+    "line": 321,
+    "source": "  - No split of the hash",
+    "translation": "  - Le hash n’est pas divisé"
+  },
+  {
     "line": 322,
     "source": "  - It is case sensitive",
     "translation": "  - Sensible à la casse."
@@ -515,6 +760,11 @@
     "translation": "  - NTLMv1, NTLMv2 : *protocoles Challenge-Response utilisés pour l’authentification dans les environnements Windows*."
   },
   {
+    "line": 325,
+    "source": "- NTLM (NT) hashes do not have password salts - ***can be cracked through a brute-force / dictionary attacks***.",
+    "translation": "- Les hashes NTLM (NT) ne comportent pas de salt : ***ils peuvent être cassés par des attaques par Brute Force ou par dictionnaire***."
+  },
+  {
     "line": 329,
     "source": "Windows configuration files can contain stored passwords, `e.g.` in the *Unattended Windows Setup* utility, used to mass deploy Windows on systems.",
     "translation": "Les fichiers de configuration Windows peuvent contenir des mots de passe enregistrés, `e.g.` avec l’utilitaire *Unattended Windows Setup*, utilisé pour déployer Windows sur un grand nombre de machines."
@@ -525,9 +775,69 @@
     "translation": "- Le fichier de configuration peut contenir des paramètres spécifiques et des identifiants de comptes utilisateurs."
   },
   {
+    "line": 332,
+    "source": "- An attacker can find the configuration file left on the target after installation",
+    "translation": "- Un attaquant peut trouver le fichier de configuration laissé sur la cible après l’installation"
+  },
+  {
+    "line": 334,
+    "source": "The utility typically utilizes those [files](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/update-windows-settings-and-scripts-create-your-own-answer-file-sxs?view=windows-11):",
+    "translation": "L’utilitaire utilise généralement ces [fichiers](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/update-windows-settings-and-scripts-create-your-own-answer-file-sxs?view=windows-11) :"
+  },
+  {
+    "line": 340,
+    "source": "- The stored passwords might be encoded in **`base64`** (easily decodable).",
+    "translation": "- Les mots de passe stockés peuvent être encodés en **`base64`** (facilement décodables)."
+  },
+  {
     "line": 342,
     "source": "> 🔬 Check the `Lab 1` in the [Credentials Dumping section](windows-attacks/creds-dump.md#lab-1-unattended-files)",
     "translation": "> 🔬 Consulter le `Lab 1` dans la [section Identifiants Windows](windows-attacks/creds-dump.md#lab-1-unattended-files)."
+  },
+  {
+    "line": 346,
+    "source": "> [**Mimikatz**](https://www.kali.org/tools/mimikatz/) - a tool that allows the extraction of clear-text passwords, hashes, PIN code and Kerberos tickets from memory.",
+    "translation": "> [**Mimikatz**](https://www.kali.org/tools/mimikatz/) : outil permettant d’extraire de la mémoire des mots de passe en clair, des hashes, des codes PIN et des tickets Kerberos."
+  },
+  {
+    "line": 348,
+    "source": "> - *perform pass-the-hash, pass-the-ticket attacks, or build Golden tickets*",
+    "translation": "> - *Effectuer des attaques Pass-the-hash, Pass-the-ticket ou créer des Golden Tickets*"
+  },
+  {
+    "line": 349,
+    "source": "> - extract hashes from the `lsass.exe` process memory",
+    "translation": "> - Extraire les hashes de la mémoire du processus `lsass.exe`"
+  },
+  {
+    "line": 350,
+    "source": "> - **requires elevated privileges** (Administrator/SYSTEM)",
+    "translation": "> - **Nécessite des privilèges élevés** (Administrator/SYSTEM)"
+  },
+  {
+    "line": 351,
+    "source": "> - pre-packet on Kali Linux and Parrot OS",
+    "translation": "> - Préinstallé sur Kali Linux et Parrot OS"
+  },
+  {
+    "line": 352,
+    "source": "> - **`Kiwi`** - `meterpreter` extension for hashes dumping from memory",
+    "translation": "> - **`Kiwi`** : extension `meterpreter` permettant d’extraire les hashes de la mémoire"
+  },
+  {
+    "line": 358,
+    "source": " 🗒️ [**Pass-the-hash**](https://www.crowdstrike.com/cybersecurity-101/pass-the-hash/) (**PtH**) is an exploitation technique that involves harvesting NTLM hashes and reusing them to authenticate with the target legitimately.",
+    "translation": " 🗒️ [**Pass-the-hash**](https://www.crowdstrike.com/cybersecurity-101/pass-the-hash/) (**PtH**) est une technique d’exploitation qui consiste à récupérer des hashes NTLM et à les réutiliser pour s’authentifier légitimement auprès de la cible."
+  },
+  {
+    "line": 360,
+    "source": "- It allows legitimate access to the target system, without exploitation",
+    "translation": "- Permet un accès légitime au système cible, sans exploitation"
+  },
+  {
+    "line": 361,
+    "source": "- Administrator user's NTLM hash comes useful after a service is being patched or disabled and can no longer be exploited ",
+    "translation": "- Le hash NTLM de l’utilisateur Administrator devient utile lorsqu’un service est corrigé ou désactivé et ne peut plus être exploité"
   },
   {
     "line": 363,

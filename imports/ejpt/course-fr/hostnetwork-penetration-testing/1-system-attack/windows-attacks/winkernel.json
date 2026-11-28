@@ -15,8 +15,153 @@
     "translation": "> - Système hôte : `Kali Linux`, IP `192.168.31.128`"
   },
   {
+    "line": 10,
+    "source": "> - Target system: `Windown Server 2008 R2` - IP `192.168.31.131` - `test`:`Exploit12345`",
+    "translation": "> - Système cible : `Windown Server 2008 R2`, IP `192.168.31.131`, `test`:`Exploit12345`"
+  },
+  {
     "line": 14,
     "source": "> ❗ **Targeting Kernel space memory and apps can cause system crashes, data loss, etc. Do NOT use it in production systems**❗",
     "translation": "> ❗ **Les interventions dans la mémoire et les applications de l’espace noyau peuvent provoquer des plantages du système, des pertes de données, etc. Ne PAS les effectuer sur des systèmes de production.** ❗"
+  },
+  {
+    "line": 18,
+    "source": "- Get a `Meterpreter` session on the target with a manual payload",
+    "translation": "- Obtenir une session `Meterpreter` sur la cible avec un payload manuel"
+  },
+  {
+    "line": 19,
+    "source": "- Create the payload on the Kali VM",
+    "translation": "- Créer le payload sur la VM Kali"
+  },
+  {
+    "line": 25,
+    "source": "- Start a webserver on Kali VM",
+    "translation": "- Démarrer un serveur Web sur la VM Kali"
+  },
+  {
+    "line": 31,
+    "source": "- On the Win2008 VM, login with the `test`:`Exploit12345` user",
+    "translation": "- Sur la VM Win2008, se connecter avec les identifiants `test`:`Exploit12345`"
+  },
+  {
+    "line": 32,
+    "source": "  - Open the link `http://192.168.31.128:8000/` and download `payload.exe`",
+    "translation": "  - Ouvrir le lien `http://192.168.31.128:8000/` et télécharger `payload.exe`"
+  },
+  {
+    "line": 33,
+    "source": "  - Stop the webserver on Kali VM",
+    "translation": "  - Arrêter le serveur Web sur la VM Kali"
+  },
+  {
+    "line": 34,
+    "source": "- Set up a payload handler on Kali VM",
+    "translation": "- Configurer un handler de payload sur la VM Kali"
+  },
+  {
+    "line": 48,
+    "source": "- On the Win2008 VM, run the payload with the `test` user",
+    "translation": "- Sur la VM Win2008, exécuter le payload avec l’utilisateur `test`"
+  },
+  {
+    "line": 52,
+    "source": "- View the `meterpreter` session on Kali VM",
+    "translation": "- Afficher la session `meterpreter` sur la VM Kali"
+  },
+  {
+    "line": 56,
+    "source": "- Background the session",
+    "translation": "- Placer la session en arrière-plan"
+  },
+  {
+    "line": 90,
+    "source": "- Enumerate Windows Kernel vulnerabilities with Metasploit",
+    "translation": "- Énumérer les vulnérabilités du noyau Windows avec Metasploit"
+  },
+  {
+    "line": 116,
+    "source": "- `e.g.` [Windows WMI Receive Notification Exploit - ms16_014_wmi_recv_notif](https://www.rapid7.com/db/modules/exploit/windows/local/ms16_014_wmi_recv_notif/)",
+    "translation": "- `e.g.` [Exploit Windows WMI Receive Notification : ms16_014_wmi_recv_notif](https://www.rapid7.com/db/modules/exploit/windows/local/ms16_014_wmi_recv_notif/)"
+  },
+  {
+    "line": 117,
+    "source": "  - *This module exploits an uninitialized stack variable in the WMI subsystem of ntoskrnl*",
+    "translation": "  - *Ce module exploite une variable de pile non initialisée dans le sous-système WMI de ntoskrnl*"
+  },
+  {
+    "line": 130,
+    "source": "- By using a kernel exploit for this specific version of Windows O.S., the attacker is able to get a `meterpreter` session with **elevated privileges.**",
+    "translation": "- En utilisant un exploit du noyau adapté à cette version de Windows, l’attaquant peut obtenir une session `meterpreter` avec des **privilèges élevés.**"
+  },
+  {
+    "line": 195,
+    "source": "- Save the `systeminfo` output to a file named `win2008r2-systeminfo.txt`",
+    "translation": "- Enregistrer la sortie de `systeminfo` dans un fichier nommé `win2008r2-systeminfo.txt`"
+  },
+  {
+    "line": 199,
+    "source": "- Open a Kali VM terminal session and use [Windows-Exploit-Suggester](https://github.com/AonCyberLabs/Windows-Exploit-Suggester)",
+    "translation": "- Ouvrir une session de terminal sur la VM Kali et utiliser [Windows-Exploit-Suggester](https://github.com/AonCyberLabs/Windows-Exploit-Suggester)"
+  },
+  {
+    "line": 215,
+    "source": "- Use [https://cloudconvert.com/xlsx-to-xls](https://cloudconvert.com/xlsx-to-xls) to convert the `2023-03-15-mssb.xls` file to `.xlsx` and back to `.xls`",
+    "translation": "- Utiliser [https://cloudconvert.com/xlsx-to-xls](https://cloudconvert.com/xlsx-to-xls) pour convertir le fichier `2023-03-15-mssb.xls` en `.xlsx`, puis de nouveau en `.xls`"
+  },
+  {
+    "line": 216,
+    "source": "- Run the script",
+    "translation": "- Exécuter le script"
+  },
+  {
+    "line": 228,
+    "source": "- [Microsoft Windows Kernel - 'win32k' Denial of Service (MS16-135)](https://www.exploit-db.com/exploits/40745)",
+    "translation": "- [Noyau Microsoft Windows : déni de service 'win32k' (MS16-135)](https://www.exploit-db.com/exploits/40745)"
+  },
+  {
+    "line": 229,
+    "source": "- [Microsoft Windows Kernel - 'win32k.sys NtSetWindowLongPtr' Local Privilege Escalation (MS16-135) (2)](https://www.exploit-db.com/exploits/41015/)",
+    "translation": "- [Noyau Microsoft Windows : Privilege Escalation locale 'win32k.sys NtSetWindowLongPtr' (MS16-135) (2)](https://www.exploit-db.com/exploits/41015/)"
+  },
+  {
+    "line": 238,
+    "source": "- Search **`MS16-135`** in the **[windows-kernel-exploits](https://github.com/SecWiki/windows-kernel-exploits)** github repository",
+    "translation": "- Rechercher **`MS16-135`** dans le dépôt GitHub **[windows-kernel-exploits](https://github.com/SecWiki/windows-kernel-exploits)**"
+  },
+  {
+    "line": 239,
+    "source": "  - [MS16-135 exploit](https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS16-135)",
+    "translation": "  - [Exploit MS16-135](https://github.com/SecWiki/windows-kernel-exploits/tree/master/MS16-135)"
+  },
+  {
+    "line": 240,
+    "source": "  - check the [41015.c](https://github.com/SecWiki/windows-kernel-exploits/blob/master/MS16-135/41015.c) `C` file to check if the code does what it's supposed to",
+    "translation": "  - Examiner le fichier [41015.c](https://github.com/SecWiki/windows-kernel-exploits/blob/master/MS16-135/41015.c) en `C` pour vérifier que le code fonctionne comme prévu"
+  },
+  {
+    "line": 241,
+    "source": "  - in this case I will use the pre-build executable `41015.exe`",
+    "translation": "  - Dans ce cas, j’utiliserai l’exécutable précompilé `41015.exe`"
+  },
+  {
+    "line": 243,
+    "source": "- Knowing that the specific Windows version is vulnerable to this particular exploit, proceed with the exploitation",
+    "translation": "- Sachant que cette version de Windows est vulnérable à cet exploit, procéder à l’exploitation"
+  },
+  {
+    "line": 245,
+    "source": "Use the `meterpreter` access to upload the `41015.exe` file to the `temp` directory within the Windows O.S.",
+    "translation": "Utiliser l’accès `meterpreter` pour téléverser le fichier `41015.exe` dans le répertoire `temp` de Windows."
+  },
+  {
+    "line": 262,
+    "source": "> 🧪 I have tried to copy the exploit file to my protected Windows host. Antivirus will detect the Exploit file, so pay attention.",
+    "translation": "> 🧪 J’ai essayé de copier le fichier de l’exploit sur mon hôte Windows protégé. L’antivirus détectera le fichier, attention."
+  },
+  {
+    "line": 264,
+    "source": "> [VirusTotal Analysis](https://www.virustotal.com/gui/file/5ec6a6c9a7233a7ff68d989d830a2249e94a2784e69d5c8a593d3345da14a6b5)",
+    "translation": "> [Analyse VirusTotal](https://www.virustotal.com/gui/file/5ec6a6c9a7233a7ff68d989d830a2249e94a2784e69d5c8a593d3345da14a6b5)"
   }
 ]
