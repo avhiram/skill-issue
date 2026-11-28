@@ -55,6 +55,11 @@
     "translation": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) : shell des systèmes Unix et assimilés, faisant partie du projet GNU et utilisé par défaut dans la plupart des distributions Linux."
   },
   {
+    "line": 33,
+    "source": "🗒️ **CGI** (**C**ommond **G**ateway **I**nterface) - Apache executes arbitrary commands on the Linux system and the output displayed on the web server.",
+    "translation": "🗒️ **CGI** (**C**ommond **G**ateway **I**nterface) : interface permettant au serveur Web d’exécuter des programmes externes et d’afficher leur résultat."
+  },
+  {
     "line": 45,
     "source": "> 🔬 Check the [Bash - ShellShock Lab here](linux-attacks/bash-shell.md)",
     "translation": "> 🔬 Consulter le [laboratoire Bash et ShellShock](linux-attacks/bash-shell.md)."
@@ -175,8 +180,23 @@
     "translation": "- Les Cron Jobs peuvent être exécutés sous différents comptes utilisateurs."
   },
   {
+    "line": 139,
+    "source": "> 🔬 Check the [Cron Jobs Lab here](linux-attacks/cron.md)",
+    "translation": "> 🔬 Consulter le [laboratoire Cron Jobs](linux-attacks/cron.md)."
+  },
+  {
     "line": 143,
     "source": "🗒️ [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) - is a type of special access permission given to a file. A file with SUID *always executes as its the owner*, regardless of the user passing the command. ",
     "translation": "🗒️ Le [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) est une permission spéciale attribuée à un fichier. Le cours indique qu’un fichier SUID _s’exécute avec les droits de son propriétaire_, quel que soit l’utilisateur qui lance la commande."
+  },
+  {
+    "line": 155,
+    "source": "> 🔬 Check the [SUID Lab here](linux-attacks/suid.md)",
+    "translation": "> 🔬 Consulter le [laboratoire SUID](linux-attacks/suid.md)."
+  },
+  {
+    "line": 191,
+    "source": "> 🔬 Check the [Dumping Linux Hashes Lab here](linux-attacks/creds-dump-unix.md)",
+    "translation": "> 🔬 Consulter le [laboratoire sur les hashes Linux](linux-attacks/creds-dump-unix.md)."
   }
 ]

@@ -220,6 +220,11 @@
     "translation": "- Elle permet aux systèmes Windows d’accéder aux partages Linux."
   },
   {
+    "line": 127,
+    "source": "> 🔬 Check some hands-on labs in the [SMB - PsExec section](windows-attacks/smb-psexec.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section SMB et PsExec](windows-attacks/smb-psexec.md)."
+  },
+  {
     "line": 131,
     "source": "🗒️ [**RDP**](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (**R**emote **D**esktop **P**rotocol) - Microsoft proprietary GUI remote access protocol used to remotely connect with Windows.",
     "translation": "🗒️ [**RDP**](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (**R**emote **D**esktop **P**rotocol) est un protocole propriétaire de Microsoft permettant d’accéder à distance à Windows via une interface graphique."
@@ -238,6 +243,11 @@
     "line": 135,
     "source": "- An RDP Client is used to connect to the target",
     "translation": "- Un client RDP permet de se connecter au système distant."
+  },
+  {
+    "line": 137,
+    "source": "> 🔬 Check some hands-on labs in the [RDP section](windows-attacks/rdp.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section RDP](windows-attacks/rdp.md)."
   },
   {
     "line": 141,
@@ -263,6 +273,11 @@
     "line": 146,
     "source": "  - remotely access, interact and execute commands on Windows hosts on a LAN",
     "translation": "  - Accéder aux hôtes Windows d’un réseau local, interagir avec eux et exécuter des commandes à distance."
+  },
+  {
+    "line": 170,
+    "source": "> 🔬 Jump to the hands-on labs in the [WinRM section](windows-attacks/winrm.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section WinRM](windows-attacks/winrm.md)."
   },
   {
     "line": 174,
@@ -295,6 +310,11 @@
     "translation": "Le noyau facilite la communication entre les couches matérielles et logicielles."
   },
   {
+    "line": 211,
+    "source": "> 🔬 Take a look at the Windows 2008 R2 home lab in the [Win Kernel section](windows-attacks/winkernel.md)",
+    "translation": "> 🔬 Consulter le laboratoire local Windows 2008 R2 dans la [section Windows Kernel](windows-attacks/winkernel.md)."
+  },
+  {
     "line": 215,
     "source": "🗒️ [**UAC**](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview) (**U**ser **A**ccount **C**ontrol) - a Windows security feature used to prevent unauthorized changes to the operating system. Exception of cases when an administrator has deliberately granted administrator-level access to the system, *UAC ensures that programs and processes always operate in the security context of a **non-administrator account***.",
     "translation": "🗒️ L’[**UAC**](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview) (**U**ser **A**ccount **C**ontrol) est une fonctionnalité de sécurité de Windows destinée à prévenir les modifications non autorisées du système d’exploitation. Sauf lorsqu’un administrateur a délibérément accordé des droits administratifs, *l’UAC permet aux programmes et processus de fonctionner dans le contexte de sécurité d’un **compte non administrateur***."
@@ -308,6 +328,21 @@
     "line": 218,
     "source": "- On modern versions of Windows, since Win Vista",
     "translation": "- Sur les versions modernes de Windows, depuis Windows Vista"
+  },
+  {
+    "line": 219,
+    "source": "- A **consent form** appears if the user is already a local administrator and he opens an app with `Run as administrator`:",
+    "translation": "- Une **demande de consentement** apparaît lorsqu’un utilisateur déjà administrateur local ouvre une application avec `Run as administrator` :"
+  },
+  {
+    "line": 223,
+    "source": "- A standard account instead, will be prompted with a **credential prompt**, to enter an administrator's credentials",
+    "translation": "- Un compte standard reçoit à la place une **demande d’identifiants** administrateur."
+  },
+  {
+    "line": 243,
+    "source": "> 🔬 Jump to the hands-on labs in the [UAC Bypass section](windows-attacks/uacme.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section UAC Bypass](windows-attacks/uacme.md)."
   },
   {
     "line": 247,
@@ -330,6 +365,11 @@
     "translation": "- Chaque processus exécuté par cet utilisateur possède une copie de cet **access token**, associé au processus `userinit.exe`."
   },
   {
+    "line": 270,
+    "source": "> 🔬 Jump to the hands-on labs in the [Access Token section](windows-attacks/accesstoken.md)",
+    "translation": "> 🔬 Consulter les exercices pratiques dans la [section Access Token](windows-attacks/accesstoken.md)."
+  },
+  {
     "line": 276,
     "source": "🗒️ [**ADS**](https://www.malwarebytes.com/blog/news/2015/07/introduction-to-alternate-data-streams) (**A**lternate **D**ata **S**treams) are a *file attribute only found on the `NTFS` file system* that allow files to contain more than one stream of data. They were originally designed to provide compatibility with files in the MacOS file system and have been around since Windows NTFS was introduced.",
     "translation": "🗒️ Les [**ADS**](https://www.malwarebytes.com/blog/news/2015/07/introduction-to-alternate-data-streams) (**A**lternate **D**ata **S**treams) sont un _attribut des fichiers du système de fichiers `NTFS`_ permettant à un fichier de contenir plusieurs flux de données. Initialement conçus pour la compatibilité avec les fichiers du système de fichiers MacOS, ils existent depuis l’introduction de NTFS sous Windows."
@@ -338,6 +378,11 @@
     "line": 278,
     "source": "- Any file created have 2 different streams:",
     "translation": "- Le cours présente deux types de flux associés à un fichier :"
+  },
+  {
+    "line": 284,
+    "source": "> 🔬 Jump to the [ADS demonstration section](windows-attacks/alternateds.md)",
+    "translation": "> 🔬 Consulter la [démonstration ADS](windows-attacks/alternateds.md)."
   },
   {
     "line": 294,
@@ -368,5 +413,15 @@
     "line": 318,
     "source": "🗒️ **`NTLM`** (`NTHash`) - a collection of authentication protocols and the currently used algorithm for *storing passwords on modern Windows systems*.",
     "translation": "🗒️ **`NTLM`** (`NTHash`) : ensemble de protocoles d’authentification, présenté dans le cours en lien avec le stockage des mots de passe sous Windows."
+  },
+  {
+    "line": 342,
+    "source": "> 🔬 Check the `Lab 1` in the [Credentials Dumping section](windows-attacks/creds-dump.md#lab-1-unattended-files)",
+    "translation": "> 🔬 Consulter le `Lab 1` dans la [section Identifiants Windows](windows-attacks/creds-dump.md#lab-1-unattended-files)."
+  },
+  {
+    "line": 363,
+    "source": "> 🔬 Check the `Labs 2 and 3` in the [Credentials Dumping section](windows-attacks/creds-dump.md#lab-2-mimikatz)",
+    "translation": "> 🔬 Consulter les `Labs 2 and 3` dans la [section Identifiants Windows](windows-attacks/creds-dump.md#lab-2-mimikatz)."
   }
 ]
