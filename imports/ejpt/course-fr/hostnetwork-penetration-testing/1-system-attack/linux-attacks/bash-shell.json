@@ -8,5 +8,85 @@
     "line": 8,
     "source": ">  - **Bash Exploitation** - [CVE-2014-6071](https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2014-6271)",
     "translation": ">  - **Exploitation de Bash** : [CVE-2014-6071](https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2014-6271)"
+  },
+  {
+    "line": 27,
+    "source": "- Check the website via a browser:",
+    "translation": "- Examiner le site Web depuis un navigateur :"
+  },
+  {
+    "line": 29,
+    "source": "- View Page Source",
+    "translation": "- Afficher le code source de la page"
+  },
+  {
+    "line": 31,
+    "source": "  - `gettime.cgi` script can be utilized as the attack vector",
+    "translation": "  - Le script `gettime.cgi` peut servir de vecteur d’attaque"
+  },
+  {
+    "line": 35,
+    "source": "- Check if the server is vulnerable to ShellShock",
+    "translation": "- Vérifier si le serveur est vulnérable à ShellShock"
+  },
+  {
+    "line": 45,
+    "source": "- [Shellshock exploitable environment](https://github.com/opsxcq/exploit-CVE-2014-6271)",
+    "translation": "- [Environnement vulnérable à Shellshock](https://github.com/opsxcq/exploit-CVE-2014-6271)"
+  },
+  {
+    "line": 46,
+    "source": "- To inject special characters into the `user-agent` HTTP header, [BurpSuite](https://portswigger.net/burp) can be used.",
+    "translation": "- Pour injecter des caractères spéciaux dans l’en-tête HTTP `user-agent`, utiliser [BurpSuite](https://portswigger.net/burp)."
+  },
+  {
+    "line": 47,
+    "source": "  - Configure FoxyProxy on Firefox, click on Burp Suite in FoxyProxy and run Burp Suite",
+    "translation": "  - Configurer FoxyProxy dans Firefox, sélectionner Burp Suite dans FoxyProxy et lancer Burp Suite"
+  },
+  {
+    "line": 48,
+    "source": "  - Inside Proxy menu, turn **Intercept On**",
+    "translation": "  - Dans le menu Proxy, activer **Intercept On**"
+  },
+  {
+    "line": 49,
+    "source": "- Reload the `/gettime.cgi` webpage in Firefox and intercept the response in BurpSuite",
+    "translation": "- Recharger la page Web `/gettime.cgi` dans Firefox et intercepter la réponse dans BurpSuite"
+  },
+  {
+    "line": 53,
+    "source": "- Send the request to the **Repeater**",
+    "translation": "- Envoyer la requête à **Repeater**"
+  },
+  {
+    "line": 54,
+    "source": "- Replace `User-Agent: ` value with characters:",
+    "translation": "- Remplacer la valeur `User-Agent: ` par les caractères suivants :"
+  },
+  {
+    "line": 60,
+    "source": "- **Send** the request and check the Response",
+    "translation": "- Envoyer la requête avec **Send** et examiner la réponse"
+  },
+  {
+    "line": 64,
+    "source": "> 📌 The target is vulnerable to ShellShock",
+    "translation": "> 📌 La cible est vulnérable à ShellShock"
+  },
+  {
+    "line": 68,
+    "source": "- Set up a listener",
+    "translation": "- Configurer un listener"
+  },
+  {
+    "line": 74,
+    "source": "- Open Burp Suite and change the command to connect to the `netcat` listener of the Kali VM. The payload will be:",
+    "translation": "- Ouvrir Burp Suite et modifier la commande pour se connecter au listener `netcat` de la VM Kali. Le payload sera le suivant :"
+  },
+  {
+    "line": 84,
+    "source": "- *Turn off burpsuite listener and FoxyProxy.*",
+    "translation": "- *Désactiver le listener BurpSuite et FoxyProxy.*"
   }
 ]

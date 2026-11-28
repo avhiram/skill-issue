@@ -18,5 +18,45 @@
     "line": 17,
     "source": "> 📌 `student` user has no privileges and no scheduled cron jobs",
     "translation": "> 📌 L’utilisateur `student` ne dispose pas de privilèges ni de tâches Cron planifiées."
+  },
+  {
+    "line": 29,
+    "source": "- Look for all occurences of the path or the file, on the system",
+    "translation": "- Rechercher toutes les occurrences du chemin ou du fichier sur le système"
+  },
+  {
+    "line": 44,
+    "source": "- The file has been copied into the /tmp directory",
+    "translation": "- Le fichier a été copié dans le répertoire /tmp"
+  },
+  {
+    "line": 51,
+    "source": "- Check `copy.sh` privileges",
+    "translation": "- Vérifier les permissions de `copy.sh`"
+  },
+  {
+    "line": 65,
+    "source": "- Every user account has read/write/execute permissions on the `copy.sh` script",
+    "translation": "- Chaque compte utilisateur dispose des permissions de lecture, d’écriture et d’exécution sur le script `copy.sh`"
+  },
+  {
+    "line": 66,
+    "source": "- The script is writable by the `student` user. Modify the script to execute a command (`e.g.` a*dding **student** to `sudoers` file*).",
+    "translation": "- Le script est modifiable par l’utilisateur `student`. Modifier le script pour exécuter une commande (`e.g.` *ajouter **student** au fichier `sudoers`*)."
+  },
+  {
+    "line": 67,
+    "source": "  - When the script is executed by `root` cron job (*every 1 min for this lab*), it will run commands with pivileged permissions",
+    "translation": "  - Lorsque le script est exécuté par la tâche Cron de `root` (*toutes les minutes dans ce laboratoire*), il exécute les commandes avec des privilèges élevés"
+  },
+  {
+    "line": 68,
+    "source": "  - No text editors available in the lab",
+    "translation": "  - Aucun éditeur de texte n’est disponible dans le laboratoire"
+  },
+  {
+    "line": 104,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

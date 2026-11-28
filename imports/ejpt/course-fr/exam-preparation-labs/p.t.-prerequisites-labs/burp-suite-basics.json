@@ -170,9 +170,74 @@
     "translation": "* _Le trafic du proxy hors périmètre est désactivé_. Les URL dont le préfixe diffère de la cible ne sont donc pas enregistrées dans HTTP History."
   },
   {
+    "line": 136,
+    "source": "* Burp intruder can be configured to launch a _**Directory Enumeration** attack_.",
+    "translation": "* Burp Intruder peut être configuré pour lancer une attaque d’_**énumération de répertoires**_."
+  },
+  {
+    "line": 137,
+    "source": "  * Right click a request in the HTTP history tab and send it to the Intruder (**`CTRL+I`**).",
+    "translation": "  * Faire un clic droit sur une requête dans l’onglet HTTP history et l’envoyer à Intruder (**`CTRL+I`**)."
+  },
+  {
+    "line": 138,
+    "source": "  * Target fields are already been set.",
+    "translation": "  * Les champs Target sont déjà renseignés."
+  },
+  {
+    "line": 139,
+    "source": "  * Clean Payload Position with **`Clear §`** button in the **Intruder - Positions** tab, removing all the § markers from the payload.",
+    "translation": "  * Réinitialiser Payload Position avec le bouton **`Clear §`** dans l’onglet **Intruder - Positions** pour retirer tous les marqueurs § du payload."
+  },
+  {
+    "line": 145,
+    "source": "* Modify the payload by setting a `§path§` variable with the **`Add §`** button.",
+    "translation": "* Modifier le payload en définissant une variable `§path§` avec le bouton **`Add §`**."
+  },
+  {
+    "line": 146,
+    "source": "  * This will make the Intruder send GET requests to many locations, supplied next with a wordlist.",
+    "translation": "  * Intruder enverra ainsi des requêtes GET vers plusieurs emplacements, qui seront ensuite fournis par une wordlist."
+  },
+  {
+    "line": 150,
+    "source": "*   Specify the wordlist in the **Intruder - Payloads - Payload Options** section:",
+    "translation": "*   Indiquer la wordlist dans la section **Intruder - Payloads - Payload Options** :"
+  },
+  {
     "line": 152,
     "source": "    * BurpSuite Community Edition = time throttled attacks!",
     "translation": "    * Burp Suite Community Edition : débit des requêtes limité."
+  },
+  {
+    "line": 153,
+    "source": "    * Enter the next new items, some knownd words (e.g. from the _`http://demo.ine.local/robots.txt`_ file):",
+    "translation": "    * Saisir les nouveaux éléments suivants, des mots connus (par exemple ceux du fichier _`http://demo.ine.local/robots.txt`_) :"
+  },
+  {
+    "line": 157,
+    "source": "    * Load a wordlist using the `Load ...` button - **/usr/share/wordlists/dirb/common.txt**",
+    "translation": "    * Charger une wordlist avec le bouton `Load ...` : **/usr/share/wordlists/dirb/common.txt**"
+  },
+  {
+    "line": 163,
+    "source": "* Add a **Payload Processing** rule, in this case prepending a forward slash (**/**) to all the accessed resources.",
+    "translation": "* Ajouter une règle **Payload Processing**, ici pour préfixer toutes les ressources consultées par un slash (**/**)."
+  },
+  {
+    "line": 167,
+    "source": "* Uncheck **`URL-encode ...`** in the **Payload Encoding** to make Burp not encode the payload (including the **/**).",
+    "translation": "* Décocher **`URL-encode ...`** dans **Payload Encoding** pour empêcher Burp d’encoder le payload (y compris le **/**)."
+  },
+  {
+    "line": 171,
+    "source": "* From the **Intruder - Options - Redirection** section, configure the intruder to _always follow redirections_.",
+    "translation": "* Dans la section **Intruder - Options - Redirection**, configurer Intruder pour _toujours suivre les redirections_."
+  },
+  {
+    "line": 175,
+    "source": "* Launch the attack with the **Start attack** button, a new windows will appear with the attack results/progress.",
+    "translation": "* Lancer l’attaque avec le bouton **Start attack**. Une nouvelle fenêtre affiche les résultats et la progression."
   },
   {
     "line": 176,
@@ -195,6 +260,16 @@
     "translation": "  * Chaque entrée peut être ouverte dans une fenêtre séparée par un double-clic."
   },
   {
+    "line": 185,
+    "source": "* Select the `/passwords` Payload and send it to the Repeater (**`CTRL+R`**) for tampering with the request.",
+    "translation": "* Sélectionner le payload `/passwords` et l’envoyer à Repeater (**`CTRL+R`**) pour modifier la requête."
+  },
+  {
+    "line": 186,
+    "source": "  * Meanwhile, Intruder attack can be stopped by closing its window.",
+    "translation": "  * L’attaque Intruder peut être arrêtée entre-temps en fermant sa fenêtre."
+  },
+  {
     "line": 187,
     "source": "* **`Send`** the request in the Repeater and use the `Follow redirection` button to get the _200 OK_ status code.",
     "translation": "* **`Send`** : envoyer la requête dans Repeater, puis utiliser le bouton `Follow redirection` pour obtenir le code de statut _200 OK_."
@@ -208,6 +283,11 @@
     "line": 197,
     "source": "* Paste the copied URL in the browser and check the response:",
     "translation": "* Coller l’URL copiée dans le navigateur et examiner la réponse :"
+  },
+  {
+    "line": 203,
+    "source": "* From the Repeater, send a request to fetch `wp-config.bak`",
+    "translation": "* Depuis Repeater, envoyer une requête pour récupérer `wp-config.bak`"
   },
   {
     "line": 207,

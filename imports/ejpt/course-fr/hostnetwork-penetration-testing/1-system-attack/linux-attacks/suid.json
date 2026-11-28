@@ -18,5 +18,15 @@
     "line": 23,
     "source": "> 📌 `welcome` file has the `SUID` permission applied",
     "translation": "> 📌 Le fichier `welcome` dispose de la permission `SUID`."
+  },
+  {
+    "line": 46,
+    "source": "- It calls `greetings` binary",
+    "translation": "- Il appelle le binaire `greetings`"
+  },
+  {
+    "line": 64,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]
