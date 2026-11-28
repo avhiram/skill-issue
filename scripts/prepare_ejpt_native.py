@@ -2180,6 +2180,19 @@ def translate_course_ui_labels(article):
         "Status code": "Code de statut",
         "Advantages": "Avantages",
         "Disadvantages": "Inconvénients",
+        "Tools": "Outils",
+        "Tool": "Outil",
+        "Home Lab": "Laboratoire local",
+        "Target IP": "IP cible",
+        "Lab done!": "Laboratoire terminé !",
+        "Lab solved!": "Laboratoire résolu !",
+        "SOLUTION": "Solution",
+        "System Information": "Informations système",
+        "Case Studies": "Études de cas",
+        "Terminology": "Terminologie",
+        "File System": "Système de fichiers",
+        "Filtering": "Filtrage",
+        "Methodology": "Méthodologie",
     }
     changed = 0
     for node in list(article.find_all(string=True)):
@@ -2189,9 +2202,14 @@ def translate_course_ui_labels(article):
             continue
         value = str(node)
         old = value.strip()
-        new = labels.get(old)
-        if new is None and re.fullmatch(r"Lab [0-9]+", old):
-            new = old.replace("Lab ", "Laboratoire ", 1)
+        prefix_match = re.fullmatch(r"([⚡📕🔬📌📝❗️\s]+)(.+)", old)
+        prefix = prefix_match.group(1) if prefix_match else ""
+        label = prefix_match.group(2).strip() if prefix_match else old
+        new = labels.get(label)
+        if new is None and re.fullmatch(r"Lab [0-9]+", label):
+            new = label.replace("Lab ", "Laboratoire ", 1)
+        if new is not None:
+            new = prefix + new
         if new is not None and old != new:
             node.replace_with(value.replace(old, new, 1))
             changed += 1
