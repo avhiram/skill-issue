@@ -568,5 +568,270 @@
     "line": 335,
     "source": "* use it to search for Dorks by Category to find potentially unsecured files",
     "translation": "* Permet de rechercher des Dorks par catégorie afin d’identifier des fichiers potentiellement non sécurisés."
+  },
+  {
+    "line": 341,
+    "source": "* a digital archive by the Internet Archive",
+    "translation": "* Une archive numérique gérée par Internet Archive."
+  },
+  {
+    "line": 342,
+    "source": "* captures/snapshots web pages over time",
+    "translation": "* Conserve des captures de pages Web au fil du temps."
+  },
+  {
+    "line": 343,
+    "source": "* check earlier version of websites",
+    "translation": "* Permet de consulter les anciennes versions des sites Web."
+  },
+  {
+    "line": 344,
+    "source": "* on older versions of the websites there can be useful **sensitive information** leaked",
+    "translation": "* Les anciennes versions peuvent contenir des **informations sensibles** divulguées."
+  },
+  {
+    "line": 352,
+    "source": "> [**`theHarvester`**](https://github.com/laramies/theHarvester) tool - an open-source Python tool that performs OSINT gathering to help determine a domain's external threat landscape.",
+    "translation": "> Outil [**`theHarvester`**](https://github.com/laramies/theHarvester) : outil Python open source de collecte OSINT permettant de mieux connaître l’exposition externe d’un domaine."
+  },
+  {
+    "line": 354,
+    "source": "* used to enumerate the emails (names, IPs, URLs, subdomains) belonging to a domain target, using **publicly available resources and databases**.",
+    "translation": "* Utilisé pour énumérer les adresses e-mail, noms, IP, URL et sous-domaines associés à un domaine cible, à partir de **ressources et bases de données publiques**."
+  },
+  {
+    "line": 355,
+    "source": "* check the GitHub repository for more information on the [Passive](https://github.com/laramies/theHarvester#passive) and [Active](https://github.com/laramies/theHarvester#active) information gathering and [Installation](https://github.com/laramies/theHarvester/wiki/Installation).",
+    "translation": "* Consulter le dépôt GitHub pour en savoir plus sur la collecte [passive](https://github.com/laramies/theHarvester#passive), [active](https://github.com/laramies/theHarvester#active) et l’[installation](https://github.com/laramies/theHarvester/wiki/Installation)."
+  },
+  {
+    "line": 356,
+    "source": "* In this case the tool is used for Email Harvesting.",
+    "translation": "* Dans cet exemple, l’outil est utilisé pour l’Email Harvesting."
+  },
+  {
+    "line": 377,
+    "source": "* _Emails could be used to send phishing email with malicious attachments during an attack._",
+    "translation": "* _Les adresses e-mail peuvent être utilisées dans des scénarios de phishing avec des pièces jointes malveillantes lors d’un test autorisé._"
+  },
+  {
+    "line": 381,
+    "source": "Email or account passwords can be potentially found and used for a **password spray attack** = use the discovered passwords and test them for authentication on many other services (_not part of Passive info gathering_).",
+    "translation": "Les mots de passe associés à des comptes ou adresses e-mail peuvent être exposés. Le cours évoque leur réutilisation dans une **password spray attack** sur d’autres services, ce qui ne relève _pas de la collecte passive_."
+  },
+  {
+    "line": 383,
+    "source": "* Leaked online password databases can be utilized, usually coming from a site data breach containing the users credentials.",
+    "translation": "* Les bases de données divulguées en ligne proviennent généralement de violations de données contenant des identifiants d’utilisateurs."
+  },
+  {
+    "line": 385,
+    "source": "> [**haveibeenpwned.com**](https://haveibeenpwned.com/) site by [Troy Hunt](https://www.troyhunt.com/)",
+    "translation": "> Site [**haveibeenpwned.com**](https://haveibeenpwned.com/) créé par [Troy Hunt](https://www.troyhunt.com/)"
+  },
+  {
+    "line": 387,
+    "source": "* safe, reliable, no signup",
+    "translation": "* Le cours le présente comme un service fiable, accessible sans inscription."
+  },
+  {
+    "line": 388,
+    "source": "* insert the found target email in the site to check for data breaches",
+    "translation": "* Vérifier si une adresse e-mail figure dans des violations de données."
+  },
+  {
+    "line": 389,
+    "source": "* for older emails there is a greater chance of finding data breaches!",
+    "translation": "* Les adresses e-mail anciennes ont davantage de chances d’avoir été concernées par une violation de données."
+  },
+  {
+    "line": 401,
+    "source": "> 🗒️ Check my basic DNS theory notes [here](../penetration-testing-prerequisites/networking.md#dns).",
+    "translation": "> 🗒️ Consulter les notes sur les bases du DNS [ici](../penetration-testing-prerequisites/networking.md#dns)."
+  },
+  {
+    "line": 403,
+    "source": "> 📌 More in depth explanations about DNS can be found at the [Cloudflare Learning Center](https://www.cloudflare.com/learning/dns/what-is-dns/).",
+    "translation": "> 📌 Des explications plus détaillées sur le DNS sont disponibles sur le [Cloudflare Learning Center](https://www.cloudflare.com/learning/dns/what-is-dns/)."
+  },
+  {
+    "line": 405,
+    "source": "> 🔬 **Training list**: Check some PentesterAcademy/INE [DNS Network Pentesting Labs](https://attackdefense.com/listing?labtype=network-pentesting\\&subtype=network-pentesting-dns) (`subscription required`)",
+    "translation": "> 🔬 **Liste d’entraînement** : consulter les [DNS Network Pentesting Labs](https://attackdefense.com/listing?labtype=network-pentesting\\&subtype=network-pentesting-dns) de PentesterAcademy/INE (`subscription required`)."
+  },
+  {
+    "line": 407,
+    "source": "* Most common types of DNS:",
+    "translation": "* Types d’enregistrements DNS les plus courants :"
+  },
+  {
+    "line": 409,
+    "source": "| Record Type | Description                                                              |",
+    "translation": "| Type d’enregistrement | Description |"
+  },
+  {
+    "line": 411,
+    "source": "|    **A**    | Holds/Resolves the IPv4 address of a domain/hostname                     |",
+    "translation": "| **A** | Associe un domaine ou nom d’hôte à une adresse IPv4 |"
+  },
+  {
+    "line": 412,
+    "source": "|   **AAAA**  | Holds/Resolves the IPv6 address of a domain/hostname                     |",
+    "translation": "| **AAAA** | Associe un domaine ou nom d’hôte à une adresse IPv6 |"
+  },
+  {
+    "line": 413,
+    "source": "|  **CNAME**  | Used for domain aliases, forwards one domain/subdomain to another domain |",
+    "translation": "| **CNAME** | Définit un alias vers un autre nom de domaine |"
+  },
+  {
+    "line": 414,
+    "source": "|    **MX**   | Resolves a domain to a mail server                                       |",
+    "translation": "| **MX** | Indique le serveur de messagerie d’un domaine |"
+  },
+  {
+    "line": 415,
+    "source": "|   **TXT**   | Used for admin text notes, often used for email security                 |",
+    "translation": "| **TXT** | Contient des informations textuelles administratives, souvent utilisées pour la sécurité des e-mails |"
+  },
+  {
+    "line": 416,
+    "source": "|    **NS**   | Reference to the domains name server                                     |",
+    "translation": "| **NS** | Indique les serveurs de noms du domaine |"
+  },
+  {
+    "line": 417,
+    "source": "|   **SOA**   | Stores admin information about a domain (domain authority)               |",
+    "translation": "| **SOA** | Contient les informations administratives de la zone DNS |"
+  },
+  {
+    "line": 418,
+    "source": "|  **HINFO**  | Host information                                                         |",
+    "translation": "| **HINFO** | Informations sur l’hôte |"
+  },
+  {
+    "line": 419,
+    "source": "|   **SRV**   | Specific services records                                                |",
+    "translation": "| **SRV** | Enregistrements relatifs à des services spécifiques |"
+  },
+  {
+    "line": 420,
+    "source": "|   **PTR**   | Resolves an IP address to a hostname - reverse lookups                   |",
+    "translation": "| **PTR** | Associe une adresse IP à un nom d’hôte (résolution inverse) |"
+  },
+  {
+    "line": 422,
+    "source": "🗒️ _Enumerating DNS records_ for a particular domain is done through a procedure known as **DNS Interrogation**.",
+    "translation": "🗒️ L’_énumération des enregistrements DNS_ d’un domaine repose sur une procédure appelée **DNS Interrogation**."
+  },
+  {
+    "line": 424,
+    "source": "* Probe a DNS server to provide additional records and information (domain IP address, subdomains, mail server addresses, etc)",
+    "translation": "* Interroger un serveur DNS afin d’obtenir des enregistrements et informations supplémentaires (adresse IP du domaine, sous-domaines, adresses des serveurs de messagerie, etc.)."
+  },
+  {
+    "line": 426,
+    "source": "To obtain more records from a DNS server with regards to a particular domain, **DNS Zone Transfers** may be useful:",
+    "translation": "Les **DNS Zone Transfers** permettent de récupérer des enregistrements DNS relatifs à un domaine :"
+  },
+  {
+    "line": 428,
+    "source": "* A **zone transfer** occurs when a system admin may want to _copy or transfer zone files_ (containing domain records) from one DNS server to another.",
+    "translation": "* Un **zone transfer** intervient lorsqu’un administrateur souhaite _copier ou transférer des fichiers de zone_ contenant les enregistrements d’un domaine entre deux serveurs DNS."
+  },
+  {
+    "line": 429,
+    "source": "* _This functionality can be abused by attackers when left misconfigured, to copy the zone file from the primary DNS to another DNS server._",
+    "translation": "* _Une mauvaise configuration de cette fonctionnalité peut permettre à un attaquant de copier un fichier de zone depuis le serveur DNS primaire._"
+  },
+  {
+    "line": 430,
+    "source": "* It can give penetration testers a complete picture of the network architecture of an organization and internal network addresses may be found.",
+    "translation": "* Cela peut révéler aux pentesters l’architecture réseau d’une organisation ainsi que des adresses IP internes."
+  },
+  {
+    "line": 432,
+    "source": "An IP address can be mapped to a local (or external) specific domain name using the **`/etc/hosts`** file:",
+    "translation": "Une adresse IP peut être associée à un nom de domaine local ou externe précis à l’aide du fichier **`/etc/hosts`** :"
+  },
+  {
+    "line": 448,
+    "source": "* **`E.g.`** - [**`ZoneTransfer.me`**](https://digi.ninja/projects/zonetransferme.php) can be utilized for educational purposes",
+    "translation": "* **`E.g.`** : [**`ZoneTransfer.me`**](https://digi.ninja/projects/zonetransferme.php) peut être utilisé à des fins pédagogiques."
+  },
+  {
+    "line": 450,
+    "source": "**Passive reconnaissance** [here](1-info-gathering.md#dns-reconnaissance) - using `dnsdumpster.com`, `dnsrecon`",
+    "translation": "**Reconnaissance passive** : voir [ici](1-info-gathering.md#dns-reconnaissance), avec `dnsdumpster.com` et `dnsrecon`."
+  },
+  {
+    "line": 479,
+    "source": "**Active reconnaissance**",
+    "translation": "**Reconnaissance active**"
+  },
+  {
+    "line": 481,
+    "source": "> [**`dnsenum`**](https://www.kali.org/tools/dnsenum/) tool - a multithread Perl script to enumerate DNS information of a domain and to discover non-contiguous ip blocks",
+    "translation": "> Outil [**`dnsenum`**](https://www.kali.org/tools/dnsenum/) : script Perl multithread destiné à énumérer les informations DNS d’un domaine et identifier des blocs IP non contigus."
+  },
+  {
+    "line": 483,
+    "source": "* enumerate public DNS records",
+    "translation": "* Énumérer les enregistrements DNS publics."
+  },
+  {
+    "line": 484,
+    "source": "* perform automatic DNS zone transfer",
+    "translation": "* Réaliser automatiquement des transferts de zone DNS."
+  },
+  {
+    "line": 485,
+    "source": "* perform DNS brute force on subdomains",
+    "translation": "* Effectuer une énumération de sous-domaines par brute force."
+  },
+  {
+    "line": 489,
+    "source": "* The two name server of ZoneTransfer.me are **`nsztm1.digi.ninja`** and **`nsztm2.digi.ninja`**",
+    "translation": "* Les deux serveurs de noms de ZoneTransfer.me sont **`nsztm1.digi.ninja`** et **`nsztm2.digi.ninja`**."
+  },
+  {
+    "line": 490,
+    "source": "  * DNS Zone transfer functionality must be ON on the Name Servers.",
+    "translation": "  * La fonctionnalité DNS Zone Transfer doit être activée sur les serveurs de noms."
+  },
+  {
+    "line": 491,
+    "source": "  * Identify subdomains and internal IP addresses from the Zone Transfer results.",
+    "translation": "  * Identifier les sous-domaines et adresses IP internes à partir des résultats du transfert de zone."
+  },
+  {
+    "line": 493,
+    "source": "_Check comments below_",
+    "translation": "_Consulter les commentaires ci-dessous._"
+  },
+  {
+    "line": 621,
+    "source": "* `dnsenum` can fail if zone transfer is disabled (e.g. Cloudflare NS)",
+    "translation": "* `dnsenum` peut échouer si le transfert de zone est désactivé (par exemple, serveurs de noms Cloudflare)."
+  },
+  {
+    "line": 625,
+    "source": "> [**`dig`**](https://linuxize.com/post/how-to-use-dig-command-to-query-dns-in-linux/) tool - query DNS name servers",
+    "translation": "> Outil [**`dig`**](https://linuxize.com/post/how-to-use-dig-command-to-query-dns-in-linux/) : interroger les serveurs de noms DNS."
+  },
+  {
+    "line": 627,
+    "source": "* [_**AXFR zone transfers**_](https://www.cloudns.net/blog/zone-transfer-zone-file-domain-namespace/) _are the full DNS zone transfers of all DNS data. The Primary DNS server sends the whole zone file that contains all the DNS records to the Secondary DNS servers. This assures that the secondary DNS server is well synced. It will have all the latest changes that were made to the Master DNS zone._",
+    "translation": "* Les [_**AXFR zone transfers**_](https://www.cloudns.net/blog/zone-transfer-zone-file-domain-namespace/) _correspondent au transfert complet des données DNS d’une zone. Le serveur primaire transmet le fichier de zone entier, contenant les enregistrements DNS, aux serveurs secondaires. Cela permet de maintenir leur synchronisation avec les dernières modifications de la zone primaire._"
+  },
+  {
+    "line": 637,
+    "source": "> [**`fierce`**](https://github.com/mschwager/fierce) tool - a semi-lightweight scanner that helps locate non-contiguous IP space and hostnames against specified domains, using DNS primarily",
+    "translation": "> Outil [**`fierce`**](https://github.com/mschwager/fierce) : scanner relativement léger permettant de localiser des plages IP non contiguës et des noms d’hôtes associés à des domaines, principalement via le DNS."
+  },
+  {
+    "line": 656,
+    "source": "> ✍️ \"Zone transfers are rare these days, but they give us the keys to the DNS castle.\" [fierce - Geeksforgeeks](https://www.geeksforgeeks.org/fierce-dns-reconnaissance-tool-for-locating-non-contiguous-ip-space/)",
+    "translation": "> ✍️ « Les transferts de zone sont rares de nos jours, mais ils nous donnent les clés du château DNS. » [fierce - Geeksforgeeks](https://www.geeksforgeeks.org/fierce-dns-reconnaissance-tool-for-locating-non-contiguous-ip-space/)"
   }
 ]
