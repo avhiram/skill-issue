@@ -1,0 +1,142 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [HTTP Method Enumeration](https://attackdefense.com/challengedetailsnoauth?cid=1802)",
+    "translation": "> 🔬 [Énumération des méthodes HTTP](https://attackdefense.com/challengedetailsnoauth?cid=1802)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `192.41.48.3`",
+    "translation": "> - IP cible du laboratoire : `192.41.48.3`"
+  },
+  {
+    "line": 8,
+    "source": "> - Credentials: `john`:`password`",
+    "translation": "> - Identifiants fournis : `john`:`password`"
+  },
+  {
+    "line": 15,
+    "source": "- Open the browser and navigate to",
+    "translation": "- Ouvrir le navigateur et accéder à l’adresse suivante :"
+  },
+  {
+    "line": 18,
+    "source": "- **View Source code** of the login page and check the `POST` method",
+    "translation": "- Afficher le **code source** de la page de connexion et vérifier la méthode `POST`."
+  },
+  {
+    "line": 22,
+    "source": "- Login with the provided credentials",
+    "translation": "- Se connecter avec les identifiants fournis."
+  },
+  {
+    "line": 23,
+    "source": "- Follow the remaining links",
+    "translation": "- Suivre les liens restants :"
+  },
+  {
+    "line": 29,
+    "source": "- Enumerate hidden directories using [**`dirb`**](https://www.kali.org/tools/dirb/)",
+    "translation": "- Énumérer les répertoires avec [**`dirb`**](https://www.kali.org/tools/dirb/)."
+  },
+  {
+    "line": 37,
+    "source": "> 📌 Hidden directories are `css`, `img`, `js`, `mail`, `uploads`, `vendor`",
+    "translation": "> 📌 Répertoires identifiés : `css`, `img`, `js`, `mail`, `uploads`, `vendor`."
+  },
+  {
+    "line": 41,
+    "source": "- Use **`curl`** to send some requests",
+    "translation": "- Utiliser **`curl`** pour envoyer des requêtes."
+  },
+  {
+    "line": 62,
+    "source": "- Use **`curl`** to interact with `login.php` and `post.php`",
+    "translation": "- Utiliser **`curl`** pour interagir avec `login.php` et `post.php`."
+  },
+  {
+    "line": 84,
+    "source": "> 📌 `WebDAV` module is enabled on the Apache Server and allows file upload via `PUT` method.",
+    "translation": "> 📌 Le module `WebDAV` est activé sur le serveur Apache et autorise l’envoi de fichiers via la méthode `PUT`."
+  },
+  {
+    "line": 102,
+    "source": "> 🔬 Check the [BurpSuite Basics lab here](../../exam-preparation-labs/p.t.-prerequisites-labs/burp-suite-basics.md)",
+    "translation": "> 🔬 Consulter le [laboratoire sur les bases de Burp Suite](../../exam-preparation-labs/p.t.-prerequisites-labs/burp-suite-basics.md)."
+  },
+  {
+    "line": 104,
+    "source": "- Target IP has changed to `192.83.140.3`",
+    "translation": "- L’adresse IP cible a changé : `192.83.140.3`."
+  },
+  {
+    "line": 106,
+    "source": "- Capture the home page and send it to `Repeater`",
+    "translation": "- Capturer la requête de la page d’accueil et l’envoyer dans `Repeater`."
+  },
+  {
+    "line": 107,
+    "source": "- Use the various options to sed **requests** and check the **response**.",
+    "translation": "- Utiliser les différentes options pour envoyer des **requêtes** et examiner la **réponse**."
+  },
+  {
+    "line": 113,
+    "source": "- Try to login in the webpage, intercept the request and send it to the repetear",
+    "translation": "- Se connecter à la page Web et examiner la requête interceptée dans Repeater."
+  },
+  {
+    "line": 114,
+    "source": "- Send a `POST` to `login.php` with valid credentials",
+    "translation": "- Envoyer une requête `POST` vers `login.php` avec les identifiants valides."
+  },
+  {
+    "line": 130,
+    "source": "> 🔬 [Directory Enumeration with Gobuster](https://.attackdefense.com/challengedetails?cid=1882)",
+    "translation": "> 🔬 [Énumération de répertoires avec Gobuster](https://.attackdefense.com/challengedetails?cid=1882)"
+  },
+  {
+    "line": 132,
+    "source": "> - Target IP: `192.185.38.3`",
+    "translation": "> - IP cible du laboratoire : `192.185.38.3`"
+  },
+  {
+    "line": 133,
+    "source": "> - Enumerate a **Multillidae II** vulnerable web app",
+    "translation": "> - Énumérer une application Web volontairement vulnérable **Multillidae II**."
+  },
+  {
+    "line": 142,
+    "source": "- Open the browser and navigate to",
+    "translation": "- Ouvrir le navigateur et accéder à l’adresse suivante :"
+  },
+  {
+    "line": 155,
+    "source": "- Scan to find specific file extensions and interesting files",
+    "translation": "- Examiner les extensions de fichiers et les fichiers identifiés."
+  },
+  {
+    "line": 182,
+    "source": "> 🔬 [Directory Enumeration with Burp Suite](https://attackdefense.com/challengedetails?cid=1886)",
+    "translation": "> 🔬 [Énumération de répertoires avec Burp Suite](https://attackdefense.com/challengedetails?cid=1886)"
+  },
+  {
+    "line": 184,
+    "source": "> - Target IP: `192.221.162.3`",
+    "translation": "> - IP cible du laboratoire : `192.221.162.3`"
+  },
+  {
+    "line": 185,
+    "source": "> - Enumerate a **Multillidae II** vulnerable web app",
+    "translation": "> - Énumérer une application Web volontairement vulnérable **Multillidae II**."
+  },
+  {
+    "line": 194,
+    "source": "- Open the browser and navigate to",
+    "translation": "- Ouvrir le navigateur et accéder à l’adresse suivante :"
+  },
+  {
+    "line": 196,
+    "source": "  - Activate FoxyProxy Plugin",
+    "translation": "  - Activer l’extension FoxyProxy."
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [Windows: Insecure RDP Service](https://attackdefense.com/challengedetails?cid=1957)",
+    "translation": "> 🔬 [Windows : service RDP non sécurisé](https://attackdefense.com/challengedetails?cid=1957)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `10.4.18.131`",
+    "translation": "> - IP cible du laboratoire : `10.4.18.131`"
+  },
+  {
+    "line": 8,
+    "source": "> - **RDP** exploitation",
+    "translation": "> - Étude des vulnérabilités du service **RDP**."
+  }
+]

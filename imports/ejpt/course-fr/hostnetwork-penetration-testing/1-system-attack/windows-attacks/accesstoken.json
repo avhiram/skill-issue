@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Privilege Escalation: Impersonate](https://attackdefense.com/challengedetails?cid=2353)",
+    "translation": ">  🔬 [Laboratoire Access Token Impersonation](https://attackdefense.com/challengedetails?cid=2353)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `10.4.22.75`",
+    "translation": ">  - IP cible du laboratoire : `10.4.22.75`"
+  },
+  {
+    "line": 8,
+    "source": ">  - **Access Token impersonation** ",
+    "translation": ">  - Étude de l’**Access Token Impersonation**."
+  },
+  {
+    "line": 25,
+    "source": "- Determine the version information of the web server on port `80`",
+    "translation": "- Identifier la version du serveur Web sur le port `80`."
+  }
+]

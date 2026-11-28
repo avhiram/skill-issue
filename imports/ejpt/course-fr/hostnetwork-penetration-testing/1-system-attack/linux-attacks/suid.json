@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Exploiting Setuid Programs](https://www.attackdefense.com/challengedetails?cid=73)",
+    "translation": ">  🔬 [Laboratoire sur les programmes Setuid](https://www.attackdefense.com/challengedetails?cid=73)"
+  },
+  {
+    "line": 7,
+    "source": ">  - **SUID** Privilege escalation",
+    "translation": ">  - Étude des risques de Privilege Escalation liés au **SUID**."
+  },
+  {
+    "line": 8,
+    "source": ">  - Already logged on as `student` unprivileged user",
+    "translation": ">  - Session ouverte avec l’utilisateur non privilégié `student`."
+  },
+  {
+    "line": 23,
+    "source": "> 📌 `welcome` file has the `SUID` permission applied",
+    "translation": "> 📌 Le fichier `welcome` dispose de la permission `SUID`."
+  }
+]

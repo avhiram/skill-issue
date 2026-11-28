@@ -1,0 +1,217 @@
+[
+  {
+    "line": 3,
+    "source": "The Kali OS GUI instance is web hosted on the INE website, where:",
+    "translation": "L’interface graphique de Kali est hébergée sur le site INE :"
+  },
+  {
+    "line": 5,
+    "source": "* The bWAPP web application is accessible at `demo.ine.local` domain.",
+    "translation": "* L’application Web bWAPP est accessible via le domaine `demo.ine.local`."
+  },
+  {
+    "line": 6,
+    "source": "  * Info on bWAPP insecure web app [here](http://www.itsecgames.com/index.htm).",
+    "translation": "  * Informations sur l’application Web vulnérable bWAPP [ici](http://www.itsecgames.com/index.htm)."
+  },
+  {
+    "line": 8,
+    "source": "> 📌 Another deliberately vulnerable open-source web app is [Mutillidae II](https://github.com/webpwnized/mutillidae). INE provides another similar lab with Mutillidae II to test and learn Burp Suite.",
+    "translation": "> 📌 [Mutillidae II](https://github.com/webpwnized/mutillidae) est une autre application Web open source volontairement vulnérable. INE propose un laboratoire similaire pour apprendre à utiliser Burp Suite."
+  },
+  {
+    "line": 10,
+    "source": "_Objective_: User Burp Suite and explore its different functionalities as Site Map, Proxy history, scope, Repeater, basic directory enumeration attack with Intruder.",
+    "translation": "_Objectif_ : utiliser Burp Suite et examiner ses fonctionnalités, notamment Site Map, Proxy History, Scope, Repeater et les bases de l’énumération de répertoires avec Intruder."
+  },
+  {
+    "line": 12,
+    "source": "_**Tools**_ used:",
+    "translation": "_**Outils**_ utilisés :"
+  },
+  {
+    "line": 15,
+    "source": "* A web browser",
+    "translation": "* Un navigateur Web"
+  },
+  {
+    "line": 16,
+    "source": "* Wordlist: `/usr/share/wordlists/dirb/common.txt`",
+    "translation": "* Wordlist : `/usr/share/wordlists/dirb/common.txt`"
+  },
+  {
+    "line": 18,
+    "source": "* Check if the provided machine is reachable:",
+    "translation": "* Vérifier si la machine fournie est accessible :"
+  },
+  {
+    "line": 24,
+    "source": "* Scan for open ports:",
+    "translation": "* Scanner les ports ouverts :"
+  },
+  {
+    "line": 32,
+    "source": "*   For a more advanced scan:",
+    "translation": "*   Pour un scan plus approfondi :"
+  },
+  {
+    "line": 76,
+    "source": "Ports **80** (HTTP) and **3306** (MySQL) are open.",
+    "translation": "Les ports **80** (HTTP) et **3306** (MySQL) sont ouverts."
+  },
+  {
+    "line": 80,
+    "source": "* Start BurpSuite via the GUI or via terminal (`burpsuite`) and create a temporary project with default configurations.",
+    "translation": "* Lancer Burp Suite depuis l’interface graphique ou le terminal (`burpsuite`), puis créer un projet temporaire avec les paramètres par défaut."
+  },
+  {
+    "line": 81,
+    "source": "* Configure Proxy listener inside **Proxy - Options** window.",
+    "translation": "* Configurer le Proxy Listener dans la fenêtre **Proxy - Options**."
+  },
+  {
+    "line": 85,
+    "source": "* Turn Intercept mode on from the **Proxy - Intercept** window.",
+    "translation": "* Activer le mode Intercept dans la fenêtre **Proxy - Intercept**."
+  },
+  {
+    "line": 86,
+    "source": "  * Use the Burp's embedded browser or configure external browser to use the Burp proxy (FoxyProxy plugin used in this case)",
+    "translation": "  * Utiliser le navigateur intégré de Burp ou configurer un navigateur externe pour utiliser le proxy Burp (extension FoxyProxy dans cet exemple)."
+  },
+  {
+    "line": 92,
+    "source": "* Browse to `http://demo.ine.local/`",
+    "translation": "* Accéder à `http://demo.ine.local/`."
+  },
+  {
+    "line": 93,
+    "source": "  * The page doesn't load, because the request is forwarded to the Burp proxy listener.",
+    "translation": "  * La page ne se charge pas car la requête est transmise au Proxy Listener de Burp."
+  },
+  {
+    "line": 94,
+    "source": "  * **Proxy - Intercept** tabs are marked with orange. The proxy is waiting for an action.",
+    "translation": "  * Les onglets **Proxy - Intercept** sont indiqués en orange. Le proxy attend une action."
+  },
+  {
+    "line": 98,
+    "source": "1. **`Forward`** option - send the request as is",
+    "translation": "1. Option **`Forward`** : transmettre la requête telle quelle."
+  },
+  {
+    "line": 99,
+    "source": "2. **`Drop`** option - drop the intercepted request",
+    "translation": "2. Option **`Drop`** : abandonner la requête interceptée."
+  },
+  {
+    "line": 100,
+    "source": "3. **`Action`** option - tamper with the request",
+    "translation": "3. Option **`Action`** : modifier la requête."
+  },
+  {
+    "line": 104,
+    "source": "* _Forwarding_ this request, other `GET /portal.php HTTP/1.1` and `GET /login.php HTTP/1.1` request are being made, until the webpage is shown.",
+    "translation": "* En transmettant cette requête, d’autres requêtes `GET /portal.php HTTP/1.1` et `GET /login.php HTTP/1.1` sont émises jusqu’à l’affichage de la page Web."
+  },
+  {
+    "line": 108,
+    "source": "* Turn off intercept mode by clicking on the **`Intercept is on`** button, the web page will load without interception.",
+    "translation": "* Désactiver le mode Intercept en cliquant sur **`Intercept is on`**. La page Web se charge sans interception."
+  },
+  {
+    "line": 109,
+    "source": "* Since Burp proxy is enabled in the browser, every request still get logged in the **Proxy - HTTP history** tab.",
+    "translation": "* Le proxy Burp restant activé dans le navigateur, toutes les requêtes sont enregistrées dans l’onglet **Proxy - HTTP history**."
+  },
+  {
+    "line": 110,
+    "source": "  * other Firefox requests are listed, use the Host column to sort the list.",
+    "translation": "  * D’autres requêtes Firefox sont affichées. Utiliser la colonne Host pour les trier."
+  },
+  {
+    "line": 116,
+    "source": "> 📕 _The_ [_site map_](https://portswigger.net/burp/documentation/desktop/tools/target/site-map) _aggregates all of the information that Burp has gathered about applications. You can filter and annotate this information to help manage it, and also use the site map to drive your testing workflow._",
+    "translation": "> 📕 La [_site map_](https://portswigger.net/burp/documentation/desktop/tools/target/site-map) _regroupe les informations collectées par Burp sur les applications. Ces informations peuvent être filtrées et annotées afin de faciliter leur gestion et d’organiser le workflow de test._"
+  },
+  {
+    "line": 118,
+    "source": "* A site map is built when Burp proxy intercepts the requests, check it in the **Target - Site map** tab.",
+    "translation": "* Une Site Map est créée lorsque le proxy Burp intercepte les requêtes. Elle est visible dans l’onglet **Target - Site map**."
+  },
+  {
+    "line": 119,
+    "source": "  * targets",
+    "translation": "  * Cibles"
+  },
+  {
+    "line": 120,
+    "source": "  * list of resources",
+    "translation": "  * Liste des ressources"
+  },
+  {
+    "line": 121,
+    "source": "  * requests & responses for those resources",
+    "translation": "  * Requêtes et réponses associées aux ressources"
+  },
+  {
+    "line": 125,
+    "source": "* Interested target web app can be configured in the **Target - Scope** tab.",
+    "translation": "* Le périmètre de l’application Web étudiée peut être configuré dans l’onglet **Target - Scope**."
+  },
+  {
+    "line": 126,
+    "source": "  * Add the URL to the target scope via the `Add` button or by right-clicking + `Add to scope` option in the Site Map list.",
+    "translation": "  * Ajouter l’URL au périmètre via le bouton `Add` ou l’option `Add to scope` du menu contextuel de Site Map."
+  },
+  {
+    "line": 132,
+    "source": "* _Out-of-scope Proxy traffic is disabled_, so URLs with different prefix than the target are not logged in the HTTP history.",
+    "translation": "* _Le trafic du proxy hors périmètre est désactivé_. Les URL dont le préfixe diffère de la cible ne sont donc pas enregistrées dans HTTP History."
+  },
+  {
+    "line": 152,
+    "source": "    * BurpSuite Community Edition = time throttled attacks!",
+    "translation": "    * Burp Suite Community Edition : débit des requêtes limité."
+  },
+  {
+    "line": 176,
+    "source": "  * Sort the list by Status.",
+    "translation": "  * Trier la liste par statut."
+  },
+  {
+    "line": 177,
+    "source": "  * For the _robots.txt entries_ there are 2 requests/responses because of the redirection.",
+    "translation": "  * Les entrées de robots.txt génèrent deux requêtes et réponses en raison de la redirection."
+  },
+  {
+    "line": 178,
+    "source": "    * Response 1 = `HTTP/1.1 301 Moved Permanently`",
+    "translation": "    * Réponse 1 : `HTTP/1.1 301 Moved Permanently`"
+  },
+  {
+    "line": 179,
+    "source": "  * Every entry can be double-clicked to have the result in a separate window.",
+    "translation": "  * Chaque entrée peut être ouverte dans une fenêtre séparée par un double-clic."
+  },
+  {
+    "line": 193,
+    "source": "* Right click on the Response body and copy its URL with the `Show response in browser` button.",
+    "translation": "* Faire un clic droit sur le corps de la réponse et copier son URL avec le bouton `Show response in browser`."
+  },
+  {
+    "line": 197,
+    "source": "* Paste the copied URL in the browser and check the response:",
+    "translation": "* Coller l’URL copiée dans le navigateur et examiner la réponse :"
+  },
+  {
+    "line": 207,
+    "source": "* Repeater issued requests can be _navigated_ back and forth with the arrow buttons.",
+    "translation": "* Les requêtes envoyées par Repeater peuvent être parcourues avec les boutons fléchés."
+  },
+  {
+    "line": 211,
+    "source": "> 📍 Lab done!",
+    "translation": "> 📍 Laboratoire terminé !"
+  }
+]

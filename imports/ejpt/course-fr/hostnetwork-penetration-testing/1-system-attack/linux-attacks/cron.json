@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Cron Jobs Gone Wild II](https://www.attackdefense.com/challengedetails?cid=77)",
+    "translation": ">  🔬 [Laboratoire Cron Jobs Gone Wild II](https://www.attackdefense.com/challengedetails?cid=77)"
+  },
+  {
+    "line": 7,
+    "source": ">  - **Cron Jobs** Privilege escalation",
+    "translation": ">  - Étude de la Privilege Escalation liée aux **Cron Jobs**."
+  },
+  {
+    "line": 8,
+    "source": ">  - Already logged on as `student` unprivileged user",
+    "translation": ">  - Session ouverte avec l’utilisateur non privilégié `student`."
+  },
+  {
+    "line": 17,
+    "source": "> 📌 `student` user has no privileges and no scheduled cron jobs",
+    "translation": "> 📌 L’utilisateur `student` ne dispose pas de privilèges ni de tâches Cron planifiées."
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [WinRM: Exploitation with Metasploit](https://attackdefense.com/challengedetails?cid=2026)",
+    "translation": "> 🔬 [WinRM : laboratoire Metasploit](https://attackdefense.com/challengedetails?cid=2026)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `10.4.30.175`",
+    "translation": "> - IP cible du laboratoire : `10.4.30.175`"
+  },
+  {
+    "line": 8,
+    "source": "> - **WinRM** exploitation",
+    "translation": "> - Étude des vulnérabilités du service **WinRM**."
+  }
+]
