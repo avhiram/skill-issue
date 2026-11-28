@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic familiarity with Linux & Windows",
+    "translation": "> * Connaissances de base de Linux et Windows"
+  },
+  {
+    "line": 6,
+    "source": "> * Basic familiarity with TCP & UDP protocols",
+    "translation": "> * Connaissances de base des protocoles TCP et UDP"
+  },
+  {
+    "line": 10,
+    "source": "> * Understand, install, configure and use **Metasploit Framework**",
+    "translation": "> * Comprendre, installer, configurer et utiliser le **Metasploit Framework**"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform **info-gathering**, **enumeration**, **exploitation**, **post exploitation** with Metasploit",
+    "translation": "> * Aborder les phases d’**Information Gathering**, d’**énumération**, d’**exploitation** et de **Post-Exploitation** avec Metasploit"
+  }
+]

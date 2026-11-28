@@ -1,0 +1,222 @@
+[
+  {
+    "line": 14,
+    "source": "- covers pre-requisite topics introducing information security, programming and pentesting",
+    "translation": "- Présente les prérequis en sécurité informatique, programmation et pentest."
+  },
+  {
+    "line": 15,
+    "source": "- prepares for the eJPT exam & certification",
+    "translation": "- Prépare à l’examen et à la certification eJPT."
+  },
+  {
+    "line": 16,
+    "source": "- provides the skills and practice to start a pentesting career as an entry-level position",
+    "translation": "- Apporte les compétences et la pratique nécessaires pour débuter une carrière de pentester junior."
+  },
+  {
+    "line": 20,
+    "source": "~ 145 hours (*`~56h of videos`*)",
+    "translation": "Environ 145 heures (*`~56h of videos`*)"
+  },
+  {
+    "line": 22,
+    "source": "Activities: **4** sections , **12** courses , **229** videos, **154** quizzes, **120** labs",
+    "translation": "Activités : **4** sections, **12** cours, **229** vidéos, **154** quiz, **120** labs."
+  },
+  {
+    "line": 24,
+    "source": "- [**Assessment Methodologies & Auditing**](assessment-methodologies/README.md) ~ 27 hours (`11h` of videos)",
+    "translation": "- [**Méthodologie et audit**](assessment-methodologies/README.md) : environ 27 heures (`11h` de vidéos)"
+  },
+  {
+    "line": 25,
+    "source": "- [**Host & Network Penetration Testing**](hostnetwork-penetration-testing/README.md) ~ 108 hours (`42h` of videos)",
+    "translation": "- [**Pentest systèmes et réseaux**](hostnetwork-penetration-testing/README.md) : environ 108 heures (`42h` de vidéos)"
+  },
+  {
+    "line": 26,
+    "source": "- [**Web Application Penetration Testing**](webapp-penetration-testing/README.md) ~ 10 hours (`3h` of videos)",
+    "translation": "- [**Pentest des applications Web**](webapp-penetration-testing/README.md) : environ 10 heures (`3h` de vidéos)"
+  },
+  {
+    "line": 30,
+    "source": "- Where to find the PTSv2 (Penetration Testing Student v2) course? - [INE Learning Paths](https://my.ine.com/learning-paths)",
+    "translation": "- Où trouver le cours PTSv2 (Penetration Testing Student v2) ? [INE Learning Paths](https://my.ine.com/learning-paths)"
+  },
+  {
+    "line": 31,
+    "source": "- Where to find the eJPT certification exam? - [eJPT](https://security.ine.com/certifications/ejpt-certification/)",
+    "translation": "- Où trouver l’examen de certification ? [eJPT](https://security.ine.com/certifications/ejpt-certification/)"
+  },
+  {
+    "line": 32,
+    "source": "- As these notes started with my PTS v1 study, I've decided to keep my [**Penetration Testing Prerequisites** notes here](penetration-testing-prerequisites/README.md) based on the (discontinued) PTSv1 course.",
+    "translation": "- Ces notes ayant commencé avec le parcours PTSv1, les [**notes sur les prérequis du pentest**](penetration-testing-prerequisites/README.md), issues de ce cours désormais arrêté, ont été conservées."
+  },
+  {
+    "line": 33,
+    "source": "- 🔬 For the **training** part I will use the provided INE Labs Environment (with the `PTSv2 paid course`) and I will link the labs from the [Attack-Defense](https://attackdefense.com/members) platform by PentesterAcademy (`subscription required`)",
+    "translation": "- 🔬 Pour la **pratique**, les notes utilisent l’environnement de labs INE (avec le `PTSv2 paid course`) et les liens vers la plateforme [Attack-Defense](https://attackdefense.com/members) de PentesterAcademy (`subscription required`)."
+  },
+  {
+    "line": 37,
+    "source": "- Time limit: 2 days (**48 hours** lab on)",
+    "translation": "- Durée maximale : 2 jours (**48 heures** d’accès au laboratoire)"
+  },
+  {
+    "line": 38,
+    "source": "- Questions: **35**",
+    "translation": "- Questions : **35**"
+  },
+  {
+    "line": 39,
+    "source": "- Expiration date: yes (3 years)",
+    "translation": "- Durée de validité indiquée : 3 ans"
+  },
+  {
+    "line": 40,
+    "source": "- Objectives:",
+    "translation": "- Objectifs :"
+  },
+  {
+    "line": 41,
+    "source": "  - **Assessment Methodologies Domain (25% of exam):**",
+    "translation": "  - **Méthodologie d’évaluation (25 % de l’examen) :**"
+  },
+  {
+    "line": 42,
+    "source": "    - Evaluate information and criticality or impact of vulnerabilities",
+    "translation": "    - Évaluer les informations et la criticité ou l’impact des vulnérabilités"
+  },
+  {
+    "line": 43,
+    "source": "    - Identify open ports and services on a target",
+    "translation": "    - Identifier les ports ouverts et les services d’une cible"
+  },
+  {
+    "line": 44,
+    "source": "    - *Exam Score to pass*: at least **`90%`**",
+    "translation": "    - *Score minimal indiqué* : **`90%`**"
+  },
+  {
+    "line": 45,
+    "source": "  - **Host and Network Auditing Domain (25% of exam):**",
+    "translation": "  - **Audit des systèmes et réseaux (25 % de l’examen) :**"
+  },
+  {
+    "line": 46,
+    "source": "    - Gather hash/password information from target",
+    "translation": "    - Collecter les informations relatives aux hashes et mots de passe de la cible"
+  },
+  {
+    "line": 47,
+    "source": "    - Enumerate network information from files on target",
+    "translation": "    - Énumérer les informations réseau contenues dans les fichiers de la cible"
+  },
+  {
+    "line": 48,
+    "source": "    - *Exam Score to pass*: at least **`80%`**",
+    "translation": "    - *Score minimal indiqué* : **`80%`**"
+  },
+  {
+    "line": 49,
+    "source": "  - **Host and Network Pen Testing Domain (35% of exam):**",
+    "translation": "  - **Pentest systèmes et réseaux (35 % de l’examen) :**"
+  },
+  {
+    "line": 50,
+    "source": "    - Conduct brute-force password attacks",
+    "translation": "    - Attaques par brute force sur les mots de passe"
+  },
+  {
+    "line": 51,
+    "source": "    - Conduct exploitation with Metasploit",
+    "translation": "    - Exploitation avec Metasploit"
+  },
+  {
+    "line": 52,
+    "source": "    - *Exam Score to pass*: at least **`70%`**",
+    "translation": "    - *Score minimal indiqué* : **`70%`**"
+  },
+  {
+    "line": 53,
+    "source": "  - **Web Application Pen Testing Domain (15% of exam):**",
+    "translation": "  - **Pentest des applications Web (15 % de l’examen) :**"
+  },
+  {
+    "line": 54,
+    "source": "    - Exploit web app vulnerabilities",
+    "translation": "    - Exploiter les vulnérabilités des applications Web"
+  },
+  {
+    "line": 55,
+    "source": "    - Locate hidden files and directories",
+    "translation": "    - Localiser les fichiers et répertoires cachés"
+  },
+  {
+    "line": 56,
+    "source": "    - *Exam Score to pass*: at least **`60%`**",
+    "translation": "    - *Score minimal indiqué* : **`60%`**"
+  },
+  {
+    "line": 57,
+    "source": "- *Overall Exam score*: **at least `70%` + above minimum score requirements in each domain section**",
+    "translation": "- *Score global indiqué* : **au moins `70%` et respect des seuils minimaux de chaque domaine**"
+  },
+  {
+    "line": 58,
+    "source": "- From a **technical perspective** the exam is set out to simulate a black box penetration test",
+    "translation": "- Sur le **plan technique**, l’examen simule un pentest en black box :"
+  },
+  {
+    "line": 60,
+    "source": "  - minimal amount of information about the target network",
+    "translation": "  - Peu d’informations initiales sur le réseau cible"
+  },
+  {
+    "line": 62,
+    "source": "  - in browser labs (no vpn)",
+    "translation": "  - Labs accessibles depuis le navigateur (sans VPN)"
+  },
+  {
+    "line": 63,
+    "source": "  - a complete unrestricted access to the lab environment for the entire duration of the exam",
+    "translation": "  - Accès complet à l’environnement du laboratoire pendant toute la durée de l’examen"
+  },
+  {
+    "line": 64,
+    "source": "  - letter of engagement",
+    "translation": "  - Lettre de mission"
+  },
+  {
+    "line": 65,
+    "source": "- Flexible structure for the user",
+    "translation": "- Organisation flexible pour le candidat"
+  },
+  {
+    "line": 66,
+    "source": "- Hands-on, open book",
+    "translation": "- Épreuve pratique, documentation autorisée"
+  },
+  {
+    "line": 67,
+    "source": "- **Dynamic flags**: randomly generated flags injected into the lab environment",
+    "translation": "- **Dynamic flags** : flags générés aléatoirement et intégrés à l’environnement de laboratoire"
+  },
+  {
+    "line": 68,
+    "source": "- Testing your ability to **find the answer**. How you do it is up to you.",
+    "translation": "- L’épreuve évalue la capacité à **trouver la réponse**, avec une méthode laissée au candidat."
+  },
+  {
+    "line": 70,
+    "source": "> 📖 Read the [Letter Of Engagement](https://media.graphassets.com/RdsCvab8SvacedNV5k4V)",
+    "translation": "> 📖 Lire la [lettre de mission](https://media.graphassets.com/RdsCvab8SvacedNV5k4V)"
+  },
+  {
+    "line": 72,
+    "source": "> 📖 Read the [Lab Guidelines](https://media.graphassets.com/26hoOMeZQDyu7QJQlvaJ)",
+    "translation": "> 📖 Lire les [consignes du laboratoire](https://media.graphassets.com/26hoOMeZQDyu7QJQlvaJ)"
+  }
+]

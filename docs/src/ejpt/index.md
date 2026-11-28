@@ -32,7 +32,7 @@ Un parcours progressif pour apprendre les fondamentaux du pentest et s'entraîne
   </a>
 </div>
 
-Les notes originales sont disponibles en anglais, chapitre par chapitre, avec les images fournies. La traduction française viendra ensuite.
+La traduction française des cours est en cours. Les commandes et les images originales sont conservées.
 
 [Programme eJPT officiel](https://ine.com/security/certifications/ejpt-certification)
 
