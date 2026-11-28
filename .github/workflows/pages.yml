@@ -77,12 +77,19 @@ jobs:
           root=Path('docs/.vitepress/dist/ejpt/original')
           report=json.loads((root/'import-report.json').read_text())
           assert len(report['pages'])==80
+          assert report['external_assets_restored']==10, 'Missing original GitBook screenshots'
+          assert not any(item[1]=='img' and '.gitbook/assets/' in item[2] for item in report['missing_links']), 'Unresolved GitBook image reference'
+          assert report['missing_images']==sum(1 for item in report['missing_links'] if item[1]=='img'), 'Image import report mismatch'
+          assert report['gitbook_hints'].get('info',0)>=1, 'GitBook info hint was not converted'
+          assert report['gitbook_hints'].get('warning',0)>=1, 'GitBook warning hint was not converted'
           for p in report['pages']:
               body=(root/p).read_text(encoding='utf-8')
               assert 'data-ejpt-native' in body and 'VPDoc' in body and 'VPNav' in body, p
           from bs4 import BeautifulSoup
           sheet=BeautifulSoup((root/'ejpt-cheatsheet.html').read_text(encoding='utf-8'),'html.parser').select_one('.ejpt-cheatsheet-content')
           assert sheet is not None, 'Missing native cheatsheet content'
+          sheet_html=(root/'ejpt-cheatsheet.html').read_text(encoding='utf-8')
+          assert '{% hint' not in sheet_html and '{% endhint %}' not in sheet_html, 'Raw GitBook hint directive leaked into the page'
           assert len(sheet.select('pre code'))==report['cheatsheet_display_blocks'], 'Unexpected change in displayed code block count'
           assert len(sheet.select('.ejpt-action-heading'))>=20, 'Missing information gathering action headings'
           assert len(sheet.select('.ejpt-existing-note-heading'))==report['cheatsheet_remaining_headings'], 'Incomplete remaining section headings'
