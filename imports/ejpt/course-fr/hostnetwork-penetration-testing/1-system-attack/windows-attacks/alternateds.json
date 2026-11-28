@@ -18,5 +18,40 @@
     "line": 15,
     "source": "- Check the Resource Stream (metadata) of the file",
     "translation": "- Examiner le Resource Stream (métadonnées) du fichier."
+  },
+  {
+    "line": 33,
+    "source": "`e.g.` - Download latest [winPEASx64_ofs.exe](https://github.com/carlospolop/PEASS-ng/releases/tag/20230312) (*Antivirus may block the file*), rename it to `payload.exe` and move it to `C:\\Temp` directory",
+    "translation": "`e.g.` : télécharger la dernière version de [winPEASx64_ofs.exe](https://github.com/carlospolop/PEASS-ng/releases/tag/20230312) (*l’antivirus peut bloquer le fichier*), la renommer en `payload.exe` et la déplacer dans le répertoire `C:\\Temp`"
+  },
+  {
+    "line": 35,
+    "source": "- Using the `type` command, redirect the output into a new legitimate text file, passing in the actual executable into the text file resource stream.",
+    "translation": "- Avec la commande `type`, rediriger la sortie vers un nouveau fichier texte légitime en plaçant l’exécutable dans le Resource Stream du fichier texte."
+  },
+  {
+    "line": 42,
+    "source": "- `windows_log.txt` file can be filled with legitimate logs data to make it as realistic as possible",
+    "translation": "- Le fichier `windows_log.txt` peut être rempli de logs légitimes pour le rendre aussi réaliste que possible"
+  },
+  {
+    "line": 43,
+    "source": "- Start the hidden executable",
+    "translation": "- Lancer l’exécutable masqué"
+  },
+  {
+    "line": 51,
+    "source": "- Open an elevated `cmd` and create a symbolic link",
+    "translation": "- Ouvrir un `cmd` avec des privilèges élevés et créer un lien symbolique"
+  },
+  {
+    "line": 60,
+    "source": "- Run `wupdate.exe` to launch the `winpeas.exe` payload from the Resource stream of the windows_log.txt file",
+    "translation": "- Exécuter `wupdate.exe` pour lancer le payload `winpeas.exe` depuis le Resource Stream du fichier windows_log.txt"
+  },
+  {
+    "line": 66,
+    "source": "> 📌 Same as above procedure can be done with a malicious `msfvenom` payload.",
+    "translation": "> 📌 La même procédure peut être effectuée avec un payload `msfvenom` malveillant."
   }
 ]

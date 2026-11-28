@@ -13,5 +13,30 @@
     "line": 8,
     "source": "> - **WinRM** exploitation",
     "translation": "> - Étude des vulnérabilités du service **WinRM**."
+  },
+  {
+    "line": 9,
+    "source": "> - Dictionaries to use:",
+    "translation": "> - Wordlists à utiliser :"
+  },
+  {
+    "line": 43,
+    "source": "- Use [`crackmapexec`](https://www.kali.org/tools/crackmapexec/) tool to confirm WinRM is running on port `5985`",
+    "translation": "- Utiliser l’outil [`crackmapexec`](https://www.kali.org/tools/crackmapexec/) pour confirmer que WinRM fonctionne sur le port `5985`"
+  },
+  {
+    "line": 55,
+    "source": "- Execute specific Windows commands",
+    "translation": "- Exécuter des commandes Windows spécifiques"
+  },
+  {
+    "line": 66,
+    "source": "- Get a command shell session using `evil-winrm` tool",
+    "translation": "- Obtenir une session de type command shell avec l’outil `evil-winrm`"
+  },
+  {
+    "line": 93,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

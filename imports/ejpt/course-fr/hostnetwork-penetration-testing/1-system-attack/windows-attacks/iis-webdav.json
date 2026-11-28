@@ -13,5 +13,235 @@
     "line": 8,
     "source": ">  - **IIS** exploitation",
     "translation": ">  - Étude de l’exploitation du service **IIS**."
+  },
+  {
+    "line": 9,
+    "source": ">  - Credentials provided: `bob`:`password_123321`",
+    "translation": ">  - Identifiants fournis : `bob`:`password_123321`"
+  },
+  {
+    "line": 60,
+    "source": "- A `http-enum` script scan can also be done, focusing only on port `80`:",
+    "translation": "- Un scan avec le script `http-enum` peut aussi être effectué en ciblant uniquement le port `80` :"
+  },
+  {
+    "line": 83,
+    "source": "> **`hydra`** - a parallelized fast and flexible login cracker which supports numerous protocols to attack.",
+    "translation": "> **`hydra`** : outil rapide et flexible de recherche d’identifiants, parallélisé et compatible avec de nombreux protocoles."
+  },
+  {
+    "line": 89,
+    "source": "> **❗Pay attention with brute-force attacks as they can cause a DoS (Denial of Service)❗**",
+    "translation": "> **❗ Attention aux attaques par Brute Force, qui peuvent provoquer un déni de service (DoS) ❗**"
+  },
+  {
+    "line": 91,
+    "source": "- Try `hydra` to brute force WebDAV in this case",
+    "translation": "- Essayer `hydra` pour effectuer un Brute Force de WebDAV dans ce cas"
+  },
+  {
+    "line": 99,
+    "source": "- Use the lab provided credentials instead, first in the web browser then with `davtest` tool",
+    "translation": "- Utiliser plutôt les identifiants fournis par le laboratoire, d’abord dans le navigateur Web, puis avec l’outil `davtest`"
+  },
+  {
+    "line": 105,
+    "source": "- It sends exploit files to the WebDAV server and automatically creates the directory and uploads different format types of files, then it tries to execute uploaded files and gives an output of successfully executed files.",
+    "translation": "- Il envoie des fichiers d’exploitation au serveur WebDAV, crée automatiquement le répertoire et téléverse différents types de fichiers. Il tente ensuite de les exécuter et indique ceux dont l’exécution a réussi."
+  },
+  {
+    "line": 116,
+    "source": "- Use the provided credentials with `davtest`",
+    "translation": "- Utiliser les identifiants fournis avec `davtest`"
+  },
+  {
+    "line": 143,
+    "source": "> 📌 Summary:",
+    "translation": "> 📌 Résumé :"
+  },
+  {
+    "line": 145,
+    "source": "> - All important file types can be uploaded to the `/webdav` directory",
+    "translation": "> - Tous les types de fichiers importants peuvent être téléversés dans le répertoire `/webdav`"
+  },
+  {
+    "line": 146,
+    "source": "> - `.txt`, `.asp`, `.html` files can be executed",
+    "translation": "> - Les fichiers `.txt`, `.asp`, `.html` peuvent être exécutés"
+  },
+  {
+    "line": 150,
+    "source": "- Use `cadaver` to upload an `.asp` payload to the `/webdav` directory",
+    "translation": "- Utiliser `cadaver` pour téléverser un payload `.asp` dans le répertoire `/webdav`"
+  },
+  {
+    "line": 176,
+    "source": "- Access the backdoor using the browser",
+    "translation": "- Accéder à la backdoor depuis le navigateur"
+  },
+  {
+    "line": 179,
+    "source": "- Windows commands can be provided in the box",
+    "translation": "- Des commandes Windows peuvent être saisies dans le champ"
+  },
+  {
+    "line": 183,
+    "source": "- Run `whoami`, `ipconfig` or other commands to find the flag",
+    "translation": "- Exécuter `whoami`, `ipconfig` ou d’autres commandes pour trouver le flag"
+  },
+  {
+    "line": 187,
+    "source": "- `dir C:\\` command",
+    "translation": "- Commande `dir C:\\`"
+  },
+  {
+    "line": 190,
+    "source": "- `type C:\\flag.txt` command",
+    "translation": "- Commande `type C:\\flag.txt`"
+  },
+  {
+    "line": 195,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 208,
+    "source": "> 🔬 [Windows: IIS Server: WebDav Metasploit](https://attackdefense.com/challengedetails?cid=2319)",
+    "translation": "> 🔬 [Windows : serveur IIS, WebDAV et Metasploit](https://attackdefense.com/challengedetails?cid=2319)"
+  },
+  {
+    "line": 210,
+    "source": "> - Target IP: `10.4.18.218`",
+    "translation": "> - IP cible : `10.4.18.218`"
+  },
+  {
+    "line": 211,
+    "source": "> - IIS exploitation with Metasploit",
+    "translation": "> - Exploitation d’IIS avec Metasploit"
+  },
+  {
+    "line": 212,
+    "source": "> - Credentials provided: `bob`:`password_123321`",
+    "translation": "> - Identifiants fournis : `bob`:`password_123321`"
+  },
+  {
+    "line": 232,
+    "source": "- Use `davtest` to get the all the file types that can be uploaded and executed on the IIS server",
+    "translation": "- Utiliser `davtest` pour identifier tous les types de fichiers pouvant être téléversés et exécutés sur le serveur IIS"
+  },
+  {
+    "line": 240,
+    "source": "- Use [Metasploit module](https://www.rapid7.com/db/modules/exploit/windows/iis/iis_webdav_upload_asp/) to execute a payload and optain a **reverse shell** (**`meterpreter session`**) on the target system or use `msfvenom` to manually create a payload and use it with metasploit.",
+    "translation": "- Utiliser le [module Metasploit](https://www.rapid7.com/db/modules/exploit/windows/iis/iis_webdav_upload_asp/) pour exécuter un payload et obtenir un **reverse shell** (**`meterpreter session`**) sur le système cible, ou utiliser `msfvenom` pour créer manuellement un payload et l’utiliser avec Metasploit."
+  },
+  {
+    "line": 244,
+    "source": "- Manually generate the `.asp` payload",
+    "translation": "- Générer manuellement le payload `.asp`"
+  },
+  {
+    "line": 250,
+    "source": "- Use `cadaver` to upload the generated `shell.asp` payload to the `/webdav` directory",
+    "translation": "- Utiliser `cadaver` pour téléverser le payload `shell.asp` généré dans le répertoire `/webdav`"
+  },
+  {
+    "line": 260,
+    "source": "Before executing the `shell.asp`, *setup a **listener**/**handler** that will receive the reverse connection from the target and send the stage that provides with a `meterpreter` session when executed*.",
+    "translation": "Avant d’exécuter `shell.asp`, *configurer un **listener**/**handler** qui recevra la connexion inverse de la cible et enverra le stage fournissant une session `meterpreter` lors de son exécution*."
+  },
+  {
+    "line": 261,
+    "source": "- Open a new terminal tab and run Metasploit with database support",
+    "translation": "- Ouvrir un nouvel onglet du terminal et lancer Metasploit avec la prise en charge de la base de données"
+  },
+  {
+    "line": 267,
+    "source": "- Setup a [Metasploit handler](https://www.rapid7.com/db/modules/exploit/multi/handler/), using the same payload, LHOST, LPORT provided to `msfvenom`",
+    "translation": "- Configurer un [handler Metasploit](https://www.rapid7.com/db/modules/exploit/multi/handler/) avec les mêmes payload, LHOST et LPORT que ceux fournis à `msfvenom`"
+  },
+  {
+    "line": 277,
+    "source": "- The listener (reverse TCP handler) starts listening and waits for a connection from the actual `shell.asp` payload",
+    "translation": "- Le listener (reverse TCP handler) se met en écoute et attend une connexion provenant du payload `shell.asp`"
+  },
+  {
+    "line": 281,
+    "source": "- Open the `http://10.4.18.218/webdav` link in the browser and click on `shell.asp` file",
+    "translation": "- Ouvrir le lien `http://10.4.18.218/webdav` dans le navigateur et cliquer sur le fichier `shell.asp`"
+  },
+  {
+    "line": 282,
+    "source": "- The **Meterpreter** session will be opened",
+    "translation": "- La session **Meterpreter** sera ouverte"
+  },
+  {
+    "line": 286,
+    "source": "- Get remote system info with `sysinfo`",
+    "translation": "- Récupérer les informations du système distant avec `sysinfo`"
+  },
+  {
+    "line": 290,
+    "source": "- Get the user that the server is running as with `getuid`",
+    "translation": "- Identifier le compte sous lequel le serveur s’exécute avec `getuid`"
+  },
+  {
+    "line": 294,
+    "source": "> 📌 No privilege escalation needed since the user is `NT AUTHORITY\\SYSTEM`",
+    "translation": "> 📌 Aucune Privilege Escalation nécessaire, car le compte est `NT AUTHORITY\\SYSTEM`"
+  },
+  {
+    "line": 296,
+    "source": "> ❗ Once access is optained, the uploaded payloads can be deleted from the target system, to avoid detection!",
+    "translation": "> ❗ Une fois l’accès obtenu, les payloads téléversés peuvent être supprimés du système cible pour éviter la détection !"
+  },
+  {
+    "line": 298,
+    "source": "- Use cadaver to delete the `shell.asp` uploaded file",
+    "translation": "- Utiliser cadaver pour supprimer le fichier `shell.asp` téléversé"
+  },
+  {
+    "line": 307,
+    "source": "- Use Metasploit [iis_webdav_upload_asp](https://www.rapid7.com/db/modules/exploit/windows/iis/iis_webdav_upload_asp/) module to get a `meterpreter` session on the target system.",
+    "translation": "- Utiliser le module Metasploit [iis_webdav_upload_asp](https://www.rapid7.com/db/modules/exploit/windows/iis/iis_webdav_upload_asp/) pour obtenir une session `meterpreter` sur le système cible."
+  },
+  {
+    "line": 325,
+    "source": "- *This exploit automatically deleted the `/webdav/metasploit.asp` payload*",
+    "translation": "- *Cet exploit a automatiquement supprimé le payload `/webdav/metasploit.asp`*"
+  },
+  {
+    "line": 326,
+    "source": "- Find the flag, running `meterpreter` commands",
+    "translation": "- Trouver le flag en exécutant des commandes `meterpreter`"
+  },
+  {
+    "line": 337,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 351,
+    "source": "> [Windows: IIS Server Metasploit Backdoor](https://attackdefense.com/challengedetails?cid=2318)",
+    "translation": "> [Windows : backdoor Metasploit sur serveur IIS](https://attackdefense.com/challengedetails?cid=2318)"
+  },
+  {
+    "line": 353,
+    "source": "> - Target IP: `10.4.23.148`",
+    "translation": "> - IP cible : `10.4.23.148`"
+  },
+  {
+    "line": 354,
+    "source": "> - IIS exploitation with Metasploit",
+    "translation": "> - Exploitation d’IIS avec Metasploit"
+  },
+  {
+    "line": 355,
+    "source": "> - Credentials provided: `bob`:`password_123321`",
+    "translation": "> - Identifiants fournis : `bob`:`password_123321`"
+  },
+  {
+    "line": 390,
+    "source": "<summary>Reveal Flag - Administrator NTLM Hash is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : hash NTLM d’Administrator : 🚩</summary>"
   }
 ]

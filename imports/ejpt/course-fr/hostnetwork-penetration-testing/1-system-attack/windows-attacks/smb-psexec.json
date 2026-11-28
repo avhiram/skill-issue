@@ -13,5 +13,120 @@
     "line": 8,
     "source": "> - **SMB** exploitation",
     "translation": "> - Étude des vulnérabilités du service **SMB**."
+  },
+  {
+    "line": 9,
+    "source": "> - Dictionaries to use:",
+    "translation": "> - Wordlists à utiliser :"
+  },
+  {
+    "line": 45,
+    "source": "> 📌 SMB version 2.02",
+    "translation": "> 📌 Version SMB : 2.02"
+  },
+  {
+    "line": 49,
+    "source": "- Use Metasploit [smb_login](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/smb_login) module to brute force SMB",
+    "translation": "- Utiliser le module Metasploit [smb_login](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/smb_login) pour effectuer un Brute Force SMB"
+  },
+  {
+    "line": 50,
+    "source": "  - The brute force success is based on the users and password used.",
+    "translation": "  - Le succès du Brute Force dépend des utilisateurs et des mots de passe utilisés."
+  },
+  {
+    "line": 78,
+    "source": "- Use [PsExec.py](https://github.com/fortra/impacket/blob/master/examples/psexec.py) script for Linux (from the [impacket-scripts](https://www.kali.org/tools/impacket-scripts/))  to get a command prompt on the target machine, with the Administrator account.",
+    "translation": "- Utiliser le script [PsExec.py](https://github.com/fortra/impacket/blob/master/examples/psexec.py) pour Linux (fourni par [impacket-scripts](https://www.kali.org/tools/impacket-scripts/)) afin d’obtenir une invite de commandes sur la machine cible avec le compte Administrator."
+  },
+  {
+    "line": 79,
+    "source": "  - Using this technique, **no exploit is launched or uploaded on the target system**.",
+    "translation": "  - Avec cette technique, **aucun exploit n’est lancé ni téléversé sur le système cible**."
+  },
+  {
+    "line": 80,
+    "source": "  - It is a legitimate authentication with the actual credentials and the use of an official tool (`psexec`).",
+    "translation": "  - Il s’agit d’une authentification légitime avec les identifiants réels et un outil officiel (`psexec`)."
+  },
+  {
+    "line": 88,
+    "source": "- Alternatively to the Python script, use Metasploit [psexec](https://www.rapid7.com/db/modules/exploit/windows/smb/psexec/) module to get a `meterpreter` session on the target system.",
+    "translation": "- En alternative au script Python, utiliser le module Metasploit [psexec](https://www.rapid7.com/db/modules/exploit/windows/smb/psexec/) pour obtenir une session `meterpreter` sur le système cible."
+  },
+  {
+    "line": 89,
+    "source": "  - This technique will **upload and run a (malicious) payload** on the target. Pay attention to the antivirus!",
+    "translation": "  - Cette technique **téléverse et exécute un payload (malveillant)** sur la cible. Attention à l’antivirus !"
+  },
+  {
+    "line": 104,
+    "source": "- Find the flag, running `meterpreter` commands",
+    "translation": "- Trouver le flag en exécutant des commandes `meterpreter`"
+  },
+  {
+    "line": 115,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 129,
+    "source": "> 🔬 **Home Lab**",
+    "translation": "> 🔬 **Laboratoire local**"
+  },
+  {
+    "line": 131,
+    "source": "> I have prepared a vulnerable *Windows 2008 R2 Virtual Machine* and connected it to the same network of the Kali virtual machine. On the server, I have activated `File Services` role and created a shared folder with the Administrators Group.",
+    "translation": "> J’ai préparé une *machine virtuelle Windows 2008 R2* vulnérable et l’ai connectée au même réseau que la machine virtuelle Kali. Sur le serveur, j’ai activé le rôle `File Services` et créé un dossier partagé avec le groupe Administrators."
+  },
+  {
+    "line": 133,
+    "source": "> - Host system: `Kali Linux`",
+    "translation": "> - Système hôte : `Kali Linux`"
+  },
+  {
+    "line": 134,
+    "source": "> - Target system: `Windown Server 2008 R2` - IP `192.168.31.131` - `Administrator`:`Eternal17010`",
+    "translation": "> - Système cible : `Windown Server 2008 R2`, IP `192.168.31.131`, `Administrator`:`Eternal17010`"
+  },
+  {
+    "line": 135,
+    "source": "> - Exploitation tool: [AutoBlue-MS17-010](https://github.com/3ndG4me/AutoBlue-MS17-010)",
+    "translation": "> - Outil d’exploitation : [AutoBlue-MS17-010](https://github.com/3ndG4me/AutoBlue-MS17-010)"
+  },
+  {
+    "line": 136,
+    "source": "> - Vulnerability: [CVE-2017-0143 - EternalBlue](https://nvd.nist.gov/vuln/detail/CVE-2017-0143) + [CVE-2017-0144](https://nvd.nist.gov/vuln/detail/CVE-2017-0144)",
+    "translation": "> - Vulnérabilité : [CVE-2017-0143 - EternalBlue](https://nvd.nist.gov/vuln/detail/CVE-2017-0143) + [CVE-2017-0144](https://nvd.nist.gov/vuln/detail/CVE-2017-0144)"
+  },
+  {
+    "line": 152,
+    "source": "> - 📌 The system is vulnerable to the `CVE-2017-0143`",
+    "translation": "> - 📌 Le système est vulnérable à `CVE-2017-0143`"
+  },
+  {
+    "line": 156,
+    "source": "- [AutoBlue-MS17-010](https://github.com/3ndG4me/AutoBlue-MS17-010) will be used for the manual exploitation",
+    "translation": "- [AutoBlue-MS17-010](https://github.com/3ndG4me/AutoBlue-MS17-010) sera utilisé pour l’exploitation manuelle"
+  },
+  {
+    "line": 167,
+    "source": "- Generate a shellcode that will be exploited on the target system.",
+    "translation": "- Générer un shellcode qui sera utilisé pour exploiter le système cible."
+  },
+  {
+    "line": 179,
+    "source": "- Set a **`netcat`** listener on the specified port, in another terminal tab",
+    "translation": "- Configurer un listener **`netcat`** sur le port indiqué, dans un autre onglet du terminal"
+  },
+  {
+    "line": 185,
+    "source": "- In the `AutoBlue` terminal tab, use the `eternalblue_exploit7.py` to exploit the target from the AutoBlue-MS17-010 directory",
+    "translation": "- Dans l’onglet du terminal `AutoBlue`, utiliser `eternalblue_exploit7.py` pour exploiter la cible depuis le répertoire AutoBlue-MS17-010"
+  },
+  {
+    "line": 193,
+    "source": "- Check the `netcat` tab for the reverse shell",
+    "translation": "- Vérifier le reverse shell dans l’onglet `netcat`"
   }
 ]

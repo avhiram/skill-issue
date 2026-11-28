@@ -13,5 +13,205 @@
     "line": 8,
     "source": "> - **RDP** exploitation",
     "translation": "> - Étude des vulnérabilités du service **RDP**."
+  },
+  {
+    "line": 9,
+    "source": "> - Dictionaries to use:",
+    "translation": "> - Wordlists à utiliser :"
+  },
+  {
+    "line": 36,
+    "source": "- Use Metasploit [rdp_scanner](https://www.rapid7.com/db/modules/auxiliary/scanner/rdp/rdp_scanner/) module to check if port `3333` is running RDP.",
+    "translation": "- Utiliser le module Metasploit [rdp_scanner](https://www.rapid7.com/db/modules/auxiliary/scanner/rdp/rdp_scanner/) pour vérifier si RDP fonctionne sur le port `3333`."
+  },
+  {
+    "line": 51,
+    "source": "> 📌 The **RDP is exposed on target port `3333`**, and not on the default port `3389`.",
+    "translation": "> 📌 **RDP est exposé sur le port cible `3333`**, et non sur le port par défaut `3389`."
+  },
+  {
+    "line": 55,
+    "source": "- Try `hydra` to find valid username and password",
+    "translation": "- Essayer `hydra` pour trouver un nom d’utilisateur et un mot de passe valides"
+  },
+  {
+    "line": 70,
+    "source": "- `freerdp` cannot be used in this lab",
+    "translation": "- `freerdp` ne peut pas être utilisé dans ce laboratoire"
+  },
+  {
+    "line": 71,
+    "source": "- Use **`xfreerdp`** to connect to target via RDP",
+    "translation": "- Utiliser **`xfreerdp`** pour se connecter à la cible via RDP"
+  },
+  {
+    "line": 82,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 97,
+    "source": "> 🔬 **Home Lab**",
+    "translation": "> 🔬 **Laboratoire local**"
+  },
+  {
+    "line": 99,
+    "source": "> I have prepared a vulnerable *Windows 2008 R2 Virtual Machine* and connected it to the same network of the Kali virtual machine. On the server, I have activated `RDP` service on default port `3389`.",
+    "translation": "> J’ai préparé une *machine virtuelle Windows 2008 R2* vulnérable et l’ai connectée au même réseau que la machine virtuelle Kali. Sur le serveur, j’ai activé le service `RDP` sur le port par défaut `3389`."
+  },
+  {
+    "line": 101,
+    "source": "> - Host system: `Kali Linux`",
+    "translation": "> - Système hôte : `Kali Linux`"
+  },
+  {
+    "line": 102,
+    "source": "> - Target system: `Windown Server 2008 R2` - IP `192.168.31.131` - `Administrator`:`Eternal17010`",
+    "translation": "> - Système cible : `Windown Server 2008 R2`, IP `192.168.31.131`, `Administrator`:`Eternal17010`"
+  },
+  {
+    "line": 103,
+    "source": "> - Exploitation tool:",
+    "translation": "> - Outil d’exploitation :"
+  },
+  {
+    "line": 104,
+    "source": "> - Vulnerability: [CVE-2019-0708 - BlueKeep](https://nvd.nist.gov/vuln/detail/CVE-2019-0708)",
+    "translation": "> - Vulnérabilité : [CVE-2019-0708 - BlueKeep](https://nvd.nist.gov/vuln/detail/CVE-2019-0708)"
+  },
+  {
+    "line": 105,
+    "source": "> - ❗ **Targeting Kernel space memory and apps can cause system crashes.**",
+    "translation": "> - ❗ **Cibler la mémoire et les applications du Kernel Space peut provoquer des plantages du système.**"
+  },
+  {
+    "line": 107,
+    "source": "- *The attacker can remotely execute arbitrary code by gaining access to a chunk of kernel memory, without authentication.*",
+    "translation": "- *L’attaquant peut exécuter du code arbitraire à distance en accédant à une zone de mémoire du noyau, sans authentification.*"
+  },
+  {
+    "line": 108,
+    "source": "- BlueKeep **PoC**'s (**P**roof **o**f **C**oncepts) and exploits could be **malicious** in nature, use only verified exploit code and modules.",
+    "translation": "- Les **PoC** (**P**roof **o**f **C**oncepts) et exploits BlueKeep peuvent être **malveillants**. Utiliser uniquement des exploits et modules vérifiés."
+  },
+  {
+    "line": 112,
+    "source": "- Target RDP activated:",
+    "translation": "- RDP activé sur la cible :"
+  },
+  {
+    "line": 124,
+    "source": "> - 📌 RDP Port `3389` is open",
+    "translation": "> - 📌 Le port RDP `3389` est ouvert"
+  },
+  {
+    "line": 156,
+    "source": "> ❗ **Kernel CRASH can be caused by this exploit, so pay attention on production environment** ❗",
+    "translation": "> ❗ **Cet exploit peut provoquer un plantage du noyau. Attention en environnement de production.** ❗"
+  },
+  {
+    "line": 160,
+    "source": "- To make the exploit work, I've used the [Pentest-Tools blog on BlueKeep](https://pentest-tools.com/blog/bluekeep-exploit-metasploit) and [Alexandre Vieira blog post](https://alexandrevvo.medium.com/testing-bluekeep-cve-2019-0708-metasploit-module-on-windows-7-ef3f28217b7b).",
+    "translation": "- Pour faire fonctionner l’exploit, j’ai utilisé le [blog Pentest-Tools sur BlueKeep](https://pentest-tools.com/blog/bluekeep-exploit-metasploit) et [l’article d’Alexandre Vieira](https://alexandrevvo.medium.com/testing-bluekeep-cve-2019-0708-metasploit-module-on-windows-7-ef3f28217b7b)."
+  },
+  {
+    "line": 161,
+    "source": "- On WinServer2008 target, open `regedit`",
+    "translation": "- Sur la cible WinServer2008, ouvrir `regedit`"
+  },
+  {
+    "line": 163,
+    "source": "  - Set `fDisableCam` reg key on `0`",
+    "translation": "  - Définir la clé de registre `fDisableCam` sur `0`"
+  },
+  {
+    "line": 169,
+    "source": "- To make the exploit work, it needs the correct GROOMBASE value which is the start address of the [Non Paged Pool area](https://docs.microsoft.com/en-us/windows/win32/memory/memory-pools) (NPP).",
+    "translation": "- Pour fonctionner, l’exploit nécessite la valeur GROOMBASE correcte, qui correspond à l’adresse de début de la [zone Non Paged Pool](https://docs.microsoft.com/en-us/windows/win32/memory/memory-pools) (NPP)."
+  },
+  {
+    "line": 170,
+    "source": "- The NPP address can be extracted from a memory dump of the target machine.",
+    "translation": "- L’adresse NPP peut être extraite d’un dump mémoire de la machine cible."
+  },
+  {
+    "line": 171,
+    "source": "- In VMWare, take a snapshot of the target virtual machine (Win Server 2008 R2).",
+    "translation": "- Dans VMWare, effectuer un snapshot de la machine virtuelle cible (Win Server 2008 R2)."
+  },
+  {
+    "line": 172,
+    "source": "  - Download the [vmss2core tool](https://labs.vmware.com/flings/vmss2core;)",
+    "translation": "  - Télécharger [l’outil vmss2core](https://labs.vmware.com/flings/vmss2core;)"
+  },
+  {
+    "line": 173,
+    "source": "  - From the VM (virtual machine) folder copy the `.vmem` and `.vmsn` files to the `vmss2core` tool folder",
+    "translation": "  - Depuis le dossier de la machine virtuelle, copier les fichiers `.vmem` et `.vmsn` dans le dossier de l’outil `vmss2core`"
+  },
+  {
+    "line": 174,
+    "source": "  - Run the tool to generate a `memory.dmp` file",
+    "translation": "  - Exécuter l’outil pour générer un fichier `memory.dmp`"
+  },
+  {
+    "line": 180,
+    "source": "- Run [WinDbg](https://apps.microsoft.com/store/detail/windbg-preview/9PGJGD53TN86?hl=en-us&gl=us) and open the `memory.dmp` file",
+    "translation": "- Lancer [WinDbg](https://apps.microsoft.com/store/detail/windbg-preview/9PGJGD53TN86?hl=en-us&gl=us) et ouvrir le fichier `memory.dmp`"
+  },
+  {
+    "line": 181,
+    "source": "  - Run `!polfind a` to get a message",
+    "translation": "  - Exécuter `!polfind a` pour obtenir un message"
+  },
+  {
+    "line": 182,
+    "source": "  - That is the start of address of Non Page Pool, in this case **`fffffa8018c08000`**",
+    "translation": "  - Il s’agit de l’adresse de début du Non Paged Pool, ici **`fffffa8018c08000`**"
+  },
+  {
+    "line": 186,
+    "source": "- Edit the exploit and set the `GROOMBASE` variable if not already set.",
+    "translation": "- Modifier l’exploit et définir la variable `GROOMBASE` si elle n’est pas déjà configurée."
+  },
+  {
+    "line": 187,
+    "source": "  - In my case it is already set as the above address, for the `2008 R2 (6.1.7601 x64 - VMWare 15.1)` target number `5`.",
+    "translation": "  - Dans mon cas, elle correspond déjà à l’adresse ci-dessus pour la cible `2008 R2 (6.1.7601 x64 - VMWare 15.1)` numéro `5`."
+  },
+  {
+    "line": 191,
+    "source": "- Save the exploit file and run `reload_all` in the Metasploit interface.",
+    "translation": "- Enregistrer le fichier de l’exploit et exécuter `reload_all` dans l’interface Metasploit."
+  },
+  {
+    "line": 192,
+    "source": "- Set the GROOMSIZE to 50.",
+    "translation": "- Définir GROOMSIZE sur 50."
+  },
+  {
+    "line": 211,
+    "source": "> [Windows RDP: Dictionary Attack](https://attackdefense.com/challengedetails?cid=1954)",
+    "translation": "> [Windows RDP : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=1954)"
+  },
+  {
+    "line": 213,
+    "source": "> - Target IP: `10.4.22.41`",
+    "translation": "> - IP cible : `10.4.22.41`"
+  },
+  {
+    "line": 214,
+    "source": "> - **RDP** exploitation",
+    "translation": "> - Exploitation de **RDP**"
+  },
+  {
+    "line": 215,
+    "source": "> - Dictionaries to use:",
+    "translation": "> - Wordlists à utiliser :"
+  },
+  {
+    "line": 245,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]
