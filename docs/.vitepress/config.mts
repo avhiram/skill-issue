@@ -536,10 +536,10 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
-        async _render(src, env, md) {
-          const html = await md.renderAsync(src, env)
-          if (env.frontmatter?.search === false || /^(oscp|crto|crtp|bug-bounty|membres)\//i.test(env.relativePath || '')) return ''
-          return html
+        _render(src, env, md) {
+          if (/^(oscp|crto|crtp|bug-bounty|membres)\//i.test(env.relativePath || '')) return ''
+          const html = md.render(src, env)
+          return env.frontmatter?.search === false ? '' : html
         },
         miniSearch: {
           options: {
