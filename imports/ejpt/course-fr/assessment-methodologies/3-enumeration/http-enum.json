@@ -30,8 +30,43 @@
     "translation": ">  - Énumération d’un serveur HTTP `IIS` sans navigateur."
   },
   {
+    "line": 71,
+    "source": "> - IIS Server version is `10.0`",
+    "translation": "> - Version du serveur IIS : `10.0`"
+  },
+  {
+    "line": 72,
+    "source": "> - ASP.NET version is `4.0.30319`",
+    "translation": "> - Version ASP.NET : `4.0.30319`"
+  },
+  {
     "line": 78,
     "source": "> **`httpie`** - CLI, cURL-like tool for humans. Run with **`http`**",
     "translation": "> **`httpie`** : outil en ligne de commande comparable à cURL, conçu pour faciliter les requêtes HTTP. Il se lance avec **`http`**."
+  },
+  {
+    "line": 167,
+    "source": "> **`browsh`** - *A fully interactive, real-time, and modern text-based browser rendered to TTYs and browsers*. It's used when only command line is available or now browser is installed.",
+    "translation": "> **`browsh`** : *navigateur textuel moderne et interactif, dont le rendu en temps réel est accessible depuis un TTY ou un navigateur*. Il est utile lorsqu’on ne dispose que d’une interface en ligne de commande ou qu’aucun navigateur graphique n’est installé."
+  },
+  {
+    "line": 177,
+    "source": "> 📌 The target application is `WebGoat.net`",
+    "translation": "> 📌 L’application du laboratoire est `WebGoat.net`."
+  },
+  {
+    "line": 181,
+    "source": ">  🔬 [Windows Recon: IIS: Nmap Scripts](https://attackdefense.com/challengedetails?cid=2312)",
+    "translation": ">  🔬 [Reconnaissance Windows : IIS et scripts Nmap](https://attackdefense.com/challengedetails?cid=2312)"
+  },
+  {
+    "line": 183,
+    "source": ">  - Target IP: `10.4.21.207`",
+    "translation": ">  - IP cible du laboratoire : `10.4.21.207`"
+  },
+  {
+    "line": 184,
+    "source": ">  - Enumeration of an `IIS` HTTP server using `nmap` scripts",
+    "translation": ">  - Énumération d’un serveur HTTP `IIS` avec les scripts `nmap`."
   }
 ]

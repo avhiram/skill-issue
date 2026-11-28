@@ -25,8 +25,23 @@
     "translation": ">  - Reconnaissance d’un serveur `MySQL`."
   },
   {
+    "line": 29,
+    "source": "> 📌 MySQL server version is `5.5.62`",
+    "translation": "> 📌 Version du serveur MySQL : `5.5.62`."
+  },
+  {
     "line": 33,
     "source": "> **`mysql`** - SQL shell with input line editing capabilities.",
     "translation": "> **`mysql`** : interpréteur de commandes SQL permettant de modifier les lignes saisies."
+  },
+  {
+    "line": 62,
+    "source": "> 📌 There are `11 databases` on the server.",
+    "translation": "> 📌 Le serveur contient `11 databases` (11 bases de données)."
+  },
+  {
+    "line": 75,
+    "source": "> 📌 There are `10 records` in table *`authors`* inside the books *database*.",
+    "translation": "> 📌 La base books contient `10 records` (10 enregistrements) dans la table *`authors`*."
   }
 ]

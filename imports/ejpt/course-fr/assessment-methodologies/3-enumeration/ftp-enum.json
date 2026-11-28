@@ -13,5 +13,35 @@
     "line": 7,
     "source": "Default FTP port is **`21`**, opened when FTP is activated for sharing data.",
     "translation": "Le port FTP par défaut est **`21`**, ouvert lorsque FTP est activé pour le partage de données."
+  },
+  {
+    "line": 15,
+    "source": ">  🔬 [ProFTP Recon: Basics](https://attackdefense.com/challengedetails?cid=518)",
+    "translation": ">  🔬 [Reconnaissance ProFTP : fondamentaux](https://attackdefense.com/challengedetails?cid=518)"
+  },
+  {
+    "line": 17,
+    "source": ">  - Target IP: `192.217.238.3`",
+    "translation": ">  - IP cible du laboratoire : `192.217.238.3`"
+  },
+  {
+    "line": 18,
+    "source": ">  - Enumeration of [ProFTP](http://www.proftpd.org/) server",
+    "translation": ">  - Énumération du serveur [ProFTP](http://www.proftpd.org/)."
+  },
+  {
+    "line": 174,
+    "source": ">  🔬 [VSFTPD Recon: Basics](https://attackdefense.com/challengedetails?cid=519)",
+    "translation": ">  🔬 [Reconnaissance VSFTPD : fondamentaux](https://attackdefense.com/challengedetails?cid=519)"
+  },
+  {
+    "line": 176,
+    "source": ">  - Target IP: `192.119.169.3`",
+    "translation": ">  - IP cible du laboratoire : `192.119.169.3`"
+  },
+  {
+    "line": 177,
+    "source": ">  - Enumeration of [vsftpd](https://security.appspot.com/vsftpd.html) server",
+    "translation": ">  - Énumération du serveur [vsftpd](https://security.appspot.com/vsftpd.html)."
   }
 ]

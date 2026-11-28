@@ -13,5 +13,15 @@
     "line": 7,
     "source": "- `e.g.` Windows mapping and sharing drives as letter, uses SMB",
     "translation": "- `e.g.` Sous Windows, le partage et le mappage de lecteurs avec des lettres utilisent SMB."
+  },
+  {
+    "line": 19,
+    "source": ">  🔬 [Windows Recon: SMB Nmap Scripts](https://attackdefense.com/challengedetailsnoauth?cid=2222)",
+    "translation": ">  🔬 [Reconnaissance Windows : SMB et scripts Nmap](https://attackdefense.com/challengedetailsnoauth?cid=2222)"
+  },
+  {
+    "line": 21,
+    "source": ">  - Target IP: `10.2.24.25`",
+    "translation": ">  - IP cible du laboratoire : `10.2.24.25`"
   }
 ]

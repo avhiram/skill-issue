@@ -8,5 +8,35 @@
     "line": 5,
     "source": "Default SMTP TCP port is **`25`**.",
     "translation": "Le port TCP par défaut de SMTP est **`25`**."
+  },
+  {
+    "line": 13,
+    "source": ">  🔬  [SMTP - Postfix Recon: Basics](https://www.attackdefense.com/challengedetails?cid=516)",
+    "translation": ">  🔬  [Reconnaissance SMTP et Postfix : fondamentaux](https://www.attackdefense.com/challengedetails?cid=516)"
+  },
+  {
+    "line": 15,
+    "source": ">  - Target IP: `192.63.243.3`",
+    "translation": ">  - IP cible du laboratoire : `192.63.243.3`"
+  },
+  {
+    "line": 16,
+    "source": ">  - Enumeration of [Postfix](https://www.postfix.org/) server",
+    "translation": ">  - Énumération du serveur [Postfix](https://www.postfix.org/)."
+  },
+  {
+    "line": 38,
+    "source": "> 📌 SMTP server name and banner are:",
+    "translation": "> 📌 Nom et bannière du serveur SMTP :"
+  },
+  {
+    "line": 54,
+    "source": "> 📌 SMTP server hostname is `openmailbox.xyz`",
+    "translation": "> 📌 Nom d’hôte du serveur SMTP : `openmailbox.xyz`."
+  },
+  {
+    "line": 96,
+    "source": "> 📌 Supported commands/capabilities are",
+    "translation": "> 📌 Commandes et fonctionnalités prises en charge :"
   }
 ]
