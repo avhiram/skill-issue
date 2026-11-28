@@ -997,15 +997,25 @@ def refine_network_layout(soup, article):
     # Use broad topics already explicitly present in the original notes.
     wireshark={
         "# Filter by ip": ("Adresses IP", "Les filtres d’affichage distinguent les paquets selon les adresses IP."),
+        "# Filter by dest ip": ("Adresse IP de destination", "Filtrer les paquets selon leur adresse IP de destination."),
+        "# Filter by source ip": ("Adresse IP source", "Filtrer les paquets selon leur adresse IP source."),
+        "# Filter by ip addr and port": ("Adresse IP et port", "Combiner les critères d’adresse et de port."),
         "# Filter by tcp port": ("Ports TCP", "Les ports identifient les points de communication des services."),
-        "# Filter SYN flag": ("En-têtes TCP", "Les indicateurs TCP décrivent les états et le fonctionnement des connexions."),
+        "# Filter SYN flag": ("Indicateur SYN", "Repérer les paquets TCP qui portent le flag SYN."),
         "# Broadcast filter": ("Diffusion réseau", "Le broadcast désigne les trames destinées à l’ensemble d’un domaine de diffusion."),
     }
     tshark={
         "# First 100 packets": ("Lecture de la capture", "TShark permet de consulter des captures réseau en ligne de commande."),
         "# Protocl hierarchy statistics": ("Statistiques de protocoles", "La hiérarchie des protocoles résume la composition d’une capture."),
         "# HTTP traffic": ("Trafic HTTP", "Les messages HTTP sont structurés en requêtes et réponses."),
-        "# Check session ID": ("Autres observations de la capture", "Les extraits suivants restent regroupés dans leur ordre original."),
+        "# Check session ID": ("Identifiant de session", "Repérer les informations de session présentes dans la capture."),
+        "# Check OS/User Agent type": ("Système et User-Agent", "Consulter les informations de système et de navigateur exposées dans les échanges."),
+        "# WiFi traffic filter": ("Trafic Wi-Fi", "Filtrer les trames liées aux communications sans fil."),
+        "# Only deauthentication packets": ("Trames de désauthentification", "Isoler les trames de désauthentification dans la capture."),
+        "# Only WPA handshake packets": ("Handshake WPA", "Repérer les paquets associés à un échange WPA."),
+        "# Onyl SSID/BSSID": ("SSID et BSSID", "Consulter les identifiants du réseau et du point d’accès."),
+        "# WiFi Channel": ("Canal Wi-Fi", "Identifier le canal utilisé par le réseau sans fil."),
+        "# Vendor & model": ("Constructeur et modèle", "Consulter les informations de fabricant et de modèle visibles dans la capture."),
     }
     count=0
     sources=0
@@ -1342,6 +1352,446 @@ def refine_final_chapters(soup, article):
     return counts
 
 
+def refine_long_blocks(soup, article):
+    """Split long source blocks at existing section markers without changing their text."""
+    before = [c.get_text() for c in article.select("pre code")]
+    original_pres = list(article.find_all("pre"))
+    expected = list(before)
+    position = 0
+    reviewed = 0
+    split_count = 0
+    created_blocks = 0
+    retained = 0
+
+    label_map = {
+        "msf meterpreter": "Session Meterpreter",
+        "linux shell - run 'shell' in meterpreter": "Shell Linux",
+        "system": "Informations système",
+        "users": "Utilisateurs",
+        "network": "Réseau",
+        "services": "Services",
+        "metasploit": "Metasploit",
+        "linenum - automatic enumeration": "Énumération automatique avec LinEnum",
+        "win cmd - run 'shell' in meterpreter": "Invite de commandes Windows",
+        "jaws - automatic local enumeration - powershell": "Énumération automatique avec JAWS",
+        "exploitation": "Exploitation",
+        "on target system": "Exécution sur le système cible",
+        "run payload.exe": "Lancement du payload",
+        "metasploit - meterpreter": "Session Meterpreter",
+        "creds dumping - meterpreter": "Collecte des identifiants",
+        "mimikatz": "Mimikatz",
+        "pass the hash": "Pass the Hash",
+        "service enumeration": "Énumération des services",
+        "ftp": "FTP",
+        "smb": "SMB",
+        "http": "HTTP",
+        "mysql": "MySQL",
+        "ssh": "SSH",
+        "smtp": "SMTP",
+        "msfconsole": "Console Metasploit",
+        "switch between sessions ids with": "Gestion des sessions",
+        "rename sessions": "Renommer une session",
+        "run a meterpreter command on the session given with -i": "Commande sur une session",
+        "terminate a specific session": "Fermer une session",
+        "terminate all sessions": "Fermer toutes les sessions",
+        "upgrade a shell session to a meterpreter session": "Conversion en Meterpreter",
+        "workspaces - db_status must be connected": "Workspaces",
+        "dirbuster": "Dirbuster",
+        "curl": "Requêtes HTTP avec cURL",
+        "gobuster": "Gobuster",
+        "ffuf": "Ffuf",
+        "directory discovery:": "Découverte de répertoires",
+        "file discovery:": "Découverte de fichiers",
+        "output of responses with status code:": "Filtrage par code HTTP",
+        "the -maxtime flag offers to end the ongoing fuzzing after the specified time in seconds:": "Durée maximale du fuzzing",
+        "number of threads:": "Nombre de threads",
+        "nikto": "Nikto",
+        "wpscan": "WPScan",
+        "targeting smb": "Analyse SMB",
+        "brute-force smb": "Authentification SMB",
+        "enumeration": "Énumération",
+        "smb login with <user>": "Connexion SMB avec identifiants",
+        "without <user>:<pw>, exploit a vulnerability, e.g. eternalblue": "Vulnérabilité SMB",
+        "targeting vsftpd": "Analyse vsftpd",
+        "try anonymous:anonymous": "Accès anonyme",
+        "exploit vsftpd": "Référence vsftpd",
+        "enumerate smtp - msfconsole": "Énumération SMTP",
+        "brute-force ftp": "Authentification FTP",
+        "modify the shell via ftp": "Transfert du fichier",
+        "change the $ip & $port variable to the attacker's ip & port": "Paramètres du fichier",
+        "attacker listener": "Listener Netcat",
+        "metasploit mysql": "Modules MySQL",
+        "ms sql": "Microsoft SQL Server",
+        "global set": "Paramètres globaux",
+        "set options depends on the selected module": "Options du module",
+        "meterpreter - 'root' user": "Session Meterpreter privilégiée",
+        "local machine enumeration": "Énumération locale",
+        "targeting mysql (wordpress)": "Analyse MySQL",
+        "brute-force mysql - msfconsole": "Authentification MySQL",
+        "mysql login with <user>": "Connexion MySQL",
+        "attacker's machine - find target ip": "Préparation de la machine de test",
+        "port scanning - 1000 common ports or more advanced scans": "Scan des ports",
+        "banner grabbing": "Bannières des services",
+        "exploitable vulnerabilities modules": "Modules de vulnérabilités",
+        "msfconsole meterpreter privesc": "Vérification des privilèges",
+        "uac - uacme": "UACMe",
+        "metasploit - listening": "Configuration du handler",
+        "meterpreter (unprivileged session)": "Session non privilégiée",
+        "elevated meterpreter received on the listening session": "Session élevée",
+        "persistence": "Persistance",
+        "meterpreter - manual": "Session Meterpreter",
+        "ssh key": "Clé SSH",
+        "persistence test": "Vérification de la persistance",
+        "exit all the msfconsole sessions and close it": "Fermeture des sessions",
+        "searchsploit - install": "Installation de SearchSploit",
+        "update": "Mise à jour",
+        "copy an exploit to the current working dir": "Copier un exploit",
+        "case sensitive search": "Recherche sensible à la casse",
+        "search just the exploit title": "Recherche par titre",
+        "exact search on title": "Recherche exacte",
+        "filters search": "Recherche filtrée",
+        "list online links": "Liens en ligne",
+        "targeting openssh": "Analyse SSH",
+        "brute-force ssh": "Authentification SSH",
+        "ssh login with <user>": "Connexion SSH",
+        "win": "Commandes Windows",
+        "ctrl+z to background": "Mettre la session en arrière-plan",
+        "targeting iis/ftp": "Analyse IIS et FTP",
+        "generate an .asp reverse shell payload": "Génération du fichier ASP",
+        "ftp login with <user>": "Connexion FTP",
+        "open http://<target_ip>/shell.aspx . a reverse shell may be received.": "Accès au fichier transféré",
+        "nmap": "Nmap",
+        "microsoft sql": "Microsoft SQL Server",
+        "port scan example": "Scan des ports",
+        "pivoting to target2 through target1": "Pivoting",
+        "winrm": "WinRM",
+        "brute force winrm login": "Authentification WinRM",
+        "launch command": "Exécution de commande",
+        "sqlmap": "SQLMap",
+        "list databases": "Lister les bases de données",
+        "xsser": "XSSer",
+        "authenticated xsser": "Tests authentifiés",
+        "hydra - basic auth attacks (brute-force)": "Authentification HTTP",
+        "null sessions": "Null Sessions",
+        "enumerate wordpress using wpscan": "Énumération WordPress",
+        "upload reverse shell to wordpress": "Fichier de thème WordPress",
+        "upload using metasploit": "Modules Metasploit",
+        "manual exploit - autoblue": "AutoBlue",
+        "access token impersonation": "Access Token Impersonation",
+        "metasploit - meterpreter (unprivileged session)": "Session Meterpreter non privilégiée",
+        "automation": "Automatisation",
+        "create a handler resource": "Créer un fichier resource",
+        "insert the following lines": "Configuration du handler",
+        "save it and exit": "Enregistrer le fichier",
+        "export inserted msfconsole commands into a resource script": "Exporter les commandes",
+        "kiwi - meterpreter": "Kiwi",
+        "mimikatz - meterpreter": "Mimikatz",
+        "port forwarding": "Port Forwarding",
+        "target2 exploitation": "Test de la cible secondaire",
+        "targeting php": "Analyse PHP",
+        "browse": "Navigation",
+        "manual exploitation php cgi": "PHP CGI",
+        "if it executes, modify the .py script": "Vérification du résultat",
+        "php reverse shell": "PHP Reverse Shell",
+        "attacker listener in another tab": "Listener Netcat",
+        "launch the exploit": "Lancement du test",
+        "gobuster - install": "Installation de Gobuster",
+        "dirbuster - install": "Installation de Dirbuster",
+        "nikto - install": "Installation de Nikto",
+        "burpsuite - install": "Installation de Burp Suite",
+        "sqlmap - install": "Installation de SQLMap",
+        "xsser - install": "Installation de XSSer",
+        "wpscan - install": "Installation de WPScan",
+        "hydra - install": "Installation de Hydra",
+        "spawn shells": "Spawn Shells",
+        "smb connection": "Connexion SMB",
+        "smbclient": "Client SMB",
+        "rpcclient": "Client RPC",
+        "bypass uac": "UAC Bypass",
+        "administrative privileges required!": "Privilèges administrateur",
+        "rdp - meterpreter": "RDP",
+        "regain access": "Reprise de session",
+        "enabling rdp": "Activation de RDP",
+        "netcat - install": "Installation de Netcat",
+        "nc listener": "Listener Netcat",
+        "transfer files": "Transfert de fichiers",
+        "download the 'id_rsa' file": "Téléchargement de la clé SSH",
+        "cron jobs": "Tâches Cron",
+        "setup a 'nc' listener and wait for the bash reverse shell": "Listener Netcat",
+        "windows c:\\temp - metasploit e.g.": "Nettoyage Windows",
+        "cleanup meterpreter rc file:": "Nettoyage des fichiers RC",
+        "linux /tmp": "Nettoyage Linux",
+        "johnthe ripper": "John the Ripper",
+        "checking routes": "Vérification des routes",
+        "adding manual routes": "Routes statiques",
+        "meterpreter on target1": "Session sur la cible intermédiaire",
+        "meterpreterport forwarding": "Port Forwarding",
+        "filter by ip": "Adresses IP",
+        "filter by dest ip": "Adresse IP de destination",
+        "filter by source ip": "Adresse IP source",
+        "filter by ip addr and port": "Adresse IP et port",
+        "filter by tcp port": "Ports TCP",
+        "filter syn flag": "Indicateur SYN",
+        "broadcast filter": "Diffusion réseau",
+        "first 100 packets": "Lecture de la capture",
+        "protocl hierarchy statistics": "Statistiques de protocoles",
+        "http traffic": "Trafic HTTP",
+        "check session id": "Identifiant de session",
+        "check os/user agent type": "Système et User-Agent",
+        "wifi traffic filter": "Trafic Wi-Fi",
+        "only deauthentication packets": "Trames de désauthentification",
+        "only wpa handshake packets": "Handshake WPA",
+        "onyl ssid/bssid": "SSID et BSSID",
+        "wifi channel": "Canal Wi-Fi",
+        "vendor & model": "Constructeur et modèle",
+    }
+
+    description_map = {
+        "Informations système": "Consulter les informations du système et sa configuration.",
+        "Utilisateurs": "Consulter les comptes, groupes et sessions utilisateurs.",
+        "Réseau": "Consulter les interfaces, routes et connexions réseau.",
+        "Services": "Repérer les processus et services actifs.",
+        "Session Meterpreter": "Commandes et informations issues d’une session Meterpreter.",
+        "Shell Linux": "Commandes exécutées dans un shell Linux.",
+        "Invite de commandes Windows": "Commandes exécutées dans l’invite de commandes Windows.",
+        "Énumération automatique avec LinEnum": "Repères sur l’outil d’inventaire Linux LinEnum.",
+        "Énumération automatique avec JAWS": "Repères sur l’outil d’inventaire Windows JAWS.",
+        "Énumération des services": "Regrouper les modules par service réseau.",
+        "Paramètres globaux": "Définir les paramètres réutilisés par les modules.",
+        "Options du module": "Renseigner les options propres au module sélectionné.",
+        "Scan des ports": "Identifier les ports et services visibles dans le périmètre de test.",
+        "Bannières des services": "Lire les informations de bannière exposées par un service.",
+        "Collecte des identifiants": "Repères sur les informations d’authentification présentes sur le système.",
+        "Pass the Hash": "Notions liées à l’utilisation d’un hash comme élément d’authentification.",
+        "Trafic HTTP": "Les messages HTTP sont structurés en requêtes et réponses.",
+        "Trafic Wi-Fi": "Filtrer les trames liées aux communications sans fil.",
+        "Handshake WPA": "Repérer les paquets associés à un échange WPA.",
+        "SSID et BSSID": "Consulter les identifiants du réseau et du point d’accès.",
+        "Canal Wi-Fi": "Identifier le canal utilisé par le réseau sans fil.",
+        "Constructeur et modèle": "Consulter les informations de fabricant et de modèle visibles dans la capture.",
+        "Découverte de répertoires": "Rechercher les chemins Web présents dans le périmètre de test.",
+        "Filtrage par code HTTP": "Limiter les résultats aux codes de réponse HTTP pertinents.",
+        "Durée maximale du fuzzing": "Limiter la durée d’une recherche automatisée.",
+        "Nombre de threads": "Régler le nombre de tâches concurrentes.",
+        "Authentification SMB": "Repères sur les mécanismes d’authentification SMB.",
+        "Authentification FTP": "Repères sur les mécanismes d’authentification FTP.",
+        "Authentification SSH": "Repères sur les mécanismes d’authentification SSH.",
+        "Authentification WinRM": "Repères sur les mécanismes d’authentification WinRM.",
+        "Installation de Burp Suite": "Installation de l’outil d’analyse Web Burp Suite.",
+        "Installation de Netcat": "Installation de l’utilitaire réseau Netcat.",
+        "Transfert de fichiers": "Échanges de fichiers dans le laboratoire.",
+        "Tâches Cron": "Tâches planifiées sur les systèmes Unix.",
+        "Nettoyage Windows": "Extrait original relatif aux fichiers temporaires Windows.",
+        "Nettoyage Linux": "Extrait original relatif aux fichiers temporaires Linux.",
+    }
+
+    def count_lines(lines):
+        return sum(bool(line.strip()) for line in lines)
+
+    def is_marker(line):
+        match = re.match(r"^\s*#{1,3}\s+(.+?)\s*$", line)
+        if not match:
+            return False
+        label = match.group(1).strip()
+        if re.match(r"^(?:LHOST|LPORT|[1-5]\s*[-.)]|and devices\b|or upload\b|this is another way\b)", label, re.I):
+            return False
+        return True
+
+    def merge_short(groups):
+        groups = [g for g in groups if g]
+        i = 0
+        while i < len(groups) and len(groups) > 1:
+            if count_lines(groups[i]) < 2:
+                if i + 1 < len(groups):
+                    groups[i + 1] = groups[i] + groups[i + 1]
+                    groups.pop(i)
+                else:
+                    groups[i - 1].extend(groups[i])
+                    groups.pop(i)
+                continue
+            i += 1
+        return groups
+
+    def split_markers(lines):
+        groups = []
+        current = []
+        for line in lines:
+            if is_marker(line) and current and count_lines(current) >= 2:
+                groups.append(current)
+                current = []
+            current.append(line)
+        if current:
+            groups.append(current)
+        return merge_short(groups)
+
+    def split_blank_lines(lines):
+        groups = []
+        current = []
+        pending = []
+        for line in lines:
+            if not line.strip():
+                pending.append(line)
+                continue
+            if pending and count_lines(current) >= 3:
+                current.extend(pending)
+                groups.append(current)
+                current = [line]
+            else:
+                current.extend(pending)
+                current.append(line)
+            pending = []
+        current.extend(pending)
+        if current:
+            groups.append(current)
+        return merge_short(groups)
+
+    def manual_groups(lines):
+        first = next((line.strip() for line in lines if line.strip()), "")
+        if first == "# Spawn shells":
+            one = next((i for i,line in enumerate(lines) if line.strip().startswith("import socket,subprocess,os;")), None)
+            two = next((i for i,line in enumerate(lines) if line.strip().startswith("/usr/bin/script -qc /bin/bash /dev/null")), None)
+            if one is not None and two is not None and one < two:
+                return [
+                    (lines[:one+1], "Python", "Exemples originaux de création de shell avec Python."),
+                    (lines[one+1:two+1], "Shells et PHP", "Autres exemples originaux de shell et d’interpréteur."),
+                    (lines[two+1:], "Perl, Ruby, Lua et outils", "Variantes utilisant différents interpréteurs et utilitaires."),
+                ]
+        if first == "# meterpreter > <command>":
+            one = next((i for i,line in enumerate(lines) if line.strip() == "getenv PATH"), None)
+            two = next((i for i,line in enumerate(lines) if i > (one if one is not None else -1) and line.strip() == "ifconfig"), None)
+            if one is not None and two is not None:
+                return [
+                    (lines[:one+1], "Commandes générales Meterpreter", "Commandes courantes de navigation et d’environnement."),
+                    (lines[one+1:two+1], "Identité et réseau", "Informations sur l’identité, les privilèges et le réseau."),
+                    (lines[two+1:], "Fichiers et processus", "Commandes de gestion des fichiers, processus et sessions."),
+                ]
+        return None
+
+    def split_block(lines):
+        manual = manual_groups(lines)
+        if manual:
+            return manual
+        groups = split_markers(lines)
+        if len(groups) == 1:
+            groups = split_blank_lines(lines)
+        else:
+            refined = []
+            for group in groups:
+                if count_lines(group) >= 15:
+                    refined.extend(split_blank_lines(group))
+                else:
+                    refined.append(group)
+            groups = merge_short(refined)
+        return [(group, None, None) for group in groups]
+
+    def title_and_description(group, title_override=None, description_override=None):
+        first = next((line.strip() for line in group if line.strip()), "")
+        if title_override:
+            title = title_override
+        elif is_marker(first):
+            raw = re.sub(r"^\s*#{1,3}\s*", "", first).strip()
+            key = re.sub(r"\s+", " ", raw).casefold()
+            title = label_map.get(key, raw)
+            if len(title) > 68:
+                title = title[:65].rstrip() + "…"
+        else:
+            command = first.split(None, 1)[0].casefold() if first else ""
+            inferred = {
+                "nmap": "Nmap",
+                "smbclient": "Client SMB",
+                "smbmap": "SMBMap",
+                "enum4linux": "Enum4linux",
+                "rpcclient": "Client RPC",
+                "hydra": "Hydra",
+                "curl": "cURL",
+                "gobuster": "Gobuster",
+                "ffuf": "Ffuf",
+                "nikto": "Nikto",
+                "wpscan": "WPScan",
+                "sqlmap": "SQLMap",
+                "nc": "Netcat",
+                "msfconsole": "Console Metasploit",
+                "use": "Modules Metasploit",
+                "mysql": "Client MySQL",
+                "ftp": "Client FTP",
+                "ssh": "Client SSH",
+            }
+            title = inferred.get(command, "Commandes complémentaires")
+        description = description_override or description_map.get(
+            title, "Extrait original de cette sous-partie, conservé dans son ordre initial."
+        )
+        return title, description
+
+    for pre in original_pres:
+        code = pre.find("code", recursive=False)
+        if code is None:
+            continue
+        old = code.get_text()
+        lines = old.splitlines(keepends=True)
+        if count_lines(lines) < 15:
+            position += 1
+            continue
+        reviewed += 1
+        groups = split_block(lines)
+        contents = ["".join(group) for group,_,_ in groups]
+        if len(contents) < 2 or "".join(contents) != old:
+            retained += 1
+            position += 1
+            continue
+        if pre.get("id"):
+            pre.insert_before(soup.new_tag("span", id=pre["id"]))
+        for group,title_override,description_override in groups:
+            title,description = title_and_description(group,title_override,description_override)
+            label = soup.new_tag("p", attrs={"class":"ejpt-leaf-title"})
+            strong = soup.new_tag("strong")
+            strong.string = title
+            label.append(strong)
+            pre.insert_before(label)
+            para = soup.new_tag("p", attrs={"class":"ejpt-action-description"})
+            para.string = description
+            pre.insert_before(para)
+            new_pre = soup.new_tag("pre", attrs={k:v for k,v in pre.attrs.items() if k != "id"})
+            new_code = soup.new_tag("code", attrs=dict(code.attrs))
+            new_code.string = "".join(group)
+            new_pre.append(new_code)
+            pre.insert_before(new_pre)
+        pre.decompose()
+        expected[position:position+1] = contents
+        position += len(contents)
+        split_count += 1
+        created_blocks += len(contents) - 1
+
+    actual = [c.get_text() for c in article.select("pre code")]
+    if expected != actual:
+        raise RuntimeError("Long-block presentation changed original code or order")
+    remaining = []
+    for pre in article.find_all("pre"):
+        code = pre.find("code", recursive=False)
+        if code is None:
+            continue
+        lines = code.get_text().splitlines()
+        count = count_lines(lines)
+        if count >= 15:
+            first = next((line.strip() for line in lines if line.strip()), "")
+            remaining.append({"lines":count,"first_line":first})
+    after_long = len(remaining)
+    print("Long-block review:", reviewed, "candidates;", split_count, "split;", created_blocks,
+          "additional blocks;", retained, "kept intact;", after_long, "still at 15+ lines")
+    if remaining:
+        for item in remaining:
+            print("Remaining long block:", item["lines"], "lines;", item["first_line"])
+    return {
+        "reviewed":reviewed,
+        "split":split_count,
+        "created_blocks":created_blocks,
+        "retained":retained,
+        "before_long":reviewed,
+        "after_long":after_long,
+        "remaining":remaining,
+        "preserved":True,
+    }
+
+
 def simplify_note_titles(soup, article):
     """Keep actual sections collapsible; display leaf labels as plain text."""
     before = [c.get_text() for c in article.select("pre code")]
@@ -1419,6 +1869,7 @@ for page in report["pages"]:
         report["cheatsheet_framework_layout"]=refine_framework_layout(soup,article)
         report["cheatsheet_later_layout"]=refine_later_chapters(soup,article)
         report["cheatsheet_final_layout"]=refine_final_chapters(soup,article)
+        report["cheatsheet_long_block_review"]=refine_long_blocks(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
