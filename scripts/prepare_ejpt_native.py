@@ -2341,6 +2341,71 @@ def format_assessment_navigation(article, page):
     return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
 
 
+# Editorial navigation only, without modifying technical lessons.
+HOST_NETWORK_OVERVIEW_PAGES = {
+    "README.html", "1-system-attack.html",
+    "1-system-attack/linux-attacks.html", "1-system-attack/windows-attacks.html",
+    "2-network-attack.html", "3-metasploit.html", "4-exploitation.html",
+    "5-post-exploit.html", "6-social-engineer.html",
+}
+HOST_NETWORK_GENERAL_HEADINGS = {
+    "Topics": "Thèmes abordés",
+    "Disclaimer": "Avertissement",
+    "Linux Vulnerabilities": "Vulnérabilités Linux",
+    "Windows Vulnerabilities": "Vulnérabilités Windows",
+    "Vulns Types": "Types de vulnérabilités",
+    "Tools": "Outils",
+    "MSF Introduction": "Introduction à Metasploit",
+    "Terminology": "Terminologie",
+    "Interfaces": "Interfaces",
+    "Metasploit Fundamentals": "Fondamentaux de Metasploit",
+    "Module Variables": "Variables des modules",
+    "Case Studies": "Études de cas",
+    "Penetration Testing": "Tests d’intrusion",
+    "Methodology": "Méthodologie",
+    "System Information": "Informations système",
+    "Users & Groups": "Utilisateurs et groupes",
+    "Network information & Services": "Informations réseau et services",
+    "File System - Alternate Data Streams": "Système de fichiers : Alternate Data Streams",
+}
+HOST_NETWORK_OVERVIEW = {
+    "System/Host Based Attacks": "Sécurité des systèmes",
+    "Network Based Attacks": "Sécurité réseau",
+    "The Metasploit Framework (MSF)": "Framework Metasploit (MSF)",
+    "Post-Exploitation": "Post-exploitation",
+    "Never use tools and techniques on real IP addresses, hosts or networks without proper authorization!": "Ne jamais utiliser ces outils et techniques sur des adresses IP, des hôtes ou des réseaux réels sans autorisation préalable !",
+}
+def format_host_network_navigation(article, page):
+    before = [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    links = [a["href"] for a in article.find_all("a", href=True)]
+    images = [str(i) for i in article.find_all("img")]
+    ids = [n["id"] for n in article.select("[id]")]
+    renamed = 0
+    overview = 0
+    for heading in article.find_all(re.compile(r"^h[2-6]$")):
+        old = heading.get_text(" ", strip=True)
+        if old in HOST_NETWORK_GENERAL_HEADINGS and heading.string is not None and not heading.find(["a","code","img","kbd"]):
+            new = HOST_NETWORK_GENERAL_HEADINGS[old]
+            if new != old:
+                heading.string.replace_with(new)
+                renamed += 1
+    if page.endswith("/README.html"):
+        for node in list(article.find_all(string=True)):
+            if node.find_parent(["pre","code","kbd","samp","script","style"]):
+                continue
+            value = str(node)
+            old = value.strip()
+            if old in HOST_NETWORK_OVERVIEW and old != HOST_NETWORK_OVERVIEW[old]:
+                node.replace_with(value.replace(old, HOST_NETWORK_OVERVIEW[old], 1))
+                overview += 1
+    assert before == [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    assert links == [a["href"] for a in article.find_all("a", href=True)]
+    assert images == [str(i) for i in article.find_all("img")]
+    assert ids == [n["id"] for n in article.select("[id]")]
+    print("eJPT host-network navigation:", page, renamed, "headings;", overview, "overview fragments")
+    return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2386,6 +2451,8 @@ for page in report["pages"]:
         report.setdefault("prerequisite_navigation", {})[page] = format_prerequisite_headings(article, page)
     elif page.startswith("assessment-methodologies/"):
         report.setdefault("assessment_navigation", {})[page] = format_assessment_navigation(article, page)
+    elif page.startswith("hostnetwork-penetration-testing/") and page.split("/", 1)[1] in HOST_NETWORK_OVERVIEW_PAGES:
+        report.setdefault("host_network_navigation", {})[page] = format_host_network_navigation(article, page)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
