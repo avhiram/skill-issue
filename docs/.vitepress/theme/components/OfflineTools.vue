@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { withBase } from 'vitepress'
 const supported=ref(false),busy=ref(false),message=ref(''),done=ref(0),total=ref(0)
-const key='skill-issue-offline-v2'
+const key='skill-issue-offline-v3'
 const revision=ref('')
 onMounted(()=>{
   supported.value=!!(window.isSecureContext&&'serviceWorker' in navigator&&'caches' in window)

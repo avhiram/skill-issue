@@ -1,9 +1,10 @@
 /* Optional offline copy. Online navigation always uses the network first. */
-const CACHE = 'skill-issue-offline-v2'
+const CACHE = 'skill-issue-offline-v3'
 const scope = new URL(self.registration.scope)
 self.addEventListener('install', event => event.waitUntil(self.skipWaiting()))
 self.addEventListener('activate', event => event.waitUntil((async () => {
   await caches.delete('skill-issue-offline-v1')
+  await caches.delete('skill-issue-offline-v2')
   await self.clients.claim()
 })()))
 function local(url) {
@@ -33,7 +34,8 @@ self.addEventListener('fetch', event => {
   const request = event.request
   const url = new URL(request.url)
   if (request.method !== 'GET' || !local(url) || url.pathname.endsWith('/offline-sw.js') || url.pathname.endsWith('/offline-index.json')) return
-  if (/\/membres(?:\/|\.html$|$)/.test(url.pathname)) return
+  const relative = url.pathname.slice(scope.pathname.length)
+  if (/^(?:oscp|crto|crtp|bug-bounty|membres)(?:\/|\.html$|$)|^assets\/(?:oscp|crto|crtp|bug-bounty)(?:_|[.-])/i.test(relative)) return
   const navigation = request.mode === 'navigate'
   if (!navigation && !/\.(js|css|json|woff2?|svg)$/i.test(url.pathname)) return
   if (/\/(credentials|institutions|justificatifs|audit|database)\//.test(url.pathname)) return

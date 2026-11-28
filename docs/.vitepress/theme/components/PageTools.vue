@@ -107,13 +107,11 @@ const resumeKey = 'skill-issue:resume:v1'
 const wrapKey = 'skill-issue:wrap-code:v1'
 const sections = [
   { title: 'Accueil', path: '/' },
+  { title: 'Accès gratuit', path: '/gratuit/' },
   { title: 'Academy', path: '/academy/' },
-  { title: 'Exam Mode · OSCP', path: '/oscp/exam' },
+  { title: 'eJPT', path: '/ejpt/' },
   { title: 'OSINT', path: '/osint/' },
-  { title: 'Bug Bounty', path: '/bug-bounty/' },
-  { title: 'OSCP', path: '/oscp/' },
-  { title: 'CRTO', path: '/crto/' },
-  { title: 'CRTP', path: '/crtp/' }
+  { title: 'Accès membre', path: '/membres/' }
 ]
 function readLocal<T>(key: string, fallback: T): T {
   try { const value = localStorage.getItem(key); return value ? JSON.parse(value) as T : fallback } catch { return fallback }
@@ -443,11 +441,8 @@ onUnmounted(() => {
         <select id="skill-search-scope" v-model="searchScope">
           <option value="all">Tout le site</option>
           <option value="academy">Academy</option>
+          <option value="ejpt">eJPT</option>
           <option value="osint">OSINT</option>
-          <option value="bug-bounty">Bug Bounty</option>
-          <option value="oscp">OSCP</option>
-          <option value="crto">CRTO</option>
-          <option value="crtp">CRTP</option>
         </select>
         <button type="button" @click="searchInScope">Rechercher</button>
       </div>
@@ -468,11 +463,8 @@ onUnmounted(() => {
               <select id="skill-search-scope-mobile" v-model="searchScope">
                 <option value="all">Tout le site</option>
                 <option value="academy">Academy</option>
+          <option value="ejpt">eJPT</option>
                 <option value="osint">OSINT</option>
-                <option value="bug-bounty">Bug Bounty</option>
-                <option value="oscp">OSCP</option>
-                <option value="crto">CRTO</option>
-                <option value="crtp">CRTP</option>
               </select>
               <button type="button" @click="searchInScope">Rechercher</button>
             </div>

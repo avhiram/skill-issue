@@ -12,7 +12,7 @@ pageClass: skill-home-page
   <h1>Morad H.</h1>
   <p class="profile-subtitle">Adversary Simulation · Cyberdéfense</p>
   <div class="profile-links">
-    <a href="/skill-issue/academy/index.html">Accès gratuit</a>
+    <a href="/skill-issue/gratuit/">Accès gratuit</a>
     <a href="/skill-issue/membres/">Accès membre</a>
   </div>
 </div>
@@ -70,17 +70,17 @@ J'ai regroupé ce que j'aurais aimé trouver à mes débuts :
 - Outils et ressources
 
 <div class="access-overview">
-  <a class="access-card access-card-free" href="/skill-issue/academy/index.html">
+  <a class="access-card access-card-free" href="/skill-issue/gratuit/">
     <span class="access-kicker">OUVERT À TOUS</span>
     <strong>Accès gratuit</strong>
     <span>Pour ceux qui veulent apprendre, même sans budget.</span>
-    <small>eJPT · Academy · OSINT · Bug Bounty · OSCP · CRTP</small>
+    <small>Academy · eJPT · OSINT</small>
   </a>
   <a class="access-card access-card-member" href="/skill-issue/membres/">
     <span class="access-kicker">ESPACE RÉSERVÉ</span>
     <strong>Accès membre</strong>
     <span>Pour ceux qui veulent aller plus loin et développer leurs compétences.</span>
-    <small>Ressources avancées · Contenus réservés · CRTO</small>
+    <small>OSCP · CRTO · CRTP · Bug Bounty</small>
   </a>
 </div>
 

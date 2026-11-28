@@ -15,6 +15,9 @@ export default defineConfig({
   cleanUrls: true,
   lastUpdated: false,
   transformPageData(pageData) {
+    if (/^(oscp|crto|crtp|bug-bounty|membres)\//i.test(pageData.relativePath)) {
+      pageData.frontmatter.search = false
+    }
     if (pageData.relativePath.startsWith('bug-bounty/')) {
       pageData.frontmatter.buildRevision = process.env.GITHUB_SHA?.slice(0, 12) || 'local'
     }
@@ -25,6 +28,7 @@ export default defineConfig({
     async function walk(dir: string, prefix = '') {
       for (const entry of await readdir(dir, { withFileTypes: true })) {
         const rel = prefix + entry.name
+        if (/^(?:oscp|crto|crtp|bug-bounty|membres)(?:\/|$)|^assets\/(?:oscp|crto|crtp|bug-bounty)(?:_|[.-])/i.test(rel)) continue
         if (entry.isDirectory()) {
           if (!/^(credentials|institutions|justificatifs|audit|images|database|membres)$/.test(entry.name)) await walk(join(dir, entry.name), rel + '/')
         } else if (/\.(html|js|css|json|woff2?|svg)$/i.test(rel) && !/^(offline-sw\.js|offline-index\.json)$/.test(rel)) {
@@ -58,19 +62,20 @@ export default defineConfig({
       {
         text: 'Accès gratuit',
         items: [
-          { text: 'Academy', link: 'https://avhiram.github.io/skill-issue/academy/index.html', target: '_self' },
+          { text: 'Tous les parcours gratuits', link: '/gratuit/' },
+          { text: 'Academy', link: '/academy/' },
           { text: 'eJPT', link: '/ejpt/' },
-          { text: 'OSINT', link: '/osint/' },
-          { text: 'Bug Bounty', link: `https://avhiram.github.io/skill-issue/bug-bounty/index.html?v=${process.env.GITHUB_SHA?.slice(0, 12) || 'local'}`, target: '_self' },
-          { text: 'OSCP', link: '/oscp/' },
-          { text: 'CRTP', link: '/crtp/' }
+          { text: 'OSINT', link: '/osint/' }
         ]
       },
       {
         text: 'Accès membre',
         items: [
           { text: 'Espace membre', link: '/membres/' },
-          { text: 'CRTO · Accès réservé', link: '/crto/' }
+          { text: 'OSCP', link: '/membres/#oscp' },
+          { text: 'CRTO', link: '/membres/#crto' },
+          { text: 'CRTP', link: '/membres/#crtp' },
+          { text: 'Bug Bounty', link: '/membres/#bug-bounty' }
         ]
       }
     ],
@@ -531,6 +536,11 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        async _render(src, env, md) {
+          const html = await md.renderAsync(src, env)
+          if (env.frontmatter?.search === false || /^(oscp|crto|crtp|bug-bounty|membres)\//i.test(env.relativePath || '')) return ''
+          return html
+        },
         miniSearch: {
           options: {
             processTerm: (term) => {
@@ -562,9 +572,9 @@ export default defineConfig({
             filter: (result) => {
               if (typeof document === 'undefined') return true
               const path = String(result.id).split('#')[0].replace(/^\/skill-issue\//, '/')
-              if (/^\/?crto(?:\/|$)/i.test(path)) return false
+              if (/^\/?(?:oscp|crto|crtp|bug-bounty|membres)(?:\/|$)/i.test(path)) return false
               const scope = document.documentElement.dataset.skillSearchScope
-              if (!scope || !/^(academy|osint|bug-bounty|oscp|crtp)$/.test(scope)) return true
+              if (!scope || !/^(academy|ejpt|osint)$/.test(scope)) return true
               return path.startsWith('/' + scope + '/') || path.startsWith(scope + '/') ||
                 path === '/' + scope || path === scope
             }

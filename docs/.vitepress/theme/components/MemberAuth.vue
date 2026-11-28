@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed } from 'vue'
+import { withBase } from 'vitepress'
 import { createClient, type SupabaseClient, type Session } from '@supabase/supabase-js'
 
 const email = ref('')
@@ -18,6 +19,16 @@ let mounted = false
 let generation = 0
 const redirect = 'https://avhiram.github.io/skill-issue/membres/'
 const active = computed(() => grants.value.filter(g => !g.revoked_at && Date.parse(g.starts_at) <= Date.now() && (!g.expires_at || Date.parse(g.expires_at) > Date.now())))
+
+const memberSections = [
+  { id: 'oscp', title: 'OSCP', path: '/oscp/' },
+  { id: 'crto', title: 'CRTO', path: '/crto/' },
+  { id: 'crtp', title: 'CRTP', path: '/crtp/' },
+  { id: 'bug-bounty', title: 'Bug Bounty', path: '/bug-bounty/' }
+]
+function hasGrant(id: string) {
+  return active.value.some(g => g.section === '*' || g.section.trim().toLowerCase().replace(/[_\s]+/g, '-') === id)
+}
 
 async function refresh() {
   const request = ++generation
@@ -118,6 +129,13 @@ async function logout() {
           <ul><li v-for="grant in active" :key="grant.section + grant.source">{{ grant.section === '*' ? 'Toutes les rubriques membres' : grant.section }} · {{ grant.source === 'admin' ? 'Administrateur' : grant.source === 'manual' ? 'Sur autorisation' : 'Abonnement' }}</li></ul>
         </template>
       </template>
+      <div v-if="!grantError" class="member-paths">
+        <p v-for="section in memberSections" :key="section.id">
+          <strong>{{ section.title }}</strong>
+          <a v-if="hasGrant(section.id)" :href="withBase(section.path)">Ouvrir la rubrique</a>
+          <span v-else>Autorisation requise</span>
+        </p>
+      </div>
       <button class="member-secondary" :disabled="busy" @click="refresh">Actualiser mes accès</button>
       <button class="member-secondary" :disabled="busy" @click="logout">Se déconnecter</button>
     </template>
