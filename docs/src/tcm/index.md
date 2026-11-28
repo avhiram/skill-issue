@@ -16,4 +16,3 @@ Trois parcours de formation, des fondamentaux Linux au pentest.
   <a class="access-card" href="/skill-issue/tcm/original/peh/README.html"><strong>Practical Ethical Hacking</strong><span>Parcours de pentest pratique.</span></a>
 </div>
 
-[Mentions légales](/tcm/mentions)
