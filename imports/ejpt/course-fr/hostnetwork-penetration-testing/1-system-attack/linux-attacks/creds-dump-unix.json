@@ -8,5 +8,35 @@
     "line": 7,
     "source": ">  - Target IP: `192.75.64.3`",
     "translation": ">  - IP cible du laboratoire : `192.75.64.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - **Password Hashes** dumping - `/etc/shadow`",
+    "translation": ">  - Extraction des **hashes de mots de passe** : `/etc/shadow`"
+  },
+  {
+    "line": 40,
+    "source": "- Postgresql is started to store all `metasploit` loot and sensitive information from the target machine - [Metasploit - PostgreSQL Workflows](https://docs.metasploit.com/docs/pentesting/metasploit-guide-postgresql.html)",
+    "translation": "- PostgreSQL est démarré pour stocker le loot de `metasploit` et les informations sensibles de la machine cible : [Metasploit - PostgreSQL Workflows](https://docs.metasploit.com/docs/pentesting/metasploit-guide-postgresql.html)"
+  },
+  {
+    "line": 55,
+    "source": "- Upgrade the sessions to a `meterpreter` session",
+    "translation": "- Convertir les sessions en une session `meterpreter`"
+  },
+  {
+    "line": 75,
+    "source": "- Gather Linux Password hashes with `Metasploit`",
+    "translation": "- Récupérer les hashes de mots de passe Linux avec `Metasploit`"
+  },
+  {
+    "line": 90,
+    "source": "- The *unshadowed password file* is a file containing the format hashed password, ready to be cracked.",
+    "translation": "- Le *fichier de mots de passe unshadowed* contient les mots de passe au format hash, prêts à être cassés."
+  },
+  {
+    "line": 106,
+    "source": "<summary>Reveal Flag - \"root\" password is:  🚩</summary>",
+    "translation": "<summary>Afficher le flag : mot de passe de « root » : 🚩</summary>"
   }
 ]

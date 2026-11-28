@@ -18,5 +18,25 @@
     "line": 9,
     "source": ">  - **Enumeration and nmap scripts** have been already covered in this [SSH Enum lab](../../../assessment-methodologies/3-enumeration/ssh-enum.md)",
     "translation": ">  - L’**énumération et les scripts Nmap** sont déjà abordés dans ce [laboratoire d’énumération SSH](../../../assessment-methodologies/3-enumeration/ssh-enum.md)."
+  },
+  {
+    "line": 23,
+    "source": "> 📌 OpenSSH 7.9p1 cannot be exploited directly",
+    "translation": "> 📌 OpenSSH 7.9p1 ne peut pas être exploité directement"
+  },
+  {
+    "line": 27,
+    "source": "- Metasploit `ssh_login` module or `Hydra` tool can be utilized for brute forcing the SSH password",
+    "translation": "- Le module Metasploit `ssh_login` ou l’outil `Hydra` peut être utilisé pour effectuer un Brute Force du mot de passe SSH"
+  },
+  {
+    "line": 40,
+    "source": "- Login to the target via SSH",
+    "translation": "- Se connecter à la cible via SSH"
+  },
+  {
+    "line": 56,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

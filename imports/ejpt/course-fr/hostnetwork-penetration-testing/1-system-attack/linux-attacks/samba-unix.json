@@ -18,5 +18,30 @@
     "line": 10,
     "source": ">  - **Enumeration, brute-force, tools and flags** have been already covered in this [SMB Enum Lab 6](../../../assessment-methodologies/3-enumeration/smb-enum.md)",
     "translation": ">  - L’**énumération, le Brute Force, les outils et les flags** sont déjà abordés dans le [laboratoire SMB 6](../../../assessment-methodologies/3-enumeration/smb-enum.md)."
+  },
+  {
+    "line": 25,
+    "source": "> 📌 Server is running SAMBA on the standard port `445`",
+    "translation": "> 📌 Le serveur exécute Samba sur le port standard `445`"
+  },
+  {
+    "line": 45,
+    "source": "- Use `SMBMap` tool",
+    "translation": "- Utiliser l’outil `SMBMap`"
+  },
+  {
+    "line": 60,
+    "source": "- Use `smbclient` tool to access Samba sources",
+    "translation": "- Utiliser l’outil `smbclient` pour accéder aux ressources Samba"
+  },
+  {
+    "line": 101,
+    "source": "- Use `enum4linux`tool",
+    "translation": "- Utiliser l’outil `enum4linux`"
+  },
+  {
+    "line": 119,
+    "source": "<summary>Reveal Flag:  🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

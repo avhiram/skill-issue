@@ -50,6 +50,26 @@
     "translation": "| [**SAMBA**](https://www.samba.org/samba/what_is_samba.html) | TCP `445` | Implémentation open source du protocole `SMB` permettant aux machines Unix de communiquer avec les machines Windows sur un réseau. |"
   },
   {
+    "line": 25,
+    "source": "> GNU Bash through 4.3 processes trailing strings after function definitions in the values of environment variables, which allows remote attackers to ***execute arbitrary code** via a crafted environment, as demonstrated by vectors involving the ForceCommand feature in **OpenSSH** sshd, the mod_cgi and mod_cgid modules in the **Apache HTTP Server**, scripts executed by unspecified DHCP clients, and other situations in which setting the environment occurs across a privilege boundary from Bash execution*, aka **ShellShock**.",
+    "translation": "> GNU Bash jusqu’à la version 4.3 traite les chaînes qui suivent les définitions de fonctions dans les valeurs des variables d’environnement. Cette vulnérabilité permet à des attaquants distants d’***exécuter du code arbitraire** via un environnement spécialement conçu, comme le montrent les vecteurs liés à la fonctionnalité ForceCommand de sshd dans **OpenSSH**, aux modules mod_cgi et mod_cgid du **serveur HTTP Apache**, aux scripts exécutés par certains clients DHCP et à d’autres situations où la configuration de l’environnement franchit une frontière de privilèges avant l’exécution de Bash*. Elle est connue sous le nom de **ShellShock**."
+  },
+  {
+    "line": 27,
+    "source": "> - `Bash` shell since v.1.3",
+    "translation": "> - Shell `Bash` depuis la version 1.3"
+  },
+  {
+    "line": 28,
+    "source": "> - The `Bash` mistakenly exectutes trailing commands after a series of characters",
+    "translation": "> - `Bash` exécute par erreur les commandes qui suivent une série de caractères"
+  },
+  {
+    "line": 29,
+    "source": "> - Apache web servers that run CGI or `.sh` scripts are also vulnerable",
+    "translation": "> - Les serveurs Web Apache qui exécutent des scripts CGI ou `.sh` sont également vulnérables"
+  },
+  {
     "line": 31,
     "source": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) - **Nix* shell part of the GNU project and default shell for most Linux distros.",
     "translation": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) : shell des systèmes Unix et assimilés, faisant partie du projet GNU et utilisé par défaut dans la plupart des distributions Linux."
@@ -58,6 +78,26 @@
     "line": 33,
     "source": "🗒️ **CGI** (**C**ommond **G**ateway **I**nterface) - Apache executes arbitrary commands on the Linux system and the output displayed on the web server.",
     "translation": "🗒️ **CGI** (**C**ommond **G**ateway **I**nterface) : interface permettant au serveur Web d’exécuter des programmes externes et d’afficher leur résultat."
+  },
+  {
+    "line": 37,
+    "source": "1. Locate a script or input vector (legitimate Apache CGI scripts) to communicate with Bash",
+    "translation": "1. Identifier un script ou un vecteur d’entrée (scripts CGI Apache légitimes) permettant de communiquer avec Bash"
+  },
+  {
+    "line": 38,
+    "source": "2. Input special characters within the HTTP headers (e.g. `user-agent`)",
+    "translation": "2. Insérer des caractères spéciaux dans les en-têtes HTTP (par exemple `user-agent`)"
+  },
+  {
+    "line": 39,
+    "source": "3. When CGI is executed, the web server will run it with Bash in a new process",
+    "translation": "3. Lors de l’exécution du CGI, le serveur Web le lance avec Bash dans un nouveau processus"
+  },
+  {
+    "line": 41,
+    "source": "The exploitation can be done manually and automatically.",
+    "translation": "L’exploitation peut être effectuée manuellement ou automatiquement."
   },
   {
     "line": 45,
@@ -83,6 +123,16 @@
     "line": 53,
     "source": "  - ***anonymous*** access may be configured on FTP - no credentials needed",
     "translation": "  - Un accès ***anonymous*** peut être configuré sur FTP sans nécessiter d’identifiants."
+  },
+  {
+    "line": 57,
+    "source": "1. Credentials can be **brute-forced** on the FTP server",
+    "translation": "1. Les identifiants du serveur FTP peuvent être recherchés par **Brute Force**"
+  },
+  {
+    "line": 58,
+    "source": "2. Exploit inherent vulnerability within FTP service",
+    "translation": "2. Exploiter une vulnérabilité inhérente au service FTP"
   },
   {
     "line": 60,
@@ -115,6 +165,16 @@
     "translation": "  - Authentification par `Key` : clés **publique** et **privée**, présentée dans le cours comme une alternative à l’identifiant et au mot de passe."
   },
   {
+    "line": 73,
+    "source": "1. Credentials can be **brute-forced** on the SSH",
+    "translation": "1. Les identifiants SSH peuvent être recherchés par **Brute Force**"
+  },
+  {
+    "line": 74,
+    "source": "2. With SSH legitimate credentials the attacker gain access to a full shell, with the utilized user account's privileges",
+    "translation": "2. Avec des identifiants SSH valides, l’attaquant accède à un shell complet avec les privilèges du compte utilisé"
+  },
+  {
     "line": 76,
     "source": "> 🔬 Check the [SSH Brute force Lab here](linux-attacks/ssh-unix.md)",
     "translation": "> 🔬 Consulter le [laboratoire SSH Brute Force](linux-attacks/ssh-unix.md)."
@@ -140,6 +200,16 @@
     "translation": "- *Authentification utilisateur* : `username` et `password`"
   },
   {
+    "line": 88,
+    "source": "1. Credentials can be **brute-forced**",
+    "translation": "1. Les identifiants peuvent être recherchés par **Brute Force**"
+  },
+  {
+    "line": 89,
+    "source": "2. Use SMBMap or `smbclient` to retrieve information",
+    "translation": "2. Utiliser SMBMap ou `smbclient` pour récupérer des informations"
+  },
+  {
     "line": 91,
     "source": "> 🔬 Check the [SAMBA Brute force Lab here](linux-attacks/samba-unix.md)",
     "translation": "> 🔬 Consulter le [laboratoire Samba Brute Force](linux-attacks/samba-unix.md)."
@@ -160,9 +230,39 @@
     "translation": "- La version du noyau et la distribution sont importantes."
   },
   {
+    "line": 103,
+    "source": "The **Linux Privilege Exploitation** process consists of:",
+    "translation": "Le processus d’**exploitation des privilèges Linux** comprend les étapes suivantes :"
+  },
+  {
+    "line": 105,
+    "source": "1. Identify kernel vulnerabilities (`Linux Exploit Suggester`)",
+    "translation": "1. Identifier les vulnérabilités du noyau (`Linux Exploit Suggester`)"
+  },
+  {
+    "line": 106,
+    "source": "2. Download, compile, transfer kernel exploits onto the target system",
+    "translation": "2. Télécharger, compiler et transférer les exploits du noyau vers le système cible"
+  },
+  {
+    "line": 108,
+    "source": "> [**Linux-Exploit-Suggester**](https://www.kali.org/tools/linux-exploit-suggester/) - a tool designed to assist in *detecting security deficiencies for given Linux kernel/Linux-based machine*.",
+    "translation": "> [**Linux-Exploit-Suggester**](https://www.kali.org/tools/linux-exploit-suggester/) : outil conçu pour aider à *détecter les faiblesses de sécurité d’un noyau Linux ou d’une machine Linux donnée*."
+  },
+  {
+    "line": 110,
+    "source": "> - Assessing kernel exposure on publicly known exploits",
+    "translation": "> - Évaluation de l’exposition du noyau aux exploits connus publiquement"
+  },
+  {
     "line": 111,
     "source": "> - Verifying state of kernel hardening security measures",
     "translation": "> - Vérification de l’état des mesures de durcissement du noyau."
+  },
+  {
+    "line": 121,
+    "source": "- Very useful to get Kernel version, possible Exploits with detailed information on the CVEs",
+    "translation": "- Très utile pour identifier la version du noyau, les exploits possibles et obtenir des informations détaillées sur les CVE"
   },
   {
     "line": 127,
@@ -190,6 +290,16 @@
     "translation": "- Les Cron Jobs peuvent être exécutés sous différents comptes utilisateurs."
   },
   {
+    "line": 136,
+    "source": "- The attacker will target `root`'s privileged Cron Jobs",
+    "translation": "- L’attaquant cible les Cron Jobs privilégiés de `root`"
+  },
+  {
+    "line": 137,
+    "source": "- Find and identify cron jobs scheduled by the `root` user or the files processed by te cron job.",
+    "translation": "- Rechercher et identifier les Cron Jobs planifiés par l’utilisateur `root` ou les fichiers traités par ces tâches."
+  },
+  {
     "line": 139,
     "source": "> 🔬 Check the [Cron Jobs Lab here](linux-attacks/cron.md)",
     "translation": "> 🔬 Consulter le [laboratoire Cron Jobs](linux-attacks/cron.md)."
@@ -198,6 +308,31 @@
     "line": 143,
     "source": "🗒️ [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) - is a type of special access permission given to a file. A file with SUID *always executes as its the owner*, regardless of the user passing the command. ",
     "translation": "🗒️ Le [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) est une permission spéciale attribuée à un fichier. Le cours indique qu’un fichier SUID _s’exécute avec les droits de son propriétaire_, quel que soit l’utilisateur qui lance la commande."
+  },
+  {
+    "line": 145,
+    "source": "- Allows unprivileged users to *run scripts or binaries* with `root` permissions, and it's limited to the execution of that specific binary.",
+    "translation": "- Permet aux utilisateurs non privilégiés d’*exécuter des scripts ou binaires* avec les permissions de `root`. Ces permissions sont limitées à l’exécution du binaire concerné."
+  },
+  {
+    "line": 146,
+    "source": "- This is not privilege escalation, but can be used to obtain an elevated session",
+    "translation": "- Ce mécanisme n’est pas une Privilege Escalation en soi, mais peut être utilisé pour obtenir une session avec des privilèges élevés"
+  },
+  {
+    "line": 147,
+    "source": "  - `e.g.` the **`sudo`** binary",
+    "translation": "  - `e.g.` le binaire **`sudo`**"
+  },
+  {
+    "line": 151,
+    "source": "- The exploitation of SUID binaries to get privesc depends on:",
+    "translation": "- L’exploitation des binaires SUID pour une Privilege Escalation dépend des éléments suivants :"
+  },
+  {
+    "line": 152,
+    "source": "  - the **owner** of the SUID file - `e.g.` look for `root` user's SUID binaries",
+    "translation": "  - Le **propriétaire** du fichier SUID : `e.g.` rechercher les binaires SUID appartenant à `root`"
   },
   {
     "line": 153,
@@ -218,6 +353,46 @@
     "line": 161,
     "source": "Linux has multi-user support, this can increase the overall risk of a server.",
     "translation": "Linux prend en charge plusieurs utilisateurs, ce qui peut augmenter le risque global pour un serveur."
+  },
+  {
+    "line": 169,
+    "source": "Passwords cannot be viewed because they are **encrypted** and stored in the **`shadow`** file in the `/etc/` directory.",
+    "translation": "Les mots de passe ne peuvent pas être consultés directement, car ils sont **chiffrés** et stockés dans le fichier **`shadow`** du répertoire `/etc/`."
+  },
+  {
+    "line": 171,
+    "source": "- 📌 Only `root` account can access `shadow` file",
+    "translation": "- 📌 Seul le compte `root` peut accéder au fichier `shadow`"
+  },
+  {
+    "line": 181,
+    "source": "The hashed password have a prefix `$id` value that indicates the type of **hashing algorithm** that is being used, `e.g.`:",
+    "translation": "Le hash du mot de passe possède un préfixe `$id` qui indique le type d’**algorithme de hashage** utilisé, `e.g.` :"
+  },
+  {
+    "line": 183,
+    "source": "| Value | Hashing Algorithm                                            |",
+    "translation": "| Valeur | Algorithme de hashage |"
+  },
+  {
+    "line": 185,
+    "source": "| $1    | MD5 (easy to crack)                                          |",
+    "translation": "| $1    | MD5 (facile à casser) |"
+  },
+  {
+    "line": 186,
+    "source": "| $2    | Blowfish (easy to crack)                                     |",
+    "translation": "| $2    | Blowfish (facile à casser) |"
+  },
+  {
+    "line": 187,
+    "source": "| $5    | SHA-256 (difficult to crack)                                 |",
+    "translation": "| $5    | SHA-256 (difficile à casser) |"
+  },
+  {
+    "line": 188,
+    "source": "| $6    | [SHA-512](https://www.baeldung.com/cs/md5-vs-sha-algorithms#1-security-1) (difficult to crack) |",
+    "translation": "| $6    | [SHA-512](https://www.baeldung.com/cs/md5-vs-sha-algorithms#1-security-1) (difficile à casser) |"
   },
   {
     "line": 191,

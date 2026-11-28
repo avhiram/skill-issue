@@ -18,5 +18,15 @@
     "line": 9,
     "source": ">  - **Enumeration, nmap brute-force and flags** have been already covered in this [FTP Enum lab](../../../assessment-methodologies/3-enumeration/ftp-enum.md)",
     "translation": ">  - L’**énumération, le Brute Force avec Nmap et les flags** sont déjà abordés dans ce [laboratoire d’énumération FTP](../../../assessment-methodologies/3-enumeration/ftp-enum.md)."
+  },
+  {
+    "line": 19,
+    "source": "- Check anonymous login and inherent vulnerabilities",
+    "translation": "- Vérifier la connexion anonyme et les vulnérabilités inhérentes au service"
+  },
+  {
+    "line": 45,
+    "source": "- Try to connect with FTP and found credentials and retrieve every user's flag:",
+    "translation": "- Essayer de se connecter en FTP avec les identifiants trouvés et récupérer le flag de chaque utilisateur :"
   }
 ]
