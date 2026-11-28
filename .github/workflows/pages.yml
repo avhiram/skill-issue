@@ -204,6 +204,8 @@ jobs:
             echo 'Ancienne introduction Bug Bounty détectée dans la source.'
             exit 1
           fi
+      - name: Import and verify complete TCM source archive
+        run: python3 scripts/import_tcm_original.py docs/.vitepress/dist/tcm/original
       - name: Audit all rendered HTML for visible Markdown fences
         run: python3 scripts/audit_rendered_markdown.py docs/.vitepress/dist --output docs/.vitepress/dist/audit/site-rendering.json --strict
       - name: Stamp compiled pages with source revision
