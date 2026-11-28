@@ -1,0 +1,507 @@
+[
+  {
+    "line": 5,
+    "source": "> ⚡ Penetration Testing Usage: ",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 7,
+    "source": "> - Knowing the information security (**`infosec`**) field",
+    "translation": "> - Connaître le domaine de la sécurité informatique (**`infosec`**)"
+  },
+  {
+    "line": 8,
+    "source": "> - Career opportunities",
+    "translation": "> - Identifier les débouchés professionnels"
+  },
+  {
+    "line": 9,
+    "source": "> - Talking with colleagues",
+    "translation": "> - Échanger avec ses collègues"
+  },
+  {
+    "line": 13,
+    "source": "Deep roots in the underground hacking scene.",
+    "translation": "La culture InfoSec trouve ses racines dans le milieu underground du hacking."
+  },
+  {
+    "line": 15,
+    "source": "**`Hacker`** = refers to people who prefer to understand how a system works, being curious, intelligent and motivated to pursue knowledge.",
+    "translation": "**`Hacker`** = désigne une personne qui cherche à comprendre le fonctionnement d’un système, avec curiosité, intelligence et envie d’apprendre."
+  },
+  {
+    "line": 17,
+    "source": "Usually a hacker approaches systems with curiosity, so he can:",
+    "translation": "Un hacker aborde généralement les systèmes avec curiosité afin de :"
+  },
+  {
+    "line": 19,
+    "source": "- Find new ways to use computer systems",
+    "translation": "- Trouver de nouvelles façons d’utiliser les systèmes informatiques"
+  },
+  {
+    "line": 20,
+    "source": "- Bypass imposed restrictions",
+    "translation": "- Contourner les restrictions imposées"
+  },
+  {
+    "line": 21,
+    "source": "- Understand security pitfalls",
+    "translation": "- Comprendre les failles de sécurité"
+  },
+  {
+    "line": 23,
+    "source": "*Performing an attack* means to **understand** the technology and the functioning of the target system.",
+    "translation": "*Réaliser une attaque* consiste à **comprendre** la technologie et le fonctionnement du système cible."
+  },
+  {
+    "line": 25,
+    "source": "*Being a Hacker* means **improving** skills every day, pushed by **curiosity** and hunger for **knowledge**.",
+    "translation": "*Être hacker*, c’est **améliorer** ses compétences chaque jour, guidé par la **curiosité** et la soif de **connaissances**."
+  },
+  {
+    "line": 27,
+    "source": "> 📕 There is always something new to learn! *Hacking* is a lifestyle.",
+    "translation": "> 📕 Il y a toujours quelque chose à apprendre ! Le *hacking* est un mode de vie."
+  },
+  {
+    "line": 29,
+    "source": "*Being an InfoSec professional* means pursuing knowledge by keeping challenging yourself and your colleagues, being honest with yourself and never stop. ",
+    "translation": "*Être un professionnel de l’InfoSec*, c’est continuer à apprendre, se remettre en question, encourager ses collègues à faire de même et rester honnête envers soi-même."
+  },
+  {
+    "line": 31,
+    "source": "- To have an idea about the ideals of the underground hacking community read [The Conscience of a Hacker](http://phrack.org/issues/7/3.html).",
+    "translation": "- Pour comprendre les idéaux de la communauté underground du hacking, lire [The Conscience of a Hacker](http://phrack.org/issues/7/3.html)."
+  },
+  {
+    "line": 37,
+    "source": "Companies and government bodies are using advanced tech to store and process confidential data. Using hacking skills for good has become critical for the safety of nations too.",
+    "translation": "Les entreprises et les administrations utilisent des technologies avancées pour stocker et traiter des données confidentielles. L’utilisation des compétences en hacking à des fins légitimes est aussi devenue essentielle à la sécurité des États."
+  },
+  {
+    "line": 39,
+    "source": "*Data is transmitted* across private & public networks. It is a **must** to:",
+    "translation": "*Les données transitent* sur des réseaux privés et publics. Il est **indispensable** de :"
+  },
+  {
+    "line": 41,
+    "source": "- **Protect sensitive information**",
+    "translation": "- **Protéger les informations sensibles**"
+  },
+  {
+    "line": 42,
+    "source": "- Implement hardware and software defensive systems",
+    "translation": "- Mettre en place des mécanismes de défense matériels et logiciels"
+  },
+  {
+    "line": 43,
+    "source": "- Protect `digital assets` from major **cyber-threats** like:",
+    "translation": "- Protéger les actifs numériques (`digital assets`) contre les principales **cybermenaces** telles que :"
+  },
+  {
+    "line": 44,
+    "source": "  - global cyber syndicates",
+    "translation": "  - les organisations cybercriminelles internationales"
+  },
+  {
+    "line": 45,
+    "source": "  - hackers for hire",
+    "translation": "  - les hackers rémunérés"
+  },
+  {
+    "line": 46,
+    "source": "  - hacktivists",
+    "translation": "  - les hacktivistes"
+  },
+  {
+    "line": 47,
+    "source": "  - terrorists",
+    "translation": "  - les terroristes"
+  },
+  {
+    "line": 48,
+    "source": "  - state-sponsored hackers",
+    "translation": "  - les hackers soutenus par des États"
+  },
+  {
+    "line": 50,
+    "source": "*Train the organization* to make sure:",
+    "translation": "*Former les équipes de l’organisation* afin de garantir que :"
+  },
+  {
+    "line": 52,
+    "source": "- secure applications are developed",
+    "translation": "- les applications développées sont sécurisées"
+  },
+  {
+    "line": 53,
+    "source": "- proper defensive measures are taken",
+    "translation": "- les mesures de défense adaptées sont mises en place"
+  },
+  {
+    "line": 54,
+    "source": "- proper use of the company's data is in place",
+    "translation": "- les données de l’entreprise sont utilisées correctement"
+  },
+  {
+    "line": 56,
+    "source": "*Hire a penetration tester* to ensure that a system is secure from cyber-attacks.",
+    "translation": "*Faire appel à un pentester* pour évaluer la sécurité d’un système face aux cyberattaques."
+  },
+  {
+    "line": 58,
+    "source": "**`Penetration Testers`** (a.k.a. **`pentesters`**) = are professionals hired to simulate a hacking attack against a network, a computer system, a web application or the entire organization. They discover vulnerabilities across the tested systems by mastering the same tools and techniques used by malicious hackers. They often work:",
+    "translation": "**`Penetration Testers`** (aussi appelés **`pentesters`**) = professionnels chargés de simuler une attaque contre un réseau, un système informatique, une application Web ou l’ensemble d’une organisation. Ils identifient les vulnérabilités des systèmes testés en maîtrisant les outils et techniques utilisés par les hackers malveillants. Ils travaillent souvent :"
+  },
+  {
+    "line": 60,
+    "source": "- as freelancers",
+    "translation": "- en freelance"
+  },
+  {
+    "line": 61,
+    "source": "- in an IT Security services company",
+    "translation": "- dans une entreprise de services en sécurité informatique"
+  },
+  {
+    "line": 62,
+    "source": "- as in-house employees",
+    "translation": "- comme salariés internes"
+  },
+  {
+    "line": 64,
+    "source": "Pentesters can specialize in specific InfoSec sectors:",
+    "translation": "Les pentesters peuvent se spécialiser dans différents domaines de l’InfoSec :"
+  },
+  {
+    "line": 66,
+    "source": "- Systems attacks",
+    "translation": "- Attaques système"
+  },
+  {
+    "line": 67,
+    "source": "- Web Applications",
+    "translation": "- Applications Web"
+  },
+  {
+    "line": 68,
+    "source": "- Malware Analysis",
+    "translation": "- Analyse de malware"
+  },
+  {
+    "line": 69,
+    "source": "- Reverse Engineering",
+    "translation": "- Reverse Engineering"
+  },
+  {
+    "line": 70,
+    "source": "- Mobile Applications",
+    "translation": "- Applications mobiles"
+  },
+  {
+    "line": 71,
+    "source": "- Network Pentesting",
+    "translation": "- Pentest réseau"
+  },
+  {
+    "line": 72,
+    "source": "- Social Engineering",
+    "translation": "- Social Engineering"
+  },
+  {
+    "line": 73,
+    "source": "- Other...",
+    "translation": "- Autres domaines..."
+  },
+  {
+    "line": 75,
+    "source": "> 📌 Be passionate, skilled and hungry for knowledge!",
+    "translation": "> 📌 Développer ses compétences avec passion et continuer à apprendre !"
+  },
+  {
+    "line": 81,
+    "source": "It is fundamental to speak the InfoSec domain language.",
+    "translation": "Il est essentiel de maîtriser le vocabulaire de l’InfoSec."
+  },
+  {
+    "line": 87,
+    "source": "- is a professional pentester or ***ethical hacker*** who performs *authorized* attacks against a system helping the client *solve* their security issues.",
+    "translation": "- désigne un pentester professionnel ou ***ethical hacker*** qui réalise des attaques *autorisées* contre un système pour aider le client à *résoudre* ses problèmes de sécurité."
+  },
+  {
+    "line": 88,
+    "source": "- they do NOT perform illegal actions.",
+    "translation": "- il ne réalise PAS d’actions illégales."
+  },
+  {
+    "line": 94,
+    "source": "- is a hacker who performs *unauthorized* attacks against a system with the purpose of *causing damage* or gaining *profit*.",
+    "translation": "- désigne un hacker qui réalise des attaques *non autorisées* contre un système afin de *causer des dommages* ou d’en tirer un *profit*."
+  },
+  {
+    "line": 95,
+    "source": "- a category of black hat hackers is called \"*crackers*\".",
+    "translation": "- une catégorie de black hat hackers est appelée « *crackers* »."
+  },
+  {
+    "line": 101,
+    "source": "- is a computer system user (an employee of your client of an external user).",
+    "translation": "- désigne un utilisateur d’un système informatique (un salarié du client ou un utilisateur externe)."
+  },
+  {
+    "line": 107,
+    "source": "- is a user who *misuses* or *attacks* computer systems and applications.",
+    "translation": "- désigne un utilisateur qui *détourne l’usage* ou *attaque* des systèmes et applications informatiques."
+  },
+  {
+    "line": 113,
+    "source": "- are the users who manage IT networks or single systems.",
+    "translation": "- désigne les utilisateurs qui administrent des réseaux informatiques ou des systèmes individuels."
+  },
+  {
+    "line": 114,
+    "source": "- they have *maximum privileges* over a system.",
+    "translation": "- ils disposent des *privilèges maximaux* sur un système."
+  },
+  {
+    "line": 120,
+    "source": "- identify the action that a user is *allowed* to do.",
+    "translation": "- définissent les actions qu’un utilisateur est *autorisé* à effectuer."
+  },
+  {
+    "line": 121,
+    "source": "- the higher the privileges, the more control.",
+    "translation": "- plus les privilèges sont élevés, plus le contrôle est important."
+  },
+  {
+    "line": 127,
+    "source": "- is the use of *secrecy of design*, implementation or configuration in order to provide security.",
+    "translation": "- consiste à s’appuyer sur le *secret de la conception*, de l’implémentation ou de la configuration pour assurer la sécurité."
+  },
+  {
+    "line": 128,
+    "source": "- it *cannot stop* a skilled and motivated attacker.",
+    "translation": "- elle ne peut *pas arrêter* un attaquant compétent et motivé."
+  },
+  {
+    "line": 134,
+    "source": "- is any kind of action aimed at *misusing* or *taking control* over a computer system or application.",
+    "translation": "- désigne toute action visant à *détourner l’usage* ou à *prendre le contrôle* d’un système informatique ou d’une application."
+  },
+  {
+    "line": 135,
+    "source": "  - unauthorized access to an administration area",
+    "translation": "  - accès non autorisé à une interface d’administration"
+  },
+  {
+    "line": 136,
+    "source": "  - stealing a user's credentials",
+    "translation": "  - vol des identifiants d’un utilisateur"
+  },
+  {
+    "line": 137,
+    "source": "  - causing denial of service",
+    "translation": "  - déni de service"
+  },
+  {
+    "line": 138,
+    "source": "  - eavesdropping or communications",
+    "translation": "  - interception des communications"
+  },
+  {
+    "line": 144,
+    "source": "- **`privesc`** is an attack where a malicious user *gains elevated privileges* over a system.",
+    "translation": "- **`privesc`** désigne une attaque permettant à un utilisateur malveillant d’*obtenir des privilèges plus élevés* sur un système."
+  },
+  {
+    "line": 150,
+    "source": "- a **`DoS attack`** is used by an attacker to make a system or a service unavailable / unresponsive, causing a service crash or resources saturation.",
+    "translation": "- une **`DoS attack`** vise à rendre un système ou un service indisponible ou incapable de répondre, en provoquant un arrêt du service ou une saturation des ressources."
+  },
+  {
+    "line": 156,
+    "source": "- during a **`RCE attack`** a malicious user executes some attacker-controlled *code* on a victim *remote* machine.",
+    "translation": "- lors d’une **`RCE attack`**, un utilisateur malveillant exécute du *code* qu’il contrôle sur une machine *distante*."
+  },
+  {
+    "line": 157,
+    "source": "- RCE vulnerabilities can be *exploited* over the network by a remote attacker.",
+    "translation": "- les vulnérabilités RCE peuvent être *exploitées* à distance par le réseau."
+  },
+  {
+    "line": 163,
+    "source": "- is a piece of custom code which provides the attacker a **`shell`** on the victim machine, generally used during RCE attacks.",
+    "translation": "- désigne un morceau de code personnalisé donnant à l’attaquant un **`shell`** sur la machine cible, généralement lors d’une attaque RCE."
+  },
+  {
+    "line": 169,
+    "source": "> ⚡ P.T. Usage: ",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 171,
+    "source": "> - Knowing how info is transmitted over networks, by using the right protocol for the transmission",
+    "translation": "> - Comprendre comment les informations transitent sur les réseaux en utilisant le protocole adapté"
+  },
+  {
+    "line": 172,
+    "source": "> - Traffic protection",
+    "translation": "> - Protéger le trafic"
+  },
+  {
+    "line": 176,
+    "source": "- They should **not** be used for the transmission of critical or private info, since it's easy to intercept.",
+    "translation": "- Ils ne doivent **pas** être utilisés pour transmettre des informations critiques ou privées, car celles-ci sont faciles à intercepter."
+  },
+  {
+    "line": 177,
+    "source": "- Use clear-text protocols only on trusted networks, if really necessary.",
+    "translation": "- Utiliser les protocoles en clair uniquement sur des réseaux de confiance, si cela est vraiment nécessaire."
+  },
+  {
+    "line": 181,
+    "source": "- They are used to protect the communication by *encrypting* the transmitted information, in case of eavesdropping.",
+    "translation": "- Ils protègent les communications en *chiffrant* les informations transmises, notamment en cas d’interception."
+  },
+  {
+    "line": 182,
+    "source": "- Always use a **cryptographic** protocol for usernames and passwords.",
+    "translation": "- Toujours utiliser un protocole **cryptographique** pour les noms d’utilisateur et les mots de passe."
+  },
+  {
+    "line": 184,
+    "source": "A Clear-text protocol information can be wrapped into a cryptographic protocol, like a *VPN tunnel*.",
+    "translation": "Les informations transmises en clair peuvent être encapsulées dans un protocole cryptographique, par exemple dans un *tunnel VPN*."
+  },
+  {
+    "line": 188,
+    "source": "A **`VPN`** establish a secure, encrypted and protected connection between a private network and a public one (or the Internet), using a private tunnel for the data.",
+    "translation": "Un **`VPN`** établit une connexion sécurisée, chiffrée et protégée entre un réseau privé et un réseau public (ou Internet), au moyen d’un tunnel privé pour les données."
+  },
+  {
+    "line": 190,
+    "source": "- The client is directly connected to the private network.",
+    "translation": "- Le client est directement connecté au réseau privé."
+  },
+  {
+    "line": 196,
+    "source": "- **`Wireshark`** is a network sniffer tool and packet analyzer, that allows to capture the data transmitted over the network.",
+    "translation": "- **`Wireshark`** est un outil de capture réseau et d’analyse de paquets qui permet de capturer les données transmises sur le réseau."
+  },
+  {
+    "line": 198,
+    "source": "> 🔬 Check [*HTTP(s) Traffic Sniffing*](../exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing.md) lab.",
+    "translation": "> 🔬 Consulter le laboratoire [*Analyse du trafic HTTP(S)*](../exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing.md)."
+  },
+  {
+    "line": 204,
+    "source": "> ⚡ P.T. Usage: ",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 206,
+    "source": "> - Computer/Boolean logic, data is represented in binary format",
+    "translation": "> - Logique informatique et booléenne : les données sont représentées au format binaire"
+  },
+  {
+    "line": 207,
+    "source": "> - Network addressing",
+    "translation": "> - Adressage réseau"
+  },
+  {
+    "line": 211,
+    "source": "**`Binary`** notation uses only two symbols to represent numbers, **0** (**zero**) and **1** (**one**).",
+    "translation": "La notation **`Binary`** (binaire) utilise seulement deux symboles pour représenter les nombres : **0** (**zéro**) et **1** (**un**)."
+  },
+  {
+    "line": 213,
+    "source": "**`Decimal`** notation uses ten symbols (0 to 9).",
+    "translation": "La notation **`Decimal`** (décimale) utilise dix symboles (de 0 à 9)."
+  },
+  {
+    "line": 215,
+    "source": "- *Counting* in binary: start counting from 0, when reach 1, you increment the digit to the left of it.",
+    "translation": "- *Compter* en binaire : commencer à 0 ; lorsque 1 est atteint, incrémenter le chiffre à sa gauche."
+  },
+  {
+    "line": 216,
+    "source": "  - 0, 1, 10, 11, 100, 101, 110, 111, 1000 ... and so on.",
+    "translation": "  - 0, 1, 10, 11, 100, 101, 110, 111, 1000 ... et ainsi de suite."
+  },
+  {
+    "line": 218,
+    "source": "- *Converting* from **bin**ary to **dec**imal: by using the position of the digits.",
+    "translation": "- *Convertir* du **binaire** au **décimal** en utilisant la position des chiffres."
+  },
+  {
+    "line": 223,
+    "source": "- *Converting* from **dec**imal to **bin**ary:",
+    "translation": "- *Convertir* du **décimal** au **binaire** :"
+  },
+  {
+    "line": 225,
+    "source": "  - by dividing the decimal number by 2 (base 2), write the remainder, continue like this until reaching 0 as dividend.",
+    "translation": "  - diviser le nombre décimal par 2 (base 2), noter le reste et poursuivre jusqu’à obtenir un dividende égal à 0."
+  },
+  {
+    "line": 250,
+    "source": "  - Or use the powers of two in a \"base 2 table\":",
+    "translation": "  - Ou utiliser les puissances de deux dans une table en base 2 :"
+  },
+  {
+    "line": 310,
+    "source": "- **`NOT`** flips the bits - zero to one, and one to zero.",
+    "translation": "- **`NOT`** inverse les bits : zéro devient un, et un devient zéro."
+  },
+  {
+    "line": 315,
+    "source": "- **`AND`** logical AND (**&**) between the bits of the operands.",
+    "translation": "- **`AND`** réalise un ET logique (**&**) entre les bits des opérandes."
+  },
+  {
+    "line": 332,
+    "source": "- **`OR`** logical OR (**|**) between the bits of the operands.",
+    "translation": "- **`OR`** réalise un OU logique (**|**) entre les bits des opérandes."
+  },
+  {
+    "line": 349,
+    "source": "- **`XOR`** logical Exclusive OR (**^** , **⊕**) between the bits of the operands.",
+    "translation": "- **`XOR`** réalise un OU exclusif logique (**^** , **⊕**) entre les bits des opérandes."
+  },
+  {
+    "line": 366,
+    "source": "Windows calculator can help with calculations in \"Programmer\" mode.",
+    "translation": "La calculatrice Windows peut faciliter les calculs en mode « Programmeur »."
+  },
+  {
+    "line": 372,
+    "source": "**`Hexadecimal`** system is used too in computer science. It uses 16 symbols (with letters for double-digit numbers):",
+    "translation": "Le système **`Hexadecimal`** (hexadécimal) est aussi utilisé en informatique. Il emploie 16 symboles, dont des lettres pour les valeurs à deux chiffres :"
+  },
+  {
+    "line": 376,
+    "source": "To distinguish a hexadecimal number from a decimal number, \"**0x**\" at the beginning or \"**h**\" at the end is added.",
+    "translation": "Pour distinguer un nombre hexadécimal d’un nombre décimal, on ajoute « **0x** » au début ou « **h** » à la fin."
+  },
+  {
+    "line": 378,
+    "source": "- *Converting* from **hex**adecimal to **dec**imal: by using the position of the digits.",
+    "translation": "- *Convertir* de l’**hexadécimal** au **décimal** en utilisant la position des chiffres."
+  },
+  {
+    "line": 385,
+    "source": "- *Converting* from **dec**imal to **hex**adecimal:",
+    "translation": "- *Convertir* du **décimal** à l’**hexadécimal** :"
+  },
+  {
+    "line": 387,
+    "source": "  - by subsequently dividing the decimal number by 16 (base 16), write the remainder, continue like this until reaching 0.",
+    "translation": "  - diviser successivement le nombre décimal par 16 (base 16), noter le reste et poursuivre jusqu’à obtenir 0."
+  },
+  {
+    "line": 413,
+    "source": "> 📌Online converters can help to speed up the calculations, for example here you can find some conversion tools [Binary Hex Converters](https://www.binaryhexconverter.com/).",
+    "translation": "> 📌 Les convertisseurs en ligne permettent d’accélérer les calculs, par exemple les outils proposés sur [Binary Hex Converters](https://www.binaryhexconverter.com/)."
+  }
+]

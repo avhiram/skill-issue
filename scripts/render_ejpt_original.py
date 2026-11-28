@@ -195,8 +195,36 @@ def navigation(current):
     return "".join(out)
 allowed = set("a p img pre code li ul ol strong em s del blockquote h1 h2 h3 h4 h5 h6 hr details summary td tr th table thead tbody br kbd sup sub span div figure figcaption".split())
 attrs = {"a":{"href","title","id","name"},"img":{"src","alt","title","width","height"},"code":{"class"},"ol":{"start"},"details":{"open"},"th":{"style"},"td":{"style"}}
+def translated_course_content(n):
+    original = content(n)
+    path = Path("imports/ejpt/course-fr") / Path(n).with_suffix(".json")
+    if not path.is_file():
+        return original
+    edits = json.loads(path.read_text(encoding="utf-8"))
+    lines = original.splitlines(keepends=True)
+    seen = set()
+    for edit in edits:
+        i = edit["line"] - 1
+        if i in seen or lines[i].rstrip("\r\n") != edit["source"]:
+            raise RuntimeError("Translation source mismatch: " + n + ":" + str(i+1))
+        seen.add(i)
+        ending = lines[i][len(lines[i].rstrip("\r\n")):]
+        lines[i] = edit["translation"] + ending
+    translated = "".join(lines)
+    def protected(value):
+        doc = BeautifulSoup(md.render(convert_gitbook_hints(value)), "html.parser")
+        return (
+            [str(t) for t in doc.select("pre, code, kbd, samp, img")],
+            [a.get("href") for a in doc.select("a[href]")],
+            [h.get_text() for h in doc.find_all(re.compile(r"^h[1-6]$"))],
+        )
+    if protected(original) != protected(translated):
+        raise RuntimeError("Translation modified protected content: " + n)
+    print("eJPT French course:", n, len(edits), "translated lines")
+    return translated
+
 def render(n):
-    source = convert_gitbook_hints(content(n))
+    source = convert_gitbook_hints(translated_course_content(n))
     soup = BeautifulSoup(md.render(source), "html.parser")
     for tag in list(soup.find_all(True)):
         if tag.name is None:
