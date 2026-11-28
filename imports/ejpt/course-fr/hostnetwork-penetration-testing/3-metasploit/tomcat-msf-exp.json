@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Windows: Java Web Server](https://attackdefense.com/challengedetails?cid=1948)",
+    "translation": ">  🔬 [Windows : serveur Web Java](https://attackdefense.com/challengedetails?cid=1948)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `10.2.24.113`",
+    "translation": ">  - IP cible du laboratoire : `10.2.24.113`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
+    "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  },
+  {
+    "line": 30,
+    "source": "- Try tomcat from a browser",
+    "translation": "- Consulter Tomcat depuis un navigateur."
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Vulnerable SMTP Server](https://www.attackdefense.com/challengedetails?cid=715)",
+    "translation": ">  🔬 [Serveur SMTP vulnérable](https://www.attackdefense.com/challengedetails?cid=715)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.109.36.3`",
+    "translation": ">  - IP cible du laboratoire : `192.109.36.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
+    "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  }
+]

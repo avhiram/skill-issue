@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Windows: HTTP File Server](https://attackdefense.com/challengedetails?cid=1945)",
+    "translation": ">  🔬 [Windows : serveur de fichiers HTTP](https://attackdefense.com/challengedetails?cid=1945)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `10.2.19.226`",
+    "translation": ">  - IP cible du laboratoire : `10.2.19.226`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
+    "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  }
+]
