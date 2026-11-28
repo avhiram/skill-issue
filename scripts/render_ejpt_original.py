@@ -76,6 +76,29 @@ md = MarkdownIt("commonmark", {"html": True}).enable("table").enable("strikethro
 def content(n):
     s = files[n].decode("utf-8-sig")
     return re.sub(r"\A---[ \t]*\r?\n[\s\S]*?\r?\n---[ \t]*\r?\n", "", s, count=1)
+hint_counts = collections.Counter()
+HINT_RE = re.compile(
+    r'{%\s*hint\s+style=["\']([^"\']+)["\']\s*%}([\s\S]*?){%\s*endhint\s*%}',
+    re.I,
+)
+def convert_gitbook_hints(source):
+    """Render GitBook hint directives as native Markdown callouts."""
+    def replace(match):
+        style = match.group(1).strip().lower()
+        labels = {
+            "info": "Info",
+            "warning": "Warning",
+            "success": "Success",
+            "danger": "Warning",
+            "tip": "Tip",
+            "note": "Note",
+        }
+        hint_counts[style] += 1
+        body = match.group(2).strip()
+        quoted = "\n".join("> " + line if line else ">" for line in body.splitlines())
+        return "\n> **" + labels.get(style, "Note") + "**\n>\n" + quoted + "\n"
+    return HINT_RE.sub(replace, source)
+
 def title(n):
     m = re.search(r"^#\s+(.+)$", content(n), re.M)
     return m.group(1).strip() if m else PurePosixPath(n).stem
@@ -93,6 +116,53 @@ def clean_heading(text):
 byname = collections.defaultdict(list)
 for n in files:
     byname[PurePosixPath(n).name].append(n)
+GITBOOK_ASSET_BASE = (
+    "https://4053168017-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/"
+    "spaces%2FbkAZDoSuRHGdNlWHdyKs%2Fuploads%2F"
+)
+def gitbook_asset(blob, filename):
+    return (
+        GITBOOK_ASSET_BASE + "git-blob-" + blob + "%2F"
+        + urllib.parse.quote(filename, safe="") + "?alt=media"
+    )
+
+# The supplementary Markdown retains its original relative paths. These
+# exact GitBook assets restore the matching screenshots without editing that
+# source file or replacing the images with approximations.
+external_assets = {
+    ".gitbook/assets/image (3).png": gitbook_asset(
+        "50bf07ade58e70bab23a0cca05204a1bd07b8b2d", "image (1111).png"
+    ),
+    ".gitbook/assets/image (4).png": gitbook_asset(
+        "82a942408ce69ff92471e41f0d334db258a87bb2", "image (533).png"
+    ),
+    ".gitbook/assets/image (5).png": gitbook_asset(
+        "cd734fb04458eb19f18f9a1df50c912d69743da1", "image (524).png"
+    ),
+    ".gitbook/assets/image (13).png": gitbook_asset(
+        "6ab46c118379ea792b2f477ca36d22f4e1380ddd", "image (328).png"
+    ),
+    ".gitbook/assets/image (14).png": gitbook_asset(
+        "592a4e1a03125816894fd143f1631e70c75444d2", "image (903).png"
+    ),
+    ".gitbook/assets/image (10).png": gitbook_asset(
+        "af912ceb716958218004a7094a885255498368a9", "image (307).png"
+    ),
+    ".gitbook/assets/image (12).png": gitbook_asset(
+        "bbd405a269fec3069cb078fd269da45510050c9b", "image (333).png"
+    ),
+    ".gitbook/assets/image (11).png": gitbook_asset(
+        "74cc125b1d2baf64a7889fc0a04bcd299d4fb8e2",
+        "image (227) (1) (1) (1).png"
+    ),
+    ".gitbook/assets/image (6).png": gitbook_asset(
+        "33b0cd0a5bf70946deb6bc5c2dc0e6904642af9b", "image (247) (1).png"
+    ),
+    ".gitbook/assets/image (7).png": gitbook_asset(
+        "607d764091f974226ff1baac853144a317fc5838", "image (338).png"
+    ),
+}
+external_asset_repairs = []
 missing = []
 repaired = []
 def esc(s):
@@ -126,7 +196,8 @@ def navigation(current):
 allowed = set("a p img pre code li ul ol strong em s del blockquote h1 h2 h3 h4 h5 h6 hr details summary td tr th table thead tbody br kbd sup sub span div figure figcaption".split())
 attrs = {"a":{"href","title","id","name"},"img":{"src","alt","title","width","height"},"code":{"class"},"ol":{"start"},"details":{"open"},"th":{"style"},"td":{"style"}}
 def render(n):
-    soup = BeautifulSoup(md.render(content(n)), "html.parser")
+    source = convert_gitbook_hints(content(n))
+    soup = BeautifulSoup(md.render(source), "html.parser")
     for tag in list(soup.find_all(True)):
         if tag.name is None:
             continue
@@ -161,6 +232,11 @@ def render(n):
         if not p.path:
             continue
         q = posixpath.normpath(posixpath.join(posixpath.dirname(n),urllib.parse.unquote(p.path)))
+        external_asset = external_assets.get(q) if tag.name == "img" else None
+        if external_asset:
+            tag[key] = external_asset
+            external_asset_repairs.append([n, u, external_asset])
+            continue
         if q not in files and q+"/README.md" in files:
             q += "/README.md"
         if q not in files:
@@ -222,7 +298,20 @@ for n in notes:
     page='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+esc(titles[n])+' | SKILL-ISSUE</title><link rel="stylesheet" href="'+BASE+'reader.css"></head><body><header><a href="/skill-issue/"><strong>SKILL-ISSUE</strong></a><a href="'+url("README.md")+'">Cours</a><a href="'+url("ejpt-cheatsheet.md")+'">Cheatsheet</a><a href="'+url("cheatsheet-additional.md")+'">Cheatsheet 2</a><button type="button" class="mobile" aria-expanded="false">Chapitres</button></header><div class="layout"><aside aria-label="Chapitres">'+navigation(n)+'</aside><main><article>'+body+'</article></main></div><script src="'+BASE+'reader.js" defer></script></body></html>'
     write(destination(n),page)
 write("index.html",'<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=README.html"><title>eJPT</title></head><body><a href="README.html">Cours original</a></body></html>')
-write("import-report.json",json.dumps({"revision":REVISION,"source_files":826,"markdown_pages":len(notes),"pages":[destination(n) for n in notes],"images":len(assets),"repaired_links":repaired,"missing_links":missing},ensure_ascii=False,indent=2))
+missing_images = sum(1 for _, kind, _ in missing if kind == "img")
+write("import-report.json",json.dumps({
+    "revision":REVISION,
+    "source_files":826,
+    "markdown_pages":len(notes),
+    "pages":[destination(n) for n in notes],
+    "images":len(assets),
+    "repaired_links":repaired,
+    "missing_links":missing,
+    "missing_images":missing_images,
+    "gitbook_hints":dict(hint_counts),
+    "external_assets_restored":len(external_asset_repairs),
+    "restored_external_assets":external_asset_repairs,
+},ensure_ascii=False,indent=2))
 assert all((OUT/destination(n)).is_file() for n in files)
 assert all(digest((OUT/destination(n)).read_bytes())==digest(files[n]) for n in assets)
 print(f"Verified: {len(notes)} original Markdown pages rendered, {len(assets)} unchanged images, {len(missing)} unresolved source references, {len(repaired)} repaired references")
