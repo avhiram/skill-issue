@@ -1723,7 +1723,7 @@ def refine_long_blocks(soup, article):
         return title, description
 
     for pre in original_pres:
-        code = pre.find("code", recursive=False)
+        code = pre.find("code")
         if code is None:
             continue
         old = code.get_text()
@@ -1766,7 +1766,7 @@ def refine_long_blocks(soup, article):
         raise RuntimeError("Long-block presentation changed original code or order")
     remaining = []
     for pre in article.find_all("pre"):
-        code = pre.find("code", recursive=False)
+        code = pre.find("code")
         if code is None:
             continue
         lines = code.get_text().splitlines()
