@@ -218,5 +218,95 @@
     "line": 103,
     "source": "- it allows Windows systems to access Linux shares",
     "translation": "- Elle permet aux systèmes Windows d’accéder aux partages Linux."
+  },
+  {
+    "line": 131,
+    "source": "🗒️ [**RDP**](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (**R**emote **D**esktop **P**rotocol) - Microsoft proprietary GUI remote access protocol used to remotely connect with Windows.",
+    "translation": "🗒️ [**RDP**](https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/understanding-remote-desktop-protocol) (**R**emote **D**esktop **P**rotocol) est un protocole propriétaire de Microsoft permettant d’accéder à distance à Windows via une interface graphique."
+  },
+  {
+    "line": 133,
+    "source": "- Ports: **`3389`** (TCP) or any other port",
+    "translation": "- Ports : **`3389`** (TCP) ou un autre port configuré."
+  },
+  {
+    "line": 134,
+    "source": "- *User Authentication* -  `username` & `password`",
+    "translation": "- *Authentification utilisateur* : `username` et `password`."
+  },
+  {
+    "line": 135,
+    "source": "- An RDP Client is used to connect to the target",
+    "translation": "- Un client RDP permet de se connecter au système distant."
+  },
+  {
+    "line": 141,
+    "source": "🗒️ [**WinRM**](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) (**W**indows **R**emote **M**anagement **P**rotocol) - a protocol used to facilitate remote access with Windows systems over HTTP(S).",
+    "translation": "🗒️ [**WinRM**](https://learn.microsoft.com/en-us/windows/win32/winrm/portal) (**W**indows **R**emote **M**anagement **P**rotocol) est un protocole facilitant l’accès distant aux systèmes Windows via HTTP(S)."
+  },
+  {
+    "line": 143,
+    "source": "- Ports: `5986` - `5986 (HTTPS)` (TCP)",
+    "translation": "- Ports indiqués dans le cours : `5986` - `5986 (HTTPS)` (TCP)."
+  },
+  {
+    "line": 144,
+    "source": "- Not configured by default",
+    "translation": "- Non configuré par défaut selon le cours."
+  },
+  {
+    "line": 145,
+    "source": "- Used by system administrator to:",
+    "translation": "- Utilisé par les administrateurs système pour :"
+  },
+  {
+    "line": 146,
+    "source": "  - remotely access, interact and execute commands on Windows hosts on a LAN",
+    "translation": "  - Accéder aux hôtes Windows d’un réseau local, interagir avec eux et exécuter des commandes à distance."
+  },
+  {
+    "line": 174,
+    "source": "🗒️ **Privilege Escalation** (*privesc*) is the process of exploiting vulnerabilities to escalate/elevate privileges from one user to a user with administrative or root access.",
+    "translation": "🗒️ La **Privilege Escalation** (*privesc*) consiste à exploiter des vulnérabilités pour passer des privilèges d’un utilisateur à ceux d’un compte administrateur ou root."
+  },
+  {
+    "line": 176,
+    "source": "- it is an important part of the Penetration testing process, specially after gaining initial foothold",
+    "translation": "- Elle constitue une étape importante du pentest, notamment après l’obtention d’un premier accès."
+  },
+  {
+    "line": 177,
+    "source": "- the better the privesc is, the better the Pentest will be",
+    "translation": "- Le cours souligne son importance dans l’évaluation de la sécurité."
+  },
+  {
+    "line": 181,
+    "source": "> ❗ **Targeting Kernel space memory and apps can cause system crashes, data loss, etc** ❗",
+    "translation": "> ❗ **Les interventions dans la mémoire et les applications de l’espace noyau peuvent provoquer des plantages du système, des pertes de données, etc.** ❗"
+  },
+  {
+    "line": 183,
+    "source": "🗒️ The [kernel](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/windows-kernel-mode-kernel-library) of an operating system is a computer program that implements the core functionality of an O.S. and has control over every system resource and hardware.",
+    "translation": "🗒️ Le [noyau](https://learn.microsoft.com/en-us/windows-hardware/drivers/kernel/windows-kernel-mode-kernel-library) d’un système d’exploitation est un programme informatique qui en assure les fonctions essentielles et contrôle ses ressources ainsi que le matériel."
+  },
+  {
+    "line": 185,
+    "source": "The kernel facilitates the communication between hardware and software layers.",
+    "translation": "Le noyau facilite la communication entre les couches matérielles et logicielles."
+  },
+  {
+    "line": 215,
+    "source": "🗒️ [**UAC**](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview) (**U**ser **A**ccount **C**ontrol) - a Windows security feature used to prevent unauthorized changes to the operating system. Exception of cases when an administrator has deliberately granted administrator-level access to the system, *UAC ensures that programs and processes always operate in the security context of a **non-administrator account***.",
+    "translation": "🗒️ L’[**UAC**](https://learn.microsoft.com/en-us/windows/security/identity-protection/user-account-control/user-account-control-overview) (**U**ser **A**ccount **C**ontrol) est une fonctionnalité de sécurité de Windows destinée à prévenir les modifications non autorisées du système d’exploitation. Sauf lorsqu’un administrateur a délibérément accordé des droits administratifs, *l’UAC permet aux programmes et processus de fonctionner dans le contexte de sécurité d’un **compte non administrateur***."
+  },
+  {
+    "line": 217,
+    "source": "- It requires approval from a user that is part of the administrators group",
+    "translation": "- Une approbation par un utilisateur membre du groupe des administrateurs est nécessaire."
+  },
+  {
+    "line": 218,
+    "source": "- On modern versions of Windows, since Win Vista",
+    "translation": "- Sur les versions modernes de Windows, depuis Windows Vista"
   }
 ]

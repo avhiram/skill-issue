@@ -148,5 +148,35 @@
     "line": 99,
     "source": "Linux kernel vulnerabilities can be targetted to execute arbitrary code and obtain privileged system shell.",
     "translation": "Les vulnérabilités du noyau Linux peuvent entraîner une exécution de code arbitraire et l’obtention d’un shell avec des privilèges élevés."
+  },
+  {
+    "line": 127,
+    "source": "🗒️ **Cron** - a time-based daemon/service, scheduler of applications, scripts and commands. It executed non-interactive jobs.",
+    "translation": "🗒️ **Cron** est un service de planification qui permet de programmer l’exécution d’applications, de scripts et de commandes à des heures définies. Il exécute des tâches non interactives."
+  },
+  {
+    "line": 129,
+    "source": "- *Tasks scheduled in `cron` are called* **cron jobs**",
+    "translation": "- *Les tâches planifiées dans `cron` sont appelées* **cron jobs**."
+  },
+  {
+    "line": 130,
+    "source": "  - `e.g.` backups, o.s. upgrades, patches, scripts, commands etc",
+    "translation": "  - `e.g.` sauvegardes, mises à niveau du système, correctifs, scripts, commandes, etc."
+  },
+  {
+    "line": 131,
+    "source": "- Default cron table/configuration file is **` /etc/crontab`**",
+    "translation": "- Le fichier de configuration par défaut de la table Cron est **` /etc/crontab`**."
+  },
+  {
+    "line": 132,
+    "source": "- Cron Jobs can be run as any user",
+    "translation": "- Les Cron Jobs peuvent être exécutés sous différents comptes utilisateurs."
+  },
+  {
+    "line": 143,
+    "source": "🗒️ [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) - is a type of special access permission given to a file. A file with SUID *always executes as its the owner*, regardless of the user passing the command. ",
+    "translation": "🗒️ Le [**SUID**](https://www.redhat.com/sysadmin/suid-sgid-sticky-bit) (**S**et owner **U**ser **ID**) est une permission spéciale attribuée à un fichier. Le cours indique qu’un fichier SUID _s’exécute avec les droits de son propriétaire_, quel que soit l’utilisateur qui lance la commande."
   }
 ]
