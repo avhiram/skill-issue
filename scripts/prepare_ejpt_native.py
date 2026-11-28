@@ -2142,6 +2142,66 @@ def merge_matching_subsections(soup, article):
     return {"merged":len(merged), "skipped":skipped, "subsections":merged, "content_preserved":True}
 
 
+def translate_course_ui_labels(article):
+    """Translate common editorial labels, without changing technical examples."""
+    before = [str(c) for c in article.select("pre, code, kbd, samp")]
+    links = [str(a) for a in article.find_all("a")]
+    images = [str(i) for i in article.find_all("img")]
+    ids = [n["id"] for n in article.select("[id]")]
+    labels = {
+        "Prerequisites": "Prérequis",
+        "Learning Objectives": "Objectifs pédagogiques",
+        "Training list - PentesterAcademy/INE Labs": "Laboratoires d’entraînement PentesterAcademy / INE",
+        "Training list": "Laboratoires d’entraînement",
+        "Home Labs": "Laboratoires locaux",
+        "Disclaimer": "Avertissement",
+        "Topics": "Thèmes abordés",
+        "Sections": "Chapitres",
+        "Useful links": "Liens utiles",
+        "Course duration & Topics": "Durée et contenu du parcours",
+        "Conclusion": "Conclusion",
+        "References": "Références",
+        "Resources": "Ressources",
+        "Notes": "Notes",
+        "Examples": "Exemples",
+        "Example": "Exemple",
+        "Warning": "Avertissement",
+        "Tip": "Conseil",
+        "Success": "Succès",
+        "Reveal Flag:": "Afficher le flag :",
+        "Reveal Flag": "Afficher le flag",
+        "Target IP:": "IP cible :",
+        "Command": "Commande",
+        "Operating System": "Système d’exploitation",
+        "Description": "Description",
+        "Meaning": "Signification",
+        "Value": "Valeur",
+        "Attribute": "Attribut",
+        "Status code": "Code de statut",
+        "Advantages": "Avantages",
+        "Disadvantages": "Inconvénients",
+    }
+    changed = 0
+    for node in list(article.find_all(string=True)):
+        if node.find_parent(["pre", "code", "kbd", "samp", "script", "style", "textarea", "a"]):
+            continue
+        if not node.find_parent(["h1", "h2", "h3", "h4", "h5", "h6", "summary", "th", "strong"]):
+            continue
+        value = str(node)
+        old = value.strip()
+        new = labels.get(old)
+        if new is None and re.fullmatch(r"Lab [0-9]+", old):
+            new = old.replace("Lab ", "Laboratoire ", 1)
+        if new is not None and old != new:
+            node.replace_with(value.replace(old, new, 1))
+            changed += 1
+    assert before == [str(c) for c in article.select("pre, code, kbd, samp")]
+    assert links == [str(a) for a in article.find_all("a")]
+    assert images == [str(i) for i in article.find_all("img")]
+    assert ids == [n["id"] for n in article.select("[id]")]
+    return {"labels_translated": changed, "content_preserved": True}
+
+
 def remove_em_dashes(article):
     """Use natural punctuation in displayed prose, leaving technical literals intact."""
     from bs4 import Comment
@@ -2589,6 +2649,7 @@ for page in report["pages"]:
     elif page in WEB_LABS_GENERAL_PAGES:
         report.setdefault("web_labs_navigation", {})[page] = format_web_labs_navigation(article, page)
     if page != canonical:
+        report.setdefault("course_ui_labels", {})[page] = translate_course_ui_labels(article)
         report.setdefault("course_punctuation", {})[page] = remove_em_dashes(article)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
