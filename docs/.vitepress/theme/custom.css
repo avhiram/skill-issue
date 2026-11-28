@@ -1512,3 +1512,46 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   outline: 2px solid var(--vp-c-brand-1);
   outline-offset: 2px;
 }
+
+/* eJPT: a compact, responsive hierarchy without changing source content. */
+.vp-doc .ejpt-cheatsheet-content {
+  min-width: 0;
+  max-width: 100%;
+}
+.vp-doc .ejpt-cheatsheet-content :is(h4,h5,h6):not(.skill-fold-title) {
+  margin-block: 1.15rem .4rem;
+  font-size: .96rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.vp-doc .ejpt-cheatsheet-content :is(p,li) {
+  overflow-wrap: anywhere;
+}
+.vp-doc .ejpt-cheatsheet-content img {
+  max-width: 100%;
+  height: auto;
+}
+.vp-doc .ejpt-cheatsheet-content div[class*="language-"] {
+  min-width: 0;
+  max-width: 100%;
+  margin-block: .45rem 1rem;
+}
+.vp-doc .ejpt-cheatsheet-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.vp-doc .ejpt-cheatsheet-content [data-ejpt-repetitive-description="true"],
+.vp-doc .ejpt-cheatsheet-content [data-ejpt-repetitive-title="true"] {
+  display: none !important;
+}
+@media (max-width: 767px) {
+  .vp-doc .ejpt-cheatsheet-content .skill-fold-nested {
+    margin-inline-start: 0 !important;
+  }
+  .vp-doc .ejpt-cheatsheet-content .skill-fold-title.skill-fold-nested {
+    margin-inline-start: 6px !important;
+  }
+  .vp-doc .ejpt-cheatsheet-content .ejpt-selection-copy {
+    min-height: 44px;
+  }
+}
