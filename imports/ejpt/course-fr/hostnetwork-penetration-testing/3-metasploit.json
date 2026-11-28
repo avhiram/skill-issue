@@ -300,6 +300,21 @@
     "translation": "| **Scan de vulnérabilités** | Modules Auxiliary, rapports `nessus` |"
   },
   {
+    "line": 189,
+    "source": "🗒️ The **Metasploit Framework Database** (**msfdb**) contains all the data used with MSF like assessments and scans data, etc.",
+    "translation": "🗒️ La **Metasploit Framework Database** (**msfdb**) contient les données utilisées par MSF, notamment les résultats des évaluations et des scans."
+  },
+  {
+    "line": 224,
+    "source": "> 📌 Check this article by StationX ➡️ [How to Use Metasploit in Kali Linux + Metasploitable3](https://www.stationx.net/how-to-use-metasploit-in-kali-linux/) which will cover:",
+    "translation": "> 📌 Consulter cet article de StationX ➡️ [Utilisation de Metasploit sous Kali Linux avec Metasploitable3](https://www.stationx.net/how-to-use-metasploit-in-kali-linux/), qui aborde les sujets suivants :"
+  },
+  {
+    "line": 233,
+    "source": "🗒️ The **Metasploit Framework Console** (**msfconsole**) is an all-in-one interface and centralized console that allows access to all of the MSF options and features.",
+    "translation": "🗒️ La **Metasploit Framework Console** (**msfconsole**) est une interface centralisée donnant accès aux options et fonctionnalités du MSF."
+  },
+  {
     "line": 235,
     "source": "- It is launched by running the `msfconsole` command",
     "translation": "Il se lance en exécutant la commande `msfconsole`."
@@ -308,5 +323,70 @@
     "line": 249,
     "source": "An MSF module requires additional information that can be configured through the use of MSF **variables**, both *local* or *global* variables, called **`options`** inside the msfconsole.",
     "translation": "Un module MSF nécessite des informations supplémentaires, configurables à l’aide de **variables** MSF, *locales* ou *globales*, appelées **`options`** dans msfconsole."
+  },
+  {
+    "line": 327,
+    "source": "🗒️ Metasploit **Workspaces** allows to manage and organize the hosts, data, scans and activities stored in the `msfdb`.",
+    "translation": "🗒️ Les **Workspaces** de Metasploit permettent de gérer et d’organiser les hôtes, les données, les scans et les activités enregistrés dans la `msfdb`."
+  },
+  {
+    "line": 333,
+    "source": "> 📌 *It's recommended to create a new workspace for each engagement.*",
+    "translation": "> 📌 *Il est recommandé de créer un nouveau Workspace pour chaque mission.*"
+  },
+  {
+    "line": 385,
+    "source": "> 🔬 Check the full `nmap` information gathering lab in [this Nmap Host Discovery Lab](../assessment-methodologies/1-info-gathering.md#lab-with-nmap) (at the end of the page).",
+    "translation": "> 🔬 Consulter le laboratoire complet de collecte d’informations avec `nmap` dans [ce laboratoire de découverte des hôtes](../assessment-methodologies/1-info-gathering.md#lab-with-nmap), en fin de page."
+  },
+  {
+    "line": 565,
+    "source": "> 📌🔬 Check the [Enumeration Section labs here](../assessment-methodologies/3-enumeration.md) for basic `nmap` enumeration.",
+    "translation": "> 📌🔬 Consulter les [laboratoires de la section Énumération](../assessment-methodologies/3-enumeration.md) pour les bases de l’énumération avec `nmap`."
+  },
+  {
+    "line": 1155,
+    "source": "> 🔬 You can find my lab installation & configuration with Vagrant at [this page](https://blog.syselement.com/home/home-lab/redteam/metasploitable3), *set up for educational purposes*.",
+    "translation": "> 🔬 L’installation et la configuration du laboratoire avec Vagrant sont présentées sur [cette page](https://blog.syselement.com/home/home-lab/redteam/metasploitable3), *à des fins pédagogiques*."
+  },
+  {
+    "line": 1324,
+    "source": "> 🔬 You can find my [**Nessus Essentials** install tutorial here](https://blog.syselement.com/home/operating-systems/linux/tools/nessus).",
+    "translation": "> 🔬 Consulter le [tutoriel d’installation de **Nessus Essentials**](https://blog.syselement.com/home/operating-systems/linux/tools/nessus)."
+  },
+  {
+    "line": 1364,
+    "source": "🗒️ **WMAP** is a web application vulnerability scanner that allows to conduct and automate web server enumeration and scanning from within the Metasploit Framework.",
+    "translation": "🗒️ **WMAP** est un scanner de vulnérabilités des applications Web permettant de réaliser et d’automatiser l’énumération et l’analyse des serveurs Web depuis le Metasploit Framework."
+  },
+  {
+    "line": 1714,
+    "source": "🗒️ [Windows **Portable Executable**]() (**PE**) *is a file format for executables, object code, DLLs and others, used in 32-bit and 64-bit Windows O.S.*",
+    "translation": "🗒️ [Windows **Portable Executable**]() (**PE**) : *format de fichier pour les exécutables, le code objet, les DLL et d’autres fichiers utilisés sous Windows 32 et 64 bits.*"
+  },
+  {
+    "line": 1755,
+    "source": "Repetitive tasks and commands can be automated using **MSF resource scripts** (same as batch scripts).",
+    "translation": "Les tâches et commandes répétitives peuvent être automatisées avec les **MSF Resource Scripts** (comme avec les scripts batch)."
+  },
+  {
+    "line": 1847,
+    "source": "A **HFS** (HTTP File Server) is a file and documents sharing web server.",
+    "translation": "Un **HFS** (HTTP File Server) est un serveur Web destiné au partage de fichiers et de documents."
+  },
+  {
+    "line": 2020,
+    "source": "🗒️ **Windows Event Logs**, accessed via the `Event Viewer` on Windows, are categorized into:",
+    "translation": "🗒️ Les **Windows Event Logs**, accessibles depuis l’`Event Viewer` de Windows, sont répartis dans les catégories suivantes :"
+  },
+  {
+    "line": 2041,
+    "source": "🗒️ **Armitage** is a Java-based GUI front-end for the MSF.",
+    "translation": "🗒️ **Armitage** est une interface graphique Java pour le MSF."
+  },
+  {
+    "line": 2048,
+    "source": "> 🔬 **Port Scanning & Enumeration With Armitage** - lab by INE",
+    "translation": "> 🔬 **Scan de ports et énumération avec Armitage** : laboratoire INE"
   }
 ]
