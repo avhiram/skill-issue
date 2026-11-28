@@ -144,6 +144,17 @@ def render(name):
     code_counts[name] = len(original_blocks)
     if len(soup.select("img")) != original_images:
         raise RuntimeError("Rendered images differ from source: " + name)
+    # Move explicit instructor credits from the course introductions to the
+    # consolidated legal page. The source archive and original Markdown stay intact.
+    relocated = {
+        "mapt/README.md": "Instructor: Aaron Wilson",
+        "peh/README.md": "Instructor: Heath Adams - The Cyber Mentor",
+    }
+    if name in relocated:
+        matches = [p for p in soup.find_all("p") if p.get_text(" ", strip=True) == relocated[name]]
+        if len(matches) != 1:
+            raise RuntimeError("Unexpected instructor attribution: " + name)
+        matches[0].decompose()
     # UI only: add stable heading anchors and copy buttons outside original code.
     ids = set(tag.get("id") for tag in soup.find_all(id=True))
     for i, heading in enumerate(soup.select("h2, h3, h4"), 1):
@@ -203,7 +214,7 @@ article h2{font-size:22px}article h3{font-size:18px}article p,article ul,article
 .page-nav{display:flex;justify-content:space-between;gap:12px;margin:42px 0 0}
 .page-nav a{border:1px solid var(--line);border-radius:9px;padding:12px 16px;text-decoration:none;flex:1;min-width:0;overflow-wrap:anywhere}
 .page-nav a:last-child{text-align:right}.page-nav small{display:block;color:var(--muted)}
-footer details summary{cursor:pointer;font-size:12px}footer details p{margin:10px 0}
+footer .legal-link{font-size:11px;color:var(--muted);text-decoration:none}footer .legal-link:hover{text-decoration:underline}
 .reading-mode .layout{display:block}.reading-mode aside{display:none}
 @media(max-width:780px){header .nav-toggle{display:inline-block}aside{display:none;position:static;max-height:none}aside.open{display:block}main{padding-top:22px}.page-nav a{padding:10px;font-size:13px}header{gap:12px}.reading-mode aside.open{display:block}}
 """
@@ -285,11 +296,7 @@ for name in ordered:
         '<script src="' + url("reader.js") + '" defer></script></head><body><header><a href="/skill-issue/"><strong>SKILL-ISSUE</strong></a><a href="/skill-issue/tcm/">TCM</a>'
         '<button type="button" class="nav-toggle" aria-expanded="false">Chapitres</button><button type="button" class="reading-toggle" aria-pressed="false">Lecture</button></header>'
         '<div class="layout"><aside aria-label="Chapitres">' + "".join(nav) + '</aside><main>' + breadcrumb + '<article>' + body + '</article>' + adjacent +
-        '<footer><details><summary>Licence et attributions</summary><p>Notes originales : <a href="https://github.com/' + repository + '/tree/' + revision + '">syselement/tcm-sec-notes</a> · '
-        '<a href="' + url("LICENSE.txt") + '">CC BY-SA 4.0</a> · '
-        '<a href="' + url("markdown/"+name) + '">Markdown original</a> · '
-        '<a href="' + url("source.zip") + '">Archive complète</a>. '
-        'Présentation adaptée pour SKILL-ISSUE ; mentions originales et droits des tiers conservés.</p></details></footer></main></div></body></html>')
+        '<footer><a class="legal-link" href="/skill-issue/tcm/mentions.html">Mentions légales</a></footer></main></div></body></html>')
     write(page(name), document)
 
 report = {"repository":repository,"revision":revision,"files_verified":len(files),"archive_sha256":hashlib.sha256(archive).hexdigest(),"images_verified":len(images),"courses":{course:sum(n.startswith(course+"/") for n in notes) for course in courses},"rendered_pages":len(notes),"unresolved_source_references":missing,"resolved_lab_examples":resolved_examples,"code_blocks_verified":sum(code_counts.values()),"code_pages_verified":len(code_counts)}
