@@ -403,5 +403,1095 @@
     "line": 200,
     "source": " _Windows OS_",
     "translation": " _Système Windows_"
+  },
+  {
+    "line": 212,
+    "source": "> ⚡ P.T. Usage:",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 215,
+    "source": "> * Sniffing techniques",
+    "translation": "> * Techniques de Sniffing"
+  },
+  {
+    "line": 216,
+    "source": "> * MITM (Man in the middle) attacks",
+    "translation": "> * Attaques MITM (Man in the Middle)"
+  },
+  {
+    "line": 217,
+    "source": "> * Testing switches security",
+    "translation": "> * Tester la sécurité des switches"
+  },
+  {
+    "line": 219,
+    "source": "**`Link layer`** devices and protocols only deal with the next-hop, in the link layer of the TCP/IP stack, working with **`frames`** (layer 2 packets).",
+    "translation": "Les équipements et protocoles de la **`Link layer`** (couche liaison) ne concernent que le prochain saut dans la pile TCP/IP. Ils manipulent des **`frames`** (trames de couche 2)."
+  },
+  {
+    "line": 221,
+    "source": "* Hubs/Switches forward frames on a local network.",
+    "translation": "* Les hubs et switches transfèrent les trames sur un réseau local."
+  },
+  {
+    "line": 222,
+    "source": "* They work with MAC addresses.",
+    "translation": "* Ils utilisent les adresses MAC."
+  },
+  {
+    "line": 226,
+    "source": "While IP addresses are the Layer 3 (Network layer) addressing scheme, **`MAC addresses`** _uniquely identify a network card_ on the **Layer 2**.",
+    "translation": "Alors que les adresses IP servent à l’adressage de couche 3 (réseau), les **`MAC addresses`** _identifient une carte réseau de manière unique_ au niveau de la **couche 2**."
+  },
+  {
+    "line": 228,
+    "source": "* **MAC** (**M**edia **A**ccess **C**ontrol) address is known as the **physical address**.",
+    "translation": "* L’adresse **MAC** (**M**edia **A**ccess **C**ontrol) est également appelée **adresse physique**."
+  },
+  {
+    "line": 229,
+    "source": "* A MAC Address is 48 bits (6 bytes) long, expressed in hexadecimal form - `00:0C:AA:4F:79:6E`",
+    "translation": "* Une adresse MAC mesure 48 bits (6 octets) et s’exprime en hexadécimal : `00:0C:AA:4F:79:6E`"
+  },
+  {
+    "line": 230,
+    "source": "* Every host on a network has a MAC and an IP address.",
+    "translation": "* Chaque hôte du réseau possède une adresse MAC et une adresse IP."
+  },
+  {
+    "line": 232,
+    "source": "> 💻 Discover network cards MAC address with the commands below:",
+    "translation": "> 💻 Afficher l’adresse MAC des cartes réseau avec les commandes suivantes :"
+  },
+  {
+    "line": 234,
+    "source": "|       Command       |               Operating System               |",
+    "translation": "| Commande | Système d’exploitation |"
+  },
+  {
+    "line": 239,
+    "source": "|  **`ip -br -c a`**  | Linux - useful for fast finding IP interface |",
+    "translation": "|  **`ip -br -c a`**  | Linux : utile pour identifier rapidement les interfaces IP |"
+  },
+  {
+    "line": 241,
+    "source": " _Linux OS_",
+    "translation": " _Système Linux_"
+  },
+  {
+    "line": 249,
+    "source": "* The router has two interfaces, each with its own IP and MAC addresses.",
+    "translation": "* Le routeur possède deux interfaces, chacune avec ses propres adresses IP et MAC."
+  },
+  {
+    "line": 250,
+    "source": "* Every host has an IP and MAC address.",
+    "translation": "* Chaque hôte possède une adresse IP et une adresse MAC."
+  },
+  {
+    "line": 251,
+    "source": "* The router will _not change_ the source and destination IP addresses.",
+    "translation": "* Le routeur ne modifie _pas_ les adresses IP source et destination."
+  },
+  {
+    "line": 252,
+    "source": "* When a device sends a packet:",
+    "translation": "* Lorsqu’un équipement envoie un paquet :"
+  },
+  {
+    "line": 253,
+    "source": "  * **Destination IP address = Destination host IP address** (remains the same, global information)",
+    "translation": "  * **Adresse IP de destination = adresse IP de l’hôte destinataire** (inchangée, information globale)"
+  },
+  {
+    "line": 254,
+    "source": "  * **Destination MAC address = Next hop MAC address** (the network knows where to forward the packet)",
+    "translation": "  * **Adresse MAC de destination = adresse MAC du prochain saut** (le réseau sait où transférer le paquet)"
+  },
+  {
+    "line": 255,
+    "source": "* Broadcast MAC address: `FF:FF:FF:FF:FF:FF`",
+    "translation": "* Adresse MAC de broadcast : `FF:FF:FF:FF:FF:FF`"
+  },
+  {
+    "line": 256,
+    "source": "  * A frame with this address is delivered to all the hosts in the local network.",
+    "translation": "  * Une trame avec cette adresse est transmise à tous les hôtes du réseau local."
+  },
+  {
+    "line": 260,
+    "source": "* Hubs are repeaters that simply forward packets (repeating the electric signals) on all the ports.",
+    "translation": "* Les hubs sont des répéteurs qui retransmettent les paquets (signaux électriques) sur tous leurs ports."
+  },
+  {
+    "line": 261,
+    "source": "* Do not check any header.",
+    "translation": "* Ils ne vérifient aucun en-tête."
+  },
+  {
+    "line": 262,
+    "source": "* Every host receives the same packets.",
+    "translation": "* Chaque hôte reçoit les mêmes paquets."
+  },
+  {
+    "line": 263,
+    "source": "* Very rare nowadays and replaced by switches.",
+    "translation": "* Ils sont devenus rares et ont été remplacés par les switches."
+  },
+  {
+    "line": 267,
+    "source": "**Layer 2 Switches** work with MAC addresses.",
+    "translation": "Les **switches de couche 2** utilisent les adresses MAC."
+  },
+  {
+    "line": 269,
+    "source": "* Switches can have multiple interfaces (4 ports for \"home switches\", 64 ports for \"corporate switches\")",
+    "translation": "* Les switches peuvent disposer de plusieurs interfaces (4 ports pour un switch domestique, 64 pour un switch d’entreprise)."
+  },
+  {
+    "line": 270,
+    "source": "* Different packet forwarding speed: 10 Mbps (megabits per second) to 10 Gbps.",
+    "translation": "* Leur vitesse de transfert varie de 10 Mbps (mégabits par seconde) à 10 Gbps."
+  },
+  {
+    "line": 271,
+    "source": "* Corporate networks use to have a multi-switch network to accommodate more hosts.",
+    "translation": "* Les réseaux d’entreprise utilisent souvent plusieurs switches pour accueillir davantage d’hôtes."
+  },
+  {
+    "line": 272,
+    "source": "  * by using switches without VLANs, networks are not segmented.",
+    "translation": "  * Sans VLAN, les réseaux ne sont pas segmentés."
+  },
+  {
+    "line": 273,
+    "source": "  * routers do the **`segmentation`** in those cases, since every interface is attached to different subnets.",
+    "translation": "  * Les routeurs assurent alors la **`segmentation`**, car chaque interface est reliée à un sous-réseau différent."
+  },
+  {
+    "line": 277,
+    "source": "Switches need to keep a _forwarding table_ that binds MAC addresses to interfaces, called **`CAM table`** (**C**ontent **A**ddressable **M**emory table).",
+    "translation": "Les switches conservent une _table de transfert_ associant les adresses MAC aux interfaces, appelée **`CAM table`** (**C**ontent **A**ddressable **M**emory table)."
+  },
+  {
+    "line": 279,
+    "source": "* Contains: MAC addresses, interface used for delivery, TTL (time to live).",
+    "translation": "* Contient les adresses MAC, les interfaces de transmission et le TTL (Time To Live)."
+  },
+  {
+    "line": 280,
+    "source": "* Stored in the device's RAM.",
+    "translation": "* Stockée dans la RAM de l’équipement."
+  },
+  {
+    "line": 281,
+    "source": "* Constantly refreshed with new info.",
+    "translation": "* Actualisée en permanence."
+  },
+  {
+    "line": 282,
+    "source": "* Multiple hosts might be connected on the same interface (via another switch).",
+    "translation": "* Plusieurs hôtes peuvent être reliés à la même interface (via un autre switch)."
+  },
+  {
+    "line": 283,
+    "source": "* Interfaces without any host attached might be present.",
+    "translation": "* Certaines interfaces peuvent ne desservir aucun hôte."
+  },
+  {
+    "line": 284,
+    "source": "* Since the CAM table _has a **finite size**_, the TTL determines _how long an entry will stay_ in the table.",
+    "translation": "* La table CAM ayant une _**taille limitée**_, le TTL détermine _combien de temps une entrée reste_ dans la table."
+  },
+  {
+    "line": 285,
+    "source": "  * When an entry expires, it's automatically removed from the table.",
+    "translation": "  * Lorsqu’une entrée expire, elle est automatiquement supprimée."
+  },
+  {
+    "line": 287,
+    "source": "Switches learn new MAC address _dynamically_, inspecting the header of every packet they receive, populating the CAM table. They just use the source MAC address to decide the interface to use for the forwarding.",
+    "translation": "Les switches apprennent les nouvelles adresses MAC _dynamiquement_ en examinant les en-têtes des paquets reçus. Ils alimentent ainsi la table CAM en associant les adresses MAC source aux interfaces."
+  },
+  {
+    "line": 289,
+    "source": "* **CAM Table Population** - The source MAC address is compared to the CAM table:",
+    "translation": "* **Remplissage de la table CAM** : l’adresse MAC source est comparée aux entrées de la table :"
+  },
+  {
+    "line": 290,
+    "source": "  1. if the MAC _address is not in the table_, it will be added as a **new MAC-Interface binding** to the switch table.",
+    "translation": "  1. si l’adresse MAC _ne figure pas dans la table_, une **nouvelle association MAC-interface** est ajoutée."
+  },
+  {
+    "line": 291,
+    "source": "  2. if the MAC _is already in the table_, its **TTL gets updated**.",
+    "translation": "  2. si l’adresse MAC _figure déjà dans la table_, son **TTL est actualisé**."
+  },
+  {
+    "line": 292,
+    "source": "  3. if the MAC _is in the table_, but not bound to another interface, the **switch will update the table**.",
+    "translation": "  3. si l’adresse MAC _figure dans la table_ mais que son association d’interface diffère, le **switch actualise la table**."
+  },
+  {
+    "line": 294,
+    "source": "To **`forward a packet`**, the switch:",
+    "translation": "Pour **`forward a packet`** (transférer un paquet), le switch :"
+  },
+  {
+    "line": 296,
+    "source": "1. reads the destination MAC address of the frame.",
+    "translation": "1. lit l’adresse MAC de destination de la trame."
+  },
+  {
+    "line": 297,
+    "source": "2. performs a look-up in the CAM table.",
+    "translation": "2. consulte la table CAM."
+  },
+  {
+    "line": 298,
+    "source": "3. forwards the packet to the corresponding interface.",
+    "translation": "3. transfère le paquet vers l’interface correspondante."
+  },
+  {
+    "line": 299,
+    "source": "4. if no entry is found with that MAC address, the switch will forward the frame to all its interfaces.",
+    "translation": "4. si aucune entrée ne correspond à cette adresse MAC, il diffuse la trame sur les interfaces concernées."
+  },
+  {
+    "line": 303,
+    "source": "**`ARP`** (**A**ddress **R**esolution **P**rotocol) is used to build the correct _IP Address - MAC Address binding_ when a host do not know the MAC address of the other network nodes.",
+    "translation": "**`ARP`** (**A**ddress **R**esolution **P**rotocol) permet d’établir l’_association adresse IP-adresse MAC_ lorsqu’un hôte ne connaît pas l’adresse MAC d’un autre équipement du réseau."
+  },
+  {
+    "line": 305,
+    "source": "* For example, when HostA wants to send traffic to HostB and it only knows the HostB IP address:",
+    "translation": "* Par exemple, HostA souhaite communiquer avec HostB et ne connaît que son adresse IP :"
+  },
+  {
+    "line": 306,
+    "source": "  1. HostA builds an **`ARP request`** with the HostB IP address and FF:FF:FF:FF:FF:FF as destination MAC address.",
+    "translation": "  1. HostA construit une **`ARP request`** contenant l’adresse IP de HostB et FF:FF:FF:FF:FF:FF comme adresse MAC de destination."
+  },
+  {
+    "line": 307,
+    "source": "  2. The switch will forward the packet to every host on the network.",
+    "translation": "  2. Le switch transmet le paquet à tous les hôtes du réseau."
+  },
+  {
+    "line": 308,
+    "source": "  3. HostB replies with an **`ARP reply`**, containing its MAC address.",
+    "translation": "  3. HostB répond par une **`ARP reply`** contenant son adresse MAC."
+  },
+  {
+    "line": 309,
+    "source": "  4. HostA will save the IP - MAC binding of HostB in its **`ARP cache`**.",
+    "translation": "  4. HostA enregistre l’association IP-MAC de HostB dans son **`ARP cache`**."
+  },
+  {
+    "line": 310,
+    "source": "  5. No new ARP resolution round will be needed for further traffic from HostA to HostB.",
+    "translation": "  5. Les échanges suivants de HostA vers HostB ne nécessitent plus de nouvelle résolution ARP tant que l’entrée reste valide."
+  },
+  {
+    "line": 311,
+    "source": "* ARP cache entries have a TTL too. Entries are discarded by a host at the power off or when entry's TTL expires.",
+    "translation": "* Les entrées du cache ARP possèdent aussi un TTL. Elles disparaissent à l’arrêt de l’hôte ou à l’expiration de leur TTL."
+  },
+  {
+    "line": 313,
+    "source": "> 💻 Check the ARP cache on a host with the commands below:",
+    "translation": "> 💻 Consulter le cache ARP d’un hôte avec les commandes suivantes :"
+  },
+  {
+    "line": 315,
+    "source": "|       Command      | Operating System |",
+    "translation": "| Commande | Système d’exploitation |"
+  },
+  {
+    "line": 335,
+    "source": "> ⚡ P.T. Usage:",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 337,
+    "source": "> * TCP Session attacks",
+    "translation": "> * Attaques visant les sessions TCP"
+  },
+  {
+    "line": 338,
+    "source": "> * Advanced DoS (Denial of Service) attacks",
+    "translation": "> * Attaques DoS (Denial of Service) avancées"
+  },
+  {
+    "line": 339,
+    "source": "> * Network scanning",
+    "translation": "> * Scan réseau"
+  },
+  {
+    "line": 341,
+    "source": "**`TCP`** (**T**ransport **C**ontrol **P**rotocol) and **`UDP`** (**U**ser **D**atagram **P**rotocol) are the most common **transport layer** protocols used on the Internet.",
+    "translation": "**`TCP`** (**T**ransmission **C**ontrol **P**rotocol) et **`UDP`** (**U**ser **D**atagram **P**rotocol) sont les protocoles de **couche transport** les plus utilisés sur Internet."
+  },
+  {
+    "line": 343,
+    "source": "> 📕 Considerations:",
+    "translation": "> 📕 Points à retenir :"
+  },
+  {
+    "line": 345,
+    "source": "> * Computer networks can be **unreliable**.",
+    "translation": "> * Les réseaux informatiques peuvent être **peu fiables**."
+  },
+  {
+    "line": 346,
+    "source": "> * Network congestion, loss of connection and other technical issues can cause a _packet loss_ during the communication.",
+    "translation": "> * La congestion, les interruptions de connexion et d’autres problèmes techniques peuvent entraîner des _pertes de paquets_ pendant la communication."
+  },
+  {
+    "line": 348,
+    "source": "* Key differences:",
+    "translation": "* Principales différences :"
+  },
+  {
+    "line": 352,
+    "source": "|                        Connection-oriented protocol                        |                    Connectionless protocol                    |",
+    "translation": "| Protocole orienté connexion | Protocole sans connexion |"
+  },
+  {
+    "line": 353,
+    "source": "|                    Reliable, guarantees packet delivery                    |               Delivery of data is not guaranteed              |",
+    "translation": "| Fiable, garantit la livraison des données | Livraison des données non garantie |"
+  },
+  {
+    "line": 354,
+    "source": "|                Slower speed, lower throughput, heavy-weight                |        Faster than TCP, better throughput, lightweight        |",
+    "translation": "| Plus lent, débit inférieur, plus de surcharge | Plus rapide, meilleur débit, plus léger |"
+  },
+  {
+    "line": 355,
+    "source": "|                        Delays when network congested                       |              Less delay, possibility of data loss             |",
+    "translation": "| Retards en cas de congestion | Moins de retards, pertes de données possibles |"
+  },
+  {
+    "line": 356,
+    "source": "|                           Acknowledgment segments                          |                   No acknowledgment segments                  |",
+    "translation": "| Segments d’acquittement | Aucun segment d’acquittement |"
+  },
+  {
+    "line": 357,
+    "source": "| Used by majority of applications (Email client, Web browsers, Ftp clients) | Used by multimedia applications (VoIP, Audio/Video streaming) |",
+    "translation": "| Utilisé par la majorité des applications (clients e-mail, navigateurs Web, clients FTP) | Utilisé par les applications multimédias (VoIP, streaming audio et vidéo) |"
+  },
+  {
+    "line": 361,
+    "source": "**`Ports`** are used to identify a single **network process**, to make sure the transport layer know what the destination process is.",
+    "translation": "Les **`Ports`** permettent d’identifier un **processus réseau**, afin que la couche transport connaisse le processus destinataire."
+  },
+  {
+    "line": 363,
+    "source": "* **`<IP>:<Port>`** pair identifies a process on a network. For example: `192.168.13.2:80`",
+    "translation": "* Le couple **`<IP>:<Port>`** identifie un processus sur un réseau. Par exemple : `192.168.13.2:80`"
+  },
+  {
+    "line": 364,
+    "source": "* **1024 well-known ports** are used for the most common services: 0-1023. They are assigned by IANA in [this registry](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml).",
+    "translation": "* Les **1024 ports bien connus** correspondent aux services les plus courants : 0 à 1023. Ils sont attribués par l’IANA dans [ce registre](https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml)."
+  },
+  {
+    "line": 365,
+    "source": "* A **`daemon`** is a program that runs a service. Its configuration can be changed, so the service listening port can be changed in order to make recognition harder.",
+    "translation": "* Un **`daemon`** est un programme exécutant un service. Sa configuration peut être modifiée, notamment son port d’écoute, pour rendre son identification plus difficile."
+  },
+  {
+    "line": 366,
+    "source": "* Server-Client applications know which port to use because the TCP/UDP header contains two fields for the source/destination ports.",
+    "translation": "* Les applications client-serveur savent quel port utiliser grâce aux champs de ports source et destination dans les en-têtes TCP et UDP."
+  },
+  {
+    "line": 367,
+    "source": "* Common ports:",
+    "translation": "* Ports courants :"
+  },
+  {
+    "line": 369,
+    "source": "|      Port     |        Service        |",
+    "translation": "| Port | Service |"
+  },
+  {
+    "line": 379,
+    "source": "|      443      | HTTPS (HTTP over SSL) |",
+    "translation": "| 443 | HTTPS (HTTP sur SSL) |"
+  },
+  {
+    "line": 386,
+    "source": "> 💻 Check _listening ports_ and TCP connections on a host with the commands below:",
+    "translation": "> 💻 Afficher les _ports en écoute_ et les connexions TCP d’un hôte avec les commandes suivantes :"
+  },
+  {
+    "line": 388,
+    "source": "|                           Command                            | Operating System |",
+    "translation": "| Commande | Système d’exploitation |"
+  },
+  {
+    "line": 390,
+    "source": "| <p><strong><code>netstat -tunp</code></strong><br><strong><code>netstat -tulpn</code></strong> (listening ports too)<br><strong><code>ss -tnl</code></strong></p> |      Linux       |",
+    "translation": "| <p><strong><code>netstat -tunp</code></strong><br><strong><code>netstat -tulpn</code></strong> (ports en écoute également)<br><strong><code>ss -tnl</code></strong></p> |      Linux       |"
+  },
+  {
+    "line": 400,
+    "source": "* [TCPView](https://docs.microsoft.com/en-us/sysinternals/downloads/tcpview) tool from Microsoft Sysinternals shows detailed listings of all TCP and UDP connections.",
+    "translation": "* L’outil [TCPView](https://docs.microsoft.com/en-us/sysinternals/downloads/tcpview) de Microsoft Sysinternals affiche la liste détaillée des connexions TCP et UDP."
+  },
+  {
+    "line": 406,
+    "source": "A **`three-way handshake`** process is necessary to establish a connection between two hosts running TCP (server/client).",
+    "translation": "Un **`three-way handshake`** est nécessaire pour établir une connexion TCP entre deux hôtes (serveur et client)."
+  },
+  {
+    "line": 408,
+    "source": "* The TCP header fields involved in the handshake are:",
+    "translation": "* Les champs de l’en-tête TCP utilisés pendant le handshake sont :"
+  },
+  {
+    "line": 409,
+    "source": "  * Sequence number",
+    "translation": "  * Numéro de séquence"
+  },
+  {
+    "line": 410,
+    "source": "  * Acknowledgment number",
+    "translation": "  * Numéro d’acquittement"
+  },
+  {
+    "line": 411,
+    "source": "  * ACK flag",
+    "translation": "  * Flag ACK"
+  },
+  {
+    "line": 412,
+    "source": "  * SYN flag",
+    "translation": "  * Flag SYN"
+  },
+  {
+    "line": 413,
+    "source": "* The 3 steps in the handshake synchronize the sequence and acknowledgment numbers between the server and the client:",
+    "translation": "* Les trois étapes du handshake synchronisent les numéros de séquence et d’acquittement du serveur et du client :"
+  },
+  {
+    "line": 414,
+    "source": "  1. Client sends a TCP packet (**`SYN segment`**) to the server with:",
+    "translation": "  1. Le client envoie au serveur un paquet TCP (**`SYN segment`**) contenant :"
+  },
+  {
+    "line": 415,
+    "source": "     * SYN=1 (flag enabled) - request to establish connection and data synchronization with server",
+    "translation": "     * SYN=1 (flag activé) : demande d’établissement de connexion et de synchronisation des données avec le serveur"
+  },
+  {
+    "line": 416,
+    "source": "     * ACK=0 (flag disabled) - no acknowledgment of request",
+    "translation": "     * ACK=0 (flag désactivé) : aucun acquittement de demande"
+  },
+  {
+    "line": 417,
+    "source": "     * ISN=7001 - Random initial sequence number set",
+    "translation": "     * ISN=7001 : numéro de séquence initial aléatoire"
+  },
+  {
+    "line": 418,
+    "source": "     * ACK # = NULL - acknowledgment number set to null",
+    "translation": "     * ACK # = NULL : numéro d’acquittement nul"
+  },
+  {
+    "line": 419,
+    "source": "  2. Server replies by sending a TCP packet (**`SYN/ACK segment`**) with:",
+    "translation": "  2. Le serveur répond par un paquet TCP (**`SYN/ACK segment`**) contenant :"
+  },
+  {
+    "line": 420,
+    "source": "     * SYN=1 (flag enabled) - request to establish connection and data synchronization with client",
+    "translation": "     * SYN=1 (flag activé) : demande de connexion et de synchronisation avec le client"
+  },
+  {
+    "line": 421,
+    "source": "     * ACK=1 (flag enabled) - acknowledgment of request",
+    "translation": "     * ACK=1 (flag activé) : acquittement de la demande"
+  },
+  {
+    "line": 422,
+    "source": "     * ISN=3001 - Random initial sequence number set",
+    "translation": "     * ISN=3001 : numéro de séquence initial aléatoire"
+  },
+  {
+    "line": 423,
+    "source": "     * ACK # = \\[client ISN + 1] = 7002 - adding 1 to the client's ISN and acknowledge the client's request",
+    "translation": "     * ACK # = \\[client ISN + 1] = 7002 : ajout de 1 à l’ISN du client et acquittement de sa demande"
+  },
+  {
+    "line": 424,
+    "source": "  3. Client replies with a TCP packet (**`ACK segment`**) with:",
+    "translation": "  3. Le client répond par un paquet TCP (**`ACK segment`**) contenant :"
+  },
+  {
+    "line": 425,
+    "source": "     * SYN=0 (flag disabled) - no more requests",
+    "translation": "     * SYN=0 (flag désactivé) : aucune nouvelle demande"
+  },
+  {
+    "line": 426,
+    "source": "     * ACK=1 (flag enabled) - acknowledgment of request",
+    "translation": "     * ACK=1 (flag activé) : acquittement de la demande"
+  },
+  {
+    "line": 427,
+    "source": "     * ISN=7002 - Server's sequence number received",
+    "translation": "     * ISN=7002 : numéro de séquence indiqué dans l’exemple"
+  },
+  {
+    "line": 428,
+    "source": "     * ACK # = \\[server ISN + 1] = 3002 - adding 1 to the server's ISN and acknowledge the server's request",
+    "translation": "     * ACK # = \\[server ISN + 1] = 3002 : ajout de 1 à l’ISN du serveur et acquittement de sa demande"
+  },
+  {
+    "line": 432,
+    "source": "> 📌 _By performing the above 3-way handshake, the client-server connection is fully established and the data transfer process can begin. TCP automatically terminates the connection after the data transmission process is over._",
+    "translation": "> 📌 _À l’issue du three-way handshake, la connexion client-serveur est établie et le transfert des données peut commencer. TCP permet de terminer la connexion une fois la transmission achevée._"
+  },
+  {
+    "line": 438,
+    "source": "> ⚡ P.T. Usage:",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 440,
+    "source": "> * Firewall evasion",
+    "translation": "> * Contournement des pare-feu"
+  },
+  {
+    "line": 441,
+    "source": "> * Advanced stealth scanning",
+    "translation": "> * Scan furtif avancé"
+  },
+  {
+    "line": 442,
+    "source": "> * Filtering evasion",
+    "translation": "> * Contournement du filtrage"
+  },
+  {
+    "line": 444,
+    "source": "There exists different appliances/devices used to protect the network with different techniques (access control, attack detection, attack prevention).",
+    "translation": "Différents équipements protègent le réseau au moyen du contrôle d’accès, de la détection et de la prévention des attaques."
+  },
+  {
+    "line": 446,
+    "source": "A **`Firewall`** is a specialized software module running on a computer or a dedicated hardware device.",
+    "translation": "Un **`Firewall`** est un module logiciel spécialisé exécuté sur un ordinateur ou sur un équipement matériel dédié."
+  },
+  {
+    "line": 448,
+    "source": "* **Access control** to network resources and services.",
+    "translation": "* **Contrôle d’accès** aux ressources et services réseau."
+  },
+  {
+    "line": 449,
+    "source": "* Can work on **different layers** of the OSI model (different features and protections).",
+    "translation": "* Peut fonctionner sur **différentes couches** du modèle OSI, avec des fonctionnalités et protections distinctes."
+  },
+  {
+    "line": 453,
+    "source": "* Firewalls monitor and **filter** all the traffic and data coming in and out of a network.",
+    "translation": "* Les pare-feu surveillent et **filtrent** le trafic entrant et sortant du réseau."
+  },
+  {
+    "line": 454,
+    "source": "* System administrators can create _rules with specific filter_ on the packets: Source / Destination IP, Source / Destination Port, Protocol.",
+    "translation": "* Les administrateurs peuvent créer des _règles de filtrage spécifiques_ : IP source et destination, ports source et destination, protocole."
+  },
+  {
+    "line": 455,
+    "source": "* _Packet filters inspect the header_ of every packet, but not the packet content.",
+    "translation": "* _Les filtres inspectent l’en-tête_ des paquets, mais pas leur contenu."
+  },
+  {
+    "line": 456,
+    "source": "* Packet inspections common **actions** are:",
+    "translation": "* Les **actions** courantes sont :"
+  },
+  {
+    "line": 457,
+    "source": "  * **`Allow`**: allow the packet to pass",
+    "translation": "  * **`Allow`** : autorise le passage du paquet"
+  },
+  {
+    "line": 458,
+    "source": "  * **`Drop`**: drops the packet, with no diagnostic message to the source host",
+    "translation": "  * **`Drop`** : supprime le paquet sans message de diagnostic à l’hôte source"
+  },
+  {
+    "line": 459,
+    "source": "  * **`Deny`**: do not let the packet pass, but notify the source host",
+    "translation": "  * **`Deny`** : refuse le passage et informe l’hôte source"
+  },
+  {
+    "line": 461,
+    "source": "> 📌 _Any kind of application layer traffic will pass_, so **packet filtering is not enough to stop layer 7 attacks** like:",
+    "translation": "> 📌 _Le trafic applicatif peut traverser le filtre_, donc **le filtrage de paquets ne suffit pas à arrêter les attaques de couche 7**, comme :"
+  },
+  {
+    "line": 463,
+    "source": "> * XSS exploit",
+    "translation": "> * Exploitation XSS"
+  },
+  {
+    "line": 465,
+    "source": "> * SQL injection",
+    "translation": "> * Injection SQL"
+  },
+  {
+    "line": 466,
+    "source": "> * others...",
+    "translation": "> * Autres..."
+  },
+  {
+    "line": 470,
+    "source": "* Application firewalls checks all the OSI 7 layers and provide a more comprehensive protection.",
+    "translation": "* Les pare-feu applicatifs examinent les couches du modèle OSI et offrent une protection plus complète."
+  },
+  {
+    "line": 471,
+    "source": "  * Control of the execution of files or code by specific applications.",
+    "translation": "  * Contrôle de l’exécution des fichiers ou du code par certaines applications."
+  },
+  {
+    "line": 472,
+    "source": "  * _Content of a packet_ inspection.",
+    "translation": "  * Inspection du _contenu des paquets_."
+  },
+  {
+    "line": 473,
+    "source": "  * Filter unwanted traffic and protect a network from external attacks.",
+    "translation": "  * Filtrage du trafic indésirable et protection du réseau contre les attaques externes."
+  },
+  {
+    "line": 477,
+    "source": "**`IDS`** (**I**ntrusion **D**etection **S**ystems) inspect the application payload trying to detect any potential attack.",
+    "translation": "Les **`IDS`** (**I**ntrusion **D**etection **S**ystems) inspectent le payload applicatif pour détecter les attaques potentielles."
+  },
+  {
+    "line": 479,
+    "source": "* _Detect ongoing intrusions_, attack vectors (ping sweeps, port scans, SQL injections, BoF ...)",
+    "translation": "* _Détectent les intrusions en cours_ et les vecteurs d’attaque (ping sweeps, scans de ports, injections SQL, BoF...)."
+  },
+  {
+    "line": 480,
+    "source": "* _Detection_ is performed by lots of **sensors**, inspecting the network activity.",
+    "translation": "* La _détection_ repose sur des **capteurs** qui inspectent l’activité réseau."
+  },
+  {
+    "line": 481,
+    "source": "* Identify traffic generated by a work or a virus, by means of **signatures** patterns (like an antivirus) frequently updated by the vendor.",
+    "translation": "* Identifient notamment le trafic généré par un ver ou un virus à l’aide de **signatures** régulièrement actualisées par l’éditeur."
+  },
+  {
+    "line": 482,
+    "source": "* IDS cannot detect intrusions if it does not already know them.",
+    "translation": "* Un IDS fondé sur les signatures ne détecte pas les intrusions dont il ne connaît pas les signatures."
+  },
+  {
+    "line": 483,
+    "source": "* _False positives_ are presented when legit traffic is flagged as malicious.",
+    "translation": "* Les _faux positifs_ correspondent au trafic légitime signalé comme malveillant."
+  },
+  {
+    "line": 484,
+    "source": "* Intercepted intrusions are communicated to the **IDS manager**, a software in charge of maintaining policies, with a management console for the sysadmin.",
+    "translation": "* Les intrusions détectées sont transmises à l’**IDS manager**, logiciel chargé des politiques et doté d’une console d’administration."
+  },
+  {
+    "line": 486,
+    "source": "> 📕 IDS **do not substitute firewalls**!",
+    "translation": "> 📕 Les IDS **ne remplacent pas les pare-feu** !"
+  },
+  {
+    "line": 488,
+    "source": "> * They support firewall with a further layer of security, monitoring the traffic and reporting well-known malicious activity.",
+    "translation": "> * Ils complètent le pare-feu par une couche de sécurité supplémentaire, en surveillant le trafic et en signalant les activités malveillantes connues."
+  },
+  {
+    "line": 489,
+    "source": "> * Suspicious activity is logged for future analysis, but **it is not blocked**.",
+    "translation": "> * L’activité suspecte est journalisée pour analyse ultérieure, mais **elle n’est pas bloquée**."
+  },
+  {
+    "line": 491,
+    "source": "|                   IDS Category                  |                                                                                                            Description                                                                                                            |",
+    "translation": "| Catégorie IDS | Description |"
+  },
+  {
+    "line": 493,
+    "source": "| **`NIDS`** - Network intrusion detection system | <p>Identifies intrusions by examining network traffic and monitors multiple hosts.<br>Uses sensors placed on a router or on a high intrusion risk network (DMZ).<br>Example: <a href=\"https://www.snort.org/snort3\">Snort</a></p> |",
+    "translation": "| **`NIDS`** : Network Intrusion Detection System | <p>Identifie les intrusions en examinant le trafic réseau et surveille plusieurs hôtes.<br>Utilise des capteurs placés sur un routeur ou dans une zone réseau à risque élevé (DMZ).<br>Exemple : <a href=\"https://www.snort.org/snort3\">Snort</a></p> |"
+  },
+  {
+    "line": 494,
+    "source": "|   **`HIDS`** - Host intrusion detection system  |          <p>Identifies intrusions by analyzing system calls, application logs, file-system changes, host activities.<br>Uses sensors/agent installed on a host.<br>Example: <a href=\"https://www.ossec.net\">OSSEC</a></p>         |",
+    "translation": "| **`HIDS`** : Host Intrusion Detection System | <p>Identifie les intrusions en analysant les appels système, les journaux applicatifs, les modifications du système de fichiers et l’activité de l’hôte.<br>Utilise des capteurs ou un agent installé sur l’hôte.<br>Exemple : <a href=\"https://www.ossec.net\">OSSEC</a></p> |"
+  },
+  {
+    "line": 498,
+    "source": "**`IPS`** (**I**ntrusion **P**revention **S**ystems) detect malicious activity and block it by not allowing the traffic to gain access to its target network.",
+    "translation": "Les **`IPS`** (**I**ntrusion **P**revention **S**ystems) détectent l’activité malveillante et la bloquent en empêchant le trafic d’accéder au réseau cible."
+  },
+  {
+    "line": 500,
+    "source": "* IPS **drop** malicious requests when a threat has a _risk classification_ above a pre-defined threshold.",
+    "translation": "* Les IPS **suppriment** les requêtes malveillantes lorsque leur _niveau de risque_ dépasse un seuil prédéfini."
+  },
+  {
+    "line": 501,
+    "source": "* Detective and preventive technology.",
+    "translation": "* Technologie de détection et de prévention."
+  },
+  {
+    "line": 502,
+    "source": "* IPS _inspect real time traffic, detect and classify it, and prevent the attacks on detection_.",
+    "translation": "* Les IPS _inspectent le trafic en temps réel, le classifient et bloquent les attaques détectées_."
+  },
+  {
+    "line": 506,
+    "source": "The presence of a firewall-like mechanism in the environment can be checked by looking at the the TCP 3-way handshake.",
+    "translation": "La présence d’un mécanisme de filtrage peut être recherchée en observant le TCP three-way handshake."
+  },
+  {
+    "line": 508,
+    "source": "An environmental constraint (FW, IPS, IDS, etc) may be in place, when:",
+    "translation": "Une contrainte réseau (FW, IPS, IDS, etc.) peut être présente lorsque :"
+  },
+  {
+    "line": 510,
+    "source": "* TCP **SYN** are sent, but there are _no TCP **`SYN/ACK`** replies_.",
+    "translation": "* Des paquets TCP **SYN** sont envoyés, mais _aucune réponse TCP **`SYN/ACK`** n’est reçue_."
+  },
+  {
+    "line": 511,
+    "source": "* TCP **SYN** are sent, but a _TCP **`RST/ACK`** reply is received_.",
+    "translation": "* Des paquets TCP **SYN** sont envoyés, mais _une réponse TCP **`RST/ACK`** est reçue_."
+  },
+  {
+    "line": 515,
+    "source": "Firewalls can be used to implement **`NAT`** (**N**etwork **A**ddress **T**ranslation) and **`IP masquerading`**.",
+    "translation": "Les pare-feu peuvent mettre en œuvre le **`NAT`** (**N**etwork **A**ddress **T**ranslation) et l’**`IP masquerading`**."
+  },
+  {
+    "line": 517,
+    "source": "Take a machine inside a private network, that is using the NAT device as its default gateway. The machine can access the Internet if the NAT device allows the traffic to pass.",
+    "translation": "Prenons une machine d’un réseau privé utilisant l’équipement NAT comme passerelle par défaut. Elle peut accéder à Internet si cet équipement autorise le trafic."
+  },
+  {
+    "line": 519,
+    "source": "* NAT _rewrites the source IP address_ of every packet, setting it to the default gateway public IP (for example) and _masquerading the original client's IP address_.",
+    "translation": "* Le NAT _réécrit l’adresse IP source_ de chaque paquet, par exemple avec l’IP publique de la passerelle, et _masque l’adresse IP d’origine du client_."
+  },
+  {
+    "line": 521,
+    "source": "> 📌 A machine on the Internet will never know the original client's IP address. Take a home router as an example.",
+    "translation": "> 📌 Une machine sur Internet ne voit pas l’adresse IP privée d’origine du client dans ce scénario. Un routeur domestique en est un exemple."
+  },
+  {
+    "line": 525,
+    "source": "> 🔬 Check [_Find the Secret Server_](../exam-preparation-labs/p.t.-prerequisites-labs/find-the-secret-server.md) lab.",
+    "translation": "> 🔬 Consulter le laboratoire [_Find the Secret Server_](../exam-preparation-labs/p.t.-prerequisites-labs/find-the-secret-server.md)."
+  },
+  {
+    "line": 531,
+    "source": "> ⚡ P.T. Usage:",
+    "translation": "> ⚡ Utilité en pentest :"
+  },
+  {
+    "line": 533,
+    "source": "> * SSL/TLS certificates validation relies on DNS",
+    "translation": "> * La validation des certificats SSL/TLS repose notamment sur le DNS"
+  },
+  {
+    "line": 534,
+    "source": "> * Mounting spoofing attacks",
+    "translation": "> * Attaques de spoofing"
+  },
+  {
+    "line": 535,
+    "source": "> * Performing information gathering",
+    "translation": "> * Collecte d’informations"
+  },
+  {
+    "line": 537,
+    "source": "The **`DNS`** (**D**omain **N**ame **S**ystem) is an application layer protocol.",
+    "translation": "Le **`DNS`** (**D**omain **N**ame **S**ystem) est un protocole de couche applicative."
+  },
+  {
+    "line": 539,
+    "source": "- It is a service which translates human-readable resource names/URLs to their corresponding IP addresses - **`name resolution`**.",
+    "translation": "- Il traduit les noms de ressources lisibles par l’humain en adresses IP correspondantes : **`name resolution`**."
+  },
+  {
+    "line": 540,
+    "source": "- It is a very important service and the Internet security relies upon DNS.",
+    "translation": "- Ce service est essentiel au fonctionnement et à la sécurité d’Internet."
+  },
+  {
+    "line": 541,
+    "source": "- *The global* domain names and IPs *database* forms the DNS network hierarchy of DNS servers.",
+    "translation": "- La _base mondiale_ des noms de domaine et des adresses IP est répartie dans une hiérarchie de serveurs DNS."
+  },
+  {
+    "line": 545,
+    "source": "- The **`FQDN`** (**F**ully **Q**ualified **D**omain **N**ame) is the domain name that specifies its location in the DNS hierarchy and it consists of the following parts:",
+    "translation": "- Le **`FQDN`** (**F**ully **Q**ualified **D**omain **N**ame) précise la position d’un nom de domaine dans la hiérarchie DNS et comprend :"
+  },
+  {
+    "line": 547,
+    "source": "  - Domain part (Second level domains)",
+    "translation": "  - Le domaine de deuxième niveau"
+  },
+  {
+    "line": 548,
+    "source": "  - Sub-Domain part (when present)",
+    "translation": "  - Le sous-domaine, si présent"
+  },
+  {
+    "line": 549,
+    "source": "  - Host Name",
+    "translation": "  - Le nom d’hôte"
+  },
+  {
+    "line": 551,
+    "source": "For example: [my.ine.com](https://my.ine.com/)",
+    "translation": "Par exemple : [my.ine.com](https://my.ine.com/)"
+  },
+  {
+    "line": 553,
+    "source": "| Host Name | Domain Name | Top Level Domain |",
+    "translation": "| Nom d’hôte | Nom de domaine | Domaine de premier niveau |"
+  },
+  {
+    "line": 557,
+    "source": "- DNS queries use UDP protocol.",
+    "translation": "- Les requêtes DNS utilisent généralement le protocole UDP."
+  },
+  {
+    "line": 561,
+    "source": "A **`resolver`** server must be contacted by the client O.S. to perform the DNS resolution. These servers are public or provided by the ISP, and they convert the DNS name into an IP address:",
+    "translation": "Le système d’exploitation du client contacte un serveur **`resolver`** pour effectuer la résolution DNS. Ce serveur, public ou fourni par le FAI, convertit le nom DNS en adresse IP :"
+  },
+  {
+    "line": 563,
+    "source": "1. The resolver contacts one of the `root name servers`, which contains information about the top-level domains.",
+    "translation": "1. Le resolver contacte l’un des `root name servers`, qui détient les informations sur les domaines de premier niveau."
+  },
+  {
+    "line": 564,
+    "source": "2. The root server returns the IP address for the `TLD nameservers`.",
+    "translation": "2. Le serveur racine renvoie l’adresse IP des `TLD nameservers`."
+  },
+  {
+    "line": 565,
+    "source": "3. The resolver asks the TLD nameserver for the IP address of the `Authoritative Name Server`, that can give information about the domain.",
+    "translation": "3. Le resolver interroge le serveur TLD pour obtenir l’adresse IP du `Authoritative Name Server`, capable de fournir les informations du domaine."
+  },
+  {
+    "line": 566,
+    "source": "4. For every subdomain, step 3 is performed again on the authoritative DNS server.",
+    "translation": "4. Pour chaque sous-domaine, l’étape 3 est répétée auprès du serveur DNS faisant autorité."
+  },
+  {
+    "line": 567,
+    "source": "5. The resolver finally asks for the `host name resolution`, caches the response and returns it back to the client.",
+    "translation": "5. Le resolver demande finalement la `host name resolution`, met la réponse en cache et la transmet au client."
+  },
+  {
+    "line": 569,
+    "source": "> 📌 The 13 [DNS Root servers](https://www.cloudflare.com/learning/dns/glossary/dns-root-server/) IP addresses are hardcoded in the configuration of the resolver and [publicly available](https://root-servers.org/).",
+    "translation": "> 📌 Les adresses IP des 13 [serveurs DNS racine](https://www.cloudflare.com/learning/dns/glossary/dns-root-server/) logiques figurent dans la configuration du resolver et sont [publiquement disponibles](https://root-servers.org/)."
+  },
+  {
+    "line": 573,
+    "source": "- DNS can also *convert an IP into a DNS name* - **`Reverse DNS lookup`** (rDNS)",
+    "translation": "- Le DNS permet également de _convertir une adresse IP en nom DNS_ : **`Reverse DNS lookup`** (rDNS)."
+  },
+  {
+    "line": 574,
+    "source": "- This feature have to be manually enabled and configured by the administrator of the domain.",
+    "translation": "- Cette fonctionnalité doit être configurée par l’administrateur du domaine."
+  },
+  {
+    "line": 575,
+    "source": "- Many tools use the reverse DNS when available, like **`ping`** utility.",
+    "translation": "- De nombreux outils utilisent le reverse DNS lorsqu’il est disponible, comme **`ping`**."
+  },
+  {
+    "line": 579,
+    "source": "- Refer to the [RFC 1034](https://www.ietf.org/rfc/rfc1034.txt) and [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt) for more DNS examples and details.",
+    "translation": "- Consulter les [RFC 1034](https://www.ietf.org/rfc/rfc1034.txt) et [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt) pour davantage d’exemples et de détails."
+  },
+  {
+    "line": 581,
+    "source": "> 📌 Check more advanced explanation at the [Cloudflare DNS Glossary](https://www.cloudflare.com/learning/dns/dns-server-types/).",
+    "translation": "> 📌 Pour aller plus loin, consulter le [glossaire DNS de Cloudflare](https://www.cloudflare.com/learning/dns/dns-server-types/)."
+  },
+  {
+    "line": 587,
+    "source": "**Wireshark** is a network sniffer tool and protocol analyzer.",
+    "translation": "**Wireshark** est un outil de capture réseau et d’analyse de protocoles."
+  },
+  {
+    "line": 589,
+    "source": "- It can capture and analyze all the traffic seen by network interfaces of the computer running it.",
+    "translation": "- Il capture et analyse le trafic visible par les interfaces réseau de l’ordinateur sur lequel il s’exécute."
+  },
+  {
+    "line": 590,
+    "source": "- Most **`NIC`** (**N**etwork **I**nterface **C**ards) can work in *promiscuous* or *monitor mode*.",
+    "translation": "- La plupart des **`NIC`** (**N**etwork **I**nterface **C**ards) peuvent fonctionner en mode *promiscuous* ou *monitor mode*."
+  },
+  {
+    "line": 592,
+    "source": "In **promiscuous mode** a network card will *accept and process any packet it receives* (hub network for example), instead of discarding any packet addressed to another NIC (normal operation).",
+    "translation": "En **promiscuous mode**, une carte réseau _accepte et traite tous les paquets qu’elle reçoit_ (par exemple sur un réseau à hubs), au lieu d’écarter ceux destinés à une autre NIC."
+  },
+  {
+    "line": 594,
+    "source": "- Sniffing other machines traffic in switched networks is harder than in hub-based networks. An ARP poisoning or a MAC flooding attack has to be performed in order to do that.",
+    "translation": "- L’analyse du trafic d’autres machines est plus difficile sur un réseau commuté que sur un réseau à hubs. Le cours évoque notamment les attaques ARP poisoning et MAC flooding."
+  },
+  {
+    "line": 595,
+    "source": "- WiFi medium (the air) is broadcast by nature, so it is possible to detect traffic destined to a different host.",
+    "translation": "- Le support Wi-Fi (l’air) est diffusé par nature, ce qui permet de détecter le trafic destiné à d’autres hôtes."
+  },
+  {
+    "line": 599,
+    "source": "- Open **`wireshark`** as admin/root user.",
+    "translation": "- Ouvrir **`wireshark`** en tant qu’administrateur ou utilisateur root."
+  },
+  {
+    "line": 600,
+    "source": "- Select the capture interface from the main page and start capturing with double-click on it:",
+    "translation": "- Sélectionner l’interface de capture sur la page principale et lancer la capture en double-cliquant dessus :"
+  },
+  {
+    "line": 604,
+    "source": "- To check for the capture options before starting it, click \"*Capture*\" in the menu, in the window that opens, there are some useful informations:",
+    "translation": "- Pour consulter les options avant de démarrer la capture, cliquer sur « *Capture* » dans le menu. La fenêtre affiche notamment :"
+  },
+  {
+    "line": 605,
+    "source": "  - used interface",
+    "translation": "  - L’interface utilisée"
+  },
+  {
+    "line": 606,
+    "source": "  - NIC in promiscuous mode",
+    "translation": "  - Le mode promiscuous de la NIC"
+  },
+  {
+    "line": 611,
+    "source": "- Captured traffic can be saved in a **`PCAP`** files, that can be opened with wireshark, resulting in this view:",
+    "translation": "- Le trafic capturé peut être enregistré dans des fichiers **`PCAP`**, puis ouvert dans Wireshark pour afficher :"
+  },
+  {
+    "line": 612,
+    "source": "  - Upper pane: useful information like Source, Destination, Protocol, Info (protocol specific).",
+    "translation": "  - Panneau supérieur : source, destination, protocole et informations propres au protocole."
+  },
+  {
+    "line": 613,
+    "source": "  - Center pane: packet layer by layer with all the protocols used by the packet.",
+    "translation": "  - Panneau central : détail du paquet couche par couche, avec les protocoles utilisés."
+  },
+  {
+    "line": 614,
+    "source": "  - Bottom pane: packet payload",
+    "translation": "  - Panneau inférieur : payload du paquet."
+  },
+  {
+    "line": 620,
+    "source": "- Wireshark can **filter** traffic at capture or at display time.",
+    "translation": "- Wireshark peut **filtrer** le trafic pendant la capture ou lors de son affichage."
+  },
+  {
+    "line": 621,
+    "source": "- ***Capture filters*** can be set before starting the capture and Wireshark will capture only packets matching the filters.",
+    "translation": "- Les ***Capture filters*** sont définis avant de commencer. Wireshark ne capture que les paquets correspondant aux filtres."
+  },
+  {
+    "line": 622,
+    "source": "  - Pro: They downsize the amount of traffic gathered, with the final capture *smaller*.",
+    "translation": "  - Avantage : réduit le volume du trafic collecté et la *taille* de la capture finale."
+  },
+  {
+    "line": 623,
+    "source": "  - Con: Cannot tune filter during capture, must restart capture from scratch.",
+    "translation": "  - Inconvénient : impossible d’ajuster le filtre pendant la capture sans la recommencer."
+  },
+  {
+    "line": 627,
+    "source": "- ***Display filters*** allow to inspect and apply granular filters to every field of the packets.",
+    "translation": "- Les ***Display filters*** permettent d’inspecter les paquets et d’appliquer des filtres précis à leurs différents champs."
+  },
+  {
+    "line": 628,
+    "source": "  - Pro: Can always remove or tune a display filter. Might catch interesting traffic.",
+    "translation": "  - Avantage : le filtre d’affichage peut être retiré ou ajusté à tout moment. Le trafic intéressant reste disponible."
+  },
+  {
+    "line": 629,
+    "source": "  - Cons: *larger* PCAP file.",
+    "translation": "  - Inconvénient : fichier PCAP plus *volumineux*."
+  },
+  {
+    "line": 630,
+    "source": "  - Display filters and captures examples:",
+    "translation": "  - Exemples de filtres d’affichage et de captures :"
+  },
+  {
+    "line": 636,
+    "source": "- **`arp`** request example:",
+    "translation": "- Exemple de requête **`arp`** :"
+  },
+  {
+    "line": 640,
+    "source": "- **`ping my.ine.com`** / DNS query example:",
+    "translation": "- Exemple de **`ping my.ine.com`** et de requête DNS :"
+  },
+  {
+    "line": 644,
+    "source": "- **`TCP`** 3-way handshake:",
+    "translation": "- Three-way handshake **`TCP`** :"
+  },
+  {
+    "line": 645,
+    "source": "  - First package has SYN flag set",
+    "translation": "  - Premier paquet : flag SYN activé"
+  },
+  {
+    "line": 646,
+    "source": "  - Second package has SYN + ACK flags set",
+    "translation": "  - Deuxième paquet : flags SYN et ACK activés"
+  },
+  {
+    "line": 647,
+    "source": "  - Third package has ACK flag set",
+    "translation": "  - Troisième paquet : flag ACK activé"
+  },
+  {
+    "line": 651,
+    "source": "> 📌 Refer to the [Wireshark User's Guide](https://www.wireshark.org/docs/wsug_html_chunked/) for more in depth information.",
+    "translation": "> 📌 Consulter le [guide utilisateur de Wireshark](https://www.wireshark.org/docs/wsug_html_chunked/) pour approfondir."
+  },
+  {
+    "line": 653,
+    "source": "> 🔬 Check [_Data-Exfiltration_](../exam-preparation-labs/p.t.-prerequisites-labs/data-exfiltration.md) lab.",
+    "translation": "> 🔬 Consulter le laboratoire [_Data-Exfiltration_](../exam-preparation-labs/p.t.-prerequisites-labs/data-exfiltration.md)."
   }
 ]
