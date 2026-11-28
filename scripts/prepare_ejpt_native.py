@@ -1970,14 +1970,16 @@ def merge_common_chapters(soup, article):
             raise RuntimeError("No matching primary heading for " + ident)
         nodes = [h]
         for n in h.next_siblings:
-            if getattr(n, "name", None) in ("h2", "h3"):
+            tag = getattr(n, "name", None)
+            if tag == "h2" or (tag == "h3" and n.get("id", "").startswith("complement-")):
                 break
             nodes.append(n)
         # Keep the original fragment ID without creating a repeated accordion.
         h.name = "span"
         h["class"] = h.get("class", []) + ["ejpt-merged-chapter-anchor"]
-        h["hidden"] = ""
-        h["style"] = "display:none!important"
+        h.clear()
+        h["aria-hidden"] = "true"
+        h["style"] = "display:block;height:0;scroll-margin-top:100px"
         # Promote genuine nested headings by one level so they remain within
         # the corresponding chapter. Keep platform headings and code unchanged.
         for n in nodes[1:]:
