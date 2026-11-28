@@ -1492,7 +1492,8 @@ body { font-feature-settings: "ss01" on; letter-spacing: -.006em; }
   line-height: 1.65;
 }
 .ejpt-cheatsheet-content .ejpt-leaf-title,
-.ejpt-cheatsheet-content .ejpt-network-reviewed-title {
+.ejpt-cheatsheet-content .ejpt-network-reviewed-title,
+.ejpt-cheatsheet-content .ejpt-long-block-title {
   margin-top: 1.5rem;
   margin-bottom: .35rem;
 }
