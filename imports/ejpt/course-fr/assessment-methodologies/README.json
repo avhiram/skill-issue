@@ -1,0 +1,32 @@
+[
+  {
+    "line": 5,
+    "source": "* [Information Gathering](1-info-gathering.md)",
+    "translation": "* [Collecte d’informations](1-info-gathering.md)"
+  },
+  {
+    "line": 6,
+    "source": "* [Footprinting & Scanning](2-footprint-scan.md)",
+    "translation": "* [Footprinting et scanning](2-footprint-scan.md)"
+  },
+  {
+    "line": 7,
+    "source": "* [Enumeration](3-enumeration.md)",
+    "translation": "* [Énumération](3-enumeration.md)"
+  },
+  {
+    "line": 8,
+    "source": "* [Vulnerability Assessment](4-va.md)",
+    "translation": "* [Évaluation des vulnérabilités](4-va.md)"
+  },
+  {
+    "line": 9,
+    "source": "* [Auditing Fundamentals](5-audit.md)",
+    "translation": "* [Fondamentaux de l’audit](5-audit.md)"
+  },
+  {
+    "line": 13,
+    "source": "> * **Never use tools and techniques on real IP addresses, hosts or networks without proper authorization!**",
+    "translation": "> * **Ne jamais utiliser ces outils et techniques sur des adresses IP, des hôtes ou des réseaux réels sans autorisation préalable !**"
+  }
+]

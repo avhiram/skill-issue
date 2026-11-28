@@ -1,0 +1,52 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic familiarity with Linux and networks concepts",
+    "translation": "> * Connaissances de base de Linux et des réseaux"
+  },
+  {
+    "line": 6,
+    "source": "> * Footprinting and Scanning",
+    "translation": "> * Footprinting et scanning"
+  },
+  {
+    "line": 10,
+    "source": "> * Purpose of service enumeration",
+    "translation": "> * Comprendre l’objectif de l’énumération des services"
+  },
+  {
+    "line": 11,
+    "source": "> * Enumeration on common and uncommon services and protocols",
+    "translation": "> * Énumérer les services et protocoles courants ou moins courants"
+  },
+  {
+    "line": 27,
+    "source": "A **server** is a computer program or device that provides a **service** to another computer program and its user, also known as the **client**. It accepts and responds to request made over a network. The term _server_ can refer to a physical machine, a virtual machine or to software performing server services.",
+    "translation": "Un **serveur** est un programme ou un équipement informatique fournissant un **service** à un autre programme et à son utilisateur, également appelé **client**. Il accepte les requêtes transmises sur un réseau et y répond. Le terme _serveur_ peut désigner une machine physique, une machine virtuelle ou un logiciel fournissant des services."
+  },
+  {
+    "line": 29,
+    "source": "It can run various operating systems like Windows Server, Linux Server, macOS Server.",
+    "translation": "Il peut fonctionner sous différents systèmes d’exploitation, comme Windows Server, Linux Server ou macOS Server."
+  },
+  {
+    "line": 31,
+    "source": "Servers need to be accessed remotely by multiple clients, so the server must _open_ and accept connections on the listening _port_ of the service.",
+    "translation": "Les serveurs doivent être accessibles à distance par plusieurs clients. Le serveur doit donc _ouvrir_ le _port_ d’écoute du service et accepter les connexions."
+  },
+  {
+    "line": 33,
+    "source": "Open port service bugs and vulnerabilities could expose the entire server to attackers.",
+    "translation": "Les bugs et vulnérabilités des services associés aux ports ouverts peuvent exposer le serveur entier à des attaquants."
+  },
+  {
+    "line": 35,
+    "source": "Chech the common services recon here:",
+    "translation": "Consulter les chapitres de reconnaissance des services courants :"
+  },
+  {
+    "line": 44,
+    "source": "🗒️ **Enumeration** is a critical phase in a pentest, used to identify information about in-scope assets, discovering potential attack vectors and vulnerabilities.",
+    "translation": "🗒️ L’**énumération** est une phase essentielle du pentest. Elle permet de recueillir des informations sur les actifs du périmètre et d’identifier des vecteurs d’attaque et des vulnérabilités potentiels."
+  }
+]

@@ -1,0 +1,317 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic networks concepts",
+    "translation": "> * Connaissances de base des réseaux"
+  },
+  {
+    "line": 9,
+    "source": "> * Describe cyber security and explain cyber maturity",
+    "translation": "> * Décrire la cybersécurité et expliquer la maturité cyber"
+  },
+  {
+    "line": 10,
+    "source": "> * Identify common frameworks and governing regulations",
+    "translation": "> * Identifier les référentiels courants et les réglementations applicables"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform network auditing",
+    "translation": "> * Réaliser un audit réseau"
+  },
+  {
+    "line": 13,
+    "source": "> ❗ _**Authorization is required to conduct systems auditing.**_ ❗",
+    "translation": "> ❗ _**Une autorisation est nécessaire pour réaliser un audit des systèmes.**_ ❗"
+  },
+  {
+    "line": 17,
+    "source": "🗒️ **Cybersecurity**, or **I**nformation **T**echnology Security, *is the process of protecting systems, networks, programs, devices and data by preventing, detecting and responding to digital attacks*. It aims to lower the risk of cyberattack and protect against the unauthorized and improper use of the involved technology.",
+    "translation": "🗒️ La **cybersécurité**, ou sécurité des technologies de l’information, *consiste à protéger les systèmes, réseaux, programmes, équipements et données en prévenant et détectant les attaques numériques et en y répondant*. Elle vise à réduire le risque de cyberattaque et à empêcher les usages non autorisés ou inappropriés des technologies concernées."
+  },
+  {
+    "line": 19,
+    "source": "Protected information can be:",
+    "translation": "Les informations à protéger peuvent comprendre :"
+  },
+  {
+    "line": 21,
+    "source": "- **PII** (**P**ersonally **I**dentifiable **I**nformation)",
+    "translation": "- **PII** (**P**ersonally **I**dentifiable **I**nformation) : informations permettant d’identifier une personne"
+  },
+  {
+    "line": 22,
+    "source": "- Healthcare Information",
+    "translation": "- Informations de santé"
+  },
+  {
+    "line": 23,
+    "source": "- Financial Data",
+    "translation": "- Données financières"
+  },
+  {
+    "line": 24,
+    "source": "- Intellectual Property",
+    "translation": "- Propriété intellectuelle"
+  },
+  {
+    "line": 25,
+    "source": "- Business Secrets",
+    "translation": "- Secrets commerciaux"
+  },
+  {
+    "line": 26,
+    "source": "- Business Operations",
+    "translation": "- Activités de l’entreprise"
+  },
+  {
+    "line": 28,
+    "source": "Data must be secured from:",
+    "translation": "Les données doivent être protégées contre :"
+  },
+  {
+    "line": 30,
+    "source": "- Criminals",
+    "translation": "- Les criminels"
+  },
+  {
+    "line": 31,
+    "source": "- Competitors",
+    "translation": "- Les concurrents"
+  },
+  {
+    "line": 32,
+    "source": "- Insider Threats",
+    "translation": "- Les menaces internes (Insider Threats)"
+  },
+  {
+    "line": 33,
+    "source": "- Malicious Actors",
+    "translation": "- Les acteurs malveillants"
+  },
+  {
+    "line": 37,
+    "source": "🗒️ The **CIA** Triad (**C**onfidentiality, **I**ntegrity and **A**vailability) *is a guiding model used to describe information security*, also useful for managing the products and data of research.",
+    "translation": "🗒️ La triade **CIA** (**C**onfidentiality, **I**ntegrity et **A**vailability) *est un modèle de référence pour décrire la sécurité de l’information*, également utile pour gérer les produits et les données de recherche."
+  },
+  {
+    "line": 39,
+    "source": "Policies and security controls that reduce threats to these three vital components are a part of a comprehensive *information security plan* and are balanced to meet business needs.",
+    "translation": "Les politiques et contrôles de sécurité qui réduisent les menaces visant ces trois composantes essentielles font partie d’un *plan global de sécurité de l’information*. Ils sont équilibrés en fonction des besoins de l’entreprise."
+  },
+  {
+    "line": 43,
+    "source": "|      CIA Triad      | Description                                                  |",
+    "translation": "| Triade CIA | Description |"
+  },
+  {
+    "line": 45,
+    "source": "| **Confidentiality** | *Protecting information from unauthorized access*, allowing only authorized users to access certain data |",
+    "translation": "| **Confidentialité** | *Protéger les informations contre les accès non autorisés*, en réservant l’accès aux données aux utilisateurs autorisés. |"
+  },
+  {
+    "line": 46,
+    "source": "|    **Integrity**    | *Data is trustworthy, complete, accurate and have not been accidentally altered or modified by an unauthorized user*. Data can be retrieved in the future without changes |",
+    "translation": "| **Intégrité** | *Les données sont fiables, complètes, exactes et n’ont pas été modifiées accidentellement ou par un utilisateur non autorisé*. Elles peuvent être récupérées ultérieurement sans altération. |"
+  },
+  {
+    "line": 47,
+    "source": "|  **Availability**   | *Data is accessible when needed*                             |",
+    "translation": "| **Disponibilité** | *Les données sont accessibles lorsque nécessaire*. |"
+  },
+  {
+    "line": 51,
+    "source": "🗒️ The **Defense-in-Depth** is *a strategy that uses multiple layers of security protection* and helps reducing vulnerabilities, containing threats and mitigating risks.",
+    "translation": "🗒️ La **Defense-in-Depth** (défense en profondeur) *est une stratégie reposant sur plusieurs couches de protection*. Elle aide à réduire les vulnérabilités, contenir les menaces et atténuer les risques."
+  },
+  {
+    "line": 53,
+    "source": "Depending on *what* and *how* an organization need to secure, the strategy have to be shaped, considering a risk management plan.",
+    "translation": "La stratégie doit être adaptée à *ce que* l’organisation doit protéger et à *la manière* dont elle doit le protéger, en tenant compte d’un plan de gestion des risques."
+  },
+  {
+    "line": 55,
+    "source": "🗒️ **Risk Management** is *the process of identifying, assessing and controlling financial, legal, strategic and security risks to an organization’s **capital** and earnings*. It plays the ultimate factor in an organization.",
+    "translation": "🗒️ Le **Risk Management** (gestion des risques) *consiste à identifier, évaluer et maîtriser les risques financiers, juridiques, stratégiques et de sécurité qui menacent le **capital** et les revenus d’une organisation*. Il joue un rôle déterminant dans celle-ci."
+  },
+  {
+    "line": 59,
+    "source": "🗒️ **Cybersecurity Compliance** *involves meeting various controls to protect the confidentiality, integrity, and availability of data*.",
+    "translation": "🗒️ La **conformité en cybersécurité** *consiste à respecter différents contrôles destinés à protéger la confidentialité, l’intégrité et la disponibilité des données*."
+  },
+  {
+    "line": 61,
+    "source": "Compliance requirements (usually established by a regulatory authority, law or industry group) typically involve using an array of specific organizational processes and technologies to safeguard data. Controls come from a variety of Cybersecurity frameworks and regulations, such as:",
+    "translation": "Les exigences de conformité, généralement fixées par une autorité de régulation, une loi ou un organisme sectoriel, nécessitent des processus et technologies spécifiques pour protéger les données. Ces contrôles proviennent de différents référentiels et réglementations de cybersécurité, notamment :"
+  },
+  {
+    "line": 64,
+    "source": "  - mandated by card brands, created to increase controls around cardholder data",
+    "translation": "  - Imposé par les réseaux de cartes de paiement pour renforcer les contrôles portant sur les données des titulaires."
+  },
+  {
+    "line": 65,
+    "source": "  - reduce card fraud",
+    "translation": "  - Réduire la fraude aux cartes de paiement."
+  },
+  {
+    "line": 67,
+    "source": "  - Data protection and privacy law in the EU (European Union) and EEA (European Economic Area)",
+    "translation": "  - Réglementation sur la protection des données et de la vie privée dans l’Union européenne (UE) et l’Espace économique européen (EEE)."
+  },
+  {
+    "line": 69,
+    "source": "  - United States regulations for the use and disclosure of **PHI** (**P**rotected **H**ealth **I**nformation)",
+    "translation": "  - Réglementation américaine encadrant l’utilisation et la divulgation des **PHI** (**P**rotected **H**ealth **I**nformation)."
+  },
+  {
+    "line": 70,
+    "source": "  - Administrative, physical, technical safeguards",
+    "translation": "  - Mesures de protection administratives, physiques et techniques."
+  },
+  {
+    "line": 72,
+    "source": "  - enhance privacy rights and consumer protection for California (USA) residents",
+    "translation": "  - Renforcer les droits à la vie privée et la protection des consommateurs résidant en Californie (États-Unis)."
+  },
+  {
+    "line": 78,
+    "source": "🗒️ [Cybersecurity **Frameworks**](https://www.celerium.com/cybersecurity-frameworks-a-comprehensive-guide) are *sets of controls that represents a fully functional cybersecurity program when met*.",
+    "translation": "🗒️ Les [**Frameworks** de cybersécurité](https://www.celerium.com/cybersecurity-frameworks-a-comprehensive-guide) sont *des ensembles de contrôles dont la mise en œuvre constitue un programme de cybersécurité opérationnel*."
+  },
+  {
+    "line": 81,
+    "source": "  - Identify, Protect, Detect, Respond, Recover - best practices",
+    "translation": "  - Identifier, protéger, détecter, répondre et rétablir : bonnes pratiques."
+  },
+  {
+    "line": 82,
+    "source": "  - Applies to any organization",
+    "translation": "  - S’applique à toute organisation."
+  },
+  {
+    "line": 83,
+    "source": "  - [NIST 800-53](https://csrc.nist.gov/Projects/risk-management/sp800-53-controls/release-search) disegned to apply to U.S. Federal Government agencies.",
+    "translation": "  - [NIST 800-53](https://csrc.nist.gov/Projects/risk-management/sp800-53-controls/release-search) conçu pour les agences du gouvernement fédéral américain."
+  },
+  {
+    "line": 85,
+    "source": "  - Information security management systems - Requirements",
+    "translation": "  - Systèmes de management de la sécurité de l’information : exigences."
+  },
+  {
+    "line": 86,
+    "source": "  - [ISO/IEC 27002](https://www.iso.org/standard/75652.html) - Code of practice for information security controls",
+    "translation": "  - [ISO/IEC 27002](https://www.iso.org/standard/75652.html) : bonnes pratiques relatives aux contrôles de sécurité de l’information."
+  },
+  {
+    "line": 88,
+    "source": "  - business and generic IT management focused",
+    "translation": "  - Axé sur la gestion de l’entreprise et la gestion générale des technologies de l’information."
+  },
+  {
+    "line": 90,
+    "source": "  - 18 CIS Controls for mitigate the most known cyber attacks",
+    "translation": "  - 18 CIS Controls destinés à atténuer les cyberattaques les plus connues."
+  },
+  {
+    "line": 92,
+    "source": "  - Simplifies compliance by allowing self-assessment for some requirements",
+    "translation": "  - Simplifie la conformité en autorisant l’autoévaluation pour certaines exigences."
+  },
+  {
+    "line": 93,
+    "source": "  - Applies priorities for protecting Department of Defense (DoD) information",
+    "translation": "  - Définit des priorités pour protéger les informations du Department of Defense (DoD)."
+  },
+  {
+    "line": 94,
+    "source": "  - Reinforces cooperation between the DoD and industry in addressing evolving cyber threats",
+    "translation": "  - Renforce la coopération entre le DoD et l’industrie face à l’évolution des cybermenaces."
+  },
+  {
+    "line": 99,
+    "source": "🗒️ A **security Audit** is *an extensive evaluation of an organization’s information system*, an assessment that measures the information system’s security against an audit checklist of industry best practices, governmental legislation or externally defined standards.",
+    "translation": "🗒️ Un **audit de sécurité** est *une évaluation approfondie du système d’information d’une organisation*. Il mesure sa sécurité à l’aide d’une liste de contrôles issue de bonnes pratiques sectorielles, de dispositions légales ou de normes définies par des organismes externes."
+  },
+  {
+    "line": 101,
+    "source": "An audit is necessary for a compliance plan.",
+    "translation": "Un audit est nécessaire à un plan de conformité."
+  },
+  {
+    "line": 103,
+    "source": "- *Interviews* on security awareness, training and practices - CISO, system administrators, employees",
+    "translation": "- *Entretiens* sur la sensibilisation, la formation et les pratiques de sécurité avec le CISO, les administrateurs système et les salariés."
+  },
+  {
+    "line": 104,
+    "source": "- *Review Paperworks* - how records, logs are kept",
+    "translation": "- *Examen documentaire* : vérifier la conservation des documents et des journaux."
+  },
+  {
+    "line": 105,
+    "source": "- *Assessments* - using automated tools to find compliance software and devices, vulnerability assessments",
+    "translation": "- *Évaluations* : utiliser des outils automatisés pour identifier les logiciels et équipements concernés par la conformité et réaliser des évaluations de vulnérabilités."
+  },
+  {
+    "line": 106,
+    "source": "- As an auditor or pentester, *good notes* are useful for the information gathering and the final report",
+    "translation": "- Pour un auditeur ou un pentester, *des notes de qualité* facilitent la collecte d’informations et la rédaction du rapport final."
+  },
+  {
+    "line": 107,
+    "source": "- *Mind maps* - useful and understandable by the customer",
+    "translation": "- *Mind maps* : utiles et compréhensibles pour le client."
+  },
+  {
+    "line": 108,
+    "source": "- *Reports* - an important part that has value to a company as a result of a penetration test",
+    "translation": "- *Rapports* : un livrable essentiel du pentest, apportant de la valeur à l’entreprise."
+  },
+  {
+    "line": 112,
+    "source": "🗒️ The **[SCAP](https://public.cyber.mil/stigs/scap/)** (**S**ecurity **C**ontent **A**utomation **P**rotocol) is *a specification for expressing and manipulating security data in standardized ways. It uses specific standards to help organizations automate continuous monitoring, vulnerability management and security policy compliance evaluation reporting.*",
+    "translation": "🗒️ Le **[SCAP](https://public.cyber.mil/stigs/scap/)** (**S**ecurity **C**ontent **A**utomation **P**rotocol) est *une spécification permettant de représenter et manipuler les données de sécurité de manière standardisée. Il utilise des normes pour aider les organisations à automatiser la surveillance continue, la gestion des vulnérabilités et les rapports d’évaluation de la conformité aux politiques de sécurité.*"
+  },
+  {
+    "line": 114,
+    "source": "DISA **[STIG Viewer](https://public.cyber.mil/stigs/srg-stig-tools/)** is a GUI java based program used to open content and generate checklists for managing the security settings on a system or network. ",
+    "translation": "Le **[STIG Viewer](https://public.cyber.mil/stigs/srg-stig-tools/)** de la DISA est un logiciel graphique développé en Java, permettant d’ouvrir des contenus et de générer des listes de contrôles pour gérer les paramètres de sécurité d’un système ou d’un réseau."
+  },
+  {
+    "line": 122,
+    "source": "- General audit internal devices with an internal network scan using **`nmap`** tool to find active services and open ports",
+    "translation": "- Audit général des équipements internes par un scan réseau avec **`nmap`** pour identifier les services actifs et les ports ouverts."
+  },
+  {
+    "line": 133,
+    "source": "**`nessus`** is a network vulnerability scanning tool, hosted locally and used for Vulnerability Assessment.",
+    "translation": "**`nessus`** est un outil de scan des vulnérabilités réseau, hébergé localement et utilisé pour les évaluations de vulnérabilités."
+  },
+  {
+    "line": 135,
+    "source": "- `Nessus Essentials` is the free version of the V.A. tool by [Tenable](https://www.tenable.com/blog/nessus-home-is-now-nessus-essentials).",
+    "translation": "- `Nessus Essentials` est la version gratuite de l’outil d’évaluation de vulnérabilités de [Tenable](https://www.tenable.com/blog/nessus-home-is-now-nessus-essentials)."
+  },
+  {
+    "line": 136,
+    "source": "  - Limited to 16 IPs for V.A.",
+    "translation": "  - Limité à 16 adresses IP pour l’évaluation de vulnérabilités."
+  },
+  {
+    "line": 137,
+    "source": "  - Build in insights with latest vulnerabilities",
+    "translation": "  - Informations intégrées sur les dernières vulnérabilités."
+  },
+  {
+    "line": 138,
+    "source": "  - No usage time limit",
+    "translation": "  - Aucune limite de durée d’utilisation."
+  },
+  {
+    "line": 139,
+    "source": "  - Report export as PDF, HTML, CSV formats",
+    "translation": "  - Export des rapports aux formats PDF, HTML et CSV."
+  }
+]
