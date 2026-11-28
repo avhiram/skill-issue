@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": "* [System/Host Based Attacks](1-system-attack.md)",
+    "translation": "* [Attaques visant les systèmes et les hôtes](1-system-attack.md)"
+  },
+  {
+    "line": 6,
+    "source": "* [Network Based Attacks](2-network-attack.md)",
+    "translation": "* [Attaques réseau](2-network-attack.md)"
+  },
+  {
+    "line": 7,
+    "source": "* [The Metasploit Framework (MSF)](3-metasploit.md)",
+    "translation": "* [Le framework Metasploit (MSF)](3-metasploit.md)"
+  },
+  {
+    "line": 14,
+    "source": "> * **Never use tools and techniques on real IP addresses, hosts or networks without proper authorization!**",
+    "translation": "> * **Ne jamais utiliser ces outils et techniques sur des adresses IP, des hôtes ou des réseaux réels sans autorisation préalable !**"
+  }
+]

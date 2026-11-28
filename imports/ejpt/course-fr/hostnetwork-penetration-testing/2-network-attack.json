@@ -1,0 +1,27 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic Cybersecurity & Network Concepts",
+    "translation": "> * Notions fondamentales de cybersécurité et de réseaux"
+  },
+  {
+    "line": 9,
+    "source": "> * Describe service related **Network Attacks**",
+    "translation": "> * Décrire les **attaques réseau** liées aux services"
+  },
+  {
+    "line": 10,
+    "source": "> * Identify network traffic and perform packet analysis",
+    "translation": "> * Identifier le trafic réseau et analyser les paquets"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform **MITM (Man in the Middle)** attacks",
+    "translation": "> * Étudier les attaques **MITM (Man in the Middle)**"
+  },
+  {
+    "line": 22,
+    "source": "🗒️ **Network based attacks** are attacks targeted towards specific network traffic and services.",
+    "translation": "🗒️ Les **attaques réseau** ciblent certains types de trafic et services réseau."
+  }
+]

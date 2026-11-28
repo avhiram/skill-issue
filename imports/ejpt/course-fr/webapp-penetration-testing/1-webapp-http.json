@@ -1,0 +1,52 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic Network and Cybersecurity Concepts",
+    "translation": "> * Notions fondamentales des réseaux et de la cybersécurité"
+  },
+  {
+    "line": 9,
+    "source": "> * Understand **Web protocols**",
+    "translation": "> * Comprendre les **protocoles Web**"
+  },
+  {
+    "line": 10,
+    "source": "> * Perform **webapps enumeration**",
+    "translation": "> * Étudier l’**énumération des applications Web**"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform **SQL injection**, **XSS** and **brute-force** attacks",
+    "translation": "> * Comprendre les attaques **SQL Injection**, **XSS** et **Brute Force**"
+  },
+  {
+    "line": 20,
+    "source": "**Web application penetration testing** is a process of identifying and exploiting vulnerabilities in web applications to assess their security posture.",
+    "translation": "Le **pentest des applications Web** consiste à identifier et évaluer les vulnérabilités des applications Web afin d’apprécier leur niveau de sécurité."
+  },
+  {
+    "line": 24,
+    "source": "> 🔗📝 Some **Web Applications Basics** notes are already covered [here](../penetration-testing-prerequisites/web-applications.md) (from the PTSv1 Course)",
+    "translation": "> 🔗📝 Les bases des **applications Web** sont déjà abordées [ici](../penetration-testing-prerequisites/web-applications.md) (cours PTSv1)."
+  },
+  {
+    "line": 26,
+    "source": "🗒️ **`HTTP`** (**H**yper**T**ext **T**ransfer **P**rotocol) is a protocol used for communication between web servers and clients, such as web browsers. **`HTTP`** key features are:",
+    "translation": "🗒️ **`HTTP`** (**H**yper**T**ext **T**ransfer **P**rotocol) est un protocole de communication entre les serveurs et les clients Web, notamment les navigateurs. Les principales caractéristiques de **`HTTP`** sont :"
+  },
+  {
+    "line": 28,
+    "source": "- Client-Server Architecture",
+    "translation": "- Architecture client-serveur"
+  },
+  {
+    "line": 29,
+    "source": "- Stateless Protocol",
+    "translation": "- Protocole Stateless (sans état)"
+  },
+  {
+    "line": 30,
+    "source": "- Request Methods",
+    "translation": "- Méthodes de requête"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic familiarity with Linux & Windows",
+    "translation": "> * Connaissances de base de Linux et Windows"
+  },
+  {
+    "line": 6,
+    "source": "> * Basic familiarity with TCP & UDP",
+    "translation": "> * Connaissances de base de TCP et UDP"
+  },
+  {
+    "line": 10,
+    "source": "> * Understand, identify and exploit **Windows & Linux vulnerabilities**",
+    "translation": "> * Comprendre, identifier et étudier les **vulnérabilités Windows et Linux**"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform **privilege escalation**",
+    "translation": "> * Étudier la **Privilege Escalation**"
+  },
+  {
+    "line": 12,
+    "source": "> * Identity and exploit **file system vulnerabilities**",
+    "translation": "> * Identifier les **vulnérabilités des systèmes de fichiers**"
+  },
+  {
+    "line": 13,
+    "source": "> * Understand **credentials storage** and password **hashes dumping**",
+    "translation": "> * Comprendre le **stockage des identifiants** et les risques liés à l’exposition des **hashes** de mots de passe"
+  },
+  {
+    "line": 30,
+    "source": "🗒️ **System or Host based attacks** are attacks targeted towards specific systems oh hosts. They are about *exploiting vulnerabilities within Windows and Linux operating systems*, running on (internal) servers, workstations, laptops, etc.",
+    "translation": "🗒️ Les **attaques visant les systèmes et les hôtes** ciblent des systèmes spécifiques. Elles concernent les vulnérabilités des systèmes d’exploitation Windows et Linux utilisés sur les serveurs, postes de travail, ordinateurs portables, etc."
+  }
+]
