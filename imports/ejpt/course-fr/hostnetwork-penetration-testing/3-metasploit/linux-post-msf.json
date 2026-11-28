@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [Post Exploitation Lab I](https://www.attackdefense.com/challengedetails?cid=194)",
+    "translation": "> 🔬 [Laboratoire de Post-Exploitation I](https://www.attackdefense.com/challengedetails?cid=194)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `192.215.55.3`",
+    "translation": "> - IP cible du laboratoire : `192.215.55.3`"
+  },
+  {
+    "line": 8,
+    "source": "> - Metasploit **`post/linux/gather/`** modules",
+    "translation": "> - Modules Metasploit **`post/linux/gather/`**."
+  }
+]

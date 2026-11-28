@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Vulnerable FTP Server](https://www.attackdefense.com/challengedetailsnoauth?cid=179)",
+    "translation": ">  🔬 [Serveur FTP vulnérable](https://www.attackdefense.com/challengedetailsnoauth?cid=179)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.80.80.3`",
+    "translation": ">  - IP cible du laboratoire : `192.80.80.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
+    "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  }
+]

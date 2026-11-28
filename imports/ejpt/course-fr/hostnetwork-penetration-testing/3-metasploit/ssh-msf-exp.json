@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Vulnerable SSH server](https://www.attackdefense.com/challengedetails?cid=448)",
+    "translation": ">  🔬 [Serveur SSH vulnérable](https://www.attackdefense.com/challengedetails?cid=448)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.66.211.3`",
+    "translation": ">  - IP cible du laboratoire : `192.66.211.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
+    "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  }
+]

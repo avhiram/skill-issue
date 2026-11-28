@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Meterpreter Basics](https://www.attackdefense.com/challengedetails?cid=193)",
+    "translation": ">  🔬 [Bases de Meterpreter](https://www.attackdefense.com/challengedetails?cid=193)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.170.151.3`",
+    "translation": ">  - IP cible du laboratoire : `192.170.151.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Usage of the **Meterpreter** payload",
+    "translation": ">  - Utilisation du payload **Meterpreter**."
+  }
+]

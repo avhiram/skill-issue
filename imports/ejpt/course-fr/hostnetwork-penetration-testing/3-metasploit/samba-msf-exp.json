@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Vulnerable File Sharing Service](https://www.attackdefense.com/challengedetails?cid=178)",
+    "translation": ">  🔬 [Service de partage de fichiers vulnérable](https://www.attackdefense.com/challengedetails?cid=178)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.234.251.3`",
+    "translation": ">  - IP cible du laboratoire : `192.234.251.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
+    "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  }
+]
