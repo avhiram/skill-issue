@@ -2270,6 +2270,77 @@ def format_prerequisite_headings(article, page):
     return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
 
 
+ASSESSMENT_HEADINGS = {
+    "Topics": "Thèmes abordés",
+    "Disclaimer": "Avertissement",
+    "Passive Information Gathering Introduction": "Introduction à la collecte passive",
+    "What passive information?": "Informations collectées passivement",
+    "Active Information Gathering Introduction": "Introduction à la collecte active",
+    "What active information?": "Informations collectées activement",
+    "Code of conduct": "Code de conduite",
+    "Passive Information Gathering": "Collecte passive d’informations",
+    "Active Information Gathering": "Collecte active d’informations",
+    "Website Reconnaissance & Footprinting": "Reconnaissance Web et footprinting",
+    "Whois Enumeration": "Énumération WHOIS",
+    "Website Footprinting with Netcraft": "Footprinting Web avec Netcraft",
+    "DNS Reconnaissance": "Reconnaissance DNS",
+    "Mapping a Network": "Cartographie réseau",
+    "Purpose": "Objectif",
+    "Process": "Processus",
+    "Tools": "Outils",
+    "Operating System": "Système d’exploitation",
+    "Services": "Services",
+    "Port Scanning": "Scan de ports",
+    "Vulnerabilities": "Vulnérabilités",
+    "Case Studies": "Études de cas",
+    "Vulnerable Lab": "Laboratoire vulnérable",
+    "Cybersecurity Basics": "Fondamentaux de la cybersécurité",
+    "CIA Triad": "Triade CIA",
+    "Defense in Depth": "Défense en profondeur",
+    "Compliance": "Conformité",
+    "Frameworks and Maturity": "Référentiels et maturité",
+    "Auditing": "Audit",
+    "Asset Management": "Gestion des actifs",
+}
+ASSESSMENT_OVERVIEW = {
+    "Information Gathering": "Collecte d’informations",
+    "Footprinting & Scanning": "Footprinting et scanning",
+    "Enumeration": "Énumération",
+    "Vulnerability Assessment": "Évaluation des vulnérabilités",
+    "Auditing Fundamentals": "Fondamentaux de l’audit",
+    "Never use tools and techniques on real IP addresses, hosts or networks without proper authorization!": "Ne jamais utiliser ces outils et techniques sur des adresses IP, des hôtes ou des réseaux réels sans autorisation préalable !",
+}
+def format_assessment_navigation(article, page):
+    before = [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    links = [a["href"] for a in article.find_all("a", href=True)]
+    images = [str(i) for i in article.find_all("img")]
+    ids = [n["id"] for n in article.select("[id]")]
+    renamed = 0
+    overview = 0
+    for heading in article.find_all(re.compile(r"^h[2-6]$")):
+        old = heading.get_text(" ", strip=True)
+        if old in ASSESSMENT_HEADINGS and heading.string is not None and not heading.find(["a","code","img","kbd"]):
+            new = ASSESSMENT_HEADINGS[old]
+            if new != old:
+                heading.string.replace_with(new)
+                renamed += 1
+    if page.endswith("/README.html"):
+        for node in list(article.find_all(string=True)):
+            if node.find_parent(["pre","code","kbd","samp","script","style"]):
+                continue
+            value = str(node)
+            old = value.strip()
+            if old in ASSESSMENT_OVERVIEW and old != ASSESSMENT_OVERVIEW[old]:
+                node.replace_with(value.replace(old, ASSESSMENT_OVERVIEW[old], 1))
+                overview += 1
+    assert before == [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    assert links == [a["href"] for a in article.find_all("a", href=True)]
+    assert images == [str(i) for i in article.find_all("img")]
+    assert ids == [n["id"] for n in article.select("[id]")]
+    print("eJPT assessment navigation:", page, renamed, "headings;", overview, "overview fragments")
+    return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2313,6 +2384,8 @@ for page in report["pages"]:
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     elif page.startswith("penetration-testing-prerequisites/"):
         report.setdefault("prerequisite_navigation", {})[page] = format_prerequisite_headings(article, page)
+    elif page.startswith("assessment-methodologies/"):
+        report.setdefault("assessment_navigation", {})[page] = format_assessment_navigation(article, page)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
