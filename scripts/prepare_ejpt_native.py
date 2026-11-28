@@ -84,6 +84,22 @@ def consolidate_sheets(soup, article):
         if len(link["href"])>1:
             link["href"] = "#complement-"+link["href"][1:]
     dedup(supplement)
+    # Mark source chapter boundaries before the editorial passes rename headings.
+    def mark_chapters(part, role):
+        seen = set()
+        for heading in part.find_all("h2"):
+            label = heading.get_text(" ", strip=True)
+            if label in sheet_labels and label not in seen:
+                heading["data-ejpt-source-chapter"] = label
+                heading["data-ejpt-source-role"] = role
+                seen.add(label)
+        if seen != set(sheet_labels):
+            raise RuntimeError("Missing source chapters (" + role + "): " + str(sorted(set(sheet_labels) - seen)))
+    mark_chapters(article, "primary")
+    mark_chapters(supplement, "supplement")
+    # All original level-two supplement headings mark boundaries, including CMS.
+    for heading in supplement.find_all("h2"):
+        heading["data-ejpt-source-boundary"] = "true"
     # Use the same heading hierarchy as the rest of the site's native sheets.
     # This is presentation only: retain all existing prose, images and code.
     extra = soup.new_tag("h2", id="complements-de-revision")
@@ -1940,38 +1956,20 @@ def merge_common_chapters(soup, article):
     root = article.find("h2", id="complements-de-revision")
     if root is None:
         raise RuntimeError("Missing complementary chapter")
-    def slug(label):
-        return re.sub(r"[^\w-]", "", re.sub(r"\s+", "-", label.lower().strip()))
-    def label(node):
-        return node.get_text(" ", strip=True)
-    main = {}
-    for h in root.previous_siblings:
-        if getattr(h, "name", None) == "h2":
-            main[h.get("id")] = h
-    common = {slug(name): value for name, value in sheet_labels.items()}
-    roots = []
-    for h in root.next_siblings:
-        if getattr(h, "name", None) == "h2":
-            break
-        if getattr(h, "name", None) != "h3":
-            continue
-        ident = h.get("id", "")
-        if ident == "complement-wordpress":
-            break
-        if ident.startswith("complement-") and ident[11:] in common:
-            roots.append(h)
-    if len(roots) != len(common):
-        raise RuntimeError("Expected 12 complementary chapters, found " + str(len(roots)))
+    main = {h["data-ejpt-source-chapter"]: h for h in article.select('[data-ejpt-source-role="primary"]')}
+    roots = list(article.select('[data-ejpt-source-role="supplement"]'))
+    if len(roots) != len(sheet_labels) or set(main) != set(sheet_labels):
+        raise RuntimeError("Source chapter markers incomplete")
     moved = []
+    anchors = []
     for h in roots:
-        ident = h["id"][11:]
-        dest = main.get(ident)
-        if dest is None:
-            raise RuntimeError("No matching primary heading for " + ident)
+        key = h["data-ejpt-source-chapter"]
+        dest = main[key]
+        anchors.append(h["id"])
         nodes = [h]
         for n in h.next_siblings:
             tag = getattr(n, "name", None)
-            if tag == "h2" or (tag == "h3" and n.get("id", "").startswith("complement-")):
+            if tag == "h2" or (tag and n.get("data-ejpt-source-boundary") == "true"):
                 break
             nodes.append(n)
         # Keep the original fragment ID without creating a repeated accordion.
@@ -1992,13 +1990,13 @@ def merge_common_chapters(soup, article):
             raise RuntimeError("Missing main chapter boundary")
         for n in nodes:
             stop.insert_before(n.extract())
-        moved.append(common[ident])
-    assert len(moved) == len(common)
+        moved.append(sheet_labels[key])
+    assert len(moved) == len(sheet_labels)
     assert code_before == Counter(c.get_text() for c in article.select("pre code"))
     assert images_before == Counter(str(i) for i in article.find_all("img"))
     assert links_before == Counter(a.get("href") for a in article.find_all("a", href=True))
     assert ids_before == Counter(n["id"] for n in article.select("[id]"))
-    assert all(article.find(id="complement-" + ident).name == "span" for ident in common)
+    assert all(article.find(id=ident).name == "span" for ident in anchors)
     print("eJPT chapter merge:", len(moved), "common chapters merged; all blocks, images, links and IDs preserved")
     return {"merged":len(moved), "chapters":moved, "content_preserved":True}
 
