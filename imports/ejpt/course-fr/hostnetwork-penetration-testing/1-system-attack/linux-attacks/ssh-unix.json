@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [SSH Login](https://attackdefense.com/challengedetails?cid=1526)",
+    "translation": ">  🔬 [Authentification SSH](https://attackdefense.com/challengedetails?cid=1526)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.63.218.3`",
+    "translation": ">  - IP cible du laboratoire : `192.63.218.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - **Brute-force** of [OpenSSH](https://www.openssh.com/) server",
+    "translation": ">  - Étude du **Brute Force** sur un serveur [OpenSSH](https://www.openssh.com/) en laboratoire."
+  },
+  {
+    "line": 9,
+    "source": ">  - **Enumeration and nmap scripts** have been already covered in this [SSH Enum lab](../../../assessment-methodologies/3-enumeration/ssh-enum.md)",
+    "translation": ">  - L’**énumération et les scripts Nmap** sont déjà abordés dans ce [laboratoire d’énumération SSH](../../../assessment-methodologies/3-enumeration/ssh-enum.md)."
+  }
+]

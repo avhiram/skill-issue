@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 **Home Lab**",
+    "translation": "> 🔬 **Laboratoire local**"
+  },
+  {
+    "line": 7,
+    "source": "> I have prepared a vulnerable *Windows 2008 R2 Virtual Machine* and connected it to the same network of the Kali virtual machine.",
+    "translation": "> Une *machine virtuelle Windows 2008 R2* vulnérable a été préparée et connectée au même réseau que la machine virtuelle Kali."
+  },
+  {
+    "line": 9,
+    "source": "> - Host system: `Kali Linux` - IP `192.168.31.128`",
+    "translation": "> - Système hôte : `Kali Linux`, IP `192.168.31.128`"
+  },
+  {
+    "line": 14,
+    "source": "> ❗ **Targeting Kernel space memory and apps can cause system crashes, data loss, etc. Do NOT use it in production systems**❗",
+    "translation": "> ❗ **Les interventions dans la mémoire et les applications de l’espace noyau peuvent provoquer des plantages du système, des pertes de données, etc. Ne PAS les effectuer sur des systèmes de production.** ❗"
+  }
+]

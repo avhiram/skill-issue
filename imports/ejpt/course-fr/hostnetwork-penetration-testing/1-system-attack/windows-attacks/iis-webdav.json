@@ -1,0 +1,17 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Windows: IIS Server DAVTest](https://attackdefense.com/challengedetails?cid=2317)",
+    "translation": ">  🔬 [Windows : serveur IIS et DAVTest](https://attackdefense.com/challengedetails?cid=2317)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `10.3.26.115`",
+    "translation": ">  - IP cible du laboratoire : `10.3.26.115`"
+  },
+  {
+    "line": 8,
+    "source": ">  - **IIS** exploitation",
+    "translation": ">  - Étude de l’exploitation du service **IIS**."
+  }
+]

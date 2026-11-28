@@ -1,0 +1,22 @@
+[
+  {
+    "line": 5,
+    "source": ">  🔬 [Samba Recon: Dictionary Attack](https://attackdefense.com/challengedetails?cid=556)",
+    "translation": ">  🔬 [Samba Recon : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=556)"
+  },
+  {
+    "line": 7,
+    "source": ">  - Target IP: `192.174.58.3`",
+    "translation": ">  - IP cible du laboratoire : `192.174.58.3`"
+  },
+  {
+    "line": 8,
+    "source": ">  - **Brute-force** of SAMBA service",
+    "translation": ">  - Étude du **Brute Force** sur le service Samba."
+  },
+  {
+    "line": 10,
+    "source": ">  - **Enumeration, brute-force, tools and flags** have been already covered in this [SMB Enum Lab 6](../../../assessment-methodologies/3-enumeration/smb-enum.md)",
+    "translation": ">  - L’**énumération, le Brute Force, les outils et les flags** sont déjà abordés dans le [laboratoire SMB 6](../../../assessment-methodologies/3-enumeration/smb-enum.md)."
+  }
+]
