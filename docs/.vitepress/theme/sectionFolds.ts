@@ -43,6 +43,9 @@ function build(container: HTMLElement, inherited: Fold[]) {
       const level=Number(node.tagName.slice(1))
       while(stack.length && Number(stack[stack.length-1].heading.tagName.slice(1))>=level) stack.pop()
       owners.set(node,[...inherited,...stack])
+      // In the eJPT cheatsheet, only chapters and main subchapters fold.
+      // Deeper headings remain visible text and retain their outline anchors.
+      if(activeRoot?.classList.contains('ejpt-cheatsheet-content') && level>=4) continue
       const next=children[i+1]
       // A heading without any content or lower-level heading needs no control.
       if(!next || (isHeading(next)&&Number(next.tagName.slice(1))<=level)) continue
