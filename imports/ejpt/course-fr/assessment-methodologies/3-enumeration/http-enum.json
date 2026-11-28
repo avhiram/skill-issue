@@ -13,5 +13,25 @@
     "line": 7,
     "source": "Default `HTTP` port is **`80`** and `HTTPS` port is **`443`**.",
     "translation": "Le port par défaut de `HTTP` est **`80`** et celui de `HTTPS` est **`443`**."
+  },
+  {
+    "line": 15,
+    "source": ">  🔬 [Windows Recon: IIS](https://attackdefense.com/challengedetails?cid=2311)",
+    "translation": ">  🔬 [Reconnaissance Windows : IIS](https://attackdefense.com/challengedetails?cid=2311)"
+  },
+  {
+    "line": 17,
+    "source": ">  - Target IP: `10.4.16.17`",
+    "translation": ">  - IP cible du laboratoire : `10.4.16.17`"
+  },
+  {
+    "line": 18,
+    "source": ">  - Enumeration of an `IIS` HTTP server, without the usage of a browser",
+    "translation": ">  - Énumération d’un serveur HTTP `IIS` sans navigateur."
+  },
+  {
+    "line": 78,
+    "source": "> **`httpie`** - CLI, cURL-like tool for humans. Run with **`http`**",
+    "translation": "> **`httpie`** : outil en ligne de commande comparable à cURL, conçu pour faciliter les requêtes HTTP. Il se lance avec **`http`**."
   }
 ]

@@ -20,6 +20,56 @@
     "translation": "> * Aborder les phases d’**Information Gathering**, d’**énumération**, d’**exploitation** et de **Post-Exploitation** avec Metasploit"
   },
   {
+    "line": 17,
+    "source": "> - [Metasploit Auxiliary modules](https://www.attackdefense.com/listingnoauth?labtype=metasploit&subtype=metasploit-auxiliary)",
+    "translation": "> - [Modules Auxiliary de Metasploit](https://www.attackdefense.com/listingnoauth?labtype=metasploit&subtype=metasploit-auxiliary)"
+  },
+  {
+    "line": 18,
+    "source": "> - [MITRE ATT&CK Linux Discovery](https://attackdefense.com/listing?labtype=mitre&subtype=mitre-discovery)",
+    "translation": "> - [Découverte Linux : MITRE ATT&CK](https://attackdefense.com/listing?labtype=mitre&subtype=mitre-discovery)"
+  },
+  {
+    "line": 20,
+    "source": "> - [Linux Vulnerable Servers Exploitation - Metasploit](https://www.attackdefense.com/listingnoauth?labtype=metasploit&subtype=metasploit-linux-exploitation)",
+    "translation": "> - [Serveurs Linux vulnérables : Metasploit](https://www.attackdefense.com/listingnoauth?labtype=metasploit&subtype=metasploit-linux-exploitation)"
+  },
+  {
+    "line": 21,
+    "source": "> - [Linux Exploitation - Metasploit](https://www.attackdefense.com/listingnoauth?labtype=linux-security-exploitation&subtype=linux-security-exploitation-metasploit)",
+    "translation": "> - [Exploitation Linux avec Metasploit](https://www.attackdefense.com/listingnoauth?labtype=linux-security-exploitation&subtype=linux-security-exploitation-metasploit)"
+  },
+  {
+    "line": 22,
+    "source": "> - [Linux Post Modules - Metasploit](https://www.attackdefense.com/listingnoauth?labtype=linux-security-post-exploitation&subtype=linux-security-post-exploitation-metasploit)",
+    "translation": "> - [Modules de Post-Exploitation Linux avec Metasploit](https://www.attackdefense.com/listingnoauth?labtype=linux-security-post-exploitation&subtype=linux-security-post-exploitation-metasploit)"
+  },
+  {
+    "line": 23,
+    "source": "> - [Win Basic Exploitation - Metasploit](https://www.attackdefense.com/listingnoauth?labtype=windows-exploitation&subtype=windows-exploitation-basics)",
+    "translation": "> - [Fondamentaux de l’exploitation Windows avec Metasploit](https://www.attackdefense.com/listingnoauth?labtype=windows-exploitation&subtype=windows-exploitation-basics)"
+  },
+  {
+    "line": 24,
+    "source": "> - [Win Pentesting Basic Exploitation](https://attackdefense.com/listing?labtype=windows-exploitation&subtype=windows-exploitation-pentesting)",
+    "translation": "> - [Fondamentaux du pentest Windows](https://attackdefense.com/listing?labtype=windows-exploitation&subtype=windows-exploitation-pentesting)"
+  },
+  {
+    "line": 25,
+    "source": "> - [Win Apps Exploits - Metasploit](https://www.attackdefense.com/listingnoauth?labtype=metasploit&subtype=metasploit-windows-apps-exploits)",
+    "translation": "> - [Vulnérabilités des applications Windows : Metasploit](https://www.attackdefense.com/listingnoauth?labtype=metasploit&subtype=metasploit-windows-apps-exploits)"
+  },
+  {
+    "line": 26,
+    "source": "> - [Win Post Exploitation - Metasploit](https://attackdefense.com/listing?labtype=windows-post-exploitation&subtype=windows-post-exploitation-metasploit)",
+    "translation": "> - [Post-Exploitation Windows avec Metasploit](https://attackdefense.com/listing?labtype=windows-post-exploitation&subtype=windows-post-exploitation-metasploit)"
+  },
+  {
+    "line": 27,
+    "source": "> - [Win Maintaining Access](https://attackdefense.com/listing?labtype=windows-maintaining-access&subtype=windows-maintaining-access-basics)",
+    "translation": "> - [Maintien de l’accès sous Windows](https://attackdefense.com/listing?labtype=windows-maintaining-access&subtype=windows-maintaining-access-basics)"
+  },
+  {
     "line": 31,
     "source": "🗒️ The [**Metasploit Framework**](https://www.metasploit.com/) (**MSF**) is an open-source pentesting and exploit development platform, used to write, test and execute exploit code.",
     "translation": "🗒️ Le [**Metasploit Framework**](https://www.metasploit.com/) (**MSF**) est une plateforme open source de pentest et de développement d’exploits, utilisée pour écrire, tester et exécuter du code d’exploitation."

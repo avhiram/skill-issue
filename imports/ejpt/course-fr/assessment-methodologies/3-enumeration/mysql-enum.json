@@ -8,5 +8,25 @@
     "line": 5,
     "source": "Default `MYSQL` port is **`3306`**.",
     "translation": "Le port par défaut de `MYSQL` est **`3306`**."
+  },
+  {
+    "line": 13,
+    "source": ">  🔬 [MySQL Recon: Basics](https://attackdefense.com/challengedetails?cid=529)",
+    "translation": ">  🔬 [Reconnaissance MySQL : fondamentaux](https://attackdefense.com/challengedetails?cid=529)"
+  },
+  {
+    "line": 15,
+    "source": ">  - Target IP: `192.49.51.3`",
+    "translation": ">  - IP cible du laboratoire : `192.49.51.3`"
+  },
+  {
+    "line": 16,
+    "source": ">  - `MySQL` server reconnaisance.",
+    "translation": ">  - Reconnaissance d’un serveur `MySQL`."
+  },
+  {
+    "line": 33,
+    "source": "> **`mysql`** - SQL shell with input line editing capabilities.",
+    "translation": "> **`mysql`** : interpréteur de commandes SQL permettant de modifier les lignes saisies."
   }
 ]

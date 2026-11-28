@@ -8,5 +8,30 @@
     "line": 5,
     "source": "Default SSH TCP port is **`22`**.",
     "translation": "Le port TCP par défaut de SSH est **`22`**."
+  },
+  {
+    "line": 13,
+    "source": ">  🔬 [SSH Recon: Basic](https://attackdefense.com/challengedetails?cid=526)",
+    "translation": ">  🔬 [Reconnaissance SSH : fondamentaux](https://attackdefense.com/challengedetails?cid=526)"
+  },
+  {
+    "line": 15,
+    "source": ">  - Target IP: `192.8.3.3`",
+    "translation": ">  - IP cible du laboratoire : `192.8.3.3`"
+  },
+  {
+    "line": 16,
+    "source": ">  - Enumeration of [OpenSSH](https://www.openssh.com/) server",
+    "translation": ">  - Énumération d’un serveur [OpenSSH](https://www.openssh.com/)."
+  },
+  {
+    "line": 41,
+    "source": "> **`nc`** (netcat) - *TCP/IP swiss army knife*, tool wich reads and writes data across network connections",
+    "translation": "> **`nc`** (netcat) : outil polyvalent TCP/IP permettant de lire et d’écrire des données via des connexions réseau."
+  },
+  {
+    "line": 55,
+    "source": "> **`ssh`** - establish an encrypted secure connection with the host machine",
+    "translation": "> **`ssh`** : établit une connexion sécurisée et chiffrée avec une machine distante."
   }
 ]
