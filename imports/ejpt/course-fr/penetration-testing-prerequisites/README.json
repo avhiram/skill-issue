@@ -1,0 +1,47 @@
+[
+  {
+    "line": 3,
+    "source": "_These notes are from the first version of the PTS1 Learning Path on INE._",
+    "translation": "_Ces notes proviennent de la première version du parcours PTS1 sur INE._"
+  },
+  {
+    "line": 7,
+    "source": "* Information Security",
+    "translation": "* Sécurité informatique"
+  },
+  {
+    "line": 8,
+    "source": "* Foundational and technical skills on:",
+    "translation": "* Fondamentaux et compétences techniques :"
+  },
+  {
+    "line": 9,
+    "source": "  * Computer networks",
+    "translation": "  * Réseaux informatiques"
+  },
+  {
+    "line": 10,
+    "source": "  * Protocols",
+    "translation": "  * Protocoles"
+  },
+  {
+    "line": 11,
+    "source": "  * Web applications",
+    "translation": "  * Applications Web"
+  },
+  {
+    "line": 12,
+    "source": "* Theoretical + Hands on sessions (Labs)",
+    "translation": "* Théorie et sessions pratiques (Labs)"
+  },
+  {
+    "line": 17,
+    "source": "2. [Networking](networking.md)",
+    "translation": "2. [Réseaux](networking.md)"
+  },
+  {
+    "line": 18,
+    "source": "3. [Web Applications](web-applications.md)",
+    "translation": "3. [Applications Web](web-applications.md)"
+  }
+]
