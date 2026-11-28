@@ -1,0 +1,97 @@
+[
+  {
+    "line": 5,
+    "source": "[Windows O.S.](https://www.microsoft.com/en-us/windows) is a prime target for attackers given the threat surface and its popularity.",
+    "translation": "Le [système d’exploitation Windows](https://www.microsoft.com/en-us/windows) constitue une cible privilégiée pour les attaquants en raison de sa surface d’exposition et de sa popularité."
+  },
+  {
+    "line": 7,
+    "source": "Most of the Windows vulnerabilities **exploits** are publicly available, making them simple to use.",
+    "translation": "La plupart des **exploits** associés aux vulnérabilités Windows sont accessibles publiquement, ce qui facilite leur utilisation."
+  },
+  {
+    "line": 9,
+    "source": "- Threat surface is fragmented, depending on the Win O.S. version.",
+    "translation": "- La surface d’attaque varie selon la version de Windows."
+  },
+  {
+    "line": 10,
+    "source": "- The older the O.S. version, the more vulnerable to attacks.",
+    "translation": "- Plus une version du système est ancienne, plus elle peut être vulnérable aux attaques."
+  },
+  {
+    "line": 11,
+    "source": "- All of Windows operating systems share a similarity according to the development model.",
+    "translation": "- Les systèmes d’exploitation Windows présentent des similitudes dans leur modèle de développement."
+  },
+  {
+    "line": 12,
+    "source": "  - `C` programming language - leads to buffer overflows, arbitrary code execution, etc",
+    "translation": "  - Le langage de programmation `C` peut être associé à des vulnérabilités telles que les Buffer Overflows et l’exécution de code arbitraire."
+  },
+  {
+    "line": 13,
+    "source": "  - No default security practices applied - must be sistematically handled by the company",
+    "translation": "  - Le cours souligne la nécessité pour l’entreprise de gérer systématiquement les pratiques de sécurité."
+  },
+  {
+    "line": 14,
+    "source": "  - Patching by Microsoft is not immediate, or versions are out of support/patching",
+    "translation": "  - Les correctifs de Microsoft ne sont pas toujours immédiats et certaines versions ne bénéficient plus du support ni de mises à jour."
+  },
+  {
+    "line": 15,
+    "source": "- To name a few, Windows `XP`, `7`, `Server 2008` and Server 2012, are still used by many companies and are ***largerly vulnerable***, leaving the systems open to new attack vectors.",
+    "translation": "- Le cours cite Windows `XP`, `7`, `Server 2008` et Server 2012 comme exemples de systèmes anciens encore utilisés par certaines entreprises et ***particulièrement vulnérables*** à de nouveaux vecteurs d’attaque."
+  },
+  {
+    "line": 16,
+    "source": "  - Cross platform vulnerabilities, `e.g.` SQL injections, cross-site scripting (on IIS web servers)",
+    "translation": "  - Vulnérabilités multiplateformes : `e.g.` SQL Injection et Cross-Site Scripting sur les serveurs Web IIS."
+  },
+  {
+    "line": 17,
+    "source": "- Physical attacks, `e.g.` malicious USB drives, theft, etc",
+    "translation": "- Attaques physiques : `e.g.` clés USB malveillantes, vol, etc."
+  },
+  {
+    "line": 21,
+    "source": "|           Vulnerability           | Description                                                  |",
+    "translation": "| Vulnérabilité | Description |"
+  },
+  {
+    "line": 23,
+    "source": "|   **`Information Disclosure`**    | Allows an attacker to access confidential data               |",
+    "translation": "| **`Information Disclosure`** | Permet à un attaquant d’accéder à des données confidentielles. |"
+  },
+  {
+    "line": 24,
+    "source": "|      **`Buffer Overflows`**       | Programming error that allows an attacker to write data to a buffer and overrun the allocated buffer, therefore writing malicious data to allocated memory addresses |",
+    "translation": "| **`Buffer Overflows`** | Erreur de programmation provoquant une écriture au-delà des limites d’un tampon mémoire alloué, susceptible d’altérer la mémoire. |"
+  },
+  {
+    "line": 25,
+    "source": "| **`Remote Code Execution (RCE)`** | Allows an attacker to remotely execute code on the target    |",
+    "translation": "| **`Remote Code Execution (RCE)`** | Permet à un attaquant d’exécuter du code à distance sur la cible. |"
+  },
+  {
+    "line": 26,
+    "source": "|    **`Privilege Escalation`**     | Allows an attacker to elevate their privileges after initial compromise |",
+    "translation": "| **`Privilege Escalation`** | Permet à un attaquant d’élever ses privilèges après une compromission initiale. |"
+  },
+  {
+    "line": 27,
+    "source": "|   **`Denial of Service (DoS)`**   | Allows an attacker to flood a target consuming its resources (CPU, RAM, Network ...), interrupting the system's normal functioning, resulting in denial of service to other users |",
+    "translation": "| **`Denial of Service (DoS)`** | Consiste à saturer les ressources de la cible (CPU, RAM, réseau, etc.), perturbant le fonctionnement normal du système et sa disponibilité pour les autres utilisateurs. |"
+  },
+  {
+    "line": 31,
+    "source": "Windows has various standard native services and protocols configured or not on a host. When active, they provide an attacker with an **access vector**.",
+    "translation": "Windows dispose de différents services et protocoles natifs, activés ou non sur un hôte. Lorsqu’ils sont actifs, ils peuvent constituer un **vecteur d’accès** pour un attaquant."
+  },
+  {
+    "line": 33,
+    "source": "| Protocol/Service                                             | Ports                                   | Purpose                                                      |",
+    "translation": "| Protocole / Service | Ports | Fonction |"
+  }
+]

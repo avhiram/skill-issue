@@ -1,0 +1,57 @@
+[
+  {
+    "line": 5,
+    "source": "**[GNU/Linux](https://www.gnu.org/home.en.html)** is a free and open source operating system, combination of the Linux kernel and the GNU toolkit software collection, developed by Richard Stallman.",
+    "translation": "**[GNU/Linux](https://www.gnu.org/home.en.html)** est un système d’exploitation libre et open source, associant le noyau Linux à la collection de logiciels du projet GNU, lancé par Richard Stallman."
+  },
+  {
+    "line": 7,
+    "source": "- Linux kernel is the core of the O.S.",
+    "translation": "- Le noyau Linux constitue le cœur du système d’exploitation."
+  },
+  {
+    "line": 8,
+    "source": "- Linux distributions are variants of the same O.S.",
+    "translation": "- Les distributions Linux sont des variantes de ce système d’exploitation."
+  },
+  {
+    "line": 9,
+    "source": "- Typically deployed as a **server** O.S.",
+    "translation": "- Linux est généralement déployé comme système d’exploitation de **serveur**."
+  },
+  {
+    "line": 10,
+    "source": "  - Linux server services and protocols can provide with an access vector that an attacker can use",
+    "translation": "  - Les services et protocoles d’un serveur Linux peuvent constituer des vecteurs d’accès pour un attaquant."
+  },
+  {
+    "line": 12,
+    "source": "| Protocol/Service                                             | Ports          | Purpose                                                      |",
+    "translation": "| Protocole / Service | Ports | Fonction |"
+  },
+  {
+    "line": 14,
+    "source": "| [**Apache Web Server**](https://httpd.apache.org/)           | TCP `80`/`443` | Open source cross-platform web server                        |",
+    "translation": "| [**Apache Web Server**](https://httpd.apache.org/) | TCP `80`/`443` | Serveur Web open source multiplateforme |"
+  },
+  {
+    "line": 15,
+    "source": "| [**SSH**](https://en.wikipedia.org/wiki/Secure_Shell) (Secure Shell) | TCP `22`       | Cryptographic remote access protocol, used for operating network services securely over an unsecured network. Secure successor of `telnet` |",
+    "translation": "| [**SSH**](https://en.wikipedia.org/wiki/Secure_Shell) (Secure Shell) | TCP `22` | Protocole cryptographique d’accès distant permettant d’utiliser des services réseau de manière sécurisée sur un réseau non sécurisé. Successeur sécurisé de `telnet`. |"
+  },
+  {
+    "line": 16,
+    "source": "| [**FTP**](https://en.wikipedia.org/wiki/File_Transfer_Protocol) (File Transfer Protocol) | TCP `21`       | Communication protocol used for file sharing between a server and a client, over TCP |",
+    "translation": "| [**FTP**](https://en.wikipedia.org/wiki/File_Transfer_Protocol) (File Transfer Protocol) | TCP `21` | Protocole de communication permettant le partage de fichiers entre un serveur et un client via TCP. |"
+  },
+  {
+    "line": 17,
+    "source": "| [**SAMBA**](https://www.samba.org/samba/what_is_samba.html)  | TCP `445`      | Open source implementation of the `SMB` protocol. Enabled Unix machines to communicate with Windows machines in a network |",
+    "translation": "| [**SAMBA**](https://www.samba.org/samba/what_is_samba.html) | TCP `445` | Implémentation open source du protocole `SMB` permettant aux machines Unix de communiquer avec les machines Windows sur un réseau. |"
+  },
+  {
+    "line": 31,
+    "source": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) - **Nix* shell part of the GNU project and default shell for most Linux distros.",
+    "translation": "🗒️ [**Bash**](https://www.gnu.org/software/bash/) : shell des systèmes Unix et assimilés, faisant partie du projet GNU et utilisé par défaut dans la plupart des distributions Linux."
+  }
+]
