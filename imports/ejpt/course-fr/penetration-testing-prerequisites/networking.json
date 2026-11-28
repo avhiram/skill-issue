@@ -205,9 +205,39 @@
     "translation": "* Une **adresse IPv4** est une adresse de 32 bits composée de 4 octets séparés par un point (**.**)."
   },
   {
+    "line": 97,
+    "source": "$$",
+    "translation": ""
+  },
+  {
+    "line": 98,
+    "source": "1\\ Byte = 8\\ bits \\\\ 2^8=256\\ values\\ that\\ can\\ be\\ represented\\ from\\ 0\\ to\\ 255 \\\\ \\\\ IP\\ Example\\dashrightarrow\\ 216.58.208.142",
+    "translation": "**1 octet = 8 bits**  \n2⁸ = 256 valeurs possibles, de 0 à 255.\n\n**Exemple d’adresse IPv4 :** 216.58.208.142"
+  },
+  {
+    "line": 99,
+    "source": "$$",
+    "translation": ""
+  },
+  {
     "line": 101,
     "source": "* There are some IPv4 addresses with reserved intervals:",
     "translation": "* Certaines plages d’adresses IPv4 sont réservées :"
+  },
+  {
+    "line": 103,
+    "source": "$$",
+    "translation": ""
+  },
+  {
+    "line": 104,
+    "source": "10.0.0.0/8\\ (10.0.0.0\\to\\ 0.255.255.255)\\dashrightarrow\\ Private\\ networks\\ \\\\ \\\\ 127.0.0.0/8\\ (127.0.0.0\\to\\ 127.255.255.255)\\dashrightarrow\\ Internet\\ host\\ loopback\\ - Local\\ host \\\\ \\\\ 192.168.0.0/16\\ (192.168.0.0\\to\\ 192.168.255.255)\\dashrightarrow\\ Private\\ networks",
+    "translation": "| Plage CIDR | Utilisation |\n| --- | --- |\n| 10.0.0.0/8 | Réseau privé |\n| 172.16.0.0/12 | Réseau privé |\n| 192.168.0.0/16 | Réseau privé |\n| 127.0.0.0/8 | Loopback (hôte local) |\n\n**Plages complètes :**\n\n- 10.0.0.0 à 10.255.255.255\n- 172.16.0.0 à 172.31.255.255\n- 192.168.0.0 à 192.168.255.255\n- 127.0.0.0 à 127.255.255.255"
+  },
+  {
+    "line": 105,
+    "source": "$$",
+    "translation": ""
   },
   {
     "line": 107,
@@ -238,6 +268,21 @@
     "line": 116,
     "source": "* **`CIDR`** notation = **C**lassless **I**nter-**D**omain **R**outing notation",
     "translation": "* Notation **`CIDR`** = **C**lassless **I**nter-**D**omain **R**outing."
+  },
+  {
+    "line": 118,
+    "source": "$$",
+    "translation": ""
+  },
+  {
+    "line": 119,
+    "source": "Notation \\to 192.168.32.0/255.255.224.0 \\\\ CIDR\\ notation \\to 192.168.32.0/19 \\\\ \\\\ 192.168.32.0 \\to network\\ address \\\\ 192.168.63.255 \\to broadcast\\ address \\\\ \\\\ Total\\ number\\ of\\ hosts\\ contained\\ =\\ 2^{13}=8192\\ \\\\ Total\\ number\\ of\\ usable\\ hosts =8190",
+    "translation": "| Paramètre | Valeur |\n| --- | --- |\n| Réseau et masque | 192.168.32.0 / 255.255.224.0 |\n| Notation CIDR | 192.168.32.0/19 |\n| Adresse réseau | 192.168.32.0 |\n| Adresse broadcast | 192.168.63.255 |\n| Nombre total d’adresses | 2¹³ = 8 192 |\n| Adresses hôtes utilisables | 8 190 |"
+  },
+  {
+    "line": 120,
+    "source": "$$",
+    "translation": ""
   },
   {
     "line": 122,
@@ -275,9 +320,39 @@
     "translation": "  * Les 4 derniers groupes (64 bits) correspondent à l’identifiant de l’interface ou de l’équipement."
   },
   {
+    "line": 133,
+    "source": "$$",
+    "translation": ""
+  },
+  {
+    "line": 134,
+    "source": "IPv6\\ Example \\\\ \\\\ Regular form\\dashrightarrow\\ 2001:0db8:0000:0000:0000:ff00:0042:7879 \\\\Compressed form\\dashrightarrow\\ 2001:0db8::ff00:0042:7879",
+    "translation": "**Exemple IPv6 :**\n\n- Forme complète : 2001:0db8:0000:0000:0000:ff00:0042:7879\n- Forme compressée : 2001:0db8::ff00:0042:7879"
+  },
+  {
+    "line": 135,
+    "source": "$$",
+    "translation": ""
+  },
+  {
     "line": 137,
     "source": "* Reserved addresses:",
     "translation": "* Adresses réservées :"
+  },
+  {
+    "line": 139,
+    "source": "$$",
+    "translation": ""
+  },
+  {
+    "line": 140,
+    "source": "Loopback\\ address\\dashrightarrow\\ ::1/128 \\\\ IPv4\\ Mapped\\ addresses\\dashrightarrow\\ ::FFFF:0:0/96",
+    "translation": "- Adresse loopback : ::1/128\n- Adresses IPv4-mapped : ::FFFF:0:0/96"
+  },
+  {
+    "line": 141,
+    "source": "$$",
+    "translation": ""
   },
   {
     "line": 143,
@@ -303,6 +378,21 @@
     "line": 147,
     "source": "* The number of bits used for the prefix is the **`prefix length`**, like the IPv4 subnet mask.",
     "translation": "* Le nombre de bits utilisés pour le préfixe correspond à la **`prefix length`**, comparable au masque de sous-réseau IPv4."
+  },
+  {
+    "line": 149,
+    "source": "$$",
+    "translation": ""
+  },
+  {
+    "line": 150,
+    "source": "2001:1234:5678:1234:5678:ABCD:EF12:1234/64 \\\\ Prefix\\ is\\dashrightarrow\\ 2001:1234:5678:1234::/64 \\\\ Host\\dashrightarrow\\ 5678:ABCD:EF12:1234",
+    "translation": "**Exemple :** 2001:1234:5678:1234:5678:ABCD:EF12:1234/64\n\n- Préfixe réseau : 2001:1234:5678:1234::/64\n- Partie hôte : 5678:ABCD:EF12:1234"
+  },
+  {
+    "line": 151,
+    "source": "$$",
+    "translation": ""
   },
   {
     "line": 153,
