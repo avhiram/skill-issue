@@ -1,0 +1,62 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 [Passive Crawling with Burp Suite](https://attackdefense.com/challengedetails?cid=1891)",
+    "translation": "> 🔬 [Crawling passif avec Burp Suite](https://attackdefense.com/challengedetails?cid=1891)"
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `192.230.181.3`",
+    "translation": "> - IP cible du laboratoire : `192.230.181.3`"
+  },
+  {
+    "line": 17,
+    "source": "- Open the browser and navigate to",
+    "translation": "- Ouvrir le navigateur et accéder à l’adresse suivante :"
+  },
+  {
+    "line": 19,
+    "source": "  - Activate `FoxyProxy` Plugin",
+    "translation": "  - Activer l’extension `FoxyProxy`."
+  },
+  {
+    "line": 20,
+    "source": "- Start `BurpSuite` (set *User options/Display/Look* to *Darcula* and restart BurpSuite)",
+    "translation": "- Lancer `BurpSuite` (dans *User options/Display/Look*, sélectionner *Darcula*, puis redémarrer Burp Suite)."
+  },
+  {
+    "line": 21,
+    "source": "  - Intercept the home page request and **turn off the intercept**",
+    "translation": "  - Intercepter la requête de la page d’accueil, puis **désactiver l’interception**."
+  },
+  {
+    "line": 22,
+    "source": "- Check the **`HTTP history`** tab",
+    "translation": "- Consulter l’onglet **`HTTP history`**."
+  },
+  {
+    "line": 23,
+    "source": "- Browse the Multillidae web app and Burp will crawl the visited pages",
+    "translation": "- Parcourir l’application Web Multillidae. Burp effectuera le crawling des pages visitées."
+  },
+  {
+    "line": 29,
+    "source": "- Check the **`Target`** tab for a **Site map**",
+    "translation": "- Consulter la **Site Map** dans l’onglet **`Target`**."
+  },
+  {
+    "line": 30,
+    "source": "  - Add site to the **Scope**",
+    "translation": "  - Ajouter le site au **Scope**."
+  },
+  {
+    "line": 38,
+    "source": "> 🔬 [SQL Injection with SQLMap](https://attackdefense.com/challengedetails?cid=2129)",
+    "translation": "> 🔬 [Injection SQL avec SQLMap](https://attackdefense.com/challengedetails?cid=2129)"
+  },
+  {
+    "line": 40,
+    "source": "> - Target IP: `192.42.186.3`",
+    "translation": "> - IP cible du laboratoire : `192.42.186.3`"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "line": 3,
+    "source": "The Kali OS GUI instance is web hosted on the INE website, where:",
+    "translation": "L’interface graphique de Kali est hébergée sur le site INE :"
+  },
+  {
+    "line": 7,
+    "source": "* The API endpoint is accessible at `demo.ine.local` domain.",
+    "translation": "* Le point d’accès API est accessible via le domaine `demo.ine.local`."
+  },
+  {
+    "line": 11,
+    "source": "_**Tools**_ used:",
+    "translation": "_**Outils**_ utilisés :"
+  },
+  {
+    "line": 14,
+    "source": "* A web browser",
+    "translation": "* Un navigateur Web"
+  },
+  {
+    "line": 15,
+    "source": "* Python Scripting",
+    "translation": "* Scripts Python"
+  },
+  {
+    "line": 39,
+    "source": "* The web server IP is `192.70.33.3`",
+    "translation": "* L’adresse IP du serveur Web est `192.70.33.3`."
+  }
+]
