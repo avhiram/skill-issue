@@ -13,5 +13,15 @@
     "line": 8,
     "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
     "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  },
+  {
+    "line": 9,
+    "source": ">  - [Haraka < 2.8.9 - Remote Command Execution](https://www.exploit-db.com/exploits/41162)",
+    "translation": ">  - [Haraka < 2.8.9 : exécution de commandes à distance](https://www.exploit-db.com/exploits/41162)"
+  },
+  {
+    "line": 23,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
   }
 ]

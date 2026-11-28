@@ -13,5 +13,25 @@
     "line": 8,
     "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
     "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  },
+  {
+    "line": 10,
+    "source": ">  - [libssh Authentication Bypass Scanner](https://www.rapid7.com/db/modules/auxiliary/scanner/ssh/libssh_auth_bypass/)",
+    "translation": ">  - [Scanner de contournement de l’authentification libssh](https://www.rapid7.com/db/modules/auxiliary/scanner/ssh/libssh_auth_bypass/)"
+  },
+  {
+    "line": 24,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 54,
+    "source": "- Enumerate some information",
+    "translation": "- Énumérer quelques informations"
+  },
+  {
+    "line": 64,
+    "source": "- Shell to `Meterpreter` post exploitation",
+    "translation": "- Convertir le shell en session `Meterpreter` pour la post-exploitation"
   }
 ]

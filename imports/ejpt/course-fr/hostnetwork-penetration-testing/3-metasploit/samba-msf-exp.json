@@ -13,5 +13,20 @@
     "line": 8,
     "source": ">  - Exploit the target with the appropriate Metasploit Framework module",
     "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
+  },
+  {
+    "line": 9,
+    "source": ">  - [Samba 3.5.0 - Remote Code Execution](https://www.exploit-db.com/exploits/42060)",
+    "translation": ">  - [Samba 3.5.0 : exécution de code à distance](https://www.exploit-db.com/exploits/42060)"
+  },
+  {
+    "line": 23,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 54,
+    "source": "- Shell to `Meterpreter` post exploitation",
+    "translation": "- Convertir le shell en session `Meterpreter` pour la post-exploitation"
   }
 ]
