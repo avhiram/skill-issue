@@ -15,8 +15,63 @@
     "translation": ">  - Étudier l’exploitation de la cible avec le module approprié du Metasploit Framework."
   },
   {
+    "line": 9,
+    "source": ">  - [Apache Tomcat < 9.0.1 (Beta) / < 8.5.23 / < 8.0.47 / < 7.0.8 - JSP Upload Bypass / Remote Code Execution](https://www.exploit-db.com/exploits/42966)",
+    "translation": ">  - [Apache Tomcat < 9.0.1 (Beta) / < 8.5.23 / < 8.0.47 / < 7.0.8 : contournement du téléversement JSP / exécution de code à distance](https://www.exploit-db.com/exploits/42966)"
+  },
+  {
+    "line": 22,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
     "line": 30,
     "source": "- Try tomcat from a browser",
     "translation": "- Consulter Tomcat depuis un navigateur."
+  },
+  {
+    "line": 44,
+    "source": "- Or use a specific payload",
+    "translation": "- Ou utiliser un payload spécifique"
+  },
+  {
+    "line": 53,
+    "source": "- A CMD shell session is provided",
+    "translation": "- Une session shell CMD est obtenue"
+  },
+  {
+    "line": 61,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 72,
+    "source": "- Obtain a `Meterpreter` session",
+    "translation": "- Obtenir une session `Meterpreter`"
+  },
+  {
+    "line": 79,
+    "source": "- Generate a Windows `meterpreter` payload. Open a new terminal tab",
+    "translation": "- Générer un payload Windows `meterpreter`. Ouvrir un nouvel onglet du terminal"
+  },
+  {
+    "line": 91,
+    "source": "- In the first `msfconsole` tab",
+    "translation": "- Dans le premier onglet `msfconsole`"
+  },
+  {
+    "line": 100,
+    "source": "- Terminate the python web server and set up the handler in the second tab",
+    "translation": "- Arrêter le serveur Web Python et configurer le handler dans le second onglet"
+  },
+  {
+    "line": 119,
+    "source": "- Execute the `meterpreter.exe` on the target system",
+    "translation": "- Exécuter `meterpreter.exe` sur le système cible"
+  },
+  {
+    "line": 125,
+    "source": "- Reverse `Meterpreter` session will be opened.",
+    "translation": "- Une session inverse `Meterpreter` sera ouverte."
   }
 ]

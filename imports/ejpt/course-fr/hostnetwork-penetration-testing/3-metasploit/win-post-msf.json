@@ -8,5 +8,420 @@
     "line": 7,
     "source": "> - Target IP: `10.2.16.114`",
     "translation": "> - IP cible du laboratoire : `10.2.16.114`"
+  },
+  {
+    "line": 8,
+    "source": "> - Metasploit **`post/multi/manage/shell_to_meterpreter`** module",
+    "translation": "> - Module Metasploit **`post/multi/manage/shell_to_meterpreter`**"
+  },
+  {
+    "line": 21,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 47,
+    "source": "- In the new `Meterpreter` session, enumerate the Windows target",
+    "translation": "- Dans la nouvelle session `Meterpreter`, énumérer la cible Windows"
+  },
+  {
+    "line": 121,
+    "source": "- Architecture migrate",
+    "translation": "- Migration d’architecture"
+  },
+  {
+    "line": 137,
+    "source": "- Migration e.g. from x86 service",
+    "translation": "- Migration, par exemple depuis un service x86"
+  },
+  {
+    "line": 147,
+    "source": "- Enumerate current user privileges",
+    "translation": "- Énumérer les privilèges de l’utilisateur actuel"
+  },
+  {
+    "line": 158,
+    "source": "- Check current and recently logged on users",
+    "translation": "- Vérifier les utilisateurs actuellement ou récemment connectés"
+  },
+  {
+    "line": 169,
+    "source": "- Determine if the system is a VM",
+    "translation": "- Déterminer si le système est une VM"
+  },
+  {
+    "line": 180,
+    "source": "- Enumerate installed programs",
+    "translation": "- Énumérer les programmes installés"
+  },
+  {
+    "line": 189,
+    "source": "> 📌 *Applications version is a very useful information. It can lead to a privilege escalation vulnerability!*",
+    "translation": "> 📌 *La version des applications est une information très utile. Elle peut révéler une vulnérabilité de Privilege Escalation !*"
+  },
+  {
+    "line": 197,
+    "source": "- The `/root/.msf4/loot/` folder can be handy.",
+    "translation": "- Le répertoire `/root/.msf4/loot/` peut être utile."
+  },
+  {
+    "line": 201,
+    "source": "- Check Antivirus",
+    "translation": "- Vérifier l’antivirus"
+  },
+  {
+    "line": 217,
+    "source": "- Enumerate domain computers",
+    "translation": "- Énumérer les ordinateurs du domaine"
+  },
+  {
+    "line": 228,
+    "source": "- Enumerate installed patches",
+    "translation": "- Énumérer les correctifs installés"
+  },
+  {
+    "line": 248,
+    "source": "- Enumerate any shares",
+    "translation": "- Énumérer les partages"
+  },
+  {
+    "line": 259,
+    "source": "- Check if RDP is enabled",
+    "translation": "- Vérifier si RDP est activé"
+  },
+  {
+    "line": 274,
+    "source": "> 🔬 [UAC Bypass: Memory Injection (Metasploit)](https://attackdefense.com/challengedetailsnoauth?cid=2210)",
+    "translation": "> 🔬 [UAC Bypass : injection en mémoire (Metasploit)](https://attackdefense.com/challengedetailsnoauth?cid=2210)"
+  },
+  {
+    "line": 276,
+    "source": "> - Target IP: `10.2.18.116`",
+    "translation": "> - IP cible : `10.2.18.116`"
+  },
+  {
+    "line": 277,
+    "source": "> - Metasploit [**`Windows Escalate UAC Protection Bypass (In Memory Injection)`**](https://www.rapid7.com/db/modules/exploit/windows/local/bypassuac_injection/) module",
+    "translation": "> - Module Metasploit [**`Windows Escalate UAC Protection Bypass (In Memory Injection)`**](https://www.rapid7.com/db/modules/exploit/windows/local/bypassuac_injection/)"
+  },
+  {
+    "line": 278,
+    "source": ">   - *This module will bypass Windows UAC by utilizing the trusted publisher certificate through process injection. It will spawn a second shell that has the UAC flag turned off. This module uses the Reflective DLL Injection technique to drop only the DLL payload binary instead of three separate binaries in the standard technique. However, it requires the correct architecture to be selected, (use x64 for SYSWOW64 systems also). If specifying EXE::Custom your DLL should call ExitProcess() after starting your payload in a separate process.*",
+    "translation": ">   - *Ce module contourne l’UAC Windows en utilisant le certificat d’un éditeur approuvé via une injection de processus. Il ouvre un second shell dont le flag UAC est désactivé. Il utilise la technique Reflective DLL Injection pour déposer uniquement la DLL du payload plutôt que trois binaires distincts comme dans la technique standard. Il nécessite toutefois de sélectionner l’architecture correcte (utiliser x64 également pour les systèmes SYSWOW64). Si EXE::Custom est spécifié, la DLL doit appeler ExitProcess() après avoir démarré le payload dans un processus distinct.*"
+  },
+  {
+    "line": 291,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 358,
+    "source": "- On the Windows target `cmd`",
+    "translation": "- Dans le `cmd` de la cible Windows"
+  },
+  {
+    "line": 402,
+    "source": "- Select the correct target - `x64`",
+    "translation": "- Sélectionner la cible correcte : `x64`"
+  },
+  {
+    "line": 411,
+    "source": "- Now the **`getsystem`** command should work",
+    "translation": "- La commande **`getsystem`** devrait désormais fonctionner"
+  },
+  {
+    "line": 434,
+    "source": "<summary>Reveal Flag - Administrator NTLM Hash is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : hash NTLM d’Administrator : 🚩</summary>"
+  },
+  {
+    "line": 448,
+    "source": "> 🔬 [Privilege Escalation: Impersonate](https://attackdefense.com/challengedetails?cid=2353)",
+    "translation": "> 🔬 [Privilege Escalation : impersonation](https://attackdefense.com/challengedetails?cid=2353)"
+  },
+  {
+    "line": 450,
+    "source": "> - Target IP: `10.2.16.163`",
+    "translation": "> - IP cible : `10.2.16.163`"
+  },
+  {
+    "line": 451,
+    "source": "> - Check the [🔬Access Token lab here](../1-system-attack/windows-attacks/accesstoken.md) that already covered the Incognito tool",
+    "translation": "> - Consulter le [🔬laboratoire Access Token](../1-system-attack/windows-attacks/accesstoken.md) qui aborde déjà l’outil Incognito"
+  },
+  {
+    "line": 453,
+    "source": "> - Metasploit **Token Impersonation with Incognito** inbuilt Meterpreter module",
+    "translation": "> - Module Meterpreter intégré de Metasploit : **Token Impersonation avec Incognito**"
+  },
+  {
+    "line": 454,
+    "source": "> - [Access Token Impersonation - Description](../1-system-attack/windows-attacks.md#access-token-impersonation)",
+    "translation": "> - [Description de l’Access Token Impersonation](../1-system-attack/windows-attacks.md#access-token-impersonation)"
+  },
+  {
+    "line": 529,
+    "source": "- `ATTACKDEFENSE\\Administrator` account access token would provide elevated privileges",
+    "translation": "- L’Access Token du compte `ATTACKDEFENSE\\Administrator` fournirait des privilèges élevés"
+  },
+  {
+    "line": 563,
+    "source": "> 🔬 [Windows: Meterpreter: Kiwi Extension](https://attackdefense.com/challengedetails?cid=2340)",
+    "translation": "> 🔬 [Windows : Meterpreter et extension Kiwi](https://attackdefense.com/challengedetails?cid=2340)"
+  },
+  {
+    "line": 565,
+    "source": "> - Target IP: `10.2.17.39`",
+    "translation": "> - IP cible : `10.2.17.39`"
+  },
+  {
+    "line": 566,
+    "source": "> - Check the [🔬Lab 2 - Mimikatz lab here](../1-system-attack/windows-attacks/creds-dump.md#lab-2-mimikatz) with full description of the commands",
+    "translation": "> - Consulter le [🔬laboratoire 2 : Mimikatz](../1-system-attack/windows-attacks/creds-dump.md#lab-2-mimikatz) pour la description complète des commandes"
+  },
+  {
+    "line": 640,
+    "source": "- Run `mimikatz.exe`",
+    "translation": "- Exécuter `mimikatz.exe`"
+  },
+  {
+    "line": 649,
+    "source": "- Dump the cache of the `lsass` process",
+    "translation": "- Extraire le cache du processus `lsass`"
+  },
+  {
+    "line": 661,
+    "source": "> 🔬 [Windows: Meterpreter: Kiwi Extension](https://attackdefense.com/challengedetails?cid=2340) - same lab as Lab 4",
+    "translation": "> 🔬 [Windows : Meterpreter et extension Kiwi](https://attackdefense.com/challengedetails?cid=2340), même laboratoire que le Lab 4"
+  },
+  {
+    "line": 663,
+    "source": "> - Target IP: `10.2.28.123`",
+    "translation": "> - IP cible : `10.2.28.123`"
+  },
+  {
+    "line": 664,
+    "source": "> - Check the [🔬Lab 3 - Pass-the-hash lab here](../1-system-attack/windows-attacks/creds-dump.md#lab-3-pass-the-hash) for full description",
+    "translation": "> - Consulter le [🔬laboratoire 3 : Pass-the-hash](../1-system-attack/windows-attacks/creds-dump.md#lab-3-pass-the-hash) pour la description complète"
+  },
+  {
+    "line": 665,
+    "source": "> - Metasploit **PsExec** module",
+    "translation": "> - Module Metasploit **PsExec**"
+  },
+  {
+    "line": 732,
+    "source": "- **Use PSExec to login with `Administrator` user and its password hashes**",
+    "translation": "- **Utiliser PSExec pour se connecter avec l’utilisateur `Administrator` et ses hashes de mots de passe**"
+  },
+  {
+    "line": 763,
+    "source": "> 🔬 [Maintaining Access: Persistence Service](https://attackdefense.com/challengedetails?cid=2140)",
+    "translation": "> 🔬 [Maintien de l’accès : service de persistance](https://attackdefense.com/challengedetails?cid=2140)"
+  },
+  {
+    "line": 765,
+    "source": "> - Target IP: `10.2.20.185`",
+    "translation": "> - IP cible : `10.2.20.185`"
+  },
+  {
+    "line": 766,
+    "source": "> - Metasploit **persistence** modules",
+    "translation": "> - Modules Metasploit de **persistance**"
+  },
+  {
+    "line": 819,
+    "source": "❗ In order to set up persistence, administrative privileges are required.",
+    "translation": "❗ Des privilèges administratifs sont nécessaires pour mettre en place une persistance."
+  },
+  {
+    "line": 836,
+    "source": "- Successful maintained access. Once the persistent backdoor is installed, it's going to continue to run (across restarts) as a service and a multi handler listening to a connection will receive a connection from the service.",
+    "translation": "- L’accès est maintenu avec succès. Une fois la backdoor persistante installée, elle continue de fonctionner comme un service, même après redémarrage, et un multi handler en écoute reçoit une connexion de ce service."
+  },
+  {
+    "line": 849,
+    "source": "- Regain access to the system",
+    "translation": "- Récupérer l’accès au système"
+  },
+  {
+    "line": 865,
+    "source": "> 🔬 [Windows: Enabling Remote Desktop](https://attackdefense.com/challengedetails?cid=1958)",
+    "translation": "> 🔬 [Windows : activation du Bureau à distance](https://attackdefense.com/challengedetails?cid=1958)"
+  },
+  {
+    "line": 867,
+    "source": "> - Target IP: `10.2.21.205`",
+    "translation": "> - IP cible : `10.2.21.205`"
+  },
+  {
+    "line": 868,
+    "source": "> - Enable **RDP** on the target machine on port **`3389`**",
+    "translation": "> - Activer **RDP** sur la machine cible, sur le port **`3389`**"
+  },
+  {
+    "line": 942,
+    "source": "- To access RDP, login credentials are necessary",
+    "translation": "- Des identifiants de connexion sont nécessaires pour accéder à RDP"
+  },
+  {
+    "line": 952,
+    "source": "- Change the `Administrator` user's password (no recommended in a real-world system)",
+    "translation": "- Modifier le mot de passe de l’utilisateur `Administrator` (non recommandé sur un système réel)"
+  },
+  {
+    "line": 955,
+    "source": "> 📌 *During a standard Pentest, create another user account, add it to the Administrators group and utilize that one.*",
+    "translation": "> 📌 *Lors d’un pentest standard, créer un autre compte utilisateur, l’ajouter au groupe Administrateurs et utiliser ce compte.*"
+  },
+  {
+    "line": 962,
+    "source": "Legitimate credentials are now: `administrator`:`p4ssword_12344321`",
+    "translation": "Les identifiants valides sont désormais : `administrator`:`p4ssword_12344321`"
+  },
+  {
+    "line": 964,
+    "source": "- In a new Terminal TAB",
+    "translation": "- Dans un nouvel onglet du terminal"
+  },
+  {
+    "line": 975,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 989,
+    "source": "> 🔬 [Windows: File and Keylogging](https://attackdefense.com/challengedetails?cid=1955)",
+    "translation": "> 🔬 [Windows : fichiers et Keylogging](https://attackdefense.com/challengedetails?cid=1955)"
+  },
+  {
+    "line": 991,
+    "source": "> - Target IP: `10.2.24.165`",
+    "translation": "> - IP cible : `10.2.24.165`"
+  },
+  {
+    "line": 992,
+    "source": "> - Metasploit **keystroke sniffer**",
+    "translation": "> - **Capture des frappes clavier** avec Metasploit"
+  },
+  {
+    "line": 1035,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 1071,
+    "source": "- Open a `Notepad` session on the Target machine.",
+    "translation": "- Ouvrir une session `Notepad` sur la machine cible."
+  },
+  {
+    "line": 1072,
+    "source": "- On the Attacker machine, start the keystroke capture",
+    "translation": "- Sur la machine attaquante, démarrer la capture des frappes clavier"
+  },
+  {
+    "line": 1079,
+    "source": "- Input some text into the target machine",
+    "translation": "- Saisir du texte sur la machine cible"
+  },
+  {
+    "line": 1080,
+    "source": "- Back on the attacker machine, capture the entered data",
+    "translation": "- Revenir sur la machine attaquante et récupérer les données saisies"
+  },
+  {
+    "line": 1088,
+    "source": "- Stop the sniffer",
+    "translation": "- Arrêter le sniffer"
+  },
+  {
+    "line": 1098,
+    "source": "> 🔬 Same as Lab 8 - [Windows: File and Keylogging](https://attackdefense.com/challengedetails?cid=1955)",
+    "translation": "> 🔬 Même laboratoire que le Lab 8 : [Windows : fichiers et Keylogging](https://attackdefense.com/challengedetails?cid=1955)"
+  },
+  {
+    "line": 1100,
+    "source": "> - Target IP: `10.2.26.66`",
+    "translation": "> - IP cible : `10.2.26.66`"
+  },
+  {
+    "line": 1101,
+    "source": "> - Metasploit **clearev** `Meterpreter` option",
+    "translation": "> - Option Metasploit **clearev** de `Meterpreter`"
+  },
+  {
+    "line": 1138,
+    "source": "❗ *Elevated privileges are necessary to clean the Event logs.*",
+    "translation": "❗ *Des privilèges élevés sont nécessaires pour effacer les journaux d’événements.*"
+  },
+  {
+    "line": 1140,
+    "source": "- From the `Meterpreter` session clear the event log",
+    "translation": "- Depuis la session `Meterpreter`, effacer le journal d’événements"
+  },
+  {
+    "line": 1148,
+    "source": "> 📌 Exploit files or executables need to be cleaned too.",
+    "translation": "> 📌 Les fichiers d’exploitation ou exécutables doivent également être supprimés."
+  },
+  {
+    "line": 1156,
+    "source": "> - Target 1 IP: `10.2.30.252`",
+    "translation": "> - IP cible 1 : `10.2.30.252`"
+  },
+  {
+    "line": 1157,
+    "source": "> - Target 2 IP: `10.2.21.166`",
+    "translation": "> - IP cible 2 : `10.2.21.166`"
+  },
+  {
+    "line": 1158,
+    "source": "> - **Pivoting** technique with a *network route* to the internal network's subnet",
+    "translation": "> - Technique de **Pivoting** avec une *route réseau* vers le sous-réseau interne"
+  },
+  {
+    "line": 1234,
+    "source": "- Target2 is on the same Target1 subnet - **`\t10.2.16.0/20`** (look at the Interface 12)",
+    "translation": "- La cible 2 appartient au même sous-réseau que la cible 1 : **`\t10.2.16.0/20`** (voir l’interface 12)"
+  },
+  {
+    "line": 1235,
+    "source": "  - ` 10.2.16.0/20` = from `10.2.16.1` to ` 10.2.31.254`",
+    "translation": "  - ` 10.2.16.0/20` = de `10.2.16.1` à ` 10.2.31.254`"
+  },
+  {
+    "line": 1240,
+    "source": "- From the attacker's machine, a route through \"target1 `10.2.30.0/20` machine\" is needed, to run MSF modules against target2 machine",
+    "translation": "- Depuis la machine attaquante, une route passant par la machine « cible 1 `10.2.30.0/20` » est nécessaire pour exécuter des modules MSF contre la cible 2"
+  },
+  {
+    "line": 1248,
+    "source": "- Now, subnet `10.2.30.0/20` can be accessed with `MSFconsole`",
+    "translation": "- Le sous-réseau `10.2.30.0/20` est désormais accessible avec `MSFconsole`"
+  },
+  {
+    "line": 1255,
+    "source": "- Scan for open ports on the target2 system - `10.2.21.166`",
+    "translation": "- Scanner les ports ouverts sur le système cible 2 : `10.2.21.166`"
+  },
+  {
+    "line": 1267,
+    "source": "- 📌 The route is only applicable to `MSFconsole`, not outside of it",
+    "translation": "- 📌 La route est utilisable uniquement dans `MSFconsole`, et non en dehors"
+  },
+  {
+    "line": 1271,
+    "source": "- To perform an `nmap` scan on target2, a port forwarding need to be set up.",
+    "translation": "- Pour effectuer un scan `nmap` sur la cible 2, il faut configurer un Port Forwarding."
+  },
+  {
+    "line": 1272,
+    "source": "  - **`e.g.`** forward the remote port `80` to an attacker machine local port, which will allow to perform a service version enumeration of the target2 service",
+    "translation": "  - **`e.g.`** rediriger le port distant `80` vers un port local de la machine attaquante, afin d’énumérer la version du service de la cible 2"
+  },
+  {
+    "line": 1335,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

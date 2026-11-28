@@ -13,5 +13,285 @@
     "line": 8,
     "source": "> - Metasploit **`post/linux/gather/`** modules",
     "translation": "> - Modules Metasploit **`post/linux/gather/`**."
+  },
+  {
+    "line": 26,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 56,
+    "source": "- Upgrade the `shell cmd/unix` sessions to a `Meterpreter` session",
+    "translation": "- Convertir les sessions `shell cmd/unix` en session `Meterpreter`"
+  },
+  {
+    "line": 63,
+    "source": "- Some local enumeration",
+    "translation": "- Effectuer une énumération locale"
+  },
+  {
+    "line": 126,
+    "source": "- Enumerate apps and services **configuration files**",
+    "translation": "- Énumérer les **fichiers de configuration** des applications et services"
+  },
+  {
+    "line": 158,
+    "source": "- Enumerate system **environment variables**",
+    "translation": "- Énumérer les **variables d’environnement** du système"
+  },
+  {
+    "line": 173,
+    "source": "- Enumerate **network information**",
+    "translation": "- Énumérer les **informations réseau**"
+  },
+  {
+    "line": 199,
+    "source": "- Check for **protection/security systems**",
+    "translation": "- Vérifier les **systèmes de protection et de sécurité**"
+  },
+  {
+    "line": 224,
+    "source": "- Enumerate the **system**",
+    "translation": "- Énumérer le **système**"
+  },
+  {
+    "line": 247,
+    "source": "- Check if the target is a VM or a **container**",
+    "translation": "- Vérifier si la cible est une VM ou un **conteneur**"
+  },
+  {
+    "line": 263,
+    "source": "> 📌 *A Docker container can be exploited to break out of it and  gain access to the host system.*",
+    "translation": "> 📌 *Un conteneur Docker peut être exploité pour en sortir et accéder au système hôte.*"
+  },
+  {
+    "line": 265,
+    "source": "- Enumerate **VM**",
+    "translation": "- Énumérer les **VM**"
+  },
+  {
+    "line": 277,
+    "source": "- Enumerate **users history**",
+    "translation": "- Énumérer l’**historique des utilisateurs**"
+  },
+  {
+    "line": 314,
+    "source": "> 🔬 [Privilege Escalation - Rootkit Scanner](https://attackdefense.com/challengedetails?cid=1396)",
+    "translation": "> 🔬 [Privilege Escalation : scanner de rootkits](https://attackdefense.com/challengedetails?cid=1396)"
+  },
+  {
+    "line": 316,
+    "source": "> - Target IP: `192.15.244.3`",
+    "translation": "> - IP cible : `192.15.244.3`"
+  },
+  {
+    "line": 317,
+    "source": "> - Exploit a vulnerable **Rootkit Scanner** and escalate privileges to root user",
+    "translation": "> - Exploiter un **scanner de rootkits** vulnérable et obtenir les privilèges root"
+  },
+  {
+    "line": 318,
+    "source": "> - [Chkrootkit 0.49 - Local Privilege Escalation](https://www.exploit-db.com/exploits/33899)",
+    "translation": "> - [Chkrootkit 0.49 : Privilege Escalation locale](https://www.exploit-db.com/exploits/33899)"
+  },
+  {
+    "line": 319,
+    "source": "> - SSH Credentials: `jackie`:`password`",
+    "translation": "> - Identifiants SSH : `jackie`:`password`"
+  },
+  {
+    "line": 334,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 401,
+    "source": "- Investigate the `/bin/check-down` binary",
+    "translation": "- Examiner le binaire `/bin/check-down`"
+  },
+  {
+    "line": 416,
+    "source": "> 📌 The `/usr/local/bin/chkrootkit/chkrootkit` binary is executed every 60 seconds.",
+    "translation": "> 📌 Le binaire `/usr/local/bin/chkrootkit/chkrootkit` est exécuté toutes les 60 secondes."
+  },
+  {
+    "line": 418,
+    "source": "> - [**`chkrootkit`**](https://www.chkrootkit.org/) - locally checks for signs of a rootkit",
+    "translation": "> - [**`chkrootkit`**](https://www.chkrootkit.org/) : recherche localement des signes de rootkit"
+  },
+  {
+    "line": 420,
+    "source": "> Chkrootkit < 0.50 is vulnerable to [local privilege escalation vulnerability](https://www.exploit-db.com/exploits/33899)",
+    "translation": "> Chkrootkit < 0.50 présente une [vulnérabilité de Privilege Escalation locale](https://www.exploit-db.com/exploits/33899)"
+  },
+  {
+    "line": 422,
+    "source": "- Check `chkrootkit` version",
+    "translation": "- Vérifier la version de `chkrootkit`"
+  },
+  {
+    "line": 429,
+    "source": "- Background both the shell and the meterpreter session with `CTRL+Z`",
+    "translation": "- Placer le shell et la session Meterpreter en arrière-plan avec `CTRL+Z`"
+  },
+  {
+    "line": 433,
+    "source": "- The technique will depend on the version of the target Linux Kernel and the distribution version.",
+    "translation": "- La technique dépend de la version du noyau Linux cible et de la distribution."
+  },
+  {
+    "line": 434,
+    "source": "  - It is necessary to manually enumerate a privesc vulnerable program, `Chkrootkit v.0.49` in this case ",
+    "translation": "  - Il faut identifier manuellement un programme vulnérable à une Privilege Escalation, ici `Chkrootkit v.0.49`"
+  },
+  {
+    "line": 463,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 479,
+    "source": "> 🔬 [Post Exploitation Lab II](https://www.attackdefense.com/challengedetails?cid=195)",
+    "translation": "> 🔬 [Laboratoire de post-exploitation II](https://www.attackdefense.com/challengedetails?cid=195)"
+  },
+  {
+    "line": 481,
+    "source": "> - Target IP: `192.252.196.3`",
+    "translation": "> - IP cible : `192.252.196.3`"
+  },
+  {
+    "line": 482,
+    "source": "> - Metasploit **`post/linux/gather/`** credentials dumping modules",
+    "translation": "> - Modules Metasploit **`post/linux/gather/`** d’extraction d’identifiants"
+  },
+  {
+    "line": 521,
+    "source": "- Upgrade the `shell cmd/unix` sessions to a `Meterpreter` session",
+    "translation": "- Convertir les sessions `shell cmd/unix` en session `Meterpreter`"
+  },
+  {
+    "line": 532,
+    "source": "- Linux user account hashes can be dumped using the privileged `root` user.",
+    "translation": "- Les hashes des comptes Linux peuvent être extraits avec l’utilisateur privilégié `root`."
+  },
+  {
+    "line": 533,
+    "source": "- Terminate the shell session and background the meterpreter session.",
+    "translation": "- Terminer le shell et placer la session Meterpreter en arrière-plan."
+  },
+  {
+    "line": 537,
+    "source": "> 📌 Linux password hashes are stored in the **`/etc/shadow`** file, accessible **only by a user with root privileges**.",
+    "translation": "> 📌 Les hashes des mots de passe Linux sont stockés dans le fichier **`/etc/shadow`**, accessible **uniquement à un utilisateur disposant des privilèges root**."
+  },
+  {
+    "line": 539,
+    "source": "> - In newer Linux, the hashed passwords are stored in the `/etc/shadow` file. In turn, the hashed password field in the `/etc/passwd` file is filled with the `x` character. `/etc/passwd` is readable by all the users.",
+    "translation": "> - Sur les versions récentes de Linux, les hashes des mots de passe sont stockés dans `/etc/shadow`. Le champ correspondant dans `/etc/passwd` contient le caractère `x`. Le fichier `/etc/passwd` est lisible par tous les utilisateurs."
+  },
+  {
+    "line": 540,
+    "source": "> - Linux users' passphrases are hashed using the [crypt](https://manpages.debian.org/unstable/libcrypt-dev/crypt.5.en.html) function. The hashed passphrase follows a specific format: **`$id$salt$hashedpassword`**",
+    "translation": "> - Les mots de passe des utilisateurs Linux sont hashés à l’aide de la fonction [crypt](https://manpages.debian.org/unstable/libcrypt-dev/crypt.5.en.html). Le hash suit un format spécifique : **`$id$salt$hashedpassword`**"
+  },
+  {
+    "line": 541,
+    "source": "> - [Methods Used by Linux for Hashing Passwords](https://www.baeldung.com/linux/hashing-methods-password)",
+    "translation": "> - [Méthodes de hashage des mots de passe sous Linux](https://www.baeldung.com/linux/hashing-methods-password)"
+  },
+  {
+    "line": 543,
+    "source": "- `post/linux/gather/hashdump` module need to be run manually to dump the user account hashes and unshadow them",
+    "translation": "- Le module `post/linux/gather/hashdump` doit être exécuté manuellement pour extraire les hashes des comptes utilisateurs et les préparer au format unshadow"
+  },
+  {
+    "line": 544,
+    "source": "  - A hash can be cracked (with `John the Ripper`) or stored for later use",
+    "translation": "  - Un hash peut être cassé (avec `John the Ripper`) ou conservé pour une utilisation ultérieure"
+  },
+  {
+    "line": 563,
+    "source": "- Enumerate **ssh** directories",
+    "translation": "- Énumérer les répertoires **SSH**"
+  },
+  {
+    "line": 582,
+    "source": "- Enumerate users' **.ecrypts directories**",
+    "translation": "- Énumérer les **répertoires .ecrypts** des utilisateurs"
+  },
+  {
+    "line": 600,
+    "source": "- Enumerate **WiFi credentials**",
+    "translation": "- Énumérer les **identifiants WiFi**"
+  },
+  {
+    "line": 617,
+    "source": "- Check for **PPTP VPN chap-secrets credentials**",
+    "translation": "- Rechercher les **identifiants chap-secrets VPN PPTP**"
+  },
+  {
+    "line": 632,
+    "source": "- Perform **SSH Persistence**",
+    "translation": "- Mettre en place une **persistance SSH**"
+  },
+  {
+    "line": 651,
+    "source": "> 🔬 Same as [Privilege Escalation - Rootkit Scanner](https://attackdefense.com/challengedetails?cid=1396)",
+    "translation": "> 🔬 Même laboratoire que [Privilege Escalation : scanner de rootkits](https://attackdefense.com/challengedetails?cid=1396)"
+  },
+  {
+    "line": 653,
+    "source": "> - Target IP: `192.101.97.3`",
+    "translation": "> - IP cible : `192.101.97.3`"
+  },
+  {
+    "line": 654,
+    "source": "> - Metasploit **`post/linux/gather/`** credentials dumping modules",
+    "translation": "> - Modules Metasploit **`post/linux/gather/`** d’extraction d’identifiants"
+  },
+  {
+    "line": 686,
+    "source": "- Upgrade the `shell cmd/unix` sessions to a `Meterpreter` session",
+    "translation": "- Convertir les sessions `shell cmd/unix` en session `Meterpreter`"
+  },
+  {
+    "line": 705,
+    "source": "- Upgrade the privileged session 3 to a `Meterpreter` session",
+    "translation": "- Convertir la session privilégiée 3 en session `Meterpreter`"
+  },
+  {
+    "line": 712,
+    "source": "- `SESSION 4` is a Meterpreter privileged session",
+    "translation": "- `SESSION 4` est une session Meterpreter privilégiée"
+  },
+  {
+    "line": 718,
+    "source": "- Create a backdoor user with administrative privileges that can be used to access the target system via SSH",
+    "translation": "- Créer un compte backdoor avec des privilèges administratifs permettant d’accéder au système cible via SSH"
+  },
+  {
+    "line": 736,
+    "source": "❗ Changing user's password is a strong indicator of compromise, it should not be done.",
+    "translation": "❗ Modifier le mot de passe d’un utilisateur constitue un indicateur fort de compromission et doit être évité."
+  },
+  {
+    "line": 738,
+    "source": "- Perform **SSH Persistence** with a Metasploit persistence modules",
+    "translation": "- Mettre en place une **persistance SSH** avec les modules de persistance Metasploit"
+  },
+  {
+    "line": 759,
+    "source": "- Access the private key and copy the content of the `id_rsa` file and save it as a new file. Assign the appropriate permissions to the file",
+    "translation": "- Accéder à la clé privée, copier le contenu du fichier `id_rsa` et l’enregistrer dans un nouveau fichier. Attribuer les permissions appropriées au fichier"
+  },
+  {
+    "line": 766,
+    "source": "- Exit the `msfconsole` with command **`exit -y`**. All the sessions will be closed.",
+    "translation": "- Quitter `msfconsole` avec la commande **`exit -y`**. Toutes les sessions seront fermées."
+  },
+  {
+    "line": 808,
+    "source": "- Authenticate to the target with the private key",
+    "translation": "- S’authentifier auprès de la cible avec la clé privée"
   }
 ]

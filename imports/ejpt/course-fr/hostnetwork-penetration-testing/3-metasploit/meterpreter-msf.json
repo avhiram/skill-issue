@@ -13,5 +13,80 @@
     "line": 8,
     "source": ">  - Usage of the **Meterpreter** payload",
     "translation": ">  - Utilisation du payload **Meterpreter**."
+  },
+  {
+    "line": 23,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 54,
+    "source": "- In the **`Meterpreter`** session",
+    "translation": "- Dans la session **`Meterpreter`**"
+  },
+  {
+    "line": 180,
+    "source": "- Unprivileged session with the `www-data` user",
+    "translation": "- Session non privilégiée avec l’utilisateur `www-data`"
+  },
+  {
+    "line": 192,
+    "source": "- Keyboard shortcut: `CTRL+Z`",
+    "translation": "- Raccourci clavier : `CTRL+Z`"
+  },
+  {
+    "line": 350,
+    "source": "- Open a native Linux `bash` sessions by running after the `shell` command",
+    "translation": "- Ouvrir une session Linux `bash` native après avoir exécuté la commande `shell`"
+  },
+  {
+    "line": 360,
+    "source": "- Terminate the `shell` session with **`CTRL+C`** or with `exit` command",
+    "translation": "- Terminer la session `shell` avec **`CTRL+C`** ou la commande `exit`"
+  },
+  {
+    "line": 389,
+    "source": "- It could not work due to lack of sufficient privileges/permissions",
+    "translation": "- L’opération peut échouer faute de privilèges ou de permissions suffisants"
+  },
+  {
+    "line": 401,
+    "source": "- Works on Windows O.S.",
+    "translation": "- Fonctionne sous Windows"
+  },
+  {
+    "line": 420,
+    "source": "> 🔬 Same [Samba SMB Exploitation lab](samba-msf-exp.md)",
+    "translation": "> 🔬 Même [laboratoire d’exploitation SMB Samba](samba-msf-exp.md)"
+  },
+  {
+    "line": 422,
+    "source": "> - Target IP: `192.129.219.3`",
+    "translation": "> - IP cible : `192.129.219.3`"
+  },
+  {
+    "line": 423,
+    "source": "> - Metasploit **`post/multi/manage/shell_to_meterpreter`** module",
+    "translation": "> - Module Metasploit **`post/multi/manage/shell_to_meterpreter`**"
+  },
+  {
+    "line": 438,
+    "source": "- Perform an `nmap` scan directly into MSF",
+    "translation": "- Effectuer un scan `nmap` directement dans MSF"
+  },
+  {
+    "line": 462,
+    "source": "- This Linux command shell is not as advanced as `Meterpreter`.",
+    "translation": "- Ce command shell Linux n’est pas aussi avancé que `Meterpreter`."
+  },
+  {
+    "line": 464,
+    "source": "- Upgrade the command shell to a `Meterpreter` session on the target system",
+    "translation": "- Convertir le command shell en session `Meterpreter` sur le système cible"
+  },
+  {
+    "line": 484,
+    "source": "- Use the sessions **`-u`** option to upgrade the shell to a `Meterpreter` session",
+    "translation": "- Utiliser l’option **`-u`** de sessions pour convertir le shell en session `Meterpreter`"
   }
 ]
