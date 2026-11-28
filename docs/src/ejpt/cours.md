@@ -1,5 +1,5 @@
 ---
-title: Junior Pentester : formation complète
+title: "Junior Pentester : formation complète"
 aside: false
 prev: false
 next: false
