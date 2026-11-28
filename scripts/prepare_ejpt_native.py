@@ -1886,6 +1886,50 @@ def translate_ejpt_cheatsheet(article):
     return result
 
 
+def simplify_generated_descriptions(article):
+    """Hide repetitive editorial text, never original notes, commands or headings."""
+    before = [c.get_text() for c in article.select("pre code")]
+    images = [i.get("src") for i in article.find_all("img")]
+    links = [a.get("href") for a in article.find_all("a", href=True)]
+    seen = set()
+    section = ""
+    hidden = 0
+    boilerplate = {
+        "Notes complémentaires issues de la seconde fiche, regroupées avec les références originales.",
+        "Notes de découverte issues du complément de révision.",
+        "Exemple original du cours. À replacer dans le contexte du laboratoire autorisé.",
+        "Extrait original de cette sous-partie, conservé dans son ordre initial.",
+    }
+    # Keep generated metadata for the existing structural audit. Hide only
+    # generated descriptions, and keep the first useful occurrence per chapter.
+    for node in article.find_all(["h2", "h3", "p"]):
+        if node.name == "h2":
+            section = node.get("id") or node.get_text(" ", strip=True)
+            continue
+        if node.name != "p" or node.find(["a", "img", "code", "kbd"]):
+            continue
+        classes = set(node.get("class", []))
+        if not (node.get("data-ejpt-note-description") == "true" or
+                classes.intersection({"ejpt-action-description", "ejpt-section-description"})):
+            continue
+        value = " ".join(node.get_text(" ", strip=True).split())
+        key = (section, value)
+        if value in boilerplate or key in seen:
+            node["hidden"] = ""
+            node["style"] = (node.get("style", "").rstrip(";") + ";display:none!important").lstrip(";")
+            node["data-ejpt-repetitive-description"] = "true"
+            hidden += 1
+        else:
+            seen.add(key)
+    assert before == [c.get_text() for c in article.select("pre code")]
+    assert images == [i.get("src") for i in article.find_all("img")]
+    assert links == [a.get("href") for a in article.find_all("a", href=True)]
+    assert not any(" ".join(p.get_text(" ", strip=True).split()) in boilerplate
+                   for p in article.select("p.ejpt-action-description:not([hidden]), p.ejpt-section-description:not([hidden])"))
+    print("eJPT editorial cleanup:", hidden, "repetitive generated descriptions hidden; original content intact")
+    return {"hidden_descriptions": hidden, "commands_preserved": True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -1920,6 +1964,7 @@ for page in report["pages"]:
         report["cheatsheet_long_block_review"]=refine_long_blocks(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_translation"]=translate_ejpt_cheatsheet(article)
+        report["cheatsheet_editorial_cleanup"]=simplify_generated_descriptions(article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
