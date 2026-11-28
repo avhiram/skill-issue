@@ -1,0 +1,572 @@
+[
+  {
+    "line": 5,
+    "source": "> * Basic familiarity with Linux",
+    "translation": "> * Connaissances de base de Linux"
+  },
+  {
+    "line": 6,
+    "source": "> * Basic familiarity with web technologies",
+    "translation": "> * Connaissances de base des technologies Web"
+  },
+  {
+    "line": 10,
+    "source": "> * Differences between **active** and **passive** information gathering",
+    "translation": "> * Comprendre les différences entre la collecte d’informations **active** et **passive**"
+  },
+  {
+    "line": 11,
+    "source": "> * Perform passive and active information gathering with various tools and resources",
+    "translation": "> * Réaliser une collecte passive et active à l’aide de différents outils et ressources"
+  },
+  {
+    "line": 13,
+    "source": "🗒️ **Information gathering** (_**Reconnaissance**_) is the initial stage of any penetration test and one of the most important phase.",
+    "translation": "🗒️ L’**Information Gathering** (_**Reconnaissance**_) constitue la première étape de tout pentest et l’une de ses phases les plus importantes."
+  },
+  {
+    "line": 15,
+    "source": "* It involves finding out as much information as possible about a targeted individual, website, company or system.",
+    "translation": "* Elle consiste à recueillir autant d’informations que possible sur une personne, un site Web, une entreprise ou un système ciblé."
+  },
+  {
+    "line": 16,
+    "source": "* The more information a pentester has on a **target**, the more successful and easier the latter stages of a pentest will be. It depends on the **scope** of the penetration test too.",
+    "translation": "* Plus le pentester dispose d’informations sur une **cible**, plus les étapes suivantes du pentest seront faciles à mener et susceptibles de réussir. Cela dépend aussi du **périmètre** du test."
+  },
+  {
+    "line": 17,
+    "source": "* `E.g.1` - Pentest on a Website: web technology, vulnerabilities, IP address of the hosting server.",
+    "translation": "* `E.g.1` : pentest d’un site Web : technologies utilisées, vulnérabilités, adresse IP du serveur d’hébergement."
+  },
+  {
+    "line": 18,
+    "source": "* `E.g.2` - Pentest on a public facing assets and some internal systems, there can be more attack vectors:",
+    "translation": "* `E.g.2` : pentest d’actifs exposés publiquement et de systèmes internes. Plusieurs vecteurs d’attaque peuvent exister :"
+  },
+  {
+    "line": 19,
+    "source": "  * gain access to the internal network through the public facing web server (one **access vector**)",
+    "translation": "  * Accéder au réseau interne par l’intermédiaire du serveur Web exposé publiquement (un **vecteur d’accès**)."
+  },
+  {
+    "line": 20,
+    "source": "  * during the info-gathering phase, learn more about the company employees (names, email addresses, credentials), getting this important information (useful for exploitation or initial access) by using phishing attacks, malicious attachments via email (another **access vector**)",
+    "translation": "  * Lors de la collecte, recueillir davantage d’informations sur les employés de l’entreprise (noms, adresses e-mail, identifiants). Le cours cite le phishing et les pièces jointes malveillantes comme autres **vecteurs d’accès** possibles dans le cadre d’une mission autorisée."
+  },
+  {
+    "line": 24,
+    "source": "🗒️ [**Passive information gathering**](1-info-gathering.md#passive-information-gathering) involves _obtaining as much data as possible without actively interacting with the target_.",
+    "translation": "🗒️ La [**collecte passive d’informations**](1-info-gathering.md#passive-information-gathering) consiste à _obtenir autant de données que possible sans interagir activement avec la cible_."
+  },
+  {
+    "line": 26,
+    "source": "* The pentester uses what's available on the Internet.",
+    "translation": "* Le pentester utilise les informations disponibles sur Internet."
+  },
+  {
+    "line": 27,
+    "source": "* `E.g.` - Website: utilizing publicly accessible information and resources of that particular website, through the browser, public IP address of the webserver hosting that website, etc.",
+    "translation": "* `E.g.` : pour un site Web, exploiter les informations et ressources publiquement accessibles depuis le navigateur, ainsi que l’adresse IP publique du serveur d’hébergement."
+  },
+  {
+    "line": 31,
+    "source": "* IP addresses, DNS, domain names and domain ownership",
+    "translation": "* Adresses IP, DNS, noms de domaine et propriétaires des domaines"
+  },
+  {
+    "line": 32,
+    "source": "* Email addresses, social media profiles",
+    "translation": "* Adresses e-mail, profils sur les réseaux sociaux"
+  },
+  {
+    "line": 33,
+    "source": "* Web technologies, subdomains",
+    "translation": "* Technologies Web, sous-domaines"
+  },
+  {
+    "line": 37,
+    "source": "🗒️ [**Active information gathering**](1-info-gathering.md#active-information-gathering) involves _obtaining as much information as possible by actively engaging with the target_.",
+    "translation": "🗒️ La [**collecte active d’informations**](1-info-gathering.md#active-information-gathering) consiste à _obtenir autant d’informations que possible en interagissant activement avec la cible_."
+  },
+  {
+    "line": 39,
+    "source": "> ❗***An authorization is required to conduct active information gathering.***",
+    "translation": "> ❗***Une autorisation est nécessaire pour réaliser une collecte active d’informations.***"
+  },
+  {
+    "line": 41,
+    "source": "* The target will be aware of the attacker's engagement.",
+    "translation": "* La cible peut détecter les interactions de l’attaquant."
+  },
+  {
+    "line": 42,
+    "source": "* `E.g.` - Website: perform a port scan of the webserver IP address (found with passive info gathering) using **`nmap`** tool to identify the open ports and running services. Identify exploitable vulnerabilities on those services and consequently access the web server.",
+    "translation": "* `E.g.` : pour un site Web, réaliser un scan de ports de l’adresse IP du serveur Web (identifiée lors de la collecte passive) à l’aide de **`nmap`**, afin d’identifier les ports ouverts et les services actifs. Identifier les vulnérabilités exploitables de ces services, puis évaluer la possibilité d’accéder au serveur Web dans le périmètre autorisé."
+  },
+  {
+    "line": 46,
+    "source": "* Open ports, internal network/organization infrastructure",
+    "translation": "* Ports ouverts, infrastructure réseau interne de l’organisation"
+  },
+  {
+    "line": 47,
+    "source": "* Enumeration target info",
+    "translation": "* Informations issues de l’énumération de la cible"
+  },
+  {
+    "line": 51,
+    "source": "> 📌 From the [The Pentester's Code of Conduct - by Sherri Davidoff](https://www.lmgsecurity.com/the-pentesters-code-of-conduct-rules-that-keep-everyone-safe/)",
+    "translation": "> 📌 Extrait de [The Pentester's Code of Conduct, par Sherri Davidoff](https://www.lmgsecurity.com/the-pentesters-code-of-conduct-rules-that-keep-everyone-safe/)"
+  },
+  {
+    "line": 53,
+    "source": "> * **Know your scope.**",
+    "translation": "> * **Connaître son périmètre.**"
+  },
+  {
+    "line": 54,
+    "source": "> * **Do not exceed your scope.**",
+    "translation": "> * **Ne pas dépasser son périmètre.**"
+  },
+  {
+    "line": 55,
+    "source": "> * **Take responsibility.**",
+    "translation": "> * **Assumer ses responsabilités.**"
+  },
+  {
+    "line": 56,
+    "source": "> * **Only hack when under signed contract.**",
+    "translation": "> * **N’intervenir que dans le cadre d’un contrat signé.**"
+  },
+  {
+    "line": 57,
+    "source": "> * **Verify your targets** well in advance of the start of an engagement, and have the list in writing.",
+    "translation": "> * **Vérifier ses cibles** bien avant le début de la mission et disposer d’une liste écrite."
+  },
+  {
+    "line": 58,
+    "source": "> * **Do a thorough and complete job.**",
+    "translation": "> * **Réaliser un travail rigoureux et complet.**"
+  },
+  {
+    "line": 59,
+    "source": "> * **Take careful notes.**",
+    "translation": "> * **Prendre des notes précises.**"
+  },
+  {
+    "line": 60,
+    "source": "> * **Upload your evidence to a central repository as** soon as you can.",
+    "translation": "> * **Déposer les preuves dans un espace centralisé** dès que possible."
+  },
+  {
+    "line": 61,
+    "source": "> * **Know your client.**",
+    "translation": "> * **Connaître son client.**"
+  },
+  {
+    "line": 62,
+    "source": "> * **Communicate** with your teammates, your client, and your project managers.",
+    "translation": "> * **Communiquer** avec ses coéquipiers, son client et ses responsables de projet."
+  },
+  {
+    "line": 63,
+    "source": "> * **Know your limitations and do not exceed them.**",
+    "translation": "> * **Connaître ses limites et ne pas les dépasser.**"
+  },
+  {
+    "line": 64,
+    "source": "> * **Treat all others with respect.**",
+    "translation": "> * **Traiter chacun avec respect.**"
+  },
+  {
+    "line": 65,
+    "source": "> * **Own your mistakes.**",
+    "translation": "> * **Assumer ses erreurs.**"
+  },
+  {
+    "line": 66,
+    "source": "> * **Include your best suggestions for a solution when reporting a problem.**",
+    "translation": "> * **Proposer les meilleures solutions possibles lors du signalement d’un problème.**"
+  },
+  {
+    "line": 67,
+    "source": "> * **Google first, then ask questions.**",
+    "translation": "> * **Effectuer d’abord une recherche, puis poser des questions.**"
+  },
+  {
+    "line": 68,
+    "source": "> * **Share your knowledge.**",
+    "translation": "> * **Partager ses connaissances.**"
+  },
+  {
+    "line": 69,
+    "source": "> * **Above all, exercise common sense.**",
+    "translation": "> * **Avant tout, faire preuve de bon sens.**"
+  },
+  {
+    "line": 71,
+    "source": "> 🚩🔬 [zonetransfer.me](https://digi.ninja/projects/zonetransferme.php) domain will be utilized for training purposes and examples.",
+    "translation": "> 🚩🔬 Le domaine [zonetransfer.me](https://digi.ninja/projects/zonetransferme.php) sera utilisé pour les exercices et les exemples."
+  },
+  {
+    "line": 79,
+    "source": "🗒️ **Footprinting** is like reconnaissance, with more important information about a particular target.",
+    "translation": "🗒️ Le **Footprinting** s’apparente à la reconnaissance, avec une collecte d’informations plus poussée sur une cible particulière."
+  },
+  {
+    "line": 81,
+    "source": "| What to look for in a Website? |",
+    "translation": "| Quelles informations rechercher sur un site Web ? |"
+  },
+  {
+    "line": 83,
+    "source": "| IP addresses of the web server |",
+    "translation": "| Adresses IP du serveur Web |"
+  },
+  {
+    "line": 84,
+    "source": "| Hidden directories             |",
+    "translation": "| Répertoires cachés |"
+  },
+  {
+    "line": 85,
+    "source": "| Names, Email addresses         |",
+    "translation": "| Noms, adresses e-mail |"
+  },
+  {
+    "line": 86,
+    "source": "| Phone numbers                  |",
+    "translation": "| Numéros de téléphone |"
+  },
+  {
+    "line": 87,
+    "source": "| Physical Addresses             |",
+    "translation": "| Adresses physiques |"
+  },
+  {
+    "line": 88,
+    "source": "| Web technologies               |",
+    "translation": "| Technologies Web |"
+  },
+  {
+    "line": 90,
+    "source": "**`E.g.`** - Passive Reconnaissance on [hackersploit.org](https://hackersploit.org/):",
+    "translation": "**`E.g.`** : reconnaissance passive sur [hackersploit.org](https://hackersploit.org/) :"
+  },
+  {
+    "line": 92,
+    "source": "> **`host`** command",
+    "translation": "> Commande **`host`**"
+  },
+  {
+    "line": 103,
+    "source": "* 2 IP addresses found - the website is behind Cloudflare proxy.",
+    "translation": "* Deux adresses IP identifiées : le site Web se trouve derrière un proxy Cloudflare."
+  },
+  {
+    "line": 104,
+    "source": "  * Check the [DNSLytics Report](https://dnslytics.com/domain/hackersploit.org) too.",
+    "translation": "  * Consulter également le [rapport DNSLytics](https://dnslytics.com/domain/hackersploit.org)."
+  },
+  {
+    "line": 105,
+    "source": "* Social Links at the bottom of the main page:",
+    "translation": "* Liens vers les réseaux sociaux en bas de la page principale :"
+  },
+  {
+    "line": 109,
+    "source": "> **`robots.txt`** file - [https://hackersploit.org/robots.txt](https://hackersploit.org/robots.txt)",
+    "translation": "> Fichier **`robots.txt`** : [https://hackersploit.org/robots.txt](https://hackersploit.org/robots.txt)"
+  },
+  {
+    "line": 111,
+    "source": "* Avoid having the site indexed by search engines by using the \"Disallow\" feature, which lets the site owner designate which file or folder not to index.",
+    "translation": "* La directive « Disallow » permet au propriétaire du site d’indiquer aux robots d’exploration les fichiers et répertoires à ne pas parcourir."
+  },
+  {
+    "line": 112,
+    "source": "* **`/wp-content`** indicates that the website is running Wordpress",
+    "translation": "* **`/wp-content`** indique que le site Web utilise WordPress."
+  },
+  {
+    "line": 116,
+    "source": "> **`sitemap.xml`** file - [https://hackersploit.org/sitemap.xml](https://hackersploit.org/sitemap.xml)",
+    "translation": "> Fichier **`sitemap.xml`** : [https://hackersploit.org/sitemap.xml](https://hackersploit.org/sitemap.xml)"
+  },
+  {
+    "line": 118,
+    "source": "* Used to provide search engines with an organized way of indexing the website.",
+    "translation": "* Fournit aux moteurs de recherche une structure facilitant l’indexation du site Web."
+  },
+  {
+    "line": 119,
+    "source": "* List of site pages, categories, author, etc",
+    "translation": "* Liste des pages du site, catégories, auteurs, etc."
+  },
+  {
+    "line": 123,
+    "source": "> Broswer add-ons for **Web Technology footprinting**:",
+    "translation": "> Extensions de navigateur pour le **Footprinting des technologies Web** :"
+  },
+  {
+    "line": 125,
+    "source": "* [Wappalyzer](https://www.wappalyzer.com/) - find out the technology stack of the website",
+    "translation": "* [Wappalyzer](https://www.wappalyzer.com/) : identifier les technologies utilisées par le site Web."
+  },
+  {
+    "line": 129,
+    "source": "> [**`whatweb`**](https://github.com/urbanadventurer/WhatWeb) command",
+    "translation": "> Commande [**`whatweb`**](https://github.com/urbanadventurer/WhatWeb)"
+  },
+  {
+    "line": 133,
+    "source": "> Download the entire website, for analyzing the source code for example:",
+    "translation": "> Télécharger l’intégralité du site Web, par exemple pour analyser son code source :"
+  },
+  {
+    "line": 146,
+    "source": "[**Whois**](https://g.co/kgs/YizQVp) lookups are used to identify information regarding a particular domain.",
+    "translation": "Les recherches [**Whois**](https://g.co/kgs/YizQVp) servent à identifier les informations relatives à un domaine particulier."
+  },
+  {
+    "line": 148,
+    "source": "* Date of registration, Owner, Registrar, Owner Email address, etc",
+    "translation": "* Date d’enregistrement, propriétaire, registrar, adresse e-mail du propriétaire, etc."
+  },
+  {
+    "line": 149,
+    "source": "* **`WHOIS`** _is a query and response protocol that is widely used for querying databases that store the registered users or assignees of an Internet resource, such as a domain name, an IP address block or an autonomous system, but is also used for a wider range of other information._ - [Whois - Wikipedia](https://en.wikipedia.org/wiki/WHOIS)",
+    "translation": "* **`WHOIS`** _est un protocole de requête et de réponse utilisé pour consulter les bases de données recensant les titulaires ou bénéficiaires de ressources Internet, telles que les noms de domaine, les blocs d’adresses IP ou les systèmes autonomes. Il sert également à consulter d’autres types d’informations._ ([Whois, Wikipédia](https://en.wikipedia.org/wiki/WHOIS))"
+  },
+  {
+    "line": 151,
+    "source": "> **`whois`** command",
+    "translation": "> Commande **`whois`**"
+  },
+  {
+    "line": 157,
+    "source": "* [**who.is**](https://who.is/whois/hackersploit.org) site",
+    "translation": "* Site [**who.is**](https://who.is/whois/hackersploit.org)"
+  },
+  {
+    "line": 158,
+    "source": "* [**domaintools.com**](https://whois.domaintools.com/hackersploit.org) site",
+    "translation": "* Site [**domaintools.com**](https://whois.domaintools.com/hackersploit.org)"
+  },
+  {
+    "line": 164,
+    "source": "> [**Netcraft**](https://www.netcraft.com/internet-data-mining/) _provides internet security services for a large number of use cases, including cybercrime detection and disruption, application testing and PCI scanning._",
+    "translation": "> [**Netcraft**](https://www.netcraft.com/internet-data-mining/) _propose des services de sécurité Internet pour de nombreux usages, notamment la détection et la neutralisation de la cybercriminalité, les tests applicatifs et les scans PCI._"
+  },
+  {
+    "line": 166,
+    "source": "* It collates previous information identified with other tools and outputs an easy to read format.",
+    "translation": "* Il regroupe les informations précédemment identifiées par d’autres outils et les présente dans un format facile à lire."
+  },
+  {
+    "line": 168,
+    "source": "**`E.g.`** - [Netcraft - Hackersploit.org](https://sitereport.netcraft.com/?url=https://hackersploit.org) - check the information needed for the pentest:",
+    "translation": "**`E.g.`** : [Netcraft - Hackersploit.org](https://sitereport.netcraft.com/?url=https://hackersploit.org) : consulter les informations utiles au pentest."
+  },
+  {
+    "line": 170,
+    "source": "* Background",
+    "translation": "* Informations générales"
+  },
+  {
+    "line": 171,
+    "source": "* Network: domain IP address, Nameserver, Domain registrar, IP delegation",
+    "translation": "* Réseau : adresse IP du domaine, Nameserver, registrar, délégation IP"
+  },
+  {
+    "line": 172,
+    "source": "* SSL/TLS Certificate: Issuer, Validity, Transparency, vulnerabilities",
+    "translation": "* Certificat SSL/TLS : émetteur, validité, transparence, vulnérabilités"
+  },
+  {
+    "line": 173,
+    "source": "* Hosting History",
+    "translation": "* Historique de l’hébergement"
+  },
+  {
+    "line": 174,
+    "source": "* Web Trackers",
+    "translation": "* Traceurs Web"
+  },
+  {
+    "line": 175,
+    "source": "* Site Technology: Server-Side, Client-Side, Frameworks, etc",
+    "translation": "* Technologies du site : Server-Side, Client-Side, Frameworks, etc."
+  },
+  {
+    "line": 181,
+    "source": "🗒️ **DNS Recon** is used to _identify DNS records associated to a domain_, like A record, IP address, mail server IP.",
+    "translation": "🗒️ La **DNS Recon** sert à _identifier les enregistrements DNS associés à un domaine_, notamment les enregistrements A, les adresses IP et l’adresse du serveur de messagerie."
+  },
+  {
+    "line": 183,
+    "source": "> [**`dnsrecon`**](https://github.com/darkoperator/dnsrecon) tool - a Python script that provides the ability to perform NS/DNS Records Enumeration, records lookup, subdomain brute force, etc.",
+    "translation": "> Outil [**`dnsrecon`**](https://github.com/darkoperator/dnsrecon) : script Python permettant notamment l’énumération des enregistrements NS/DNS, leur consultation et le brute force de sous-domaines."
+  },
+  {
+    "line": 200,
+    "source": "> [**dnsdumpster.com**](https://dnsdumpster.com/) site",
+    "translation": "> Site [**dnsdumpster.com**](https://dnsdumpster.com/)"
+  },
+  {
+    "line": 202,
+    "source": "* discover hosts related to a domain",
+    "translation": "* Identifier les hôtes associés à un domaine."
+  },
+  {
+    "line": 203,
+    "source": "* map the domain in a graph `.png` image or `.xlsx` file.",
+    "translation": "* Cartographier le domaine sous forme d’image `.png` ou de fichier `.xlsx`."
+  },
+  {
+    "line": 213,
+    "source": "> **W**eb **A**pplication **F**irewall (**`WAF`**) detection with [**`wafw00f`**](https://github.com/EnableSecurity/wafw00f).",
+    "translation": "> Détection de **W**eb **A**pplication **F**irewall (**`WAF`**) avec [**`wafw00f`**](https://github.com/EnableSecurity/wafw00f)."
+  },
+  {
+    "line": 215,
+    "source": "It does the following:",
+    "translation": "Son fonctionnement est le suivant :"
+  },
+  {
+    "line": 217,
+    "source": "* _Sends a normal HTTP request and analyses the response; this identifies a number of WAF solutions._",
+    "translation": "* _Envoie une requête HTTP normale et analyse la réponse pour identifier certaines solutions WAF._"
+  },
+  {
+    "line": 218,
+    "source": "* _If that is not successful, it sends a number of (potentially malicious) HTTP requests and uses simple logic to deduce which WAF it is._",
+    "translation": "* _En l’absence de résultat, envoie plusieurs requêtes HTTP potentiellement malveillantes et utilise une logique simple pour identifier le WAF._"
+  },
+  {
+    "line": 219,
+    "source": "* _If that is also not successful, it analyses the responses previously returned and uses another simple algorithm to guess if a WAF or security solution is actively responding to our attacks._",
+    "translation": "* _Si cela ne suffit pas, analyse les réponses précédentes et tente de déterminer si un WAF ou une solution de sécurité réagit aux attaques._"
+  },
+  {
+    "line": 244,
+    "source": "* This would be definitely tested within the _active information gathering_ phase with a port scan on the webserver IP address.",
+    "translation": "* Ce point serait également vérifié lors de la _collecte active d’informations_ par un scan de ports de l’adresse IP du serveur Web."
+  },
+  {
+    "line": 248,
+    "source": "To identify the subdomains of a specific domain in a passive way, **publicly available resources and databases** can be utilized.",
+    "translation": "Pour identifier passivement les sous-domaines d’un domaine spécifique, il est possible d’utiliser les **ressources et bases de données publiquement accessibles**."
+  },
+  {
+    "line": 250,
+    "source": "> [**`sublist3r`**](https://github.com/aboul3la/Sublist3r) tool - a Python tool that enumerate subdomains of websites using OSINT (**O**pen-**S**ource **Int**eligence).",
+    "translation": "> Outil [**`sublist3r`**](https://github.com/aboul3la/Sublist3r) : outil Python qui énumère les sous-domaines de sites Web à l’aide de l’OSINT (**O**pen-**S**ource **Int**elligence)."
+  },
+  {
+    "line": 252,
+    "source": "* this example is NOT active enumeration - is is passive (using public available resources)",
+    "translation": "* Cet exemple relève de l’énumération passive, et non active, car il utilise des ressources publiques."
+  },
+  {
+    "line": 253,
+    "source": "* it enumerates subdomains using search engines (Google, Yaoo, Bing ...) and other tools (Netcraft, Virustotal, DNSdumpster, ReverseDNS, ThreatCrowd).",
+    "translation": "* Il énumère les sous-domaines grâce aux moteurs de recherche (Google, Yahoo, Bing...) et à d’autres outils (Netcraft, VirusTotal, DNSdumpster, ReverseDNS, ThreatCrowd)."
+  },
+  {
+    "line": 270,
+    "source": "🗒️ **Google Dorking**/Hacking can be utilized to identify public information pertinent to a target.",
+    "translation": "🗒️ Le **Google Dorking** (Google Hacking) peut servir à identifier les informations publiques pertinentes concernant une cible."
+  },
+  {
+    "line": 272,
+    "source": "* Search filters for specific subdomains, files, etc using [google.com](https://www.google.com/).",
+    "translation": "* Utiliser des filtres de recherche pour des sous-domaines, fichiers, etc. sur [google.com](https://www.google.com/)."
+  },
+  {
+    "line": 273,
+    "source": "* First try to directly search for the specific domain and look for useful information.",
+    "translation": "* Commencer par rechercher directement le domaine spécifique et examiner les informations utiles."
+  },
+  {
+    "line": 279,
+    "source": "* limit all results to the particular domain/site",
+    "translation": "* Limite les résultats au domaine ou au site indiqué."
+  },
+  {
+    "line": 280,
+    "source": "* shows subdomains for that particular domain",
+    "translation": "* Affiche les sous-domaines associés à ce domaine."
+  },
+  {
+    "line": 288,
+    "source": "* look for specific results within the website title/URL",
+    "translation": "* Recherche des résultats particuliers dans le titre ou l’URL du site Web."
+  },
+  {
+    "line": 289,
+    "source": "* **`e.g.`** - `inurl:admin` , etc.",
+    "translation": "* **`e.g.`** : `inurl:admin`, etc."
+  },
+  {
+    "line": 295,
+    "source": "* show **subdomains** (indexed by Google) for a particular domain",
+    "translation": "* Affiche les **sous-domaines** indexés par Google pour un domaine donné."
+  },
+  {
+    "line": 296,
+    "source": "* usually they are exposed subdomains",
+    "translation": "* Il s’agit généralement de sous-domaines exposés."
+  },
+  {
+    "line": 297,
+    "source": "  * sometimes unintended exposed subdomains",
+    "translation": "  * Certains peuvent être exposés involontairement."
+  },
+  {
+    "line": 303,
+    "source": "* limit the results to subdomains with a specific word in the site title",
+    "translation": "* Limite les résultats aux sous-domaines dont le titre contient un mot précis."
+  },
+  {
+    "line": 309,
+    "source": "* limit the results to a file type in the URL",
+    "translation": "* Limite les résultats à un type de fichier dans l’URL."
+  },
+  {
+    "line": 310,
+    "source": "* make the search query a bit more specific",
+    "translation": "* Rend la requête de recherche plus précise."
+  },
+  {
+    "line": 316,
+    "source": "* look for sites with **directory listing** enabled, searching for _**index of**_",
+    "translation": "* Recherche les sites dont le **directory listing** est activé, avec l’expression _**index of**_."
+  },
+  {
+    "line": 317,
+    "source": "* common web servers vulnerability/misconfiguration (against security)",
+    "translation": "* Vulnérabilité ou erreur de configuration courante des serveurs Web."
+  },
+  {
+    "line": 318,
+    "source": "* directory listing allows users to see the content of the directory",
+    "translation": "* Le directory listing permet aux utilisateurs de consulter le contenu d’un répertoire."
+  },
+  {
+    "line": 324,
+    "source": "* shows the cached website",
+    "translation": "* Affiche la version mise en cache du site Web."
+  },
+  {
+    "line": 328,
+    "source": "> * Other Google dorking examples:",
+    "translation": "> * Autres exemples de Google Dorking :"
+  },
+  {
+    "line": 335,
+    "source": "* use it to search for Dorks by Category to find potentially unsecured files",
+    "translation": "* Permet de rechercher des Dorks par catégorie afin d’identifier des fichiers potentiellement non sécurisés."
+  }
+]
