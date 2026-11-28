@@ -833,5 +833,210 @@
     "line": 656,
     "source": "> ✍️ \"Zone transfers are rare these days, but they give us the keys to the DNS castle.\" [fierce - Geeksforgeeks](https://www.geeksforgeeks.org/fierce-dns-reconnaissance-tool-for-locating-non-contiguous-ip-space/)",
     "translation": "> ✍️ « Les transferts de zone sont rares de nos jours, mais ils nous donnent les clés du château DNS. » [fierce - Geeksforgeeks](https://www.geeksforgeeks.org/fierce-dns-reconnaissance-tool-for-locating-non-contiguous-ip-space/)"
+  },
+  {
+    "line": 660,
+    "source": "> [**`nmap`**](https://nmap.org/) - open source security tool for network exploration, security scanning and auditing.",
+    "translation": "> [**`nmap`**](https://nmap.org/) : outil de sécurité open source destiné à l’exploration réseau, au scan de sécurité et à l’audit."
+  },
+  {
+    "line": 785,
+    "source": "* **`E.g.`** - Discover all the devices on a target network using a **ping sweep** (ping scan) with Nmap.",
+    "translation": "* **`E.g.`** : découvrir les équipements d’un réseau cible à l’aide d’un **ping sweep** (ping scan) avec Nmap."
+  },
+  {
+    "line": 786,
+    "source": "  * `-sn` option - Ping Scan (ping sweep), disable port scan. It finds the responding hosts. **-sn** consist of:",
+    "translation": "  * Option `-sn` : Ping Scan (ping sweep), désactive le scan de ports et identifie les hôtes qui répondent. **-sn** utilise :"
+  },
+  {
+    "line": 787,
+    "source": "    * an ICMP echo request",
+    "translation": "    * Une requête ICMP Echo"
+  },
+  {
+    "line": 788,
+    "source": "    * a TCP SYN to port 443",
+    "translation": "    * Un TCP SYN vers le port 443"
+  },
+  {
+    "line": 789,
+    "source": "    * a TCP ACK to port 80",
+    "translation": "    * Un TCP ACK vers le port 80"
+  },
+  {
+    "line": 790,
+    "source": "    * an ICMP default timestamp",
+    "translation": "    * Un timestamp ICMP par défaut"
+  },
+  {
+    "line": 791,
+    "source": "    * `-sn` must be run as `sudo`",
+    "translation": "    * L’option `-sn` doit être exécutée avec `sudo` selon le cours."
+  },
+  {
+    "line": 818,
+    "source": "* Copy the found IPs for future references and move on to the [port scan phase](1-info-gathering.md#port-scanning-with-nmap) on each of them.",
+    "translation": "* Conserver les adresses IP identifiées pour référence et passer à la [phase de scan de ports](1-info-gathering.md#port-scanning-with-nmap) pour chacune."
+  },
+  {
+    "line": 827,
+    "source": "> [**`netdiscover`**](https://www.kali.org/tools/netdiscover/) - an active/passive ARP discovering tool",
+    "translation": "> [**`netdiscover`**](https://www.kali.org/tools/netdiscover/) : outil de découverte ARP active et passive."
+  },
+  {
+    "line": 829,
+    "source": "* _it utilizes ARP requests_",
+    "translation": "* _Il utilise des requêtes ARP._"
+  },
+  {
+    "line": 860,
+    "source": "> 🔬 **Training list**: PentesterAcademy [Windows Recon - Host Discovery](https://attackdefense.com/listing?labtype=windows-recon\\&subtype=windows-recon-host-discovery) (`subscription required`)",
+    "translation": "> 🔬 **Liste d’entraînement** : PentesterAcademy [Windows Recon - Host Discovery](https://attackdefense.com/listing?labtype=windows-recon\\&subtype=windows-recon-host-discovery) (`subscription required`)"
+  },
+  {
+    "line": 862,
+    "source": "Use **`nmap`** to identify open ports and the respective running services on a target system.",
+    "translation": "Utiliser **`nmap`** pour identifier les ports ouverts et les services actifs correspondants sur un système cible."
+  },
+  {
+    "line": 864,
+    "source": "* _Enumerate as much information as possible_",
+    "translation": "* _Énumérer autant d’informations que possible._"
+  },
+  {
+    "line": 865,
+    "source": "* **`E.g.`** - perform post scanning on TCP and UDP ports, using a few techniques",
+    "translation": "* **`E.g.`** : effectuer un scan des ports TCP et UDP à l’aide de différentes techniques."
+  },
+  {
+    "line": 876,
+    "source": "* Windows systems will typically block ICMP ping probes, resulting in a \"host down\" response from the **`nmap`** command.",
+    "translation": "* Les systèmes Windows bloquent souvent les requêtes ICMP Echo, ce qui peut entraîner une réponse « host down » de la commande **`nmap`**."
+  },
+  {
+    "line": 880,
+    "source": "> **`-Pn`** option - **skip host discovery** (skip `ping`)",
+    "translation": "> Option **`-Pn`** : **ignorer la découverte des hôtes** (ignorer le `ping`)."
+  },
+  {
+    "line": 902,
+    "source": "* Try to access the webserver with a browser:",
+    "translation": "* Essayer d’accéder au serveur Web avec un navigateur :"
+  },
+  {
+    "line": 906,
+    "source": "> **`-p-`** - Scan the entire range of TCP ports (**65535 ports**)",
+    "translation": "> **`-p-`** : scanner toute la plage des ports TCP (**65 535 ports**)."
+  },
+  {
+    "line": 908,
+    "source": "* the scan will take longer",
+    "translation": "* Le scan prendra davantage de temps."
+  },
+  {
+    "line": 914,
+    "source": "> **`-p <PORTS_LIST>`** - Scan a specific or more TCP **ports**:",
+    "translation": "> **`-p <PORTS_LIST>`** : scanner un ou plusieurs **ports** TCP spécifiques :"
+  },
+  {
+    "line": 916,
+    "source": "* if a port state is **filtered** it means the port is _blocked by a firewall_ or _closed_",
+    "translation": "* Si un port est **filtered**, son état ne peut pas être déterminé avec certitude, notamment en présence d’un filtrage réseau."
+  },
+  {
+    "line": 934,
+    "source": "> **`-F`** - **fast mode**, scan 100 of the most commonly used ports **`-v`** - increase **verbosity**, see background scanning info",
+    "translation": "> **`-F`** : **mode rapide**, scan de 100 ports parmi les plus courants. **`-v`** : augmenter la **verbosité** et afficher davantage d’informations sur le scan."
+  },
+  {
+    "line": 972,
+    "source": "> **`-sU`** - **UDP scan**",
+    "translation": "> **`-sU`** : **scan UDP**."
+  },
+  {
+    "line": 974,
+    "source": "* always try to do a UDP port scan (DNS service, etc). Default `nmap` scan performs only TCP scans.",
+    "translation": "* Penser au scan UDP (DNS, etc.). Par défaut, `nmap` effectue un scan TCP."
+  },
+  {
+    "line": 980,
+    "source": "> **`-sV`** - probe open ports to determine **service/version** info",
+    "translation": "> **`-sV`** : examiner les ports ouverts pour déterminer le **service et sa version**."
+  },
+  {
+    "line": 1000,
+    "source": "> **`-O`** - **Operating System detection**, based on the open ports and running services",
+    "translation": "> **`-O`** : **détection du système d’exploitation**, à partir des informations réseau observées."
+  },
+  {
+    "line": 1002,
+    "source": "* sometimes is not accurate",
+    "translation": "* Le résultat peut manquer de précision."
+  },
+  {
+    "line": 1003,
+    "source": "* _a penetration tester can start to identify specific O.S. version vulnerabilities and exploits_",
+    "translation": "* _Le pentester peut ensuite examiner les vulnérabilités associées à la version du système d’exploitation identifiée._"
+  },
+  {
+    "line": 1018,
+    "source": "> **`-sC`** - default `nmap` **script scan**",
+    "translation": "> **`-sC`** : exécution des **scripts par défaut** de `nmap`."
+  },
+  {
+    "line": 1020,
+    "source": "* under each service, `nmap` will run a series of scripts based on the service",
+    "translation": "* Pour chaque service, `nmap` exécute une série de scripts adaptés au service."
+  },
+  {
+    "line": 1085,
+    "source": "> **`-A`** - **Aggressive scan**: OS detection, version detection, script scanning (`-sV` + `-O` + `-sC`)",
+    "translation": "> **`-A`** : **Aggressive scan** : détection du système d’exploitation, des versions et exécution de scripts (`-sV` + `-O` + `-sC`)."
+  },
+  {
+    "line": 1091,
+    "source": "> **`-T#`** - `nmap` **Timing templates** - optimize and speed up scanning (higher is faster)",
+    "translation": "> **`-T#`** : **Timing templates** de `nmap`, permettant d’ajuster la vitesse du scan (une valeur élevée correspond à un scan plus rapide)."
+  },
+  {
+    "line": 1093,
+    "source": "* `-T0` - _paranoid_ (possible IDS evasion, slow)",
+    "translation": "* `-T0` : _paranoid_ (scan lent, décrit dans le cours comme susceptible de réduire la détection IDS)."
+  },
+  {
+    "line": 1094,
+    "source": "* `-T1` - _sneaky_ (possible IDS evasion, slow)",
+    "translation": "* `-T1` : _sneaky_ (scan lent, décrit dans le cours comme susceptible de réduire la détection IDS)."
+  },
+  {
+    "line": 1095,
+    "source": "* `-T2` - _polite_ (less bandwidth and target machine resources, slow)",
+    "translation": "* `-T2` : _polite_ (utilise moins de bande passante et de ressources sur la cible, lent)."
+  },
+  {
+    "line": 1096,
+    "source": "* `-T3` - _normal_ (default scan)",
+    "translation": "* `-T3` : _normal_ (scan par défaut)."
+  },
+  {
+    "line": 1097,
+    "source": "* `-T4` - _aggressive_ (reasonably fast, modern and reliable network)",
+    "translation": "* `-T4` : _aggressive_ (relativement rapide, adapté aux réseaux modernes et fiables)."
+  },
+  {
+    "line": 1098,
+    "source": "* `-T5` - _insane_ (extraordinarily fast network)",
+    "translation": "* `-T5` : _insane_ (adapté aux réseaux particulièrement rapides)."
+  },
+  {
+    "line": 1099,
+    "source": "* the lower the number the slower the scan",
+    "translation": "* Plus la valeur est faible, plus le scan est lent."
+  },
+  {
+    "line": 1105,
+    "source": "> **`-oN`** - output the report into three main formats",
+    "translation": "> **`-oN`** : exporter le rapport au format normal. Le cours présente également d’autres formats de sortie."
   }
 ]
