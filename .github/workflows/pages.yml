@@ -89,6 +89,12 @@ jobs:
           sheet=BeautifulSoup((root/'ejpt-cheatsheet.html').read_text(encoding='utf-8'),'html.parser').select_one('.ejpt-cheatsheet-content')
           assert sheet is not None, 'Missing native cheatsheet content'
           sheet_html=(root/'ejpt-cheatsheet.html').read_text(encoding='utf-8')
+          translation=report['cheatsheet_translation']
+          assert translation['progress_percent']==100 and translation['untranslated_prose']==0, 'eJPT cheatsheet still contains untranslated prose'
+          assert translation['commands_preserved'] is True, 'eJPT translation changed original command blocks'
+          sheet_text=sheet.get_text(' ',strip=True)
+          for phrase in ('A node can hold anything','Drupal supports three types of users','In older versions of Drupal','If you request a new password for an existing username'):
+              assert phrase not in sheet_text, 'English prose remains in eJPT cheatsheet: '+phrase
           assert '{% hint' not in sheet_html and '{% endhint %}' not in sheet_html, 'Raw GitBook hint directive leaked into the page'
           assert len(sheet.select('pre code'))==report['cheatsheet_display_blocks'], 'Unexpected change in displayed code block count'
           assert len(sheet.select('.ejpt-action-heading'))>=20, 'Missing information gathering action headings'
