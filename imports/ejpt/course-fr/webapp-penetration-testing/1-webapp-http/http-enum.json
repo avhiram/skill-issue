@@ -55,9 +55,19 @@
     "translation": "- Utiliser **`curl`** pour interagir avec `login.php` et `post.php`."
   },
   {
+    "line": 76,
+    "source": "- Interact with `uploads` directory",
+    "translation": "- Interagir avec le répertoire `uploads`"
+  },
+  {
     "line": 84,
     "source": "> 📌 `WebDAV` module is enabled on the Apache Server and allows file upload via `PUT` method.",
     "translation": "> 📌 Le module `WebDAV` est activé sur le serveur Apache et autorise l’envoi de fichiers via la méthode `PUT`."
+  },
+  {
+    "line": 86,
+    "source": "- Upload a file with **`PUT`** method",
+    "translation": "- Téléverser un fichier avec la méthode **`PUT`**"
   },
   {
     "line": 102,
@@ -95,6 +105,11 @@
     "translation": "- Envoyer une requête `POST` vers `login.php` avec les identifiants valides."
   },
   {
+    "line": 118,
+    "source": "- Try to upload a file to `/uploads/`",
+    "translation": "- Essayer de téléverser un fichier dans `/uploads/`"
+  },
+  {
     "line": 130,
     "source": "> 🔬 [Directory Enumeration with Gobuster](https://.attackdefense.com/challengedetails?cid=1882)",
     "translation": "> 🔬 [Énumération de répertoires avec Gobuster](https://.attackdefense.com/challengedetails?cid=1882)"
@@ -115,9 +130,19 @@
     "translation": "- Ouvrir le navigateur et accéder à l’adresse suivante :"
   },
   {
+    "line": 147,
+    "source": "- Use **`gobuster`** to enumerate directories, ignoring `403` and `404` status codes",
+    "translation": "- Utiliser **`gobuster`** pour énumérer les répertoires en ignorant les codes de statut `403` et `404`"
+  },
+  {
     "line": 155,
     "source": "- Scan to find specific file extensions and interesting files",
     "translation": "- Examiner les extensions de fichiers et les fichiers identifiés."
+  },
+  {
+    "line": 175,
+    "source": "- Check the `xml` file",
+    "translation": "- Examiner le fichier `xml`"
   },
   {
     "line": 182,
@@ -148,5 +173,45 @@
     "line": 197,
     "source": "- Start `BurpSuite` (set *User options/Display/Look* to *Darcula* and restart BurpSuite)",
     "translation": "- Lancer `BurpSuite` (dans *User options/Display/Look*, sélectionner *Darcula*, puis redémarrer Burp Suite)."
+  },
+  {
+    "line": 198,
+    "source": "  - Intercept the home page request and send it to `Intruder`",
+    "translation": "  - Intercepter la requête de la page d’accueil et l’envoyer à `Intruder`"
+  },
+  {
+    "line": 199,
+    "source": "  - **`Intruder`** - set `HOST` target IP and `PORT`",
+    "translation": "  - **`Intruder`** : définir l’IP cible dans `HOST` et le `PORT`"
+  },
+  {
+    "line": 200,
+    "source": "  - Configure **`Payload Positions`**",
+    "translation": "  - Configurer **`Payload Positions`**"
+  },
+  {
+    "line": 201,
+    "source": "    - Clear §",
+    "translation": "    - Effacer les §"
+  },
+  {
+    "line": 202,
+    "source": "    - Add `§name§` in the `GET` request",
+    "translation": "    - Ajouter `§name§` dans la requête `GET`"
+  },
+  {
+    "line": 203,
+    "source": "  - **`Payloads - Options`** - add a list of strings and load the ` /usr/share/wordlists/dirb/common.txt` list",
+    "translation": "  - **`Payloads - Options`** : ajouter une liste de chaînes et charger la liste ` /usr/share/wordlists/dirb/common.txt`"
+  },
+  {
+    "line": 204,
+    "source": "  - **`Start Attack`** and check the status code",
+    "translation": "  - Cliquer sur **`Start Attack`** et vérifier le code de statut"
+  },
+  {
+    "line": 214,
+    "source": "- Navigate to `http://192.221.162.3/passwords/accounts.txt`",
+    "translation": "- Accéder à `http://192.221.162.3/passwords/accounts.txt`"
   }
 ]

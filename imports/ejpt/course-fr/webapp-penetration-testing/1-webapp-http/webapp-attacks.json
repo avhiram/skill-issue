@@ -58,5 +58,370 @@
     "line": 40,
     "source": "> - Target IP: `192.42.186.3`",
     "translation": "> - IP cible du laboratoire : `192.42.186.3`"
+  },
+  {
+    "line": 50,
+    "source": "- Open the browser and navigate to `http://192.42.186.3/`, login with `bee`:`bug`, select `SQL Injection (GET/Search)` and click Hack button",
+    "translation": "- Ouvrir le navigateur et accéder à `http://192.42.186.3/`. Se connecter avec `bee`:`bug`, sélectionner `SQL Injection (GET/Search)` et cliquer sur Hack"
+  },
+  {
+    "line": 51,
+    "source": "  - Input a string and search",
+    "translation": "  - Saisir une chaîne et lancer la recherche"
+  },
+  {
+    "line": 54,
+    "source": "- Activate `FoxyProxy` Plugin",
+    "translation": "- Activer l’extension `FoxyProxy`"
+  },
+  {
+    "line": 55,
+    "source": "- Start `BurpSuite` in Interception mode",
+    "translation": "- Démarrer `BurpSuite` en mode Intercept"
+  },
+  {
+    "line": 56,
+    "source": "  - Refresh the page, intercept the request and copy the cookie",
+    "translation": "  - Actualiser la page, intercepter la requête et copier le cookie"
+  },
+  {
+    "line": 57,
+    "source": "  - Cookie: `PHPSESSID=rmoepg39ac0savq89d1k5fu2q1; security_level=0`",
+    "translation": "  - Cookie : `PHPSESSID=rmoepg39ac0savq89d1k5fu2q1; security_level=0`"
+  },
+  {
+    "line": 61,
+    "source": "- Run `sqlmap`, defining `title` as the test parameter",
+    "translation": "- Lancer `sqlmap` en définissant `title` comme paramètre de test"
+  },
+  {
+    "line": 86,
+    "source": "- In BurpSuite, send the request to Repeater",
+    "translation": "- Dans BurpSuite, envoyer la requête à Repeater"
+  },
+  {
+    "line": 87,
+    "source": "  - Copy the first payload from SQLMap and paste it as part of the `title` parameter",
+    "translation": "  - Copier le premier payload de SQLMap et l’insérer dans le paramètre `title`"
+  },
+  {
+    "line": 95,
+    "source": "- Use `sqlmap` to get a list of tables for the `bWAPP` database",
+    "translation": "- Utiliser `sqlmap` pour obtenir la liste des tables de la base `bWAPP`"
+  },
+  {
+    "line": 110,
+    "source": "- Use `sqlmap` to get a list of columns in the `users` table of the `bWAPP` database",
+    "translation": "- Utiliser `sqlmap` pour obtenir la liste des colonnes de la table `users` de la base `bWAPP`"
+  },
+  {
+    "line": 118,
+    "source": "- Dump `password` and `email` for **admin** from the `users` table",
+    "translation": "- Extraire `password` et `email` pour **admin** depuis la table `users`"
+  },
+  {
+    "line": 126,
+    "source": "- Turn off Intercept mode in BurpSuite, navigate to `http://192.42.186.3/sqli_6.php` and turn back on Intercept mode.",
+    "translation": "- Désactiver le mode Intercept dans BurpSuite, accéder à `http://192.42.186.3/sqli_6.php` puis réactiver Intercept."
+  },
+  {
+    "line": 127,
+    "source": "  - Search `example` string from the page and intercept it",
+    "translation": "  - Rechercher la chaîne `example` depuis la page et intercepter la requête"
+  },
+  {
+    "line": 128,
+    "source": "  - **Copy to file** the request and name the filerequest`",
+    "translation": "  - Utiliser **Copy to file** pour enregistrer la requête et nommer le fichier request`"
+  },
+  {
+    "line": 132,
+    "source": "- Use `sqlmap` with this request file",
+    "translation": "- Utiliser `sqlmap` avec ce fichier de requête"
+  },
+  {
+    "line": 157,
+    "source": "- In BurpSuite, send the request to Repeater",
+    "translation": "- Dans BurpSuite, envoyer la requête à Repeater"
+  },
+  {
+    "line": 158,
+    "source": "  - Try the proposed payloads from SQLMap",
+    "translation": "  - Tester les payloads proposés par SQLMap"
+  },
+  {
+    "line": 162,
+    "source": "- Change the request to pass `version()` function to the database",
+    "translation": "- Modifier la requête pour transmettre la fonction `version()` à la base de données"
+  },
+  {
+    "line": 170,
+    "source": "> 🔬 [XSS Attack with XSSer](https://attackdefense.com/challengedetails?cid=1889)",
+    "translation": "> 🔬 [Attaque XSS avec XSSer](https://attackdefense.com/challengedetails?cid=1889)"
+  },
+  {
+    "line": 172,
+    "source": "> - Target IP: `192.131.167.3`",
+    "translation": "> - IP cible : `192.131.167.3`"
+  },
+  {
+    "line": 189,
+    "source": "- Navigate to the [XSS Reflected](https://portswigger.net/web-security/cross-site-scripting/reflected) - DNS Lookup webpage:",
+    "translation": "- Accéder à la page Web [XSS réfléchie](https://portswigger.net/web-security/cross-site-scripting/reflected) (DNS Lookup) :"
+  },
+  {
+    "line": 191,
+    "source": "  - Enter any text and `Lookup DNS`",
+    "translation": "  - Saisir un texte quelconque et cliquer sur `Lookup DNS`"
+  },
+  {
+    "line": 192,
+    "source": "  - The value is **reflected back** on the web page",
+    "translation": "  - La valeur est **réfléchie** sur la page Web"
+  },
+  {
+    "line": 196,
+    "source": "- Activate `FoxyProxy` Plugin",
+    "translation": "- Activer l’extension `FoxyProxy`"
+  },
+  {
+    "line": 197,
+    "source": "- Start `BurpSuite`",
+    "translation": "- Démarrer `BurpSuite`"
+  },
+  {
+    "line": 198,
+    "source": "- Enter any text and `Lookup DNS` and intercept the request in `BurpSuite`",
+    "translation": "- Saisir un texte quelconque, cliquer sur `Lookup DNS` et intercepter la requête dans `BurpSuite`"
+  },
+  {
+    "line": 199,
+    "source": "  - Copy the payload and input `XSS` in the target_host",
+    "translation": "  - Copier le payload et saisir `XSS` dans target_host"
+  },
+  {
+    "line": 203,
+    "source": "- Use **`xsser`** to check the vulnerability",
+    "translation": "- Utiliser **`xsser`** pour vérifier la vulnérabilité"
+  },
+  {
+    "line": 219,
+    "source": "- Use a custom XSS payload",
+    "translation": "- Utiliser un payload XSS personnalisé"
+  },
+  {
+    "line": 227,
+    "source": "- Copy the `Final Attack` payload and use it in the browser or BurpSuite to trigger the XSS attack",
+    "translation": "- Copier le payload `Final Attack` et l’utiliser dans le navigateur ou BurpSuite pour déclencher l’attaque XSS"
+  },
+  {
+    "line": 234,
+    "source": "- Perform an XSS Poll Question attack over `GET` request",
+    "translation": "- Effectuer une attaque XSS sur le sondage via une requête `GET`"
+  },
+  {
+    "line": 236,
+    "source": "  - copy the `URL`, replace the `nmap` value with **`XSS`** and pass it to XSSer",
+    "translation": "  - Copier l’`URL`, remplacer la valeur `nmap` par **`XSS`** et la transmettre à XSSer"
+  },
+  {
+    "line": 251,
+    "source": "- Open the `Final Attack` link in the browser",
+    "translation": "- Ouvrir le lien `Final Attack` dans le navigateur"
+  },
+  {
+    "line": 260,
+    "source": "> 🔬 [Authenticated XSS Attack with XSSer](https://attackdefense.com/challengedetails?cid=1892)",
+    "translation": "> 🔬 [Attaque XSS authentifiée avec XSSer](https://attackdefense.com/challengedetails?cid=1892)"
+  },
+  {
+    "line": 262,
+    "source": "> - Target IP: `192.56.179.3`",
+    "translation": "> - IP cible : `192.56.179.3`"
+  },
+  {
+    "line": 272,
+    "source": "- Login with `bug`:`bee`, select the `HTML Injection - Reflected (GET)` bug and input any value. Copy the URL",
+    "translation": "- Se connecter avec `bug`:`bee`, sélectionner la vulnérabilité `HTML Injection - Reflected (GET)` et saisir une valeur quelconque. Copier l’URL"
+  },
+  {
+    "line": 275,
+    "source": "- Activate `FoxyProxy` Plugin, start `BurpSuite`, refresh the webpage and copy the `Cookie` from the Proxy intercepted request",
+    "translation": "- Activer l’extension `FoxyProxy`, démarrer `BurpSuite`, actualiser la page Web et copier le `Cookie` de la requête interceptée par le Proxy"
+  },
+  {
+    "line": 278,
+    "source": "- Run the **`xsser`** tool by",
+    "translation": "- Lancer l’outil **`xsser`** en :"
+  },
+  {
+    "line": 279,
+    "source": "  - replacing the `firstname` value string with `XSS`",
+    "translation": "  - Remplaçant la valeur de `firstname` par `XSS`"
+  },
+  {
+    "line": 280,
+    "source": "  - feeding the Cookie",
+    "translation": "  - Fournissant le cookie"
+  },
+  {
+    "line": 281,
+    "source": "  - stop BurpSuite interceptor",
+    "translation": "  - Arrêtant l’interception BurpSuite"
+  },
+  {
+    "line": 299,
+    "source": "> 🔬 [Attacking HTTP Login Form with Hydra](https://attackdefense.com/challengedetails?cid=1895)",
+    "translation": "> 🔬 [Attaque du formulaire de connexion HTTP avec Hydra](https://attackdefense.com/challengedetails?cid=1895)"
+  },
+  {
+    "line": 301,
+    "source": "> - Target IP: `192.210.201.3`",
+    "translation": "> - IP cible : `192.210.201.3`"
+  },
+  {
+    "line": 311,
+    "source": "- Open the `http://192.210.201.3/login.php` page, view source code and check the parameters passed in the login form.",
+    "translation": "- Ouvrir la page `http://192.210.201.3/login.php`, afficher le code source et examiner les paramètres transmis dans le formulaire de connexion."
+  },
+  {
+    "line": 315,
+    "source": "- Prepare a usernames and a passwords list",
+    "translation": "- Préparer une liste de noms d’utilisateur et une liste de mots de passe"
+  },
+  {
+    "line": 324,
+    "source": "- Use **`hydra`** to retrieve the credentials",
+    "translation": "- Utiliser **`hydra`** pour retrouver les identifiants"
+  },
+  {
+    "line": 336,
+    "source": "> 🔬 [Attacking Basic Auth with Burp Suite](https://attackdefense.com/challengedetails?cid=1896)",
+    "translation": "> 🔬 [Attaque Basic Auth avec Burp Suite](https://attackdefense.com/challengedetails?cid=1896)"
+  },
+  {
+    "line": 338,
+    "source": "> - Target IP: `192.190.241.3`",
+    "translation": "> - IP cible : `192.190.241.3`"
+  },
+  {
+    "line": 348,
+    "source": "- Open **Firefox**, activate `FoxyProxy` Plugin, start `BurpSuite`, open `http://192.190.241.3/basic` and intercepted the request. Forward the request, input some data and intercept the request.",
+    "translation": "- Ouvrir **Firefox**, activer l’extension `FoxyProxy`, démarrer `BurpSuite`, ouvrir `http://192.190.241.3/basic` et intercepter la requête. Transférer la requête, saisir des données et intercepter la requête."
+  },
+  {
+    "line": 349,
+    "source": "  - `/basic` directory uses **Basic Auth**",
+    "translation": "  - Le répertoire `/basic` utilise **Basic Auth**"
+  },
+  {
+    "line": 350,
+    "source": "  - send the request to Intruder",
+    "translation": "  - Envoyer la requête à Intruder"
+  },
+  {
+    "line": 354,
+    "source": "- Navigate to **Intruder - Positions** tab",
+    "translation": "- Accéder à l’onglet **Intruder - Positions**"
+  },
+  {
+    "line": 356,
+    "source": "  - Decode the `base64` string, it will become `test:test`, like the input data from the login form",
+    "translation": "  - Décoder la chaîne `base64` pour obtenir `test:test`, correspondant aux données saisies dans le formulaire de connexion"
+  },
+  {
+    "line": 360,
+    "source": "- Replace the credentials with a parameter to be substituted like `§credentials§`",
+    "translation": "- Remplacer les identifiants par un paramètre à substituer tel que `§credentials§`"
+  },
+  {
+    "line": 364,
+    "source": "- In the **Payload Options**, Load the `/root/Desktop/wordlists/100-common-passwords.txt:` list",
+    "translation": "- Dans **Payload Options**, charger la liste `/root/Desktop/wordlists/100-common-passwords.txt:`"
+  },
+  {
+    "line": 365,
+    "source": "  - In the **Payload Processing** - `Add prefix` rule, and input `admin:` to append it to all the passwords",
+    "translation": "  - Dans **Payload Processing**, ajouter la règle `Add prefix` et saisir `admin:` pour le préfixer à tous les mots de passe"
+  },
+  {
+    "line": 366,
+    "source": "    - Add a `Encode - Base64-encode` rule too",
+    "translation": "    - Ajouter aussi une règle `Encode - Base64-encode`"
+  },
+  {
+    "line": 367,
+    "source": "  - Start the attack",
+    "translation": "  - Démarrer l’attaque"
+  },
+  {
+    "line": 368,
+    "source": "- Check the entry result with status code `301`",
+    "translation": "- Examiner le résultat avec le code de statut `301`"
+  },
+  {
+    "line": 369,
+    "source": "  - **Send to Decoder** the `Authorization: Basic` value",
+    "translation": "  - Envoyer la valeur `Authorization: Basic` avec **Send to Decoder**"
+  },
+  {
+    "line": 370,
+    "source": "  - Check the BurpSuite Decoder tab",
+    "translation": "  - Examiner l’onglet Decoder de BurpSuite"
+  },
+  {
+    "line": 374,
+    "source": "- Decoded as base64 string is `admin:cookie1`",
+    "translation": "- La chaîne décodée depuis Base64 est `admin:cookie1`"
+  },
+  {
+    "line": 378,
+    "source": "- Turn off BurpSuite interceptor, open the web page and insert the found credentials",
+    "translation": "- Désactiver l’interception BurpSuite, ouvrir la page Web et saisir les identifiants trouvés"
+  },
+  {
+    "line": 380,
+    "source": "> 🚩 The flag is `d25db4ce54b60b49dfd7b32c52ed8d26`",
+    "translation": "> 🚩 Le flag est `d25db4ce54b60b49dfd7b32c52ed8d26`"
+  },
+  {
+    "line": 388,
+    "source": "> 🔬 [Attacking HTTP Login Form with ZAProxy](https://attackdefense.com/challengedetails?cid=1897)",
+    "translation": "> 🔬 [Attaque du formulaire de connexion HTTP avec ZAProxy](https://attackdefense.com/challengedetails?cid=1897)"
+  },
+  {
+    "line": 390,
+    "source": "> - Target IP: `192.145.79.3`",
+    "translation": "> - IP cible : `192.145.79.3`"
+  },
+  {
+    "line": 400,
+    "source": "- Open the **`owasp-zap`** tool, Manual Explore, input the URL and launch browser",
+    "translation": "- Ouvrir l’outil **`owasp-zap`**, choisir Manual Explore, saisir l’URL et lancer le navigateur"
+  },
+  {
+    "line": 402,
+    "source": "- Attempt login with bad credentials. The website will be added to the sitemap inside `ZAP`",
+    "translation": "- Tenter une connexion avec des identifiants invalides. Le site sera ajouté au sitemap dans `ZAP`"
+  },
+  {
+    "line": 406,
+    "source": "- Right click on the `POST` request and select **Fuzz...**",
+    "translation": "- Faire un clic droit sur la requête `POST` et sélectionner **Fuzz...**"
+  },
+  {
+    "line": 410,
+    "source": "- Select the input username, click the Add button, Add again and input the payloads for username. Confirm with OK",
+    "translation": "- Sélectionner la valeur username, cliquer sur Add, puis à nouveau sur Add et saisir les payloads pour username. Confirmer avec OK"
+  },
+  {
+    "line": 414,
+    "source": "- Select the input password and do the same thing with a list of possible password",
+    "translation": "- Sélectionner la valeur password et répéter l’opération avec une liste de mots de passe possibles"
+  },
+  {
+    "line": 418,
+    "source": "- **Start Fuzzer** to start the attack and check the results and the `302` response",
+    "translation": "- Cliquer sur **Start Fuzzer** pour lancer l’attaque et examiner les résultats ainsi que la réponse `302`"
   }
 ]

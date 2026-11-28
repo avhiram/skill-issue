@@ -35,6 +35,16 @@
     "translation": "- Se connecter à l’application Web avec les identifiants `bee`:`bug`."
   },
   {
+    "line": 25,
+    "source": "  - set the security level to `low`",
+    "translation": "  - Régler le niveau de sécurité sur `low`"
+  },
+  {
+    "line": 29,
+    "source": "- Try some HTML and SQL Injection or other bugs from the `https://192.192.29.3/portal.php` page",
+    "translation": "- Tester des injections HTML et SQL ou d’autres vulnérabilités depuis la page `https://192.192.29.3/portal.php`"
+  },
+  {
     "line": 33,
     "source": "- Configure authenticated session in ZAProxy",
     "translation": "- Configuration de la session authentifiée dans ZAProxy."
@@ -50,14 +60,44 @@
     "translation": "- Utiliser `Include in Context` pour le site `https://192.192.29.3/` et confirmer avec **`OK`**."
   },
   {
+    "line": 49,
+    "source": "- Run a **`Spider`** attack on the site, select the `bee` user and Start the scan",
+    "translation": "- Lancer une attaque **`Spider`** sur le site, sélectionner l’utilisateur `bee` et démarrer le scan"
+  },
+  {
+    "line": 55,
+    "source": "- Run an **`Active Scan`** on the site, select the `bee` user and Start the scan",
+    "translation": "- Lancer un **`Active Scan`** sur le site, sélectionner l’utilisateur `bee` et démarrer le scan"
+  },
+  {
     "line": 59,
     "source": "- In the `Alerts` tab check the 🚩`High` risk Alerts",
     "translation": "- Dans l’onglet `Alerts`, consulter les alertes 🚩`High` (risque élevé)."
   },
   {
+    "line": 63,
+    "source": "- Try to navigate to `https://192.192.29.3/htmli_stored.php`, inject the **`XSS`** (**Cross-site Scripting**) payload and Submit it",
+    "translation": "- Accéder à `https://192.192.29.3/htmli_stored.php`, injecter le payload **`XSS`** (**Cross-site Scripting**) et le soumettre"
+  },
+  {
+    "line": 64,
+    "source": "  - The XSS payload will be triggered",
+    "translation": "  - Le payload XSS se déclenchera"
+  },
+  {
     "line": 70,
     "source": "- Using the `ZAP HUD`, Site Alerts can be accessed. Every vulnerability is clickable and can be directly tried via the URL",
     "translation": "- Le `ZAP HUD` permet de consulter les alertes du site. Chaque vulnérabilité dispose d’un lien vers son URL."
+  },
+  {
+    "line": 78,
+    "source": "- Try a SQL Injection attack by opening this link",
+    "translation": "- Tester une injection SQL en ouvrant ce lien"
+  },
+  {
+    "line": 80,
+    "source": "  - The table records will be dumped on the web page",
+    "translation": "  - Les enregistrements de la table seront affichés sur la page Web"
   },
   {
     "line": 86,
@@ -85,6 +125,11 @@
     "translation": "- Dans le terminal Bash, lancer **`nikto`** et enregistrer les résultats dans un fichier."
   },
   {
+    "line": 112,
+    "source": "- Scan the target web app for **L**ocal **F**ile **I**nclusion (**LFI**) vulnerability by copying the link from the browser",
+    "translation": "- Scanner l’application Web cible pour rechercher une vulnérabilité **L**ocal **F**ile **I**nclusion (**LFI**) en copiant le lien depuis le navigateur"
+  },
+  {
     "line": 114,
     "source": "  - output to an `HTML` file",
     "translation": "  - Enregistrer les résultats dans un fichier `HTML`."
@@ -93,5 +138,10 @@
     "line": 130,
     "source": "- *The PHP-Nuke Rocket add-in is vulnerable to **file traversal**, allowing an attacker to view any file on the host*",
     "translation": "- *L’extension PHP-Nuke Rocket présente une vulnérabilité de **file traversal** susceptible d’exposer les fichiers de l’hôte.*"
+  },
+  {
+    "line": 131,
+    "source": "  - View the contents of the `passwd` file of the target machine",
+    "translation": "  - Afficher le contenu du fichier `passwd` de la machine cible"
   }
 ]

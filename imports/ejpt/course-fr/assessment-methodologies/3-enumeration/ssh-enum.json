@@ -25,6 +25,11 @@
     "translation": ">  - Énumération d’un serveur [OpenSSH](https://www.openssh.com/)."
   },
   {
+    "line": 23,
+    "source": "- Target IP is `192.8.3.3`",
+    "translation": "- IP cible : `192.8.3.3`"
+  },
+  {
     "line": 37,
     "source": "> 📌 SSH server version is  `OpenSSH 7.2p2 Ubuntu 4ubuntu2.6`.",
     "translation": "> 📌 Version du serveur SSH : `OpenSSH 7.2p2 Ubuntu 4ubuntu2.6`."
@@ -35,13 +40,123 @@
     "translation": "> **`nc`** (netcat) : outil polyvalent TCP/IP permettant de lire et d’écrire des données via des connexions réseau."
   },
   {
+    "line": 43,
+    "source": "- Fetch the banner and check the SSH server version using `nc`(`netcat`)",
+    "translation": "- Récupérer la bannière et vérifier la version du serveur SSH avec `nc`(`netcat`)"
+  },
+  {
     "line": 55,
     "source": "> **`ssh`** - establish an encrypted secure connection with the host machine",
     "translation": "> **`ssh`** : établit une connexion sécurisée et chiffrée avec une machine distante."
   },
   {
+    "line": 57,
+    "source": "- Fetch the pre-login SSH banner",
+    "translation": "- Récupérer la bannière SSH avant authentification"
+  },
+  {
+    "line": 65,
+    "source": "> 📌 SSH banner is `Welcome to attack defense ssh recon lab!!`",
+    "translation": "> 📌 Bannière SSH : `Welcome to attack defense ssh recon lab!!`"
+  },
+  {
+    "line": 67,
+    "source": "- Use [nmap ssh2-enum-algos script](https://nmap.org/nsedoc/scripts/ssh2-enum-algos.html) to report the SSH supported algorithms",
+    "translation": "- Utiliser le [script nmap ssh2-enum-algos](https://nmap.org/nsedoc/scripts/ssh2-enum-algos.html) pour afficher les algorithmes pris en charge par SSH"
+  },
+  {
     "line": 113,
     "source": "> 📌 There are `6` supported *encryption_algorithms*",
     "translation": "> 📌 Le serveur prend en charge `6` *algorithmes de chiffrement*."
+  },
+  {
+    "line": 115,
+    "source": "- Use [nmap ssh-hostkey script](https://nmap.org/nsedoc/scripts/ssh-hostkey.html) to show the target SSH server's entire key",
+    "translation": "- Utiliser le [script nmap ssh-hostkey](https://nmap.org/nsedoc/scripts/ssh-hostkey.html) pour afficher la clé complète du serveur SSH cible"
+  },
+  {
+    "line": 129,
+    "source": "> 📌 The entire `ssh-rsa` host key is `AAAAB3NzaC1yc2EAAAADAQABAAABAQC1fkJK7F8yxf3vewEcLYHljBnKTAiRqzFxkFo6lqyew73ATL2Abyh6at/oOmBSlPI90rtAMA6jQGJ+0HlHgf7mkjz5+CBo9j2VPu1bejYtcxpqpHcL5Bp12wgey1zup74fgd+yOzILjtgbnDOw1+HSkXqN79d+4BnK0QF6T9YnkHvBhZyjzIDmjonDy92yVBAIoB6Rdp0w7nzFz3aN9gzB5MW/nSmgc4qp7R6xtzGaqZKp1H3W3McZO3RELjGzvHOdRkAKL7n2kyVAraSUrR0Oo5m5e/sXrITYi9y0X6p2PTUfYiYvgkv/3xUF+5YDDA33AJvv8BblnRcRRZ74BxaD`",
+    "translation": "> 📌 La clé d’hôte `ssh-rsa` complète est `AAAAB3NzaC1yc2EAAAADAQABAAABAQC1fkJK7F8yxf3vewEcLYHljBnKTAiRqzFxkFo6lqyew73ATL2Abyh6at/oOmBSlPI90rtAMA6jQGJ+0HlHgf7mkjz5+CBo9j2VPu1bejYtcxpqpHcL5Bp12wgey1zup74fgd+yOzILjtgbnDOw1+HSkXqN79d+4BnK0QF6T9YnkHvBhZyjzIDmjonDy92yVBAIoB6Rdp0w7nzFz3aN9gzB5MW/nSmgc4qp7R6xtzGaqZKp1H3W3McZO3RELjGzvHOdRkAKL7n2kyVAraSUrR0Oo5m5e/sXrITYi9y0X6p2PTUfYiYvgkv/3xUF+5YDDA33AJvv8BblnRcRRZ74BxaD`"
+  },
+  {
+    "line": 131,
+    "source": "- Use [nmap ssh-auth-methods script](https://nmap.org/nsedoc/scripts/ssh-auth-methods.html) to show supported authentication methods",
+    "translation": "- Utiliser le [script nmap ssh-auth-methods](https://nmap.org/nsedoc/scripts/ssh-auth-methods.html) pour afficher les méthodes d’authentification prises en charge"
+  },
+  {
+    "line": 158,
+    "source": "> 📌 `none_auth` authentication method for *`student`* user is used.",
+    "translation": "> 📌 La méthode d’authentification `none_auth` est utilisée pour l’utilisateur *`student`*."
+  },
+  {
+    "line": 160,
+    "source": "> 📌 `publickey` and `password` authentication method for *`admin`* user is used.",
+    "translation": "> 📌 Les méthodes d’authentification `publickey` et `password` sont utilisées pour l’utilisateur *`admin`*."
+  },
+  {
+    "line": 172,
+    "source": "- Or use [nmap ssh-run script](https://nmap.org/nsedoc/scripts/ssh-run.html) to run remote command on SSH server",
+    "translation": "- Ou utiliser le [script nmap ssh-run](https://nmap.org/nsedoc/scripts/ssh-run.html) pour exécuter une commande à distance sur le serveur SSH"
+  },
+  {
+    "line": 194,
+    "source": "<summary>Reveal Flag - /home/student/FLAG is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag /home/student/FLAG : 🚩</summary>"
+  },
+  {
+    "line": 205,
+    "source": ">  🔬 [SSH Recon: Dictionary Attack](https://attackdefense.com/challengedetails?cid=527)",
+    "translation": ">  🔬 [Reconnaissance SSH : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=527)"
+  },
+  {
+    "line": 207,
+    "source": ">  - Target IP: `192.230.83.3`",
+    "translation": ">  - IP cible : `192.230.83.3`"
+  },
+  {
+    "line": 208,
+    "source": ">  - Detailed `SSH` Enumeration",
+    "translation": ">  - Énumération détaillée de `SSH`"
+  },
+  {
+    "line": 215,
+    "source": "- Target IP is `192.230.83.3`",
+    "translation": "- IP cible : `192.230.83.3`"
+  },
+  {
+    "line": 225,
+    "source": "- Use `hydra` to find *student* user password",
+    "translation": "- Utiliser `hydra` pour trouver le mot de passe de l’utilisateur *student*"
+  },
+  {
+    "line": 244,
+    "source": "> 📌 *student*'s password is `friend`",
+    "translation": "> 📌 Le mot de passe de *student* est `friend`"
+  },
+  {
+    "line": 246,
+    "source": "- Use [nmap ssh-brute script](https://nmap.org/nsedoc/scripts/ssh-brute.html) to perform brute-force password guessing for *administrator* user",
+    "translation": "- Utiliser le [script nmap ssh-brute](https://nmap.org/nsedoc/scripts/ssh-brute.html) pour retrouver le mot de passe de l’utilisateur *administrator* par brute force"
+  },
+  {
+    "line": 263,
+    "source": "> 📌 *student*'s password is `sunshine`",
+    "translation": "> 📌 Le mot de passe de *student* est `sunshine`"
+  },
+  {
+    "line": 265,
+    "source": "- Use [`ssh_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/ssh/ssh_login/) metasploit module to bruteforce *root*'s password",
+    "translation": "- Utiliser le module Metasploit [`ssh_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/ssh/ssh_login/) pour retrouver le mot de passe de *root* par brute force"
+  },
+  {
+    "line": 295,
+    "source": "<summary>Reveal Flag - root password is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : mot de passe de root : 🚩</summary>"
+  },
+  {
+    "line": 320,
+    "source": "> 📌 The message of the day is `SSH recon dictionary attack lab`.",
+    "translation": "> 📌 Message du jour : `SSH recon dictionary attack lab`."
   }
 ]

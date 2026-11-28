@@ -85,6 +85,11 @@
     "translation": "- Afficher les paquets contenant une chaîne de caractères."
   },
   {
+    "line": 117,
+    "source": "> 📌 `4` HTTP packets contain the `password` string",
+    "translation": "> 📌 `4` paquets HTTP contiennent la chaîne `password`"
+  },
+  {
     "line": 119,
     "source": "- Check the **destination IP** for `GET` requests sent to `www.nytimes.com`",
     "translation": "- Vérifier l’**adresse IP de destination** des requêtes `GET` envoyées vers `www.nytimes.com`."
@@ -93,6 +98,16 @@
     "line": 127,
     "source": "> 📌 `170.149.159.130` is the destination IP of `www.nytimes.com`",
     "translation": "> 📌 `170.149.159.130` est l’adresse IP de destination de `www.nytimes.com`."
+  },
+  {
+    "line": 129,
+    "source": "- Check the **session ID** used by `192.168.252.128` for `amazon.in`",
+    "translation": "- Identifier le **session ID** utilisé par `192.168.252.128` pour `amazon.in`"
+  },
+  {
+    "line": 137,
+    "source": "> 📌 `278-7381968-4337153` is the session ID",
+    "translation": "> 📌 `278-7381968-4337153` est le session ID"
   },
   {
     "line": 139,
@@ -115,9 +130,79 @@
     "translation": ">  🔬 *Laboratoire de la plateforme INE*"
   },
   {
+    "line": 159,
+    "source": ">  - **ARP Poisoning** attack to a `telnet` server",
+    "translation": ">  - Attaque **ARP Poisoning** contre un serveur `telnet`"
+  },
+  {
+    "line": 160,
+    "source": ">    - the client machine authenticates with the `telnet` server every 30sec",
+    "translation": ">    - La machine cliente s’authentifie auprès du serveur `telnet` toutes les 30 secondes"
+  },
+  {
+    "line": 161,
+    "source": ">  - Find the `telnet` login credentials",
+    "translation": ">  - Retrouver les identifiants de connexion `telnet`"
+  },
+  {
+    "line": 162,
+    "source": ">  - Tools: **`arpspoof`** & **`Wireshark`**",
+    "translation": ">  - Outils : **`arpspoof`** & **`Wireshark`**"
+  },
+  {
+    "line": 164,
+    "source": "- Monitor the traffic on `eth1` interface of the Kali Attacker machine.",
+    "translation": "- Surveiller le trafic sur l’interface `eth1` de la machine Kali utilisée pour l’attaque."
+  },
+  {
+    "line": 198,
+    "source": "- To see traffic of other machines, configure Kali Attacker VM to forward IP packets",
+    "translation": "- Pour observer le trafic des autres machines, configurer la VM Kali pour transférer les paquets IP"
+  },
+  {
+    "line": 204,
+    "source": "- Start the ARP poisoning attack with the [**`arpspoof`**](https://www.kali.org/tools/dsniff/#arpspoof) tool",
+    "translation": "- Démarrer l’attaque ARP Poisoning avec l’outil [**`arpspoof`**](https://www.kali.org/tools/dsniff/#arpspoof)"
+  },
+  {
+    "line": 212,
+    "source": "- Open `Wireshark` and start capture `eth1` traffic",
+    "translation": "- Ouvrir `Wireshark` et lancer la capture du trafic sur `eth1`"
+  },
+  {
+    "line": 213,
+    "source": "  - Apply `telnet` filter",
+    "translation": "  - Appliquer le filtre `telnet`"
+  },
+  {
+    "line": 217,
+    "source": "- Follow the **TCP stream** and find the `telnet` credentials",
+    "translation": "- Suivre le **TCP stream** et retrouver les identifiants `telnet`"
+  },
+  {
+    "line": 218,
+    "source": "  - Stop the capture and the `arpspoof` tool",
+    "translation": "  - Arrêter la capture et l’outil `arpspoof`"
+  },
+  {
+    "line": 222,
+    "source": "> 📌 `Telnet` credentials are `admin`:`MyS3cr3tP455`",
+    "translation": "> 📌 Identifiants `Telnet` : `admin`:`MyS3cr3tP455`"
+  },
+  {
+    "line": 234,
+    "source": "> 🔬 [WiFi Security: Traffic Analysis I](https://attackdefense.com/challengedetails?cid=1141)",
+    "translation": "> 🔬 [Sécurité WiFi : analyse du trafic I](https://attackdefense.com/challengedetails?cid=1141)"
+  },
+  {
     "line": 236,
     "source": "> - **WiFi** basic traffic analysis with `Wireshark`",
     "translation": "> - Analyse élémentaire du trafic **WiFi** avec `Wireshark`."
+  },
+  {
+    "line": 238,
+    "source": "- Find the name of the Open SSID in the packet dump, using the filter",
+    "translation": "- Identifier le nom du SSID ouvert dans la capture de paquets à l’aide du filtre"
   },
   {
     "line": 239,
@@ -130,6 +215,46 @@
     "translation": "  - Tag WLAN `48` : **[RSN-IE](https://mrncciew.com/2014/08/21/cwsp-rsn-information-elements/)** (Robust Security Network Information Element)."
   },
   {
+    "line": 250,
+    "source": "<summary>Reveal Flag - The name of the Open SSID is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : nom du SSID ouvert : 🚩</summary>"
+  },
+  {
+    "line": 260,
+    "source": "- Find the channel `Home_Network` is operating",
+    "translation": "- Identifier le canal utilisé par `Home_Network`"
+  },
+  {
+    "line": 269,
+    "source": "<summary>Reveal Flag - Home_Network operates on channel: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : canal utilisé par Home_Network : 🚩</summary>"
+  },
+  {
+    "line": 279,
+    "source": "- Find which security mechanism has `LazyArtists` SSID",
+    "translation": "- Identifier le mécanisme de sécurité du SSID `LazyArtists`"
+  },
+  {
+    "line": 288,
+    "source": "<summary>Reveal Flag - LazyArtists configured security is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : sécurité configurée pour LazyArtists : 🚩</summary>"
+  },
+  {
+    "line": 298,
+    "source": "- Check the **WPS** setup for `Amazon Wood` SSID",
+    "translation": "- Vérifier la configuration **WPS** du SSID `Amazon Wood`"
+  },
+  {
+    "line": 304,
+    "source": "> 📌  WPS is enabled",
+    "translation": "> 📌 WPS est activé"
+  },
+  {
+    "line": 308,
+    "source": "- Count the packets of the device with MAC `e8:de:27:16:87:18`",
+    "translation": "- Compter les paquets de l’appareil avec l’adresse MAC `e8:de:27:16:87:18`"
+  },
+  {
     "line": 309,
     "source": "  - wlan.ta = transmitted",
     "translation": "  - wlan.ta : adresse de l’émetteur"
@@ -138,6 +263,41 @@
     "line": 310,
     "source": "  - wlan.ra = received",
     "translation": "  - wlan.ra : adresse du récepteur"
+  },
+  {
+    "line": 319,
+    "source": "<summary>Reveal Flag - Total packets number is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : nombre total de paquets : 🚩</summary>"
+  },
+  {
+    "line": 329,
+    "source": "- Find a **specific MAC address** which exchange data with `SecurityTube_Open` SSID",
+    "translation": "- Identifier une **adresse MAC spécifique** qui échange des données avec le SSID `SecurityTube_Open`"
+  },
+  {
+    "line": 330,
+    "source": "  - `SecurityTube_Open` is hosted on BSSID `e8:de:27:16:87:18`",
+    "translation": "  - `SecurityTube_Open` est hébergé sur le BSSID `e8:de:27:16:87:18`"
+  },
+  {
+    "line": 339,
+    "source": "<summary>Reveal Flag - The MAC address is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : adresse MAC : 🚩</summary>"
+  },
+  {
+    "line": 349,
+    "source": "- Find TSF timestamp of the **Association Response** sent from the `SecurityTube_Open` access point to a station",
+    "translation": "- Identifier l’horodatage TSF de la trame **Association Response** envoyée par le point d’accès `SecurityTube_Open` à une station"
+  },
+  {
+    "line": 359,
+    "source": "<summary>Reveal Flag - The TSF timestamp is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : horodatage TSF : 🚩</summary>"
+  },
+  {
+    "line": 371,
+    "source": "> 🔬 [Filtering Advanced: WiFi](https://attackdefense.com/challengedetails?cid=4)",
+    "translation": "> 🔬 [Filtrage avancé : WiFi](https://attackdefense.com/challengedetails?cid=4)"
   },
   {
     "line": 373,
@@ -150,14 +310,69 @@
     "translation": "- Afficher uniquement le trafic Wi-Fi."
   },
   {
+    "line": 383,
+    "source": "- Show only the deauthentication packets",
+    "translation": "- Afficher uniquement les paquets de désauthentification"
+  },
+  {
     "line": 384,
     "source": "  - *Every management frame in WiFi has can be classified under a **type** and **subtype***",
     "translation": "  - *Chaque trame de gestion Wi-Fi peut être classée selon un **type** et un **sous-type**.*"
   },
   {
+    "line": 385,
+    "source": "  - `wlan.fc.type_subtype == 0x000c` - AP sends deauthentication frames",
+    "translation": "  - `wlan.fc.type_subtype == 0x000c` : le point d’accès envoie des trames de désauthentification"
+  },
+  {
+    "line": 393,
+    "source": "- Show only the `WPA handshake` packets",
+    "translation": "- Afficher uniquement les paquets du `WPA handshake`"
+  },
+  {
     "line": 394,
     "source": "  - **EAPoL** (Extensible Authentication Protocol over LAN) is used for WPA handshake",
     "translation": "  - **EAPoL** (Extensible Authentication Protocol over LAN) est utilisé lors du WPA Handshake."
+  },
+  {
+    "line": 402,
+    "source": "- Show only **SSID** and **BSSID** values of all beacon frames",
+    "translation": "- Afficher uniquement les valeurs **SSID** et **BSSID** de toutes les trames beacon"
+  },
+  {
+    "line": 412,
+    "source": "- Check the BSSID of `LazyArtists` SSID",
+    "translation": "- Vérifier le BSSID du SSID `LazyArtists`"
+  },
+  {
+    "line": 420,
+    "source": "> 📌  `LazyArtists` BSSID is **`fc:b0:c4:91:71:e0`**.",
+    "translation": "> 📌 Le BSSID de `LazyArtists` est **`fc:b0:c4:91:71:e0`**."
+  },
+  {
+    "line": 424,
+    "source": "- Show the channel on which `Home_Network` operates",
+    "translation": "- Afficher le canal utilisé par `Home_Network`"
+  },
+  {
+    "line": 432,
+    "source": "> 📌  `Home_Network` operating channel is **`6`**.",
+    "translation": "> 📌 Le canal utilisé par `Home_Network` est **`6`**."
+  },
+  {
+    "line": 436,
+    "source": "- Show the two devices that received the deauth messages",
+    "translation": "- Afficher les deux appareils ayant reçu les messages de désauthentification"
+  },
+  {
+    "line": 444,
+    "source": "> 📌  The MAC address of the two devices are `6c:19:8f:5f:81:74` and `bc:ae:c5:c3:5e:01`.",
+    "translation": "> 📌 Les adresses MAC des deux appareils sont `6c:19:8f:5f:81:74` et `bc:ae:c5:c3:5e:01`."
+  },
+  {
+    "line": 448,
+    "source": "- Check vendor and model of the device with MAC `5c:51:88:31:a0:3b`",
+    "translation": "- Vérifier le fabricant et le modèle de l’appareil avec l’adresse MAC `5c:51:88:31:a0:3b`"
   },
   {
     "line": 456,
