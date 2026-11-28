@@ -58,5 +58,95 @@
     "line": 28,
     "source": "> ❗ **It's important to stay vigilant against phishing attacks and be wary of any unsolicited messages asking for personal or sensitive information.**",
     "translation": "> ❗ **Il est important de rester vigilant face au phishing et de se méfier des messages non sollicités demandant des informations personnelles ou sensibles.**"
+  },
+  {
+    "line": 32,
+    "source": "🗒️ **Phishing** is the most common form of social engineering attack. Attackers send fraudulent emails that appear to be from a reputable source, such as a bank or social media site, to trick the victim into revealing their login credentials, credit card numbers, or other sensitive information.",
+    "translation": "🗒️ Le **Phishing** est la forme la plus courante de Social Engineering selon le cours. Les victimes reçoivent des courriels frauduleux semblant provenir d’organismes de confiance, comme une banque ou un réseau social. Le risque est la divulgation d’identifiants, de numéros de carte bancaire ou d’autres informations sensibles."
+  },
+  {
+    "line": 34,
+    "source": "- **`e.g.`** Emails with malicious links and/or attachments",
+    "translation": "- **`e.g.`** Courriels contenant des liens ou des pièces jointes malveillantes."
+  },
+  {
+    "line": 36,
+    "source": "Common types of phishing attacks are:",
+    "translation": "Les principaux types de phishing sont :"
+  },
+  {
+    "line": 38,
+    "source": "- `Spear Phishing` - *targeted attack where the attacker researches and personalizes the message to increase the likelihood of success*",
+    "translation": "- `Spear Phishing` : _attaque ciblée reposant sur des messages personnalisés_."
+  },
+  {
+    "line": 39,
+    "source": "- `Whaling` - *targets high-profile individuals*, such as executives or celebrities, who have access to sensitive information or financial resources",
+    "translation": "- `Whaling` : _attaque ciblant des personnalités_, notamment des dirigeants ou des célébrités ayant accès à des informations sensibles ou à des ressources financières."
+  },
+  {
+    "line": 40,
+    "source": "- `Smishing` - phishing attack that *uses SMS text messages to trick the victim into revealing sensitive information or downloading malware*",
+    "translation": "- `Smishing` : phishing par SMS visant à obtenir des informations sensibles ou à provoquer le téléchargement d’un logiciel malveillant."
+  },
+  {
+    "line": 41,
+    "source": "- `Vishing` - phishing attack that uses *voice communication, such as a phone call, to trick the victim into revealing sensitive information*",
+    "translation": "- `Vishing` : phishing par communication vocale, notamment par téléphone, visant à obtenir des informations sensibles."
+  },
+  {
+    "line": 42,
+    "source": "- `Baiting` - *leaving a physical device, such as a USB drive, in a public place for the victim to pick it up and plug it into their computer, unintentionally downloading malware, keylogger, backdoor*",
+    "translation": "- `Baiting` : _piège utilisant un support physique, par exemple une clé USB, susceptible d’exposer la victime à des logiciels malveillants, des keyloggers ou des backdoors_."
+  },
+  {
+    "line": 44,
+    "source": "Getting people's trust is a big part of a phishing attack and can be done through different approaches like redirecting web traffic maliciously, targeting a trusted site and use it against the victim (**watering hole**), compromise business email (**BEC**), spoofing and impersonation.",
+    "translation": "L’exploitation de la confiance est un élément central du phishing. Les menaces citées comprennent les redirections malveillantes, la compromission de sites de confiance (**watering hole**), la compromission de messageries professionnelles (**BEC**), le spoofing et l’usurpation d’identité."
+  },
+  {
+    "line": 60,
+    "source": "It is essential for organizations to take social engineering attacks seriously and implement comprehensive cybersecurity measures that include **employee training**, **security awareness programs**, and regular **security audits and controls** to identify and address vulnerabilities in their systems and processes. *By staying vigilant and educating employees on how to identify and respond to social engineering attacks, organizations can significantly **reduce the risk** of a successful cyber attack.*",
+    "translation": "Les organisations doivent prendre au sérieux le Social Engineering et mettre en place des mesures de cybersécurité comprenant la **formation des collaborateurs**, des **programmes de sensibilisation** et des **audits et contrôles de sécurité** réguliers pour identifier et traiter les vulnérabilités des systèmes et processus. *La vigilance et la formation à l’identification et à la gestion de ces attaques permettent de **réduire le risque** de compromission.*"
+  },
+  {
+    "line": 64,
+    "source": "- [Google and Facebook fake invoicing](https://www.trendmicro.com/vinfo/fr/security/news/cybercrime-and-digital-threats/google-and-facebook-fraudster-pleads-guilty-to-100-million-scam)",
+    "translation": "- [Fraude aux fausses factures chez Google et Facebook](https://www.trendmicro.com/vinfo/fr/security/news/cybercrime-and-digital-threats/google-and-facebook-fraudster-pleads-guilty-to-100-million-scam)"
+  },
+  {
+    "line": 65,
+    "source": "- [FACC CEO fraud](https://www.trendmicro.com/vinfo/pl/security/news/cybercrime-and-digital-threats/austrian-aeronautics-company-loses-42m-to-bec-scam)",
+    "translation": "- [Fraude au président chez FACC](https://www.trendmicro.com/vinfo/pl/security/news/cybercrime-and-digital-threats/austrian-aeronautics-company-loses-42m-to-bec-scam)"
+  },
+  {
+    "line": 66,
+    "source": "- [Robinhood Vishing](https://www.bleepingcomputer.com/news/security/robinhood-discloses-data-breach-impacting-7-million-customers/)",
+    "translation": "- [Vishing chez Robinhood](https://www.bleepingcomputer.com/news/security/robinhood-discloses-data-breach-impacting-7-million-customers/)"
+  },
+  {
+    "line": 67,
+    "source": "- [Fake Excel file - Emotet](https://unit42.paloaltonetworks.com/new-emotet-infection-method/)",
+    "translation": "- [Faux fichier Excel et Emotet](https://unit42.paloaltonetworks.com/new-emotet-infection-method/)"
+  },
+  {
+    "line": 68,
+    "source": "- [HTML Table Windows Logo](https://www.microsoft.com/en-us/security/blog/2021/08/18/trend-spotting-email-techniques-how-modern-phishing-emails-hide-in-plain-sight/)",
+    "translation": "- [Tableau HTML et logo Windows](https://www.microsoft.com/en-us/security/blog/2021/08/18/trend-spotting-email-techniques-how-modern-phishing-emails-hide-in-plain-sight/)"
+  },
+  {
+    "line": 69,
+    "source": "- [FIN7 USB in Mail](https://www.bleepingcomputer.com/news/security/fbi-hackers-use-badusb-to-target-defense-firms-with-ransomware/)",
+    "translation": "- [Clés USB envoyées par courrier par FIN7](https://www.bleepingcomputer.com/news/security/fbi-hackers-use-badusb-to-target-defense-firms-with-ransomware/)"
+  },
+  {
+    "line": 73,
+    "source": "The purpose of **social engineering in a penetration test** is to *identify weaknesses in an organization's security systems and processes and to raise awareness among employees about the risks of social engineering attacks.*",
+    "translation": "L’objectif du **Social Engineering dans un pentest** est d’identifier les faiblesses des systèmes et processus de sécurité d’une organisation et de sensibiliser les collaborateurs aux risques associés."
+  },
+  {
+    "line": 87,
+    "source": "> ❗ **Phishing campaigns should only be conducted for legitimate security testing purposes**, and not for malicious intent. Additionally, it's crucial to obtain **permission** and **informed consent** from the costumer involved in the campaign.",
+    "translation": "> ❗ **Les campagnes de phishing doivent être réservées aux tests de sécurité légitimes**, sans intention malveillante. Il est essentiel d’obtenir l’**autorisation** et le **consentement éclairé** du client concerné."
   }
 ]
