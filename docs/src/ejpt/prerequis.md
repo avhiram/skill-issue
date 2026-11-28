@@ -14,15 +14,10 @@ Comprendre l'environnement de travail avant de commencer les tests.
 - Comprendre les adresses IP, les ports, les protocoles et les routes.
 - Comprendre une requête HTTP et une réponse.
 
-## Notes originales
+## Chapitres du parcours
 
-- [Introduction aux prérequis](https://github.com/e-hakson/eJPT/blob/7e20a68c70b4a9fe086e9174138e0468eb375886/penetration-testing-prerequisites/README.md)
-- [Introduction](https://github.com/e-hakson/eJPT/blob/7e20a68c70b4a9fe086e9174138e0468eb375886/penetration-testing-prerequisites/introduction.md)
-- [Networking](https://github.com/e-hakson/eJPT/blob/7e20a68c70b4a9fe086e9174138e0468eb375886/penetration-testing-prerequisites/networking.md)
-- [Web Applications](https://github.com/e-hakson/eJPT/blob/7e20a68c70b4a9fe086e9174138e0468eb375886/penetration-testing-prerequisites/web-applications.md)
-
-::: info État du cours
-Plan du chapitre et liens vers les notes originales. Le cours français détaillé et ses illustrations restent à intégrer.
-:::
+- [Sécurité informatique, cryptographie et VPN](./original/penetration-testing-prerequisites/introduction.html)
+- [Protocoles réseau et modèle OSI](./original/penetration-testing-prerequisites/networking.html)
+- [Fondamentaux HTTP et HTTPS](./original/penetration-testing-prerequisites/web-applications.html)
 
 [Retour au cours](./cours.md) · [Cheatsheet](./cheatsheet.md)

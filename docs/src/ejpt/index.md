@@ -32,7 +32,7 @@ Un parcours progressif pour apprendre les fondamentaux du pentest et s'entraîne
   </a>
 </div>
 
-La traduction française des cours est en cours. Les commandes et les images originales sont conservées.
+Les cours en français sont organisés par module. Les commandes et les illustrations d’origine sont conservées dans le parcours.
 
 [Programme eJPT officiel](https://ine.com/security/certifications/ejpt-certification)
 
