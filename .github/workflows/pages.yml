@@ -121,6 +121,11 @@ jobs:
           assert len(sheet.select('.ejpt-final-reviewed-heading'))==final_layout['titles'], 'Final chapter titles incomplete'
           for kind in ('social','web','cms'):
               assert len(sheet.select('.ejpt-final-'+kind))==final_layout[kind]==2, 'Missing final chapter context'
+          large=report['cheatsheet_long_block_review']
+          assert large['reviewed']>=50, 'Large-block review did not cover the expected source blocks'
+          assert large['split']>0, 'No long code blocks were reorganized'
+          assert large['after_long']<large['before_long'], 'Long-block review did not reduce large blocks'
+          assert large['preserved'] is True, 'Long-block review changed original code'
           assert sum(x['blocks'] for x in report['cheatsheet_block_sizes'].values())==len(sheet.select('pre code')), 'Block size inventory incomplete'
           assert len(sheet.select('.ejpt-footprint-heading'))==report['cheatsheet_footprinting_actions']==7, 'Incomplete footprinting presentation'
           assert len(sheet.select('h4[id^="reseau-"]'))==15, 'Missing networking platform headings'
