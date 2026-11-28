@@ -2406,6 +2406,57 @@ def format_host_network_navigation(article, page):
     return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
 
 
+WEB_LABS_GENERAL_PAGES = {
+    "webapp-penetration-testing/README.html",
+    "webapp-penetration-testing/1-webapp-http.html",
+    "webapp-penetration-testing/1-webapp-http/webapp-scan.html",
+    "exam-preparation-labs/README.html",
+    "exam-preparation-labs/p.t.-prerequisites-labs/README.html",
+    "exam-preparation-labs/p.t.-prerequisites-labs/http-s-traffic-sniffing.html",
+    "exam-preparation-labs/pts2-labs.html",
+}
+WEB_LABS_LABELS = {
+    "Topics": "Thèmes abordés",
+    "Disclaimer": "Avertissement",
+    "Request Methods": "Méthodes HTTP",
+    "Response Status Codes": "Codes de statut HTTP",
+    "INE - PTSv2 Course": "Parcours PTSv2 sur INE",
+}
+def format_web_labs_navigation(article, page):
+    before = [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    links = [a["href"] for a in article.find_all("a", href=True)]
+    images = [str(i) for i in article.find_all("img")]
+    ids = [n["id"] for n in article.select("[id]")]
+    renamed = 0
+    overview = 0
+    for heading in article.find_all(re.compile(r"^h[2-6]$")):
+        old = heading.get_text(" ", strip=True)
+        if old in WEB_LABS_LABELS and not heading.find(["code","img","kbd"]):
+            strings = [n for n in heading.find_all(string=True) if str(n).strip()]
+            if len(strings) == 1 and str(strings[0]).strip() == old:
+                strings[0].replace_with(str(strings[0]).replace(old, WEB_LABS_LABELS[old], 1))
+                renamed += 1
+    if page.endswith("/README.html"):
+        translations = {
+            "Intro to Web App Pentesting": "Introduction au pentest Web",
+            "Never use tools and techniques on real IP addresses, hosts or networks without proper authorization!": "Ne jamais utiliser ces outils et techniques sur des adresses IP, des hôtes ou des réseaux réels sans autorisation préalable !",
+        }
+        for node in list(article.find_all(string=True)):
+            if node.find_parent(["pre","code","kbd","samp","script","style"]):
+                continue
+            value = str(node)
+            old = value.strip()
+            if old in translations:
+                node.replace_with(value.replace(old, translations[old], 1))
+                overview += 1
+    assert before == [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    assert links == [a["href"] for a in article.find_all("a", href=True)]
+    assert images == [str(i) for i in article.find_all("img")]
+    assert ids == [n["id"] for n in article.select("[id]")]
+    print("eJPT web/labs navigation:", page, renamed, "headings;", overview, "overview fragments")
+    return {"headings_renamed":renamed, "overview_fragments":overview, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2453,6 +2504,8 @@ for page in report["pages"]:
         report.setdefault("assessment_navigation", {})[page] = format_assessment_navigation(article, page)
     elif page.startswith("hostnetwork-penetration-testing/") and page.split("/", 1)[1] in HOST_NETWORK_OVERVIEW_PAGES:
         report.setdefault("host_network_navigation", {})[page] = format_host_network_navigation(article, page)
+    elif page in WEB_LABS_GENERAL_PAGES:
+        report.setdefault("web_labs_navigation", {})[page] = format_web_labs_navigation(article, page)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
