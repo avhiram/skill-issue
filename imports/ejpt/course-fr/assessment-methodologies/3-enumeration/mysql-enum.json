@@ -43,5 +43,265 @@
     "line": 75,
     "source": "> 📌 There are `10 records` in table *`authors`* inside the books *database*.",
     "translation": "> 📌 La base books contient `10 records` (10 enregistrements) dans la table *`authors`*."
+  },
+  {
+    "line": 81,
+    "source": "- Use the [`mysql_schemadump`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_schemadump/) metasploit module to dump the schema of all databases.",
+    "translation": "- Utiliser le module Metasploit [`mysql_schemadump`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_schemadump/) pour extraire le schéma de toutes les bases de données."
+  },
+  {
+    "line": 136,
+    "source": "- Use the [`mysql_writable_dirs`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_writable_dirs/) metasploit module to enumerate writable directories.",
+    "translation": "- Utiliser le module Metasploit [`mysql_writable_dirs`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_writable_dirs/) pour énumérer les répertoires accessibles en écriture."
+  },
+  {
+    "line": 210,
+    "source": "> 📌 `2` directories are writable: `/tmp` and `/root`",
+    "translation": "> 📌 `2` répertoires sont accessibles en écriture : `/tmp` et `/root`"
+  },
+  {
+    "line": 212,
+    "source": "- Use the [`mysql_file_enum`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_file_enum/) metasploit module to enumerate readable files.",
+    "translation": "- Utiliser le module Metasploit [`mysql_file_enum`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_file_enum/) pour énumérer les fichiers accessibles en lecture."
+  },
+  {
+    "line": 241,
+    "source": "> 📌 `10` sensitive files are readable: `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/mysql/my.cn`, `/etc/hosts`, `/etc/hosts.allow`, `/etc/hosts.deny`, `/etc/issue`, `/etc/fstab`, `/proc/version`",
+    "translation": "> 📌 `10` fichiers sensibles sont accessibles en lecture : `/etc/passwd`, `/etc/shadow`, `/etc/group`, `/etc/mysql/my.cn`, `/etc/hosts`, `/etc/hosts.allow`, `/etc/hosts.deny`, `/etc/issue`, `/etc/fstab`, `/proc/version`"
+  },
+  {
+    "line": 243,
+    "source": "- Use the [`mysql_hashdump`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_hashdump/) metasploit module to list database users and their password hashes.",
+    "translation": "- Utiliser le module Metasploit [`mysql_hashdump`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_hashdump/) pour lister les utilisateurs des bases de données et leurs hashes de mots de passe."
+  },
+  {
+    "line": 274,
+    "source": "> 📌 `8` db users are present:",
+    "translation": "> 📌 `8` utilisateurs de bases de données sont présents :"
+  },
+  {
+    "line": 302,
+    "source": "<summary>Reveal Flag - System password hash for user “root” is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : hash du mot de passe système de l’utilisateur « root » : 🚩</summary>"
+  },
+  {
+    "line": 313,
+    "source": "- Use [nmap mysql-empty-password script](https://nmap.org/nsedoc/scripts/mysql-empty-password.html) to check MySQL with an empty password for **`root`** and ***anonymous*** users.",
+    "translation": "- Utiliser le [script nmap mysql-empty-password](https://nmap.org/nsedoc/scripts/mysql-empty-password.html) pour vérifier les connexions MySQL sans mot de passe des utilisateurs **`root`** et ***anonymous***."
+  },
+  {
+    "line": 327,
+    "source": "> 📌 *root* and *anonymous* users login is permitted without password.",
+    "translation": "> 📌 Les utilisateurs *root* et *anonymous* peuvent se connecter sans mot de passe."
+  },
+  {
+    "line": 329,
+    "source": "- Use [nmap `mysql-info` script](https://nmap.org/nsedoc/scripts/mysql-info.html) to check MySQL server information.",
+    "translation": "- Utiliser le [script nmap `mysql-info`](https://nmap.org/nsedoc/scripts/mysql-info.html) pour consulter les informations du serveur MySQL."
+  },
+  {
+    "line": 352,
+    "source": "> 📌 `InteractiveClient` is supported on the server.",
+    "translation": "> 📌 `InteractiveClient` est pris en charge par le serveur."
+  },
+  {
+    "line": 354,
+    "source": "- Use [nmap ``mysql-users`` script](https://nmap.org/nsedoc/scripts/mysql-users.html) to list all MySQL db users",
+    "translation": "- Utiliser le [script nmap ``mysql-users``](https://nmap.org/nsedoc/scripts/mysql-users.html) pour lister tous les utilisateurs des bases de données MySQL"
+  },
+  {
+    "line": 375,
+    "source": "> 📌 DB users are: `filetest`, `root`, `debian-sys-maint`, `guest`, `sigver`, `sysadmin`, `udadmin`, `ultra`",
+    "translation": "> 📌 Utilisateurs des bases de données : `filetest`, `root`, `debian-sys-maint`, `guest`, `sigver`, `sysadmin`, `udadmin`, `ultra`"
+  },
+  {
+    "line": 377,
+    "source": "- Use [nmap ``mysql-databases`` script](https://nmap.org/nsedoc/scripts/mysql-databases.html) to list all MySQL db users",
+    "translation": "- Utiliser le [script nmap ``mysql-databases``](https://nmap.org/nsedoc/scripts/mysql-databases.html) pour lister tous les utilisateurs des bases de données MySQL"
+  },
+  {
+    "line": 401,
+    "source": "> 📌 MySQL databases are `information_schema`, `books`, `data`, `mysql`, `password`, `performance_schema`, `secret`, `store`, `upload`, `vendors`, `videos`",
+    "translation": "> 📌 Bases de données MySQL : `information_schema`, `books`, `data`, `mysql`, `password`, `performance_schema`, `secret`, `store`, `upload`, `vendors`, `videos`"
+  },
+  {
+    "line": 403,
+    "source": "- Use [nmap ``mysql-variables`` script](https://nmap.org/nsedoc/scripts/mysql-variables.html) to show MySQL variables.",
+    "translation": "- Utiliser le [script nmap ``mysql-variables``](https://nmap.org/nsedoc/scripts/mysql-variables.html) pour afficher les variables MySQL."
+  },
+  {
+    "line": 411,
+    "source": "> 📌 The data directory used by MySQL server is *datadir:* `var/lib/mysql/`",
+    "translation": "> 📌 Répertoire de données utilisé par le serveur MySQL (*datadir*) : `var/lib/mysql/`"
+  },
+  {
+    "line": 413,
+    "source": "- Use [nmap ``mysql-audit`` script](https://nmap.org/nsedoc/scripts/mysql-audit.html) to audit MySQL server security configuration.",
+    "translation": "- Utiliser le [script nmap ``mysql-audit``](https://nmap.org/nsedoc/scripts/mysql-audit.html) pour auditer la configuration de sécurité du serveur MySQL."
+  },
+  {
+    "line": 468,
+    "source": "> 📌 `No File privileges can be granted` to non admin users.",
+    "translation": "> 📌 `No File privileges can be granted` : aucun privilège sur les fichiers ne peut être accordé aux utilisateurs non administrateurs."
+  },
+  {
+    "line": 470,
+    "source": "- Use [nmap ``mysql-dump-hashes`` script](https://nmap.org/nsedoc/scripts/mysql-dump-hashes.html) to dump the password hashes.",
+    "translation": "- Utiliser le [script nmap ``mysql-dump-hashes``](https://nmap.org/nsedoc/scripts/mysql-dump-hashes.html) pour extraire les hashes de mots de passe."
+  },
+  {
+    "line": 490,
+    "source": "> 📌 Users hashes are:",
+    "translation": "> 📌 Hashes des utilisateurs :"
+  },
+  {
+    "line": 506,
+    "source": "- Use [nmap ``mysql-query`` script](https://nmap.org/nsedoc/scripts/mysql-query.html) to run a query against a MySQL db.",
+    "translation": "- Utiliser le [script nmap ``mysql-query``](https://nmap.org/nsedoc/scripts/mysql-query.html) pour exécuter une requête sur une base de données MySQL."
+  },
+  {
+    "line": 528,
+    "source": ">  🔬 [MySQL Recon: Dictionary Attack](https://attackdefense.com/challengedetails?cid=532)",
+    "translation": ">  🔬 [Reconnaissance MySQL : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=532)"
+  },
+  {
+    "line": 530,
+    "source": ">  - Target IP: `10.4.16.17`",
+    "translation": ">  - IP cible : `10.4.16.17`"
+  },
+  {
+    "line": 531,
+    "source": ">  - `MySQL` server dictionary attack.",
+    "translation": ">  - Attaque par dictionnaire sur le serveur `MySQL`."
+  },
+  {
+    "line": 546,
+    "source": "- Use the [`mysql_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_login/) metasploit module to bruteforce user login.",
+    "translation": "- Utiliser le module Metasploit [`mysql_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/mysql/mysql_login/) pour effectuer un bruteforce des identifiants utilisateurs."
+  },
+  {
+    "line": 570,
+    "source": "- Use `hydra` tool with the same metasploit `unix_passwords` list to bruteforce root login.",
+    "translation": "- Utiliser l’outil `hydra` avec la même wordlist Metasploit `unix_passwords` pour effectuer un bruteforce de la connexion root."
+  },
+  {
+    "line": 585,
+    "source": "<summary>Reveal Flag - MySQL server \"root\" password is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : mot de passe « root » du serveur MySQL : 🚩</summary>"
+  },
+  {
+    "line": 597,
+    "source": ">  🔬 [Recon: MSSQL: Nmap Scripts](https://attackdefense.com/challengedetails?cid=2313)",
+    "translation": ">  🔬 [Reconnaissance MSSQL : scripts Nmap](https://attackdefense.com/challengedetails?cid=2313)"
+  },
+  {
+    "line": 599,
+    "source": ">  - Target IP: `10.4.21.27`",
+    "translation": ">  - IP cible : `10.4.21.27`"
+  },
+  {
+    "line": 600,
+    "source": ">  - `Windows MSSQL` server enumeration with `nmap`",
+    "translation": ">  - Énumération d’un serveur `Windows MSSQL` avec `nmap`"
+  },
+  {
+    "line": 644,
+    "source": "- *Sending a MS-TDS NTLM authentication request with an invalid domain and null credentials will cause the remote service to respond with a NTLMSSP message disclosing information to include NetBIOS, DNS, and OS build version.*",
+    "translation": "- *L’envoi d’une requête d’authentification MS-TDS NTLM avec un domaine invalide et des identifiants nuls provoque une réponse NTLMSSP du service distant. Celle-ci divulgue des informations telles que NetBIOS, DNS et la version de build du système.*"
+  },
+  {
+    "line": 645,
+    "source": "- For above default scripts, `nmap --script` command option can also be used:",
+    "translation": "- Pour les scripts par défaut ci-dessus, l’option `nmap --script` peut aussi être utilisée :"
+  },
+  {
+    "line": 655,
+    "source": "> 📌 Server is `Microsoft SQL Server 2019`",
+    "translation": "> 📌 Le serveur est `Microsoft SQL Server 2019`"
+  },
+  {
+    "line": 657,
+    "source": "- Enumerate MSSQL users and password.",
+    "translation": "- Énumérer les utilisateurs MSSQL et leurs mots de passe."
+  },
+  {
+    "line": 675,
+    "source": "> 📌 Valid MSSQL users and passwords are:",
+    "translation": "> 📌 Identifiants MSSQL valides :"
+  },
+  {
+    "line": 683,
+    "source": "- Check empty password users.",
+    "translation": "- Vérifier les utilisateurs sans mot de passe."
+  },
+  {
+    "line": 689,
+    "source": "> 📌 ***sa*** user is enabled with `empty password`.",
+    "translation": "> 📌 L’utilisateur ***sa*** est activé avec un `empty password` (mot de passe vide)."
+  },
+  {
+    "line": 691,
+    "source": "- Extract *sysusers* from MSSQL and store the output in a file",
+    "translation": "- Extraire *sysusers* de MSSQL et enregistrer le résultat dans un fichier"
+  },
+  {
+    "line": 699,
+    "source": "- Dump MSSQL users hashes",
+    "translation": "- Extraire les hashes des utilisateurs MSSQL"
+  },
+  {
+    "line": 707,
+    "source": "> 📌 ***MSSQL*** users hashes are:",
+    "translation": "> 📌 Hashes des utilisateurs ***MSSQL*** :"
+  },
+  {
+    "line": 725,
+    "source": "- Execute a command using [`ms-sql-xp-cmdshell`](https://nmap.org/nsedoc/scripts/ms-sql-xp-cmdshell.html) nmap script.",
+    "translation": "- Exécuter une commande avec le script nmap [`ms-sql-xp-cmdshell`](https://nmap.org/nsedoc/scripts/ms-sql-xp-cmdshell.html)."
+  },
+  {
+    "line": 726,
+    "source": "  - [xp_cmdshell](https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/xp-cmdshell-transact-sql?view=sql-server-ver15) *spawns a Windows command shell and passes in a string for execution*",
+    "translation": "  - [xp_cmdshell](https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/xp-cmdshell-transact-sql?view=sql-server-ver15) *lance un shell de commandes Windows et lui transmet une chaîne à exécuter*"
+  },
+  {
+    "line": 741,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 753,
+    "source": ">  🔬 [Recon: MSSQL: Metasploit](https://attackdefense.com/challengedetails?cid=2314)",
+    "translation": ">  🔬 [Reconnaissance MSSQL : Metasploit](https://attackdefense.com/challengedetails?cid=2314)"
+  },
+  {
+    "line": 755,
+    "source": ">  - Target IP: `10.4.23.176`",
+    "translation": ">  - IP cible : `10.4.23.176`"
+  },
+  {
+    "line": 756,
+    "source": ">  - `Windows MSSQL` server enumeration with `metasploit`",
+    "translation": ">  - Énumération d’un serveur `Windows MSSQL` avec `metasploit`"
+  },
+  {
+    "line": 790,
+    "source": "> 📌 Server is `Microsoft SQL Server 2019`",
+    "translation": "> 📌 Le serveur est `Microsoft SQL Server 2019`"
+  },
+  {
+    "line": 792,
+    "source": "- User Metasploit to enumerate MSSQL configuration, logins, users and execute a command on the target machine.",
+    "translation": "- Utiliser Metasploit pour énumérer la configuration MSSQL, les identifiants et les utilisateurs, puis exécuter une commande sur la machine cible."
+  },
+  {
+    "line": 816,
+    "source": "> 📌 **`sa`** user has `empty password`.",
+    "translation": "> 📌 L’utilisateur **`sa`** possède un `empty password` (mot de passe vide)."
+  },
+  {
+    "line": 821,
+    "source": "<summary>Reveal Flag - other users and passwords are: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : autres utilisateurs et mots de passe : 🚩</summary>"
   }
 ]

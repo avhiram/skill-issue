@@ -15,6 +15,16 @@
     "translation": "- `e.g.` Sous Windows, le partage et le mappage de lecteurs avec des lettres utilisent SMB."
   },
   {
+    "line": 9,
+    "source": "Usually SMB can be found on ports **`139`** or **`445`** and `nmap` service and scripts enumeration (`-sV`, `-sC`) can find more info about the O.S. version.",
+    "translation": "SMB est généralement accessible sur les ports **`139`** ou **`445`**. L’énumération des services et des scripts avec `nmap` (`-sV`, `-sC`) permet d’obtenir davantage d’informations sur la version du système."
+  },
+  {
+    "line": 11,
+    "source": "After finding SMB through port scanning, gather more information with `nmap`.",
+    "translation": "Après avoir identifié SMB par un scan de ports, recueillir davantage d’informations avec `nmap`."
+  },
+  {
     "line": 19,
     "source": ">  🔬 [Windows Recon: SMB Nmap Scripts](https://attackdefense.com/challengedetailsnoauth?cid=2222)",
     "translation": ">  🔬 [Reconnaissance Windows : SMB et scripts Nmap](https://attackdefense.com/challengedetailsnoauth?cid=2222)"
@@ -23,5 +33,465 @@
     "line": 21,
     "source": ">  - Target IP: `10.2.24.25`",
     "translation": ">  - IP cible du laboratoire : `10.2.24.25`"
+  },
+  {
+    "line": 22,
+    "source": ">  - Enumeration of SMB protocol dialects, security level information, active sessions, Windows users and shares, domains, services.",
+    "translation": ">  - Énumération des dialectes SMB, des informations sur le niveau de sécurité, des sessions actives, des utilisateurs et partages Windows, des domaines et des services."
+  },
+  {
+    "line": 40,
+    "source": "- SMB port `445` is open, use a specific [nmap script](https://nmap.org/nsedoc/scripts/smb-protocols.html) to list the *SMB server supported protocols and dialects*",
+    "translation": "- Le port SMB `445` est ouvert. Utiliser un [script nmap spécifique](https://nmap.org/nsedoc/scripts/smb-protocols.html) pour lister les *protocoles et dialectes pris en charge par le serveur SMB*."
+  },
+  {
+    "line": 59,
+    "source": "- Find [SMB security level](https://nmap.org/nsedoc/scripts/smb-security-mode.html) with another nmap script",
+    "translation": "- Identifier le [niveau de sécurité SMB](https://nmap.org/nsedoc/scripts/smb-security-mode.html) avec un autre script nmap"
+  },
+  {
+    "line": 76,
+    "source": "- Enumerate [SMB logged in users](https://nmap.org/nsedoc/scripts/smb-enum-sessions.html)",
+    "translation": "- Énumérer les [utilisateurs connectés via SMB](https://nmap.org/nsedoc/scripts/smb-enum-sessions.html)"
+  },
+  {
+    "line": 93,
+    "source": "- Use the provided user and password to enumerate the same login sessions",
+    "translation": "- Utiliser le nom d’utilisateur et le mot de passe fournis pour énumérer les mêmes sessions"
+  },
+  {
+    "line": 110,
+    "source": "- Enumerate [SMB shares](https://nmap.org/nsedoc/scripts/smb-enum-shares.html) with a *guest* user",
+    "translation": "- Énumérer les [partages SMB](https://nmap.org/nsedoc/scripts/smb-enum-shares.html) avec un utilisateur *guest*"
+  },
+  {
+    "line": 162,
+    "source": "> 📌 **`IPC$`** ([`null session connection`](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/inter-process-communication-share-null-session)) - with this session, Windows lets guest *anonymous users enumerate the names of domain accounts and network shares*.",
+    "translation": "> 📌 **`IPC$`** ([`null session connection`](https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/inter-process-communication-share-null-session)) : avec cette session, Windows permet aux *utilisateurs invités anonymes d’énumérer les noms des comptes de domaine et des partages réseau*."
+  },
+  {
+    "line": 166,
+    "source": "- Enumerate SMB shares with an *authenticated* user (administrator account)",
+    "translation": "- Énumérer les partages SMB avec un utilisateur *authentifié* (compte administrateur)"
+  },
+  {
+    "line": 242,
+    "source": "> 📌 The authenticated user, the **administrator** in this case, has **Read & Write** privileges to the entire `C$` (and `D$`) drive.",
+    "translation": "> 📌 L’utilisateur authentifié, ici l’**administrateur**, dispose des privilèges de **lecture et écriture** sur l’intégralité du lecteur `C$` (et `D$`)."
+  },
+  {
+    "line": 246,
+    "source": "- Enumerate [Windows users](https://nmap.org/nsedoc/scripts/smb-enum-users.html)",
+    "translation": "- Énumérer les [utilisateurs Windows](https://nmap.org/nsedoc/scripts/smb-enum-users.html)"
+  },
+  {
+    "line": 265,
+    "source": "> 📌 Three users are present with some dangerous *flags* and misconfigurations.",
+    "translation": "> 📌 Trois utilisateurs sont présents avec des *flags* à risque et des erreurs de configuration."
+  },
+  {
+    "line": 267,
+    "source": "> - `Guest` user - *no password expiration, password not required, normal user account*",
+    "translation": "> - Utilisateur `Guest` : *mot de passe sans expiration, mot de passe non requis, compte utilisateur standard*"
+  },
+  {
+    "line": 268,
+    "source": "> - `Administrator`, `bob` - *no password expiration*",
+    "translation": "> - `Administrator`, `bob` : *mot de passe sans expiration*"
+  },
+  {
+    "line": 272,
+    "source": "- Get some [server statistics](https://nmap.org/nsedoc/scripts/smb-server-stats.html)",
+    "translation": "- Récupérer des [statistiques du serveur](https://nmap.org/nsedoc/scripts/smb-server-stats.html)"
+  },
+  {
+    "line": 288,
+    "source": "- Enumerate [system domains](https://nmap.org/nsedoc/scripts/smb-enum-domains.html) and policies",
+    "translation": "- Énumérer les [domaines du système](https://nmap.org/nsedoc/scripts/smb-enum-domains.html) et leurs stratégies"
+  },
+  {
+    "line": 314,
+    "source": "- Enumerate [available groups](https://nmap.org/nsedoc/scripts/smb-enum-groups.html)",
+    "translation": "- Énumérer les [groupes disponibles](https://nmap.org/nsedoc/scripts/smb-enum-groups.html)"
+  },
+  {
+    "line": 352,
+    "source": "- Enumerate [services](https://nmap.org/nsedoc/scripts/smb-enum-services.html) on the target machine",
+    "translation": "- Énumérer les [services](https://nmap.org/nsedoc/scripts/smb-enum-services.html) sur la machine cible"
+  },
+  {
+    "line": 414,
+    "source": "- Retrieve useful information from all the shared folders, running the [`ls` command](https://nmap.org/nsedoc/scripts/smb-ls.html) on all of them",
+    "translation": "- Récupérer des informations utiles dans tous les dossiers partagés en exécutant la [commande `ls`](https://nmap.org/nsedoc/scripts/smb-ls.html) sur chacun"
+  },
+  {
+    "line": 518,
+    "source": ">  🔬 [Windows Recon: SMBMap](https://attackdefense.com/challengedetails?cid=2221)",
+    "translation": ">  🔬 [Reconnaissance Windows : SMBMap](https://attackdefense.com/challengedetails?cid=2221)"
+  },
+  {
+    "line": 520,
+    "source": ">  - Target IP: `10.2.21.233`",
+    "translation": ">  - IP cible : `10.2.21.233`"
+  },
+  {
+    "line": 521,
+    "source": ">  - Use of [`smbmap`](https://www.kali.org/tools/smbmap/) to enumerate samba shares and permissions. Upload, download, delete files",
+    "translation": ">  - Utilisation de [`smbmap`](https://www.kali.org/tools/smbmap/) pour énumérer les partages Samba et leurs permissions. Téléversement, téléchargement et suppression de fichiers"
+  },
+  {
+    "line": 539,
+    "source": "- SMB port `445` is open, list the SMB protocols",
+    "translation": "- Le port SMB `445` est ouvert. Lister les protocoles SMB"
+  },
+  {
+    "line": 556,
+    "source": "- Enumerate the target machine with **`smbmap`**",
+    "translation": "- Énumérer la machine cible avec **`smbmap`**"
+  },
+  {
+    "line": 578,
+    "source": "- Login with administrator and enumerate with `smbmap`",
+    "translation": "- Se connecter en tant qu’administrateur et effectuer l’énumération avec `smbmap`"
+  },
+  {
+    "line": 586,
+    "source": "- Run a command using the smbmap `-x` option",
+    "translation": "- Exécuter une commande avec l’option `-x` de smbmap"
+  },
+  {
+    "line": 592,
+    "source": "> ❗ ***R**emote **C**ode **E**xecution* (**`RCE`**) can be achieved through SMB!",
+    "translation": "> ❗ Une exécution de code à distance (*Remote Code Execution*, **`RCE`**) est possible via SMB !"
+  },
+  {
+    "line": 596,
+    "source": "- List all drives with `-L` option",
+    "translation": "- Lister tous les lecteurs avec l’option `-L`"
+  },
+  {
+    "line": 610,
+    "source": "- List directory contents with `-r` option",
+    "translation": "- Lister le contenu des répertoires avec l’option `-r`"
+  },
+  {
+    "line": 639,
+    "source": "- Upload a sample file to the `C:\\` drive",
+    "translation": "- Téléverser un fichier d’exemple sur le lecteur `C:\\`"
+  },
+  {
+    "line": 658,
+    "source": "- Download a file, the flag file in this case",
+    "translation": "- Télécharger un fichier, ici le fichier contenant le flag"
+  },
+  {
+    "line": 674,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 683,
+    "source": ">  🔬 [Samba Recon: Basics 1](https://attackdefense.com/challengedetails?cid=553)",
+    "translation": ">  🔬 [Reconnaissance Samba : fondamentaux 1](https://attackdefense.com/challengedetails?cid=553)"
+  },
+  {
+    "line": 685,
+    "source": ">  - Target IP: `192.28.157.3`",
+    "translation": ">  - IP cible : `192.28.157.3`"
+  },
+  {
+    "line": 686,
+    "source": ">  - Linux SMB (**`smbd`**) enumeration",
+    "translation": ">  - Énumération SMB sous Linux (**`smbd`**)"
+  },
+  {
+    "line": 693,
+    "source": "- Target IP is `192.28.157.3`",
+    "translation": "- IP cible : `192.28.157.3`"
+  },
+  {
+    "line": 715,
+    "source": "> 📌 Default `smbd` TCP used ports are `139`, `445`. Workgroup name of samba server is `RECONLABS`.",
+    "translation": "> 📌 Les ports TCP utilisés par défaut par `smbd` sont `139`, `445`. Le nom du groupe de travail du serveur Samba est `RECONLABS`."
+  },
+  {
+    "line": 726,
+    "source": "> 📌  Default `nmbd` UDP used ports are `137`, `138`",
+    "translation": "> 📌 Les ports UDP utilisés par défaut par `nmbd` sont `137`, `138`"
+  },
+  {
+    "line": 745,
+    "source": "> 📌 Version of samba server is `Samba 4.3.11-Ubuntu`. NetBIOS computer name is `SAMBA-RECON`.",
+    "translation": "> 📌 Version du serveur Samba : `Samba 4.3.11-Ubuntu`. Nom NetBIOS de la machine : `SAMBA-RECON`."
+  },
+  {
+    "line": 749,
+    "source": "- Use the **`Metasploit Framework`** and its [**`msfconsole`**](https://www.offensive-security.com/metasploit-unleashed/msfconsole/) interface tool to enumerate samba version.",
+    "translation": "- Utiliser le **`Metasploit Framework`** et son interface [**`msfconsole`**](https://www.offensive-security.com/metasploit-unleashed/msfconsole/) pour identifier la version de Samba."
+  },
+  {
+    "line": 774,
+    "source": "> **`nmblookup`** - *NetBIOS over TCP/IP client used to lookup NetBIOS names*",
+    "translation": "> **`nmblookup`** : *client NetBIOS sur TCP/IP permettant de rechercher des noms NetBIOS*"
+  },
+  {
+    "line": 795,
+    "source": "> **`smbclient`** - *ftp-like client to access SMB/CIFS resources on servers*",
+    "translation": "> **`smbclient`** : *client de type FTP permettant d’accéder aux ressources SMB/CIFS sur les serveurs*"
+  },
+  {
+    "line": 827,
+    "source": "> **`rpcclient`** - tool for executing client side MS-RPC functions",
+    "translation": "> **`rpcclient`** : outil permettant d’exécuter des fonctions MS-RPC côté client"
+  },
+  {
+    "line": 836,
+    "source": "<summary>Reveal Flag - The NetBIOS computer name is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : nom NetBIOS de la machine : 🚩</summary>"
+  },
+  {
+    "line": 845,
+    "source": ">  🔬 [Samba Recon: Basics 2](https://attackdefense.com/challengedetails?cid=554)",
+    "translation": ">  🔬 [Reconnaissance Samba : fondamentaux 2](https://attackdefense.com/challengedetails?cid=554)"
+  },
+  {
+    "line": 847,
+    "source": ">  - Target IP: `192.230.128.3`",
+    "translation": ">  - IP cible : `192.230.128.3`"
+  },
+  {
+    "line": 848,
+    "source": ">  - Linux SMB enumeration",
+    "translation": ">  - Énumération SMB sous Linux"
+  },
+  {
+    "line": 855,
+    "source": "- Target IP is `192.230.128.3`",
+    "translation": "- IP cible : `192.230.128.3`"
+  },
+  {
+    "line": 875,
+    "source": "> 📌 OS Version of samba server is `6.1`.",
+    "translation": "> 📌 Version du système du serveur Samba : `6.1`."
+  },
+  {
+    "line": 879,
+    "source": "> **`enum4linux`** - tool for enumerating data from Windows and Samba hosts",
+    "translation": "> **`enum4linux`** : outil d’énumération des données des hôtes Windows et Samba"
+  },
+  {
+    "line": 926,
+    "source": "- Find samba server description",
+    "translation": "- Identifier la description du serveur Samba"
+  },
+  {
+    "line": 950,
+    "source": "> 📌 Samba server description is  `samba.recon.lab`",
+    "translation": "> 📌 Description du serveur Samba : `samba.recon.lab`"
+  },
+  {
+    "line": 968,
+    "source": "> 📌 NTLM 0.12 (SMBv1) dialects supported",
+    "translation": "> 📌 Dialectes NTLM 0.12 (SMBv1) pris en charge"
+  },
+  {
+    "line": 989,
+    "source": "> 📌 [SMB2](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/smb2/) is supported and has been online for 3700245 hours",
+    "translation": "> 📌 [SMB2](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/smb2/) est pris en charge et est en ligne depuis 3700245 heures"
+  },
+  {
+    "line": 991,
+    "source": "- List all Samba server users with various techniques/tools",
+    "translation": "- Lister tous les utilisateurs du serveur Samba avec différentes techniques et outils"
+  },
+  {
+    "line": 1010,
+    "source": "> 📌 Users are: `john`, `elie`, `aisha`, `shawn`, `emma`, `admin`",
+    "translation": "> 📌 Utilisateurs : `john`, `elie`, `aisha`, `shawn`, `emma`, `admin`"
+  },
+  {
+    "line": 1094,
+    "source": "- Find SID of user “admin” using rpcclient.",
+    "translation": "- Identifier le SID de l’utilisateur « admin » avec rpcclient."
+  },
+  {
+    "line": 1114,
+    "source": "<summary>Reveal Flag - SID of user “admin” is:  🚩</summary>",
+    "translation": "<summary>Afficher le flag : SID de l’utilisateur « admin » : 🚩</summary>"
+  },
+  {
+    "line": 1123,
+    "source": ">  🔬 [Samba Recon: Basics 3](https://attackdefense.com/challengedetails?cid=555)",
+    "translation": ">  🔬 [Reconnaissance Samba : fondamentaux 3](https://attackdefense.com/challengedetails?cid=555)"
+  },
+  {
+    "line": 1125,
+    "source": ">  - Target IP: `192.187.39.3`",
+    "translation": ">  - IP cible : `192.187.39.3`"
+  },
+  {
+    "line": 1126,
+    "source": ">  - Linux SMB detailed enumeration",
+    "translation": ">  - Énumération SMB détaillée sous Linux"
+  },
+  {
+    "line": 1133,
+    "source": "- Target IP is `192.230.128.3`",
+    "translation": "- IP cible : `192.230.128.3`"
+  },
+  {
+    "line": 1141,
+    "source": "- List all Samba server shares with various techniques/tools",
+    "translation": "- Lister tous les partages du serveur Samba avec différentes techniques et outils"
+  },
+  {
+    "line": 1201,
+    "source": "> 📌 Available shares on the samba server are `IPC$`, `aisha`, `emma`, `everyone`, `john`, `public`.",
+    "translation": "> 📌 Partages disponibles sur le serveur Samba : `IPC$`, `aisha`, `emma`, `everyone`, `john`, `public`."
+  },
+  {
+    "line": 1287,
+    "source": "- Find domain groups on the samba server",
+    "translation": "- Identifier les groupes de domaine sur le serveur Samba"
+  },
+  {
+    "line": 1325,
+    "source": "> 📌 Available domain groups are `Maintainer`, `Reserved`",
+    "translation": "> 📌 Groupes de domaine disponibles : `Maintainer`, `Reserved`"
+  },
+  {
+    "line": 1327,
+    "source": "- Check if samba server is configured for printing",
+    "translation": "- Vérifier si le serveur Samba est configuré pour l’impression"
+  },
+  {
+    "line": 1340,
+    "source": "> 📌 No printers returned.",
+    "translation": "> 📌 Aucune imprimante retournée."
+  },
+  {
+    "line": 1357,
+    "source": "> 📌 There are 2 directories present inside `public` share: `secret` and `dev`",
+    "translation": "> 📌 Le partage `public` contient 2 répertoires : `secret` et `dev`"
+  },
+  {
+    "line": 1377,
+    "source": "<summary>Reveal Flag:  🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 1388,
+    "source": ">  🔬 [Samba Recon: Dictionary Attack](https://attackdefense.com/challengedetails?cid=556)",
+    "translation": ">  🔬 [Reconnaissance Samba : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=556)"
+  },
+  {
+    "line": 1390,
+    "source": ">  - Target IP: `192.174.58.3`",
+    "translation": ">  - IP cible : `192.174.58.3`"
+  },
+  {
+    "line": 1391,
+    "source": ">  - Linux SMB detailed enumeration using `word lists`",
+    "translation": ">  - Énumération SMB détaillée sous Linux avec des `word lists` (wordlists)"
+  },
+  {
+    "line": 1393,
+    "source": "`Word lists` are lists of already known and used passwords, some of them leaked from breached websites or other services. Those passwords can be used as part of the attack via brute force tools.",
+    "translation": "Les `Word lists` sont des listes de mots de passe déjà connus et utilisés. Certains proviennent de fuites de sites Web ou d’autres services. Ces mots de passe peuvent être utilisés lors d’une attaque avec des outils de brute force."
+  },
+  {
+    "line": 1395,
+    "source": "In Kali Linux [wordlists](https://www.kali.org/tools/wordlists/) can be found inside `/usr/share/wordlists` directory.",
+    "translation": "Dans Kali Linux, les [wordlists](https://www.kali.org/tools/wordlists/) se trouvent dans le répertoire `/usr/share/wordlists`."
+  },
+  {
+    "line": 1407,
+    "source": "- Target IP is `192.174.58.3`",
+    "translation": "- IP cible : `192.174.58.3`"
+  },
+  {
+    "line": 1415,
+    "source": "- Use [`smb_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/smb_login) metasploit module to bruteforce *jane*'s password",
+    "translation": "- Utiliser le module Metasploit [`smb_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/smb_login) pour trouver le mot de passe de *jane* par bruteforce"
+  },
+  {
+    "line": 1447,
+    "source": "> 📌 Jane's password is `abc123`",
+    "translation": "> 📌 Le mot de passe de Jane est `abc123`"
+  },
+  {
+    "line": 1451,
+    "source": "> [**`hydra`**](https://github.com/vanhauser-thc/thc-hydra) - tool to guess/crack valid login/password pairs",
+    "translation": "> [**`hydra`**](https://github.com/vanhauser-thc/thc-hydra) : outil permettant de deviner ou de retrouver des couples identifiant et mot de passe valides"
+  },
+  {
+    "line": 1453,
+    "source": "- Use `hydra` tool to find *admin* user password",
+    "translation": "- Utiliser l’outil `hydra` pour trouver le mot de passe de l’utilisateur *admin*"
+  },
+  {
+    "line": 1468,
+    "source": "> 📌 *admin*'s password is `password1`",
+    "translation": "> 📌 Le mot de passe de *admin* est `password1`"
+  },
+  {
+    "line": 1470,
+    "source": "- Find `smb shares` using found credentials",
+    "translation": "- Identifier les `smb shares` (partages SMB) avec les identifiants trouvés"
+  },
+  {
+    "line": 1488,
+    "source": "> 📌 *Read-only* share is `nancy`",
+    "translation": "> 📌 Le partage *en lecture seule* est `nancy`"
+  },
+  {
+    "line": 1515,
+    "source": "> 📌 *jane*'s share is not browsable but it exists.",
+    "translation": "> 📌 Le partage de *jane* n’est pas navigable, mais il existe."
+  },
+  {
+    "line": 1549,
+    "source": "<summary>Reveal Flag:  🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 1556,
+    "source": "- A [named pipe](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wpo/4de75e21-36fd-440a-859b-75accc74487c) is a logical connection between a client and server involved in a SMB connection, similar to an open TCP port.",
+    "translation": "- Un [named pipe](https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-wpo/4de75e21-36fd-440a-859b-75accc74487c) est une connexion logique entre un client et un serveur participant à une connexion SMB, comparable à un port TCP ouvert."
+  },
+  {
+    "line": 1557,
+    "source": "- Use [`pipe_auditor`](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/pipe_auditor) metasploit module to enumerate the named pipes",
+    "translation": "- Utiliser le module Metasploit [`pipe_auditor`](https://www.rapid7.com/db/modules/auxiliary/scanner/smb/pipe_auditor) pour énumérer les named pipes"
+  },
+  {
+    "line": 1578,
+    "source": "> 📌 Named pipes available over SMB are `netlogon`, `lsarpc`, `samr`, `eventlog`, `InitShutdown`, `ntsvcs`, `srvsvc`, `wkssvc`",
+    "translation": "> 📌 Named pipes disponibles via SMB : `netlogon`, `lsarpc`, `samr`, `eventlog`, `InitShutdown`, `ntsvcs`, `srvsvc`, `wkssvc`"
+  },
+  {
+    "line": 1580,
+    "source": "- List users' SID by performing RID cycling.",
+    "translation": "- Lister les SID des utilisateurs par RID cycling."
+  },
+  {
+    "line": 1594,
+    "source": "> 📌 shawn SID is `S-1-22-1-1000`",
+    "translation": "> 📌 SID de shawn : `S-1-22-1-1000`"
+  },
+  {
+    "line": 1596,
+    "source": "> 📌 jane SID is `S-1-22-1-1001`",
+    "translation": "> 📌 SID de jane : `S-1-22-1-1001`"
+  },
+  {
+    "line": 1598,
+    "source": "> 📌 nancy SID is `S-1-22-1-1002`",
+    "translation": "> 📌 SID de nancy : `S-1-22-1-1002`"
+  },
+  {
+    "line": 1600,
+    "source": "> 📌 admin SID is `S-1-22-1-1003`",
+    "translation": "> 📌 SID de admin : `S-1-22-1-1003`"
   }
 ]

@@ -25,9 +25,29 @@
     "translation": ">  - Énumération du serveur [Postfix](https://www.postfix.org/)."
   },
   {
+    "line": 23,
+    "source": "- Target IP is `192.8.3.3`",
+    "translation": "- IP cible : `192.8.3.3`"
+  },
+  {
     "line": 38,
     "source": "> 📌 SMTP server name and banner are:",
     "translation": "> 📌 Nom et bannière du serveur SMTP :"
+  },
+  {
+    "line": 40,
+    "source": "> Server: `Postfix`",
+    "translation": "> Serveur : `Postfix`"
+  },
+  {
+    "line": 42,
+    "source": "> Banner: `openmailbox.xyz ESMTP Postfix: Welcome to our mail server.`",
+    "translation": "> Bannière : `openmailbox.xyz ESMTP Postfix: Welcome to our mail server.`"
+  },
+  {
+    "line": 44,
+    "source": "- Fetch the hostname using `nc`(`netcat`)",
+    "translation": "- Récupérer le nom d’hôte avec `nc`(`netcat`)"
   },
   {
     "line": 54,
@@ -35,8 +55,53 @@
     "translation": "> 📌 Nom d’hôte du serveur SMTP : `openmailbox.xyz`."
   },
   {
+    "line": 56,
+    "source": "- Check if `admin` and `commander` user exists",
+    "translation": "- Vérifier si les utilisateurs `admin` et `commander` existent"
+  },
+  {
+    "line": 74,
+    "source": "- Check supported commands/capabilities using `telnet`",
+    "translation": "- Vérifier les commandes et fonctionnalités prises en charge avec `telnet`"
+  },
+  {
     "line": 96,
     "source": "> 📌 Supported commands/capabilities are",
     "translation": "> 📌 Commandes et fonctionnalités prises en charge :"
+  },
+  {
+    "line": 102,
+    "source": "> **`smtp-user-enum`** - tool for enumerating OS-level user account via the SMTP service",
+    "translation": "> **`smtp-user-enum`** : outil d’énumération des comptes utilisateurs du système via le service SMTP"
+  },
+  {
+    "line": 104,
+    "source": "- Use **`smtp-user-enum`** to find common usernames from specified wordlist",
+    "translation": "- Utiliser **`smtp-user-enum`** pour rechercher les noms d’utilisateur courants dans la wordlist indiquée"
+  },
+  {
+    "line": 112,
+    "source": "> 📌 There are `8` users present on the server, from the above wordlist:",
+    "translation": "> 📌 La wordlist précédente permet d’identifier `8` utilisateurs présents sur le serveur :"
+  },
+  {
+    "line": 130,
+    "source": "- Use `msfconsole` to find common usernames from specified wordlist",
+    "translation": "- Utiliser `msfconsole` pour rechercher les noms d’utilisateur courants dans la wordlist indiquée"
+  },
+  {
+    "line": 148,
+    "source": "> 📌 There are `20` users present on the server, from the `/usr/share/metasploit-framework/data/wordlists/unix_users.txt` wordlist.",
+    "translation": "> 📌 Le serveur comporte `20` utilisateurs identifiés à partir de la wordlist `/usr/share/metasploit-framework/data/wordlists/unix_users.txt`."
+  },
+  {
+    "line": 152,
+    "source": "- Connect to SMTP service using telnet and send a fake mail to root user.",
+    "translation": "- Se connecter au service SMTP avec telnet et envoyer un faux courriel à l’utilisateur root."
+  },
+  {
+    "line": 174,
+    "source": "- Send a fake mail to root user using **`sendemail`** command",
+    "translation": "- Envoyer un faux courriel à l’utilisateur root avec la commande **`sendemail`**"
   }
 ]

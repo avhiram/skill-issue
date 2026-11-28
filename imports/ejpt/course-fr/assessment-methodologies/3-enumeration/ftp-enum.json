@@ -30,6 +30,76 @@
     "translation": ">  - Énumération du serveur [ProFTP](http://www.proftpd.org/)."
   },
   {
+    "line": 25,
+    "source": "- Target IP is `192.217.238.3`",
+    "translation": "- IP cible : `192.217.238.3`"
+  },
+  {
+    "line": 44,
+    "source": "> 📌 FTP server version is `ProFTPD 1.3.5a`.",
+    "translation": "> 📌 Version du serveur FTP : `ProFTPD 1.3.5a`."
+  },
+  {
+    "line": 48,
+    "source": "- Try `anonymous:anonymous` login",
+    "translation": "- Essayer la connexion `anonymous:anonymous`"
+  },
+  {
+    "line": 55,
+    "source": "- Use `hydra` with some users/passwords word lists to check if any credentials work with the ftp server ",
+    "translation": "- Utiliser `hydra` avec des wordlists d’utilisateurs et de mots de passe pour vérifier si des identifiants fonctionnent sur le serveur FTP."
+  },
+  {
+    "line": 76,
+    "source": "> 📌 Found credentials are:",
+    "translation": "> 📌 Identifiants trouvés :"
+  },
+  {
+    "line": 86,
+    "source": "- Use [nmap ftp-brute script](https://nmap.org/nsedoc/scripts/ftp-brute.html) to find the `sysadmin`'s password",
+    "translation": "- Utiliser le [script nmap ftp-brute](https://nmap.org/nsedoc/scripts/ftp-brute.html) pour trouver le mot de passe de `sysadmin`"
+  },
+  {
+    "line": 104,
+    "source": "- Extract the 7 flags hidden on the server by logging in to the `ftp` server with each found user",
+    "translation": "- Récupérer les 7 flags cachés sur le serveur en se connectant au serveur `ftp` avec chaque utilisateur trouvé"
+  },
+  {
+    "line": 117,
+    "source": "<summary>Reveal Flag - sysadmin flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de sysadmin : 🚩</summary>"
+  },
+  {
+    "line": 125,
+    "source": "<summary>Reveal Flag - rooty flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de rooty : 🚩</summary>"
+  },
+  {
+    "line": 133,
+    "source": "<summary>Reveal Flag - demo flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de demo : 🚩</summary>"
+  },
+  {
+    "line": 141,
+    "source": "<summary>Reveal Flag - auditor flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de auditor : 🚩</summary>"
+  },
+  {
+    "line": 149,
+    "source": "<summary>Reveal Flag - anon flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de anon : 🚩</summary>"
+  },
+  {
+    "line": 157,
+    "source": "<summary>Reveal Flag - administrator flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de administrator : 🚩</summary>"
+  },
+  {
+    "line": 165,
+    "source": "<summary>Reveal Flag - diag flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag de diag : 🚩</summary>"
+  },
+  {
     "line": 174,
     "source": ">  🔬 [VSFTPD Recon: Basics](https://attackdefense.com/challengedetails?cid=519)",
     "translation": ">  🔬 [Reconnaissance VSFTPD : fondamentaux](https://attackdefense.com/challengedetails?cid=519)"
@@ -43,5 +113,80 @@
     "line": 177,
     "source": ">  - Enumeration of [vsftpd](https://security.appspot.com/vsftpd.html) server",
     "translation": ">  - Énumération du serveur [vsftpd](https://security.appspot.com/vsftpd.html)."
+  },
+  {
+    "line": 184,
+    "source": "- Target IP is `192.119.169.3`",
+    "translation": "- IP cible : `192.119.169.3`"
+  },
+  {
+    "line": 201,
+    "source": "> 📌 FTP server version `vsftpd 3.0.3`",
+    "translation": "> 📌 Version du serveur FTP : `vsftpd 3.0.3`"
+  },
+  {
+    "line": 203,
+    "source": "- Use [nmap ftp-anon script](https://nmap.org/nsedoc/scripts/ftp-anon.html) to check `anonymous` user login",
+    "translation": "- Utiliser le [script nmap ftp-anon](https://nmap.org/nsedoc/scripts/ftp-anon.html) pour vérifier la connexion de l’utilisateur `anonymous`"
+  },
+  {
+    "line": 216,
+    "source": "> 📌 Anonymous FTP login allowed",
+    "translation": "> 📌 Connexion FTP anonyme autorisée"
+  },
+  {
+    "line": 239,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
+  },
+  {
+    "line": 250,
+    "source": ">  🔬 [VSFTPD Recon: Dictionary Attack](https://attackdefense.com/challengedetails?cid=520)",
+    "translation": ">  🔬 [Reconnaissance VSFTPD : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=520)"
+  },
+  {
+    "line": 252,
+    "source": ">  - Target IP: `192.14.30.3`",
+    "translation": ">  - IP cible : `192.14.30.3`"
+  },
+  {
+    "line": 253,
+    "source": ">  - Dicotionary attack on `vsftpd` server",
+    "translation": ">  - Attaque par dictionnaire sur le serveur `vsftpd`"
+  },
+  {
+    "line": 254,
+    "source": ">  - *FTP server terminates the session after 3 attemps*",
+    "translation": ">  - *Le serveur FTP ferme la session après 3 tentatives*"
+  },
+  {
+    "line": 261,
+    "source": "- Target IP is `192.14.30.3`",
+    "translation": "- IP cible : `192.14.30.3`"
+  },
+  {
+    "line": 290,
+    "source": "> 📌 *billy*'s password is `carlos`",
+    "translation": "> 📌 Le mot de passe de *billy* est `carlos`"
+  },
+  {
+    "line": 292,
+    "source": "- A custom script to attemp the logins is required if automated dictionary attack do not work, since the server terminates the sessions after 3 login attempts.",
+    "translation": "- Si l’attaque automatisée par dictionnaire ne fonctionne pas, un script personnalisé est nécessaire pour tenter les connexions, car le serveur ferme les sessions après 3 tentatives."
+  },
+  {
+    "line": 293,
+    "source": "- `e.g.` python script:",
+    "translation": "- `e.g.` Exemple de script Python :"
+  },
+  {
+    "line": 335,
+    "source": "- Fetch the flag using `billy:carlos` credentials",
+    "translation": "- Récupérer le flag avec les identifiants `billy:carlos`"
+  },
+  {
+    "line": 348,
+    "source": "<summary>Reveal Flag: 🚩</summary>",
+    "translation": "<summary>Afficher le flag : 🚩</summary>"
   }
 ]

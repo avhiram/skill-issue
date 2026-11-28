@@ -40,9 +40,29 @@
     "translation": "> - Version ASP.NET : `4.0.30319`"
   },
   {
+    "line": 73,
+    "source": "> - XSS Protection is `off`(`0`)",
+    "translation": "> - Protection XSS désactivée : `off`(`0`)"
+  },
+  {
+    "line": 74,
+    "source": "> - Default page of the target web app is `/Default.aspx`",
+    "translation": "> - Page par défaut de l’application Web cible : `/Default.aspx`"
+  },
+  {
     "line": 78,
     "source": "> **`httpie`** - CLI, cURL-like tool for humans. Run with **`http`**",
     "translation": "> **`httpie`** : outil en ligne de commande comparable à cURL, conçu pour faciliter les requêtes HTTP. Il se lance avec **`http`**."
+  },
+  {
+    "line": 105,
+    "source": "> [**`dirb`**](https://dirb.sourceforge.net/about.html) - a Web content scanner. It *launches a `dictionary based attack` against a web server, looking for existing Web Objects and analyzing the response*. It comes with a set of preconfigured *attack wordlists*.",
+    "translation": "> [**`dirb`**](https://dirb.sourceforge.net/about.html) : scanner de contenu Web. Il *lance une `dictionary based attack` (attaque par dictionnaire) contre un serveur Web, recherche les objets Web existants et analyse la réponse*. Il inclut des *wordlists d’attaque préconfigurées*."
+  },
+  {
+    "line": 107,
+    "source": "- Try to browse to the found directories to find out if access is granted",
+    "translation": "- Essayer d’accéder aux répertoires trouvés pour vérifier si l’accès est autorisé"
   },
   {
     "line": 167,
@@ -68,5 +88,170 @@
     "line": 184,
     "source": ">  - Enumeration of an `IIS` HTTP server using `nmap` scripts",
     "translation": ">  - Énumération d’un serveur HTTP `IIS` avec les scripts `nmap`."
+  },
+  {
+    "line": 186,
+    "source": "- Use [nmap http-enum script](https://nmap.org/nsedoc/scripts/http-enum.html) to discover and enumerate web server directories",
+    "translation": "- Utiliser le [script nmap http-enum](https://nmap.org/nsedoc/scripts/http-enum.html) pour découvrir et énumérer les répertoires du serveur Web"
+  },
+  {
+    "line": 215,
+    "source": "> 📌 Potentially interesting folders are `content`, `downloads`, `webdav`.",
+    "translation": "> 📌 Répertoires potentiellement intéressants : `content`, `downloads`, `webdav`."
+  },
+  {
+    "line": 217,
+    "source": "- Use [nmap http-headers script](https://nmap.org/nsedoc/scripts/http-headers.html) to display the *HTTP headers*",
+    "translation": "- Utiliser le [script nmap http-headers](https://nmap.org/nsedoc/scripts/http-headers.html) pour afficher les *en-têtes HTTP*"
+  },
+  {
+    "line": 248,
+    "source": "> - IIS Server version is `10.0`",
+    "translation": "> - Version du serveur IIS : `10.0`"
+  },
+  {
+    "line": 249,
+    "source": "> - ASP.NET version is `4.0.30319`",
+    "translation": "> - Version ASP.NET : `4.0.30319`"
+  },
+  {
+    "line": 250,
+    "source": "> - XSS Protection is `off`(`0`)",
+    "translation": "> - Protection XSS désactivée : `off`(`0`)"
+  },
+  {
+    "line": 251,
+    "source": "> - Default page of the target web app is `/Default.aspx`",
+    "translation": "> - Page par défaut de l’application Web cible : `/Default.aspx`"
+  },
+  {
+    "line": 253,
+    "source": "- Use [nmap http-methods script](https://nmap.org/nsedoc/scripts/http-methods.html) to find supported *options/methods*",
+    "translation": "- Utiliser le [script nmap http-methods](https://nmap.org/nsedoc/scripts/http-methods.html) pour identifier les *options et méthodes prises en charge*"
+  },
+  {
+    "line": 270,
+    "source": "> 📌 Enumerated supported HTTP methods are `OPTIONS`, `TRACE`, `GET`, `HEAD`, `POST`, `COPY`, `PROPFIND`, `DELETE`, `MOVE`, `PROPPATCH`, `MKCOL`, `LOCK`, `UNLOCK`, `PUT`",
+    "translation": "> 📌 Méthodes HTTP prises en charge : `OPTIONS`, `TRACE`, `GET`, `HEAD`, `POST`, `COPY`, `PROPFIND`, `DELETE`, `MOVE`, `PROPPATCH`, `MKCOL`, `LOCK`, `UNLOCK`, `PUT`"
+  },
+  {
+    "line": 272,
+    "source": "- Use [nmap http-webdav-scan script](https://nmap.org/nsedoc/scripts/http-webdav-scan.html) to enumerate WebDAV installation",
+    "translation": "- Utiliser le [script nmap http-webdav-scan](https://nmap.org/nsedoc/scripts/http-webdav-scan.html) pour énumérer l’installation WebDAV"
+  },
+  {
+    "line": 290,
+    "source": ">  🔬 [Apache Recon: Dictionary Attack](https://attackdefense.com/challengedetails?cid=539)",
+    "translation": ">  🔬 [Reconnaissance Apache : attaque par dictionnaire](https://attackdefense.com/challengedetails?cid=539)"
+  },
+  {
+    "line": 292,
+    "source": ">  - Target IP: `192.199.232.3`",
+    "translation": ">  - IP cible : `192.199.232.3`"
+  },
+  {
+    "line": 293,
+    "source": ">  - Enumeration of an `Apache` HTTP server",
+    "translation": ">  - Énumération d’un serveur HTTP `Apache`"
+  },
+  {
+    "line": 311,
+    "source": "> 📌 Running web server version is `Apache httpd 2.4.18`",
+    "translation": "> 📌 Version du serveur Web : `Apache httpd 2.4.18`"
+  },
+  {
+    "line": 323,
+    "source": "> 📌 `Apache2 Ubuntu Default page` is hosted on the running web server.",
+    "translation": "> 📌 La page `Apache2 Ubuntu Default page` est hébergée sur le serveur Web."
+  },
+  {
+    "line": 325,
+    "source": "- Perform directories bruteforce, using the [`brute_dirs`](https://www.rapid7.com/db/modules/auxiliary/scanner/http/brute_dirs/) metasploit module. Use [robots_txt](https://www.rapid7.com/db/modules/auxiliary/scanner/http/robots_txt/) module to detect `robots.txt` files and analize its content too.",
+    "translation": "- Effectuer un bruteforce des répertoires avec le module Metasploit [`brute_dirs`](https://www.rapid7.com/db/modules/auxiliary/scanner/http/brute_dirs/). Utiliser aussi le module [robots_txt](https://www.rapid7.com/db/modules/auxiliary/scanner/http/robots_txt/) pour détecter les fichiers `robots.txt` et analyser leur contenu."
+  },
+  {
+    "line": 347,
+    "source": "> 📌 `dir`, `poc` directories found.",
+    "translation": "> 📌 Répertoires trouvés : `dir`, `poc`."
+  },
+  {
+    "line": 363,
+    "source": "> **`curl`** - *command line tool and librare for transferring data with URLs*",
+    "translation": "> **`curl`** : *outil en ligne de commande et bibliothèque de transfert de données à partir d’URL*"
+  },
+  {
+    "line": 387,
+    "source": "> 📌 *dir* directory is using `Basic` auth protection - [WWW-Authenticate header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate)",
+    "translation": "> 📌 Le répertoire *dir* utilise l’authentification `Basic` ([en-tête WWW-Authenticate](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/WWW-Authenticate))"
+  },
+  {
+    "line": 399,
+    "source": "- Use [`http_header`](https://www.rapid7.com/db/modules/auxiliary/scanner/http/http_header/) metasploit module to find the *poc* directory protection",
+    "translation": "- Utiliser le module Metasploit [`http_header`](https://www.rapid7.com/db/modules/auxiliary/scanner/http/http_header/) pour identifier la protection du répertoire *poc*"
+  },
+  {
+    "line": 422,
+    "source": "> 📌 *poc* directory is using `Difest` auth protection",
+    "translation": "> 📌 Le répertoire *poc* utilise l’authentification `Difest` (Digest)."
+  },
+  {
+    "line": 424,
+    "source": "- Use [`http_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/http/http_login/) metasploit module to attempt HTTP user authentication",
+    "translation": "- Utiliser le module Metasploit [`http_login`](https://www.rapid7.com/db/modules/auxiliary/scanner/http/http_login/) pour tenter une authentification HTTP"
+  },
+  {
+    "line": 450,
+    "source": "> 📌 *dir* directory credentials are `bob:qwerty`",
+    "translation": "> 📌 Identifiants du répertoire *dir* : `bob:qwerty`"
+  },
+  {
+    "line": 457,
+    "source": "<summary>Reveal Flag - dir directory flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag du répertoire dir : 🚩</summary>"
+  },
+  {
+    "line": 489,
+    "source": "> 📌 *poc* directory credentials are `alice:password1`",
+    "translation": "> 📌 Identifiants du répertoire *poc* : `alice:password1`"
+  },
+  {
+    "line": 499,
+    "source": "<summary>Reveal Flag - poc directory flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag du répertoire poc : 🚩</summary>"
+  },
+  {
+    "line": 512,
+    "source": ">  🔬 [Apache Recon: Basics](https://www.attackdefense.com/challengedetails?cid=538)",
+    "translation": ">  🔬 [Reconnaissance Apache : fondamentaux](https://www.attackdefense.com/challengedetails?cid=538)"
+  },
+  {
+    "line": 514,
+    "source": ">  - Target IP: `192.157.222.3`",
+    "translation": ">  - IP cible : `192.157.222.3`"
+  },
+  {
+    "line": 515,
+    "source": ">  - Enumeration of an `Apache` HTTP server",
+    "translation": ">  - Énumération d’un serveur HTTP `Apache`"
+  },
+  {
+    "line": 534,
+    "source": "> 📌 Running web server version is `Apache httpd 2.4.18`",
+    "translation": "> 📌 Version du serveur Web : `Apache httpd 2.4.18`"
+  },
+  {
+    "line": 544,
+    "source": "> **`lynx`** - is a *text web browser*.",
+    "translation": "> **`lynx`** : *navigateur Web en mode texte*."
+  },
+  {
+    "line": 560,
+    "source": "- **Metasploit** modules",
+    "translation": "- Modules **Metasploit**"
+  },
+  {
+    "line": 585,
+    "source": "<summary>Reveal Flag - poc directory flag is: 🚩</summary>",
+    "translation": "<summary>Afficher le flag du répertoire poc : 🚩</summary>"
   }
 ]
