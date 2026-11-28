@@ -1,0 +1,77 @@
+[
+  {
+    "line": 3,
+    "source": "1. Connect to the Lab VPN (INE in this case) by using OpenVpn and the **.ovpn** file provided. (in my case INE provided a direct Lab Link / Kali GUI instance opened in another tab).",
+    "translation": "1. Se connecter au VPN du laboratoire (ici INE) avec OpenVPN et le fichier **.ovpn** fourni. Dans cet exemple, INE fournit un lien direct vers le laboratoire et une interface Kali ouverte dans un autre onglet."
+  },
+  {
+    "line": 4,
+    "source": "   *   From terminal, check if the machines are reachable:",
+    "translation": "   *   Depuis le terminal, vérifier si les machines sont accessibles :"
+  },
+  {
+    "line": 9,
+    "source": "   *   Check open ports with nmap tool:",
+    "translation": "   *   Vérifier les ports ouverts avec Nmap :"
+  },
+  {
+    "line": 14,
+    "source": "   *   Check the Kali Machine interface name:",
+    "translation": "   *   Vérifier le nom de l’interface réseau de la machine Kali :"
+  },
+  {
+    "line": 20,
+    "source": "2. Open Wireshark and start the capture on the Vpn network interface.",
+    "translation": "2. Ouvrir Wireshark et démarrer la capture sur l’interface réseau du VPN."
+  },
+  {
+    "line": 21,
+    "source": "   * or use the terminal: ",
+    "translation": "   * Ou utiliser le terminal :"
+  },
+  {
+    "line": 27,
+    "source": "3. Generate traffic from the browser by browsing to the **HTTP** web page (`http://demo.ine.local`) and try a login.",
+    "translation": "3. Générer du trafic depuis le navigateur en ouvrant la page **HTTP** (`http://demo.ine.local`) et en effectuant une tentative de connexion dans le laboratoire."
+  },
+  {
+    "line": 29,
+    "source": "4. The sniffer records the traffic between the browser and the server. Right click on a packet and `Follow TCP Stream` to see the traffic exchange.",
+    "translation": "4. L’analyseur enregistre le trafic entre le navigateur et le serveur. Faire un clic droit sur un paquet et sélectionner `Follow TCP Stream` pour observer les échanges."
+  },
+  {
+    "line": 30,
+    "source": "   *   In case of HTTP protocol, the clear-text traffic can be sniffed easily. The content of the packets is in human readable form.",
+    "translation": "   *   Avec HTTP, le trafic circule en clair. Le contenu des paquets est lisible."
+  },
+  {
+    "line": 34,
+    "source": "5. Restart the capture to clean the results. Try the same login into the **HTTPS** web page (`https://demossl.ine.local`) and check the TCP Stream in the captured traffic.",
+    "translation": "5. Redémarrer la capture pour effacer les résultats. Effectuer la même tentative de connexion sur la page **HTTPS** (`https://demossl.ine.local`) et examiner le flux TCP enregistré."
+  },
+  {
+    "line": 35,
+    "source": "   * Check the certificate with the lock icon.",
+    "translation": "   * Vérifier le certificat à l’aide de l’icône du cadenas."
+  },
+  {
+    "line": 36,
+    "source": "   * In case of HTTPS protocol, the traffic is encrypted, unreadable and protected.",
+    "translation": "   * Avec HTTPS, le contenu du trafic est chiffré et protégé."
+  },
+  {
+    "line": 37,
+    "source": "   *   HTTPS (HTTP over TLS) protects the content",
+    "translation": "   *   HTTPS (HTTP over TLS) protège le contenu."
+  },
+  {
+    "line": 41,
+    "source": "6. Captured traffic can be filtered in Wireshark with _display filters_.",
+    "translation": "6. Le trafic capturé peut être filtré dans Wireshark à l’aide des _display filters_."
+  },
+  {
+    "line": 43,
+    "source": "> 📍 Lab solved!",
+    "translation": "> 📍 Laboratoire terminé !"
+  }
+]

@@ -1,0 +1,237 @@
+[
+  {
+    "line": 5,
+    "source": "* [🔬SMB Enum](../assessment-methodologies/3-enumeration/smb-enum.md)",
+    "translation": "* [Énumération SMB](../assessment-methodologies/3-enumeration/smb-enum.md)"
+  },
+  {
+    "line": 6,
+    "source": "* [🔬FTP Enum](../assessment-methodologies/3-enumeration/ftp-enum.md)",
+    "translation": "* [Énumération FTP](../assessment-methodologies/3-enumeration/ftp-enum.md)"
+  },
+  {
+    "line": 7,
+    "source": "* [🔬SSH Enum](../assessment-methodologies/3-enumeration/ssh-enum.md)",
+    "translation": "* [Énumération SSH](../assessment-methodologies/3-enumeration/ssh-enum.md)"
+  },
+  {
+    "line": 8,
+    "source": "* [🔬HTTP Enum](../assessment-methodologies/3-enumeration/http-enum.md)",
+    "translation": "* [Inventaire des services HTTP](../assessment-methodologies/3-enumeration/http-enum.md)"
+  },
+  {
+    "line": 9,
+    "source": "* [🔬MYSQL Enum](../assessment-methodologies/3-enumeration/mysql-enum.md)",
+    "translation": "* [Énumération MySQL](../assessment-methodologies/3-enumeration/mysql-enum.md)"
+  },
+  {
+    "line": 10,
+    "source": "* [🔬SMTP Enum](../assessment-methodologies/3-enumeration/smtp-enum.md)",
+    "translation": "* [Énumération SMTP](../assessment-methodologies/3-enumeration/smtp-enum.md)"
+  },
+  {
+    "line": 14,
+    "source": "* [🔬IIS - WebDAV](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/iis-webdav.md)",
+    "translation": "* [IIS et WebDAV](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/iis-webdav.md)"
+  },
+  {
+    "line": 15,
+    "source": "* [🔬SMB - PsExec](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/smb-psexec.md)",
+    "translation": "* [SMB et PsExec](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/smb-psexec.md)"
+  },
+  {
+    "line": 16,
+    "source": "* [🔬RDP](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/rdp.md)",
+    "translation": "* [RDP](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/rdp.md)"
+  },
+  {
+    "line": 17,
+    "source": "* [🔬WinRM](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/winrm.md)",
+    "translation": "* [WinRM](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/winrm.md)"
+  },
+  {
+    "line": 18,
+    "source": "* [🔬Win Kernel Privesc](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/winkernel.md)",
+    "translation": "* [Privilege Escalation du noyau Windows](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/winkernel.md)"
+  },
+  {
+    "line": 19,
+    "source": "* [🔬UAC Bypass](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/uacme.md)",
+    "translation": "* [UAC Bypass](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/uacme.md)"
+  },
+  {
+    "line": 20,
+    "source": "* [🔬Access Token](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/accesstoken.md)",
+    "translation": "* [Access Token](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/accesstoken.md)"
+  },
+  {
+    "line": 21,
+    "source": "* [🔬Alternate Data Stream](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/alternateds.md)",
+    "translation": "* [Alternate Data Streams](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/alternateds.md)"
+  },
+  {
+    "line": 22,
+    "source": "* [🔬Credentials Dumping](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/creds-dump.md)",
+    "translation": "* [Identifiants Windows](../hostnetwork-penetration-testing/1-system-attack/windows-attacks/creds-dump.md)"
+  },
+  {
+    "line": 26,
+    "source": "* [🔬Bash](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/bash-shell.md)",
+    "translation": "* [Bash Shell](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/bash-shell.md)"
+  },
+  {
+    "line": 27,
+    "source": "* [🔬FTP](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/ftp-unix.md)",
+    "translation": "* [FTP sous Linux](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/ftp-unix.md)"
+  },
+  {
+    "line": 28,
+    "source": "* [🔬SSH](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/ssh-unix.md)",
+    "translation": "* [SSH sous Linux](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/ssh-unix.md)"
+  },
+  {
+    "line": 29,
+    "source": "* [🔬SAMBA](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/samba-unix.md)",
+    "translation": "* [Samba sous Linux](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/samba-unix.md)"
+  },
+  {
+    "line": 30,
+    "source": "* [🔬Cron Jobs](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/cron.md)",
+    "translation": "* [Tâches Cron](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/cron.md)"
+  },
+  {
+    "line": 31,
+    "source": "* [🔬SUID](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/suid.md)",
+    "translation": "* [Permissions SUID](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/suid.md)"
+  },
+  {
+    "line": 32,
+    "source": "* [🔬Hashes Dumping](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/creds-dump-unix.md)",
+    "translation": "* [Hashes sous Linux](../hostnetwork-penetration-testing/1-system-attack/linux-attacks/creds-dump-unix.md)"
+  },
+  {
+    "line": 34,
+    "source": "- [🔬Tshark, ARP, WiFi](../hostnetwork-penetration-testing/2-network-attack/tshark-arp.md)",
+    "translation": "- [TShark, ARP et Wi-Fi](../hostnetwork-penetration-testing/2-network-attack/tshark-arp.md)"
+  },
+  {
+    "line": 38,
+    "source": "* [🔬HFS - MSF Exploit](../hostnetwork-penetration-testing/3-metasploit/hfs-msf-exp.md)",
+    "translation": "* [HFS et Metasploit](../hostnetwork-penetration-testing/3-metasploit/hfs-msf-exp.md)"
+  },
+  {
+    "line": 39,
+    "source": "* [🔬Tomcat - MSF Exploit](../hostnetwork-penetration-testing/3-metasploit/tomcat-msf-exp.md)",
+    "translation": "* [Tomcat et Metasploit](../hostnetwork-penetration-testing/3-metasploit/tomcat-msf-exp.md)"
+  },
+  {
+    "line": 40,
+    "source": "* [🔬FTP - MSF Exploit](../hostnetwork-penetration-testing/3-metasploit/ftpd-msf-exp.md)",
+    "translation": "* [FTP et Metasploit](../hostnetwork-penetration-testing/3-metasploit/ftpd-msf-exp.md)"
+  },
+  {
+    "line": 41,
+    "source": "* [🔬Samba - MSF Exploit](../hostnetwork-penetration-testing/3-metasploit/samba-msf-exp.md)",
+    "translation": "* [Samba et Metasploit](../hostnetwork-penetration-testing/3-metasploit/samba-msf-exp.md)"
+  },
+  {
+    "line": 42,
+    "source": "* [🔬SSH - MSF Exploit](../hostnetwork-penetration-testing/3-metasploit/ssh-msf-exp.md)",
+    "translation": "* [SSH et Metasploit](../hostnetwork-penetration-testing/3-metasploit/ssh-msf-exp.md)"
+  },
+  {
+    "line": 43,
+    "source": "* [🔬SMTP - MSF Exploit](../hostnetwork-penetration-testing/3-metasploit/smtp-msf-exp.md)",
+    "translation": "* [SMTP et Metasploit](../hostnetwork-penetration-testing/3-metasploit/smtp-msf-exp.md)"
+  },
+  {
+    "line": 44,
+    "source": "* [🔬Meterpreter - MSF](../hostnetwork-penetration-testing/3-metasploit/meterpreter-msf.md)",
+    "translation": "* [Meterpreter](../hostnetwork-penetration-testing/3-metasploit/meterpreter-msf.md)"
+  },
+  {
+    "line": 45,
+    "source": "* [🔬Win Post Exploitation - MSF](../hostnetwork-penetration-testing/3-metasploit/win-post-msf.md)",
+    "translation": "* [Post-exploitation Windows avec Metasploit](../hostnetwork-penetration-testing/3-metasploit/win-post-msf.md)"
+  },
+  {
+    "line": 46,
+    "source": "* [🔬Linux Post Exploitation - MSF](../hostnetwork-penetration-testing/3-metasploit/linux-post-msf.md)",
+    "translation": "* [Post-exploitation Linux avec Metasploit](../hostnetwork-penetration-testing/3-metasploit/linux-post-msf.md)"
+  },
+  {
+    "line": 50,
+    "source": "* [🔬Fixing Exploits - HFS](../hostnetwork-penetration-testing/4-exploitation/fix-exp.md)",
+    "translation": "* [Adaptation des exploits HFS](../hostnetwork-penetration-testing/4-exploitation/fix-exp.md)"
+  },
+  {
+    "line": 51,
+    "source": "* [🔬Win Workflow Platform - MSF](../hostnetwork-penetration-testing/4-exploitation/workflow-exp.md)",
+    "translation": "* [Workflow Windows avec Metasploit](../hostnetwork-penetration-testing/4-exploitation/workflow-exp.md)"
+  },
+  {
+    "line": 52,
+    "source": "* [🔬Win Black Box Pentest](../hostnetwork-penetration-testing/4-exploitation/win-blackbox-exp.md)",
+    "translation": "* [Pentest Black Box Windows](../hostnetwork-penetration-testing/4-exploitation/win-blackbox-exp.md)"
+  },
+  {
+    "line": 53,
+    "source": "* [🔬Linux Black Box Pentest](../hostnetwork-penetration-testing/4-exploitation/linux-blackbox-exp.md)",
+    "translation": "* [Pentest Black Box Linux](../hostnetwork-penetration-testing/4-exploitation/linux-blackbox-exp.md)"
+  },
+  {
+    "line": 57,
+    "source": "* [🔬Windows Post-Exploitation](../hostnetwork-penetration-testing/5-post-exploit/win-post-exp.md)",
+    "translation": "* [Post-exploitation Windows](../hostnetwork-penetration-testing/5-post-exploit/win-post-exp.md)"
+  },
+  {
+    "line": 58,
+    "source": "* [🔬Windows Privilege Escalation](../hostnetwork-penetration-testing/5-post-exploit/win-privesc.md)",
+    "translation": "* [Privilege Escalation Windows](../hostnetwork-penetration-testing/5-post-exploit/win-privesc.md)"
+  },
+  {
+    "line": 59,
+    "source": "* [🔬Windows Persistence](../hostnetwork-penetration-testing/5-post-exploit/win-persistence.md)",
+    "translation": "* [Persistance Windows](../hostnetwork-penetration-testing/5-post-exploit/win-persistence.md)"
+  },
+  {
+    "line": 60,
+    "source": "* [🔬Linux Post-Exploitation](../hostnetwork-penetration-testing/5-post-exploit/linux-post-exp.md)",
+    "translation": "* [Post-exploitation Linux](../hostnetwork-penetration-testing/5-post-exploit/linux-post-exp.md)"
+  },
+  {
+    "line": 61,
+    "source": "* [🔬Linux Privilege Escalation](../hostnetwork-penetration-testing/5-post-exploit/linux-privesc.md)",
+    "translation": "* [Privilege Escalation Linux](../hostnetwork-penetration-testing/5-post-exploit/linux-privesc.md)"
+  },
+  {
+    "line": 62,
+    "source": "* [🔬Linux Persistence](../hostnetwork-penetration-testing/5-post-exploit/linux-persistence.md)",
+    "translation": "* [Persistance Linux](../hostnetwork-penetration-testing/5-post-exploit/linux-persistence.md)"
+  },
+  {
+    "line": 63,
+    "source": "* [🔬Cracking Hashes](../hostnetwork-penetration-testing/5-post-exploit/crack-hashes.md)",
+    "translation": "* [Hashes et mots de passe](../hostnetwork-penetration-testing/5-post-exploit/crack-hashes.md)"
+  },
+  {
+    "line": 64,
+    "source": "* [🔬Pivoting](../hostnetwork-penetration-testing/5-post-exploit/pivoting.md)",
+    "translation": "* [Pivoting](../hostnetwork-penetration-testing/5-post-exploit/pivoting.md)"
+  },
+  {
+    "line": 68,
+    "source": "* [🔬HTTP Enumeration](../webapp-penetration-testing/1-webapp-http/http-enum.md)",
+    "translation": "* [Énumération des méthodes et répertoires HTTP](../webapp-penetration-testing/1-webapp-http/http-enum.md)"
+  },
+  {
+    "line": 69,
+    "source": "* [🔬Web App Scanning](../webapp-penetration-testing/1-webapp-http/webapp-scan.md)",
+    "translation": "* [Scanning Web : ZAP et Nikto](../webapp-penetration-testing/1-webapp-http/webapp-scan.md)"
+  },
+  {
+    "line": 70,
+    "source": "* [🔬Web App Attacks](../webapp-penetration-testing/1-webapp-http/webapp-attacks.md)",
+    "translation": "* [Attaques Web](../webapp-penetration-testing/1-webapp-http/webapp-attacks.md)"
+  }
+]
