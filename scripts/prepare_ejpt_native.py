@@ -48,6 +48,59 @@ def load_article(page):
     if result is None:
         raise RuntimeError("Missing sheet article: "+page)
     return result
+# A title-only source is not a course. Keep the immutable archive and its
+# integrity checks, but remove empty entries from the published navigation.
+# Old URLs remain noindex redirects so bookmarks do not break.
+def empty_course(page):
+    article = load_article(page)
+    if article.find(["img", "pre", "code", "a", "table", "video", "audio", "iframe", "object", "embed"]):
+        return False
+    heading = article.find("h1")
+    if heading is not None:
+        heading.decompose()
+    return not article.get_text(" ", strip=True) and not article.find(re.compile(r"^h[2-6]$"))
+
+empty_pages = {
+    page for page in report["pages"]
+    if "/" in page and page not in aliases and empty_course(page)
+}
+course_pages = [p for p in report["pages"] if p not in empty_pages]
+redirects = {}
+for page in sorted(empty_pages):
+    parent = Path(page).parent
+    candidates = []
+    while parent.as_posix() != "." and not candidates:
+        prefix = parent.as_posix() + "/"
+        candidates = [p for p in course_pages if p.startswith(prefix)]
+        parent = parent.parent
+    redirects[page] = "/skill-issue/ejpt/original/" + candidates[0] if candidates else "/skill-issue/ejpt/cours.html"
+
+# These are build-working-copy changes, not changes to any original notes.
+catalog_path = Path("docs/.vitepress/theme/data/ejpt-catalog.ts")
+catalog = catalog_path.read_text(encoding="utf-8")
+catalog_prefix, catalog_sep, catalog_tail = catalog.partition("export const groups = ")
+catalog_groups, sheet_sep, catalog_sheets = catalog_tail.partition("\nexport const sheets = ")
+assert catalog_sep and sheet_sep, "Unexpected eJPT catalog format"
+catalog_data = json.loads(catalog_groups)
+for group in catalog_data:
+    group["children"] = [c for c in group["children"] if c["path"] not in empty_pages]
+catalog_path.write_text(catalog_prefix + catalog_sep + json.dumps(catalog_data, ensure_ascii=False, indent=2) + sheet_sep + catalog_sheets, encoding="utf-8")
+
+config_path = Path("docs/.vitepress/config.mts")
+config = config_path.read_text(encoding="utf-8")
+for page in empty_pages:
+    link = "/ejpt/original/" + page[:-5]
+    pattern = (r'(?m)^[ \t]*\{\s*"text":\s*"(?:[^"\\]|\\.)*"\s*,\s*"link":\s*"'
+               + re.escape(link) + r'"\s*\},?[ \t]*\r?\n')
+    config = re.sub(pattern, "", config)
+    assert '"' + link + '"' not in config, "Empty eJPT page still in sidebar: " + page
+config_path.write_text(config, encoding="utf-8")
+report["empty_course_pages"] = sorted(empty_pages)
+report["empty_course_redirects"] = redirects
+report["visible_course_pages"] = sum(len(g["children"]) for g in catalog_data)
+print("Empty eJPT course pages excluded:", sorted(empty_pages))
+print("Visible eJPT course pages:", report["visible_course_pages"])
+
 sheet_sources = [canonical, "cheatsheet-files/ejpt-cheatsheet_nolinks.html", "cheatsheet-additional.html"]
 source_blocks = {
     p: [c.get_text() for c in load_article(p).select("pre code")]
@@ -2686,6 +2739,13 @@ for page in report["pages"]:
     if page != canonical:
         report.setdefault("course_ui_labels", {})[page] = translate_course_ui_labels(article)
         report.setdefault("course_punctuation", {})[page] = remove_em_dashes(article)
+    if page in redirects:
+        # Keep a usable link for browsers without JavaScript, never a blank page.
+        paragraph = soup.new_tag("p")
+        link = soup.new_tag("a", href=redirects[page])
+        link.string = "Accéder au chapitre"
+        paragraph.append(link)
+        article.append(paragraph)
     before=[x.get_text() for x in article.select("pre code")]
     # Use existing VitePress code styling and native copy interaction.
     for pre in list(article.find_all("pre")):
@@ -2735,13 +2795,18 @@ for page in report["pages"]:
     data_file=dest.with_suffix(".content.json")
     data_file.write_text(json.dumps(body,ensure_ascii=False),encoding="utf-8")
     import_path="./"+data_file.name
+    redirect_url = canonical_url if page in aliases else redirects.get(page)
     redirect_script = (
         "import { onMounted } from 'vue'\n"
-        "onMounted(() => window.location.replace("+json.dumps(canonical_url)+"))\n"
-        if page in aliases else ""
+        "onMounted(() => window.location.replace("+json.dumps(redirect_url)+"))\n"
+        if redirect_url else ""
+    )
+    hidden_frontmatter = (
+        "search: false\nprev: false\nnext: false\nhead:\n  - [meta, {name: robots, content: 'noindex, follow'}]\n"
+        if page in redirects else ""
     )
     dest.write_text(
-        "---\ntitle: "+json.dumps(title,ensure_ascii=False)+"\noutline: deep\n---\n\n"
+        "---\ntitle: "+json.dumps(title,ensure_ascii=False)+"\noutline: deep\n"+hidden_frontmatter+"---\n\n"
         "<script setup>\nimport chapterHtml from "+json.dumps(import_path)+"\n"+redirect_script+"</script>\n\n"
         '<div class="ejpt-native-page" data-ejpt-native="true" v-html="chapterHtml"></div>\n',
         encoding="utf-8"
