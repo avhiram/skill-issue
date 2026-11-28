@@ -20,6 +20,8 @@ def check(path):
             return path+" (stale)"
         if path.startswith("original/") and (b"data-ejpt-native" not in data or b"VPDoc" not in data or b"VPNav" not in data):
             return path+" (missing native theme)"
+        if b'class="missing-image"' in data or "Image absente de l’archive originale".encode() in data:
+            return path+" (visible image import diagnostic)"
         return None
     except Exception as e:
         return path+" ("+str(e)+")"

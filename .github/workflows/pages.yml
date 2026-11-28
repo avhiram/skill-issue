@@ -85,6 +85,8 @@ jobs:
           for p in report['pages']:
               body=(root/p).read_text(encoding='utf-8')
               assert 'data-ejpt-native' in body and 'VPDoc' in body and 'VPNav' in body, p
+              assert 'Image absente de l’archive originale' not in body, 'Visible image import diagnostic: '+p
+              assert 'class="missing-image"' not in body, 'Visible missing image placeholder: '+p
           from bs4 import BeautifulSoup
           sheet=BeautifulSoup((root/'ejpt-cheatsheet.html').read_text(encoding='utf-8'),'html.parser').select_one('.ejpt-cheatsheet-content')
           assert sheet is not None, 'Missing native cheatsheet content'

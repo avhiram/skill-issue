@@ -277,9 +277,12 @@ def render(n):
         else:
             missing.append([n,tag.name,u])
             if tag.name=="img":
-                note=soup.new_tag("span",attrs={"class":"missing-image"})
-                note.string="Image absente de l’archive originale : "+(tag.get("alt") or u)
-                tag.replace_with(note)
+                # Keep unresolved references in the import report, not in the reader.
+                # Never substitute a different screenshot or remove adjacent prose.
+                parent = tag.parent
+                tag.decompose()
+                if parent and parent.name == "p" and not parent.get_text(strip=True) and not parent.find(True):
+                    parent.decompose()
     used=collections.Counter()
     for heading in soup.find_all(re.compile(r"^h[1-6]$")):
         base=slug(heading.get_text(" ",strip=True)) or "section"
