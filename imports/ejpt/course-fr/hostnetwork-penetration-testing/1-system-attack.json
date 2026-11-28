@@ -30,6 +30,56 @@
     "translation": "> * Comprendre le **stockage des identifiants** et les risques liés à l’exposition des **hashes** de mots de passe"
   },
   {
+    "line": 19,
+    "source": "> - [IIS Service Win Exploitation](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-iis)",
+    "translation": "> - [Service IIS sous Windows](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-iis)"
+  },
+  {
+    "line": 20,
+    "source": "> - [SMB Service Win Exploitation](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-smb)",
+    "translation": "> - [Service SMB sous Windows](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-smb)"
+  },
+  {
+    "line": 21,
+    "source": "> - [RDP Service Win Exploitation](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-rdp)",
+    "translation": "> - [Service RDP sous Windows](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-rdp)"
+  },
+  {
+    "line": 22,
+    "source": "> - [WINRM Service Win Exploitation](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-winrm)",
+    "translation": "> - [Service WinRM sous Windows](https://attackdefense.com/listing?labtype=windows-service-exploitation&subtype=windows-service-exploitation-winrm)"
+  },
+  {
+    "line": 23,
+    "source": "> - [Basic Windows Privesc](https://attackdefense.com/listing?labtype=windows-priv-esc&subtype=windows-priv-esc-basic)",
+    "translation": "> - [Fondamentaux de la Privilege Escalation Windows](https://attackdefense.com/listing?labtype=windows-priv-esc&subtype=windows-priv-esc-basic)"
+  },
+  {
+    "line": 24,
+    "source": "> - [UAC Bypass Win Privesc](https://attackdefense.com/listing?labtype=advanced-priv-esc-windows&subtype=advanced-priv-esc-windows-uac-bypass)",
+    "translation": "> - [UAC Bypass et Privilege Escalation Windows](https://attackdefense.com/listing?labtype=advanced-priv-esc-windows&subtype=advanced-priv-esc-windows-uac-bypass)"
+  },
+  {
+    "line": 25,
+    "source": "> - [Win Post Exploitation with Metasploit](https://attackdefense.com/listing?labtype=windows-post-exploitation&subtype=windows-post-exploitation-metasploit)",
+    "translation": "> - [Post-Exploitation Windows avec Metasploit](https://attackdefense.com/listing?labtype=windows-post-exploitation&subtype=windows-post-exploitation-metasploit)"
+  },
+  {
+    "line": 26,
+    "source": "> - [Linux Exploitation](https://attackdefense.com/listing?labtype=linux-security-exploitation&subtype=linux-security-exploitation-getting-started)",
+    "translation": "> - [Exploitation sous Linux](https://attackdefense.com/listing?labtype=linux-security-exploitation&subtype=linux-security-exploitation-getting-started)"
+  },
+  {
+    "line": 27,
+    "source": "> - [Basic Linux Privesc](https://attackdefense.com/listing?labtype=linux-security-priv-esc&subtype=linux-security-priv-esc-basic)",
+    "translation": "> - [Fondamentaux de la Privilege Escalation Linux](https://attackdefense.com/listing?labtype=linux-security-priv-esc&subtype=linux-security-priv-esc-basic)"
+  },
+  {
+    "line": 28,
+    "source": "> - [Password Cracking Linux Exploitation](https://attackdefense.com/listing?labtype=linux-security-exploitation&subtype=linux-security-exploitation-password-cracking)",
+    "translation": "> - [Password Cracking sous Linux](https://attackdefense.com/listing?labtype=linux-security-exploitation&subtype=linux-security-exploitation-password-cracking)"
+  },
+  {
     "line": 30,
     "source": "🗒️ **System or Host based attacks** are attacks targeted towards specific systems oh hosts. They are about *exploiting vulnerabilities within Windows and Linux operating systems*, running on (internal) servers, workstations, laptops, etc.",
     "translation": "🗒️ Les **attaques visant les systèmes et les hôtes** ciblent des systèmes spécifiques. Elles concernent les vulnérabilités des systèmes d’exploitation Windows et Linux utilisés sur les serveurs, postes de travail, ordinateurs portables, etc."

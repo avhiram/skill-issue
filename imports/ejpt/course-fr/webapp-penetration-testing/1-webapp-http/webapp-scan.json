@@ -30,6 +30,16 @@
     "translation": "  - **Launch Browser** ouvre une session de navigateur avec l’interface ZAP."
   },
   {
+    "line": 24,
+    "source": "- Login to the web app with `bee`:`bug` credentials",
+    "translation": "- Se connecter à l’application Web avec les identifiants `bee`:`bug`."
+  },
+  {
+    "line": 33,
+    "source": "- Configure authenticated session in ZAProxy",
+    "translation": "- Configuration de la session authentifiée dans ZAProxy."
+  },
+  {
     "line": 59,
     "source": "- In the `Alerts` tab check the 🚩`High` risk Alerts",
     "translation": "- Dans l’onglet `Alerts`, consulter les alertes 🚩`High` (risque élevé)."
@@ -63,6 +73,11 @@
     "line": 104,
     "source": "- In the Bash terminal run **`nikto`** and output the results to a file",
     "translation": "- Dans le terminal Bash, lancer **`nikto`** et enregistrer les résultats dans un fichier."
+  },
+  {
+    "line": 114,
+    "source": "  - output to an `HTML` file",
+    "translation": "  - Enregistrer les résultats dans un fichier `HTML`."
   },
   {
     "line": 130,

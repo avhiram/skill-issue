@@ -70,6 +70,11 @@
     "translation": "- L’adresse IP cible a changé : `192.83.140.3`."
   },
   {
+    "line": 105,
+    "source": "- Use [**`BurpSuite`**](https://portswigger.net/burp) to interact with the web page, by turning on the `FoxyProxy` Firefox plugin and opening the BurpSuite with the Proxy intercept on.",
+    "translation": "- Utiliser [**`BurpSuite`**](https://portswigger.net/burp) pour interagir avec la page Web : activer l’extension Firefox `FoxyProxy` et ouvrir Burp Suite avec l’interception du proxy activée."
+  },
+  {
     "line": 106,
     "source": "- Capture the home page and send it to `Repeater`",
     "translation": "- Capturer la requête de la page d’accueil et l’envoyer dans `Repeater`."
@@ -138,5 +143,10 @@
     "line": 196,
     "source": "  - Activate FoxyProxy Plugin",
     "translation": "  - Activer l’extension FoxyProxy."
+  },
+  {
+    "line": 197,
+    "source": "- Start `BurpSuite` (set *User options/Display/Look* to *Darcula* and restart BurpSuite)",
+    "translation": "- Lancer `BurpSuite` (dans *User options/Display/Look*, sélectionner *Darcula*, puis redémarrer Burp Suite)."
   }
 ]
