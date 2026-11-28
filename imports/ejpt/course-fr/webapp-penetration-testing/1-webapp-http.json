@@ -20,6 +20,16 @@
     "translation": "> * Comprendre les attaques **SQL Injection**, **XSS** et **Brute Force**"
   },
   {
+    "line": 17,
+    "source": "> - [Web Application Basics](https://attackdefense.com/listing?labtype=webapp-web-app-basics&subtype=webapp-web-app-basics-getting-started)",
+    "translation": "> - [Bases des applications Web](https://attackdefense.com/listing?labtype=webapp-web-app-basics&subtype=webapp-web-app-basics-getting-started)"
+  },
+  {
+    "line": 18,
+    "source": "> - [Web Apps Tools of Trade](https://attackdefense.com/listing?labtype=webapp-tools-of-trade&subtype=webapp-tools-of-trade-getting-started)",
+    "translation": "> - [Outils pour les applications Web](https://attackdefense.com/listing?labtype=webapp-tools-of-trade&subtype=webapp-tools-of-trade-getting-started)"
+  },
+  {
     "line": 20,
     "source": "**Web application penetration testing** is a process of identifying and exploiting vulnerabilities in web applications to assess their security posture.",
     "translation": "Le **pentest des applications Web** consiste à identifier et évaluer les vulnérabilités des applications Web afin d’apprécier leur niveau de sécurité."
@@ -183,6 +193,16 @@
     "line": 84,
     "source": "> 🔬 There are many vulnerable testing web apps like:",
     "translation": "> 🔬 Il existe de nombreuses applications Web volontairement vulnérables destinées à l’entraînement :"
+  },
+  {
+    "line": 86,
+    "source": "> - [Juice Shop - Kali Install](https://www.kali.org/tools/juice-shop/)",
+    "translation": "> - [Juice Shop : installation sur Kali](https://www.kali.org/tools/juice-shop/)"
+  },
+  {
+    "line": 87,
+    "source": "> - [DVWA - Kali Install](https://www.kali.org/tools/dvwa/)",
+    "translation": "> - [DVWA : installation sur Kali](https://www.kali.org/tools/dvwa/)"
   },
   {
     "line": 91,

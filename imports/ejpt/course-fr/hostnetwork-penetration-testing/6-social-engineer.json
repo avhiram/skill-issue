@@ -55,6 +55,11 @@
     "translation": "- Quid pro quo, chantage"
   },
   {
+    "line": 26,
+    "source": "- Watering hole",
+    "translation": "- Watering Hole (attaque par point d’eau)"
+  },
+  {
     "line": 28,
     "source": "> ❗ **It's important to stay vigilant against phishing attacks and be wary of any unsolicited messages asking for personal or sensitive information.**",
     "translation": "> ❗ **Il est important de rester vigilant face au phishing et de se méfier des messages non sollicités demandant des informations personnelles ou sensibles.**"
@@ -170,6 +175,21 @@
     "translation": "> 📌 [Communauté Social Engineering à la DEFCON](https://www.se.community/)"
   },
   {
+    "line": 79,
+    "source": "- **Information Gathering** - *OSINT, dumpster diving, shoulder surfing, pretexting*",
+    "translation": "- **Information Gathering** : *OSINT, Dumpster Diving, Shoulder Surfing, Pretexting*"
+  },
+  {
+    "line": 80,
+    "source": "- **External Access** to internal I.T. infrastructure - *malware, credentials attacks, reverse shells*",
+    "translation": "- **Accès externe** à l’infrastructure informatique interne : *malwares, attaques sur les identifiants, Reverse Shells*"
+  },
+  {
+    "line": 81,
+    "source": "- **Physical Access** - *attempt to gain physical access to the organization's facilities by impersonating employees or contractors, employees badges scan, malicious USBs, work people impersonation*",
+    "translation": "- **Accès physique** : *tentative d’accès aux locaux d’une organisation en se faisant passer pour des employés ou des prestataires, scan de badges, clés USB malveillantes, usurpation de l’identité de collaborateurs*"
+  },
+  {
     "line": 85,
     "source": "[**`Gophish`**](https://github.com/gophish/gophish) -  *a powerful, easy-to-use, open-source phishing toolkit meant to help pentesters and businesses conduct **real-world phishing simulations**.*",
     "translation": "[**`Gophish`**](https://github.com/gophish/gophish) : outil open source de simulation de phishing destiné aux pentesters et aux entreprises, pour des **exercices de sensibilisation en conditions réalistes**."
@@ -178,5 +198,60 @@
     "line": 87,
     "source": "> ❗ **Phishing campaigns should only be conducted for legitimate security testing purposes**, and not for malicious intent. Additionally, it's crucial to obtain **permission** and **informed consent** from the costumer involved in the campaign.",
     "translation": "> ❗ **Les campagnes de phishing doivent être réservées aux tests de sécurité légitimes**, sans intention malveillante. Il est essentiel d’obtenir l’**autorisation** et le **consentement éclairé** du client concerné."
+  },
+  {
+    "line": 103,
+    "source": "- To create a demo instance with a fake campaign, you can use `docker` and this command, made available by the Gophish maintainer [Jordan Wright](https://github.com/jordan-wright)",
+    "translation": "- Pour créer une instance de démonstration avec une campagne fictive, utiliser `docker` et cette commande fournie par le mainteneur de Gophish [Jordan Wright](https://github.com/jordan-wright)"
+  },
+  {
+    "line": 104,
+    "source": "  - [Creating the Gophish Demo: Part One](https://getgophish.com/blog/post/2019-01-04-creating-the-gophish-demo-part-one/)",
+    "translation": "  - [Création de la démonstration Gophish : première partie](https://getgophish.com/blog/post/2019-01-04-creating-the-gophish-demo-part-one/)"
+  },
+  {
+    "line": 105,
+    "source": "  - [Creating the Gophish Demo: Part Two](https://getgophish.com/blog/post/2019-01-11-creating-the-gophish-demo-part-two/)",
+    "translation": "  - [Création de la démonstration Gophish : deuxième partie](https://getgophish.com/blog/post/2019-01-11-creating-the-gophish-demo-part-two/)"
+  },
+  {
+    "line": 111,
+    "source": "The basics steps to create a phishing campaign with Gophish are:",
+    "translation": "Les étapes de base pour créer une campagne de phishing avec Gophish sont :"
+  },
+  {
+    "line": 113,
+    "source": "- Create a `Sending Profile`",
+    "translation": "- Créer un `Sending Profile`"
+  },
+  {
+    "line": 117,
+    "source": "- Set up a new `Landing Page` - the landing page is the website or form that the victim will be directed to after clicking on the phishing link",
+    "translation": "- Configurer une nouvelle `Landing Page` : le site Web ou formulaire vers lequel la victime sera redirigée après avoir cliqué sur le lien de phishing"
+  },
+  {
+    "line": 121,
+    "source": "- Customize the `Email Template`- Gophish provides a set of pre-built email templates, but it can also be create by using the HTML editor or importing an existing template. Customize the email to make it look convincing and relevant to the target audience",
+    "translation": "- Personnaliser l’`Email Template` : Gophish fournit des modèles prédéfinis, mais il est également possible d’en créer avec l’éditeur HTML ou d’importer un modèle existant. Personnaliser l’e-mail pour qu’il paraisse convaincant et pertinent pour le public cible"
+  },
+  {
+    "line": 125,
+    "source": "- Create `Users & Groups`- specify targeted users' emails or bulk import users",
+    "translation": "- Créer `Users & Groups` : indiquer les adresses e-mail des utilisateurs ciblés ou importer les utilisateurs en masse"
+  },
+  {
+    "line": 129,
+    "source": "- Create a `Campaign` - give the campaign a name, select the type of phishing campaign to create (such as credential harvesting or malicious attachment), and specify the targets and email template",
+    "translation": "- Créer une `Campaign` : donner un nom à la campagne, sélectionner son type (par exemple collecte d’identifiants ou pièce jointe malveillante) et préciser les cibles ainsi que le modèle d’e-mail"
+  },
+  {
+    "line": 133,
+    "source": "- `Launch the campaign` - Gophish will automatically send the phishing emails to the target list and track who clicked on the link and submitted data",
+    "translation": "- `Launch the campaign` : Gophish envoie automatiquement les e-mails de phishing à la liste de cibles et suit les clics sur le lien ainsi que les données soumises"
+  },
+  {
+    "line": 134,
+    "source": "- Analyze the results provided by Gophish as detailed metrics on email opens, link clicks and successful credential submissions.",
+    "translation": "- Analyser les résultats fournis par Gophish : statistiques détaillées sur les ouvertures d’e-mails, les clics sur les liens et les soumissions d’identifiants réussies."
   }
 ]
