@@ -97,6 +97,16 @@ def consolidate_sheets(soup, article):
             raise RuntimeError("Missing source chapters (" + role + "): " + str(sorted(set(sheet_labels) - seen)))
     mark_chapters(article, "primary")
     mark_chapters(supplement, "supplement")
+    # Record original direct subsection identities before translating labels.
+    for part, role in ((article, "primary"), (supplement, "supplement")):
+        chapter = None
+        for heading in part.find_all(["h2", "h3"]):
+            if heading.name == "h2":
+                chapter = heading.get("data-ejpt-source-chapter")
+            elif chapter:
+                heading["data-ejpt-source-subsection"] = heading.get_text(" ", strip=True)
+                heading["data-ejpt-subsection-chapter"] = chapter
+                heading["data-ejpt-subsection-role"] = role
     # All original level-two supplement headings mark boundaries, including CMS.
     for heading in supplement.find_all("h2"):
         heading["data-ejpt-source-boundary"] = "true"
@@ -2061,6 +2071,73 @@ def clean_generated_titles(article):
     return {"renamed":renamed, "hidden":hidden, "content_preserved":True}
 
 
+def merge_matching_subsections(soup, article):
+    """Combine exact matching original subsection headings within each chapter."""
+    from collections import Counter, defaultdict
+    code_before = Counter(c.get_text() for c in article.select("pre code"))
+    images_before = Counter(str(i) for i in article.find_all("img"))
+    links_before = Counter(a.get("href") for a in article.find_all("a", href=True))
+    ids_before = Counter(n["id"] for n in article.select("[id]"))
+    groups = defaultdict(lambda: {"primary": [], "supplement": []})
+    for heading in article.select("[data-ejpt-source-subsection]"):
+        key = (heading["data-ejpt-subsection-chapter"],
+               heading["data-ejpt-source-subsection"])
+        groups[key][heading["data-ejpt-subsection-role"]].append(heading)
+    def boundary(node):
+        return bool(getattr(node, "name", None) and
+                    (node.name == "h2" or
+                     node.get("data-ejpt-source-chapter") or
+                     node.get("data-ejpt-source-boundary") or
+                     node.get("data-ejpt-source-subsection")))
+    def chapter_for(node):
+        return next((h for h in node.previous_siblings
+                     if getattr(h, "name", None) == "h2"), None)
+    merged = []
+    skipped = 0
+    for (chapter, label), pair in groups.items():
+        if not pair["primary"] or not pair["supplement"]:
+            continue
+        if len(pair["primary"]) != 1 or len(pair["supplement"]) != 1:
+            skipped += 1
+            continue
+        target, source = pair["primary"][0], pair["supplement"][0]
+        if (target.name != "h3" or source.name != "h3" or
+            target.parent is not article or source.parent is not article or
+            chapter_for(target) is not chapter_for(source) or
+            source.find(["a", "img", "code", "kbd"])):
+            skipped += 1
+            continue
+        source_nodes = [source]
+        for n in source.next_siblings:
+            if boundary(n):
+                break
+            source_nodes.append(n)
+        if not any(getattr(n, "name", None) for n in source_nodes[1:]):
+            skipped += 1
+            continue
+        stop = next((n for n in target.next_siblings if boundary(n)), None)
+        if stop is None or any(stop is n for n in source_nodes):
+            skipped += 1
+            continue
+        # The duplicate title becomes an anchor; the original body is moved intact.
+        source["data-ejpt-original-label"] = source.get_text(" ", strip=True)
+        source.name = "span"
+        source.clear()
+        source["class"] = source.get("class", []) + ["ejpt-merged-subsection-anchor"]
+        source["aria-hidden"] = "true"
+        source["style"] = "display:block;height:0;scroll-margin-top:100px"
+        for n in source_nodes:
+            stop.insert_before(n.extract())
+        merged.append([chapter, label])
+    assert code_before == Counter(c.get_text() for c in article.select("pre code"))
+    assert images_before == Counter(str(i) for i in article.find_all("img"))
+    assert links_before == Counter(a.get("href") for a in article.find_all("a", href=True))
+    assert ids_before == Counter(n["id"] for n in article.select("[id]"))
+    print("eJPT subsection merge:", len(merged), "exact matching subsections merged;", skipped,
+          "ambiguous or incompatible matches kept intact")
+    return {"merged":len(merged), "skipped":skipped, "subsections":merged, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2096,6 +2173,7 @@ for page in report["pages"]:
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_translation"]=translate_ejpt_cheatsheet(article)
         report["cheatsheet_chapter_merge"]=merge_common_chapters(soup,article)
+        report["cheatsheet_subsection_merge"]=merge_matching_subsections(soup,article)
         report["cheatsheet_editorial_cleanup"]=simplify_generated_descriptions(article)
         report["cheatsheet_title_cleanup"]=clean_generated_titles(article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
