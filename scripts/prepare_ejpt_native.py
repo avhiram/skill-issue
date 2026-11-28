@@ -1930,6 +1930,77 @@ def simplify_generated_descriptions(article):
     return {"hidden_descriptions": hidden, "commands_preserved": True}
 
 
+def merge_common_chapters(soup, article):
+    """Move existing complementary sections into the matching main chapters."""
+    from collections import Counter
+    code_before = Counter(c.get_text() for c in article.select("pre code"))
+    images_before = Counter(str(i) for i in article.find_all("img"))
+    links_before = Counter(a.get("href") for a in article.find_all("a", href=True))
+    ids_before = Counter(n["id"] for n in article.select("[id]"))
+    root = article.find("h2", id="complements-de-revision")
+    if root is None:
+        raise RuntimeError("Missing complementary chapter")
+    def slug(label):
+        return re.sub(r"[^\w-]", "", re.sub(r"\s+", "-", label.lower().strip()))
+    def label(node):
+        return node.get_text(" ", strip=True)
+    main = {}
+    for h in root.previous_siblings:
+        if getattr(h, "name", None) == "h2":
+            main[h.get("id")] = h
+    common = {slug(name): value for name, value in sheet_labels.items()}
+    roots = []
+    for h in root.next_siblings:
+        if getattr(h, "name", None) == "h2":
+            break
+        if getattr(h, "name", None) != "h3":
+            continue
+        ident = h.get("id", "")
+        if ident == "complement-wordpress":
+            break
+        if ident.startswith("complement-") and ident[11:] in common:
+            roots.append(h)
+    if len(roots) != len(common):
+        raise RuntimeError("Expected 12 complementary chapters, found " + str(len(roots)))
+    moved = []
+    for h in roots:
+        ident = h["id"][11:]
+        dest = main.get(ident)
+        if dest is None:
+            raise RuntimeError("No matching primary heading for " + ident)
+        nodes = [h]
+        for n in h.next_siblings:
+            if getattr(n, "name", None) in ("h2", "h3"):
+                break
+            nodes.append(n)
+        # Keep the original fragment ID without creating a repeated accordion.
+        h.name = "span"
+        h["class"] = h.get("class", []) + ["ejpt-merged-chapter-anchor"]
+        h["hidden"] = ""
+        h["style"] = "display:none!important"
+        # Promote genuine nested headings by one level so they remain within
+        # the corresponding chapter. Keep platform headings and code unchanged.
+        for n in nodes[1:]:
+            tag = getattr(n, "name", None)
+            if tag and re.fullmatch(r"h[4-6]", tag):
+                n.name = "h" + str(int(tag[1]) - 1)
+        # Place the existing content at the end of the matching main chapter.
+        stop = dest.find_next_sibling("h2")
+        if stop is None:
+            raise RuntimeError("Missing main chapter boundary")
+        for n in nodes:
+            stop.insert_before(n.extract())
+        moved.append(common[ident])
+    assert len(moved) == len(common)
+    assert code_before == Counter(c.get_text() for c in article.select("pre code"))
+    assert images_before == Counter(str(i) for i in article.find_all("img"))
+    assert links_before == Counter(a.get("href") for a in article.find_all("a", href=True))
+    assert ids_before == Counter(n["id"] for n in article.select("[id]"))
+    assert all(article.find(id="complement-" + ident).name == "span" for ident in common)
+    print("eJPT chapter merge:", len(moved), "common chapters merged; all blocks, images, links and IDs preserved")
+    return {"merged":len(moved), "chapters":moved, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -1964,6 +2035,7 @@ for page in report["pages"]:
         report["cheatsheet_long_block_review"]=refine_long_blocks(soup,article)
         report["cheatsheet_leaf_titles"]=simplify_note_titles(soup,article)
         report["cheatsheet_translation"]=translate_ejpt_cheatsheet(article)
+        report["cheatsheet_chapter_merge"]=merge_common_chapters(soup,article)
         report["cheatsheet_editorial_cleanup"]=simplify_generated_descriptions(article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
