@@ -2347,8 +2347,17 @@ HOST_NETWORK_OVERVIEW_PAGES = {
     "1-system-attack/linux-attacks.html", "1-system-attack/windows-attacks.html",
     "2-network-attack.html", "3-metasploit.html", "4-exploitation.html",
     "5-post-exploit.html", "6-social-engineer.html",
+    "1-system-attack/linux-attacks/bash-shell.html",
+    "1-system-attack/linux-attacks/creds-dump-unix.html",
+    "1-system-attack/linux-attacks/cron.html",
+    "1-system-attack/linux-attacks/ftp-unix.html",
+    "1-system-attack/linux-attacks/samba-unix.html",
+    "1-system-attack/linux-attacks/ssh-unix.html",
+    "1-system-attack/linux-attacks/suid.html",
 }
 HOST_NETWORK_GENERAL_HEADINGS = {
+    "Lab 1": "Laboratoire 1",
+    "Enumeration": "Énumération",
     "Topics": "Thèmes abordés",
     "Disclaimer": "Avertissement",
     "Linux Vulnerabilities": "Vulnérabilités Linux",
