@@ -44,7 +44,7 @@ for name, data in files.items():
     blob = hashlib.sha1(("blob " + str(len(data))).encode() + b"\0" + data).hexdigest()
     if len(data) != record["size"] or blob != record["sha"]:
         raise RuntimeError("Source file integrity mismatch: " + name)
-(out / "source.zip").write_bytes(archive)
+# Keep the verified archive in memory only; never publish the ZIP.
 (out / "LICENSE.txt").write_bytes(files["LICENSE"])
 courses = manifest["courses"]
 notes = [name for name in files if name.endswith(".md") and name.split("/")[0] in courses]
@@ -68,8 +68,6 @@ def url(name):
 for name in images:
     write(media(name), files[name])
     assert (out / media(name)).read_bytes() == files[name]
-for name in notes:
-    write("markdown/" + name, files[name])
 
 md = MarkdownIt("commonmark", {"html": True}).enable("table").enable("strikethrough")
 missing = []
@@ -132,7 +130,7 @@ def render(name):
         elif target in images:
             dest = url(media(target))
         elif target in files:
-            # Other source material remains available in the complete archive.
+            # Other source material remains available at its original location.
             dest = "https://github.com/" + repository + "/blob/" + revision + "/" + urllib.parse.quote(target, safe="/")
         else:
             missing.append({"page":name,"kind":tag.name,"reference":value})
@@ -300,7 +298,8 @@ for name in ordered:
 
 report = {"repository":repository,"revision":revision,"files_verified":len(files),"archive_sha256":hashlib.sha256(archive).hexdigest(),"images_verified":len(images),"courses":{course:sum(n.startswith(course+"/") for n in notes) for course in courses},"rendered_pages":len(notes),"unresolved_source_references":missing,"resolved_lab_examples":resolved_examples,"code_blocks_verified":sum(code_counts.values()),"code_pages_verified":len(code_counts)}
 write("import-report.json", json.dumps(report, ensure_ascii=False, indent=2))
-assert all((out / page(n)).is_file() and (out / ("markdown/"+n)).read_bytes() == files[n] for n in notes)
+assert all((out / page(n)).is_file() for n in notes)
+assert not (out / "source.zip").exists() and not (out / "markdown").exists(), "Raw course archive must not be published"
 print(json.dumps(report, ensure_ascii=False))
 if missing:
     raise RuntimeError("Unresolved TCM references: " + json.dumps(missing, ensure_ascii=False))
