@@ -1,0 +1,416 @@
+{
+  "sources": [
+    {
+      "repository": "dzone343/ine-notes",
+      "revision": "03fcd972b3b792883fcd104d5dc49ba3a7998263"
+    },
+    {
+      "repository": "Akatsukikain5/ine-notes",
+      "revision": "6a686a311f341b9b0215c227dfd7510a8b0b9867"
+    }
+  ],
+  "images": [
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230214230941826.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230214230941826.png",
+      "git_blob": "fc970e951dc88d355740c2dac9f1980e7942c74c",
+      "size": 18116
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230214231113654.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230214231113654.png",
+      "git_blob": "969315e9c91a211dab09bdc1cec05262e30a749b",
+      "size": 32667
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230214231827436.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230214231827436.png",
+      "git_blob": "d5c3bebe644f7ef8223ffc02366e22048a12e305",
+      "size": 21647
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230214232351630.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230214232351630.png",
+      "git_blob": "f27cb4741608a8ba959b27f1cef70013ac94065f",
+      "size": 26161
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215101433193.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215101433193.png",
+      "git_blob": "52e1d7df56c969a8e09733ba95478cbf1b24d4eb",
+      "size": 145503
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215102856704.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215102856704.png",
+      "git_blob": "7bbb15f7a044d00fe9cf5d29e07a95ddfb1878a9",
+      "size": 34596
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215103352757.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215103352757.png",
+      "git_blob": "c66ab3593233b79c62c28672acf109b3fc8dbd1b",
+      "size": 21927
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215103619604.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215103619604.png",
+      "git_blob": "cc74d486858e62fccadd4619d6f64b55f421635e",
+      "size": 29786
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215105049826.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215105049826.png",
+      "git_blob": "1624841ce453866b7ca656f5dba1170381e2344c",
+      "size": 19286
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215114930223.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215114930223.png",
+      "git_blob": "1b8dac2d712e529646df22936e799985dc40ecc6",
+      "size": 30560
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215115946164.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215115946164.png",
+      "git_blob": "e75d41867e0709d6706220db75cffabe5f072188",
+      "size": 40762
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230215130759212.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230215130759212.png",
+      "git_blob": "fdf7ecf40d27e2a648aec68f40d20f4f341d912c",
+      "size": 30944
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216140800111.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216140800111.png",
+      "git_blob": "ef96828f04a1fe040eb0f93c7c932075261a1984",
+      "size": 18957
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216142302621.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216142302621.png",
+      "git_blob": "4951c3f2dff35c76a2fa00d55838d2a7044236de",
+      "size": 16724
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216145445323.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216145445323.png",
+      "git_blob": "f126115bd57bad4194b24d3188ad680c332f1cf6",
+      "size": 33767
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216151839392.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216151839392.png",
+      "git_blob": "b3ac601d3e99abae0746d9e21991054e9dd04b8e",
+      "size": 21483
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216152315669.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216152315669.png",
+      "git_blob": "c352a4e35f2f5634c435c9e56455e9c572a42185",
+      "size": 20982
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216152841859.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216152841859.png",
+      "git_blob": "7250061489cd32d40f2f05f22190b5a2f8289ce5",
+      "size": 43268
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216153349055.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216153349055.png",
+      "git_blob": "bee10a9b903d4b18a0ab1f542265fb1d0ba266c9",
+      "size": 19011
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216162630250.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216162630250.png",
+      "git_blob": "254983cacb3dca2f4b211b71d67e5ac71b4deb40",
+      "size": 128746
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216162709538.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216162709538.png",
+      "git_blob": "d550e98e728cbe1a459572316575a4d3d0d27c53",
+      "size": 60990
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216163301365.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216163301365.png",
+      "git_blob": "f14d3ec665eb985421f6388a17f76d0b7f2abb4d",
+      "size": 137023
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216164545950.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216164545950.png",
+      "git_blob": "2f977903eda7079cee91b4747c892eb574c05f5f",
+      "size": 80718
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216165342830.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216165342830.png",
+      "git_blob": "1a963b393926cb105d4f91a84df95c1facc341a1",
+      "size": 120170
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216165414851.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216165414851.png",
+      "git_blob": "b3d2ec9b1f47b77d168d688adcf3cc086577f22f",
+      "size": 73218
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216184659611.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216184659611.png",
+      "git_blob": "129c4ce4c7a3ee078e4a20761ac985f7cbfa06ed",
+      "size": 51882
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216185459709.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216185459709.png",
+      "git_blob": "a8d737d6da38f937b9553dd4b81aaa3314896d44",
+      "size": 19109
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216185912490.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216185912490.png",
+      "git_blob": "4c5d018203938c2ce9d3d3099e31a0ac38bfa074",
+      "size": 21884
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216190539006.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216190539006.png",
+      "git_blob": "7ae374eb08344dedacc8647082419e64160ad0f1",
+      "size": 25977
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216190722430.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216190722430.png",
+      "git_blob": "655d6e8ce76cfb296cb165f2d21feb49c750a879",
+      "size": 17809
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216192605784.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216192605784.png",
+      "git_blob": "bb7f682a9ad697e00506891eb9370d93bf4914e9",
+      "size": 10881
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230216192643068.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230216192643068.png",
+      "git_blob": "b04c18ee518cc5c88bb14823d8bce7a76d34281b",
+      "size": 11299
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219154533850.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219154533850.png",
+      "git_blob": "6f8338ae0a8f902cb368f92fdc94b5a450effae8",
+      "size": 51737
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219160107927.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219160107927.png",
+      "git_blob": "3abb3c76191dc839594acdac4b9c7907d5543610",
+      "size": 31393
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219160242823.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219160242823.png",
+      "git_blob": "670896bb54affe08f5bd49f212aeb54d8e55650f",
+      "size": 107694
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219161029085.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219161029085.png",
+      "git_blob": "212ad17bbd1f59cc51086d5815450d441dea4831",
+      "size": 21130
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219162313519.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219162313519.png",
+      "git_blob": "a417ca3367d5cbda5f9d8fc8e0d1bd21c52bf9b0",
+      "size": 61635
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219162415428.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219162415428.png",
+      "git_blob": "d51e3a8683c2e8f14018bd2a8847b4003ef043e3",
+      "size": 56978
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219163240301.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219163240301.png",
+      "git_blob": "6b6d3ca40fc6627bcd4b12a5deb02eba8fce0493",
+      "size": 25426
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219163551408.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219163551408.png",
+      "git_blob": "2a391c53b17a10b56aa3dd7936e9c8c43cf46d79",
+      "size": 48519
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219165729566.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219165729566.png",
+      "git_blob": "b7cea86a1ab34e90b7393249dc134f5d26a9ffd6",
+      "size": 30504
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219170108141.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219170108141.png",
+      "git_blob": "135771a33327928efb8a75ffd9ae3debcfa9add1",
+      "size": 33779
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219170632432.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219170632432.png",
+      "git_blob": "7253532606f29cebc1fafc07515a5e37db9b7d60",
+      "size": 72529
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219171351543.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219171351543.png",
+      "git_blob": "b3862bdac95edaf58924ff727f5b33fc72d63156",
+      "size": 119984
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219171617727.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219171617727.png",
+      "git_blob": "3f7dd069d9ab33d3645adc201a3e7a1182249d23",
+      "size": 46455
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219171909867.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219171909867.png",
+      "git_blob": "37c0dfaedff5c20ebf5224aee86ad30083ddbc7d",
+      "size": 31869
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219182624753.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219182624753.png",
+      "git_blob": "179f2ff3831b1c74dfadd230cb44ccdffd93c415",
+      "size": 108361
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219184629810.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219184629810.png",
+      "git_blob": "faf2cc17515be9a2c652a852a82ab1c1df607a87",
+      "size": 40872
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219191658970.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219191658970.png",
+      "git_blob": "0a42b15e3695d38f6760bc925f4f89dfdcb4880c",
+      "size": 37046
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219192121059.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219192121059.png",
+      "git_blob": "c2054430b7d60e48f971d62f4d0becc87b005958",
+      "size": 388514
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219192459540.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219192459540.png",
+      "git_blob": "d59d85143af73c944ac284a907a57a36f9167c4d",
+      "size": 130427
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219192841055.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219192841055.png",
+      "git_blob": "3cb5077c583cef8abaf2081cfee2c2ce98e4ec8d",
+      "size": 59689
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219193057071.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219193057071.png",
+      "git_blob": "0be1dd178060c1bcfe97dccaca5b9268c6c9450b",
+      "size": 26417
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219193931380.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219193931380.png",
+      "git_blob": "2c0ff31c27816f4680d7868cdbc943c325a18c6d",
+      "size": 61280
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219194339939.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219194339939.png",
+      "git_blob": "3fea91e97bf3b9aa4ddd4a790aef8fd42a681122",
+      "size": 373327
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219194421628.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219194421628.png",
+      "git_blob": "5066f668978f35defedbec867039e9e78a3bfa95",
+      "size": 131210
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219194438863.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219194438863.png",
+      "git_blob": "289afe86840106b95398d0b5e058ca21eb31c9db",
+      "size": 36430
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219194537158.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219194537158.png",
+      "git_blob": "7911aac158647baec5814c903865ff87e700935b",
+      "size": 80086
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219194926288.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219194926288.png",
+      "git_blob": "351e32ab3f73a0bbb40e28aba4699542203a7f09",
+      "size": 18757
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230219195109764.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230219195109764.png",
+      "git_blob": "726c40cae749899ca58750a8c24512fbaae6b3fd",
+      "size": 163523
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230413144437237.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230413144437237.png",
+      "git_blob": "b7676872c9ad545d0bf63f8ee3397bb6748dc0ec",
+      "size": 16421
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230413145251626.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230413145251626.png",
+      "git_blob": "a74a46ffbca96c025abe55789a8ae28c2376f49a",
+      "size": 10397
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230413145845823.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230413145845823.png",
+      "git_blob": "eb918fe6c562d16cf7759b790a737c6f2db47282",
+      "size": 24657
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230413151315318.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230413151315318.png",
+      "git_blob": "b58dba05dbaf67dbaa6d58a65b93ec099aa84450",
+      "size": 30820
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230413151735850.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230413151735850.png",
+      "git_blob": "11c1480292f8d70b119d57d3872475405efea7c9",
+      "size": 17287
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230413151907909.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230413151907909.png",
+      "git_blob": "36eb1870d5298e448dd48f5d40fd21a167300756",
+      "size": 10170
+    },
+    {
+      "path": "assessment-methodologies/3-enumeration/assets/image-20230417190948253.png",
+      "source": "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/image-20230417190948253.png",
+      "git_blob": "b658adfdf3792823f01d903289d715bf6eb61bde",
+      "size": 20927
+    }
+  ]
+}

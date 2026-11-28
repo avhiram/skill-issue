@@ -29,6 +29,8 @@ deadline=time.monotonic()+660
 while True:
     try:
         report=json.loads(get("original/import-report.json"))
+        if report.get("recovered_archive_images") != 67 or report.get("missing_images") != 0:
+            raise RuntimeError("Incomplete eJPT screenshot recovery")
         pages=report["pages"]
         if len(pages)!=80 or len(set(pages))!=80:
             raise RuntimeError("expected 80 distinct source pages")

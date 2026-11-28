@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Render the user-supplied eJPT archive without changing its source files."""
 import collections
+import concurrent.futures
 import hashlib
 import html
 import io
@@ -55,6 +56,42 @@ notes = sorted(n for n in files if n.endswith(".md"))
 assert len(notes) == 80
 assets = [n for n in files if n.lower().endswith((".png", ".gif"))]
 assert len(assets) == 744
+
+# Restore only missing, independently matched archive screenshots. Keep the
+# original archive manifest immutable and serve recovered bytes locally.
+recovery = json.loads(Path("imports/ejpt/recovered-images.json").read_text(encoding="utf-8"))
+assert len(recovery["images"]) == 67
+assert len(recovery["sources"]) == 2
+
+def recover_image(item):
+    target = item["path"]
+    if target in files or not re.fullmatch(r"assessment-methodologies/3-enumeration/assets/image-[0-9]+\.png", target):
+        raise RuntimeError("Unexpected screenshot recovery target: " + target)
+    expected_source = "ejpt/assessment-methodologies/3-enumeration/.gitbook/assets/" + PurePosixPath(target).name
+    if item["source"] != expected_source:
+        raise RuntimeError("Unexpected screenshot source: " + item["source"])
+    failures = []
+    for mirror in recovery["sources"]:
+        source_url = ("https://raw.githubusercontent.com/" + mirror["repository"] + "/" +
+                      mirror["revision"] + "/" + urllib.parse.quote(item["source"], safe="/"))
+        try:
+            with urllib.request.urlopen(source_url, timeout=30) as response:
+                data = response.read(item["size"] + 1)
+            git_hash = hashlib.sha1(("blob " + str(len(data))).encode() + bytes([0]) + data).hexdigest()
+            if len(data) != item["size"] or git_hash != item["git_blob"] or not data.startswith(bytes.fromhex("89504e470d0a1a0a")):
+                raise RuntimeError("Screenshot integrity mismatch")
+            return target, data
+        except Exception as exc:
+            failures.append(str(exc))
+    raise RuntimeError("Cannot restore screenshot " + target + ": " + "; ".join(failures))
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+    restored_images = dict(pool.map(recover_image, recovery["images"]))
+if len(restored_images) != 67:
+    raise RuntimeError("Incomplete screenshot recovery")
+files.update(restored_images)
+assets.extend(restored_images)
+print("Recovered enumeration screenshots:", len(restored_images))
 OUT.mkdir(parents=True, exist_ok=True)
 def write(name, data):
     p = OUT / name
@@ -336,6 +373,8 @@ write("import-report.json",json.dumps({
     "markdown_pages":len(notes),
     "pages":[destination(n) for n in notes],
     "images":len(assets),
+    "recovered_archive_images":len(restored_images),
+    "recovered_image_paths":sorted(restored_images),
     "repaired_links":repaired,
     "missing_links":missing,
     "missing_images":missing_images,
