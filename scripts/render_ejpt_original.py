@@ -296,6 +296,15 @@ def render(n):
             continue
         if not p.path:
             continue
+        # The source notes used a module identifier as a relative hyperlink.
+        # Repair only this exact reference without changing the source archive.
+        if (n == "hostnetwork-penetration-testing/5-post-exploit/crack-hashes.md"
+                and tag.name == "a" and u == "auxiliary/analyze/crack_linux"):
+            destination_url = "https://www.rapid7.com/db/modules/auxiliary/analyze/crack_linux/"
+            tag[key] = destination_url
+            tag["rel"] = "noopener noreferrer"
+            repaired.append([n, u, destination_url])
+            continue
         q = posixpath.normpath(posixpath.join(posixpath.dirname(n),urllib.parse.unquote(p.path)))
         external_asset = external_assets.get(q) if tag.name == "img" else None
         if external_asset:
@@ -384,4 +393,6 @@ write("import-report.json",json.dumps({
 },ensure_ascii=False,indent=2))
 assert all((OUT/destination(n)).is_file() for n in files)
 assert all(digest((OUT/destination(n)).read_bytes())==digest(files[n]) for n in assets)
+if missing:
+    raise RuntimeError("Unresolved eJPT source references: " + json.dumps(missing, ensure_ascii=False))
 print(f"Verified: {len(notes)} original Markdown pages rendered, {len(assets)} unchanged images, {len(missing)} unresolved source references, {len(repaired)} repaired references")
