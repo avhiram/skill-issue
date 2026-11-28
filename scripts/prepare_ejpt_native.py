@@ -2001,6 +2001,52 @@ def merge_common_chapters(soup, article):
     return {"merged":len(moved), "chapters":moved, "content_preserved":True}
 
 
+def clean_generated_titles(article):
+    """Remove generated numbering and repeated consecutive leaf labels."""
+    before = [c.get_text() for c in article.select("pre code")]
+    ids = [n["id"] for n in article.select("[id]")]
+    links = [a.get("href") for a in article.find_all("a", href=True)]
+    renamed = 0
+    hidden = 0
+    previous = None
+    for node in article.find_all(re.compile(r"^(?:h[1-6]|p)$")):
+        classes = set(node.get("class", []))
+        generated = bool(classes.intersection({
+            "ejpt-existing-note-heading", "ejpt-context-heading",
+            "ejpt-reviewed-enum-title", "ejpt-leaf-title",
+            "ejpt-long-block-title",
+        }))
+        if not generated:
+            if node.name.startswith("h"):
+                previous = None
+            continue
+        if node.find(["a", "img", "code", "kbd"]):
+            previous = None
+            continue
+        old = node.get_text(" ", strip=True)
+        if not old:
+            continue
+        new = re.sub(r"\s+(?:·\s*\d+|—\s*complément\s+\d+)$", "", old)
+        if new != old:
+            # Keep the existing element, ID, and emphasis styling.
+            target = node.find("strong") or node
+            if len(list(target.children)) == 1 and target.string is not None:
+                target.string.replace_with(new)
+                renamed += 1
+        key = " ".join(new.casefold().split())
+        if node.name == "p" and key == previous:
+            node["hidden"] = ""
+            node["style"] = (node.get("style", "").rstrip(";") + ";display:none!important").lstrip(";")
+            node["data-ejpt-repetitive-title"] = "true"
+            hidden += 1
+        previous = key
+    assert before == [c.get_text() for c in article.select("pre code")]
+    assert ids == [n["id"] for n in article.select("[id]")]
+    assert links == [a.get("href") for a in article.find_all("a", href=True)]
+    print("eJPT title cleanup:", renamed, "numbered labels simplified;", hidden, "consecutive duplicates hidden")
+    return {"renamed":renamed, "hidden":hidden, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2037,6 +2083,7 @@ for page in report["pages"]:
         report["cheatsheet_translation"]=translate_ejpt_cheatsheet(article)
         report["cheatsheet_chapter_merge"]=merge_common_chapters(soup,article)
         report["cheatsheet_editorial_cleanup"]=simplify_generated_descriptions(article)
+        report["cheatsheet_title_cleanup"]=clean_generated_titles(article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
