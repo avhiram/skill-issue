@@ -33,5 +33,35 @@
     "line": 30,
     "source": "🗒️ **System or Host based attacks** are attacks targeted towards specific systems oh hosts. They are about *exploiting vulnerabilities within Windows and Linux operating systems*, running on (internal) servers, workstations, laptops, etc.",
     "translation": "🗒️ Les **attaques visant les systèmes et les hôtes** ciblent des systèmes spécifiques. Elles concernent les vulnérabilités des systèmes d’exploitation Windows et Linux utilisés sur les serveurs, postes de travail, ordinateurs portables, etc."
+  },
+  {
+    "line": 32,
+    "source": "- During a penetration test, host based attacks are applied after the target network is accessed.",
+    "translation": "- Lors d’un pentest, les tests portant sur les hôtes interviennent après l’accès au réseau cible."
+  },
+  {
+    "line": 33,
+    "source": "- Focus on exploiting inherent vulnerabilities within the target O.S.",
+    "translation": "- Étudier les vulnérabilités propres au système d’exploitation cible."
+  },
+  {
+    "line": 34,
+    "source": "- Understand the target O.S. and its misconfigurations to stage an attack consisting of exploiting vulnerabilities, elevate local privileges, perform password cracking and lateral movement, etc.",
+    "translation": "- Comprendre le système d’exploitation et ses erreurs de configuration ainsi que les risques associés à l’exploitation, à la Privilege Escalation, au Password Cracking et au Lateral Movement."
+  },
+  {
+    "line": 36,
+    "source": "Jump to the specific O.S. attacks section to delve into each topic:",
+    "translation": "Consulter la section correspondant au système d’exploitation pour approfondir chaque sujet :"
+  },
+  {
+    "line": 38,
+    "source": "- 👉 [🪟 Windows Attacks](1-system-attack/windows-attacks.md)",
+    "translation": "- 👉 [🪟 Vulnérabilités Windows](1-system-attack/windows-attacks.md)"
+  },
+  {
+    "line": 39,
+    "source": "- 👉 [🐧 Linux Attacks](1-system-attack/linux-attacks.md)",
+    "translation": "- 👉 [🐧 Vulnérabilités Linux](1-system-attack/linux-attacks.md)"
   }
 ]

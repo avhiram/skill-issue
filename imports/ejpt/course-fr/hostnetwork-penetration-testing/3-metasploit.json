@@ -18,5 +18,160 @@
     "line": 11,
     "source": "> * Perform **info-gathering**, **enumeration**, **exploitation**, **post exploitation** with Metasploit",
     "translation": "> * Aborder les phases d’**Information Gathering**, d’**énumération**, d’**exploitation** et de **Post-Exploitation** avec Metasploit"
+  },
+  {
+    "line": 31,
+    "source": "🗒️ The [**Metasploit Framework**](https://www.metasploit.com/) (**MSF**) is an open-source pentesting and exploit development platform, used to write, test and execute exploit code.",
+    "translation": "🗒️ Le [**Metasploit Framework**](https://www.metasploit.com/) (**MSF**) est une plateforme open source de pentest et de développement d’exploits, utilisée pour écrire, tester et exécuter du code d’exploitation."
+  },
+  {
+    "line": 33,
+    "source": "- Provides automation of the penetration testing life cycle (specially exploitation and post-exploitation)",
+    "translation": "- Permet d’automatiser le cycle de vie d’un pentest, notamment les phases d’exploitation et de post-exploitation."
+  },
+  {
+    "line": 34,
+    "source": "- Used to develop and test exploits",
+    "translation": "- Utilisé pour développer et tester des exploits."
+  },
+  {
+    "line": 35,
+    "source": "- Has a world database and public tested exploits ",
+    "translation": "- Dispose d’une base de données d’exploits publics et testés."
+  },
+  {
+    "line": 36,
+    "source": "- It is modular, new modules can be added and integrated",
+    "translation": "- Architecture modulaire permettant l’ajout et l’intégration de nouveaux modules."
+  },
+  {
+    "line": 37,
+    "source": "- [Pre-installed in Kali Linux](https://www.kali.org/tools/metasploit-framework/)",
+    "translation": "- [Préinstallé dans Kali Linux](https://www.kali.org/tools/metasploit-framework/)."
+  },
+  {
+    "line": 38,
+    "source": "- It is [open-source](https://github.com/rapid7/metasploit-framework)",
+    "translation": "- Projet [open source](https://github.com/rapid7/metasploit-framework)."
+  },
+  {
+    "line": 39,
+    "source": "- Founded by H.D. Moore in 2003 (developed in Perl), Written in Ruby in 2007, acquired by [Rapid7](https://www.rapid7.com/) in 2009, released as Metasploit v6.0 in 2020",
+    "translation": "- Créé par H.D. Moore en 2003 (en Perl), réécrit en Ruby en 2007, acquis par [Rapid7](https://www.rapid7.com/) en 2009. La version 6.0 est sortie en 2020."
+  },
+  {
+    "line": 40,
+    "source": "- **Metasploit Framework** is the Community Edition",
+    "translation": "- **Metasploit Framework** correspond à l’édition communautaire."
+  },
+  {
+    "line": 41,
+    "source": "- Metasploit Pro & Express are Commercial versions",
+    "translation": "- Metasploit Pro et Express sont des éditions commerciales selon le cours."
+  },
+  {
+    "line": 43,
+    "source": "> 📌 Check the [Metasploit Unleashed – Free Ethical Hacking Course by OffSec](https://www.offsec.com/metasploit-unleashed/)",
+    "translation": "> 📌 Consulter [Metasploit Unleashed, cours gratuit d’Ethical Hacking par OffSec](https://www.offsec.com/metasploit-unleashed/)."
+  },
+  {
+    "line": 47,
+    "source": "| Term              | Description                                                  |",
+    "translation": "| Terme | Description |"
+  },
+  {
+    "line": 49,
+    "source": "| **Interface**     | Methods of interacting with the Metasploit Framework (`msfconsole`, Metasploit cmd) |",
+    "translation": "| **Interface** | Moyens d’interagir avec le Metasploit Framework (`msfconsole`, Metasploit cmd) |"
+  },
+  {
+    "line": 50,
+    "source": "| **Module**        | Pieces of code that perform a particular task (an exploit)   |",
+    "translation": "| **Module** | Partie de code réalisant une tâche particulière (par exemple un exploit) |"
+  },
+  {
+    "line": 51,
+    "source": "| **Vulnerability** | Exploitable flaw or weakness in a computer system or network |",
+    "translation": "| **Vulnerability** | Faille ou faiblesse exploitable dans un système informatique ou un réseau |"
+  },
+  {
+    "line": 52,
+    "source": "| **Exploit**       | Code/Module used to take advantage of a vulnerability        |",
+    "translation": "| **Exploit** | Code ou module exploitant une vulnérabilité |"
+  },
+  {
+    "line": 53,
+    "source": "| **Payload**       | Piece of code delivered to the target by an exploit (execute arbitrary commands or provide remote access) |",
+    "translation": "| **Payload** | Code transmis à une cible par un exploit, pouvant permettre une exécution de commandes ou un accès distant |"
+  },
+  {
+    "line": 54,
+    "source": "| **Listener**      | Utility that listens for an incoming connection from a target |",
+    "translation": "| **Listener** | Utilitaire en attente d’une connexion entrante depuis une cible |"
+  },
+  {
+    "line": 60,
+    "source": "🗒️ **Metasploit Framework Console** (**[MSFconsole](https://www.offsec.com/metasploit-unleashed/msfconsole/)**) - an all in one interface that provides with access to all the functionality of the MSF.",
+    "translation": "🗒️ **Metasploit Framework Console** (**[MSFconsole](https://www.offsec.com/metasploit-unleashed/msfconsole/)**) : interface centralisée donnant accès aux fonctionnalités du MSF."
+  },
+  {
+    "line": 64,
+    "source": "🗒️ **Metasploit Framework Command Line Interface** (**[MSFcli](https://www.offsec.com/metasploit-unleashed/msfcli/)**) - a command line utility used to facilitate the creation of automation scripts that utilize Metasploit modules.",
+    "translation": "🗒️ **Metasploit Framework Command Line Interface** (**[MSFcli](https://www.offsec.com/metasploit-unleashed/msfcli/)**) : utilitaire en ligne de commande conçu pour faciliter la création de scripts d’automatisation utilisant les modules Metasploit."
+  },
+  {
+    "line": 66,
+    "source": "- Discontinued in 2015, MSFconsole can be used with the same functionality of *redirecting output from other tools into `msfcli` and vice versa.*",
+    "translation": "- Abandonné en 2015. MSFconsole peut reprendre les fonctions de _redirection des sorties d’autres outils vers `msfcli` et inversement_."
+  },
+  {
+    "line": 68,
+    "source": "🗒️ **Metasploit Community Edition GUI** - a web based GUI front-end of the MSF.",
+    "translation": "🗒️ **Metasploit Community Edition GUI** : interface graphique Web du MSF."
+  },
+  {
+    "line": 70,
+    "source": "🗒️ [**Armitage**](https://www.kali.org/tools/armitage/) - a free Java based GUI front-end cyber attack management tool for the MSF.",
+    "translation": "🗒️ [**Armitage**](https://www.kali.org/tools/armitage/) : interface graphique gratuite basée sur Java permettant de gérer les tests de sécurité avec le MSF."
+  },
+  {
+    "line": 72,
+    "source": "- Visualizes targets and simplifies network discovery",
+    "translation": "- Visualise les cibles et simplifie la découverte réseau."
+  },
+  {
+    "line": 73,
+    "source": "- Recommends exploits",
+    "translation": "- Recommande des exploits."
+  },
+  {
+    "line": 74,
+    "source": "- Exposes the advanced capabilities of the MSF",
+    "translation": "- Donne accès aux fonctionnalités avancées du MSF."
+  },
+  {
+    "line": 80,
+    "source": "🗒️ A **module** is the piece of code that can be utilized and executed by the MSF.",
+    "translation": "🗒️ Un **module** est une partie de code que le MSF peut utiliser et exécuter."
+  },
+  {
+    "line": 82,
+    "source": "The MSF **libraries** (Rex, Core, Base) allow to extend and initiate functionality, facilitating the execution of modules without having to write additional code.",
+    "translation": "Les **bibliothèques** du MSF (Rex, Core, Base) permettent d’étendre et d’initialiser ses fonctionnalités. Elles facilitent l’exécution des modules sans écrire de code supplémentaire."
+  },
+  {
+    "line": 86,
+    "source": "| MSF Module    | Description                                                  |",
+    "translation": "| Module MSF | Description |"
+  },
+  {
+    "line": 88,
+    "source": "| **Exploit**   | Used to take advantage of a vulnerability, usually paired with a payload |",
+    "translation": "| **Exploit** | Module exploitant une vulnérabilité, généralement associé à un payload |"
+  },
+  {
+    "line": 92,
+    "source": "| **Auxiliary** | Is not paired with a payload, used to perform additional functionality - **e.g.** port scanners, fuzzers, sniffers, etc |",
+    "translation": "| **Auxiliary** | Module sans payload associé, assurant des fonctions complémentaires telles que le scan de ports, le fuzzing ou l’analyse du trafic |"
   }
 ]
