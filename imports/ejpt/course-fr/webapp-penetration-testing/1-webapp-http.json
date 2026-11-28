@@ -48,5 +48,210 @@
     "line": 30,
     "source": "- Request Methods",
     "translation": "- Méthodes de requête"
+  },
+  {
+    "line": 31,
+    "source": "- Status Codes (`200`,`404`,`500`, etc)",
+    "translation": "- Codes de statut (`200`,`404`,`500`, etc.)"
+  },
+  {
+    "line": 32,
+    "source": "- [Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) (additional information about the request/response)",
+    "translation": "- [Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) (informations supplémentaires sur la requête ou la réponse)"
+  },
+  {
+    "line": 33,
+    "source": "- Cookies (store info on the client-side)",
+    "translation": "- Cookies (stockage des informations côté client)"
+  },
+  {
+    "line": 34,
+    "source": "- Encryption (`HTTPS`)",
+    "translation": "- Chiffrement (`HTTPS`)"
+  },
+  {
+    "line": 40,
+    "source": "*HTTP defines a set of **request methods** to indicate the desired action to be performed for a given resource.* Commonly used HTTP requests are:",
+    "translation": "*HTTP définit un ensemble de **méthodes de requête** qui indiquent l’action souhaitée sur une ressource donnée.* Les méthodes HTTP courantes sont :"
+  },
+  {
+    "line": 42,
+    "source": "`GET` - retrieve data from the server",
+    "translation": "`GET` : récupérer des données depuis le serveur"
+  },
+  {
+    "line": 44,
+    "source": "`HEAD` - retrieve metadata about a resource from the server",
+    "translation": "`HEAD` : récupérer les métadonnées d’une ressource depuis le serveur"
+  },
+  {
+    "line": 46,
+    "source": "`POST` - submit data to the server",
+    "translation": "`POST` : transmettre des données au serveur"
+  },
+  {
+    "line": 48,
+    "source": "`PUT` - update an existing resource on the server",
+    "translation": "`PUT` : mettre à jour une ressource existante sur le serveur"
+  },
+  {
+    "line": 50,
+    "source": "`DELETE` - delete a specified resource",
+    "translation": "`DELETE` : supprimer une ressource spécifiée"
+  },
+  {
+    "line": 52,
+    "source": "`CONNECT` - establish a tunnel to the server identified by the target resource",
+    "translation": "`CONNECT` : établir un tunnel vers le serveur identifié par la ressource cible"
+  },
+  {
+    "line": 54,
+    "source": "`OPTIONS` - describe the communication options for a resource",
+    "translation": "`OPTIONS` : décrire les options de communication d’une ressource"
+  },
+  {
+    "line": 56,
+    "source": "`TRACE` - perform a message loop-back test along the path to the resource",
+    "translation": "`TRACE` : effectuer un test de boucle de retour du message sur le chemin vers la ressource"
+  },
+  {
+    "line": 58,
+    "source": "`PATCH` - apply partial modifications to a resource",
+    "translation": "`PATCH` : appliquer des modifications partielles à une ressource"
+  },
+  {
+    "line": 62,
+    "source": "*HTTP **response status codes** indicate whether a specific `HTTP` request has been successfully completed.* They are grouped in five classes:",
+    "translation": "*Les **codes de statut HTTP** indiquent si une requête `HTTP` particulière a été traitée avec succès.* Ils sont répartis en cinq catégories :"
+  },
+  {
+    "line": 64,
+    "source": "- `100-199` - Informational responses",
+    "translation": "- `100-199` : réponses informatives"
+  },
+  {
+    "line": 65,
+    "source": "- `200-299` - Successful responses",
+    "translation": "- `200-299` : réponses indiquant un succès"
+  },
+  {
+    "line": 66,
+    "source": "- `300-399` - Redirection messages",
+    "translation": "- `300-399` : messages de redirection"
+  },
+  {
+    "line": 67,
+    "source": "- `400-499` - Client error responses",
+    "translation": "- `400-499` : erreurs côté client"
+  },
+  {
+    "line": 68,
+    "source": "- `500-599` - Server error responses",
+    "translation": "- `500-599` : erreurs côté serveur"
+  },
+  {
+    "line": 72,
+    "source": "*An HTTP **cookie** is a small piece of data that a server sends to a user's web browser. The web browser may store the cookie and send it back to the same server with later requests.* Cookies are mainly used for these purposes:",
+    "translation": "*Un **cookie** HTTP est une petite quantité de données envoyée par un serveur au navigateur d’un utilisateur. Le navigateur peut la stocker puis la renvoyer au même serveur lors de requêtes ultérieures.* Les cookies servent principalement aux usages suivants :"
+  },
+  {
+    "line": 74,
+    "source": "- Session management",
+    "translation": "- Gestion des sessions"
+  },
+  {
+    "line": 75,
+    "source": "- Personalization",
+    "translation": "- Personnalisation"
+  },
+  {
+    "line": 76,
+    "source": "- Tracking",
+    "translation": "- Suivi de l’activité"
+  },
+  {
+    "line": 80,
+    "source": "🗒️ **`HTTPS`** (HTTP Secure) is the encrypted version of `HTTP` that uses a combination of Transport Layer Security (**`TLS`**) or Secure Sockets Layer (**`SSL`**) protocol and HTTP protocol to provide secure communication.",
+    "translation": "🗒️ **`HTTPS`** (HTTP Secure) est la version chiffrée de `HTTP` qui utilise le protocole Transport Layer Security (**`TLS`**) ou historiquement Secure Sockets Layer (**`SSL`**) pour sécuriser les communications."
+  },
+  {
+    "line": 82,
+    "source": "When a client connects to an HTTPS-enabled website, the server sends its `SSL`/`TLS` **certificate** to the client. The client verifies the certificate to ensure that it is issued by a **trusted certificate authority** and that it is valid. If the certificate is valid, the client and the server establish a secure connection using a unique **session key**.",
+    "translation": "Lorsqu’un client se connecte à un site HTTPS, le serveur transmet son **certificat** `SSL`/`TLS` au client. Celui-ci vérifie sa validité et s’assure qu’il est émis par une **autorité de certification de confiance**. Si le certificat est valide, le client et le serveur établissent une connexion sécurisée à l’aide d’une **clé de session**."
+  },
+  {
+    "line": 84,
+    "source": "> 🔬 There are many vulnerable testing web apps like:",
+    "translation": "> 🔬 Il existe de nombreuses applications Web volontairement vulnérables destinées à l’entraînement :"
+  },
+  {
+    "line": 91,
+    "source": "> 📝 Check the HackerSploit's [Web App Penetration Testing Tutorials](https://www.youtube.com/playlist?list=PLBf0hzazHTGO3EpGAs718LvLsiMIv9dSC)",
+    "translation": "> 📝 Consulter les [tutoriels Web App Penetration Testing](https://www.youtube.com/playlist?list=PLBf0hzazHTGO3EpGAs718LvLsiMIv9dSC) de HackerSploit."
+  },
+  {
+    "line": 113,
+    "source": "[**`Gobuster`**](https://www.kali.org/tools/gobuster/) - *a tool used to brute-force URIs including directories and files as well as DNS subdomains.*",
+    "translation": "[**`Gobuster`**](https://www.kali.org/tools/gobuster/) : _outil d’énumération des URI, notamment des répertoires, des fichiers et des sous-domaines DNS._"
+  },
+  {
+    "line": 125,
+    "source": "[**`BurpSuite`**](https://www.kali.org/tools/burpsuite/) - *an integrated platform for performing security testing of web applications.*",
+    "translation": "[**`BurpSuite`**](https://www.kali.org/tools/burpsuite/) : _plateforme intégrée de test de sécurité des applications Web._"
+  },
+  {
+    "line": 132,
+    "source": "> 🔬 Check [HTTP Web App Enumeration lab](1-webapp-http/http-enum.md) covering HTTP Method and Directory Enumeration Techniques",
+    "translation": "> 🔬 Consulter le [laboratoire d’énumération HTTP](1-webapp-http/http-enum.md), consacré aux méthodes HTTP et à l’énumération des répertoires."
+  },
+  {
+    "line": 136,
+    "source": "[**`Zaproxy`**](https://www.kali.org/tools/zaproxy/) - *OWASP Zed Attack Proxy (**ZAP**) is an easy to use integrated penetration testing tool for finding vulnerabilities in web applications.*",
+    "translation": "[**`Zaproxy`**](https://www.kali.org/tools/zaproxy/) : _OWASP Zed Attack Proxy (**ZAP**) est un outil intégré de test de sécurité permettant d’identifier les vulnérabilités des applications Web._"
+  },
+  {
+    "line": 145,
+    "source": "[**`Nikto`**](https://www.kali.org/tools/nikto/) - *a pluggable web server and CGI scanner written in Perl, using rfp’s LibWhisker to perform fast security or informational checks.*",
+    "translation": "[**`Nikto`**](https://www.kali.org/tools/nikto/) : _scanner extensible de serveurs Web et CGI écrit en Perl, utilisant LibWhisker pour réaliser des contrôles de sécurité et d’information._"
+  },
+  {
+    "line": 152,
+    "source": "> 🔬 Check [HTTP Web App Scanning lab](1-webapp-http/webapp-scan.md) covering Web Apps scanning techniques",
+    "translation": "> 🔬 Consulter le [laboratoire de scan des applications Web](1-webapp-http/webapp-scan.md), consacré aux techniques de scan."
+  },
+  {
+    "line": 157,
+    "source": "[**`SQLMap`**](https://www.kali.org/tools/sqlmap/) - *an open source penetration testing tool that automates the process of detecting and exploiting SQL injection flaws and taking over of database servers.*",
+    "translation": "[**`SQLMap`**](https://www.kali.org/tools/sqlmap/) : _outil open source de test de sécurité spécialisé dans les vulnérabilités de type SQL Injection._"
+  },
+  {
+    "line": 164,
+    "source": "[**`XSSer`**](https://www.kali.org/tools/xsser/) (Cross-Site Scripter) - *an automatic framework to detect, exploit and report XSS vulnerabilities in web-based applications.*",
+    "translation": "[**`XSSer`**](https://www.kali.org/tools/xsser/) (Cross-Site Scripter) : _framework automatisé de détection, de test et de signalement des vulnérabilités XSS dans les applications Web._"
+  },
+  {
+    "line": 173,
+    "source": "🗒️ [**SQL Injection**](https://owasp.org/www-community/attacks/SQL_Injection) *attacks consist of insertion or “**injection**” of a `SQL` query via the input data from the client to the application, allowing an attacker to interfere with the database queries of the vulnerable web application.*",
+    "translation": "🗒️ Une [**SQL Injection**](https://owasp.org/www-community/attacks/SQL_Injection) consiste à _introduire une requête `SQL` dans les données transmises par le client à l’application, permettant à un attaquant d’interférer avec les requêtes vers la base de données d’une application vulnérable._"
+  },
+  {
+    "line": 175,
+    "source": "- [What is a SQLi? - PortSwigger](https://portswigger.net/web-security/sql-injection)",
+    "translation": "- [Qu’est-ce qu’une SQL Injection ? PortSwigger](https://portswigger.net/web-security/sql-injection)"
+  },
+  {
+    "line": 179,
+    "source": "🗒️ **Cross-Site Scripting** ([**XSS**](https://owasp.org/www-community/attacks/xss/#)) *attacks are a type of injection, in which malicious scripts are injected into otherwise benign and trusted websites, allowing an attacker to compromise the interactions that users have with a vulnerable application.*",
+    "translation": "🗒️ Les attaques **Cross-Site Scripting** ([**XSS**](https://owasp.org/www-community/attacks/xss/#)) _sont un type d’injection dans lequel des scripts malveillants sont introduits dans des sites Web normalement légitimes et de confiance, compromettant les interactions des utilisateurs avec une application vulnérable._"
+  },
+  {
+    "line": 181,
+    "source": "- [How does XSS Work? - PortSwigger](https://portswigger.net/web-security/cross-site-scripting)",
+    "translation": "- [Comment fonctionne le XSS ? PortSwigger](https://portswigger.net/web-security/cross-site-scripting)"
+  },
+  {
+    "line": 183,
+    "source": "> 🔬 Check [Web App Attacks lab](1-webapp-http/webapp-attacks.md) covering Web Apps Attacking techniques",
+    "translation": "> 🔬 Consulter le [laboratoire sur les attaques Web](1-webapp-http/webapp-attacks.md)."
   }
 ]
