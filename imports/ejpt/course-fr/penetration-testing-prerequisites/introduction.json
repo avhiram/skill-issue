@@ -435,6 +435,21 @@
     "translation": "- *Convertir* du **binaire** au **décimal** en utilisant la position des chiffres."
   },
   {
+    "line": 219,
+    "source": "  $$ {From binary 11011 to decimal}",
+    "translation": "\n  **Conversion de 11011 (base 2) en décimal**\n  11011₂ = 1 × 2⁰ + 1 × 2¹ + 0 × 2² + 1 × 2³ + 1 × 2⁴ = 27₁₀\n"
+  },
+  {
+    "line": 220,
+    "source": "  11011(_2) = 1*2^0+1*2^1+0*2^2+1*2^3+1*2^4=27_{(10)}",
+    "translation": ""
+  },
+  {
+    "line": 221,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
     "line": 223,
     "source": "- *Converting* from **dec**imal to **bin**ary:",
     "translation": "- *Convertir* du **décimal** au **binaire** :"
@@ -445,9 +460,369 @@
     "translation": "  - diviser le nombre décimal par 2 (base 2), noter le reste et poursuivre jusqu’à obtenir un dividende égal à 0."
   },
   {
+    "line": 227,
+    "source": "  $$ {From decimal 26 to binary}",
+    "translation": "\n  **Conversion de 26 (base 10) en binaire**\n\n  | Division entière | Reste |\n  | --- | ---: |\n  | 26 ÷ 2 = 13 | 0 |\n  | 13 ÷ 2 = 6 | 1 |\n  | 6 ÷ 2 = 3 | 0 |\n  | 3 ÷ 2 = 1 | 1 |\n  | 1 ÷ 2 = 0 | 1 |\n"
+  },
+  {
+    "line": 228,
+    "source": "  26/2=13",
+    "translation": ""
+  },
+  {
+    "line": 229,
+    "source": "  \\\\remainder\\ is\\ 0",
+    "translation": ""
+  },
+  {
+    "line": 230,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 231,
+    "source": "  13/2=6",
+    "translation": ""
+  },
+  {
+    "line": 232,
+    "source": "  \\\\remainder\\ is\\ 1",
+    "translation": ""
+  },
+  {
+    "line": 233,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 234,
+    "source": "  6/2=3",
+    "translation": ""
+  },
+  {
+    "line": 235,
+    "source": "  \\\\remainder\\ is\\ 0",
+    "translation": ""
+  },
+  {
+    "line": 236,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 237,
+    "source": "  3/2=1",
+    "translation": ""
+  },
+  {
+    "line": 238,
+    "source": "  \\\\remainder\\ is\\ 1",
+    "translation": ""
+  },
+  {
+    "line": 239,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 240,
+    "source": "  1/2=0",
+    "translation": ""
+  },
+  {
+    "line": 241,
+    "source": "  \\\\remainder\\ is\\ 1",
+    "translation": ""
+  },
+  {
+    "line": 242,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 243,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 244,
+    "source": "  $$",
+    "translation": "\n  **Résultat :** 26₁₀ = 11010₂\n"
+  },
+  {
+    "line": 245,
+    "source": "  26_{(10)}=11010(_2)",
+    "translation": ""
+  },
+  {
+    "line": 246,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
     "line": 250,
     "source": "  - Or use the powers of two in a \"base 2 table\":",
     "translation": "  - Ou utiliser les puissances de deux dans une table en base 2 :"
+  },
+  {
+    "line": 252,
+    "source": "  $$",
+    "translation": "\n  **Puissances de 2**\n\n  | Puissance | Valeur |\n  | --- | ---: |\n  | 2⁰ | 1 |\n  | 2¹ | 2 |\n  | 2² | 4 |\n  | 2³ | 8 |\n  | 2⁴ | 16 |\n  | 2⁵ | 32 |\n  | 2⁶ | 64 |\n  | 2⁷ | 128 |\n  | 2⁸ | 256 |\n  | 2⁹ | 512 |\n  | 2¹⁰ | 1 024 |\n  | 2¹¹ | 2 048 |\n  | 2¹² | 4 096 |\n  | 2¹³ | 8 192 |\n  | 2¹⁴ | 16 384 |\n  | 2¹⁵ | 32 768 |\n"
+  },
+  {
+    "line": 253,
+    "source": "  {Powers\\ of\\ 2}",
+    "translation": ""
+  },
+  {
+    "line": 254,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 255,
+    "source": "  2^0=1",
+    "translation": ""
+  },
+  {
+    "line": 256,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 257,
+    "source": "  2^1=2",
+    "translation": ""
+  },
+  {
+    "line": 258,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 259,
+    "source": "  2^2=4",
+    "translation": ""
+  },
+  {
+    "line": 260,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 261,
+    "source": "  2^3=8",
+    "translation": ""
+  },
+  {
+    "line": 262,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 263,
+    "source": "  2^4=16",
+    "translation": ""
+  },
+  {
+    "line": 264,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 265,
+    "source": "  2^5=32",
+    "translation": ""
+  },
+  {
+    "line": 266,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 267,
+    "source": "  2^6=64",
+    "translation": ""
+  },
+  {
+    "line": 268,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 269,
+    "source": "  2^7=128",
+    "translation": ""
+  },
+  {
+    "line": 270,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 271,
+    "source": "  2^8=256",
+    "translation": ""
+  },
+  {
+    "line": 272,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 273,
+    "source": "  2^9=512",
+    "translation": ""
+  },
+  {
+    "line": 274,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 275,
+    "source": "  2^{10}=1024",
+    "translation": ""
+  },
+  {
+    "line": 276,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 277,
+    "source": "  2^{11}=2048",
+    "translation": ""
+  },
+  {
+    "line": 278,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 279,
+    "source": "  2^{12}=4096",
+    "translation": ""
+  },
+  {
+    "line": 280,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 281,
+    "source": "  2^{13}=8192",
+    "translation": ""
+  },
+  {
+    "line": 282,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 283,
+    "source": "  2^{14}=16384",
+    "translation": ""
+  },
+  {
+    "line": 284,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 285,
+    "source": "  2^{15}=32768",
+    "translation": ""
+  },
+  {
+    "line": 286,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 288,
+    "source": "  $$",
+    "translation": "\n  **Exemple :** 2⁴ + 2³ + 2¹ = 16 + 8 + 2 = 26\n\n  | Puissance | Bit |\n  | --- | ---: |\n  | 2⁴ | 1 |\n  | 2³ | 1 |\n  | 2² | 0 |\n  | 2¹ | 1 |\n  | 2⁰ | 0 |\n\n  **Résultat :** 26₁₀ = 11010₂\n"
+  },
+  {
+    "line": 289,
+    "source": "  {Example\\ }",
+    "translation": ""
+  },
+  {
+    "line": 290,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 291,
+    "source": "  2^4+2^3+2^1=16+8+2=26",
+    "translation": ""
+  },
+  {
+    "line": 292,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 293,
+    "source": "  2^4\\ YES\\ \\dashrightarrow 1",
+    "translation": ""
+  },
+  {
+    "line": 294,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 295,
+    "source": "  2^3\\ YES\\ \\dashrightarrow 1",
+    "translation": ""
+  },
+  {
+    "line": 296,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 297,
+    "source": "  2^2\\ NO\\ \\dashrightarrow 0",
+    "translation": ""
+  },
+  {
+    "line": 298,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 299,
+    "source": "  2^1\\ YES\\ \\dashrightarrow 1",
+    "translation": ""
+  },
+  {
+    "line": 300,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 301,
+    "source": "  2^0\\ NO\\ \\dashrightarrow 0",
+    "translation": ""
+  },
+  {
+    "line": 302,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 303,
+    "source": "  26_{(10)}=11010(_2)",
+    "translation": ""
+  },
+  {
+    "line": 304,
+    "source": "  $$",
+    "translation": ""
   },
   {
     "line": 310,
@@ -455,9 +830,94 @@
     "translation": "- **`NOT`** inverse les bits : zéro devient un, et un devient zéro."
   },
   {
+    "line": 311,
+    "source": "  $$",
+    "translation": "\n  **Exemple :** NOT(11011) = 00100\n"
+  },
+  {
+    "line": 312,
+    "source": "  NOT(11011)=00100",
+    "translation": ""
+  },
+  {
+    "line": 313,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
     "line": 315,
     "source": "- **`AND`** logical AND (**&**) between the bits of the operands.",
     "translation": "- **`AND`** réalise un ET logique (**&**) entre les bits des opérandes."
+  },
+  {
+    "line": 316,
+    "source": "  $$",
+    "translation": "\n  Le résultat vaut 1 uniquement si les deux bits valent 1.\n\n  | A | B | AND |\n  | --- | --- | --- |\n  | 0 | 0 | 0 |\n  | 0 | 1 | 0 |\n  | 1 | 0 | 0 |\n  | 1 | 1 | 1 |\n"
+  },
+  {
+    "line": 317,
+    "source": "  {If\\ both\\ bits\\ are\\ =1, result\\ is\\ 1.}",
+    "translation": ""
+  },
+  {
+    "line": 318,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 319,
+    "source": "  0\\ \\&\\ 0\\ = 0",
+    "translation": ""
+  },
+  {
+    "line": 320,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 321,
+    "source": "  0\\ \\&\\ 1\\ = 0",
+    "translation": ""
+  },
+  {
+    "line": 322,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 323,
+    "source": "  1\\ \\&\\ 0\\ = 0",
+    "translation": ""
+  },
+  {
+    "line": 324,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 325,
+    "source": "  1\\ \\&\\ 1\\ = 1",
+    "translation": ""
+  },
+  {
+    "line": 326,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 328,
+    "source": "  $$",
+    "translation": "\n  **Exemple :** 1010 &amp; 1101 = 1000\n"
+  },
+  {
+    "line": 329,
+    "source": "  1010\\ \\&\\ 1101\\ = 1000",
+    "translation": ""
+  },
+  {
+    "line": 330,
+    "source": "  $$",
+    "translation": ""
   },
   {
     "line": 332,
@@ -465,9 +925,149 @@
     "translation": "- **`OR`** réalise un OU logique (**|**) entre les bits des opérandes."
   },
   {
+    "line": 333,
+    "source": "  $$",
+    "translation": "\n  Le résultat vaut 1 si au moins un bit vaut 1.\n\n  | A | B | OR |\n  | --- | --- | --- |\n  | 0 | 0 | 0 |\n  | 0 | 1 | 1 |\n  | 1 | 0 | 1 |\n  | 1 | 1 | 1 |\n"
+  },
+  {
+    "line": 334,
+    "source": "  {If\\ at\\ least\\ one\\ bit\\ is\\ =1, result\\ is\\ 1.}",
+    "translation": ""
+  },
+  {
+    "line": 335,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 336,
+    "source": "  0\\ |\\ 0\\ = 0",
+    "translation": ""
+  },
+  {
+    "line": 337,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 338,
+    "source": "  0\\ |\\ 1\\ = 1",
+    "translation": ""
+  },
+  {
+    "line": 339,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 340,
+    "source": "  1\\ |\\ 0\\ = 1",
+    "translation": ""
+  },
+  {
+    "line": 341,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 342,
+    "source": "  1\\ |\\ 1\\ = 1",
+    "translation": ""
+  },
+  {
+    "line": 343,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 345,
+    "source": "  $$",
+    "translation": "\n  **Exemple :** 1010 &#124; 1100 = 1110\n"
+  },
+  {
+    "line": 346,
+    "source": "  1010\\ |\\ 1100\\ = 1110",
+    "translation": ""
+  },
+  {
+    "line": 347,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
     "line": 349,
     "source": "- **`XOR`** logical Exclusive OR (**^** , **⊕**) between the bits of the operands.",
     "translation": "- **`XOR`** réalise un OU exclusif logique (**^** , **⊕**) entre les bits des opérandes."
+  },
+  {
+    "line": 350,
+    "source": "  $$",
+    "translation": "\n  Le résultat vaut 1 si exactement un des deux bits vaut 1.\n\n  | A | B | XOR |\n  | --- | --- | --- |\n  | 0 | 0 | 0 |\n  | 0 | 1 | 1 |\n  | 1 | 0 | 1 |\n  | 1 | 1 | 0 |\n"
+  },
+  {
+    "line": 351,
+    "source": "  {If\\ just\\ one\\ bit\\ is\\ =1, result\\ is\\ 1.}",
+    "translation": ""
+  },
+  {
+    "line": 352,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 353,
+    "source": "  0 \\oplus 0\\ = 0",
+    "translation": ""
+  },
+  {
+    "line": 354,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 355,
+    "source": "  0 \\oplus  1\\ = 1",
+    "translation": ""
+  },
+  {
+    "line": 356,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 357,
+    "source": "  1 \\oplus  0\\ = 1",
+    "translation": ""
+  },
+  {
+    "line": 358,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 359,
+    "source": "  1 \\oplus  1\\ = 0",
+    "translation": ""
+  },
+  {
+    "line": 360,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 362,
+    "source": "  $$",
+    "translation": "\n  **Exemple :** 1010 ⊕ 1101 = 0111 = 111\n"
+  },
+  {
+    "line": 363,
+    "source": "  1010 \\oplus 1101\\ = 0111 = 111",
+    "translation": ""
+  },
+  {
+    "line": 364,
+    "source": "  $$",
+    "translation": ""
   },
   {
     "line": 366,
@@ -490,6 +1090,31 @@
     "translation": "- *Convertir* de l’**hexadécimal** au **décimal** en utilisant la position des chiffres."
   },
   {
+    "line": 379,
+    "source": "  $$",
+    "translation": "\n  **Conversion de 0x4a1 en décimal**\n  Les chiffres hexadécimaux 4, A et 1 correspondent à 4, 10 et 1.\n  0x4a1 = 1 × 16⁰ + 10 × 16¹ + 4 × 16² = 1 + 160 + 1024 = 1185₁₀\n"
+  },
+  {
+    "line": 380,
+    "source": "  0x4a1 = 0x(4\\ 10\\ 1)",
+    "translation": ""
+  },
+  {
+    "line": 381,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 382,
+    "source": "  0x4a1 = 1*16^0 + 10*16^1 + 4*16^2 = 1 + 160 + 1024 = 1185_{(10)}",
+    "translation": ""
+  },
+  {
+    "line": 383,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
     "line": 385,
     "source": "- *Converting* from **dec**imal to **hex**adecimal:",
     "translation": "- *Convertir* du **décimal** à l’**hexadécimal** :"
@@ -498,6 +1123,116 @@
     "line": 387,
     "source": "  - by subsequently dividing the decimal number by 16 (base 16), write the remainder, continue like this until reaching 0.",
     "translation": "  - diviser successivement le nombre décimal par 16 (base 16), noter le reste et poursuivre jusqu’à obtenir 0."
+  },
+  {
+    "line": 388,
+    "source": "  $$ {From decimal 1185 to hexadecimal}",
+    "translation": "\n  **Conversion de 1185 (base 10) en hexadécimal**\n\n  | Division | Partie fractionnaire |\n  | --- | ---: |\n  | 1185 ÷ 16 = 74,0625 | 0,0625 |\n  | 74 ÷ 16 = 4,625 | 0,625 |\n  | 4 ÷ 16 = 0,25 | 0,25 |\n\n  Arrêt lorsque le quotient entier atteint 0.\n"
+  },
+  {
+    "line": 389,
+    "source": "  1185/16=74,0625",
+    "translation": ""
+  },
+  {
+    "line": 390,
+    "source": "  \\\\remainder\\ is\\ 0,0625",
+    "translation": ""
+  },
+  {
+    "line": 391,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 392,
+    "source": "  74/16=4,625",
+    "translation": ""
+  },
+  {
+    "line": 393,
+    "source": "  \\\\remainder\\ is\\ 0,625",
+    "translation": ""
+  },
+  {
+    "line": 394,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 395,
+    "source": "  4/16=0,25",
+    "translation": ""
+  },
+  {
+    "line": 396,
+    "source": "  \\\\remainder\\ is\\ 0,25",
+    "translation": ""
+  },
+  {
+    "line": 397,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 398,
+    "source": "  0/16=can't\\ divide\\ 0.",
+    "translation": ""
+  },
+  {
+    "line": 399,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 401,
+    "source": "  $$",
+    "translation": "\n  **Conversion des parties fractionnaires en chiffres hexadécimaux**\n\n  | Calcul | Chiffre |\n  | --- | --- |\n  | 0,25 × 16 = 4 | 4 |\n  | 0,625 × 16 = 10 | A |\n  | 0,0625 × 16 = 1 | 1 |\n"
+  },
+  {
+    "line": 402,
+    "source": "  0.25*16=4",
+    "translation": ""
+  },
+  {
+    "line": 403,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 404,
+    "source": "  0.625*16=10\\ (a)",
+    "translation": ""
+  },
+  {
+    "line": 405,
+    "source": "  \\\\",
+    "translation": ""
+  },
+  {
+    "line": 406,
+    "source": "  0.0625*16=1",
+    "translation": ""
+  },
+  {
+    "line": 407,
+    "source": "  $$",
+    "translation": ""
+  },
+  {
+    "line": 409,
+    "source": "  $$",
+    "translation": "\n  **Résultat :** 1185₁₀ = 4A1₁₆ = 0x4a1\n"
+  },
+  {
+    "line": 410,
+    "source": "  1185_{(10)}=4a1_{(16)}=0x4a1",
+    "translation": ""
+  },
+  {
+    "line": 411,
+    "source": "  $$",
+    "translation": ""
   },
   {
     "line": 413,
