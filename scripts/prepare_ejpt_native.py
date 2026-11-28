@@ -2142,6 +2142,37 @@ def merge_matching_subsections(soup, article):
     return {"merged":len(merged), "skipped":skipped, "subsections":merged, "content_preserved":True}
 
 
+def remove_em_dashes(article):
+    """Use natural punctuation in displayed prose, leaving technical literals intact."""
+    from bs4 import Comment
+    code_before = [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    links_before = [a["href"] for a in article.find_all("a", href=True)]
+    images_before = [str(img) for img in article.find_all("img")]
+    ids_before = [n["id"] for n in article.select("[id]")]
+    def prose(node):
+        return not isinstance(node, Comment) and not node.find_parent(
+            ["pre", "code", "kbd", "samp", "script", "style", "textarea"])
+    count = 0
+    for node in list(article.find_all(string=True)):
+        if not prose(node) or "\u2014" not in str(node):
+            continue
+        value = str(node)
+        count += value.count("\u2014")
+        title = node.find_parent(re.compile(r"^h[1-6]$")) or node.find_parent(
+            class_=re.compile(r"ejpt-(?:leaf-title|long-block-title|context-heading|reviewed-enum-title)"))
+        separator = " : " if title else ", "
+        replacement = re.sub(r"[ \t]*\u2014[ \t]*", separator, value)
+        replacement = re.sub(r"^[:,][ \t]+", "", replacement)
+        node.replace_with(replacement)
+    assert not any("\u2014" in str(n) for n in article.find_all(string=True) if prose(n))
+    assert code_before == [c.get_text() for c in article.select("pre, code, kbd, samp")]
+    assert links_before == [a["href"] for a in article.find_all("a", href=True)]
+    assert images_before == [str(img) for img in article.find_all("img")]
+    assert ids_before == [n["id"] for n in article.select("[id]")]
+    print("eJPT punctuation:", count, "em dashes removed from prose; technical content unchanged")
+    return {"removed":count, "remaining_in_prose":0, "content_preserved":True}
+
+
 for page in report["pages"]:
     soup=BeautifulSoup((src/page).read_text(encoding="utf-8"),"html.parser")
     article=soup.find("article")
@@ -2180,6 +2211,7 @@ for page in report["pages"]:
         report["cheatsheet_subsection_merge"]=merge_matching_subsections(soup,article)
         report["cheatsheet_editorial_cleanup"]=simplify_generated_descriptions(article)
         report["cheatsheet_title_cleanup"]=clean_generated_titles(article)
+        report["cheatsheet_punctuation"]=remove_em_dashes(article)
         report["cheatsheet_block_sizes"]=audit_cheatsheet_block_sizes(article)
         report["cheatsheet_display_blocks"]=len(article.select("pre code"))
     before=[x.get_text() for x in article.select("pre code")]
