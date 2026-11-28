@@ -1,0 +1,12 @@
+[
+  {
+    "line": 5,
+    "source": "> 🔬 Same [HFS Exploitation lab](hfs-msf-exp.md)",
+    "translation": "> 🔬 Même [laboratoire d’exploitation HFS](hfs-msf-exp.md)."
+  },
+  {
+    "line": 7,
+    "source": "> - Target IP: `10.2.16.114`",
+    "translation": "> - IP cible du laboratoire : `10.2.16.114`"
+  }
+]
