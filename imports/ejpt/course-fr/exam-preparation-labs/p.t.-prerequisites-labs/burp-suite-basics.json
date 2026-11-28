@@ -195,6 +195,11 @@
     "translation": "  * Chaque entrée peut être ouverte dans une fenêtre séparée par un double-clic."
   },
   {
+    "line": 187,
+    "source": "* **`Send`** the request in the Repeater and use the `Follow redirection` button to get the _200 OK_ status code.",
+    "translation": "* **`Send`** : envoyer la requête dans Repeater, puis utiliser le bouton `Follow redirection` pour obtenir le code de statut _200 OK_."
+  },
+  {
     "line": 193,
     "source": "* Right click on the Response body and copy its URL with the `Show response in browser` button.",
     "translation": "* Faire un clic droit sur le corps de la réponse et copier son URL avec le bouton `Show response in browser`."

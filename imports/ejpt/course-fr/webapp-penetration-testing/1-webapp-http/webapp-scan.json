@@ -40,6 +40,16 @@
     "translation": "- Configuration de la session authentifiée dans ZAProxy."
   },
   {
+    "line": 41,
+    "source": "- Enable `Forced User mode`",
+    "translation": "- Activer le mode `Forced User mode`."
+  },
+  {
+    "line": 45,
+    "source": "- `Include in Context` the Site `https://192.192.29.3/` and confirm with **`OK`**",
+    "translation": "- Utiliser `Include in Context` pour le site `https://192.192.29.3/` et confirmer avec **`OK`**."
+  },
+  {
     "line": 59,
     "source": "- In the `Alerts` tab check the 🚩`High` risk Alerts",
     "translation": "- Dans l’onglet `Alerts`, consulter les alertes 🚩`High` (risque élevé)."
